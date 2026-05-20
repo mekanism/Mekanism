@@ -9,6 +9,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to expose this to the API?
 public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> implements IResourceContainer<RESOURCE> {
@@ -20,8 +21,13 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        internal.setContents(type, storedAmount);
+    public void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction) {
+        internal.setContents(contents, transaction);
+    }
+
+    @Override
+    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, @Nullable TransactionContext transaction) {
+        internal.setContents(type, storedAmount, transaction);
     }
 
     @Override

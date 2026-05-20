@@ -15,6 +15,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
 ///
@@ -200,7 +201,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @NonExtendable
     default void setEmpty() {
         //TODO - 26.1: Re-evaluate usages and the existence of this method, I think we may want to remove it so people are less tempted to bypass insertions/extractions
-        setContents(stackHelper().empty());
+        setContents(stackHelper().empty(), null);
     }
 
     @Override
@@ -213,7 +214,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Override
     default void deserialize(ValueInput input) {
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up crashing due to the stack not being valid
-        setContents(stackHelper().readOrEmpty(input, SerializationConstants.STORED));
+        setContents(stackHelper().readOrEmpty(input, SerializationConstants.STORED), null);
     }
 
     /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
@@ -223,18 +224,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     default void copyContents(IResourceContainer<RESOURCE> other) {
-        setContents(other.asStack());
+        setContents(other.asStack(), null);
     }
 
-    //TODO - 26.1: Docs and Re-evaluate this method
-    @NonExtendable
-    default void setContents(LargeResourceStack<RESOURCE> stack) {
-        setContents(stack.resource(), stack.amount());
-    }
+    //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional
+    void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction);
 
-    //TODO - 26.1: Docs
-    //TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
-    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
+    //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional
+    default void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, @Nullable TransactionContext transaction) {
+        setContents(stackHelper().createStack(type, storedAmount), transaction);
+    }
 
     //TODO - 26.1: Docs
     LargeResourceStack.StackHelper<RESOURCE> stackHelper();

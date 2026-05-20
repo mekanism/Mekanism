@@ -4,6 +4,8 @@ import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget.CableSaveHandler;
 import mekanism.common.content.network.transmitter.UniversalCable;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Nullable;
 
 public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandler> {
 
@@ -22,7 +24,7 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
         }
 
         @Override
-        protected void save() {
+        protected void save(@Nullable TransactionContext transaction) {
             if (value != transmitter.lastWrite) {
                 transmitter.lastWrite = value;
                 transmitter.getTransmitterTile().markForSave();

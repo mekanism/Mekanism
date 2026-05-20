@@ -54,8 +54,8 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<It
     public List<IInventorySlot> asInventorySlots(Set<Upgrade> supportedUpgrades) {
         UpgradeInventorySlot input = UpgradeInventorySlot.input(null, supportedUpgrades);
         UpgradeInventorySlot output = UpgradeInventorySlot.output(null);
-        input.setContents(inputSlot);
-        output.setContents(outputSlot);
+        input.setContents(inputSlot, null);
+        output.setContents(outputSlot, null);
         return List.of(input, output);
     }
 }

@@ -107,7 +107,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
-        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder, this::setContents);
+        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder);
     }
 
     public void setSlotType(ContainerSlotType slotType) {

@@ -99,12 +99,6 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
         return extract(amount, transaction, AutomationType.INTERNAL);
     }
 
-
-    @Override
-    default void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
-        getContainer(index).setEnergy(energy);
-    }
-
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {

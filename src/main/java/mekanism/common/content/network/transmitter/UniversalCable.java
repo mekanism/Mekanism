@@ -125,14 +125,14 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public void parseUpgradeData(@NotNull UniversalCableUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        buffer.setEnergy(data.buffer.energy());
+        buffer.copyContents(data.buffer);
     }
 
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
         lastWrite = input.getLongOr(SerializationConstants.ENERGY, lastWrite);
-        buffer.setEnergy(lastWrite);
+        buffer.setEnergy(lastWrite, null);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public Long releaseShare() {
         long energy = buffer.energy();
-        buffer.setEnergy(0);
+        buffer.setEnergy(0, null);
         return energy;
     }
 
@@ -195,8 +195,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite != 0L) {
                 //Clamp the value so that we can't error if the network's energy is less than the amount we are saving
                 lastWrite = Math.min(transmitterNetwork.energyContainer.energy(), lastWrite);
-                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.energy() - lastWrite);
-                buffer.setEnergy(lastWrite);
+                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.energy() - lastWrite, null);
+                buffer.setEnergy(lastWrite, null);
             }
         }
     }
@@ -209,7 +209,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
-        input.getLong(SerializationConstants.ENERGY).ifPresent(network.energyContainer::setEnergy);
+        input.getLong(SerializationConstants.ENERGY).ifPresent(energy -> network.energyContainer.setEnergy(energy, null));
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

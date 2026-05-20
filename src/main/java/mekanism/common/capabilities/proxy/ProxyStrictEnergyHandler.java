@@ -34,14 +34,6 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
     }
 
     @Override
-    public void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
-        //TODO - 26.1: Re-evaluate this being exposed to strict energy handler instead of just the more internal one
-        if (!readOnly) {
-            handler.setEnergy(container, energy);
-        }
-    }
-
-    @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return handler.getCapacityAsLong(index);

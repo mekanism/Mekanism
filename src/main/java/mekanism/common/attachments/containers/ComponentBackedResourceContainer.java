@@ -6,7 +6,6 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -14,8 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
@@ -50,12 +49,11 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        setContents(getAttached(), type, storedAmount);
+    public void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction) {
+        setContents(getAttached(), contents);
     }
 
     protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        MekanismPreconditions.checkNonNegative(storedAmount);
         setContents(attached, stackHelper().createStack(type, storedAmount));
     }
 

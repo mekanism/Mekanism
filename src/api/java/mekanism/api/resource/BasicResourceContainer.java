@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -39,24 +38,25 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public LargeResourceStack<RESOURCE> asStack() {
+    public final LargeResourceStack<RESOURCE> asStack() {
         return current;
     }
 
     @Override
-    protected LargeResourceStack<RESOURCE> createSnapshot() {
-        return asStack();
+    protected final LargeResourceStack<RESOURCE> createSnapshot() {
+        return current;
     }
 
     @Override
-    protected void revertToSnapshot(LargeResourceStack<RESOURCE> snapshot) {
-        setContents(snapshot.resource(), snapshot.amount());
+    protected final void revertToSnapshot(LargeResourceStack<RESOURCE> snapshot) {
+        //Directly set it without triggering onContentsChanged
+        current = snapshot;
     }
 
     @Override
     protected void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
         super.onRootCommit(originalState);
-        if (amountAsLong() != originalState.amount() || !originalState.resource().equals(resource())) {
+        if (!originalState.equals(current)) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged(originalState);
         }
@@ -92,18 +92,20 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        MekanismPreconditions.checkNonNegative(storedAmount);
-        LargeResourceStack<RESOURCE> stack = stackHelper().createStack(type, storedAmount);
-        if (stack.equals(current)) {
-            //Skip updating the contents if the target is the same as what is already stored
-            // This prevents onContentsChanged from firing
-            return;
+    public final void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction) {
+        //Skip updating the contents if the target is the same as what is already stored. This prevents onContentsChanged from firing
+        if (!contents.equals(current)) {
+            if (transaction == null) {
+                LargeResourceStack<RESOURCE> originalState = current;
+                this.current = contents;
+                //TODO - 26.1: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one
+                // but it might be useful to have
+                onContentsChanged(originalState);
+            } else {
+                updateSnapshots(transaction);
+                this.current = contents;
+            }
         }
-        LargeResourceStack<RESOURCE> originalState = current;
-        this.current = stack;
-        //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
-        onContentsChanged(originalState);
     }
 
     @Override
@@ -169,9 +171,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             return 0;
         }
         int toAdd = Math.min(amount, Ints.saturatedCast(needed));
-        updateSnapshots(transaction);
-        // Note: We just set it as unchecked as we have already validated it
-        setContents(resource, currentStored + toAdd);
+        setContents(resource, currentStored + toAdd, transaction);
         return toAdd;
     }
 
@@ -189,9 +189,8 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {
-            updateSnapshots(transaction);
             //Shrink the stack by the amount removed
-            setContents(resource, currentStored - toRemove);
+            setContents(resource, currentStored - toRemove, transaction);
         }
         return toRemove;
     }

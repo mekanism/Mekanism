@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.ObjIntConsumer;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 /// Like [ResourceHandlerSlot], except directly interacts with the [IInventorySlot] instead
 public class InventoryContainerSlot extends StackCopySlot implements ITransactionalSlot {
 
-    private final ObjIntConsumer<ItemResource> uncheckedSetter;
     private final ContainerSlotType slotType;
     private final BasicInventorySlot slot;
     @Nullable
@@ -29,13 +27,12 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
     private final Consumer<ISupportsWarning<?>> warningAdder;
 
     public InventoryContainerSlot(BasicInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay,
-          @Nullable Consumer<ISupportsWarning<?>> warningAdder, ObjIntConsumer<ItemResource> uncheckedSetter) {
+          @Nullable Consumer<ISupportsWarning<?>> warningAdder) {
         super(0, x, y);
         this.slot = slot;
         this.slotType = slotType;
         this.slotOverlay = slotOverlay;
         this.warningAdder = warningAdder;
-        this.uncheckedSetter = uncheckedSetter;
         //TODO - 26.1: Evaluate callers of getItem in cases where it may be an InventoryContainerSlot (such as for the module tweaker)
         // as it is possible we might be relying on being able to edit the item. While StackCopySlot may be able to handle that
         // we also might be missing the setChanged calls it would be relying on
@@ -94,7 +91,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         // for some reason, and the machine has invalid items in it, it could cause various issues/crashes which are not entirely
         // worth dealing with, as it is relatively reasonable to assume if an item is stored in a slot, more items of that type
         // are valid in the same slot without having to check isItemValid.
-        uncheckedSetter.accept(ItemResource.of(stack), stack.count());
+        slot.setContents(ItemResource.of(stack), stack.count(), null);
         setChanged();
     }
 

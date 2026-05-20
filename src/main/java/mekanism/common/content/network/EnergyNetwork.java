@@ -65,8 +65,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         long capacity = getCapacity();
         currentScale = (float) Math.min(1, capacity == 0L ? 0D : (ourScale + theirScale) / (double) capacity);
         if (!isRemote() && !net.energyContainer.isEmpty()) {
-            energyContainer.setEnergy(MathUtils.addClamped(energyContainer.energy(), net.getBuffer()));
-            net.energyContainer.setEnergy(0);
+            energyContainer.setEnergy(MathUtils.addClamped(energyContainer.energy(), net.getBuffer()), null);
+            net.energyContainer.setEnergy(0, null);
         }
         return transmittersToUpdate;
     }
@@ -81,7 +81,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     public void absorbBuffer(UniversalCable transmitter) {
         long energy = transmitter.releaseShare();
         if (energy != 0L) {
-            energyContainer.setEnergy(energyContainer.energy() + energy);
+            energyContainer.setEnergy(energyContainer.energy() + energy, null);
         }
     }
 
@@ -90,7 +90,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         if (!energyContainer.isEmpty()) {
             long capacity = getCapacity();
             if (energyContainer.energy() > capacity) {
-                energyContainer.setEnergy(capacity);
+                energyContainer.setEnergy(capacity, null);
             }
         }
     }
@@ -102,7 +102,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             long energy = energyContainer.energy();
             EmitUtils.sendToAcceptors(saveTarget, energy, ENERGY, transaction);
-            saveTarget.save();
+            saveTarget.save(null);
         }
     }
 
@@ -114,7 +114,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
                 long current = energyContainer.energy();
                 prevTransferAmount = tickEmit(current, transaction);
                 //TODO - 26.1: Evaluate this
-                energyContainer.setEnergy(current - prevTransferAmount);
+                energyContainer.setEnergy(current - prevTransferAmount, transaction);
                 transaction.commit();
             }
         }

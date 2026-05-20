@@ -17,7 +17,7 @@ import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
+import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -25,9 +25,8 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> implements IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
+public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> {
 
     public final PipeTier tier;
 
@@ -58,22 +57,9 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
         return Math.min(tier.getPipePullAmount(), container.getNeededAsInt(container.resource()));
     }
 
-    @Nullable
-    @Override
-    public MechanicalPipeUpgradeData getUpgradeData() {
-        return new MechanicalPipeUpgradeData(redstoneReactive, getConnectionTypesRaw(), getShare());
-    }
-
     @Override
     public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
-        return data instanceof MechanicalPipeUpgradeData;
-    }
-
-    @Override
-    public void parseUpgradeData(@NotNull MechanicalPipeUpgradeData data) {
-        redstoneReactive = data.redstoneReactive;
-        setConnectionTypesRaw(data.connectionTypes);
-        getContainer().setContents(data.contents);
+        return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.FLUID_HELPER;
     }
 
     @Override

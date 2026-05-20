@@ -12,6 +12,7 @@ import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
 @NothingNullByDefault
@@ -25,15 +26,13 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
     @Range(from = 0, to = Long.MAX_VALUE)
     long energy();
 
-    /**
-     * Overrides the amount of energy in this {@link IEnergyContainer}.
-     *
-     * @param energy Energy to set this container's contents to. Must be greater than or equal to 0.
-     *
-     * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
-     */
-    void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
+    /// Overrides the amount of energy in this [IEnergyContainer].
+    ///
+    /// @param energy      Energy to set this container's contents to. Must be greater than or equal to 0.
+    /// @param transaction The transaction that this operation is part of if any.
+    ///
+    /// @implNote If the internal amount does get updated make sure to call [#onContentsChanged()]
+    void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction);
 
     /// Inserts up to the given amount of energy into this container.
     ///
@@ -119,7 +118,7 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
 
     @Override
     default void deserialize(ValueInput input) {
-        setEnergy(input.getLongOr(SerializationConstants.STORED, 0));
+        setEnergy(input.getLongOr(SerializationConstants.STORED, 0), null);
     }
 
     /// Helper method to copy all pertinent data from another [`energy container`][IEnergyContainer] to this one without requiring a serialization, deserialization
@@ -130,6 +129,6 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     /// @since 10.8.0
     default void copyContents(IEnergyContainer other) {
-        setEnergy(other.energy());
+        setEnergy(other.energy(), null);
     }
 }

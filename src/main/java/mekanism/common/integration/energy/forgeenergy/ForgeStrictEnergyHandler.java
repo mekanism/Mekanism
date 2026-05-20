@@ -43,11 +43,6 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
-        //Not implemented or directly needed
-    }
-
-    @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
         //TODO - 26.1: Should this be using the int versions of capacity?

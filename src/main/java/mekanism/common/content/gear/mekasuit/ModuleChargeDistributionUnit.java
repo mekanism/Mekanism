@@ -74,8 +74,8 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
             try (Transaction transaction = Transaction.openRoot()) {
                 long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, transaction);
                 if (distributed == availableEnergy) {
+                    saveTarget.save(transaction);
                     transaction.commit();
-                    saveTarget.save();
                 } else {
                     Mekanism.logger.warn("Failed to distribute {} energy across {} pieces of armor. {} energy remaining afterward.", availableEnergy,
                           saveTarget.getHandlerCount(), availableEnergy - distributed);

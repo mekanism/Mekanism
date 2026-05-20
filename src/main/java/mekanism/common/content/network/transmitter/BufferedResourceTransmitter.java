@@ -14,6 +14,7 @@ import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
@@ -23,12 +24,14 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: Change the buffer to a LargeResourceStack<RESOURCE>??
 public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
       TRANSMITTER extends BufferedResourceTransmitter<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>>
-      extends BufferedTransmitter<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> implements IContentsListener {
+      extends BufferedTransmitter<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> implements IContentsListener,
+      IUpgradeableTransmitter<ResourceTransmitterUpgradeData<RESOURCE>>{
 
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
     private final CONTAINER bufferContainer;
@@ -74,7 +77,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     public void read(@NotNull ValueInput input) {
         super.read(input);
         saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
-        bufferContainer.setContents(saveShare);
+        bufferContainer.setContents(saveShare, null);
     }
 
     @Override
@@ -93,6 +96,19 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
         //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
         network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(stackHelper.empty().resource()));
+    }
+
+    @Nullable
+    @Override
+    public ResourceTransmitterUpgradeData<RESOURCE> getUpgradeData() {
+        return new ResourceTransmitterUpgradeData<>(redstoneReactive, getConnectionTypesRaw(), bufferContainer);
+    }
+
+    @Override
+    public void parseUpgradeData(@NotNull ResourceTransmitterUpgradeData<RESOURCE> data) {
+        redstoneReactive = data.redstoneReactive;
+        setConnectionTypesRaw(data.connectionTypes);
+        bufferContainer.copyContents(data.buffer);
     }
 
     protected CONTAINER getContainer() {
@@ -137,8 +153,9 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
             if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
                 //TODO - 26.1: Re-evaluate this
-                networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
-                bufferContainer.setContents(saveShare);
+                networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount(), null);
+                //TODO - 26.1: Should we have a transaction context for taking shares?
+                bufferContainer.setContents(saveShare, null);
             }
         }
     }

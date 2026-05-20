@@ -17,17 +17,15 @@ import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
+import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResource, IChemicalTank, ChemicalNetwork, PressurizedTube>
-      implements IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
+public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResource, IChemicalTank, ChemicalNetwork, PressurizedTube> {
 
     public final TubeTier tier;
 
@@ -57,22 +55,9 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
         return Math.min(tier.getTubePullAmount(), container.getNeededAsInt(container.resource()));
     }
 
-    @Nullable
-    @Override
-    public PressurizedTubeUpgradeData getUpgradeData() {
-        return new PressurizedTubeUpgradeData(redstoneReactive, getConnectionTypesRaw(), getShare());
-    }
-
     @Override
     public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
-        return data instanceof PressurizedTubeUpgradeData;
-    }
-
-    @Override
-    public void parseUpgradeData(@NotNull PressurizedTubeUpgradeData data) {
-        redstoneReactive = data.redstoneReactive;
-        setConnectionTypesRaw(data.connectionTypes);
-        getContainer().setContents(data.contents);
+        return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.CHEMICAL_HELPER;
     }
 
     @Override

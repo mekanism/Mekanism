@@ -12,6 +12,7 @@ import mekanism.common.content.network.transmitter.DiversionTransporter.Diversio
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -22,9 +23,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: PR support to make custom StructureTemplateBuilders to Neo?
@@ -59,7 +58,7 @@ public class StructureBuilderUtils {
         }
     }
 
-    public static CompoundTag withDrive(DeferredHolder<Item, ? extends IQIODriveItem> drive) {
+    public static CompoundTag withDrive(ItemRegistryObject<? extends IQIODriveItem> drive) {
         List<IInventorySlot> driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 6; x++) {
@@ -67,7 +66,7 @@ public class StructureBuilderUtils {
                 driveSlots.add(new QIODriveSlot(null, y * 6 + x, () -> null, null, 0, 0));
             }
         }
-        driveSlots.getFirst().setContents(ItemResource.of(drive), 1);
+        driveSlots.getFirst().setContents(drive.asResource(), 1, null);
 
         //TODO - 26.1: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {

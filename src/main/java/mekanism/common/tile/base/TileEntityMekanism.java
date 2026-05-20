@@ -950,7 +950,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                     }
                 }
                 //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
-                container.track(SyncableLong.create(energyContainer::energy, energyContainer::setEnergy));
+                container.track(SyncableLong.create(energyContainer));
             }
         }
     }
@@ -1216,7 +1216,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         int size = attachedContainers.size();
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
-                containers.get(i).setContents(attachedContainers.get(i));
+                containers.get(i).setContents(attachedContainers.get(i), null);
             }
         }
     }
@@ -1347,7 +1347,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         int size = stored.size();
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
-                containers.get(i).setEnergy(stored.get(i));
+                containers.get(i).setEnergy(stored.get(i), null);
             }
         }
     }

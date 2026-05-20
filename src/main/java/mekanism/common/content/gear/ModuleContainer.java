@@ -26,11 +26,13 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -278,8 +280,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return module == null ? 0 : module.getInstalledCount();
     }
 
-    public boolean canInstall(ItemStack stack, Holder<ModuleData<?>> type) {
-        if (IModuleHelper.INSTANCE.supports(stack.typeHolder(), type)) {
+    public boolean canInstall(TypedInstance<Item> instance, Holder<ModuleData<?>> type) {
+        if (IModuleHelper.INSTANCE.supports(instance.typeHolder(), type)) {
             IModule<?> module = get(type);
             return module == null || module.getInstalledCount() < type.value().getMaxStackSize();
         }

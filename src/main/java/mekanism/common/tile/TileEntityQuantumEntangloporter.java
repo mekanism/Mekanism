@@ -251,7 +251,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         }, energy -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers();
             if (!energyContainers.isEmpty()) {
-                energyContainers.getFirst().setEnergy(energy);
+                energyContainers.getFirst().setEnergy(energy, null);
             }
         }));
     }

@@ -125,7 +125,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.energy());
+            energyContainer.copyContents(data.energyContainer);
             chargeSlot.copyContents(data.chargeSlot);
             dischargeSlot.copyContents(data.dischargeSlot);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
@@ -146,7 +146,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @NotNull
     @Override
     public EnergyCubeUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new EnergyCubeUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents(), problemPath());
+        return new EnergyCubeUpgradeData(provider, redstone, getControlType(), energyContainer, chargeSlot, dischargeSlot, getComponents(), problemPath());
     }
 
     public float getEnergyScale() {

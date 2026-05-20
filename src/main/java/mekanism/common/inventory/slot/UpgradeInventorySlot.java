@@ -14,7 +14,6 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -40,9 +39,8 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 
-    @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay(), this::setContents);
+        return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay());
     }
 }

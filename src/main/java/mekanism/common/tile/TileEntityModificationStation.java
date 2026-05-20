@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,26 +95,27 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 try (Transaction transaction = Transaction.openRoot()) {
                     if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                         ItemResource moduleResource = moduleSlot.resource();
-                        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                        ItemStack stack = containerSlot.resource().toStack(containerSlot.amountAsInt());
-                        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
-                        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+                        ItemResource containerType = containerSlot.resource();
+                        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerType);
                         if (container != null) {
                             // make sure the container supports this module and that we can still install more of this module
                             Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
-                            if (container.canInstall(stack, data)) {
+                            if (container.canInstall(containerType, data)) {
                                 operated = true;
                                 operatingTicks++;
                                 clientEnergyUsed = energyPerTick;
                                 if (operatingTicks == ticksRequired) {
                                     operatingTicks = 0;
+                                    ItemStack stack = containerType.toStack(containerSlot.amountAsInt());
+                                    //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
+                                    //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
                                     int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amountAsInt());
                                     if (added > 0) {
                                         try (Transaction subTransaction = Transaction.open(transaction)) {
                                             //Validate that the module is actually able to be extracted from the module slot (this should always be true)
                                             if (moduleSlot.extract(moduleResource, added, subTransaction, AutomationType.INTERNAL) == added) {
                                                 //Update the item type of the module container to the version that has the moduled added
-                                                containerSlot.setContents(ItemResource.of(stack), stack.count());
+                                                containerSlot.setContents(ItemResource.of(stack), containerSlot.amountAsLong(), subTransaction);
                                                 subTransaction.commit();
                                             }
                                         }
@@ -138,18 +140,23 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
-        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-        ItemStack stack = containerSlot.resource().toStack(containerSlot.amountAsInt());
-        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
-        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+        ItemResource resource = containerSlot.resource();
+        ModuleContainer container = ModuleHelper.get().getModuleContainer(resource);
         if (container != null) {
             int installed = container.installedCount(type);
             if (installed > 0) {
-                int toRemove = removeAll ? installed : 1;
-                if (player.getInventory().add(new ItemStack(type.value().getItemHolder(), toRemove))) {
-                    container.removeModule(player.registryAccess(), stack, type, toRemove);
-                    //Update the item type of the module container to the version that has the moduled added
-                    containerSlot.setContents(ItemResource.of(stack), stack.count());
+                try (Transaction transaction = Transaction.openRoot()) {
+                    PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+                    int toRemove = removeAll ? installed : 1;
+                    if (playerInv.insert(ItemResource.of(type.value().getItemHolder()), toRemove, transaction) == toRemove) {
+                        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
+                        ItemStack stack = resource.toStack(containerSlot.amountAsInt());
+                        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
+                        container.removeModule(player.registryAccess(), stack, type, toRemove);
+                        //Update the item type of the module container to the version that has the moduled added
+                        containerSlot.setContents(ItemResource.of(stack), containerSlot.amountAsLong(), transaction);
+                        transaction.commit();
+                    }
                 }
             }
         }

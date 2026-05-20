@@ -58,7 +58,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     private void updateEnergyUsage(long energyUsage) {
         attachedTo.set(MekanismDataComponents.ENERGY_USAGE, energyUsage);
         //Clamp the energy
-        setEnergy(energy());
+        setEnergy(energy(), null);
     }
 
     @Override

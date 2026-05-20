@@ -8,7 +8,6 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -31,10 +30,9 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
         this.inputTypeChange = inputTypeChange;
     }
 
-    @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualInventoryContainerSlot(this, craftingWindow.getWindowData(), getSlotOverlay(), this::setContents);
+        return new VirtualInventoryContainerSlot(this, craftingWindow.getWindowData(), getSlotOverlay());
     }
 
     @Override

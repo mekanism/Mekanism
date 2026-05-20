@@ -80,10 +80,10 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
-        frequency.storedEnergy.setEnergy(energy);
-        frequency.storedFluid.setContents(fluid);
-        frequency.storedChemical.setContents(chemical);
-        frequency.storedItem.setContents(item);
+        frequency.storedEnergy.setEnergy(energy, null);
+        frequency.storedFluid.setContents(fluid, null);
+        frequency.storedChemical.setContents(chemical, null);
+        frequency.storedItem.setContents(item, null);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
@@ -96,10 +96,10 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           LargeResourceStack.ITEM_HELPER.streamCodec(), freq -> freq.storedItem.asStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
-              frequency.storedEnergy.setEnergy(energy);
-              frequency.storedFluid.setContents(fluid);
-              frequency.storedChemical.setContents(chemical);
-              frequency.storedItem.setContents(item);
+              frequency.storedEnergy.setEnergy(energy, null);
+              frequency.storedFluid.setContents(fluid, null);
+              frequency.storedChemical.setContents(chemical, null);
+              frequency.storedItem.setContents(item, null);
               frequency.storedHeat.setHeat(heat);
               return frequency;
           }

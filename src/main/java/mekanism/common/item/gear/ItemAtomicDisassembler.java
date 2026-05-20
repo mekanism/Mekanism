@@ -138,7 +138,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         super.postHurtEnemy(stack, target, attacker);
         IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-        if (energyHandler != null && !energyHandler.isEmpty()) {
+        if (energyHandler != null) {
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
             // to the amount of damage we will actually do

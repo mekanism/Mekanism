@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.LongSupplier;
 import mekanism.api.IContentsListener;
+import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
@@ -56,7 +57,6 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getBuffer() {
-        //TODO - 26.1: Evaluate callers and see what can skip wrapping in a large resource stack/if we can at least cache the empty large resource stack?
         return container.asStack();
     }
 
@@ -82,8 +82,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     // compare the chemicals themselves
                     if (this.container.resource().equals(net.container.resource())) {
                         long amount = net.container.amountAsLong();
-                        //TODO - 26.1: Do we need to check for long overflow?
-                        this.container.setContents(this.container.resource(), this.container.amountAsLong() + amount);
+                        this.container.setContents(this.container.resource(), MathUtils.addClamped(this.container.amountAsLong(), amount), null);
                     } else {
                         Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.resource(), net.container.resource());
                     }
@@ -112,10 +111,11 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         LargeResourceStack<RESOURCE> transmitterReleased = transmitter.releaseShare();
         if (!transmitterReleased.isEmpty()) {
             if (container.isEmpty()) {
-                container.setContents(transmitterReleased);
+                //TODO - 26.1: Should this be transactional?
+                container.setContents(transmitterReleased, null);
             } else if (container.resource().equals(transmitterReleased.resource())) {
                 //TODO - 26.1: evaluate if we actually do want helpers for growing and shrinking for use cases like this
-                container.setContents(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount());
+                container.setContents(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount(), null);
             }
         }
     }
@@ -156,7 +156,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
             }
         } else {
             lastType = type;
-            container.setContents(type, 1);
+            container.setContents(type, 1, null);
         }
     }
 
@@ -222,7 +222,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                 long current = container.amountAsLong();
                 prevTransferAmount = tickEmit(container.resource(), current, transaction);
                 //TODO - 26.1: Evaluate this
-                container.setContents(container.resource(), current - prevTransferAmount);
+                container.setContents(container.resource(), current - prevTransferAmount, transaction);
                 transaction.commit();
             }
         }

@@ -50,7 +50,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
         setContents(getAttached(), energy);
     }
 

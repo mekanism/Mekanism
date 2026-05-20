@@ -20,6 +20,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
@@ -161,7 +162,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
         //Throws a RuntimeException as specified is allowed when something unexpected happens
         // As setEnergy is more meant to be used as an internal method
         throw new RuntimeException("Unexpected call to setEnergy. The matrix energy container does not support directly setting the energy.");

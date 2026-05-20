@@ -72,14 +72,18 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     @Override
-    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(energy);
         //TODO - 26.1: Re-evaluate this clamping and maybe get rid of it or move it?
         energy = clampEnergy(energy);
         if (stored != energy) {
-            stored = energy;
-            //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
-            onContentsChanged();
+            if (transaction != null) {
+                updateSnapshots(transaction);
+                stored = energy;
+            } else {
+                stored = energy;
+                onContentsChanged();
+            }
         }
     }
 
@@ -131,9 +135,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
             return 0;
         }
         long toAdd = Math.min(amount, needed);
-        updateSnapshots(transaction);
-        // Note: We just set it as unchecked as we have already validated it
-        setEnergy(currentStored + toAdd);
+        setEnergy(currentStored + toAdd, transaction);
         return toAdd;
     }
 
@@ -151,9 +153,8 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {
-            updateSnapshots(transaction);
             //Shrink the stack by the amount removed
-            setEnergy(currentStored - toRemove);
+            setEnergy(currentStored - toRemove, transaction);
         }
         return toRemove;
     }
@@ -181,7 +182,8 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
 
     @Override
     protected void revertToSnapshot(Long snapshot) {
-        setEnergy(snapshot);
+        //Bypass contents change check
+        stored = snapshot;
     }
 
     @Override

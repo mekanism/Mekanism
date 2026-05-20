@@ -33,16 +33,6 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
     }
 
     /**
-     * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
-     *
-     * @param index  Container to modify
-     * @param energy Energy to set the container to (may be 0).
-     *
-     * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-     **/
-    void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long energy);
-
-    /**
      * Retrieves the amount of energy that is needed to fill a given container.
      *
      * @param index Container to query.
@@ -87,7 +77,7 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
         return extracted;
     }
 
-    default boolean isEmpty() {
+    default boolean isEmpty() {//TODO - 26.1: Remove this method?
         for (int i = 0, size = size(); i < size; i++) {
             if (getAmountAsLong(i) > 0) {
                 return false;

@@ -6,6 +6,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.lib.distribution.Target;
 import mekanism.common.lib.transaction.SimpleLongJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Nullable;
 
 public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
 
@@ -25,9 +26,9 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         return handler.accept(amount, transaction);
     }
 
-    public void save() {
+    public void save(@Nullable TransactionContext transaction) {
         for (HANDLER handler : handlers) {
-            handler.save();
+            handler.save(transaction);
         }
     }
 
@@ -51,7 +52,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
             return toAccept;
         }
 
-        protected abstract void save();
+        protected abstract void save(@Nullable TransactionContext transaction);
     }
 
     @NothingNullByDefault
@@ -65,8 +66,8 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         }
 
         @Override
-        protected void save() {
-            delegate.setEnergy(value);
+        protected void save(@Nullable TransactionContext transaction) {
+            delegate.setEnergy(value, transaction);
         }
     }
 }

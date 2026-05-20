@@ -64,7 +64,7 @@ public class ChemicalUtils {
         if (attachment != null) {
             ChemicalResource chemicalType = ChemicalResource.of(provider);
             for (IChemicalTank tank : attachment.getContainers()) {
-                tank.setContents(chemicalType, tank.capacityAsLong(chemicalType));
+                tank.setContents(chemicalType, tank.capacityAsLong(chemicalType), null);
             }
         }
         //The item is now filled return it for convenience

@@ -296,7 +296,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             return recipe;
         }
-        formulaSlot.setContents(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.amountAsLong());
+        formulaSlot.setContents(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.amountAsLong(), null);
         return RecipeFormula.EMPTY;
     }
 
@@ -609,7 +609,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     } else {
                         storedMap.put(itemType, stored - count);
                     }
-                    setSlotIfChanged(slot, itemType, count);
+                    slot.setContents(itemType, count, null);
                 } else {
                     //If we don't have the item stored anymore (already filled all previous slots with it),
                     // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
@@ -660,14 +660,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             next.setValue(stored - count);
         }
-        setSlotIfChanged(inputSlot, itemType, count);
+        inputSlot.setContents(itemType, count, null);
         return empty;
-    }
-
-    private static void setSlotIfChanged(IInventorySlot slot, ItemResource itemType, int count) {
-        if (slot.amountAsInt() != count || !slot.resource().equals(itemType)) {
-            slot.setContents(itemType, count);
-        }
     }
 
     private void buildStockControlMap() {
@@ -700,7 +694,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
-                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.amountAsLong());
+                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.amountAsLong(), null);
             }
         }
     }

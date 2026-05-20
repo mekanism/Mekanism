@@ -273,7 +273,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getContainers()) {
-                energyContainer.setEnergy(energyContainer.capacity());
+                energyContainer.setEnergy(energyContainer.capacity(), null);
             }
         }
         //The item is now filled return it for convenience
@@ -392,7 +392,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()));
+            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), null);
         }
     }
 
