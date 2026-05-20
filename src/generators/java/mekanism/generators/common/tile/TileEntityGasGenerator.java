@@ -12,6 +12,7 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.holder.IContainerHolder;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
@@ -156,22 +156,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
 
         @Override
-        public void setContents(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-            ChemicalResource oldChemical = resource();
-            super.setContents(type, amount);
-            recheckOutput(type, oldChemical);
-        }
-
-        @Override
-        public void setContentsUnchecked(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-            ChemicalResource oldChemical = resource();
-            super.setContentsUnchecked(type, amount);
-            recheckOutput(type, oldChemical);
-        }
-
-        private void recheckOutput(@NotNull ChemicalResource type, ChemicalResource oldChemical) {
-            if (!type.equals(oldChemical) && !type.isEmpty()) {
-                cachedFuel = isEmpty() ? null : type.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        protected void onContentsChanged(@NotNull LargeResourceStack<ChemicalResource> originalState) {
+            super.onContentsChanged(originalState);
+            ChemicalResource newType = resource();
+            if (!newType.isEmpty() && !originalState.matches(newType)) {
+                cachedFuel = newType.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             }
         }
     }

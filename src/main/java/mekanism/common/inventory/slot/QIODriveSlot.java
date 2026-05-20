@@ -30,25 +30,9 @@ public class QIODriveSlot extends BasicInventorySlot {
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 
-    //TODO - 26.1: Re-evaluate these two overrides
-    // I think we don't want them, but we do need to make sure we add/remove when loading saved data
+    //TODO - 26.1: Re-evaluate this override: I think we don't want it, but we do need to make sure we add/remove when loading saved data
     /*@Override
-    public void setStack(ItemResource itemType, int storedAmount) {
-        // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
-        // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
-        if (!isRemote() && !isEmpty()) {
-            removeDrive();
-        }
-        super.setStack(itemType, storedAmount);
-        // if we just added a new drive, add it to the frequency
-        // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
-        if (!isRemote() && !isEmpty()) {
-            addDrive();
-        }
-    }
-
-    @Override
-    public void setStackUnchecked(ItemResource itemType, int storedAmount) {
+    public void setContents(ItemResource itemType, long storedAmount) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
         // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
         if (!isRemote() && !isEmpty()) {
@@ -66,6 +50,7 @@ public class QIODriveSlot extends BasicInventorySlot {
 
     @Override
     protected void onRootCommit(LargeResourceStack<ItemResource> originalState) {
+        //TODO - 26.1: Should this override onContentsChanged?
         super.onRootCommit(originalState);
         //TODO - 26.1: Should we do this before or after calling super (and setting the contents changed)
         ItemResource newDrive = resource();

@@ -192,15 +192,15 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// Convenience method for checking if this container is empty.
     ///
     /// @return `true` if the container is empty, `false` otherwise.
-    default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
-        return resource().isEmpty();
+    default boolean isEmpty() {
+        return asStack().isEmpty();
     }
 
     /// Convenience method for emptying this [IResourceContainer].
     @NonExtendable
     default void setEmpty() {
         //TODO - 26.1: Re-evaluate usages and the existence of this method, I think we may want to remove it so people are less tempted to bypass insertions/extractions
-        setContentsUnchecked(stackHelper().empty());
+        setContents(stackHelper().empty());
     }
 
     @Override
@@ -213,7 +213,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Override
     default void deserialize(ValueInput input) {
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up crashing due to the stack not being valid
-        setContentsUnchecked(stackHelper().readOrEmpty(input, SerializationConstants.STORED));
+        setContents(stackHelper().readOrEmpty(input, SerializationConstants.STORED));
     }
 
     /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
@@ -223,20 +223,18 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     default void copyContents(IResourceContainer<RESOURCE> other) {
-        setContentsUnchecked(other.resource(), other.amountAsLong());
+        setContents(other.asStack());
     }
 
     //TODO - 26.1: Docs and Re-evaluate this method
     @NonExtendable
-    default void setContentsUnchecked(LargeResourceStack<RESOURCE> stack) {
-        setContentsUnchecked(stack.resource(), stack.amount());
+    default void setContents(LargeResourceStack<RESOURCE> stack) {
+        setContents(stack.resource(), stack.amount());
     }
 
     //TODO - 26.1: Docs
-    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
-
-    //TODO - 26.1: Docs and Re-evaluate this method and its callers
-    void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
+    //TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
+    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
     //TODO - 26.1: Docs
     LargeResourceStack.StackHelper<RESOURCE> stackHelper();

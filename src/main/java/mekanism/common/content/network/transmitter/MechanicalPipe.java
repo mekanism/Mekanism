@@ -73,7 +73,7 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     public void parseUpgradeData(@NotNull MechanicalPipeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        getContainer().setContentsUnchecked(data.contents);
+        getContainer().setContents(data.contents);
     }
 
     @Override

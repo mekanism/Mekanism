@@ -20,11 +20,6 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        internal.setContentsUnchecked(type, storedAmount);
-    }
-
-    @Override
     public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         internal.setContents(type, storedAmount);
     }
@@ -49,11 +44,6 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     @Override
     public boolean isEmpty() {
         return internal.isEmpty();
-    }
-
-    @Override
-    public void setEmpty() {
-        internal.setEmpty();
     }
 
     @Override

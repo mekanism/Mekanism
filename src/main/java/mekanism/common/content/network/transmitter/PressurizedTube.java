@@ -72,7 +72,7 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     public void parseUpgradeData(@NotNull PressurizedTubeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        getContainer().setContentsUnchecked(data.contents);
+        getContainer().setContents(data.contents);
     }
 
     @Override

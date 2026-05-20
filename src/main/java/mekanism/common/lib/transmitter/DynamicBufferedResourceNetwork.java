@@ -83,7 +83,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     if (this.container.resource().equals(net.container.resource())) {
                         long amount = net.container.amountAsLong();
                         //TODO - 26.1: Do we need to check for long overflow?
-                        this.container.setContentsUnchecked(this.container.resource(), this.container.amountAsLong() + amount);
+                        this.container.setContents(this.container.resource(), this.container.amountAsLong() + amount);
                     } else {
                         Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.resource(), net.container.resource());
                     }
@@ -112,10 +112,10 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         LargeResourceStack<RESOURCE> transmitterReleased = transmitter.releaseShare();
         if (!transmitterReleased.isEmpty()) {
             if (container.isEmpty()) {
-                container.setContentsUnchecked(transmitterReleased);
+                container.setContents(transmitterReleased);
             } else if (container.resource().equals(transmitterReleased.resource())) {
                 //TODO - 26.1: evaluate if we actually do want helpers for growing and shrinking for use cases like this
-                container.setContentsUnchecked(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount());
+                container.setContents(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount());
             }
         }
     }
@@ -222,7 +222,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                 long current = container.amountAsLong();
                 prevTransferAmount = tickEmit(container.resource(), current, transaction);
                 //TODO - 26.1: Evaluate this
-                container.setContentsUnchecked(container.resource(), current - prevTransferAmount);
+                container.setContents(container.resource(), current - prevTransferAmount);
                 transaction.commit();
             }
         }

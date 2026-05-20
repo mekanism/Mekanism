@@ -74,7 +74,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     public void read(@NotNull ValueInput input) {
         super.read(input);
         saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
-        bufferContainer.setContentsUnchecked(saveShare);
+        bufferContainer.setContents(saveShare);
     }
 
     @Override
@@ -127,7 +127,6 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     public LargeResourceStack<RESOURCE> releaseShare() {
         LargeResourceStack<RESOURCE> share = getShare();
-        //TODO - 26.1: Chemical tanks used to skip setting empty if it was already empty, do we care
         bufferContainer.setEmpty();
         return share;
     }
@@ -138,8 +137,8 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
             if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
                 //TODO - 26.1: Re-evaluate this
-                networkContainer.setContentsUnchecked(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
-                bufferContainer.setContentsUnchecked(saveShare);
+                networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
+                bufferContainer.setContents(saveShare);
             }
         }
     }

@@ -126,10 +126,10 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     @Override
     public void deserialize(ValueInput input) {
-        //Grab the booleans regardless if they are present as if they aren't that means they are false
-        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, isDraining);
-        isFilling = input.getBooleanOr(SerializationConstants.FILLING, isFilling);
         super.deserialize(input);
+        //Grab the booleans regardless if they are present as if they aren't that means they are false
+        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, false);
+        isFilling = input.getBooleanOr(SerializationConstants.FILLING, false);
     }
 
     public void drainChemicalTank() {

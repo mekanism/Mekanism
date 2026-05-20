@@ -52,10 +52,10 @@ public class SyncMapper extends BaseAnnotationScanner {
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid
         specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
-              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, IResourceContainer::setContentsUnchecked, LargeResourceStack.FLUID_HELPER.empty())
+              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, IResourceContainer::setContents, LargeResourceStack.FLUID_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
-              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, IResourceContainer::setContentsUnchecked, LargeResourceStack.CHEMICAL_HELPER.empty())
+              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, IResourceContainer::setContents, LargeResourceStack.CHEMICAL_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
               SpecialPropertyData.create(Long.TYPE, IEnergyContainer::energy, IEnergyContainer::setEnergy, 0L)
@@ -66,9 +66,9 @@ public class SyncMapper extends BaseAnnotationScanner {
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
               SpecialPropertyData.create(LargeResourceStack.class, tank -> tank.getFluidTank().asStack(),
-                    (tank, stack) -> tank.getFluidTank().setContentsUnchecked(stack), LargeResourceStack.FLUID_HELPER.empty()),
+                    (tank, stack) -> tank.getFluidTank().setContents(stack), LargeResourceStack.FLUID_HELPER.empty()),
               SpecialPropertyData.create(LargeResourceStack.class, tank -> tank.getChemicalTank().asStack(),
-                    (tank, stack) -> tank.getChemicalTank().setContentsUnchecked(stack), LargeResourceStack.CHEMICAL_HELPER.empty())
+                    (tank, stack) -> tank.getChemicalTank().setContents(stack), LargeResourceStack.CHEMICAL_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,
               SpecialPropertyData.create(BlockPos.class, VoxelCuboid::getMinPos, VoxelCuboid::setMinPos, null),

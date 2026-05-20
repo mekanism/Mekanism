@@ -169,7 +169,7 @@ public final class ResourceUtils {
                 return;
             }
             if (container.amountAsLong() > capacity) {
-                container.setContentsUnchecked(resource, capacity);
+                container.setContents(resource, capacity);
             }
         }
     }

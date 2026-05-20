@@ -23,7 +23,7 @@ public final class SyncableLargeResourceStack<RESOURCE extends Resource> impleme
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
         //Note: We initialize the empty stack, so that we don't have to worry about having types we don't know how to handle
-        return new SyncableLargeResourceStack<>(handler::asStack, handler::setContentsUnchecked, handler.stackHelper().empty());
+        return new SyncableLargeResourceStack<>(handler::asStack, handler::setContents, handler.stackHelper().empty());
     }
 
     @Internal

@@ -202,15 +202,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     @Override
     public void setContents(ItemResource itemType, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         super.setContents(itemType, storedAmount);
-        //Reset the cache of if we are currently draining or filling
-        isDraining = false;
-        isFilling = false;
-    }
-
-    @Override
-    public void setContentsUnchecked(ItemResource itemType, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        super.setContentsUnchecked(itemType, storedAmount);
-        //TODO - 26.1: Re-evaluate the purpose of this, it used to only have setContents and not also setContentsUnchecked
+        //TODO - 26.1: Re-evaluate the purpose of this, it used to only happen for the checked version
         //Reset the cache of if we are currently draining or filling
         isDraining = false;
         isFilling = false;
@@ -264,9 +256,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     @Override
     public void deserialize(ValueInput input) {
-        //Grab the booleans regardless if they are present as if they aren't that means they are false
-        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, isDraining);
-        isFilling = input.getBooleanOr(SerializationConstants.FILLING, isFilling);
         super.deserialize(input);
+        //Grab the booleans regardless if they are present as if they aren't that means they are false
+        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, false);
+        isFilling = input.getBooleanOr(SerializationConstants.FILLING, false);
     }
 }

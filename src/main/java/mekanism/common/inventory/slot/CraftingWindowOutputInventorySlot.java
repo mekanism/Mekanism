@@ -21,6 +21,6 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
     @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualCraftingOutputSlot(this, getSlotOverlay(), this::setContentsUnchecked, craftingWindow);
+        return new VirtualCraftingOutputSlot(this, getSlotOverlay(), this::setContents, craftingWindow);
     }
 }

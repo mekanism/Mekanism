@@ -45,6 +45,6 @@ public class NBTUtils {//TODO - 26.1: Should we rename this class?
     }
 
     public static <RESOURCE extends Resource> void readOrEmpty(ValueInput input, String key, IResourceContainer<RESOURCE> container) {
-        container.setContentsUnchecked(container.stackHelper().readOrEmpty(input, key));
+        container.setContents(container.stackHelper().readOrEmpty(input, key));
     }
 }

@@ -62,7 +62,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
                 //If we managed to insert anything, set the contents to the maximum amount of that item type
                 updateSnapshots(transaction);
                 // Note: We just set it as unchecked as we have already validated it
-                setContentsUnchecked(resource, capacityAsLong(resource));
+                setContents(resource, capacityAsLong(resource));
                 //Return that we accepted the entire amount we were passed
                 return amount;
             }

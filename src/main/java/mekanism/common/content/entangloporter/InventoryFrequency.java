@@ -81,9 +81,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
-        frequency.storedFluid.setContentsUnchecked(fluid);
-        frequency.storedChemical.setContentsUnchecked(chemical);
-        frequency.storedItem.setContentsUnchecked(item);
+        frequency.storedFluid.setContents(fluid);
+        frequency.storedChemical.setContents(chemical);
+        frequency.storedItem.setContents(item);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
@@ -97,9 +97,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);
-              frequency.storedFluid.setContentsUnchecked(fluid);
-              frequency.storedChemical.setContentsUnchecked(chemical);
-              frequency.storedItem.setContentsUnchecked(item);
+              frequency.storedFluid.setContents(fluid);
+              frequency.storedChemical.setContents(chemical);
+              frequency.storedItem.setContents(item);
               frequency.storedHeat.setHeat(heat);
               return frequency;
           }

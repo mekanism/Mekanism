@@ -50,7 +50,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     protected void revertToSnapshot(LargeResourceStack<RESOURCE> snapshot) {
-        setContentsUnchecked(snapshot.resource(), snapshot.amount());
+        setContents(snapshot.resource(), snapshot.amount());
     }
 
     @Override
@@ -58,8 +58,13 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         super.onRootCommit(originalState);
         if (amountAsLong() != originalState.amount() || !originalState.resource().equals(resource())) {
             //Fire content change listeners during root commit if the final state is different from the original one
-            onContentsChanged();
+            onContentsChanged(originalState);
         }
+    }
+
+    protected void onContentsChanged(LargeResourceStack<RESOURCE> originalState) {
+        //TODO - 26.1: Replace the parameterless type with this?
+        onContentsChanged();
     }
 
     @Override
@@ -88,32 +93,17 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        setContents(type, storedAmount, true);
-    }
-
-    @Override
-    public void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        setContents(type, storedAmount, false);
-    }
-
-    private void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, boolean validateType) {
         MekanismPreconditions.checkNonNegative(storedAmount);
-        if (type.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
-            if (isEmpty()) {
-                //If we are already empty just exit, to not fire onContentsChanged
-                return;
-            }
-            this.current = stackHelper().empty();
-        } else if (!validateType || isValid(type)) {
-            this.current = stackHelper().createStack(type, storedAmount);
-        } else {
-            //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
-            // As setStack is more meant to be used as an internal method
-            //TODO - 26.1: Evaluate if we still want to be throwing an exception
-            throw new RuntimeException("Invalid type for container: " + type);
+        LargeResourceStack<RESOURCE> stack = stackHelper().createStack(type, storedAmount);
+        if (stack.equals(current)) {
+            //Skip updating the contents if the target is the same as what is already stored
+            // This prevents onContentsChanged from firing
+            return;
         }
+        LargeResourceStack<RESOURCE> originalState = current;
+        this.current = stack;
         //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
-        onContentsChanged();
+        onContentsChanged(originalState);
     }
 
     @Override
@@ -181,7 +171,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         int toAdd = Math.min(amount, Ints.saturatedCast(needed));
         updateSnapshots(transaction);
         // Note: We just set it as unchecked as we have already validated it
-        setContentsUnchecked(resource, currentStored + toAdd);
+        setContents(resource, currentStored + toAdd);
         return toAdd;
     }
 
@@ -201,7 +191,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         if (toRemove > 0) {
             updateSnapshots(transaction);
             //Shrink the stack by the amount removed
-            setContentsUnchecked(resource, currentStored - toRemove);
+            setContents(resource, currentStored - toRemove);
         }
         return toRemove;
     }

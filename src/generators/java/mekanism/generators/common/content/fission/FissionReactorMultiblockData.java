@@ -485,7 +485,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.resource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
-        fuelTank.setContentsUnchecked(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)));
+        fuelTank.setContents(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)));
         burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste

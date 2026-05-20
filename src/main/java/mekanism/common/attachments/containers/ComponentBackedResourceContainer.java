@@ -50,13 +50,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public final void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        //TODO - 26.1: Re-evaluate this
-        setContents(getAttached(), type, storedAmount);
-    }
-
-    @Override
-    public void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
+    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         setContents(getAttached(), type, storedAmount);
     }
 

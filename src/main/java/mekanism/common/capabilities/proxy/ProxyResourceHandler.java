@@ -42,8 +42,7 @@ public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandle
 
     @Override
     public boolean isValid(int index, RESOURCE resource) {
-        //TODO - 26.1: Because of changes to what isValid means, I think we need to forward the check regardless of if it is read only
-        return !readOnly || handler.isValid(index, resource);
+        return handler.isValid(index, resource);
     }
 
     @Override
@@ -65,12 +64,4 @@ public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandle
     public int extract(RESOURCE resource, int amount, TransactionContext transaction) {
         return readOnlyExtract() ? 0 : handler.extract(resource, amount, transaction, AutomationType.handler(side));
     }
-
-    //TODO - 26.1: Re-evaluate this
-    /*@Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        if (!readOnly) {
-            inventory.setStackInSlot(slot, stack);
-        }
-    }*/
 }

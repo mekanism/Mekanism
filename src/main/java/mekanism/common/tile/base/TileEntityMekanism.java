@@ -1216,7 +1216,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         int size = attachedContainers.size();
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
-                containers.get(i).setContentsUnchecked(attachedContainers.get(i));
+                containers.get(i).setContents(attachedContainers.get(i));
             }
         }
     }
