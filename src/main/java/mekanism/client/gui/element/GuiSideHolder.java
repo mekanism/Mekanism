@@ -1,13 +1,12 @@
 package mekanism.client.gui.element;
 
 import mekanism.client.SpecialColors;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,8 +25,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         };
     }
 
-    private static final Identifier HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI, "holder_left.png");
-    private static final Identifier HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI, "holder_right.png");
+    private static final Identifier HOLDER_LEFT = Mekanism.rl("holder_left");
+    private static final Identifier HOLDER_RIGHT = Mekanism.rl("holder_right");
     private static final int TEXTURE_WIDTH = 26;
     private static final int TEXTURE_HEIGHT = 9;
 
@@ -70,6 +69,6 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     protected void drawUncolored(@NotNull GuiGraphicsExtractor guiGraphics) {
-        GuiUtils.blitNineSlicedSized(guiGraphics, getResource(), relativeX, relativeY, width, height, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
     }
 }
