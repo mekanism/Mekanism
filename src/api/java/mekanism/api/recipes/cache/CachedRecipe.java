@@ -15,6 +15,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -424,7 +425,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     protected void useEnergy(int operations, TransactionContext transaction) {
         long energy = perTickEnergy.getAsLong();
         if (this.multipleOperationsCost) {
-            energy *= operations;
+            energy = MathUtils.multiplyClamped(energy, operations);
         }
         energyUsage.useEnergy(energy, transaction);
     }
@@ -492,6 +493,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     @FunctionalInterface
     private interface EnergyUsage {
 
+        /// @param energyToUse Energy to consume.
+        /// @param transaction The transaction that this operation is part of.
+        ///
+        /// @return amount of energy used
         long useEnergy(long energyToUse, TransactionContext transaction);
     }
 

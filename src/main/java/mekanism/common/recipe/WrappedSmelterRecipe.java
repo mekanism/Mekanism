@@ -58,7 +58,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
 
     @Override
     public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input) {
-        ItemStack stack = IngredientCreatorAccess.createItemStack(input);
+        ItemStack stack = IngredientCreatorAccess.item().createStack(input);
         return ItemStackTemplate.fromNonEmptyStack(wrapped.assemble(new SingleRecipeInput(stack)));
     }
 

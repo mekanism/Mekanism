@@ -42,13 +42,15 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
                         //Simulate how much room we have in the player's inventory before trying to extract anything from the frequency
                         amountInserted = container.insertIntoPlayerInventory(player.getUUID(), itemType, itemType.getMaxStackSize(), simulation);
                     }
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
-                        int extracted = freq.removeByType(itemType, amountInserted, transaction);
-                        if (extracted > 0 && container.insertIntoPlayerInventory(player.getUUID(), itemType, extracted, transaction) == extracted) {
-                            //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
-                            // but validate it just in case and roll back if we failed
-                            transaction.commit();
+                    if (amountInserted > 0) {
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
+                            int extracted = freq.removeByType(itemType, amountInserted, transaction);
+                            if (extracted > 0 && container.insertIntoPlayerInventory(player.getUUID(), itemType, extracted, transaction) == extracted) {
+                                //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
+                                // but validate it just in case and roll back if we failed
+                                transaction.commit();
+                            }
                         }
                     }
                 }

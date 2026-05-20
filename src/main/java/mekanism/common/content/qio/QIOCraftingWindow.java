@@ -464,7 +464,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         } else {
                             //Otherwise, try and remove the stack from the QIO frequency
                             ItemResource current = inputSlot.resource();
-                            if (frequency.removeByType(current, 1, transaction) == 0) {
+                            if (frequency.massExtract(current, 1, transaction) == 0) {
                                 //If we were not able to remove any from the frequency, remove it from the crafting grid
                                 useInput(inputSlot, transaction);
                                 // see if we have another valid input stored in the frequency and replace it with it if we do
@@ -562,7 +562,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //Otherwise, try and remove the stack from the QIO frequency
                         ItemResource current = inputSlot.resource();
-                        if (frequency.removeByType(current, 1, transaction) == 0) {
+                        if (frequency.massExtract(current, 1, transaction) == 0) {
                             //If we were not able to remove any from the frequency, remove it from the crafting grid
                             useInput(inputSlot, transaction);
                             // see if we have another valid input stored in the frequency and replace it with it if we do
@@ -836,7 +836,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     int inserted = slot.insert(replacementType, 1, subTransaction, AutomationType.INTERNAL);
                     if (inserted == 1) {
-                        if (frequency.removeByType(replacementType, 1, subTransaction) == 1) {
+                        if (frequency.massExtract(replacementType, 1, subTransaction) == 1) {
                             //We were able to remove the one item we tried to, so commit our insertion to the slot
                             //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player
                             // that something about the slot changed.

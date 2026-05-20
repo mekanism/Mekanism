@@ -82,7 +82,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
         Ingredient vanillaIngredient = ingredient.ingredient();
         if (vanillaIngredient.isCustom()) {
             //Component data might be necessary, make it into a stack and test it
-            return vanillaIngredient.test(IngredientCreatorAccess.createItemStack(instance));
+            return vanillaIngredient.test(IngredientCreatorAccess.item().createStack(instance));
         }
         //Vanilla ingredients don't need to check component data so we can just skip converting the resource to a stack
         return vanillaIngredient.acceptsItem(instance.typeHolder());

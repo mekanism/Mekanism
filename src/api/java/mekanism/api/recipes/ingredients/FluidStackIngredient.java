@@ -83,8 +83,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
 
     @Override
     public boolean testType(TypedInstance<Fluid> instance) {
-        Objects.requireNonNull(instance);
-        return ingredient.ingredient().test(IngredientCreatorAccess.createFluidStack(instance));
+        return ingredient.ingredient().test(IngredientCreatorAccess.fluid().createStack(instance));
     }
 
     @Override

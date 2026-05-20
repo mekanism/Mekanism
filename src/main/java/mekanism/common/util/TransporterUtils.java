@@ -75,9 +75,12 @@ public final class TransporterUtils {
         return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force, transaction);
     }
 
-    //TODO - 26.1: What do we want to return if itemType is empty
     public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force,
           @Nullable TransactionContext transaction) {
+        if (itemType.isEmpty() || itemAmount <= 0) {
+            //TODO - 26.1: What do we want to return if itemType is empty
+            return false;
+        }
         if (force && tile instanceof IAdvancedTransportEjector sorter) {
             return sorter.canSendHome(itemType, itemAmount, transaction);
         }

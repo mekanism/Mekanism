@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.security.SecurityMode;
@@ -55,6 +56,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -149,7 +151,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public long massInsert(ItemResource itemType, long amount, TransactionContext transaction) {
-        if (amount <= 0 || itemType.isEmpty()) {
+        TransferPreconditions.checkNonEmpty(itemType);
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0) {//Nothing to insert
             return 0;
         } else if (totalCount.value == totalCountCapacity) {
             // this check and the one below for if the map contains the type are extremely important; they prevent us from wasting CPU searching for a place to put the new items
@@ -216,7 +220,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public long massExtract(ItemResource itemType, long amount, TransactionContext transaction) {
-        if (amount <= 0 || itemType.isEmpty() || itemDataMap.isEmpty()) {
+        TransferPreconditions.checkNonEmpty(itemType);
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0 || itemDataMap.isEmpty()) {
+            //Nothing to extract, or nothing is stored
             return 0;
         }
         QIOItemTypeData data = itemDataMap.get(itemType);

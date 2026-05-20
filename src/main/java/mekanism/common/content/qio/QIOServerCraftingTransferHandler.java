@@ -351,9 +351,13 @@ public class QIOServerCraftingTransferHandler {
                     if (itemType.isEmpty()) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
                         return;
+                    } else if (source.getUsed() == 0) {
+                        bail(targetContents, transaction, "Received transfer request from: {}, for: {}, for item {} that had empty usage quantities.",
+                              player, recipeID, itemType);
+                        return;
                     } else if (!frequency.isStoring(itemType)) {
-                        bail(targetContents, transaction, "Received transfer request from: {}, for: {}, could not find stored item with UUID: {}. "
-                                                          + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
+                        bail(targetContents, transaction, "Received transfer request from: {}, for: {}, could not find stored item ({}) with UUID: {}. "
+                                                          + "This likely means that more of it was requested than is stored.", player, recipeID, itemType, qioSource);
                         return;
                     }
                     amountExtracted = frequency.removeByType(itemType, source.getUsed(), transaction);
@@ -497,6 +501,7 @@ public class QIOServerCraftingTransferHandler {
                             // drop it as the player, and print a warning as ideally we should never have been able to get to this
                             // point as our simulation should have marked it as invalid
                             // Note: In theory we should never get to this point due to having accurate simulations ahead of time
+                            //TODO - 26.1: Make the dropping be transactional
                             player.drop(itemType.toStack(amountToInsert), false);
                             Mekanism.logger.warn("Received transfer request from: {}, for: {}, initially targeting the player's inventory: {}, and was unable to fit "
                                                  + "all contents that were in the crafting window into the player's inventory/QIO system; dropping items by player.",
@@ -572,6 +577,7 @@ public class QIOServerCraftingTransferHandler {
                 //If we couldn't insert it all, either because there was no frequency or it didn't have room for it all
                 // drop it as the player, and print a warning as ideally we should never have been able to get to this
                 // point as our simulation should have marked it as invalid
+                //TODO - 26.1: Make the dropping be transactional
                 player.drop(itemType.toStack(amountToInsert), false);
             }
         }

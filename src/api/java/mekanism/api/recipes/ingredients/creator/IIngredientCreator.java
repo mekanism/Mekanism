@@ -75,4 +75,11 @@ public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, ING
      * @since 10.6.0
      */
     StreamCodec<RegistryFriendlyByteBuf, INGREDIENT> streamCodec();
+
+    /// Helper method to facilitate creating a stack from an arbitrary instance.
+    ///
+    /// @param instance Instance to convert into a stack.
+    ///
+    /// @since 10.8.0
+    STACK createStack(TypedInstance<TYPE> instance);
 }
