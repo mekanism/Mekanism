@@ -6,6 +6,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class GuiEntityPreview extends GuiElement {
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

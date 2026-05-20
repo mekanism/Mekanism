@@ -44,7 +44,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     private Tooltip lastTooltip;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
-        super(gui, x, y, height, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, MODULE_SELECTION, 112, 36);
+        super(gui, x, y, height, GuiElementHolder.HOLDER, MODULE_SELECTION, 112, 36);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateItemAndList(itemSupplier.get());

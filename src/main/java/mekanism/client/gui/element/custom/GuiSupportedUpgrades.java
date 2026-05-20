@@ -17,6 +17,7 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +69,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the background
-        renderBackgroundTexture(guiGraphics, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             Upgrade upgrade = EnumUtils.UPGRADES[i];

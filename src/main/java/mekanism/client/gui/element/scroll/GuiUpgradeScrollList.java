@@ -30,7 +30,7 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
     private final Runnable onSelectionChange;
 
     public GuiUpgradeScrollList(IGuiWrapper gui, int x, int y, int height, TileComponentUpgrade component, Runnable onSelectionChange) {
-        super(gui, x, y, height, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, UPGRADE_SELECTION, 100, 36);
+        super(gui, x, y, height, GuiElementHolder.HOLDER, UPGRADE_SELECTION, 100, 36);
         this.component = component;
         this.onSelectionChange = onSelectionChange;
     }

@@ -21,6 +21,7 @@ import mekanism.client.gui.element.scroll.GuiScrollableElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -190,7 +191,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
         super.drawBackground(guiGraphics, mx, my, partialTicks);
-        renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
         //Draw contents
         scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> getStartY(module), MiniElement::renderBackground);

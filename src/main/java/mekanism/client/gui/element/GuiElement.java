@@ -34,6 +34,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -672,12 +673,10 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
               BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
     }
 
+    @Deprecated(forRemoval = true)
     protected void renderExtendedTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
-        GuiUtils.renderExtendedTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-    }
-
-    protected void renderBackgroundTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
-        GuiUtils.renderBackgroundTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+        //GuiUtils.renderExtendedTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

@@ -84,11 +84,11 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     if (skin == selectedSkin) {
                         renderSlotBackground(guiGraphics, slotX, slotY, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
                     } else {
-                        renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+                        renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_BORDER_SIZE);
                     }
                     renderRobit(guiGraphics, skins.get(slot), slotX, slotY, rotation, index);
                 } else {
-                    renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+                    renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_BORDER_SIZE);
                 }
             }
             //Lighting.setupFor3DItems();

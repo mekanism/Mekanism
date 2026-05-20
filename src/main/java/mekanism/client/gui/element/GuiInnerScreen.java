@@ -7,8 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
 
-    public static final Identifier SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
+    public static final Identifier SCREEN = Mekanism.rl("inner_screen");
     public static int SCREEN_SIZE = 32;
 
     private List<Component> lastInfo = Collections.emptyList();

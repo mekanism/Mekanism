@@ -12,6 +12,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +45,7 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw Black and border
-        renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         Identifier texture = getResource();
         //Draw the graph
         int size = graphData.size();

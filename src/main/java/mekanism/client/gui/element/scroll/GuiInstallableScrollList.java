@@ -22,9 +22,9 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
     @Nullable
     protected ScreenRectangle cachedTooltipRect;
 
-    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int height, Identifier background, int backgroundSideSize,
+    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int height, Identifier background,
           Identifier texture, int textureWidth, int textureHeight) {
-        super(gui, x, y, textureWidth + 8, height, textureHeight / 3, background, backgroundSideSize);
+        super(gui, x, y, textureWidth + 8, height, textureHeight / 3, background);
         this.texture = texture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;

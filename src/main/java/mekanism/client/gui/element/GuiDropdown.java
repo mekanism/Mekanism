@@ -10,6 +10,7 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -88,7 +89,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        renderBackgroundTexture(guiGraphics, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
