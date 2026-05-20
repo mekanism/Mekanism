@@ -14,8 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.color.block.BlockTintSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
@@ -28,24 +26,6 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
-
-    //todo - 26.1: when this changes, block needs to be marked for re-rendering
-    public static final BlockTintSource TINT_SOURCE = new BlockTintSource() {
-        @Override
-        public int color(BlockState state) {
-            return -1;
-        }
-
-        @Override
-        public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-            TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, level, pos);
-            if (tile != null) {
-                EnumColor color = tile.getColor();
-                return color == null ? -1 : color.getPackedColor();
-            }
-            return -1;
-        }
-    };
 
     @Nullable
     private EnumColor lastColor;
@@ -174,5 +154,6 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getPrevious());
     }
+
     //End methods IComputerTile
 }

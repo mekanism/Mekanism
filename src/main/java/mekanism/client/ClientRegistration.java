@@ -160,8 +160,8 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
-import mekanism.common.tile.qio.TileEntityQIOComponent;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.qio.QIOBlockTintSource;
+import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
 import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -468,9 +468,9 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockTintSources.constant(-1), TileEntityQIOComponent.TINT_SOURCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockTintSources.constant(-1), QIOBlockTintSource.INSTANCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        ClientRegistrationUtil.registerBlockColorHandler(event, TileEntityLogisticalTransporter.TINT_SOURCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, LogisticalTransporterBlockTintSource.INSTANCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {
