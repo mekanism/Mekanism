@@ -148,7 +148,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
         long clientEnergyUsed = 0L;
-        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.getResource()))) {
+        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.resource()))) {
             long energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
@@ -184,7 +184,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     public int estimateIncrementAmount() {
-        return fluidTank.getResource().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
+        return fluidTank.resource().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {

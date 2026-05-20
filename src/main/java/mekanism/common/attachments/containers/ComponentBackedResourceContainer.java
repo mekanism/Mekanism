@@ -50,17 +50,6 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public RESOURCE getResource() {
-        return asStack().resource();
-    }
-
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long amountAsLong() {
-        return asStack().amount();
-    }
-
-    @Override
     public final void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         //TODO - 26.1: Re-evaluate this
         setContents(getAttached(), type, storedAmount);
@@ -90,7 +79,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     @Override
     public final boolean isCurrentValidForExtraction(AutomationType automationType) {
-        return isValidForExtraction(getResource(), automationType);
+        return isValidForExtraction(resource(), automationType);
     }
 
     private boolean isValidForExtraction(RESOURCE type, AutomationType automationType) {

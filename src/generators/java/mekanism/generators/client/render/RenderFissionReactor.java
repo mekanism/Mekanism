@@ -90,9 +90,9 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
             IFluidTank fluidTank = multiblock.coolantTank.getFluidTank();
             state.coolantData = RenderData.Builder.create(fluidTank).of(multiblock).buildScaled(state.coolantScale);
-            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidTank.getResource(), MekanismRenderer.FluidTextureType.STILL));
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidTank.resource(), MekanismRenderer.FluidTextureType.STILL));
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            ChemicalResource chemicalType = multiblock.coolantTank.getChemicalTank().getResource();
+            ChemicalResource chemicalType = multiblock.coolantTank.getChemicalTank().resource();
             state.coolantData = RenderData.Builder.create(chemicalType).of(multiblock).buildScaled(state.coolantScale);
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
         }
@@ -100,7 +100,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             state.coolantModel = getCoolantModel(state.coolantData);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
-            ChemicalResource chemicalType = multiblock.heatedCoolantTank.getResource();
+            ChemicalResource chemicalType = multiblock.heatedCoolantTank.resource();
             state.heatedCoolantData = RenderData.Builder.create(chemicalType).of(multiblock).build();
             //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
             state.heatedCoolantModel = cachedHeatedCoolantModels.computeIfAbsent(state.heatedCoolantData, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));

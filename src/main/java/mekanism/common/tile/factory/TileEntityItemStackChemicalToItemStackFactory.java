@@ -149,7 +149,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Override
     public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
-        return containsRecipeAB(itemType, chemicalTank.getResource());
+        return containsRecipeAB(itemType, chemicalTank.resource());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, @NotNull ItemResource itemType) {
         if (cached != null) {
             ItemStackChemicalToItemStackRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(itemType) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getResource()));
+            return cachedRecipe.getItemInput().testType(itemType) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.resource()));
         }
         return false;
     }
@@ -175,7 +175,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getResource(), outputSlot.getResource(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), OUTPUT_CHECK);
     }
 
     @Override

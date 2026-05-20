@@ -175,7 +175,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
                     if (container.isEmpty()) {
                         continue;
                     }
-                    RESOURCE tankType = container.getResource();
+                    RESOURCE tankType = container.resource();
                     long tankAmount = container.amountAsLong();
                     if (type.isEmpty()) {
                         type = tankType;
@@ -216,12 +216,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             case 0 -> FluidStack.EMPTY;
             case 1 -> {
                 IFluidTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amountAsInt());
+                yield tank.resource().toStack(tank.amountAsInt());
             }
             default -> {
                 for (IFluidTank tank : containers) {
                     if (!tank.isEmpty()) {
-                        yield tank.getResource().toStack(tank.amountAsInt());
+                        yield tank.resource().toStack(tank.amountAsInt());
                     }
                 }
                 yield FluidStack.EMPTY;
@@ -241,11 +241,11 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         int size = containers.size();
         return switch (size) {
             case 0 -> ChemicalResource.EMPTY;
-            case 1 -> containers.getFirst().getResource();
+            case 1 -> containers.getFirst().resource();
             default -> {
                 for (IChemicalTank tank : containers) {
                     if (!tank.isEmpty()) {
-                        yield tank.getResource();
+                        yield tank.resource();
                     }
                 }
                 yield ChemicalResource.EMPTY;

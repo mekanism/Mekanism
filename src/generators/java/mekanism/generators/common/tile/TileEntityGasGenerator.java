@@ -30,7 +30,6 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,7 +85,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         gasUsedLastTick = 0;
 
         if (!fuelTank.isEmpty() && canFunction() && cachedFuel != null) {
-            ChemicalResource fuel = fuelTank.getResource();
+            ChemicalResource fuel = fuelTank.resource();
 
             //how full the tank is, poor-man's "pressure" measurement
             double fullness = fuelTank.amountAsLong() / (double) fuelTank.capacityAsLong(fuel);
@@ -158,14 +157,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         @Override
         public void setContents(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-            ChemicalResource oldChemical = getResource();
+            ChemicalResource oldChemical = resource();
             super.setContents(type, amount);
             recheckOutput(type, oldChemical);
         }
 
         @Override
         public void setContentsUnchecked(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
-            ChemicalResource oldChemical = getResource();
+            ChemicalResource oldChemical = resource();
             super.setContentsUnchecked(type, amount);
             recheckOutput(type, oldChemical);
         }

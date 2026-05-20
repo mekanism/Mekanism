@@ -33,7 +33,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
 
     public int burn(FuelValues fuelValues) {
         if (!isEmpty()) {
-            int burnTime = getResource().toStack().getBurnTime(null, fuelValues) / 2;
+            int burnTime = resource().toStack().getBurnTime(null, fuelValues) / 2;
             if (burnTime > 0) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     if (consumeAndReplace(this, transaction)) {
@@ -54,7 +54,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (fuelSlot.isEmpty()) {
             return false;
         }
-        ItemResource currentType = fuelSlot.getResource();
+        ItemResource currentType = fuelSlot.resource();
         //Try to consume the current item
         int extracted = fuelSlot.extract(currentType, 1, transaction, AutomationType.INTERNAL);
         if (extracted != 1) {

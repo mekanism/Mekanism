@@ -138,7 +138,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
             if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
                 //TODO - 26.1: Re-evaluate this
-                networkContainer.setContentsUnchecked(networkContainer.getResource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
+                networkContainer.setContentsUnchecked(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
                 bufferContainer.setContentsUnchecked(saveShare);
             }
         }

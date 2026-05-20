@@ -89,7 +89,7 @@ public final class InventoryUtils {
     }
 
     private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper<BlockPos> dropper) {
-        dropItemContents(level, pos, slots, scalar, dropper, IResourceContainer::getResource, IResourceContainer::amountAsLong);
+        dropItemContents(level, pos, slots, scalar, dropper, IResourceContainer::resource, IResourceContainer::amountAsLong);
     }
 
     private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper<BlockPos> dropper,
@@ -166,7 +166,7 @@ public final class InventoryUtils {
         // I believe it is fine to just do this once, but maybe some slot extractions depend on what is already extracted
         try (Transaction simulation = Transaction.openRoot()) {
             for (IInventorySlot slot : shuffled) {
-                ItemResource resource = slot.getResource();
+                ItemResource resource = slot.resource();
                 if (!resource.isEmpty()) {
                     //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
                     int extracted = slot.extract(resource, slot.amountAsInt(), simulation, AutomationType.EXTERNAL);

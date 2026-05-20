@@ -134,7 +134,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     operatingTicks++;
                     if (operatingTicks >= ticksRequired) {
                         operatingTicks = 0;
-                        FluidResource fluidType = fluidTank.getResource();
+                        FluidResource fluidType = fluidTank.resource();
                         if (finishedCalc) {
                             BlockPos below = getBlockPos().below();
                             //Note: We already validated that the fluid tank is not empty so our resource doesn't represent the empty resource
@@ -226,7 +226,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             //Always return true if it is not a source block
             return true;
         }
-        FluidResource fluidType = fluidTank.getResource();
+        FluidResource fluidType = fluidTank.resource();
         if (fluidType.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
             return state.canBeReplaced() || state.getBlock() instanceof LiquidBlockContainer;

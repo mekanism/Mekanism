@@ -120,7 +120,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
-        builder.addContainer(gasTank = BasicChemicalTank.input(MAX_GAS, chemicalType -> containsRecipeBA(inputSlot.getResource(), chemicalType), this::containsRecipeB, recipeCacheListener));
+        builder.addContainer(gasTank = BasicChemicalTank.input(MAX_GAS, chemicalType -> containsRecipeBA(inputSlot.resource(), chemicalType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
@@ -137,7 +137,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(gasInputSlot = ChemicalInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 6, 69));
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, gasTank.getResource()), this::containsRecipeA, recipeCacheListener, 26, 40))
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, gasTank.resource()), this::containsRecipeA, recipeCacheListener, 26, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 152, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

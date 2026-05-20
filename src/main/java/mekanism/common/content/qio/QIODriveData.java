@@ -198,7 +198,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
             //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
             // Also do we need to make sure the slot calls onContentsChanged?
             QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
-            ItemResource itemType = slot.getResource();
+            ItemResource itemType = slot.resource();
             if (itemType.value() instanceof IQIODriveItem) {
                 //Update stored items and metadata
                 ItemResource updatedItem = itemType.with(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.create(data))
@@ -218,7 +218,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
             //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
             // Also do we need to make sure the slot calls onContentsChanged?
             QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
-            ItemResource itemType = slot.getResource();
+            ItemResource itemType = slot.resource();
             if (itemType.value() instanceof IQIODriveItem) {
                 slot.setContents(itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data)), slot.amountAsLong());
             } else {

@@ -297,7 +297,7 @@ public class OutputHelper {
                 int operations = amountUsed / outputSize;
                 tracker.updateOperations(operations);
                 if (operations == 0) {
-                    if (amountUsed == 0 && container.getNeededAsInt(container.getResource()) > 0) {
+                    if (amountUsed == 0 && container.getNeededAsInt(container.resource()) > 0) {
                         tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
                     } else {
                         tracker.addError(notEnoughSpace);

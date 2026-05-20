@@ -75,6 +75,6 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IFluidTank tank = getContainer();
-        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amountAsInt()));
+        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
     }
 }

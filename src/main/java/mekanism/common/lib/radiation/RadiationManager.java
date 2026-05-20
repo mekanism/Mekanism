@@ -211,7 +211,7 @@ public final class RadiationManager implements IRadiationManager {
     @Override
     public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
         for (IChemicalTank chemicalTank : chemicalTanks) {
-            if (dumpRadiation(level, pos, chemicalTank.getResource(), chemicalTank.amountAsLong()) && clearRadioactive) {
+            if (dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong()) && clearRadioactive) {
                 chemicalTank.setEmpty();
             }
         }

@@ -42,7 +42,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         try (Transaction transaction = Transaction.openRoot()) {
             for (IFluidTank fluidTank : this.fluidTanks) {
                 if (!fluidTank.isEmpty()) {
-                    FluidResource fluidType = fluidTank.getResource();
+                    FluidResource fluidType = fluidTank.resource();
                     int toInsert = fluidTank.amountAsInt();
                     //Insert into the output using manual as the automation type
                     if (outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL) < toInsert) {

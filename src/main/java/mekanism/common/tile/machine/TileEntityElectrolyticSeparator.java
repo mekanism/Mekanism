@@ -253,7 +253,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private void handleTank(IChemicalTank tank, GasMode mode) {
-        ChemicalResource chemicalType = tank.getResource();
+        ChemicalResource chemicalType = tank.resource();
         if (!chemicalType.isEmpty()) {
             long toDump = 0;
             if (mode == GasMode.DUMPING) {
@@ -278,7 +278,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private long getDumpingExcessTarget(IChemicalTank tank) {
-        return MathUtils.clampToLong(tank.capacityAsLong(tank.getResource()) * MekanismConfig.general.dumpExcessKeepRatio.get());
+        return MathUtils.clampToLong(tank.capacityAsLong(tank.resource()) * MekanismConfig.general.dumpExcessKeepRatio.get());
     }
 
     private boolean atDumpingExcessTarget(IChemicalTank tank) {

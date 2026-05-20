@@ -49,7 +49,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         for (int i = 0; i < slots.size(); i++) {
             IInventorySlot slot = slots.get(i);
             if (!slot.isEmpty()) {
-                out.add(new SlotData(i, slot.getResource(), slot.amountAsLong()));
+                out.add(new SlotData(i, slot.resource(), slot.amountAsLong()));
             }
         }
         return out;

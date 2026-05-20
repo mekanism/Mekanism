@@ -60,7 +60,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
         @NotNull
         @Override
         public ChemicalResource getInputChemical() {
-            return tile.inputTank.getResource();
+            return tile.inputTank.resource();
         }
 
         @Nullable

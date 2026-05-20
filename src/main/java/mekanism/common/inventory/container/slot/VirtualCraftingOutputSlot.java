@@ -58,7 +58,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @Override
     public int extract(Player player, ItemResource itemType, int amount, TransactionContext transaction) {
         IInventorySlot slot = getInventorySlot();
-        if (mayPickup(player) && itemType.equals(slot.getResource())) {
+        if (mayPickup(player) && itemType.equals(slot.resource())) {
             int amountPerRecipe = slot.amountAsInt();
             //Return how many full recipe extractions we would be able to do. We don't modify the
             // actual slot as we want it to maintain its contents

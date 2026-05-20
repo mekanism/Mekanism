@@ -28,11 +28,6 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
     public static final StackHelper<FluidResource> FLUID_HELPER = StackHelper.create(FluidResource.EMPTY, FluidResource.CODEC, FluidResource.STREAM_CODEC);
     public static final StackHelper<ItemResource> ITEM_HELPER = StackHelper.create(ItemResource.EMPTY, ItemResource.CODEC, ItemResource.STREAM_CODEC);
 
-    public boolean isEmpty() {
-        //Note: We validate in the constructor that resource returns true for empty only when amount is zero
-        return amount == 0;
-    }
-
     public LargeResourceStack {
         MekanismPreconditions.checkNonNegative(amount);
         Objects.requireNonNull(resource, "Resource cannot be null");
@@ -41,14 +36,23 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
         }
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return amount + "x " + resource;
+    public boolean isEmpty() {
+        //Note: We validate in the constructor that resource returns true for empty only when amount is zero
+        return amount == 0;
+    }
+
+    public boolean matches(RESOURCE resource) {
+        return this.resource.equals(resource);
     }
 
     public int amountAsInt() {
         return Ints.saturatedCast(amount);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return amount + "x " + resource;
     }
 
     public record StackHelper<RESOURCE extends @NonNull Resource>(

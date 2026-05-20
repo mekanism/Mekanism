@@ -80,12 +80,12 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     net.container.setEmpty();
                 } else {
                     // compare the chemicals themselves
-                    if (this.container.getResource().equals(net.container.getResource())) {
+                    if (this.container.resource().equals(net.container.resource())) {
                         long amount = net.container.amountAsLong();
                         //TODO - 26.1: Do we need to check for long overflow?
-                        this.container.setContentsUnchecked(this.container.getResource(), this.container.amountAsLong() + amount);
+                        this.container.setContentsUnchecked(this.container.resource(), this.container.amountAsLong() + amount);
                     } else {
-                        Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.getResource(), net.container.getResource());
+                        Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.resource(), net.container.resource());
                     }
                     net.container.setEmpty();
                 }
@@ -113,7 +113,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         if (!transmitterReleased.isEmpty()) {
             if (container.isEmpty()) {
                 container.setContentsUnchecked(transmitterReleased);
-            } else if (container.getResource().equals(transmitterReleased.resource())) {
+            } else if (container.resource().equals(transmitterReleased.resource())) {
                 //TODO - 26.1: evaluate if we actually do want helpers for growing and shrinking for use cases like this
                 container.setContentsUnchecked(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount());
             }
@@ -128,7 +128,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @Override
     public boolean isCompatibleWith(NETWORK other) {
         if (super.isCompatibleWith(other)) {
-            return container.isEmpty() || other.container.isEmpty() || container.getResource().equals(other.container.getResource());
+            return container.isEmpty() || other.container.isEmpty() || container.resource().equals(other.container.resource());
         }
         return false;
     }
@@ -136,10 +136,10 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @Override
     public void onContentsChanged() {
         markDirty();
-        if (!container.getResource().equals(lastType)) {
+        if (!container.resource().equals(lastType)) {
             //If the type does not match update it, and mark that we need an update
             if (!container.isEmpty()) {
-                lastType = container.getResource();
+                lastType = container.resource();
             }
             needsUpdate = true;
         }
@@ -181,7 +181,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         if (container.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        return MekanismLang.NETWORK_MB_STORED.translate(container.getResource(), container.amountAsLong());
+        return MekanismLang.NETWORK_MB_STORED.translate(container.resource(), container.amountAsLong());
     }
 
     @Override
@@ -192,7 +192,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @Override
     protected void onLastTransmitterRemoved(@NotNull TRANSMITTER triggerTransmitter) {
         if (!container.isEmpty()) {
-            disperse(triggerTransmitter, container.getResource(), container.amountAsLong());
+            disperse(triggerTransmitter, container.resource(), container.amountAsLong());
         }
     }
 
@@ -201,7 +201,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
             ResourceTransmitterSaveTarget<RESOURCE, TRANSMITTER> saveTarget = new ResourceTransmitterSaveTarget<>(getTransmitters());
-            RESOURCE resource = container.getResource();
+            RESOURCE resource = container.resource();
             long toSend = container.amountAsLong();
             long sent = EmitUtils.sendToAcceptors(saveTarget, toSend, resource, transaction);
             if (triggerTransmitter != null && sent < toSend) {
@@ -220,9 +220,9 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         } else {
             try (Transaction transaction = Transaction.openRoot()) {
                 long current = container.amountAsLong();
-                prevTransferAmount = tickEmit(container.getResource(), current, transaction);
+                prevTransferAmount = tickEmit(container.resource(), current, transaction);
                 //TODO - 26.1: Evaluate this
-                container.setContentsUnchecked(container.getResource(), current - prevTransferAmount);
+                container.setContentsUnchecked(container.resource(), current - prevTransferAmount);
                 transaction.commit();
             }
         }

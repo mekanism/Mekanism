@@ -69,7 +69,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 IInventorySlot inputSlot = tile.getInputSlot();
                 if (!inputSlot.isEmpty()) {
-                    ItemResource input = inputSlot.getResource();
+                    ItemResource input = inputSlot.resource();
                     ItemStackToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
@@ -85,7 +85,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 }
                 return 0xFFFFFFFF;
             }
-            return getColor(tile.pigmentTank.getResource().getChemicalColorRepresentation());
+            return getColor(tile.pigmentTank.resource().getChemicalColorRepresentation());
         }
 
         private ItemStackToChemicalRecipe getRecipeAndCache() {

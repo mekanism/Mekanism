@@ -67,7 +67,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
             return dummyType;
         }
         CONTAINER container = getContainer();
-        return container == null ? dummyType : container.getResource();
+        return container == null ? dummyType : container.resource();
     }
 
     @Override
@@ -123,7 +123,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
         if (container == null || container.isEmpty()) {
             return 0;
         }
-        long capacity = container.capacityAsLong(container.getResource());
+        long capacity = container.capacityAsLong(container.resource());
         long stored = container.amountAsLong();
         if (capacity == 0) {
             return 0;
@@ -143,7 +143,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
             type = dummyType;
             amount = 0;
         } else {
-            type = container.getResource();
+            type = container.resource();
             amount = container.amountAsLong();
         }
         return getContentsTooltips(type, amount, TooltipContext.of(minecraft.level), minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);

@@ -86,7 +86,7 @@ public final class FluidUtils {
             }
             int spaceInItem;
             try (Transaction simulation = Transaction.openRoot()) {
-                spaceInItem = handler.insert(fluidTank.getResource(), fluidTank.amountAsInt(), simulation);
+                spaceInItem = handler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation);
                 if (spaceInItem == 0) {
                     return false;
                 }
@@ -97,7 +97,7 @@ public final class FluidUtils {
                     return false;
                 }
                 try (Transaction subTransaction = Transaction.open(transaction)) {
-                    int inserted = handler.insert(fluidTank.getResource(), extracted, subTransaction);
+                    int inserted = handler.insert(fluidTank.resource(), extracted, subTransaction);
                     if (inserted < extracted) {
                         return false;
                     } else if (!player.isCreative()) {//TODO - 26.1: Re-evaluate this

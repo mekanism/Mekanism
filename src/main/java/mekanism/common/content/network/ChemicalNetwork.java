@@ -46,7 +46,7 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
 
     @Override
     public Component getNeededInfo() {
-        return TextComponentUtil.build(container.getNeededAsLong(container.getResource()));
+        return TextComponentUtil.build(container.getNeededAsLong(container.resource()));
     }
 
     @NotNull

@@ -50,7 +50,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
     public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted = super.insert(resource, amount, transaction, automationType);
         //Ensure we have the same type of gas stored as we failed to insert, in which case we want to try to insert to the one above
-        if (inserted < amount && getResource().equals(resource)) {
+        if (inserted < amount && resource().equals(resource)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, this.tile.getLevel(), this.tile.getBlockPos().above());
             if (tileAbove != null) {

@@ -21,26 +21,26 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static ChemicalStack getStack(IChemicalTank tank) {
-            return tank.getResource().toStack(tank.amountAsInt());
+            return tank.resource().toStack(tank.amountAsInt());
         }
 
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IChemicalTank tank) {
             //TODO - 26.1: Should this return maximum capacity (as in getLimitAsLong(ChemicalResource.EMPTY)?)
-            return tank.capacityAsLong(tank.getResource());
+            return tank.capacityAsLong(tank.resource());
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
         public static long getNeeded(IChemicalTank tank) {
-            return tank.getNeededAsLong(tank.getResource());
+            return tank.getNeededAsLong(tank.resource());
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IChemicalTank tank) {
-            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.getResource());
+            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.resource());
         }
     }
 
@@ -49,26 +49,26 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static FluidStack getStack(IFluidTank tank) {
-            return tank.getResource().toStack(tank.amountAsInt());
+            return tank.resource().toStack(tank.amountAsInt());
         }
 
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IFluidTank tank) {
             //TODO - 26.1: Should this return maximum capacity (as in capacityAsLong(FluidResource.EMPTY)?)
-            return tank.capacityAsLong(tank.getResource());
+            return tank.capacityAsLong(tank.resource());
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
         public static long getNeeded(IFluidTank tank) {
-            return tank.getNeededAsLong(tank.getResource());
+            return tank.getNeededAsLong(tank.resource());
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IFluidTank tank) {
-            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.getResource());
+            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.resource());
         }
     }
 
@@ -76,7 +76,7 @@ public class SpecialComputerMethodWrapper {
 
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static ItemStack getStack(IInventorySlot slot) {
-            return slot.getResource().toStack(slot.amountAsInt());
+            return slot.resource().toStack(slot.amountAsInt());
         }
     }
 

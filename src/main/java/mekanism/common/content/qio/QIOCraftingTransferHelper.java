@@ -57,7 +57,7 @@ public class QIOCraftingTransferHelper {
         byte inventorySlotIndex = 0;
         for (; inventorySlotIndex < 9; inventorySlotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(inventorySlotIndex);
-            ItemResource storedType = slot.getResource();
+            ItemResource storedType = slot.resource();
             if (!storedType.isEmpty()) {
                 //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
                 // always should be able to, but we have this check that mimics our implementation here just in case

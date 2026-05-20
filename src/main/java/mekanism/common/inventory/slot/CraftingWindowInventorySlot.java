@@ -41,7 +41,7 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     public void onContentsChanged() {
         super.onContentsChanged();
         if (inputTypeChange != null) {
-            ItemResource currentType = getResource();
+            ItemResource currentType = resource();
             if (isEmpty() != wasEmpty || !currentType.equals(lastType)) {
                 //If empty state changed, or they are not the same type, then mark our input type changed
                 // Note: If they are the same object (growing or shrinking) then we know they are the same type given they are not empty

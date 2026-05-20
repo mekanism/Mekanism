@@ -63,7 +63,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.getResource().getChemicalColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.resource().getChemicalColorRepresentation());
         }
     }
 
@@ -71,7 +71,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.getResource().getChemicalColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.resource().getChemicalColorRepresentation());
         }
     }
 
@@ -91,8 +91,8 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             if (tile.outputTank.isEmpty()) {
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
-                    ChemicalResource leftInput = tile.leftInputTank.getResource();
-                    ChemicalResource rightInput = tile.rightInputTank.getResource();
+                    ChemicalResource leftInput = tile.leftInputTank.resource();
+                    ChemicalResource rightInput = tile.rightInputTank.resource();
                     ChemicalChemicalToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
@@ -109,7 +109,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                 }
                 return 0xFFFFFFFF;
             }
-            return getColor(tile.outputTank.getResource().getChemicalColorRepresentation());
+            return getColor(tile.outputTank.resource().getChemicalColorRepresentation());
         }
 
         private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {

@@ -117,7 +117,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         builder.addContainer(infusionTank = BasicChemicalTank.create(MAX_INFUSE, ConstantPredicates.alwaysTrueBi(),
-              (chemicalType, _) -> containsRecipeBA(inputSlot.getResource(), chemicalType), this::containsRecipeB, recipeCacheListener));
+              (chemicalType, _) -> containsRecipeBA(inputSlot.resource(), chemicalType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
@@ -134,7 +134,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(infusionSlot = ChemicalInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 17, 35));
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType-> containsRecipeAB(itemType, infusionTank.getResource()), this::containsRecipeA, recipeCacheListener, 51, 43))
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType-> containsRecipeAB(itemType, infusionTank.resource()), this::containsRecipeA, recipeCacheListener, 51, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 109, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

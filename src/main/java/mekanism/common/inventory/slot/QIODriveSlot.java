@@ -68,7 +68,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     protected void onRootCommit(LargeResourceStack<ItemResource> originalState) {
         super.onRootCommit(originalState);
         //TODO - 26.1: Should we do this before or after calling super (and setting the contents changed)
-        ItemResource newDrive = getResource();
+        ItemResource newDrive = resource();
         ItemResource originalDrive = originalState.resource();
         if (!isRemote() && !newDrive.equals(originalDrive)) {
             QIOFrequency frequency = driveHolder.getQIOFrequency();

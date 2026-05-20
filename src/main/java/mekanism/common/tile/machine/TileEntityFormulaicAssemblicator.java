@@ -270,7 +270,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void checkFormula() {
-        ItemResource formulaStack = formulaSlot.getResource();
+        ItemResource formulaStack = formulaSlot.resource();
         FormulaAttachment attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (!attachment.isEmpty() && !attachment.invalid()) {
             if (formula.isEmpty() || !lastFormulaStack.equals(formulaStack)) {
@@ -281,7 +281,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         //Note: Because loading ends up overriding the set stack, we can't just use our stored variable
         // and have to look it back up instead
-        lastFormulaStack = formulaSlot.getResource();
+        lastFormulaStack = formulaSlot.resource();
     }
 
     //Note: Assumes attachment is not invalid
@@ -380,7 +380,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
-                    int extracted = craftingSlot.extract(craftingSlot.getResource(), 1, transaction, AutomationType.INTERNAL);
+                    int extracted = craftingSlot.extract(craftingSlot.resource(), 1, transaction, AutomationType.INTERNAL);
                     if (extracted == 0) {
                         //Something went horribly wrong when removing the inputs from the input slots, bail and revert changes
                         return false;
@@ -410,7 +410,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         boolean canOperate = true;
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            if (!formula.isIngredientInPos(level, recipeSlot.getResource(), i)) {
+            if (!formula.isIngredientInPos(level, recipeSlot.resource(), i)) {
                 if (!tryMoveToGrid(recipeSlot, i)) {
                     canOperate = false;
                 }
@@ -425,7 +425,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private boolean tryMoveToGrid(IInventorySlot recipeSlot, int i) {
-        ItemResource resource = recipeSlot.getResource();
+        ItemResource resource = recipeSlot.resource();
         int stored = recipeSlot.amountAsInt();
         try (Transaction transaction = Transaction.openRoot()) {
             if (!resource.isEmpty()) {
@@ -452,7 +452,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (IInventorySlot stockSlot : inputSlots) {
             //The stack stored in the stock inventory
             if (!stockSlot.isEmpty()) {
-                ItemResource stockType = stockSlot.getResource();
+                ItemResource stockType = stockSlot.resource();
                 //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
                 boolean isValidIngredient;
                 if (checkedTypes.containsKey(stockType)) {
@@ -512,7 +512,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (recipeSlot.isEmpty()) {
                 continue;
             }
-            ItemResource resource = recipeSlot.getResource();
+            ItemResource resource = recipeSlot.resource();
             if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     int inserted = InventoryUtils.insertItem(inputSlots, resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
@@ -590,7 +590,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
         for (IInventorySlot inputSlot : inputSlots) {
             if (!inputSlot.isEmpty()) {
-                storedMap.mergeInt(inputSlot.getResource(), inputSlot.amountAsInt(), Integer::sum);
+                storedMap.mergeInt(inputSlot.resource(), inputSlot.amountAsInt(), Integer::sum);
             }
         }
         // place items into respective controlled slots
@@ -672,7 +672,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private static void setSlotIfChanged(IInventorySlot slot, ItemResource itemType, int count) {
-        if (slot.amountAsInt() != count || !slot.getResource().equals(itemType)) {
+        if (slot.amountAsInt() != count || !slot.resource().equals(itemType)) {
             slot.setContents(itemType, count);
         }
     }
@@ -702,7 +702,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaSlot.isEmpty()) {
             return;
         }
-        ItemResource currentResource = formulaSlot.getResource();
+        ItemResource currentResource = formulaSlot.resource();
         FormulaAttachment formulaAttachment = currentResource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
@@ -817,7 +817,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
-        FormulaAttachment formulaAttachment = formulaSlot.getResource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaAttachment formulaAttachment = formulaSlot.resource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             throw new ComputerException("No formula found.");
         } else if (hasValidFormula() || formulaAttachment.hasItems()) {

@@ -125,7 +125,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         builder.addContainer(inputGasTank = BasicChemicalTank.create(MAX_GAS, MekContainerHelper.radioactiveInputTankPredicate(() -> outputGasTank),
-              (chemicalType, _) -> containsRecipeCAB(inputSlot.getResource(), inputFluidTank.getResource(), chemicalType), this::containsRecipeC,
+              (chemicalType, _) -> containsRecipeCAB(inputSlot.resource(), inputFluidTank.resource(), chemicalType), this::containsRecipeC,
               ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addContainer(outputGasTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
@@ -135,7 +135,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
-        builder.addContainer(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluidType -> containsRecipeBAC(inputSlot.getResource(), fluidType, inputGasTank.getResource()),
+        builder.addContainer(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluidType -> containsRecipeBAC(inputSlot.resource(), fluidType, inputGasTank.resource()),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -152,7 +152,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeABC(itemType, inputFluidTank.getResource(), inputGasTank.getResource()),
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeABC(itemType, inputFluidTank.resource(), inputGasTank.resource()),
                     this::containsRecipeA, recipeCacheListener, 54, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 40))

@@ -139,7 +139,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        lockType = lock ? getResource() : ItemResource.EMPTY;
+        lockType = lock ? resource() : ItemResource.EMPTY;
         return true;
     }
 
@@ -155,7 +155,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     public ItemResource getBinItemType() {
-        return isLocked() ? lockType : getResource();
+        return isLocked() ? lockType : resource();
     }
 
     public ItemResource getLockType() {

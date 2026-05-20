@@ -81,7 +81,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         long outputAmount = 0;
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
-                ItemResource resource = slot.getResource();
+                ItemResource resource = slot.resource();
                 long amount = slot.amountAsLong();
                 Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
                 if (upgrade == null) {

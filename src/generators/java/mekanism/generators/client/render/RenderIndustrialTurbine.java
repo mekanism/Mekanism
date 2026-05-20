@@ -45,7 +45,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         if (!multiblock.chemicalTank.isEmpty() && multiblock.length() > 0) {
             int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
             if (height > 0) {
-                ChemicalResource chemicalType = multiblock.chemicalTank.getResource();
+                ChemicalResource chemicalType = multiblock.chemicalTank.resource();
                 state.steamData = RenderData.Builder.create(chemicalType)
                       .of(multiblock)
                       .height(height)

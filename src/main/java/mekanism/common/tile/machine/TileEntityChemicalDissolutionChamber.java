@@ -118,7 +118,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
-        builder.addContainer(injectTank = BasicChemicalTank.input(MAX_CHEMICAL, chemicalType -> containsRecipeBA(inputSlot.getResource(), chemicalType), this::containsRecipeB, recipeCacheListener));
+        builder.addContainer(injectTank = BasicChemicalTank.input(MAX_CHEMICAL, chemicalType -> containsRecipeBA(inputSlot.resource(), chemicalType), this::containsRecipeB, recipeCacheListener));
         builder.addContainer(outputTank = BasicChemicalTank.output(MAX_CHEMICAL, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -136,7 +136,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(gasInputSlot = ChemicalInventorySlot.fillOrConvert(injectTank, this::getLevel, listener, 8, 65));
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, injectTank.getResource()), this::containsRecipeA, recipeCacheListener, 28, 36))
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, injectTank.resource()), this::containsRecipeA, recipeCacheListener, 28, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = ChemicalInventorySlot.drain(outputTank, listener, 152, 55));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 14));

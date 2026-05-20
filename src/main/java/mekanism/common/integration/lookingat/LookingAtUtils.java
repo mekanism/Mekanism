@@ -172,7 +172,7 @@ public class LookingAtUtils {
                     continue;
                 }
             }
-            FluidResource storedType = fluidTank.getResource();
+            FluidResource storedType = fluidTank.resource();
             addFluidInfo(info, storedType, fluidTank.amountAsLong(), fluidTank.capacityAsLong(storedType), fallback);
         }
     }
@@ -230,7 +230,7 @@ public class LookingAtUtils {
                 return;
             }
         }
-        ChemicalResource resource = chemicalTank.getResource();
+        ChemicalResource resource = chemicalTank.resource();
         addChemicalInfo(info, resource, chemicalTank.amountAsLong(), chemicalTank.capacityAsLong(resource), fallback);
     }
 

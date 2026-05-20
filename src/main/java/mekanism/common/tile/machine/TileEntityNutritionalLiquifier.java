@@ -155,7 +155,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
             lastPasteScale = pasteScale;
             sendUpdatePacket = true;
         }
-        ItemResource itemType = inputSlot.getResource();
+        ItemResource itemType = inputSlot.resource();
         if (!itemType.equals(lastPasteItem)) {
             lastPasteItem = itemType;
             sendUpdatePacket = true;

@@ -291,14 +291,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         if (!reactorSlot.isEmpty()) {
-            if (GeneratorsItems.HOHLRAUM.is(reactorSlot.getResource())) {
+            if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
                 ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
                 if (handler != null) {
                     //Validate that the handler has some fusion fuel in it
                     ChemicalResource fuelType = ResourceUtils.getTypeToExtract(fuelTank, handler, AutomationType.INTERNAL, null);
                     if (!fuelType.isEmpty()) {
                         try (Transaction transaction = Transaction.openRoot()) {
-                            int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(fuelTank.getResource()), transaction);
+                            int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(fuelTank.resource()), transaction);
                             if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
                                 lastPlasmaTemperature = getPlasmaTemp();
                                 reactorSlot.setEmpty();
@@ -313,7 +313,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void injectFuel() {
-        int amountNeeded = fuelTank.getNeededAsInt(fuelTank.getResource());
+        int amountNeeded = fuelTank.getNeededAsInt(fuelTank.resource());
         int amountAvailable = 2 * Math.min(deuteriumTank.amountAsInt(), tritiumTank.amountAsInt());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
@@ -321,8 +321,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (injectingAmount > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
                 //Note: We don't have to validate if the deuterium or tritium resources are empty, as if either is, then the injecting amount will be zero
-                if (deuteriumTank.extract(deuteriumTank.getResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
-                    tritiumTank.extract(tritiumTank.getResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
+                if (deuteriumTank.extract(deuteriumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
+                    tritiumTank.extract(tritiumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
                     fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount) {
                     //Only inject if we actually are able to transfer the proper amounts
                     transaction.commit();
@@ -332,7 +332,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private long burnFuel() {
-        ChemicalResource fuel = fuelTank.getResource();
+        ChemicalResource fuel = fuelTank.resource();
         if (fuel.isEmpty()) {
             //Nothing to burn
             return 0;
@@ -361,10 +361,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
             int waterToVaporize = MathUtils.clampToInt(HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-            FluidResource water = waterTank.getResource();
+            FluidResource water = waterTank.resource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steamTank.getResource())), transaction, AutomationType.INTERNAL);
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steamTank.resource())), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
                         //TODO - 26.1: Should we be checking if this matched? I think not, as we intentionally allow excess steam to be vented
                         steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);

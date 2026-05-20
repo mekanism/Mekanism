@@ -41,7 +41,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             if (tile.fluidTank.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.getResource(), TextUtils.format(tile.fluidTank.amountAsLong())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.resource(), TextUtils.format(tile.fluidTank.amountAsLong())));
             }
             return list;
         }));

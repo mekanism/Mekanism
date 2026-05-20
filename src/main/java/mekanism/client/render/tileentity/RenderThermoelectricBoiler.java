@@ -55,7 +55,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         }
         int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
         if (height > 0) {
-            FluidResource fluid = multiblock.waterTank.getResource();
+            FluidResource fluid = multiblock.waterTank.resource();
             state.waterData = RenderData.Builder.create(multiblock.waterTank)
                   .of(multiblock)
                   .height(height)
@@ -69,7 +69,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         }
         int steamHeight = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
         if (steamHeight > 0) {
-            ChemicalResource chemicalType = multiblock.steamTank.getResource();
+            ChemicalResource chemicalType = multiblock.steamTank.resource();
             state.steamData = RenderData.Builder.create(chemicalType)
                   .of(multiblock)
                   .location(multiblock.upperRenderLocation.offset(1, 0, 1))

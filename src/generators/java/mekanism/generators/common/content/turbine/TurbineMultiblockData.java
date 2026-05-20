@@ -159,7 +159,7 @@ public class TurbineMultiblockData extends MultiblockData {
                         //TODO - 26.1: Is there any validation we want to perform for any of the following operations?
                         energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL);
                         //TODO - 26.1: Should we just make flow be an int?
-                        chemicalTank.extract(chemicalTank.getResource(), Ints.saturatedCast(flow), transaction, AutomationType.INTERNAL);
+                        chemicalTank.extract(chemicalTank.resource(), Ints.saturatedCast(flow), transaction, AutomationType.INTERNAL);
                         ventTank.insert(FluidResource.of(Fluids.WATER), Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), transaction, AutomationType.INTERNAL);
                         transaction.commit();
                     }
@@ -174,7 +174,7 @@ public class TurbineMultiblockData extends MultiblockData {
         EnergyUtils.emit(energyOutputTargets, energyContainer, null);
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
-            ChemicalResource chemicalType = chemicalTank.getResource();
+            ChemicalResource chemicalType = chemicalTank.resource();
             long amount = chemicalTank.amountAsLong();
             long toDump = 0;
                 if (dumpMode == GasMode.DUMPING) {

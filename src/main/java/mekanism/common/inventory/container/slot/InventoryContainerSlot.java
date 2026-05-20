@@ -69,7 +69,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         if (stack.isEmpty()) {
             return false;
         }
-        ItemResource currentResource = slot.getResource();
+        ItemResource currentResource = slot.resource();
         ItemResource targetResource = ItemResource.of(stack);
         //If there is an item stored that doesn't match the current stack, we need to check if we can extract the current item
         if (!currentResource.isEmpty() && !currentResource.equals(targetResource) && !slot.isCurrentValidForExtraction(AutomationType.MANUAL)) {
@@ -83,7 +83,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
     @NotNull
     @Override
     protected ItemStack getStackCopy() {
-        return slot.getResource().toStack(slot.amountAsInt());
+        return slot.resource().toStack(slot.amountAsInt());
     }
 
     @Override

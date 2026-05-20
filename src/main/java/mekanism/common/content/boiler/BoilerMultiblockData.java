@@ -150,7 +150,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @Nullable
     private HeatedCoolant getHeatedCoolant() {
-        ChemicalResource resource = superheatedCoolantTank.getResource();
+        ChemicalResource resource = superheatedCoolantTank.resource();
         return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
@@ -167,7 +167,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             HeatedCoolant coolantType = getHeatedCoolant();
             if (coolantType != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    ChemicalResource heatedTankType = superheatedCoolantTank.getResource();
+                    ChemicalResource heatedTankType = superheatedCoolantTank.resource();
                     double portionToCool = coolantType.conductivity() * superheatedCoolantTank.amountAsLong();
                     //TODO - 26.1: Re-evaluate this cast
                     int toCool = Ints.saturatedCast(Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature())));
@@ -184,7 +184,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
-            FluidResource water = waterTank.getResource();
+            FluidResource water = waterTank.resource();
             if (water.isEmpty()) {
                 lastBoilRate = 0;
             } else {

@@ -73,7 +73,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                         //try to fill the item from the fluid in the tank
                         boolean canDrain;
                         try (Transaction simulation = Transaction.openRoot()) {
-                            canDrain = handler.insert(fluidTank.getResource(), fluidTank.amountAsInt(), simulation) > 0;
+                            canDrain = handler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation) > 0;
                         }
                         if (canDrain) {
                             //If we can drain anything into it, then drain
@@ -128,7 +128,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         if (fluidTank.isEmpty()) {
             return;
         }
-        FluidResource fluidType = fluidTank.getResource();
+        FluidResource fluidType = fluidTank.resource();
         int fluidAmount = fluidTank.amountAsInt();
         try (Transaction transaction = Transaction.openRoot()) {
             //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
@@ -240,7 +240,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 return false;
             }
             //TODO - 26.1: Should we be passing in what the resource is to here?
-            int removed = extract(getResource(), 1, subTransaction, AutomationType.INTERNAL);
+            int removed = extract(resource(), 1, subTransaction, AutomationType.INTERNAL);
             if (removed == 0) {
                 //Something failed extracting the item from our current slot, fail and roll back
                 return false;

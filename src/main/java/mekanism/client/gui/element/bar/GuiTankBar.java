@@ -52,7 +52,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         CONTAINER container = getHandler().getContainer();
-        List<Component> info = getContentsTooltips(container.getResource(), container.amountAsLong(), TooltipContext.of(minecraft.level), minecraft.player,
+        List<Component> info = getContentsTooltips(container.resource(), container.amountAsLong(), TooltipContext.of(minecraft.level), minecraft.player,
               minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         if (!info.equals(lastInfo)) {
             lastInfo = info;
@@ -83,7 +83,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         if (!container.isEmpty()) {
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
             if (displayInt > 0) {
-                RESOURCE stored = container.getResource();
+                RESOURCE stored = container.resource();
                 applyRenderColor(guiGraphics, stored, container.amountAsLong());
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
@@ -123,7 +123,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         CONTAINER container = getHandler().getContainer();
-        return container.isEmpty() ? Optional.empty() : Optional.of(toIngredientStack(container.getResource(), container.amountAsLong()));
+        return container.isEmpty() ? Optional.empty() : Optional.of(toIngredientStack(container.resource(), container.amountAsLong()));
     }
 
     @Override
@@ -156,7 +156,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         @Override
         default double getLevel() {
             CONTAINER container = getContainer();
-            return MathUtils.divideToLevel(container.amountAsLong(), container.capacityAsLong(container.getResource()));
+            return MathUtils.divideToLevel(container.amountAsLong(), container.capacityAsLong(container.resource()));
         }
     }
 }

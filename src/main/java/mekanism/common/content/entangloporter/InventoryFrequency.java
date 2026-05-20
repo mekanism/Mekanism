@@ -270,7 +270,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
 
     private <RESOURCE extends Resource> void addResourceTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers,
           int expected, TransmissionType transmissionType, IResourceContainer<RESOURCE> container, TransactionContext simulation) {
-        RESOURCE type = container.getResource();
+        RESOURCE type = container.resource();
         if (!type.isEmpty()) {
             int fluidToSend = container.extract(type, storedFluid.amountAsInt(), simulation, AutomationType.INTERNAL);
             if (fluidToSend > 0) {

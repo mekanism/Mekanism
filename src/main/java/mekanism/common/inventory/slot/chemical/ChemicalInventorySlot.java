@@ -75,7 +75,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         }
         //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
         // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
-        ChemicalResource currentType = chemicalTank.getResource();
+        ChemicalResource currentType = chemicalTank.resource();
         return chemicalTank.getNeededAsLong(currentType) == 0 && currentType.equals(conversionType) && chemicalTank.isValid(conversionType);
     }
 
@@ -136,7 +136,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
         try (Transaction simulation = Transaction.openRoot()) {
             //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-            return handler.insert(chemicalTank.getResource(), chemicalTank.amountAsInt(), simulation) > 0;
+            return handler.insert(chemicalTank.resource(), chemicalTank.amountAsInt(), simulation) > 0;
         }
     }
 
@@ -193,7 +193,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             //Calculate if the fluid is ever valid for insertion into the fluid tank
             //If it is and our tank is currently empty or has the same type of resource
             // that means the items contents are valid, and we can fill the tank with any of our contents
-            return chemicalTank.isEmpty() || chemicalTank.getResource().equals(chemicalType);
+            return chemicalTank.isEmpty() || chemicalTank.resource().equals(chemicalType);
         }
         return false;
     }
@@ -244,7 +244,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         //Fill the tank from the item
         if (!fillTank(this, chemicalTank, itemAccess())) {
             //If filling from item failed, try doing it by conversion
-            ItemStack current = getResource().toStack(amountAsInt());
+            ItemStack current = resource().toStack(amountAsInt());
             ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
             if (foundRecipe != null) {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
@@ -280,7 +280,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         if (slot.isEmpty()) {
             return false;
         }
-        int needed = chemicalTank.getNeededAsInt(chemicalTank.getResource());
+        int needed = chemicalTank.getNeededAsInt(chemicalTank.resource());
         if (needed == 0) {
             return false;
         }
@@ -329,7 +329,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         if (!slot.isEmpty() && !chemicalTank.isEmpty()) {
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
             if (handler != null) {
-                ChemicalResource chemicalType = chemicalTank.getResource();
+                ChemicalResource chemicalType = chemicalTank.resource();
                 //TODO - 26.1: Do we need to simulate how much we can actually drain? In case there is an extraction rate from the tank
                 int amountToTransfer = chemicalTank.amountAsInt();
                 try (Transaction transaction = Transaction.openRoot()) {

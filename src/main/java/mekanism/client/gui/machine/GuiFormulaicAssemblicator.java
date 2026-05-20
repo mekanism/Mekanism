@@ -135,7 +135,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     private boolean canEncode() {
         if (!tile.hasValidFormula()) {
-            ItemResource resource = tile.getFormulaSlot().getResource();
+            ItemResource resource = tile.getFormulaSlot().resource();
             if (!resource.isEmpty() && MekanismItems.CRAFTING_FORMULA.is(resource)) {
                 return resource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
             }

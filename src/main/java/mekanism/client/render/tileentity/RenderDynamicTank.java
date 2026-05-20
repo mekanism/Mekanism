@@ -54,7 +54,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         state.valves.clear();
         state.valveTexture = null;
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().getResource());
+            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().resource());
             for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
                 state.valves.add(ValveRenderData.get(fluidRenderData, entry.getKey(), entry.getValue().side));
             }
@@ -85,7 +85,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         }
         return (switch (currentType) {
             case FLUID -> RenderData.Builder.create(multiblock.getFluidTank());
-            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().getResource());
+            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().resource());
             default -> throw new IllegalStateException("Unknown current type.");
         }).of(multiblock).build();
     }
@@ -97,8 +97,8 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             return null;
         }
         return switch (currentType) {
-            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().getResource(), MekanismRenderer.FluidTextureType.STILL);
-            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().getResource());
+            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().resource(), MekanismRenderer.FluidTextureType.STILL);
+            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().resource());
             default -> throw new IllegalStateException("Unknown current type.");
         };
     }

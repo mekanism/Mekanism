@@ -114,7 +114,7 @@ public class QIOCraftingWindow implements IContentsListener {
      * Checks if the stack is equivalent to the current output.
      */
     public boolean isOutput(@NotNull ItemStack stack) {
-        return outputSlot.getResource().matches(stack);
+        return outputSlot.resource().matches(stack);
     }
 
     @Override
@@ -292,7 +292,7 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     private void useInput(IInventorySlot inputSlot, TransactionContext transaction) {
-        ItemResource storedType = inputSlot.getResource();
+        ItemResource storedType = inputSlot.resource();
         if (!storedType.isEmpty()) {
             //TODO - 26.1: If it fails to extract should we have the transaction be rolled back? (Probably)
             inputSlot.extract(storedType, 1, transaction, AutomationType.MANUAL);
@@ -305,7 +305,7 @@ public class QIOCraftingWindow implements IContentsListener {
     public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         if (toPlayerInv) {
             for (IInventorySlot inputSlot : inputSlots) {
-                ItemResource slotResource = inputSlot.getResource();
+                ItemResource slotResource = inputSlot.resource();
                 if (!slotResource.isEmpty()) {
                     int extracted;
                     try (Transaction simulation = Transaction.openRoot()) {
@@ -331,7 +331,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //NO-OP if the frequency is null and that is the target
             if (frequency != null) {
                 for (IInventorySlot inputSlot : inputSlots) {
-                    ItemResource slotResource = inputSlot.getResource();
+                    ItemResource slotResource = inputSlot.resource();
                     if (!slotResource.isEmpty()) {
                         int extracted;
                         try (Transaction simulation = Transaction.openRoot()) {
@@ -371,7 +371,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
-        ItemStack result = outputSlot.getResource().toStack(outputSlot.amountAsInt());
+        ItemStack result = outputSlot.resource().toStack(outputSlot.amountAsInt());
         Item resultItem = result.getItem();
         resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
@@ -399,7 +399,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     // is enabled, and they only have access to one of the crafting recipes
                     break;
                 }
-                ItemResource updatedOutput = outputSlot.getResource();
+                ItemResource updatedOutput = outputSlot.resource();
                 if (updatedOutput.isEmpty() || !updatedOutput.is(resultItem)) {
                     //If we can't craft anymore or the resulting item changed entirely, stop crafting
                     break;
@@ -469,7 +469,7 @@ public class QIOCraftingWindow implements IContentsListener {
                             recheckOutput = true;
                         } else {
                             //Otherwise, try and remove the stack from the QIO frequency
-                            ItemResource current = inputSlot.getResource();
+                            ItemResource current = inputSlot.resource();
                             if (frequency.removeByType(current, 1, transaction) == 0) {
                                 //If we were not able to remove any from the frequency, remove it from the crafting grid
                                 useInput(inputSlot, transaction);
@@ -567,7 +567,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         useInput(inputSlot, transaction);
                     } else {
                         //Otherwise, try and remove the stack from the QIO frequency
-                        ItemResource current = inputSlot.getResource();
+                        ItemResource current = inputSlot.resource();
                         if (frequency.removeByType(current, 1, transaction) == 0) {
                             //If we were not able to remove any from the frequency, remove it from the crafting grid
                             useInput(inputSlot, transaction);
@@ -699,7 +699,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
             // to change the size of it. We also add it regardless of it is empty as that is what the method expects
             // We also copy it to a count of one, to validate that no mods are trying to do stupid stacked recipe input based hacks
-            items.add(inputSlot.getResource().toStack());
+            items.add(inputSlot.resource().toStack());
         }
         return CraftingInput.ofPositioned(3, 3, items);
     }
@@ -724,7 +724,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (!updated && !remainder.isEmpty()) {
                 //Update inputs and mark that we have updated them
                 for (int index = 0; index < inputSlots.length; index++) {
-                    dummy.set(index, inputSlots[index].getResource().toStack());
+                    dummy.set(index, inputSlots[index].resource().toStack());
                 }
                 updated = true;
             }
@@ -737,7 +737,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 for (int i = 0; i < inputSlots.length; i++) {
                     //If our index matches the one we are replacing the value of instead of getting from the slot
                     // use the stack we are replacing it with instead
-                    ItemResource type = i == index ? oldType : inputSlots[i].getResource();
+                    ItemResource type = i == index ? oldType : inputSlots[i].resource();
                     dummy.set(i, type.toStack());
                 }
                 updated = true;
@@ -897,7 +897,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (i == index) {
                 return used.toStack();
             } else if (i >= 0 && i < inputSlots.length) {
-                return inputSlots[i].getResource().toStack();
+                return inputSlots[i].resource().toStack();
             }
             return ItemStack.EMPTY;
         }

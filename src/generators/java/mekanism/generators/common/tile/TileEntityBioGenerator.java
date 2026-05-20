@@ -27,7 +27,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +87,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
                 long toGenerate = MekanismGeneratorsConfig.generators.bioGeneration.get();
                 //If we can insert all the energy we would generate, and can extract 1 mB of fuel
                 if (getEnergyContainer().insert(toGenerate, transaction, AutomationType.INTERNAL) == toGenerate &&
-                    bioFuelTank.extract(bioFuelTank.getResource(), 1, transaction, AutomationType.INTERNAL) == 1) {
+                    bioFuelTank.extract(bioFuelTank.resource(), 1, transaction, AutomationType.INTERNAL) == 1) {
                     //Then mark the generator as active and commit the changes
                     isActive = true;
                     transaction.commit();

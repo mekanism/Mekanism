@@ -69,7 +69,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             // We try to insert more than a bucket though in case we have more, and it lets us get a better estimate on some custom handlers
             //TODO - 26.1: Re-evaluate this, do we want to just pass a bucket volume to it so that it potentially has to do less checking
             int toInsert = Math.max(fluidTank.amountAsInt(), FluidType.BUCKET_VOLUME);
-            return fluidHandler.insert(fluidTank.getResource(), toInsert, simulation) > 0;
+            return fluidHandler.insert(fluidTank.resource(), toInsert, simulation) > 0;
         }
     }
 
@@ -144,7 +144,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //Calculate if the fluid is ever valid for insertion into the fluid tank
             //If it is and our tank is currently empty or has the same type of resource
             // that means the items contents are valid, and we can fill the tank with any of our contents
-            return fluidTank.isEmpty() || fluidTank.getResource().equals(fluidType);
+            return fluidTank.isEmpty() || fluidTank.resource().equals(fluidType);
         }
         return false;
     }
@@ -168,7 +168,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
                 try (Transaction simulation = Transaction.openRoot()) {
                     //TODO - 26.1: Do we need to do similar to the canInput that checks for bucket volume?
-                    return fluidHandler.insert(fluidTank.getResource(), fluidTank.amountAsInt(), simulation) > 0;
+                    return fluidHandler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation) > 0;
                 }
             }
             return false;

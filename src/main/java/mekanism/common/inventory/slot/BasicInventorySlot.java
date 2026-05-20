@@ -88,7 +88,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
 
     protected BasicInventorySlot(@Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(ItemResource.EMPTY, limit, canExtract, canInsert, validator, listener);
+        super(limit, canExtract, canInsert, validator, listener);
         this.x = x;
         this.y = y;
     }

@@ -68,7 +68,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         TexturePicker fluidTexture = null;
         if (attachment != null) {
             IFluidTank container = attachment.getContainer(0);
-            FluidResource fluidType = container.getResource();
+            FluidResource fluidType = container.resource();
             if (!fluidType.isEmpty()) {
                 FluidStack fluid = fluidType.toStack(container.amountAsInt());
                 fluidScale = (float) container.amountAsLong() / container.capacityAsLong(fluidType);

@@ -184,7 +184,7 @@ public class BinInsertRecipe extends BinRecipe {
             if (fromRecipe != null && fromRecipe) {
                 //And if it was, try to move extra items from the container into it
                 ComponentBackedBinInventorySlot slot = convertToSlot(result);
-                ItemResource storedResource = slot.getResource();
+                ItemResource storedResource = slot.resource();
                 if (!storedResource.isEmpty()) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         //TODO - 26.1: Validate this is not called from a transactional context

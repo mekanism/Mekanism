@@ -58,7 +58,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     }
 
     private <RESOURCE extends Resource> void addStored(List<Component> ret, IResourceContainer<RESOURCE> container) {
-        ret.add(MekanismLang.GENERIC_PRE_COLON.translate(container.getResource()));
+        ret.add(MekanismLang.GENERIC_PRE_COLON.translate(container.resource()));
         ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(container.amountAsLong())));
     }
 

@@ -100,7 +100,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 ResourceHandler<ItemResource> capability = ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 //Note: Instead of getting the bin item type, we just get the stored resource as we only do things if it isn't empty anyway
-                ItemResource storedType = binSlot.getResource();
+                ItemResource storedType = binSlot.resource();
                 //Limit how much we allow sending at once to a single stack of the stored item
                 request.addItem(storedType, Math.min(binSlot.amountAsInt(), storedType.getMaxStackSize()), 0);
                 if (targetInventory == null) {
@@ -210,7 +210,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Get the maximum number of items the bin can contain.")
     long getCapacity() {
-        return binSlot.capacityAsLong(binSlot.getResource());
+        return binSlot.capacityAsLong(binSlot.resource());
     }
 
     @ComputerMethod(methodDescription = "If true, the Bin is locked to a particular item type.")

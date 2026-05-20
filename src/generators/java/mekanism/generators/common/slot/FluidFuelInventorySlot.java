@@ -71,11 +71,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
      */
     public void fillOrBurn() {
         if (!isEmpty()) {
-            int needed = fluidTank.getNeededAsInt(fluidTank.getResource());
+            int needed = fluidTank.getNeededAsInt(fluidTank.resource());
             //Fill the tank from the item
             if (needed > 0 && !fillTank()) {
                 //If filling from item failed, try doing it by conversion
-                ItemResource currentType = getResource();
+                ItemResource currentType = resource();
                 int fuel = fuelValue.applyAsInt(currentType);
                 if (fuel > 0 && fuel <= needed) {
                     try (Transaction transaction = Transaction.openRoot()) {

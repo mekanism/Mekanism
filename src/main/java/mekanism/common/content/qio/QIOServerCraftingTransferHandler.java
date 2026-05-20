@@ -81,7 +81,7 @@ public class QIOServerCraftingTransferHandler {
         // need to be able to extract the contents afterwards anyway
         for (byte slot = 0; slot < 9; slot++) {
             IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
-            ItemResource storedType = inputSlot.getResource();
+            ItemResource storedType = inputSlot.resource();
             if (!storedType.isEmpty()) {
                 int stored = inputSlot.amountAsInt();
                 try (Transaction simulation = Transaction.openRoot()) {
@@ -373,7 +373,7 @@ public class QIOServerCraftingTransferHandler {
                         actualSlot = slot;
                         slotType = "crafting window";
                         IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
-                        itemType = inputSlot.getResource();
+                        itemType = inputSlot.resource();
                         amountExtracted = itemType.isEmpty() ? 0 : inputSlot.extract(itemType, source.getUsed(), transaction, AutomationType.MANUAL);
                     } else if (slot < 9 + Inventory.getSelectionSize()) {//Hotbar
                         actualSlot = slot - 9;
@@ -427,7 +427,7 @@ public class QIOServerCraftingTransferHandler {
         Byte2ObjectMap<ItemStack> remainingCraftingGridContents = new Byte2ObjectArrayMap<>(9);
         for (byte slot = 0; slot < 9; slot++) {
             IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
-            ItemResource resource = inputSlot.getResource();
+            ItemResource resource = inputSlot.resource();
             if (!resource.isEmpty()) {
                 int extracted = inputSlot.extract(resource, inputSlot.amountAsInt(), transaction, AutomationType.MANUAL);
                 if (extracted > 0) {
@@ -478,7 +478,7 @@ public class QIOServerCraftingTransferHandler {
                 //If we couldn't insert it all, try recombining with the slots they were in the crafting window
                 // (only if the type matches though)
                 IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
-                if (itemType.equals(inputSlot.getResource())) {
+                if (itemType.equals(inputSlot.resource())) {
                     amountToInsert -= inputSlot.insert(itemType, amountToInsert, transaction, AutomationType.MANUAL);
                     if (amountToInsert > 0) {
                         //If we couldn't insert all of it, then try to put the remaining items in the frequency
@@ -544,7 +544,7 @@ public class QIOServerCraftingTransferHandler {
             ItemResource resource = ItemResource.of(stack);
             int toInsert = stack.count();
             IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
-            if (resource.equals(inputSlot.getResource())) {
+            if (resource.equals(inputSlot.resource())) {
                 toInsert -= inputSlot.insert(resource, toInsert, transaction, AutomationType.MANUAL);
                 if (toInsert == 0) {
                     //Nothing left to insert, just continue

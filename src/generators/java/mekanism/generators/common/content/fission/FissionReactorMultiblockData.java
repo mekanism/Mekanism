@@ -382,7 +382,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
      */
     private double getWasteTankRadioactivity(boolean dump) {
-        ChemicalResource wasteType = wasteTank.getResource();
+        ChemicalResource wasteType = wasteTank.resource();
         double wasteRadioactivity;
         if (wasteType.isEmpty()) {
             wasteRadioactivity = MekanismChemicals.NUCLEAR_WASTE.get().getRadioactivity();
@@ -407,7 +407,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      */
     private double getTankRadioactivityAndDump(IChemicalTank tank) {
         if (!tank.isEmpty()) {
-            double radioactivity = tank.getResource().getRadioactivity() * tank.amountAsLong();
+            double radioactivity = tank.resource().getRadioactivity() * tank.amountAsLong();
             if (radioactivity > 0) {
                 //If we have a radioactive substance, then we need to set the tank to empty
                 tank.setEmpty();
@@ -440,7 +440,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             heatedCoolant = MekanismChemicals.STEAM.asResource();
         } else {//if (currentType == CurrentType.CHEMICAL)
             IChemicalTank chemicalCoolantTank = this.coolantTank.getChemicalTank();
-            ChemicalResource coolant = chemicalCoolantTank.getResource();
+            ChemicalResource coolant = chemicalCoolantTank.resource();
             CooledCoolant coolantType = getCooledCoolant(coolant);
             if (coolantType == null) {
                 lastBoilRate = 0;
@@ -470,7 +470,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private <RESOURCE extends Resource> boolean tryExtractCoolant(IResourceContainer<RESOURCE> tank, int toBoil, TransactionContext transaction) {
-        return tank.extract(tank.getResource(), toBoil, transaction, AutomationType.INTERNAL) != toBoil;
+        return tank.extract(tank.resource(), toBoil, transaction, AutomationType.INTERNAL) != toBoil;
     }
 
     private int clampCoolantHeated(double heated, int stored) {
@@ -483,7 +483,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         double storedFuel = fuelTank.amountAsLong() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
-        ChemicalResource fuel = fuelTank.getResource();
+        ChemicalResource fuel = fuelTank.resource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
         fuelTank.setContentsUnchecked(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)));
         burnRemaining = storedFuel % 1;
@@ -663,31 +663,31 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             //TODO - 26.1: Should this be current limit or absolute limit
             IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.capacityAsLong(chemicalTank.getResource());
+            return chemicalTank.capacityAsLong(chemicalTank.resource());
         }
         //TODO - 26.1: Should this be current limit or absolute limit
         IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.capacityAsLong(fluidTank.getResource());
+        return fluidTank.capacityAsLong(fluidTank.resource());
     }
 
     @ComputerMethod
     long getCoolantNeeded() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.getNeededAsLong(chemicalTank.getResource());
+            return chemicalTank.getNeededAsLong(chemicalTank.resource());
         }
         IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.getNeededAsLong(fluidTank.getResource());
+        return fluidTank.getNeededAsLong(fluidTank.resource());
     }
 
     @ComputerMethod
     double getCoolantFilledPercentage() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.getResource());
+            return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
         }
         IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.amountAsLong() / (double) fluidTank.capacityAsLong(fluidTank.getResource());
+        return fluidTank.amountAsLong() / (double) fluidTank.capacityAsLong(fluidTank.resource());
     }
 
     @ComputerMethod

@@ -73,8 +73,8 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public RESOURCE getResource() {
-        return internal.getResource();
+    public RESOURCE resource() {
+        return internal.resource();
     }
 
     @Override

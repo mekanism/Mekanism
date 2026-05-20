@@ -37,7 +37,7 @@ public class QIOGameTestHelper extends MekGameTestHelper {
         for (int slot = 0, size = driveSlots.size(); slot < size; slot++) {
             QIODriveSlot driveSlot = driveSlots.get(slot);
             if (!driveSlot.isEmpty()) {
-                frequency.addDrive(new QIODriveKey(driveArray, slot), driveSlot.getResource());
+                frequency.addDrive(new QIODriveKey(driveArray, slot), driveSlot.resource());
             }
         }
     }

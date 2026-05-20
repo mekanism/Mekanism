@@ -220,7 +220,7 @@ public final class MekanismUtils {
     }
 
     public static <RESOURCE extends Resource> float getScale(float prevScale, IResourceContainer<RESOURCE> container) {
-        return getScale(prevScale, container.amountAsLong(), container.capacityAsLong(container.getResource()), container.isEmpty());
+        return getScale(prevScale, container.amountAsLong(), container.capacityAsLong(container.resource()), container.isEmpty());
     }
 
     public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
@@ -527,7 +527,7 @@ public final class MekanismUtils {
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
             //Note: copyWithCount which is used by ItemResource#toStack returns EMPTY if the stack is empty, so we can skip checking
-            stacks.add(slot.getResource().toStack(resize ? 1 : slot.amountAsInt()));
+            stacks.add(slot.resource().toStack(resize ? 1 : slot.amountAsInt()));
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }

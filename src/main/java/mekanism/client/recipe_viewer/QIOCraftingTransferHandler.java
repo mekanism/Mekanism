@@ -107,7 +107,7 @@ public class QIOCraftingTransferHandler {
         if (!execute) {
             List<ItemStack> dummy = new ArrayList<>(9);
             for (int slot = 0; slot < 9; slot++) {
-                ItemResource inputStack = craftingWindow.getInputSlot(slot).getResource();
+                ItemResource inputStack = craftingWindow.getInputSlot(slot).resource();
                 //Copy it in case any recipe does weird things and tries to mutate the stack
                 dummy.add(inputStack.toStack());
                 if (!inputStack.isEmpty()) {
@@ -375,7 +375,7 @@ public class QIOCraftingTransferHandler {
             IInventorySlot slot = craftingWindow.getInputSlot(slotIndex);
             if (!slot.isEmpty()) {
                 //Note: We can use raw as we are not modifying the stack or persisting the reference
-                ItemResource type = slot.getResource();
+                ItemResource type = slot.resource();
                 ItemTypeSource source = qioTransferHelper.getSource(type);
                 if (source == null) {
                     //Something went wrong, this should never be null for the things in the crafting slots

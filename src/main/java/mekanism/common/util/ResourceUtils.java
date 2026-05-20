@@ -52,7 +52,7 @@ public final class ResourceUtils {
         for (int container = 0, size = toAdd.size(); container < size; container++) {
             CONTAINER toAddContainer = toAdd.get(container);
             if (!toAddContainer.isEmpty()) {
-                RESOURCE toAddResource = toAddContainer.getResource();
+                RESOURCE toAddResource = toAddContainer.resource();
                 long toAddAmount = toAddContainer.amountAsLong();
                 CONTAINER origContainer = orig.get(container);
                 //TODO - 26.1: Validate all callers have this work with the given automation type
@@ -76,7 +76,7 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(IResourceContainer<RESOURCE> container, ResourceHandler<RESOURCE> handler,
           Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
-        return getTypeToExtract(container.getResource(), handler, filter, transaction);
+        return getTypeToExtract(container.resource(), handler, filter, transaction);
     }
 
     public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(RESOURCE type, ResourceHandler<RESOURCE> handler, Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
@@ -91,13 +91,13 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, @Nullable TransactionContext transaction) {
-        return emit(targets, tank, tank.capacityAsInt(tank.getResource()), transaction);
+        return emit(targets, tank, tank.capacityAsInt(tank.resource()), transaction);
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, int maxOutput, @Nullable TransactionContext transaction) {
         if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
-            RESOURCE resourceType = tank.getResource();
+            RESOURCE resourceType = tank.resource();
             int resourceAmount;
             try (Transaction simulation = Transaction.open(transaction)) {
                 resourceAmount = tank.extract(resourceType, maxOutput, simulation, AutomationType.INTERNAL);
@@ -158,7 +158,7 @@ public final class ResourceUtils {
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void clampContents(CONTAINER container) {
-        RESOURCE resource = container.getResource();
+        RESOURCE resource = container.resource();
         if (!resource.isEmpty()) {
             long capacity = container.capacityAsLong(resource);
             if (capacity == 0 && (container instanceof VariableCapacityFluidTank || container instanceof VariableCapacityChemicalTank)) {
@@ -187,7 +187,7 @@ public final class ResourceUtils {
         for (CONTAINER container : containers) {
             long containerFill = container.amountAsLong();
             if (containerFill > 0) {
-                long capacity = container.capacityAsLong(container.getResource());
+                long capacity = container.capacityAsLong(container.resource());
                 if (capacity > 0) {
                     // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
                     proportion += Math.min(1.0f, (float) containerFill / capacity);
@@ -207,7 +207,7 @@ public final class ResourceUtils {
     public static <RESOURCE extends Resource> int getRedstoneSignalFromContainer(IResourceContainer<RESOURCE> container) {
         long containerFill = container.amountAsLong();
         if (containerFill > 0) {
-            long capacity = container.capacityAsLong(container.getResource());
+            long capacity = container.capacityAsLong(container.resource());
             if (capacity > 0) {
                 // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
                 float proportion = Math.min(1.0f, (float) containerFill / capacity);

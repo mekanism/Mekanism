@@ -64,7 +64,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IChemicalTank tank = getContainer();
-        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amountAsInt()));
+        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
     }
 
     @Override

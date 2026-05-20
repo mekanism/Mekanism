@@ -64,7 +64,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -125,7 +124,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         drainSlot.drainTank();
         fillSlot.fillTank();
         if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
-            ChemicalResource chemicalType = chemicalTank.getResource();
+            ChemicalResource chemicalType = chemicalTank.resource();
             if (!chemicalType.isEmpty()) {
                 long toDump = 0;
                 if (dumping == GasMode.DUMPING) {

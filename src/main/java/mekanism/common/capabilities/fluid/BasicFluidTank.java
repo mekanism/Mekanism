@@ -78,6 +78,6 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
 
     protected BasicFluidTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        super(FluidResource.EMPTY, capacity, canExtract, canInsert, validator, listener);
+        super(capacity, canExtract, canInsert, validator, listener);
     }
 }

@@ -73,7 +73,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = level.getGameTime();
             if (!chemicalTank.isEmpty()) {
-                ChemicalResource chemicalType = chemicalTank.getResource();
+                ChemicalResource chemicalType = chemicalTank.resource();
                 int decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();
                 if (decayAmount > 0 && !chemicalType.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST) &&
                     ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
@@ -99,7 +99,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 } else {
                     //If the block below this barrel, is also a barrel. Only emit as much as it might be able to accept.
                     // This prevents it then trying to go up the chain back to this barrel and any ones above it
-                    ResourceUtils.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeededAsInt(below.getResource()), chemicalTank.capacityAsInt(chemicalTank.getResource())), null);
+                    ResourceUtils.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeededAsInt(below.resource()), chemicalTank.capacityAsInt(chemicalTank.resource())), null);
                 }
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
@@ -130,7 +130,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     public double getChemicalScale() {
-        return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.getResource());
+        return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
     }
 
     @Override

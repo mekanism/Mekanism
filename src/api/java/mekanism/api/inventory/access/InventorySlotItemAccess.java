@@ -22,7 +22,7 @@ public class InventorySlotItemAccess implements ItemAccess {
 
     @Override
     public ItemResource getResource() {
-        return slot.getResource();
+        return slot.resource();
     }
 
     @Override

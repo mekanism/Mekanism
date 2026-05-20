@@ -538,7 +538,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             if (inputSlot.isEmpty()) {
                 emptyProcesses.add(processInfo);
             } else {
-                ItemResource inputType = inputSlot.getResource();
+                ItemResource inputType = inputSlot.resource();
                 RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputType, i -> new RecipeProcessInfo<>());
                 recipeProcessInfo.processes.add(processInfo);
                 recipeProcessInfo.totalCount += inputSlot.amountAsInt();
@@ -728,7 +728,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                     } else if (inputSlot.amountAsInt() != sizeForSlot) {
                         //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
                         //TODO - 26.1: Is resource the same as item?
-                        inputSlot.setContentsUnchecked(inputSlot.getResource(), sizeForSlot);
+                        inputSlot.setContentsUnchecked(inputSlot.resource(), sizeForSlot);
                     }
                 }
             }

@@ -79,7 +79,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
-        return containsRecipeAB(itemType, extraSlot.getResource());
+        return containsRecipeAB(itemType, extraSlot.resource());
     }
 
     @Override
@@ -96,7 +96,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @NotNull ItemResource itemType) {
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getMainInput().testType(itemType) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getResource()));
+            return cachedRecipe.getMainInput().testType(itemType) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.resource()));
         }
         return false;
     }
@@ -104,7 +104,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     protected CombinerRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.getResource(), outputSlot.getResource(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.resource(), outputSlot.resource(), OUTPUT_CHECK);
     }
 
     @NotNull

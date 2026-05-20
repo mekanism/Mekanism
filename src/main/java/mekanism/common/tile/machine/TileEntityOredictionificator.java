@@ -82,7 +82,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }
         didProcess = false;
         if (canFunction() && !inputSlot.isEmpty()) {
-            ItemResource inputType = inputSlot.getResource();
+            ItemResource inputType = inputSlot.resource();
             ItemResource result = getResult(filterManager.getEnabledFilters(), inputType);
             if (!result.isEmpty()) {
                 int outputNeeded = outputSlot.getNeededAsInt(result);

@@ -116,7 +116,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         fuelSlot.fillOrBurn();
         long prev = getEnergyContainer().energy();
         heatCapacitor.handleHeat(getBoost());
-        FluidResource lavaResource = lavaTank.getResource();
+        FluidResource lavaResource = lavaTank.resource();
         boolean isActive = false;
         if (canFunction() && !lavaResource.isEmpty() && getEnergyContainer().getNeeded() > 0L) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();

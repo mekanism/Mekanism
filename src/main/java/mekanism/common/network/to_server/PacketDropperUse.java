@@ -109,7 +109,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             tank.setEmpty();
             if (tank instanceof IChemicalTank chemicalTank) {
                 //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.getResource(), chemicalTank.amountAsLong());
+                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong());
             }
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
@@ -118,13 +118,13 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         if (dropperHandler != null) {
             if (action == DropperAction.FILL_DROPPER) {
                 //Insert fluid into dropper
-                transferBetween(tank.getResource(), tank.amountAsInt(), player, UseDropperAction.FILL,
+                transferBetween(tank.resource(), tank.amountAsInt(), player, UseDropperAction.FILL,
                       tank, (target, type, amount, transaction) -> target.extract(type, amount, transaction, AutomationType.MANUAL),
                       dropperHandler, ResourceUtils::insertManual
                 );
             } else if (action == DropperAction.DRAIN_DROPPER) {
                 //Extract fluid from dropper
-                int tankNeeded = tank.getNeededAsInt(tank.getResource());
+                int tankNeeded = tank.getNeededAsInt(tank.resource());
                 if (tankNeeded > 0) {
                     RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
                     if (currentType.isEmpty()) {

@@ -53,7 +53,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
 
     @Override
     default RESOURCE getResource(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return getContainer(index).getResource();
+        return getContainer(index).resource();
     }
 
     @Override

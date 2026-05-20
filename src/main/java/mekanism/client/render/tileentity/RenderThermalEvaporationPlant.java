@@ -47,7 +47,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         EvaporationMultiblockData multiblock = controller.getMultiblock();
         state.scale = Math.min(1, multiblock.prevScale);
-        FluidResource fluid = multiblock.inputTank.getResource();
+        FluidResource fluid = multiblock.inputTank.resource();
         state.data = RenderData.Builder.create(multiblock.inputTank)
               .of(multiblock)
               .height(multiblock.height() - 1)

@@ -21,26 +21,27 @@ import org.jetbrains.annotations.Range;
 /// @param <RESOURCE> The type of resource this container manages.
 ///
 /// @see BasicResourceContainer A functional implementation of this interface
-///
 /// @since 10.8.0
 @NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 
+    /// {@return the resource in this container, including how much is stored, which may be empty}
+    LargeResourceStack<RESOURCE> asStack();
+
     /// {@return the resource in this container, which may be empty}
     ///
     /// If the resource is empty, the [stored amount][#amountAsLong()] must be 0.
-    RESOURCE getResource();//TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
-
-    default LargeResourceStack<RESOURCE> asStack() {//TODO - 26.1: Docs
-        return stackHelper().createStack(getResource(), amountAsLong());
+    default RESOURCE resource() {
+        //TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
+        return asStack().resource();
     }
 
-    /// Returns the amount of the [currently stored resource][#getResource] in this container, as an `int`.
+    /// Returns the amount of the [currently stored resource][#resource] in this container, as an `int`.
     ///
     /// This is a convenience method to clamp the amount to an `int`, for the cases where the container is known to only support amounts up to `Integer.MAX_VALUE`, or if
     /// the caller prefers to deal in `int`s only.
     ///
-    /// The returned amount must be **non-negative**. If the [stored resource][#getResource] is empty, the amount must be 0.
+    /// The returned amount must be **non-negative**. If the [stored resource][#resource] is empty, the amount must be 0.
     ///
     /// @return the amount in this container, as an `int`
     ///
@@ -53,18 +54,20 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         return Ints.saturatedCast(amountAsLong());
     }
 
-    /// Returns the amount of the [currently stored resource][#getResource] in this container, as a `long`.
+    /// Returns the amount of the [currently stored resource][#resource] in this container, as a `long`.
     ///
     /// In general, resource containers can report `long` amounts. However, if the container is known to only support amounts up to `Integer.MAX_VALUE`, or if the caller
     /// prefers to deal in `int`s only, the [int-returning overload][#amountAsInt] can be used instead.
     ///
-    /// The returned amount must be **non-negative**. If the [stored resource][#getResource] is empty, the amount must be 0.
+    /// The returned amount must be **non-negative**. If the [stored resource][#resource] is empty, the amount must be 0.
     ///
     /// @return the amount in this container, as a long
     ///
     /// @see #amountAsInt()
     @Range(from = 0, to = Long.MAX_VALUE)
-    long amountAsLong();
+    default long amountAsLong() {
+        return asStack().amount();
+    }
 
     /// Inserts up to the given amount of a resource into this container.
     ///
@@ -190,7 +193,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @return `true` if the container is empty, `false` otherwise.
     default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
-        return getResource().isEmpty();
+        return resource().isEmpty();
     }
 
     /// Convenience method for emptying this [IResourceContainer].
@@ -220,7 +223,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     default void copyContents(IResourceContainer<RESOURCE> other) {
-        setContentsUnchecked(other.getResource(), other.amountAsLong());
+        setContentsUnchecked(other.resource(), other.amountAsLong());
     }
 
     //TODO - 26.1: Docs and Re-evaluate this method

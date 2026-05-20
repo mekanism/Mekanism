@@ -618,7 +618,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Start by sourcing from the miner's inventory
         for (IInventorySlot slot : mainSlots) {
-            ItemResource slotContents = slot.getResource();
+            ItemResource slotContents = slot.resource();
             if (!slotContents.isEmpty() && replaceStackMatches.test(slotContents)) {
                 //Try to extract the item from the slot if the type matches what we want
                 int extracted = slot.extract(slotContents, 1, transaction, AutomationType.INTERNAL);

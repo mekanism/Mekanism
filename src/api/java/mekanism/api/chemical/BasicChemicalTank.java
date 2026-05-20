@@ -227,7 +227,7 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
     protected BasicChemicalTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable ChemicalAttributeValidator attributeValidator,
           @Nullable IContentsListener listener) {
-        super(ChemicalResource.EMPTY, capacity, canExtract, canInsert, validator, listener);
+        super(capacity, canExtract, canInsert, validator, listener);
         this.attributeValidator = attributeValidator;
     }
 

@@ -12,7 +12,7 @@ public interface ITileRadioactive {
         if (RadiationManager.isGlobalRadiationEnabled() && !tanks.isEmpty()) {
             float summedScale = 0;
             for (IChemicalTank tank : tanks) {
-                ChemicalResource resource = tank.getResource();
+                ChemicalResource resource = tank.resource();
                 if (!resource.isEmpty() && resource.isRadioactive()) {
                     //TODO: Eventually we may want to debate doing this based on the radioactivity
                     // but for now this will work well

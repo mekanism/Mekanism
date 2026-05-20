@@ -495,7 +495,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
             List<QIODriveSlot> driveSlots = holder.getDriveSlots();
             for (int i = 0, slots = driveSlots.size(); i < slots; i++) {
-                addDrive(new QIODriveKey(holder, i), driveSlots.get(i).getResource());
+                addDrive(new QIODriveKey(holder, i), driveSlots.get(i).resource());
             }
         }
         return changedData;
@@ -551,7 +551,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Deprecated(forRemoval = true)//TODO - 26.1: Re-evaluate usages and fix things so that the proper stack gets updated
     public void removeDrive(QIODriveKey key, boolean updateItemMap) {
-        removeDrive(key, updateItemMap, key.holder().getDriveSlots().get(key.driveSlot()).getResource());
+        removeDrive(key, updateItemMap, key.holder().getDriveSlots().get(key.driveSlot()).resource());
     }
 
     public void removeDrive(QIODriveKey key, boolean updateItemMap, ItemResource driveData) {

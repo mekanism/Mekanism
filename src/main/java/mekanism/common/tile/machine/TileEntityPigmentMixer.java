@@ -132,9 +132,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
-        builder.addContainer(leftInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, chemicalType -> containsRecipe(chemicalType, rightInputTank.getResource()),
+        builder.addContainer(leftInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, chemicalType -> containsRecipe(chemicalType, rightInputTank.resource()),
               this::containsRecipe, recipeCacheListener));
-        builder.addContainer(rightInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, chemicalType -> containsRecipe(chemicalType, leftInputTank.getResource()),
+        builder.addContainer(rightInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, chemicalType -> containsRecipe(chemicalType, leftInputTank.resource()),
               this::containsRecipe, recipeCacheListener));
         builder.addContainer(outputTank = BasicChemicalTank.output(MAX_OUTPUT_PIGMENT, recipeCacheUnpauseListener));
         return builder.build();

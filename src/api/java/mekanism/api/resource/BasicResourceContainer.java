@@ -23,35 +23,24 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     private final Predicate<RESOURCE> validator;
     @Nullable
     private final IContentsListener listener;
-    private final RESOURCE emptyResource;
     @Range(from = 0, to = Long.MAX_VALUE)
     private final long limit;
 
-    private RESOURCE currentType;
-    @Range(from = 0, to = Long.MAX_VALUE)
-    private long storedAmount;
+    private LargeResourceStack<RESOURCE> current;
 
-    //TODO - 26.1: Make it so that fluid tanks and inventory slots can support long limits
-    protected BasicResourceContainer(RESOURCE emptyResource, @Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
+    protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
-        this.emptyResource = emptyResource;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         this.listener = listener;
         this.limit = limit;
-        this.currentType = this.emptyResource;
+        this.current = stackHelper().empty();
     }
 
     @Override
-    public RESOURCE getResource() {
-        return this.currentType;
-    }
-
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long amountAsLong() {
-        return storedAmount;
+    public LargeResourceStack<RESOURCE> asStack() {
+        return current;
     }
 
     @Override
@@ -67,7 +56,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Override
     protected void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
         super.onRootCommit(originalState);
-        if (amountAsLong() != originalState.amount() || !originalState.resource().equals(getResource())) {
+        if (amountAsLong() != originalState.amount() || !originalState.resource().equals(resource())) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();
         }
@@ -88,7 +77,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     public final boolean isCurrentValidForExtraction(AutomationType automationType) {
-        RESOURCE currentType = getResource();
+        RESOURCE currentType = resource();
         return !currentType.isEmpty() && canExtract.test(currentType, automationType);
     }
 
@@ -114,11 +103,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
                 //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
-            this.currentType = this.emptyResource;
-            this.storedAmount = 0;
+            this.current = stackHelper().empty();
         } else if (!validateType || isValid(type)) {
-            this.currentType = type;
-            this.storedAmount = storedAmount;
+            this.current = stackHelper().createStack(type, storedAmount);
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
@@ -186,7 +173,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
-        } else if (!isEmpty() && !this.currentType.equals(resource)) {
+        } else if (!isEmpty() && !this.current.matches(resource)) {
             //Fail if the type being inserted doesn't match our current stored type
             //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
             return 0;
@@ -202,7 +189,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
+        if (amount == 0 || !this.current.matches(resource) || !isCurrentValidForExtraction(automationType)) {
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }

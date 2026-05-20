@@ -93,9 +93,9 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 long energyPerTick = energyContainer.getEnergyPerTick();
                 try (Transaction transaction = Transaction.openRoot()) {
                     if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
-                        ItemResource moduleResource = moduleSlot.getResource();
+                        ItemResource moduleResource = moduleSlot.resource();
                         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amountAsInt());
+                        ItemStack stack = containerSlot.resource().toStack(containerSlot.amountAsInt());
                         //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
                         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                         if (container != null) {
@@ -139,7 +139,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amountAsInt());
+        ItemStack stack = containerSlot.resource().toStack(containerSlot.amountAsInt());
         //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
