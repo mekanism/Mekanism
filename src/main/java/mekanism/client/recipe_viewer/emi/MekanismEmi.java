@@ -26,6 +26,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.client.MekanismClient;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.recipe.BoilerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalChemicalToChemicalEmiRecipe;
@@ -232,7 +233,8 @@ public class MekanismEmi implements EmiPlugin {
         //Register both methods of rotary condensentrator recipes
         MekanismEmiRecipeCategory condensentratingCategory = addCategory(registry, RecipeViewerRecipeType.CONDENSENTRATING);
         MekanismEmiRecipeCategory decondensentratingCategory = addCategory(registry, RecipeViewerRecipeType.DECONDENSENTRATING);
-        for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(registry.getRecipeManager())) {
+        //todo - 26.1: review recipe access when updating emi
+        for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(MekanismClient.clientRecipes())) {
             RotaryRecipe recipe = recipeHolder.value();
             if (recipe.hasChemicalToFluid()) {
                 if (recipe.hasFluidToChemical()) {
@@ -292,7 +294,8 @@ public class MekanismEmi implements EmiPlugin {
     public static <RECIPE extends MekanismRecipe<?>, TYPE extends IRecipeViewerRecipeType<RECIPE> & IMekanismRecipeTypeProvider<?, RECIPE, ?>> void addCategoryAndRecipes(
           EmiRegistry registry, TYPE recipeType, BiFunction<MekanismEmiRecipeCategory, RecipeHolder<RECIPE>, MekanismEmiRecipe<RECIPE>> recipeCreator) {
         MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
-        for (RecipeHolder<RECIPE> recipe : recipeType.getRecipes(registry.getRecipeManager())) {
+        //todo - 26.1: review recipe access when updating emi
+        for (RecipeHolder<RECIPE> recipe : recipeType.getRecipes(MekanismClient.clientRecipes())) {
             registry.addRecipe(recipeCreator.apply(category, recipe));
         }
     }

@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -43,6 +44,7 @@ public class MekanismClient {
     public static final Map<UUID, SecurityData> clientSecurityMap = new Object2ObjectOpenHashMap<>();
     public static final Map<UUID, String> clientUUIDMap = new Object2ObjectOpenHashMap<>();
     private static boolean isConnected;
+    private static RecipeMap clientRecipeMap = RecipeMap.EMPTY;
 
     public MekanismClient(ModContainer container, IEventBus modEventBus) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -84,6 +86,7 @@ public class MekanismClient {
     public static void reset() {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
+        clientRecipeMap = RecipeMap.EMPTY;
 
         ClientTickHandler.reset();
         SoundHandler.radiationSoundMap.clear();
@@ -148,6 +151,10 @@ public class MekanismClient {
         // empty on our initial connection, and even if it isn't the client has no way to query the recipes and cause the
         // caches to be initialized before the tags are then received as we lazily initialize our recipe caches.
         MekanismRecipeType.clearCache();
+        clientRecipeMap = event.getRecipeMap();
+    }
 
+    public static RecipeMap clientRecipes() {
+        return clientRecipeMap;
     }
 }

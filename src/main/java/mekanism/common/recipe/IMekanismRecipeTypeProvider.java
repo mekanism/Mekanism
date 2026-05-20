@@ -8,7 +8,7 @@ import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +42,8 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
     }
 
     @NotNull
-    default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager) {
-        return getRecipeType().getRecipes(recipeManager);
+    default List<RecipeHolder<RECIPE>> getRecipes(RecipeMap recipeMap) {
+        return getRecipeType().getRecipes(recipeMap);
     }
 
     default Stream<RecipeHolder<RECIPE>> stream(@Nullable Level world) {
