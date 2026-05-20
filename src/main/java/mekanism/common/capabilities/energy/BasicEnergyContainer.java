@@ -17,9 +17,9 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEnergyContainer {
 
-    public static final Predicate<@NotNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
-    public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
-    public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
+    public static final Predicate<@NotNull AutomationType> internalOnly = AutomationType::isInternal;
+    public static final Predicate<@NotNull AutomationType> manualOnly = AutomationType::isManual;
+    public static final Predicate<@NotNull AutomationType> notExternal = automationType -> !automationType.isExternal();
 
     public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
@@ -98,7 +98,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
      * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertionRate(@Nullable AutomationType automationType) {
+    protected long getInsertionRate(AutomationType automationType) {
         return Long.MAX_VALUE;
     }
 
@@ -113,7 +113,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
      * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractionRate(@Nullable AutomationType automationType) {
+    protected long getExtractionRate(AutomationType automationType) {
         return Long.MAX_VALUE;
     }
 

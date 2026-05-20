@@ -70,8 +70,8 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
         //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
         // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInteract = (_, automationType) ->
-              automationType == AutomationType.MANUAL || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
+        BiPredicate<ItemResource, AutomationType> canInteract = (_, automationType) ->
+              automationType.isManual() || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
         PersonalStorageManager.createSlots(builder::addContainer, canInteract, listener);
         return builder.build();
     }

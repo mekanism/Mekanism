@@ -83,15 +83,17 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         return isValid(type) && canInsert.test(type, automationType);
     }
 
-    protected int getInsertionRate(@Nullable AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int getInsertionRate(AutomationType automationType) {
         //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
+        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
-    protected int getExtractionRate(@Nullable AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int getExtractionRate(AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
+        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
     @Override

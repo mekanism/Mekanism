@@ -15,7 +15,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -40,15 +39,15 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     @Override
-    protected long getInsertionRate(@Nullable AutomationType automationType) {
+    protected long getInsertionRate(AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : getRate();
+        return automationType.isManual() ? Long.MAX_VALUE : getRate();
     }
 
     @Override
-    protected long getExtractionRate(@Nullable AutomationType automationType) {
+    protected long getExtractionRate(AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : getRate();
+        return automationType.isManual() ? Long.MAX_VALUE : getRate();
     }
 
     public long getEnergyPerTick() {

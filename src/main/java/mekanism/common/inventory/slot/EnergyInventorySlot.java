@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
@@ -38,11 +39,15 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new EnergyInventorySlot(energyContainer, worldSupplier, itemType -> {
+        return new EnergyInventorySlot(energyContainer, worldSupplier, (itemType, automationType) -> {
+            if (automationType.isManual()) {
+                //Always allow manually extracting
+                return true;
+            }
             //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
             // or we are no longer a valid conversion, this might happen after a reload for example
             return !fillInsertCheck(itemType) && getPotentialConversion(worldSupplier.get(), itemType) == null;
-        }, itemType -> {
+        }, (itemType, _) -> {
             if (fillInsertCheck(itemType)) {
                 return true;
             }
@@ -61,8 +66,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, itemType -> !fillInsertCheck(itemType), EnergyInventorySlot::fillInsertCheck,
-              EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !fillInsertCheck(itemType),
+              (itemType, _) -> fillInsertCheck(itemType), EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
     }
 
     /**
@@ -72,28 +77,30 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        Predicate<ItemResource> insertPredicate = itemType -> {
-            IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
-            if (itemEnergyHandler == null) {
-                return false;
-            }
-            long storedEnergy = energyContainer.energy();
-            if (storedEnergy == 0L) {
-                //If the energy container is empty, accept the energy item as long as it is not full
-                for (int container = 0; container < itemEnergyHandler.size(); container++) {
-                    if (itemEnergyHandler.getNeededEnergy(container) > 0L) {
-                        //True if we have any space in this container
-                        return true;
-                    }
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !drainInsertCheck(energyContainer, itemType),
+              (itemType, _) -> drainInsertCheck(energyContainer, itemType), DRAIN_VALIDATOR, listener, x, y);
+    }
+
+    private static boolean drainInsertCheck(IEnergyContainer energyContainer, ItemResource itemType) {
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
+        if (itemEnergyHandler == null) {
+            return false;
+        }
+        long storedEnergy = energyContainer.energy();
+        if (storedEnergy == 0L) {
+            //If the energy container is empty, accept the energy item as long as it is not full
+            for (int container = 0; container < itemEnergyHandler.size(); container++) {
+                if (itemEnergyHandler.getNeededEnergy(container) > 0L) {
+                    //True if we have any space in this container
+                    return true;
                 }
-                return false;
             }
-            //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
-            try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
-                return itemEnergyHandler.insert(storedEnergy, simulation) > 0;
-            }
-        };
-        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, DRAIN_VALIDATOR, listener, x, y);
+            return false;
+        }
+        //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
+        try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
+            return itemEnergyHandler.insert(storedEnergy, simulation) > 0;
+        }
     }
 
     public static boolean fillInsertCheck(ItemResource itemType) {
@@ -111,13 +118,13 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private final Supplier<@Nullable Level> worldSupplier;
     private final IEnergyContainer energyContainer;
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert,
+    private EnergyInventorySlot(IEnergyContainer energyContainer, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, Predicate<ItemResource> canExtract,
-          Predicate<ItemResource> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
+    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         this.energyContainer = energyContainer;
         this.worldSupplier = worldSupplier;

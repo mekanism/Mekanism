@@ -189,10 +189,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         };
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
-        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInsert = (itemType, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(itemType);
+        BiPredicate<ItemResource, AutomationType> canInsert = (itemType, automationType) -> !automationType.isExternal() || isReplaceTarget(itemType);
         //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
         //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
-        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canExtract = (itemType, automationType) -> automationType != AutomationType.EXTERNAL || !isReplaceTarget(itemType);
+        BiPredicate<ItemResource, AutomationType> canExtract = (itemType, automationType) -> !automationType.isExternal() || !isReplaceTarget(itemType);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, mainSlotListener, 8 + slotX * 18, 92 + slotY * 18);

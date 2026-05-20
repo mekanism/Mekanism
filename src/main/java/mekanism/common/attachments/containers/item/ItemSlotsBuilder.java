@@ -58,16 +58,14 @@ public class ItemSlotsBuilder {
 
     //Copy of predicates from FuelInventorySlot
     //TODO - 26.1: this now needs world access. Does it really matter as it's only used on the Fuelwood heater's item inv, which we don't expose?
-    /*private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> automationType == AutomationType.MANUAL || itemType.toStack().getBurnTime(null) == 0;
+    /*private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> automationType.isManual() || itemType.toStack().getBurnTime(null) == 0;
     private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_INSERT = (itemType, automationType) -> itemType.toStack().getBurnTime(null) != 0;
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FUEL_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, FUEL_CAN_EXTRACT, FUEL_CAN_INSERT, ConstantPredicates.alwaysTrue());*/
 
     //Security Inventory Slot
-    private static final BiPredicate<ItemResource, AutomationType> SECURITY_LOCK_CAN_EXTRACT = (itemType, automationType) -> automationType == AutomationType.MANUAL || SecurityInventorySlot.LOCK_EXTRACT_PREDICATE.test(itemType);
-    private static final BiPredicate<ItemResource, AutomationType> SECURITY_LOCK_CAN_INSERT = (itemType, _) -> SecurityInventorySlot.LOCK_INSERT_PREDICATE.test(itemType);
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> SECURITY_LOCK_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
-          containerIndex, SECURITY_LOCK_CAN_EXTRACT, SECURITY_LOCK_CAN_INSERT, SecurityInventorySlot.VALIDATOR);
+          containerIndex, SecurityInventorySlot.LOCK_EXTRACT_PREDICATE, SecurityInventorySlot.LOCK_INSERT_PREDICATE, SecurityInventorySlot.VALIDATOR);
 
     //FormulaInventorySlot
     //Note: We skip making the extra checks based on the formula and just allow all items
@@ -92,7 +90,7 @@ public class ItemSlotsBuilder {
     private static final BiPredicate<ItemResource, AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT = (itemType, automationType) ->
           //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
           // or we are no longer a valid conversion, this might happen after a reload for example
-          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(itemType) && EnergyInventorySlot.getPotentialConversion(null, itemType) == null;
+          automationType.isManual() || !EnergyInventorySlot.fillInsertCheck(itemType) && EnergyInventorySlot.getPotentialConversion(null, itemType) == null;
     private static final BiPredicate<ItemResource, AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_INSERT = (itemType, _) -> {
         if (EnergyInventorySlot.fillInsertCheck(itemType)) {
             return true;
@@ -108,7 +106,7 @@ public class ItemSlotsBuilder {
           containerIndex, FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT, FILL_CONVERT_ENERGY_SLOT_CAN_INSERT, FILL_CONVERT_ENERGY_SLOT_VALIDATOR);
 
     private static final BiPredicate<ItemResource, AutomationType> DRAIN_ENERGY_SLOT_CAN_EXTRACT = (itemType, automationType) -> {
-        if (automationType == AutomationType.MANUAL) {
+        if (automationType.isManual()) {
             return true;
         }
         //Inversion of the insert check
@@ -187,8 +185,8 @@ public class ItemSlotsBuilder {
         return addSlots(count, (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
               //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
               //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
-              (itemType, automationType) -> automationType != AutomationType.EXTERNAL || !TileEntityDigitalMiner.isSavedReplaceTarget(attachedTo, itemType),
-              (itemType, automationType) -> automationType != AutomationType.EXTERNAL || TileEntityDigitalMiner.isSavedReplaceTarget(attachedTo, itemType),
+              (itemType, automationType) -> !automationType.isExternal() || !TileEntityDigitalMiner.isSavedReplaceTarget(attachedTo, itemType),
+              (itemType, automationType) -> !automationType.isExternal() || TileEntityDigitalMiner.isSavedReplaceTarget(attachedTo, itemType),
               ConstantPredicates.alwaysTrue()));
     }
 
@@ -198,7 +196,7 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addFormulaCraftingSlot(int count) {
         return addSlots(count, (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, ConstantPredicates.alwaysTrueBi(),
-              (_, automationType) -> automationType == AutomationType.INTERNAL || !attachedTo.getOrDefault(MekanismDataComponents.AUTO, false), ConstantPredicates.alwaysFalse()));
+              (_, automationType) -> automationType.isInternal() || !attachedTo.getOrDefault(MekanismDataComponents.AUTO, false), ConstantPredicates.alwaysFalse()));
     }
 
     public ItemSlotsBuilder addLockSlot() {
@@ -206,7 +204,8 @@ public class ItemSlotsBuilder {
     }
 
     public ItemSlotsBuilder addUnlockSlot() {
-        return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, SECURITY_LOCK_CAN_INSERT, (itemType, _) -> {
+        return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
+              containerIndex, SecurityInventorySlot.UNLOCK_EXTRACT_PREDICATE, (itemType, _) -> {
             //TODO - 26.1: Re-evaluate how we just make a stack out of the item type
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack());
             return ownerUUID != null && ownerUUID.equals(IItemSecurityUtils.INSTANCE.getOwnerUUID(attachedTo));
@@ -415,19 +414,19 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (itemType, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, itemType),
+              (itemType, automationType) -> automationType.isManual() || canChemicalFillExtract(attachedTo, tankIndex, itemType),
               (itemType, _) -> canChemicalFillInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
     }
 
     public ItemSlotsBuilder addChemicalFillOrConvertSlot(int tankIndex) {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (itemType, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, itemType),
+              (itemType, automationType) -> automationType.isManual() || canChemicalFillOrConvertExtract(attachedTo, tankIndex, itemType),
               (itemType, _) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
     }
 
     public ItemSlotsBuilder addChemicalDrainSlot(int tankIndex) {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (itemType, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, itemType),
+              (itemType, automationType) -> automationType.isManual() || !canChemicalDrainInsert(attachedTo, tankIndex, itemType),
               (itemType, _) -> canChemicalDrainInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
     }
 
@@ -435,7 +434,7 @@ public class ItemSlotsBuilder {
         //Copy of logic from ChemicalInventorySlot#rotaryDrain
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
               (itemType, automationType) -> {
-                  if (automationType == AutomationType.MANUAL) {
+                  if (automationType.isManual()) {
                       return true;
                   }
                   //Copy of the insert check but inverted
@@ -449,7 +448,7 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addChemicalRotaryFillSlot(int tankIndex) {
         //Copy of logic from ChemicalInventorySlot#rotaryFill
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (itemType, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, itemType),
+              (itemType, automationType) -> automationType.isManual() || canChemicalFillExtract(attachedTo, tankIndex, itemType),
               (itemType, _) -> !attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) &&
                                canChemicalFillInsert(attachedTo, tankIndex, itemType),
               ConstantPredicates.alwaysTrue()));
@@ -457,7 +456,7 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addInfusionFillOrConvertSlot(int tankIndex) {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (itemType, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, itemType),
+              (itemType, automationType) -> automationType.isManual() || canChemicalFillOrConvertExtract(attachedTo, tankIndex, itemType),
               (itemType, _) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
     }
 }

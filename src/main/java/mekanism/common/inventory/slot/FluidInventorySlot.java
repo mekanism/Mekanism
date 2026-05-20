@@ -1,8 +1,8 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -34,15 +34,13 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot input(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getInputPredicate(fluidTank), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> canInput(fluidTank, itemType), listener, x, y);
     }
 
-    protected static Predicate<ItemResource> getInputPredicate(IFluidTank fluidTank) {
-        return itemType -> {
-            //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
-            return fluidHandler != null && canInput(fluidHandler, fluidTank);
-        };
+    protected static boolean canInput(IFluidTank fluidTank, ItemResource itemType) {
+        //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
+        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
+        return fluidHandler != null && canInput(fluidHandler, fluidTank);
     }
 
     public static boolean canInput(ResourceHandler<FluidResource> fluidHandler, IFluidTank fluidTank) {
@@ -78,7 +76,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot rotary(IFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), itemType -> {
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> {
             ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
             if (fluidHandler != null) {
                 boolean mode = modeSupplier.getAsBoolean();
@@ -106,13 +104,12 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot fill(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getFillPredicate(fluidTank), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> canFill(fluidTank, itemType), listener, x, y);
     }
 
-    public static Predicate<ItemResource> getFillPredicate(IFluidTank fluidTank) {
-        //TODO - 26.1: Re-evaluate this method, and if we want to inline to canFill anywhere
+    public static boolean canFill(IFluidTank fluidTank, ItemResource itemType) {
         //TODO - 26.1: Figure out item access
-        return itemType -> canFill(fluidTank, ItemAccess.forStack(itemType.toStack()));
+        return canFill(fluidTank, ItemAccess.forStack(itemType.toStack()));
     }
 
     public static boolean canFill(IFluidTank fluidTank, ItemAccess itemAccess) {
@@ -155,7 +152,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot drain(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), itemType -> {
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> {
             //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
             ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
             if (fluidHandler != null) {
@@ -184,16 +181,11 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     private boolean isDraining;
     private boolean isFilling;
 
-    protected FluidInventorySlot(IFluidTank fluidTank, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert,
+    protected FluidInventorySlot(IFluidTank fluidTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
-        this(fluidTank, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
         // then we don't have it all of a sudden being invalid after it is emptied
-    }
-
-    protected FluidInventorySlot(IFluidTank fluidTank, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert,
-          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, validator, listener, x, y);
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.fluidTank = fluidTank;
     }

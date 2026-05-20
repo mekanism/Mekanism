@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -12,6 +11,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
+import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -23,47 +23,37 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<ItemResource> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
-        Predicate<ItemResource> chemicalInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getChemicalTank());
         BiPredicate<ItemResource, AutomationType> insertPredicate = (itemType, _) -> switch (mergedTank.getCurrentType()) {
-            case FLUID -> fluidInsertPredicate.test(itemType);
-            case CHEMICAL -> chemicalInsertPredicate.test(itemType);
+            case FLUID -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemType);
+            case CHEMICAL -> ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemType);
             //Tank is empty, check if any insert predicate is valid
-            case EMPTY -> fluidInsertPredicate.test(itemType) || chemicalInsertPredicate.test(itemType);
+            case EMPTY -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemType) ||
+                          ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemType);
         };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
-        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(itemType, automationType),
+        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> automationType.isManual() || !insertPredicate.test(itemType, automationType),
               insertPredicate, listener, x, y);
     }
 
     public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<ItemResource> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank());
-        Predicate<ItemResource> chemicalInsertPredicate = itemType -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
-
         return new HybridInventorySlot(mergedTank, (itemType, automationType) -> {
-            if (automationType == AutomationType.MANUAL) {
-                //Always allow the player to manually extract
+            if (mergedTank.getCurrentType() == CurrentType.FLUID) {
+                //Always allow extracting from a "fluid output" slot
                 return true;
             }
-            return switch (mergedTank.getCurrentType()) {
-                //Always allow extracting from a "fluid output" slot
-                case FLUID -> true;
-                case CHEMICAL -> chemicalExtractPredicate.test(itemType);
-                //Tank is empty, check all our extraction predicates
-                case EMPTY -> chemicalExtractPredicate.test(itemType);
-            };
+            return ChemicalInventorySlot.fillExtractCheck(mergedTank.getChemicalTank(), itemType, automationType);
         }, (itemType, automationType) -> switch (mergedTank.getCurrentType()) {
             //Only allow inserting internally for "fluid output" slots
-            case FLUID -> automationType == AutomationType.INTERNAL;
-            case CHEMICAL -> chemicalInsertPredicate.test(itemType);
+            case FLUID -> automationType.isInternal();
+            case CHEMICAL -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
             case EMPTY -> {
                 //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
-                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID.hasCapability(itemType)) {
+                if (automationType.isInternal() && Capabilities.FLUID.hasCapability(itemType)) {
                     yield true;
                 }
                 //otherwise, only allow it if one of the chemical insert predicates matches
-                yield chemicalInsertPredicate.test(itemType);
+                yield ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
             }
         }, listener, x, y);
     }

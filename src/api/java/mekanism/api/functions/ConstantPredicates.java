@@ -78,9 +78,9 @@ public class ConstantPredicates {
     private static final BiPredicate<Object, Object> alwaysFalseBi = (t, u) -> false;
     private static final TriPredicate<Object, Object, Object> alwaysFalseTri = (t, u, v) -> false;
 
-    private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (t, automationType) -> automationType == AutomationType.INTERNAL;
-    private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (t, automationType) -> automationType != AutomationType.EXTERNAL;
-    private static final BiPredicate<Object, @NotNull AutomationType> manualOnly = (t, automationType) -> automationType == AutomationType.MANUAL;
+    private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (_, automationType) -> automationType.isInternal();
+    private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (t, automationType) -> !automationType.isExternal();
+    private static final BiPredicate<Object, @NotNull AutomationType> manualOnly = (_, automationType) -> automationType.isManual();
 
     /**
      * Returns a predicate that returns {@code true} for any input.

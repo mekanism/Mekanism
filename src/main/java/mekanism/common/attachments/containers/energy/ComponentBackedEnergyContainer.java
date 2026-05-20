@@ -65,15 +65,15 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertionRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
+    protected long getInsertionRate(AutomationType automationType) {
+        //Allow manual interaction to bypass rate limit for the item
+        return automationType.isManual() ? Long.MAX_VALUE : rate.getAsLong();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractionRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
+    protected long getExtractionRate(AutomationType automationType) {
+        //Allow manual interaction to bypass rate limit for the item
+        return automationType.isManual() ? Long.MAX_VALUE : rate.getAsLong();
     }
 
     @Override

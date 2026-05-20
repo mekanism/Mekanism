@@ -23,17 +23,16 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<@NotNull ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);
+    public static final Predicate<ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);
 
     @Nullable
-    public static ComponentBackedBinInventorySlot getForStack(@NotNull ItemStack stack) {
+    public static ComponentBackedBinInventorySlot getForStack(ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
             //TODO - 26.1: Should this use getAttachmentContainersIfPresent
             ComponentBackedResourceHandler<ItemResource, IInventorySlot> attachment = ContainerType.ITEM.createHandler(stack);
@@ -76,7 +75,7 @@ public class BinInventorySlot extends BasicInventorySlot {
             if (isLocked() && !lockType.equals(resource)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
-            } else if (isCreative && automationType != AutomationType.EXTERNAL) {
+            } else if (isCreative && !automationType.isExternal()) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
                 try (Transaction simulation = Transaction.open(transaction)) {

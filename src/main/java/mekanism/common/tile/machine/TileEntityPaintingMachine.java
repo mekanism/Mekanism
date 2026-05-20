@@ -110,7 +110,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
-        builder.addContainer(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, chemicalType -> containsRecipeBA(inputSlot.resource(), chemicalType),
+        builder.addContainer(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, (chemicalType, _) -> containsRecipeBA(inputSlot.resource(), chemicalType),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -128,7 +128,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(pigmentInputSlot = ChemicalInventorySlot.fill(pigmentTank, listener, 6, 56));
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, pigmentTank.resource()), this::containsRecipeA, recipeCacheListener, 45, 35))
+        builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeAB(itemType, pigmentTank.resource()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

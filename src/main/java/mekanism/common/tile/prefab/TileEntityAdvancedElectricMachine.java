@@ -141,7 +141,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, chemicalTank.resource()), this::containsRecipeA, recipeCacheListener, 64, 17))
+        builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeAB(itemType, chemicalTank.resource()), this::containsRecipeA, recipeCacheListener, 64, 17))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(secondarySlot = ChemicalInventorySlot.fillOrConvert(chemicalTank, this::getLevel, listener, 64, 53));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))

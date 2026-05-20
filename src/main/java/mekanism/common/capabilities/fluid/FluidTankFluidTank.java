@@ -36,16 +36,16 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(@Nullable AutomationType automationType) {
+    protected int getInsertionRate(AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertionRate(automationType);
+        return automationType.isInternal() ? rate.getAsInt() : super.getInsertionRate(automationType);
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(@Nullable AutomationType automationType) {
+    protected int getExtractionRate(AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractionRate(automationType);
+        return automationType.isInternal() ? rate.getAsInt() : super.getExtractionRate(automationType);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
     public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted;
         if (isCreative) {
-            if (isEmpty() && automationType != AutomationType.EXTERNAL) {
+            if (isEmpty() && !automationType.isExternal()) {
                 //If a player manually inserts into a creative tank (or internally, via a FluidInventorySlot), that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
                 try (Transaction simulation = Transaction.open(transaction)) {

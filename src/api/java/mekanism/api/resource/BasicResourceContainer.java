@@ -23,17 +23,17 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Nullable
     private final IContentsListener listener;
     @Range(from = 0, to = Long.MAX_VALUE)
-    private final long limit;
+    private final long capacity;
 
     private LargeResourceStack<RESOURCE> current;
 
-    protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
+    protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         this.listener = listener;
-        this.limit = limit;
+        this.capacity = capacity;
         this.current = stackHelper().empty();
     }
 
@@ -105,7 +105,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(RESOURCE resource) {
-        return limit;
+        return capacity;
     }
 
     /**
@@ -119,7 +119,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
      * stack.
      */
     @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(@Nullable AutomationType automationType) {
+    protected int getInsertionRate(AutomationType automationType) {
         //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
         // Main spot where they might not is for containers
         //TODO - 26.1: Re-evaluate insertion and extraction rate, do we need to make them be tick based in case insertions/extractions are spread across multiple calls
@@ -139,7 +139,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
      * stack.
      */
     @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(@Nullable AutomationType automationType) {
+    protected int getExtractionRate(AutomationType automationType) {
         return Integer.MAX_VALUE;
     }
 

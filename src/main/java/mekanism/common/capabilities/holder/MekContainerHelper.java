@@ -33,7 +33,7 @@ public class MekContainerHelper<CONTAINER> {
     public static BiPredicate<ChemicalResource, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
-        return (type, automationType) -> automationType != AutomationType.EXTERNAL ||
+        return (type, automationType) -> !automationType.isExternal() ||
                                          (outputTank.get().isEmpty() && type.isRadioactive() && RadiationManager.isGlobalRadiationEnabled());
     }
 

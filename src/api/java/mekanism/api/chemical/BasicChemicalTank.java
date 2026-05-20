@@ -58,23 +58,6 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
     }
 
     /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, and content listener, using the default attribute validator
-     * {@link ChemicalAttributeValidator#DEFAULT}.
-     *
-     * @param capacity   Tank capacity.
-     * @param canExtract Extract predicate.
-     * @param canInsert  Insert predicate.
-     * @param listener   Contents change listener.
-     *
-     * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.7.11
-     */
-    public static IChemicalTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<ChemicalResource> canExtract, Predicate<ChemicalResource> canInsert,
-          @Nullable IContentsListener listener) {
-        return create(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
-    }
-
-    /**
      * Creates a tank with a given capacity, validation predicate, and content listener, using the default attribute validator
      * {@link ChemicalAttributeValidator#DEFAULT}.
      *
@@ -115,17 +98,16 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      *
-     * @since 10.7.11
+     * @since 10.8.0
      */
-    public static IChemicalTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<ChemicalResource> canInsert, Predicate<ChemicalResource> validator,
-          @Nullable IContentsListener listener) {
+    public static IChemicalTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<ChemicalResource, AutomationType> canInsert,
+          Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         MekanismPreconditions.checkNonNegative(capacity);
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return new BasicChemicalTank(capacity, ConstantPredicates.notExternal(), (chemicalType, _) -> canInsert.test(chemicalType), validator,
+        return new BasicChemicalTank(capacity, ConstantPredicates.notExternal(), canInsert, validator,
               null, listener);
     }
-
     /**
      * Creates an output tank with a given capacity, and content listener, that allows chemicals with any attributes. Output tanks only allow for internal
      * ({@link AutomationType#INTERNAL}) insertion.
@@ -151,52 +133,11 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
      * @param validator  Validation predicate.
      * @param listener   Contents change listener.
      *
-     * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.7.11
-     */
-    public static IChemicalTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<ChemicalResource> canExtract, Predicate<ChemicalResource> canInsert,
-          Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
-        return create(capacity, canExtract, canInsert, validator, null, listener);
-    }
-
-    /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, and content listener, using the default attribute validator
-     * {@link ChemicalAttributeValidator#DEFAULT}.
-     *
-     * @param capacity   Tank capacity.
-     * @param canExtract Extract predicate.
-     * @param canInsert  Insert predicate.
-     * @param validator  Validation predicate.
-     * @param listener   Contents change listener.
-     *
      * @since 10.7.11
      */
     public static IChemicalTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
-    }
-
-    /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, attribute validator, and content listener.
-     *
-     * @param capacity           Tank capacity.
-     * @param canExtract         Extract predicate.
-     * @param canInsert          Insert predicate.
-     * @param validator          Validation predicate.
-     * @param attributeValidator Chemical Attribute Validator, or {@code null} to fall back to {@link ChemicalAttributeValidator#DEFAULT}.
-     * @param listener           Contents change listener.
-     *
-     * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.7.11
-     */
-    public static IChemicalTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<ChemicalResource> canExtract, Predicate<ChemicalResource> canInsert,
-          Predicate<ChemicalResource> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
-        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return new BasicChemicalTank(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack),
-              (stack, _) -> canInsert.test(stack), validator, attributeValidator, listener);
     }
 
     /**

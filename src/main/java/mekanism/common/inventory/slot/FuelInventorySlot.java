@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.AutomationType;
@@ -21,14 +22,13 @@ public class FuelInventorySlot extends BasicInventorySlot {
 
     public static FuelInventorySlot forFuel(ToIntFunction<ItemResource> fuelValue, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        return new FuelInventorySlot(itemType -> fuelValue.applyAsInt(itemType) == 0, itemType -> fuelValue.applyAsInt(itemType) != 0,
-              ConstantPredicates.alwaysTrue(), listener, x, y);
+        return new FuelInventorySlot((itemType, automationType) -> automationType.isManual() || fuelValue.applyAsInt(itemType) == 0,
+              (itemType, _) -> fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    private FuelInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener,
-          int x, int y) {
-        super((itemType, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(itemType),
-              (itemType, _) -> canInsert.test(itemType), validator, listener, x, y);
+    private FuelInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator,
+          @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
     }
 
     public int burn(FuelValues fuelValues) {

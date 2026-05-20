@@ -1,7 +1,9 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -17,17 +19,17 @@ public class InputInventorySlot extends BasicInventorySlot {
     }
 
     public static InputInventorySlot at(Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        return at(ConstantPredicates.alwaysTrue(), isItemValid, listener, x, y);
+        return at(ConstantPredicates.alwaysTrueBi(), isItemValid, listener, x, y);
     }
 
-    public static InputInventorySlot at(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
+    public static InputInventorySlot at(BiPredicate<ItemResource, AutomationType> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(insertPredicate, "Insertion check cannot be null");
         Objects.requireNonNull(isItemValid, "Item validity check cannot be null");
         return new InputInventorySlot(insertPredicate, isItemValid, listener, x, y);
     }
 
-    protected InputInventorySlot(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        super(ConstantPredicates.notExternal(), (itemType, _) -> insertPredicate.test(itemType), isItemValid, listener, x, y);
+    protected InputInventorySlot(BiPredicate<ItemResource, AutomationType> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
+        super(ConstantPredicates.notExternal(), insertPredicate, isItemValid, listener, x, y);
         setSlotType(ContainerSlotType.INPUT);
     }
 }

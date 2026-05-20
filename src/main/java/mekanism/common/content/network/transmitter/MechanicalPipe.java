@@ -32,8 +32,11 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
-        super(tile, LargeResourceStack.FLUID_HELPER,
-              (capacity, listener) -> BasicFluidTank.create(capacity, ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), listener), TransmissionType.FLUID);
+        //TODO - 26.1: Why does the mechanical pipe not allow extracting from the container, but the tube does? We should make them behave the same
+        // because either the handler already protects against extracting, or we shouldn't allow it. Especially given we likely have cases where we want
+        // to allow internal extraction
+        super(tile, LargeResourceStack.FLUID_HELPER, (capacity, listener) -> BasicFluidTank.create(capacity, ConstantPredicates.manualOnly(),
+              ConstantPredicates.alwaysTrueBi(), listener), TransmissionType.FLUID);
     }
 
     @Override

@@ -11,7 +11,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -20,13 +19,12 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     private final boolean obeyStackLimit;
 
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator) {
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator) {
         this(attachedTo, slotIndex, canExtract, canInsert, validator, true, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator, boolean obeyStackLimit,
-          @Range(from = 0, to = Long.MAX_VALUE) long limit) {
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, boolean obeyStackLimit, @Range(from = 0, to = Long.MAX_VALUE) long limit) {
         //TODO - 26.1: Re-evaluate how we are doing the rate and limit for this
         super(attachedTo, slotIndex, canExtract, canInsert, validator, () -> Integer.MAX_VALUE, () -> limit);
         this.obeyStackLimit = obeyStackLimit;

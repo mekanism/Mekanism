@@ -91,8 +91,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
-    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (t, automationType) -> isFormed();
-    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (t, automationType) -> automationType != AutomationType.EXTERNAL && isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (_, _) -> isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (_, automationType) -> !automationType.isExternal() && isFormed();
 
     private boolean dirty;
 

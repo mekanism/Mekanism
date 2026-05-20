@@ -156,7 +156,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
-                InputInventorySlot inputSlot = InputInventorySlot.at(itemType -> {
+                InputInventorySlot inputSlot = InputInventorySlot.at((itemType, _) -> {
                     //Is item valid
                     if (formula.isEmpty()) {
                         return true;

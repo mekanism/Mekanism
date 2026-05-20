@@ -49,7 +49,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
             if (!lockType.isEmpty() && !resource.equals(lockType)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
-            } else if (isCreative && automationType != AutomationType.EXTERNAL) {
+            } else if (isCreative && !automationType.isExternal()) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
                 try (Transaction simulation = Transaction.open(transaction)) {

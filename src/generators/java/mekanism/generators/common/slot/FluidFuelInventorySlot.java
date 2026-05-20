@@ -1,7 +1,7 @@
 package mekanism.generators.common.slot;
 
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -37,8 +37,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         if (fuelType.is(EMPTY_KEY)) {
             throw new IllegalArgumentException("Fuel fluid type cannot be empty");
         }
-        Predicate<ItemResource> fillPredicate = getFillPredicate(fluidTank);
-        return new FluidFuelInventorySlot(fluidTank, fuelType, fuelValue, itemType -> {
+        return new FluidFuelInventorySlot(fluidTank, fuelType, fuelValue, (itemType, automationType) -> {
+            if (automationType.isManual()) {
+                //Always allow manual interaction
+                return true;
+            }
             ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
             if (itemHandler != null) {
                 for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
@@ -53,14 +56,14 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             return fuelValue.applyAsInt(itemType) == 0;
-        }, itemType -> fuelValue.applyAsInt(itemType) > 0 || fillPredicate.test(itemType), listener, x, y);
+        }, (itemType, _) -> fuelValue.applyAsInt(itemType) > 0 || canFill(fluidTank, itemType), listener, x, y);
     }
 
     private final ToIntFunction<ItemResource> fuelValue;
     private final Holder<Fluid> fuelType;
 
-    private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, ToIntFunction<ItemResource> fuelValue, Predicate<ItemResource> canExtract,
-          Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, ToIntFunction<ItemResource> fuelValue, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelType = fuelType;
         this.fuelValue = fuelValue;

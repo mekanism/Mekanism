@@ -2,8 +2,10 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
@@ -21,12 +23,16 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     //TODO - 26.1: Re-evaluate these and how we just make a stack out of the item type
     public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(itemType.toStack()) != null;
-    public static final Predicate<ItemResource> LOCK_EXTRACT_PREDICATE = itemType -> IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) != null;
-    public static final Predicate<ItemResource> LOCK_INSERT_PREDICATE = itemType -> IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) == null;
+    public static final BiPredicate<ItemResource, AutomationType> LOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
+          automationType.isManual() || IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) != null;
+    public static final BiPredicate<ItemResource, AutomationType> LOCK_INSERT_PREDICATE = (itemType, _) ->
+          IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) == null;
+    public static final BiPredicate<ItemResource, AutomationType> UNLOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
+          automationType.isManual() || IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) == null;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
-        return new SecurityInventorySlot(LOCK_INSERT_PREDICATE, itemType -> {
+        return new SecurityInventorySlot(UNLOCK_EXTRACT_PREDICATE, (itemType, _) -> {
             //TODO - 26.1: Re-evaluate how we just make a stack out of the item type
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack());
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
@@ -37,7 +43,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
         return new SecurityInventorySlot(LOCK_EXTRACT_PREDICATE, LOCK_INSERT_PREDICATE, listener, x, y);
     }
 
-    private SecurityInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private SecurityInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, VALIDATOR, listener, x, y);
     }
 

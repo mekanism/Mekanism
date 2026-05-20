@@ -135,7 +135,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
-        builder.addContainer(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluidType -> containsRecipeBAC(inputSlot.resource(), fluidType, inputGasTank.resource()),
+        builder.addContainer(inputFluidTank = BasicFluidTank.input(MAX_FLUID, (fluidType, _) -> containsRecipeBAC(inputSlot.resource(), fluidType, inputGasTank.resource()),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -152,7 +152,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeABC(itemType, inputFluidTank.resource(), inputGasTank.resource()),
+        builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> containsRecipeABC(itemType, inputFluidTank.resource(), inputGasTank.resource()),
                     this::containsRecipeA, recipeCacheListener, 54, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 40))

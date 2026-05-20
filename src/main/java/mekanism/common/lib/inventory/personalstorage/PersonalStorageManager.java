@@ -161,8 +161,7 @@ public class PersonalStorageManager {
         STORAGE_BY_PLAYER_UUID.clear();
     }
 
-    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInteract,
-          @Nullable IContentsListener listener) {
+    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<ItemResource, AutomationType> canInteract, @Nullable IContentsListener listener) {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 slotConsumer.accept(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));

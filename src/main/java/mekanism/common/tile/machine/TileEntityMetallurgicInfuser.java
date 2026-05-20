@@ -134,7 +134,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(infusionSlot = ChemicalInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 17, 35));
-        builder.addContainer(inputSlot = InputInventorySlot.at(itemType-> containsRecipeAB(itemType, infusionTank.resource()), this::containsRecipeA, recipeCacheListener, 51, 43))
+        builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _)-> containsRecipeAB(itemType, infusionTank.resource()), this::containsRecipeA, recipeCacheListener, 51, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 109, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

@@ -28,8 +28,8 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
-    public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert,
-          @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
+          BiPredicate<FluidResource, AutomationType> canInsert, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
 
@@ -39,26 +39,17 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
-    public static BasicFluidTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator,
+    public static BasicFluidTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator,
           @Nullable IContentsListener listener) {
         MekanismPreconditions.checkNonNegative(capacity);
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), (stack, _) -> canInsert.test(stack), validator, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), canInsert, validator, listener);
     }
 
     public static BasicFluidTank output(@Range(from = 0, to = Long.MAX_VALUE) long capacity, @Nullable IContentsListener listener) {
         MekanismPreconditions.checkNonNegative(capacity);
         return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener);
-    }
-
-    public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert,
-          Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
-        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
     public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
@@ -68,12 +59,6 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
-    }
-
-    protected BasicFluidTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert,
-          Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack),
-              (stack, _) -> canInsert.test(stack), validator, listener);
     }
 
     protected BasicFluidTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
