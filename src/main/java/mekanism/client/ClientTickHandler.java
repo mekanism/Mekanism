@@ -35,7 +35,6 @@ import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
@@ -58,10 +57,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
-import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -84,8 +81,6 @@ public class ClientTickHandler {
         portableTeleports.clear();
         visionEnhancement = false;
     }
-
-    private boolean isConnected;
 
     public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
         if (!player.isSpectator() && !jetpack.isEmpty()) {
@@ -146,23 +141,6 @@ public class ClientTickHandler {
     public void onStartTracking(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof Player player && MekanismConfig.client.enablePlayerSounds.get()) {
             SoundHandler.startFlamethrowerSound(player);
-        }
-    }
-
-    @SubscribeEvent
-    public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (!isConnected) {//Note: This should always be true when the event is fired
-            isConnected = true;
-            MekanismClient.launchClient(event.getConnection());
-        }
-    }
-
-    @SubscribeEvent
-    public void onLeaveServer(ClientPlayerNetworkEvent.LoggingOut event) {
-        //Note: We check if the client has actually connected before handling this, as this event is also called when the client is setting up the server
-        if (isConnected) {
-            isConnected = false;
-            MekanismClient.reset();
         }
     }
 
@@ -335,16 +313,6 @@ public class ClientTickHandler {
                 event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getUntypedData().getMaxStackSize());
             }
         }
-    }
-
-    @SubscribeEvent
-    public void recipesUpdated(RecipesReceivedEvent event) {
-        //Note: Dedicated servers first connection the server sends recipes then tags, and on reload sends tags then recipes.
-        // We ignore this fact and only clear the cache in the recipes updated event however, as the cache should already be
-        // empty on our initial connection, and even if it isn't the client has no way to query the recipes and cause the
-        // caches to be initialized before the tags are then received as we lazily initialize our recipe caches.
-        MekanismRecipeType.clearCache();
-        //TODO - 26.1: Do we need to mark OnDataPackSync#sendRecipes?
     }
 
     @SubscribeEvent
