@@ -33,7 +33,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
 
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics, FluidStack stack) {
-        MekanismRenderer.color(guiGraphics, stack);
+        MekanismRenderer.color(stack);
     }
 
     @Override

@@ -158,7 +158,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             //TODO - 26.1: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
-            MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.75F);
+            MekanismRenderer.color(0xFFFFFF, 0.75F);
             //TODO - 26.1 RenderSystem.enableBlend();
             //TODO - 26.1 RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
@@ -197,7 +197,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void renderBlur(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.3F);
+        MekanismRenderer.color(0xFFFFFF, 0.3F);
         //TODO - 26.1 RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();
         //RenderSystem.disableDepthTest();

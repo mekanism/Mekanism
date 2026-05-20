@@ -130,49 +130,45 @@ public class MekanismRenderer {
     }
 
     //Color
+    @Deprecated(forRemoval = true)
     public static void resetColor(GuiGraphicsExtractor guiGraphics) {
         //TODO - 26.1: inline color reset / remove
         //guiGraphics.setColor(1, 1, 1, 1);
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, int color) {
-        color(guiGraphics, color, ARGB.alphaFloat(color));
+    //todo - 26.1: review usages to ensure it's actually used (all color() methods)
+    public static int color(int color, float alpha) {
+        return ARGB.color(alpha, color);
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, int color, float alpha) {
-        //TODO - 26.1: Inline color value
-        int TODO_COLOR = ARGB.color(alpha, color);
-        //guiGraphics.setColor(ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), alpha);
+    public static int color(ColorRegistryObject colorRO) {
+        return color(colorRO.get());
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, ColorRegistryObject colorRO) {
-        color(guiGraphics, colorRO.get());
+    public static int color(Color color) {
+        return color.argb();
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, Color color) {
-        //TODO - 26.1: Inline color value
-        int TODO_COLOR = color.argb();
-        //guiGraphics.setColor(color.rf(), color.gf(), color.bf(), color.af());
-    }
-
-    public static void color(GuiGraphicsExtractor guiGraphics, @NotNull FluidStack fluid) {
+    public static int color(@NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(guiGraphics, getColorARGB(fluid));
+            return getColorARGB(fluid);
         }
+        return -1;
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, @NotNull ChemicalStack chemicalStack) {
+    public static int color(@NotNull ChemicalStack chemicalStack) {
         if (!chemicalStack.isEmpty()) {
-            color(guiGraphics, chemicalStack.getChemicalTint(), 1F);
+            return color(chemicalStack.getChemicalTint(), 1F);
         }
+        return -1;
     }
 
-    public static void color(GuiGraphicsExtractor guiGraphics, @Nullable SupportsColorMap color) {
+    public static int color(@Nullable SupportsColorMap color) {
         if (color != null) {
-            //TODO - 26.1: Inline color value
-            int TODO_COLOR = color.getPackedColor();
+            return color.getPackedColor();
             //guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
         }
+        return -1;
     }
 
     public static int getColorARGB(SupportsColorMap color, float alpha) {

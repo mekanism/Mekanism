@@ -78,11 +78,11 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         if (target instanceof ItemStack stack) {
             gui().renderItem(guiGraphics, stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
-            MekanismRenderer.color(guiGraphics, stack);
+            MekanismRenderer.color(stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         } else if (target instanceof ChemicalStack stack) {
-            MekanismRenderer.color(guiGraphics, stack);
+            MekanismRenderer.color(stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         }

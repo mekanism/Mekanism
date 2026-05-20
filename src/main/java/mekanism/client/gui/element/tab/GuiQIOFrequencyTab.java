@@ -39,8 +39,8 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_QIO_FREQUENCY);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_QIO_FREQUENCY);
     }
 
     @Override

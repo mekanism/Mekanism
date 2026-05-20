@@ -24,8 +24,8 @@ public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism,
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_UPGRADE);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_UPGRADE);
     }
 
     @Override

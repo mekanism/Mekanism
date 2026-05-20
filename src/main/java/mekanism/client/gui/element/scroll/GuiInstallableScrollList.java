@@ -113,7 +113,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
             }
             EnumColor color = getColor(type);
             if (color != null) {
-                MekanismRenderer.color(guiGraphics, color);
+                MekanismRenderer.color(color);
             }
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, textureWidth,
                   elementHeight, textureWidth, textureHeight);

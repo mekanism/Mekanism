@@ -60,7 +60,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_CONTAINER_EDIT_MODE);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_CONTAINER_EDIT_MODE);
     }
 }

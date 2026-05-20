@@ -115,7 +115,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
 
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, dummy || getTank() == null ? dummyType : getTank().getFluid());
+        MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
     }
 
     @Override

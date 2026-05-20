@@ -60,7 +60,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_LASER_AMPLIFIER);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_LASER_AMPLIFIER);
     }
 }

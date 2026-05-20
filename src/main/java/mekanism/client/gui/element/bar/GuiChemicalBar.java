@@ -43,7 +43,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
 
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
-        MekanismRenderer.color(guiGraphics, stack);
+        MekanismRenderer.color(stack);
     }
 
     @Override

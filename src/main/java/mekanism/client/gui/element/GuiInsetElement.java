@@ -1,7 +1,13 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -11,6 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder implements ISupportsWarning<GuiInsetElement<DATA_SOURCE>> {
+
+    private static RenderPipeline WARNING_PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
+          .withLocation(Mekanism.rl("pipeline/gui_textured_dst_color"))
+          .withColorTargetState(new ColorTargetState(new BlendFunction(SourceFactor.DST_COLOR, DestFactor.ZERO)))
+          .build();
 
     protected final int border;
     protected final int innerWidth;
@@ -73,13 +84,9 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
     protected void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
-            drawUncolored(guiGraphics);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height);
             //Draw the warning overlay (multiply-blended)
-            //TODO - 26.1: blending
-            //RenderSystem.enableBlend();
-            //RenderSystem.blendFunc(SourceFactor.DST_COLOR, DestFactor.ZERO);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
-            //RenderSystem.disableBlend();
+            guiGraphics.blit(WARNING_PIPELINE, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
         } else {
             super.draw(guiGraphics);
         }

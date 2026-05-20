@@ -41,8 +41,8 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_VISUALS);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_VISUALS);
     }
 
     @Override

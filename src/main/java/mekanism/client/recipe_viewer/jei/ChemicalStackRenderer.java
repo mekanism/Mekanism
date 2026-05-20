@@ -59,7 +59,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             if (desiredHeight > height) {
                 desiredHeight = height;
             }
-            MekanismRenderer.color(guiGraphics, stack);
+            MekanismRenderer.color(stack);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
             //TODO - 26.1: reimplement the directional tiling
             //GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),

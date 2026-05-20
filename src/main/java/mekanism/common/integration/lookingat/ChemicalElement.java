@@ -75,7 +75,7 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     protected boolean applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, stored);
+        MekanismRenderer.color(stored);
         return true;
     }
 

@@ -114,7 +114,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
 
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, getStackOrDummy());
+        MekanismRenderer.color(getStackOrDummy());
     }
 
     @Override

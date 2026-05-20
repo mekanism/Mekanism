@@ -69,8 +69,8 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_RESIZE_CONTROLS);
+    protected int getTabColor(GuiGraphicsExtractor guiGraphics) {
+        return MekanismRenderer.color(SpecialColors.TAB_RESIZE_CONTROLS);
     }
 
     private boolean handleResize(ResizeType type, boolean adjustMax) {
