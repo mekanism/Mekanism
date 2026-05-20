@@ -86,7 +86,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank, RelativeSide.FRONT);
-        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getTransferRate());
         ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL)
               .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
     }
@@ -128,13 +128,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             if (!chemicalType.isEmpty()) {
                 long toDump = 0;
                 if (dumping == GasMode.DUMPING) {
-                    toDump = tier.getStorage() / 400;
+                    toDump = tier.getCapacity() / 400;
                 } else {//dumping == GasMode.DUMPING_EXCESS
                     long target = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
                     long stored = chemicalTank.amountAsLong();
                     if (target < stored) {
                         //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                        toDump = Math.min(stored - target, tier.getOutput());
+                        toDump = Math.min(stored - target, tier.getTransferRate());
                     }
                 }
                 if (toDump > 0) {

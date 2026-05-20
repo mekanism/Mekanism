@@ -50,12 +50,6 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     }
 
     @Override
-    protected int getAvailablePull() {
-        IChemicalTank container = getContainer();
-        return Math.min(tier.getTubePullAmount(), container.getNeededAsInt(container.resource()));
-    }
-
-    @Override
     public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.CHEMICAL_HELPER;
     }
@@ -78,11 +72,6 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
         return super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof PressurizedTube other && isValidTransmitter(other);
-    }
-
-    @Override
-    public long getCapacity() {
-        return tier.getTubeCapacity();
     }
 
     public float getRadiationScale() {

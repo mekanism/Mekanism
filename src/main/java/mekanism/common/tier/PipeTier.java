@@ -1,37 +1,26 @@
 package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
-import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.util.EnumUtils;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public enum PipeTier implements ITier {//TODO - 26.1: Do we want to change capacities to match chemicals?
+public enum PipeTier implements IStorageTier {//TODO - 26.1: Do we want to change capacities to match chemicals?
     BASIC(BaseTier.BASIC, 2L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME / 4),
     ADVANCED(BaseTier.ADVANCED, 8L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 32L * FluidType.BUCKET_VOLUME, 8 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 128L * FluidType.BUCKET_VOLUME, 32 * FluidType.BUCKET_VOLUME);
 
     private final long baseCapacity;
-    private final int basePull;
+    private final int baseTransferRate;
     private final BaseTier baseTier;
     private CachedLongValue capacityReference;
-    private CachedIntValue pullReference;
+    private CachedIntValue transferRateReference;
 
-    PipeTier(BaseTier tier, long capacity, int pullAmount) {
+    PipeTier(BaseTier tier, long capacity, int transferRate) {
         baseCapacity = capacity;
-        basePull = pullAmount;
+        baseTransferRate = transferRate;
         baseTier = tier;
-    }
-
-    public static PipeTier get(BaseTier tier) {
-        for (PipeTier transmitter : EnumUtils.PIPE_TIERS) {
-            if (transmitter.getBaseTier() == tier) {
-                return transmitter;
-            }
-        }
-        return BASIC;
     }
 
     @Override
@@ -39,27 +28,29 @@ public enum PipeTier implements ITier {//TODO - 26.1: Do we want to change capac
         return baseTier;
     }
 
-    public long getPipeCapacity() {
+    @Override
+    public long getCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
-    public int getPipePullAmount() {
-        return pullReference == null ? getBasePull() : pullReference.getOrDefault();
+    @Override
+    public int getTransferRate() {
+        return transferRateReference == null ? getBaseTransferRate() : transferRateReference.getOrDefault();
     }
 
     public long getBaseCapacity() {
         return baseCapacity;
     }
 
-    public int getBasePull() {
-        return basePull;
+    public int getBaseTransferRate() {
+        return baseTransferRate;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the PipeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue pullReference) {
+    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue transferRateReference) {
         this.capacityReference = capacityReference;
-        this.pullReference = pullReference;
+        this.transferRateReference = transferRateReference;
     }
 }

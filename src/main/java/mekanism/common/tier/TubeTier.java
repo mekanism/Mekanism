@@ -1,13 +1,11 @@
 package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
-import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.util.EnumUtils;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public enum TubeTier implements ITier {
+public enum TubeTier implements IStorageTier {
     BASIC(BaseTier.BASIC, 4L * FluidType.BUCKET_VOLUME, 750),
     ADVANCED(BaseTier.ADVANCED, 16L * FluidType.BUCKET_VOLUME, 2 * FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 256L * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
@@ -17,21 +15,12 @@ public enum TubeTier implements ITier {
     private final int basePull;
     private final BaseTier baseTier;
     private CachedLongValue capacityReference;
-    private CachedIntValue pullReference;
+    private CachedIntValue transferRateReference;
 
-    TubeTier(BaseTier tier, long capacity, int pullAmount) {
+    TubeTier(BaseTier tier, long capacity, int transferRate) {
         baseCapacity = capacity;
-        basePull = pullAmount;
+        basePull = transferRate;
         baseTier = tier;
-    }
-
-    public static TubeTier get(BaseTier tier) {
-        for (TubeTier transmitter : EnumUtils.TUBE_TIERS) {
-            if (transmitter.getBaseTier() == tier) {
-                return transmitter;
-            }
-        }
-        return BASIC;
     }
 
     @Override
@@ -39,27 +28,29 @@ public enum TubeTier implements ITier {
         return baseTier;
     }
 
-    public long getTubeCapacity() {
+    @Override
+    public long getCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
-    public int getTubePullAmount() {
-        return pullReference == null ? getBasePull() : pullReference.getOrDefault();
+    @Override
+    public int getTransferRate() {
+        return transferRateReference == null ? getBaseTransferRate() : transferRateReference.getOrDefault();
     }
 
     public long getBaseCapacity() {
         return baseCapacity;
     }
 
-    public int getBasePull() {
+    public int getBaseTransferRate() {
         return basePull;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the TubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue pullReference) {
+    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue transferRateReference) {
         this.capacityReference = capacityReference;
-        this.pullReference = pullReference;
+        this.transferRateReference = transferRateReference;
     }
 }

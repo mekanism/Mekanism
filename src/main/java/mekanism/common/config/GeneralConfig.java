@@ -251,10 +251,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
         entangloporterFluidBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_FLUID.applyToBuilder(builder)
               .worldRestart()
-              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
+              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseCapacity(), 1, Long.MAX_VALUE));
         entangloporterChemicalBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_CHEMICAL.applyToBuilder(builder)
               .worldRestart()
-              .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
+              .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseCapacity(), 1, Long.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_SECURITY.applyToBuilder(builder).push("security");

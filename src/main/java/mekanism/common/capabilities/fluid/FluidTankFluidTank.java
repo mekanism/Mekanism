@@ -28,9 +28,9 @@ public class FluidTankFluidTank extends BasicFluidTank {
     private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
-        super(tile.tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+        super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
         this.tile = tile;
-        rate = tile.tier::getOutput;
+        rate = tile.tier::getTransferRate;
         isCreative = tile.tier == FluidTankTier.CREATIVE;
     }
 

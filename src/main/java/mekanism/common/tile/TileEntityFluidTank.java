@@ -185,11 +185,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             }
             IFluidTank below = getBelowTank();
             if (below == null) {
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput(), null);
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, tier.getTransferRate(), null);
             } else {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(below.resource()), tier.getOutput()), null);
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(below.resource()), tier.getTransferRate()), null);
             }
         }
         if (needsPacket) {

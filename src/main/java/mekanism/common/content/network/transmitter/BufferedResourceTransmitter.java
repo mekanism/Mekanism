@@ -13,6 +13,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
+import mekanism.common.tier.IStorageTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -53,6 +54,14 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     }
 
     protected abstract Codec<RESOURCE> resourceCodec();;
+
+    @Override
+    public abstract IStorageTier getTier();
+
+    @Override
+    public long getCapacity() {
+        return getTier().getCapacity();
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -193,7 +202,10 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         return buffer;
     }
 
-    protected abstract int getAvailablePull();
+    private int getAvailablePull() {
+        CONTAINER container = getContainer();
+        return Math.min(getTier().getTransferRate(), container.getNeededAsInt(container.resource()));
+    }
 
     @Override
     public void pullFromAcceptors() {

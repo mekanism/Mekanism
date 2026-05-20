@@ -52,12 +52,6 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     }
 
     @Override
-    protected int getAvailablePull() {
-        IFluidTank container = getContainer();
-        return Math.min(tier.getPipePullAmount(), container.getNeededAsInt(container.resource()));
-    }
-
-    @Override
     public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.FLUID_HELPER;
     }
@@ -80,10 +74,5 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     @Override
     public FluidNetwork createNetworkByMerging(Collection<FluidNetwork> networks) {
         return new FluidNetwork(networks);
-    }
-
-    @Override
-    public long getCapacity() {
-        return tier.getPipeCapacity();
     }
 }

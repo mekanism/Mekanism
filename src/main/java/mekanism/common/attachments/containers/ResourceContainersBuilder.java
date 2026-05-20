@@ -49,7 +49,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     }
 
     public final BUILDER addBasic(LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedTo, containerIndex) ->createBasicContainer(attachedTo,
+        return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
               containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
     }
 
