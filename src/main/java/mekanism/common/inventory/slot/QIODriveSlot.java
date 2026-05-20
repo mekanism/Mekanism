@@ -30,38 +30,22 @@ public class QIODriveSlot extends BasicInventorySlot {
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 
-    //TODO - 26.1: Re-evaluate this override: I think we don't want it, but we do need to make sure we add/remove when loading saved data
-    /*@Override
-    public void setContents(ItemResource itemType, long storedAmount) {
-        // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
-        // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
-        if (!isRemote() && !isEmpty()) {
-            removeDrive();
-        }
-        super.setStackUnchecked(itemType, storedAmount);
-        // if we just added a new drive, add it to the frequency
-        // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
-        if (!isRemote() && !isEmpty()) {
-            addDrive();
-        }
-    }*/
-
     //TODO - 26.1: On extracting we need to make sure that the drive's metadata is updated so that it returns the correct resource(?)
 
     @Override
-    protected void onRootCommit(LargeResourceStack<ItemResource> originalState) {
-        //TODO - 26.1: Should this override onContentsChanged?
-        super.onRootCommit(originalState);
-        //TODO - 26.1: Should we do this before or after calling super (and setting the contents changed)
+    protected void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
+        super.onContentsChanged(originalState);
         ItemResource newDrive = resource();
         ItemResource originalDrive = originalState.resource();
         if (!isRemote() && !newDrive.equals(originalDrive)) {
             QIOFrequency frequency = driveHolder.getQIOFrequency();
             if (frequency != null) {
-                //If the item type changed, start by removing the old drive and then adding the new one
+                // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
                 if (!originalState.isEmpty() && IS_QIO_ITEM.test(originalDrive)) {
                     frequency.removeDrive(key, true, originalDrive);
                 }
+                // if we just added a new drive, add it to the frequency
+                // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
                 if (!newDrive.isEmpty() && IS_QIO_ITEM.test(newDrive)) {
                     frequency.addDrive(key, newDrive);
                 }

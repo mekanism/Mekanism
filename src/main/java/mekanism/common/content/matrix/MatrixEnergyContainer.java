@@ -213,11 +213,6 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void onContentsChanged() {
-        //Unused
-    }
-
-    @Override
     public void serialize(ValueOutput output) {
         //Note: We don't actually have any specific serialization
     }

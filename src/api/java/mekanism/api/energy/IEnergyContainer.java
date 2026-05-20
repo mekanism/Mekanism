@@ -1,7 +1,6 @@
 package mekanism.api.energy;
 
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -16,7 +15,7 @@ import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
 @NothingNullByDefault
-public interface IEnergyContainer extends ValueIOSerializable, IContentsListener {
+public interface IEnergyContainer extends ValueIOSerializable {
 
     /// Returns the amount of energy in this container, as a `long`.
     ///
@@ -30,8 +29,6 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
     ///
     /// @param energy      Energy to set this container's contents to. Must be greater than or equal to 0.
     /// @param transaction The transaction that this operation is part of if any.
-    ///
-    /// @implNote If the internal amount does get updated make sure to call [#onContentsChanged()]
     void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction);
 
     /// Inserts up to the given amount of energy into this container.

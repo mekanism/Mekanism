@@ -1,12 +1,11 @@
 package mekanism.common.attachments.containers;
 
-import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 
 @NothingNullByDefault
-public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends SnapshotJournal<TYPE> implements IContentsListener {
+public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends SnapshotJournal<TYPE> {
 
     //TODO - 26.1: I suspect we should change this ItemStack attachedTo into an ItemAccess
     protected final ItemStack attachedTo;
@@ -41,10 +40,8 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
             }
         }
         if (shouldUpdate(attached, value)) {
-            attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, value));
             //TODO - 26.1: Do we want to be calling onContentsChanged here or should we instead just be marking the snapshot as taken here above setting it
-            // and then don't call onContentsChanged here
-            onContentsChanged();
+            attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, value));
         }
     }
 
@@ -54,10 +51,6 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
         // Or maybe only do that in the non overloaded setStack so as a way to potentially avoid the extra lookup here when we know
         // we only call this method if something has changed
         return !isEmpty(value) || !isEmpty(getContents(attached));
-    }
-
-    @Override
-    public void onContentsChanged() {
     }
 
     @Override
@@ -73,10 +66,9 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
     @Override
     protected void onRootCommit(TYPE originalState) {
         super.onRootCommit(originalState);
-        //TODO - 26.1: Evaluate if shouldUpdate is a good metric for if we should be calling onContentsChanged here
+        //TODO - 26.1: Evaluate if shouldUpdate is a good metric for if we should be calling onContentsChanged here, or if we even need to have contents listeners for our component backed containers
         if (shouldUpdate(getAttached(), originalState)) {
             //Fire content change listeners during root commit if the final state is different from the original one
-            onContentsChanged();
         }
     }
 }

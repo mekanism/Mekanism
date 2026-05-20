@@ -43,11 +43,6 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public void onContentsChanged() {
-        internal.onContentsChanged();
-    }
-
-    @Override
     public boolean isEmpty() {
         return internal.isEmpty();
     }

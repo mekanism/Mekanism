@@ -54,7 +54,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    protected void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
+    protected final void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
         super.onRootCommit(originalState);
         if (!originalState.equals(current)) {
             //Fire content change listeners during root commit if the final state is different from the original one
@@ -63,12 +63,6 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     protected void onContentsChanged(LargeResourceStack<RESOURCE> originalState) {
-        //TODO - 26.1: Replace the parameterless type with this?
-        onContentsChanged();
-    }
-
-    @Override
-    public void onContentsChanged() {
         if (listener != null) {
             listener.onContentsChanged();
         }

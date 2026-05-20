@@ -55,8 +55,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         this.listener = listener;
     }
 
-    @Override
-    public void onContentsChanged() {
+    public void onContentsChanged(long originalState) {
         if (listener != null) {
             listener.onContentsChanged();
         }
@@ -77,12 +76,13 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         //TODO - 26.1: Re-evaluate this clamping and maybe get rid of it or move it?
         energy = clampEnergy(energy);
         if (stored != energy) {
-            if (transaction != null) {
+            if (transaction == null) {
+                long originalState = stored;
+                stored = energy;
+                onContentsChanged(originalState);
+            } else {
                 updateSnapshots(transaction);
                 stored = energy;
-            } else {
-                stored = energy;
-                onContentsChanged();
             }
         }
     }
@@ -191,7 +191,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         super.onRootCommit(originalState);
         if (energy() != originalState) {
             //Fire content change listeners during root commit if the final state is different from the original one
-            onContentsChanged();
+            onContentsChanged(originalState);
         }
     }
 }

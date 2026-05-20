@@ -197,7 +197,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 //If we were able to actually extract it from the item, then insert it into our energy container
                 transaction.commit();
                 //and mark that we were able to transfer at least some of it
-                onContentsChanged();
+                //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
+                //onContentsChanged();
                 return true;
             }
             return false;
@@ -233,7 +234,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (extractedEnergy == inserted) {
                     //If we were able to actually extract it from our energy container, then commit all the changes
                     transaction.commit();
-                    onContentsChanged();
+                    //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
+                    //onContentsChanged();
                 }
             }
         }

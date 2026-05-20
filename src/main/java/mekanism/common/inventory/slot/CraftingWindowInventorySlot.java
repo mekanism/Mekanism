@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -20,8 +21,6 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     protected final QIOCraftingWindow craftingWindow;
     @Nullable
     private final IContentsListener inputTypeChange;
-    private ItemResource lastType = ItemResource.EMPTY;
-    private boolean wasEmpty = true;
 
     protected CraftingWindowInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           QIOCraftingWindow craftingWindow, @Nullable IContentsListener saveListener, @Nullable IContentsListener inputTypeChange) {
@@ -36,17 +35,11 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public void onContentsChanged() {
-        super.onContentsChanged();
-        if (inputTypeChange != null) {
-            ItemResource currentType = resource();
-            if (isEmpty() != wasEmpty || !currentType.equals(lastType)) {
-                //If empty state changed, or they are not the same type, then mark our input type changed
-                // Note: If they are the same object (growing or shrinking) then we know they are the same type given they are not empty
-                lastType = currentType;
-                wasEmpty = isEmpty();
-                inputTypeChange.onContentsChanged();
-            }
+    public void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
+        super.onContentsChanged(originalState);
+        if (inputTypeChange != null && !originalState.matches(resource())) {
+            //If our type changed, mark that it changed
+            inputTypeChange.onContentsChanged();
         }
     }
 }

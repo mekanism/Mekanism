@@ -1,6 +1,5 @@
 package mekanism.api.heat;
 
-import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.util.Mth;
@@ -9,7 +8,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 @NothingNullByDefault
-public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
+public interface IHeatCapacitor extends ValueIOSerializable {
 
     /**
      * Returns the temperature of this capacitor.
@@ -57,7 +56,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      * @param heat Heat to set this capacitor's storage to (may be {@code 0}).
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void setHeat(double heat);
 
@@ -65,8 +63,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      * Handles a change of heat in this capacitor. Can be positive or negative.
      *
      * @param transfer The amount being transferred.
-     *
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void handleHeat(double transfer);
 

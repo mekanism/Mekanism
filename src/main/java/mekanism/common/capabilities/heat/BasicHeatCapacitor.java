@@ -83,8 +83,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         return heatCapacity;
     }
 
-    @Override
-    public void onContentsChanged() {
+    public void onContentsChanged(double originalState) {
         if (listener != null) {
             listener.onContentsChanged();
         }
@@ -102,10 +101,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     public void update() {
         if (heatToHandle != 0 && Math.abs(heatToHandle) > HeatAPI.EPSILON) {
-            initStoredHeat();
+            double originalState = getHeat();
             storedHeat += heatToHandle;
             //notify listeners
-            onContentsChanged();
+            onContentsChanged(originalState);
             // reset our handling heat
             heatToHandle = 0;
         }
@@ -131,9 +130,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void setHeat(double heat) {
-        if (getHeat() != heat) {
+        double originalState = getHeat();
+        if (!Mth.equal(heat, originalState)) {
             storedHeat = heat;
-            onContentsChanged();
+            onContentsChanged(originalState);
         }
     }
 

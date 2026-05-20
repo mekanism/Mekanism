@@ -308,7 +308,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     //Commit the transfer
                     transaction.commit();
                     //and mark that we were able to transfer at least some of it
-                    slot.onContentsChanged();
+                    //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
+                    //slot.onContentsChanged();
                     return true;
                 }
             }
@@ -339,7 +340,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     if (inserted > 0 && chemicalTank.extract(chemicalType, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                         //If we were able to actually extract it from our tank, then insert it into the item
                         transaction.commit();
-                        slot.onContentsChanged();
+                        //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
+                        //slot.onContentsChanged();
                     }
                 }
             }
