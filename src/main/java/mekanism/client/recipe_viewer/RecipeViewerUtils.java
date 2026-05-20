@@ -27,6 +27,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -40,7 +41,6 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
@@ -78,29 +78,6 @@ public class RecipeViewerUtils {
                 return subTime / time;
             }
         };
-    }
-
-    public static Identifier synthetic(Identifier id, String prefix, String namespace) {
-        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
-    }
-
-    public static Identifier synthetic(String id, String prefix, String namespace) {
-        if (id.equals("[unregistered]")) {
-            return synthetic(Identifier.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
-        }
-        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
-    }
-
-    public static Identifier synthetic(ResourceKey<Recipe<?>> key, String prefix) {
-        return synthetic(key.identifier(), prefix);
-    }
-
-    public static ResourceKey<Recipe<?>> syntheticKey(ResourceKey<Recipe<?>> key, String prefix) {
-        return ResourceKey.create(key.registryKey(), synthetic(key.identifier(), prefix));
-    }
-
-    public static Identifier synthetic(Identifier id, String prefix) {
-        return id.withPrefix("/" + prefix + "/");
     }
 
     public static <T> T getCurrent(List<T> elements) {
@@ -172,7 +149,7 @@ public class RecipeViewerUtils {
         for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
             BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(synthetic(entry.getKey().identifier(), "liquification", Mekanism.MODID), recipe);
+                liquification.put(RegistryUtils.synthetic(entry.getKey().identifier(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

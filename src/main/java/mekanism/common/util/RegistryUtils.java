@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -74,5 +75,29 @@ public class RegistryUtils {
             }
         }
         return null;
+    }
+
+    public static Identifier synthetic(Identifier id, String prefix, String namespace) {
+        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
+    }
+
+    /* Moved from RecipeViewerUtils, but unused?
+    public static Identifier synthetic(String id, String prefix, String namespace) {
+        if (id.equals("[unregistered]")) {
+            return synthetic(Identifier.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
+        }
+        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
+    }*/
+
+    public static Identifier synthetic(ResourceKey<Recipe<?>> key, String prefix) {
+        return synthetic(key.identifier(), prefix);
+    }
+
+    public static ResourceKey<Recipe<?>> syntheticKey(ResourceKey<Recipe<?>> key, String prefix) {
+        return ResourceKey.create(key.registryKey(), synthetic(key.identifier(), prefix));
+    }
+
+    public static Identifier synthetic(Identifier id, String prefix) {
+        return id.withPrefix("/" + prefix + "/");
     }
 }

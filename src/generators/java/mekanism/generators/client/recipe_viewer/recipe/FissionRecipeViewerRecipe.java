@@ -16,9 +16,9 @@ import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -53,7 +53,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         //Special case water recipe
         long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
         recipes.add(new FissionRecipeViewerRecipe(
-              RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
+              RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
               MekanismChemicals.STEAM.asStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
         ));
@@ -63,7 +63,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
             CooledCoolant coolant = entry.getValue();
             long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
             recipes.add(new FissionRecipeViewerRecipe(
-                  RecipeViewerUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
+                  RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
                   coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)

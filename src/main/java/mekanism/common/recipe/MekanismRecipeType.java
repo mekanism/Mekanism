@@ -33,7 +33,6 @@ import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.MekanismClient;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
@@ -47,6 +46,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
@@ -270,7 +270,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
                     continue;
                 }
                 ItemStackToItemStackRecipe possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
-                ResourceKey<Recipe<?>> generateId = RecipeViewerUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
+                ResourceKey<Recipe<?>> generateId = RegistryUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
                 recipes.add(new RecipeHolder<>(generateId, castRecipe(possiblyUnwrapped)));
 
             }

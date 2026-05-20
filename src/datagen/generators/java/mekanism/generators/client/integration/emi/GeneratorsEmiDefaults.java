@@ -3,7 +3,7 @@ package mekanism.generators.client.integration.emi;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.integration.emi.BaseEmiDefaults;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
@@ -30,7 +30,7 @@ public class GeneratorsEmiDefaults extends BaseEmiDefaults {
         addSolarNeutronActivatorRecipes();
         addGearModuleRecipes();
         addRotaryRecipes();
-        addUncheckedRecipe(RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"));
+        addUncheckedRecipe(RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"));
     }
 
     private void addRotaryRecipes() {

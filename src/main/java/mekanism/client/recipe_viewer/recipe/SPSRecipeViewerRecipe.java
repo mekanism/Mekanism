@@ -8,10 +8,10 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.resources.Identifier;
 
 //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
@@ -25,7 +25,7 @@ public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input
 
     public static List<SPSRecipeViewerRecipe> getSPSRecipes() {
         return Collections.singletonList(new SPSRecipeViewerRecipe(
-              RecipeViewerUtils.synthetic(Mekanism.rl("antimatter"), "sps"),
+              RegistryUtils.synthetic(Mekanism.rl("antimatter"), "sps"),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
               MekanismChemicals.ANTIMATTER.asStack(1)
         ));

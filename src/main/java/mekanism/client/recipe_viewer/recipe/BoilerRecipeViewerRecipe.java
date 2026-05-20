@@ -15,12 +15,12 @@ import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -49,7 +49,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
         FluidStackIngredient water = IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, WATER_AMOUNT);
         ChemicalStack steam = MekanismChemicals.STEAM.asStack(WATER_AMOUNT);
         recipes.add(new BoilerRecipeViewerRecipe(
-              RecipeViewerUtils.synthetic(Mekanism.rl("water"), "boiler"),
+              RegistryUtils.synthetic(Mekanism.rl("water"), "boiler"),
               null, water,
               steam, ChemicalStack.EMPTY,
               HeatUtils.BASE_BOIL_TEMP + waterToSteamHeatNecessary / (BoilerMultiblockData.CASING_HEAT_CAPACITY * MekanismConfig.general.boilerWaterConductivity.get())
@@ -61,7 +61,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
             //Amount of coolant that is actually used to
             long coolantAmount = Math.round(waterToSteamHeatNecessary / coolant.thermalEnthalpy());
             recipes.add(new BoilerRecipeViewerRecipe(
-                  RecipeViewerUtils.synthetic(key.identifier(), "boiler", Mekanism.MODID),
+                  RegistryUtils.synthetic(key.identifier(), "boiler", Mekanism.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), coolantAmount), water,
                   steam, coolant.cool(coolantAmount),
                   HeatUtils.BASE_BOIL_TEMP

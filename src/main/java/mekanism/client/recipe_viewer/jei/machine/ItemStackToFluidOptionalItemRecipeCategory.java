@@ -16,12 +16,12 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -85,7 +85,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
         if (representations.size() == 1) {
             Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
             if (itemId != null) {
-                return RecipeViewerUtils.synthetic(itemId, "liquification", Mekanism.MODID);
+                return RegistryUtils.synthetic(itemId, "liquification", Mekanism.MODID);
             }
         }
         return null;

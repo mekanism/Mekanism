@@ -8,10 +8,10 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -60,8 +60,8 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
     public Identifier getIdentifier(@NotNull RecipeHolder<RotaryRecipe> recipe) {
         Identifier baseId = super.getIdentifier(recipe);
         if (condensentrating) {
-            return RecipeViewerUtils.synthetic(baseId, "condensentrating");
+            return RegistryUtils.synthetic(baseId, "condensentrating");
         }
-        return RecipeViewerUtils.synthetic(baseId, "decondensentrating");
+        return RegistryUtils.synthetic(baseId, "decondensentrating");
     }
 }

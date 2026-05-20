@@ -74,6 +74,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
@@ -237,8 +238,8 @@ public class MekanismEmi implements EmiPlugin {
                 if (recipe.hasFluidToChemical()) {
                     //Note: If the recipe is bidirectional, we prefix the recipe id so that they don't clash as duplicates
                     // as we return the proper recipe holder regardless
-                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
-                    registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "decondensentrating"), recipeHolder, false));
+                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RegistryUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
+                    registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, RegistryUtils.synthetic(recipeHolder.id(), "decondensentrating"), recipeHolder, false));
                 } else {
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id().identifier(), recipeHolder, true));
                 }
