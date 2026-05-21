@@ -12,9 +12,4 @@ public class GuiCloseButton extends MekanismImageButton {
         super(gui, x, y, 8, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "close.png"), window::close);
         setTooltip(MekanismLang.CLOSE);
     }
-
-    @Override
-    public boolean resetColorBeforeRender() {
-        return false;
-    }
 }

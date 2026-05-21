@@ -16,9 +16,4 @@ public class GuiPinButton extends ToggleButton {
     public GuiPinButton(IGuiWrapper gui, int x, int y, GuiWindow window) {
         super(gui, x, y, WIDTH, 8, 12, 24, UNPINNED, PINNED, window::isPinned, window::togglePinned, MekanismLang.UNPIN.translate(), MekanismLang.PIN.translate());
     }
-
-    @Override
-    public boolean resetColorBeforeRender() {
-        return false;
-    }
 }

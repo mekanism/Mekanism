@@ -4,9 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,26 +23,17 @@ public class BasicColorButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected int getButtonBlitColor() {
         EnumColor color = getColor();
+        //todo - 26.1: this seems silly. there should be no need for all the Color boxing/unboxing
         if (color != null) {
             Color c = Color.rgb(color.getRgbCode());
             double[] hsv = c.hsvArray();
             hsv[1] = Math.max(0, hsv[1] - 0.1);
             hsv[2] = Math.min(1, hsv[2] + 0.1);
-            MekanismRenderer.color(Color.hsv(hsv[0], hsv[1], hsv[2]));
-        } else {
-            MekanismRenderer.resetColor(guiGraphics);
+            return Color.hsv(hsv[0], hsv[1], hsv[2]).argb();
         }
-        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        if (color != null) {
-            MekanismRenderer.resetColor(guiGraphics);
-        }
-    }
-
-    @Override
-    protected boolean resetColorBeforeRender() {
-        return false;
+        return super.getButtonBlitColor();
     }
 
     public EnumColor getColor() {
