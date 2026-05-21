@@ -2,7 +2,6 @@ package mekanism.client.render.hud;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -47,7 +46,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
             int x = graphics.guiWidth() / 2 - 91;
             int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
             int length = (int) Math.round(((double) stored / capacity) * 79);
-            GuiUtils.renderExtendedTexture(graphics, GuiBar.BAR, 2, 2, x, y, 81, 6);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiBar.BAR, x, y, 81, 6);
             graphics.blit(RenderPipelines.GUI_TEXTURED, POWER_BAR, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
             minecraft.gui.leftHeight += 8;
         }

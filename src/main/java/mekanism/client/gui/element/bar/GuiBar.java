@@ -6,10 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement implements ISupportsWarning<GuiBar<INFO>> {
 
-    public static final Identifier BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "base.png");
+    public static final Identifier BAR = Mekanism.rl("bar/base");
 
     private final INFO handler;
     protected final boolean horizontal;
