@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.item;
 import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -205,11 +204,9 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addUnlockSlot() {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
-              containerIndex, SecurityInventorySlot.UNLOCK_EXTRACT_PREDICATE, (itemType, _) -> {
-            //TODO - 26.1: Re-evaluate how we just make a stack out of the item type
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack());
-            return ownerUUID != null && ownerUUID.equals(IItemSecurityUtils.INSTANCE.getOwnerUUID(attachedTo));
-        }, SecurityInventorySlot.VALIDATOR));
+              containerIndex, SecurityInventorySlot.UNLOCK_EXTRACT_PREDICATE, (itemType, automationType) ->
+              SecurityInventorySlot.canInsertUnlock(itemType, automationType, () -> IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(attachedTo))),
+              SecurityInventorySlot.VALIDATOR));
     }
 
     public ItemSlotsBuilder addSlot(IBasicContainerCreator<? extends ComponentBackedInventorySlot> slot) {

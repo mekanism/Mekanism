@@ -33,6 +33,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -273,8 +274,8 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return true;
     }
 
-    public boolean supports(ItemStack stack) {
-        return stack.has(component) || knownDefaultCreators.containsKey(stack.getItem());
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supports(ITEM instance) {
+        return instance.has(component) || knownDefaultCreators.containsKey(instance.typeHolder().value());
     }
 
     public void addDefault(Item item, DataComponentMap.Builder components) {

@@ -12,6 +12,7 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
@@ -41,12 +43,13 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
-            if (PersonalStorageManager.getInventoryFor(s) == null) {
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h) -> {
+            ItemAccess itemAccess = InventoryUtils.playerHandAccess(p, h);
+            if (PersonalStorageManager.getInventoryFor(itemAccess) == null) {
                 //TODO - 26.1 make translated
                 p.sendSystemMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."), true);
             }
-            getContainerType().tryOpenGui(p, h, s);
+            getContainerType().tryOpenGui(p, h);
             p.awardStat(Stats.CUSTOM.get(openStat));
         });
     }
@@ -80,18 +83,19 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();
-            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(itemAccess);
             if (inventory != null && ResourceHandlerUtil.isEmpty(inventory)) {
                 //If the inventory was actually empty we can prune the data from the storage manager
                 // (if it isn't empty we want to persist it so that server admins can recover their items)
-                PersonalStorageManager.deleteInventory(stack);
+                PersonalStorageManager.deleteInventory(itemAccess);
             }
         }
     }
 
     @Override
     public List<IInventorySlot> getDroppedSlots(ItemStack stack) {
-        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(stack);
+        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
         if (itemInventory == null) {
             return Collections.emptyList();
         }
@@ -99,7 +103,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     }
 
     @Override
-    public int getScalar(ItemStack stack) {
+    public int getScalar(ItemAccess itemAccess) {
         //If for some reason a personal storage block is destroyed that has an inventory and is stacked
         // we only want to drop one of the backing item
         return 1;

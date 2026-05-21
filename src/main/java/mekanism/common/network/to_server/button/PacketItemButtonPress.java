@@ -10,6 +10,7 @@ import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,8 +19,9 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,59 +46,60 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemInHand(hand);
-        if (stack.getItem() instanceof IGuiItem) {
-            MenuProvider provider = buttonClicked.getProvider(stack, hand);
+        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+        ItemResource itemType = itemAccess.getResource();
+        if (itemType.getItem() instanceof IGuiItem) {
+            MenuProvider provider = buttonClicked.getProvider(itemType, hand);
             if (provider != null) {
                 player.openMenu(provider, buf -> {
                     buf.writeEnum(hand);
-                    ItemStack.STREAM_CODEC.encode(buf, stack);
-                    buttonClicked.encodeExtraData(buf, stack);
+                    buttonClicked.encodeExtraData(buf, itemType);
                 });
             }
         }
     }
 
     public enum ClickedItemButton {
-        BACK_BUTTON((stack, hand) -> {
-            if (stack.getItem() instanceof IGuiItem guiItem) {
-                return guiItem.getContainerType().getProvider(stack.getHoverName(), hand, stack);
+        BACK_BUTTON((itemType, hand) -> {
+            //Note: This should always be true, as otherwise we wouldn't have a provider at the various call sites
+            if (itemType.getItem() instanceof IGuiItem guiItem) {
+                return guiItem.getContainerType().getProvider(itemType.getHoverName(), hand, itemType);
             }
             return null;
-        }, (buffer, stack) -> {
+        }, (buffer, itemType) -> {
             //Note: This should always be true, as otherwise we wouldn't have a provider at the various call sites
-            if (stack.getItem() instanceof IGuiItem guiItem) {
+            if (itemType.getItem() instanceof IGuiItem guiItem) {
                 //Mirror the logic from ContainerRegistryObject#tryOpenGui so that we properly reinitialize the initial GUI
-                guiItem.encodeContainerData(buffer, stack);
+                guiItem.encodeContainerData(buffer, itemType);
             }
         }),
-        QIO_FREQUENCY_SELECT((stack, hand) -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, hand, stack));
+        QIO_FREQUENCY_SELECT((itemType, hand) -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, hand, itemType));
 
         public static final IntFunction<ClickedItemButton> BY_ID = ByIdMap.continuous(ClickedItemButton::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ClickedItemButton> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ClickedItemButton::ordinal);
 
-        private final BiFunction<ItemStack, InteractionHand, @Nullable MenuProvider> providerFromItem;
+        private final BiFunction<ItemResource, InteractionHand, @Nullable MenuProvider> providerFromItem;
         @Nullable
-        private final BiConsumer<RegistryFriendlyByteBuf, ItemStack> extraEncodingData;
+        private final BiConsumer<RegistryFriendlyByteBuf, ItemResource> extraEncodingData;
 
-        ClickedItemButton(BiFunction<ItemStack, InteractionHand, @Nullable MenuProvider> providerFromItem) {
+        ClickedItemButton(BiFunction<ItemResource, InteractionHand, @Nullable MenuProvider> providerFromItem) {
             this(providerFromItem, null);
         }
 
-        ClickedItemButton(BiFunction<ItemStack, InteractionHand, @Nullable MenuProvider> providerFromItem,
-              @Nullable BiConsumer<RegistryFriendlyByteBuf, ItemStack> extraEncodingData) {
+        ClickedItemButton(BiFunction<ItemResource, InteractionHand, @Nullable MenuProvider> providerFromItem,
+              @Nullable BiConsumer<RegistryFriendlyByteBuf, ItemResource> extraEncodingData) {
             this.providerFromItem = providerFromItem;
             this.extraEncodingData = extraEncodingData;
         }
 
         @Nullable
-        public MenuProvider getProvider(ItemStack stack, InteractionHand hand) {
-            return providerFromItem.apply(stack, hand);
+        public MenuProvider getProvider(ItemResource itemType, InteractionHand hand) {
+            return providerFromItem.apply(itemType, hand);
         }
 
-        private void encodeExtraData(RegistryFriendlyByteBuf buffer, ItemStack stack) {
+        private void encodeExtraData(RegistryFriendlyByteBuf buffer, ItemResource itemType) {
             if (extraEncodingData != null) {
-                extraEncodingData.accept(buffer, stack);
+                extraEncodingData.accept(buffer, itemType);
             }
         }
     }

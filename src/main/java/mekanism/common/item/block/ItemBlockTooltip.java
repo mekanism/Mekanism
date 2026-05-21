@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,7 +104,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
         addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
         LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
@@ -184,8 +185,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         if (Attribute.has(getBlock(), AttributeSecurity.class)) {
-            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new SecurityObject(stack), this);
-            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new SecurityObject(stack), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (_, itemAccess) -> new SecurityObject(itemAccess), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (_, itemAccess) -> new SecurityObject(itemAccess), this);
         }
     }
 

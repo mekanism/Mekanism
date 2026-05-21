@@ -7,31 +7,34 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class PersonalStorageItemContainer extends MekanismItemContainer {
 
     private final AbstractPersonalStorageItemInventory itemInventory;
 
-    public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean isRemote) {
-        super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, stack);
+    public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean isRemote) {
         //We have to initialize this before actually adding the slots
-        itemInventory = isRemote ?
-                        new ClientSidePersonalStorageInventory() :
-                        Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available");
-        super.addSlotsAndOpen();
+        itemInventory = isRemote ? new ClientSidePersonalStorageInventory()
+                                 : Objects.requireNonNull(PersonalStorageManager.getInventoryFor(itemAccess), "Inventory not available");
+        super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, itemAccess);
     }
 
     @Override
-    protected void addSlotsAndOpen() {
-        //no-op, we call super in constructor, as we need the isRemote
+    protected boolean isValidType(ItemResource itemType) {
+        if (super.isValidType(itemType)) {
+            return itemType.is(MekanismBlocks.PERSONAL_BARREL) || itemType.is(MekanismBlocks.PERSONAL_CHEST);
+        }
+        return false;
     }
 
     @Override

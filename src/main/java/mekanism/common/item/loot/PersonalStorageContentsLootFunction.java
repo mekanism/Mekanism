@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Loot function which copies the Personal Storage inventory to the saved data and adds an inv id to the stack
@@ -53,7 +54,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
                 if (EffectiveSide.get().isClient()) {
                     destInv = new ClientSidePersonalStorageInventory();
                 } else {
-                    destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available?!");
+                    destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack)), "Inventory not available?!");
                 }
                 for (int i = 0, size = tileSlots.size(); i < size; i++) {
                     IInventorySlot tileSlot = tileSlots.get(i);

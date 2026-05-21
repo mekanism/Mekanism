@@ -31,10 +31,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,24 +91,31 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
         return identity.map(FrequencyIdentity::ownerUUID).orElse(null);
     }
 
-    @Nullable
-    public FREQ getFrequency(ItemStack stack, DataComponentType<FrequencyAware<FREQ>> type) {
+    /// @apiNote Only call this on the server
+    public void pruneInvalidTrusted(ItemAccess itemAccess, DataComponentType<? extends FrequencyAware<FREQ>> type) {
+        ItemResource resource = itemAccess.getResource();
+        if (resource.isEmpty()) {
+            return;
+        }
         FREQ frequency = frequency().orElse(null);
-        if (frequency != null && frequency.getSecurity() == SecurityMode.TRUSTED && EffectiveSide.get().isServer()) {
+        if (frequency != null && frequency.getSecurity() == SecurityMode.TRUSTED) {
             //If it is a trusted frequency, and we are on the server, validate whether the owner of the item can actually access the frequency
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
                 SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
-                    //TODO - 1.21: Re-evaluate this
-                    stack.remove(type);
-                    if (stack.getItem() instanceof IColoredItem) {
-                        stack.remove(MekanismDataComponents.COLOR);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        resource = resource.without(type);
+                        if (resource.getItem() instanceof IColoredItem) {
+                            resource = resource.without(MekanismDataComponents.COLOR);
+                        }
+                        //TODO - 26.1: Should we check we managed to exchange it all?
+                        itemAccess.exchange(resource, itemAccess.getAmount(), transaction);
+                        transaction.commit();
                     }
                 }
             }
         }
-        return frequency;
     }
 
     public static <FREQ extends Frequency> FrequencyAware<FREQ> create(FrequencyType<FREQ> frequencyType, FrequencyIdentity data, UUID player) {

@@ -74,8 +74,7 @@ public class ItemSeismicReader extends ItemEnergized {
         }
         ServerPlayer serverPlayer = (ServerPlayer) player;
         MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger(serverPlayer);
-        ItemStack stack = player.getItemInHand(hand);
-        MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand, stack);
-        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);//todo - 26.1: check this
+        MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand);
+        return InteractionResult.SUCCESS_SERVER;//todo - 26.1: check this, do we need to return a transformation?
     }
 }

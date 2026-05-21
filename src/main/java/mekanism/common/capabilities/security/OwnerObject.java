@@ -7,22 +7,25 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class OwnerObject implements IOwnerObject {
 
-    protected final ItemStack stack;
+    protected final ItemAccess itemAccess;
 
-    public OwnerObject(ItemStack stack) {
-        this.stack = stack;
+    public OwnerObject(ItemAccess itemAccess) {
+        this.itemAccess = itemAccess;
     }
 
     @Nullable
     @Override
     public UUID getOwnerUUID() {
-        return stack.get(MekanismDataComponents.OWNER);
+        return itemAccess.getResource().get(MekanismDataComponents.OWNER);
     }
 
     @Nullable
@@ -37,16 +40,26 @@ public class OwnerObject implements IOwnerObject {
     }
 
     @Override
-    public void setOwnerUUID(@Nullable UUID owner) {
-        UUID ownerUUID = getOwnerUUID();
+    public void setOwnerUUID(@Nullable UUID owner, @Nullable TransactionContext transaction) {
+        ItemResource resource = itemAccess.getResource();
+        UUID ownerUUID = resource.get(MekanismDataComponents.OWNER);
         if (!Objects.equals(ownerUUID, owner)) {
             if (ownerUUID != null) {
                 //If the object happens to be a frequency aware object reset the frequency when the owner changes
-                stack.remove(MekanismDataComponents.INVENTORY_FREQUENCY);
-                stack.remove(MekanismDataComponents.TELEPORTER_FREQUENCY);
-                stack.remove(MekanismDataComponents.QIO_FREQUENCY);
+                resource = resource.without(MekanismDataComponents.INVENTORY_FREQUENCY)
+                      .without(MekanismDataComponents.TELEPORTER_FREQUENCY)
+                      .without(MekanismDataComponents.QIO_FREQUENCY);
             }
-            stack.set(MekanismDataComponents.OWNER, owner);
+            updateResource(resource.with(MekanismDataComponents.OWNER, owner), transaction);
+        }
+    }
+
+    protected void updateResource(ItemResource resource, @Nullable TransactionContext transaction) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            //Note: ItemAccess#exchange technically allows passing a null transaction context, but we don't do so
+            //TODO - 26.1: Do we care about the result of the exchange method anywhere?
+            itemAccess.exchange(resource, itemAccess.getAmount(), subTransaction);
+            subTransaction.commit();
         }
     }
 }

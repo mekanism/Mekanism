@@ -4,6 +4,7 @@ import java.util.UUID;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.tile.component.TileComponentSecurity;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,15 +38,26 @@ public interface ISecurityTile extends ISecurityObject {
     }
 
     @Override
-    default void setSecurityMode(@NotNull SecurityMode mode) {
+    default void setSecurityMode(@NotNull SecurityMode mode, @Nullable TransactionContext transaction) {
         TileComponentSecurity security = getSecurity();
         if (security != null) {
             security.setMode(mode);
         }
     }
 
+    /**
+     * Called from {@link #setSecurityMode(SecurityMode, TransactionContext)} when the security mode changes.
+     *
+     * @param old  The old security mode.
+     * @param mode The new security mode.
+     *
+     * @apiNote It is on the implementer to call this method if it is useful to them.
+     */
+    default void onSecurityChanged(SecurityMode old, SecurityMode mode) {
+    }
+
     @Override
-    default void setOwnerUUID(@Nullable UUID owner) {
+    default void setOwnerUUID(@Nullable UUID owner, @Nullable TransactionContext transaction) {
         TileComponentSecurity security = getSecurity();
         if (security != null) {
             security.setOwnerUUID(owner);

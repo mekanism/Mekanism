@@ -32,7 +32,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// If the resource is empty, the [stored amount][#amountAsLong()] must be 0.
     default RESOURCE resource() {
-        //TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
         return asStack().resource();
     }
 

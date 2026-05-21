@@ -26,6 +26,7 @@ import moze_intel.projecte.api.components.DataComponentProcessor;
 import moze_intel.projecte.api.components.IDataComponentProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -62,7 +63,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
             //Something that is stored cannot be converted into EMC
             return 0;
         }
-        AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(stack);
+        AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
         if (personalStorage != null) {//Items stored in a personal chest or barrel
             currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getContainers());
             if (currentEMC == 0) {

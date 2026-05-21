@@ -25,7 +25,6 @@ import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
@@ -347,12 +346,12 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         NEXT_SECURITY_MODE((tile, player, extra) -> {
             if (tile.getLevel() != null) {
-                SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile));
+                SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
             }
         }),
         PREVIOUS_SECURITY_MODE((tile, player, extra) -> {
             if (tile.getLevel() != null) {
-                SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile));
+                SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
             }
         }),
 
@@ -476,8 +475,8 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionEntity {
-        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity))),
-        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity))),
+        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity), null)),
+        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity), null)),
         CONTAINER_STOP_TRACKING((entity, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);

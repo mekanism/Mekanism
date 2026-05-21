@@ -99,10 +99,9 @@ public class ItemDictionary extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
+                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand);
             }
             return InteractionResult.SUCCESS_SERVER;
         } else {

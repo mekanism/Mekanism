@@ -19,7 +19,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTank> {//TODO - 26.1: Deduplicate things between this and fluid gauges
+public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTank> {
 
     public static GuiChemicalGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiChemicalGauge gauge = new GuiChemicalGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);

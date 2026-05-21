@@ -95,7 +95,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
                 LargeResourceStack<RESOURCE> originalState = current;
                 this.current = contents;
                 //TODO - 26.1: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one
-                // but it might be useful to have
+                // but it might be useful to have, especially due to the checks happening in PersonalStorageItemInventory#onContentsChanged
                 onContentsChanged(originalState);
             } else {
                 updateSnapshots(transaction);

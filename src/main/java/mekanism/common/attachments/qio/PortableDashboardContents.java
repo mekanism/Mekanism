@@ -37,8 +37,12 @@ public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> c
     }
 
     public PortableDashboardContents with(int window, int index, ItemResource itemType, long amount) {
+        return with(window, index, LargeResourceStack.ITEM_HELPER.createStack(itemType, amount));
+    }
+
+    public PortableDashboardContents with(int window, int index, LargeResourceStack<ItemResource> stack) {
         List<LargeResourceStack<ItemResource>> copy = new ArrayList<>(contents);
-        copy.set(getIndex(window, index), LargeResourceStack.ITEM_HELPER.createStack(itemType, amount));
+        copy.set(getIndex(window, index), stack);
         return new PortableDashboardContents(copy);
     }
 

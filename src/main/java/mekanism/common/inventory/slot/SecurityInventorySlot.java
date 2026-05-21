@@ -13,30 +13,36 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.security.SecurityFrequency;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    //TODO - 26.1: Re-evaluate these and how we just make a stack out of the item type
-    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(itemType.toStack()) != null;
+    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccess.forStack(itemType.toStack())) != null;
     public static final BiPredicate<ItemResource, AutomationType> LOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          automationType.isManual() || IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) != null;
-    public static final BiPredicate<ItemResource, AutomationType> LOCK_INSERT_PREDICATE = (itemType, _) ->
-          IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) == null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) != null;
+    public static final BiPredicate<ItemResource, AutomationType> LOCK_INSERT_PREDICATE = (itemType, automationType) ->
+          //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
+          automationType.isInternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) == null;
     public static final BiPredicate<ItemResource, AutomationType> UNLOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          automationType.isManual() || IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack()) == null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) == null;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
-        return new SecurityInventorySlot(UNLOCK_EXTRACT_PREDICATE, (itemType, _) -> {
-            //TODO - 26.1: Re-evaluate how we just make a stack out of the item type
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemType.toStack());
-            return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
-        }, listener, x, y);
+        return new SecurityInventorySlot(UNLOCK_EXTRACT_PREDICATE, (itemType, automationType) -> canInsertUnlock(itemType, automationType, ownerSupplier),
+              listener, x, y);
+    }
+
+    public static boolean canInsertUnlock(ItemResource itemType, AutomationType automationType, Supplier<UUID> ownerSupplier) {
+        if (automationType.isInternal()) {
+            //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
+            return true;
+        }
+        UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack()));
+        return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
     }
 
     public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
@@ -47,38 +53,37 @@ public class SecurityInventorySlot extends BasicInventorySlot {
         super(canExtract, canInsert, VALIDATOR, listener, x, y);
     }
 
-    public void unlock(@NotNull UUID ownerUUID) {
+    public void unlock(UUID ownerUUID, TransactionContext transaction) {
         if (!isEmpty()) {
-            //TODO - 26.1: Figure out and move item security utils to item access?
-            ItemStack current = resource().toStack(amountAsInt());
-            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
+            ItemAccess itemAccess = itemAccess();
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
                 if (ownerUUID.equals(stackOwner)) {
-                    ownerObject.setOwnerUUID(null);
-                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(current);
+                    ownerObject.setOwnerUUID(null, transaction);
+                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
                     if (securityObject != null) {
-                        securityObject.setSecurityMode(SecurityMode.PUBLIC);
+                        securityObject.setSecurityMode(SecurityMode.PUBLIC, transaction);
                     }
                 }
             }
         }
     }
 
-    public void lock(UUID ownerUUID, SecurityFrequency frequency) {
+    public void lock(UUID ownerUUID, SecurityFrequency frequency, TransactionContext transaction) {
         if (!isEmpty()) {
-            //TODO - 26.1: Figure out and move item security utils to item access?
-            ItemStack current = resource().toStack(amountAsInt());
-            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
+            ItemAccess itemAccess = itemAccess();
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
                 if (stackOwner == null) {
-                    ownerObject.setOwnerUUID(stackOwner = ownerUUID);
+                    stackOwner = ownerUUID;
+                    ownerObject.setOwnerUUID(stackOwner, transaction);
                 }
                 if (stackOwner.equals(ownerUUID)) {
-                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(current);
+                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
                     if (securityObject != null) {
-                        securityObject.setSecurityMode(frequency.getSecurity());
+                        securityObject.setSecurityMode(frequency.getSecurity(), transaction);
                     }
                 }
             }

@@ -4,16 +4,18 @@ import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @FunctionalInterface
 public interface IDroppableContents {
 
-    default boolean canContentsDrop(ItemStack stack) {
+    default boolean canContentsDrop(ItemResource itemType) {
         return true;
     }
 
-    default int getScalar(ItemStack stack) {
-        return stack.count();
+    default int getScalar(ItemAccess itemAccess) {
+        return itemAccess.getAmount();
     }
 
     /**
@@ -27,7 +29,7 @@ public interface IDroppableContents {
     interface IDroppableAttachmentContents extends IDroppableContents {
 
         @Override
-        boolean canContentsDrop(ItemStack stack);
+        boolean canContentsDrop(ItemResource itemType);
 
         @Override
         default List<IInventorySlot> getDroppedSlots(ItemStack stack) {

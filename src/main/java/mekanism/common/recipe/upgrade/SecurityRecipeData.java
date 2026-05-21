@@ -8,6 +8,8 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -34,12 +36,17 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
 
     @Override
     public boolean applyToStack(ItemStack stack) {
-        IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
+        //TODO - 26.1: Test that this properly updates the stack in place (it should)
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
         if (ownerObject != null) {
-            ownerObject.setOwnerUUID(owner);
-            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-            if (security != null) {
-                security.setSecurityMode(mode);
+            try (Transaction transaction = Transaction.openRoot()) {
+                ownerObject.setOwnerUUID(owner, transaction);
+                ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
+                if (security != null) {
+                    security.setSecurityMode(mode, transaction);
+                }
+                transaction.commit();
             }
         }
         return true;

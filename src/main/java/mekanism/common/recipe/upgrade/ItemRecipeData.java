@@ -12,6 +12,7 @@ import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             //TODO: Improve the logic so that it maybe tries multiple different slot combinations
             if (applyToStack(stackSlots, slots)) {
                 //We managed to transfer it all into valid slots, so save it as a new inventory
-                return PersonalStorageManager.createInventoryFor(stack, stackSlots);
+                return PersonalStorageManager.createInventoryFor(ItemAccess.forStack(stack), stackSlots);
             }
             return false;
         }

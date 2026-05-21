@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +34,7 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
         super.setPlacedBy(world, pos, state, placer, stack);
         if (!world.isClientSide() && stack.count() == 1 && (!(placer instanceof Player player) || !player.getAbilities().instabuild)) {
             //itemstack will be deleted, remove the stored inventory
-            PersonalStorageManager.deleteInventory(stack);
+            PersonalStorageManager.deleteInventory(ItemAccess.forStack(stack));
         }
     }
 }

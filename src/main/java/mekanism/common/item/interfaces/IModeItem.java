@@ -4,12 +4,14 @@ import java.util.function.Function;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,8 +85,8 @@ public interface IModeItem {
 
         MODE getDefaultMode();
 
-        default MODE getMode(ItemInstance stack) {
-            return stack.getOrDefault(getModeDataType(), getDefaultMode());
+        default <ITEM extends TypedInstance<Item> & DataComponentGetter> MODE getMode(ITEM instance) {
+            return instance.getOrDefault(getModeDataType(), getDefaultMode());
         }
 
         default void setMode(ItemStack stack, Player player, MODE mode) {

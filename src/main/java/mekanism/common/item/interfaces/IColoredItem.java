@@ -20,7 +20,7 @@ public interface IColoredItem {
         DataComponentType<FrequencyAware<FREQ>> frequencyComponent = (DataComponentType<FrequencyAware<FREQ>>) getFrequencyComponent();
         if (frequencyComponent != null) {
             FrequencyAware<FREQ> frequencyAware = stack.getOrDefault(frequencyComponent, FrequencyAware.none());
-            if (frequencyAware.getFrequency(stack, frequencyComponent) instanceof IColorableFrequency frequency) {
+            if (frequencyAware.frequency().orElse(null) instanceof IColorableFrequency frequency) {
                 stack.set(MekanismDataComponents.COLOR, frequency.getColor());
             } else {
                 stack.remove(MekanismDataComponents.COLOR);

@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.permission.PermissionAPI;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -208,15 +209,15 @@ public final class SecurityUtils implements ISecurityUtils {
         return getFinalData(securityObject, isClient).mode();
     }
 
-    public void incrementSecurityMode(Player player, @Nullable ISecurityObject security) {
+    public void incrementSecurityMode(Player player, @Nullable ISecurityObject security, @Nullable TransactionContext transaction) {
         if (security != null && security.ownerMatches(player)) {
-            security.setSecurityMode(security.getSecurityMode().getNext());
+            security.setSecurityMode(security.getSecurityMode().getNext(), transaction);
         }
     }
 
-    public void decrementSecurityMode(Player player, @Nullable ISecurityObject security) {
+    public void decrementSecurityMode(Player player, @Nullable ISecurityObject security, @Nullable TransactionContext transaction) {
         if (security != null && security.ownerMatches(player)) {
-            security.setSecurityMode(security.getSecurityMode().getPrevious());
+            security.setSecurityMode(security.getSecurityMode().getPrevious(), transaction);
         }
     }
 

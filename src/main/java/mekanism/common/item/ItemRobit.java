@@ -50,6 +50,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +80,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         }
         tooltipAdder.accept(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
         tooltipAdder.accept(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
         tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
     }
 
@@ -100,17 +101,18 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                 //EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                 EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
                     robit.setHome(chargepad.getTileGlobalPos());
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                    ItemAccess itemAccess = ItemAccess.forStack(stack);
+                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(itemAccess, 0);
                     if (energyContainer != null) {
                         robit.getEnergyContainer().copyContents(energyContainer);
                     }
-                    UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+                    UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                     if (ownerUUID == null) {
-                        robit.setOwnerUUID(player.getUUID());
+                        robit.setOwnerUUID(player.getUUID(), null);
                         //If the robit doesn't already have an owner, make sure we portray this
                         PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
                     } else {
-                        robit.setOwnerUUID(ownerUUID);
+                        robit.setOwnerUUID(ownerUUID, null);
                     }
                     List<IInventorySlot> robitSlots = robit.getInventorySlots();
                     ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
@@ -124,9 +126,9 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     if (name != null) {
                         robit.setCustomName(name);
                     }
-                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
                     if (securityObject != null) {
-                        robit.setSecurityMode(securityObject.getSecurityMode());
+                        robit.setSecurityMode(securityObject.getSecurityMode(), null);
                     }
                     robit.setSkin(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
                     robit.setDefaultSkinManuallySelected(stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
@@ -146,8 +148,8 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new SecurityObject(stack), this);
-        event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new SecurityObject(stack), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (_, itemAccess) -> new SecurityObject(itemAccess), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (_, itemAccess) -> new SecurityObject(itemAccess), this);
     }
 
     @Override

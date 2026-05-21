@@ -32,6 +32,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,7 +71,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (ContainerType.ITEM.supports(stack) || item instanceof ItemBlockPersonalStorage) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null) {
+        if (IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccess.forStack(stack)) != null) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -107,7 +108,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM -> {
                 List<IInventorySlot> slots;
                 if (stack.getItem() instanceof ItemBlockPersonalStorage) {
-                    var inv = PersonalStorageManager.getInventoryIfPresent(stack);
+                    var inv = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
                     slots = inv != null ? inv.getContainers() : Collections.emptyList();
                 } else {
                     slots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
@@ -124,13 +125,14 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield lockType.isEmpty() ? null : new LockRecipeData(lockType);
             }
             case SECURITY -> {
-                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+                ItemAccess itemAccess = ItemAccess.forStack(stack);
+                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                 if (ownerUUID == null) {
                     yield null;
                 }
                 //Treat owner items as public even though they are private as we don't want to lower the output
                 // item's security just because it has one item that is owned
-                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }

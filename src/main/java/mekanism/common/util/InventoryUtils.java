@@ -26,12 +26,15 @@ import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -43,6 +46,15 @@ public final class InventoryUtils {
     private InventoryUtils() {
     }
 
+    /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
+    public static ItemAccess playerHandAccess(Player player, InteractionHand hand) {
+        //TODO - 26.1: See what should be moved to this from forPlayerInteraction
+        return ItemAccess.forPlayerSlot(player, switch (hand) {
+            case MAIN_HAND -> player.getInventory().getSelectedSlot();
+            case OFF_HAND -> Inventory.SLOT_OFFHAND;
+        });
+    }
+
     /**
      * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
      */
@@ -50,37 +62,39 @@ public final class InventoryUtils {
         ItemStack stack = entity.getItem();
         Level level = entity.level();
         if (!level.isClientSide() && !stack.isEmpty()) {
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            ItemResource itemType = itemAccess.getResource();
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
-                if (!IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
+                if (!IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
                     return;
                 }
-            } else if (!IItemSecurityUtils.INSTANCE.canAccess(null, stack, false)) {
+            } else if (!IItemSecurityUtils.INSTANCE.canAccess(null, itemAccess, false)) {
                 // otherwise, just check against there being no known player
                 return;
             }
-            int scalar = stack.count();
+            int scalar = itemAccess.getAmount();
             BlockPos blockPos = entity.blockPosition();
             ItemDropper<BlockPos> dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
-            if (stack.getItem() instanceof IDroppableContents inventory) {
-                if (inventory.canContentsDrop(stack)) {
-                    scalar = inventory.getScalar(stack);
+            if (itemType.getItem() instanceof IDroppableContents inventory) {
+                if (inventory.canContentsDrop(itemType)) {
+                    scalar = inventory.getScalar(itemAccess);
                     dropItemContents(level, blockPos, inventory.getDroppedSlots(stack), scalar, dropper);
                 } else {
                     //Explicitly denying dropping items
                     return;
                 }
-            } else if (ContainerType.ITEM.supports(stack)) {
+            } else if (ContainerType.ITEM.supports(itemType)) {
                 dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
             }
-            UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+            UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, LargeResourceStack::resource, LargeResourceStack::amount);
                 dropItemContents(level, blockPos, upgradeAware.upgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getResource(entry.getKey()),
                       Map.Entry::getValue);
             }
-            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
+            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(itemType);
             if (moduleContainer != null) {
                 dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper,
                       module -> ItemResource.of(module.getUntypedData().getItemHolder()), IModule::getInstalledCount);
@@ -111,12 +125,11 @@ public final class InventoryUtils {
         }
     }
 
-    /**
-     * Helper to drop a stack that may potentially be oversized.
-     *
-     * @param stack   Item Stack to drop, may be passed directly to the dropper.
-     * @param dropper Called to drop the item.
-     */
+    /// Helper to drop a stack that may potentially be oversized.
+    ///
+    /// @param itemType Item type to drop.
+    /// @param amount   Amount of the item to drop.
+    /// @param dropper  Called to drop the item.
     public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, long amount, ItemDropper<POS> dropper) {
         //TODO - 26.1: Do we really want to be letting it drop long amount of stacks?
         // This never *really* would happen because of how our multiblock's inventories are currently setup... but this feels wrong

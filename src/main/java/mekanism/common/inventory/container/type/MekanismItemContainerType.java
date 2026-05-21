@@ -1,88 +1,89 @@
 package mekanism.common.inventory.container.type;
 
+import java.util.function.Predicate;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
-import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.network.to_client.qio.BulkQIOData;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.IContainerFactory;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
-public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<ITEM, CONTAINER,
-      IMekanismItemContainerFactory<ITEM, CONTAINER>> {
+public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<CONTAINER, IMekanismItemContainerFactory<CONTAINER>> {
 
-    public static <ITEM extends Item, CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<ITEM, CONTAINER> item(Class<ITEM> type,
-          IMekanismItemContainerFactory<ITEM, CONTAINER> constructor) {
-        return new MekanismItemContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, buf.readEnum(InteractionHand.class), getStackFromBuffer(buf, type)));
+    public static <CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<CONTAINER> item(Predicate<Item> typeValidator,
+          IMekanismItemContainerFactory<CONTAINER> constructor) {
+        return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
+            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            return constructor.create(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand));
+        });
     }
 
-    public static <ITEM extends Item, CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<ITEM, CONTAINER> item(Class<ITEM> type,
-          IMekanismSidedItemContainerFactory<ITEM, CONTAINER> constructor) {
-        return new MekanismItemContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, buf.readEnum(InteractionHand.class), getStackFromBuffer(buf, type), true));
+    public static <CONTAINER extends AbstractContainerMenu> MekanismItemContainerType<CONTAINER> item(Predicate<Item> typeValidator,
+          IMekanismSidedItemContainerFactory<CONTAINER> constructor) {
+        return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
+            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            return constructor.create(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand), true);
+        });
     }
 
-    public static MekanismItemContainerType<ItemPortableQIODashboard, PortableQIODashboardContainer> qioDashboard() {
-        return new MekanismItemContainerType<>(ItemPortableQIODashboard.class,
-              (id, inv, hand, stack) -> new PortableQIODashboardContainer(id, inv, hand, stack, false, BulkQIOData.INITIAL_SERVER),
-              (id, inv, buf) -> new PortableQIODashboardContainer(id, inv, buf.readEnum(InteractionHand.class),
-                    getStackFromBuffer(buf, ItemPortableQIODashboard.class), true, BulkQIOData.fromPacket(buf))
+    public static MekanismItemContainerType<PortableQIODashboardContainer> qioDashboard() {
+        return new MekanismItemContainerType<>(MekanismItems.PORTABLE_QIO_DASHBOARD::is,
+              (id, inv, hand, itemAccess) -> new PortableQIODashboardContainer(id, inv, hand, itemAccess, false, BulkQIOData.INITIAL_SERVER),
+              (id, inv, buf) -> {
+                  InteractionHand hand = buf.readEnum(InteractionHand.class);
+                  return new PortableQIODashboardContainer(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand), true, BulkQIOData.fromPacket(buf));
+              }
         );
     }
 
-    protected MekanismItemContainerType(Class<ITEM> type, IMekanismItemContainerFactory<ITEM, CONTAINER> mekanismConstructor, IContainerFactory<CONTAINER> constructor) {
-        super(type, mekanismConstructor, constructor);
+    private final Predicate<Item> typeValidator;
+
+    protected MekanismItemContainerType(Predicate<Item> typeValidator, IMekanismItemContainerFactory<CONTAINER> mekanismConstructor,
+          IContainerFactory<CONTAINER> constructor) {
+        super(mekanismConstructor, constructor);
+        this.typeValidator = typeValidator;
     }
 
     @Nullable
-    public CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
-        if (!stack.isEmpty() && type.isInstance(stack.getItem())) {
-            return mekanismConstructor.create(id, inv, hand, stack);
+    public CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess) {
+        ItemResource itemType = itemAccess.getResource();
+        if (!itemType.isEmpty() && typeValidator.test(itemType.getItem())) {
+            return mekanismConstructor.create(id, inv, hand, itemAccess);
         }
         return null;
     }
 
     @Nullable
-    public MenuConstructor create(InteractionHand hand, ItemStack stack) {
-        if (!stack.isEmpty() && type.isInstance(stack.getItem())) {
-            return (id, inv, player) -> mekanismConstructor.create(id, inv, hand, stack);
+    public MenuConstructor create(InteractionHand hand, ItemResource itemType) {
+        if (!itemType.isEmpty() && typeValidator.test(itemType.getItem())) {
+            return (id, inv, player) -> mekanismConstructor.create(id, inv, hand, InventoryUtils.playerHandAccess(player, hand));
         }
         return null;
     }
 
-    @NotNull
-    private static <ITEM extends Item> ItemStack getStackFromBuffer(RegistryFriendlyByteBuf buffer, Class<ITEM> type) {
-        if (buffer == null) {
-            throw new IllegalArgumentException("Null packet buffer");
-        }
-        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
-        if (type.isInstance(stack.getItem())) {
-            return stack;
-        }
-        throw new IllegalStateException("Client received invalid stack (" + stack.getItem() + ") for item container.");
+    @FunctionalInterface
+    public interface IMekanismItemContainerFactory<CONTAINER extends AbstractContainerMenu> {
+
+        CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess);
     }
 
     @FunctionalInterface
-    public interface IMekanismItemContainerFactory<ITEM extends Item, CONTAINER extends AbstractContainerMenu> {
-
-        CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemStack stack);
-    }
-
-    @FunctionalInterface
-    public interface IMekanismSidedItemContainerFactory<ITEM extends Item, CONTAINER extends AbstractContainerMenu> extends IMekanismItemContainerFactory<ITEM, CONTAINER> {
+    public interface IMekanismSidedItemContainerFactory<CONTAINER extends AbstractContainerMenu> extends IMekanismItemContainerFactory<CONTAINER> {
 
 
-        CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote);
+        CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean remote);
 
         @Override
-        default CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
-            return create(id, inv, hand, stack, false);
+        default CONTAINER create(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess) {
+            return create(id, inv, hand, itemAccess, false);
         }
     }
 }

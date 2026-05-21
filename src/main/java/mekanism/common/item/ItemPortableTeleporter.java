@@ -23,6 +23,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem, ICapabilityAware {
@@ -34,7 +35,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
         MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
@@ -57,6 +58,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new OwnerObject(stack), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (_, itemAccess) -> new OwnerObject(itemAccess), this);
     }
 }

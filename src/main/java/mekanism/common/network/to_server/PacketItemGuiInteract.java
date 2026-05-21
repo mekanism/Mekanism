@@ -2,7 +2,6 @@ package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.SecurityUtils;
@@ -15,8 +14,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionHand hand, int extra) implements IMekanismPacket {
@@ -42,29 +44,44 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty()) {
-            interaction.consume(stack, player, extra);
+        //TODO - 26.1: Do we need to bypass creative handling of forPlayerInteraction?
+        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+        if (itemAccess.getAmount() > 0) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                interaction.consume(itemAccess, player, extra, transaction);
+                transaction.commit();
+            }
         }
     }
 
     public enum ItemGuiInteraction {
-        TARGET_DIRECTION_BUTTON((stack, player, extra) -> stack.update(MekanismDataComponents.INSERT_INTO_FREQUENCY, true, val -> !val)),
+        TARGET_DIRECTION_BUTTON((itemAccess, _, _, transaction) -> {
+            ItemResource resource = itemAccess.getResource();
+            boolean currentValue = resource.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
+            resource = resource.with(MekanismDataComponents.INSERT_INTO_FREQUENCY, !currentValue);
+            itemAccess.exchange(resource, itemAccess.getAmount(), transaction);
+        }),
 
-        NEXT_SECURITY_MODE((stack, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack))),
-        PREVIOUS_SECURITY_MODE((stack, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack)));
+        NEXT_SECURITY_MODE((itemAccess, player, _, transaction) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), transaction)),
+        PREVIOUS_SECURITY_MODE((itemAccess, player, _, transaction) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), transaction));
 
         public static final IntFunction<ItemGuiInteraction> BY_ID = ByIdMap.continuous(ItemGuiInteraction::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ItemGuiInteraction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ItemGuiInteraction::ordinal);
 
-        private final TriConsumer<ItemStack, Player, Integer> consumerForTile;
+        private final ConsumerForItem consumerForItem;
 
-        ItemGuiInteraction(TriConsumer<ItemStack, Player, Integer> consumerForTile) {
-            this.consumerForTile = consumerForTile;
+        ItemGuiInteraction(ConsumerForItem consumerForItem) {
+            this.consumerForItem = consumerForItem;
         }
 
-        public void consume(ItemStack stack, Player player, int extra) {
-            consumerForTile.accept(stack, player, extra);
+        public void consume(ItemAccess itemAccess, Player player, int extra, TransactionContext transaction) {
+            consumerForItem.accept(itemAccess, player, extra, transaction);
+        }
+
+        @FunctionalInterface
+        private interface ConsumerForItem {
+
+            void accept(ItemAccess itemAccess, Player player, int extra, TransactionContext transaction);
         }
     }
 }

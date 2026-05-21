@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>> {
@@ -25,7 +26,7 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileE
     protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: We manually override this as we don't want to display the security mode for the security desk as while it technically
         // has one in reality it is always private
-        IItemSecurityUtils.INSTANCE.addOwnerTooltip(stack, tooltipAdder);
+        IItemSecurityUtils.INSTANCE.addOwnerTooltip(ItemAccess.forStack(stack), tooltipAdder);
         tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
     }
 }

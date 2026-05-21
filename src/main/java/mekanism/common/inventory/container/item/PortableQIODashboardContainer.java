@@ -17,36 +17,37 @@ import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     protected final InteractionHand hand;
-    protected ItemStack stack;
+    protected final ItemAccess itemAccess;
     private QIOFrequency freq;
 
-    public PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote, BulkQIOData itemData) {
-        this(id, inv, hand, stack, remote, new PortableQIODashboardInventory(inv.player.level(), stack), itemData,
+    public PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean remote, BulkQIOData itemData) {
+        this(id, inv, hand, itemAccess, remote, new PortableQIODashboardInventory(inv.player.level(), itemAccess), itemData,
               remote ? CachedSearchData.initialClient() : CachedSearchData.INITIAL_SERVER,
               remote ? CachedSortingData.currentClient() : CachedSortingData.SERVER,
               null, null);
     }
 
-    private PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder,
+    private PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder,
           BulkQIOData itemData, CachedSearchData searchData, CachedSortingData sortingData, @Nullable SelectedWindowData selectedWindow, QIOFrequency freq) {
         super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote, craftingWindowHolder, itemData, searchData, sortingData, selectedWindow);
         this.hand = hand;
         this.freq = freq;
-        this.stack = stack;
-        if (!stack.isEmpty()) {
-            //It shouldn't be empty but validate it just in case
+        this.itemAccess = itemAccess;
+        if (isValidType(this.itemAccess.getResource())) {
             addContainerTrackers();
         }
         addSlotsAndOpen();
@@ -56,13 +57,13 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         return hand;
     }
 
-    public ItemStack getStack() {
-        return stack;
+    public ItemResource getItemType() {
+        return itemAccess.getResource();
     }
 
     @Override
     protected PortableQIODashboardContainer recreateUnchecked() {
-        return new PortableQIODashboardContainer(containerId, inv, hand, stack, true, craftingWindowHolder, asBulkData(), asCachedSearchData(), currentSortingData(),
+        return new PortableQIODashboardContainer(containerId, inv, hand, itemAccess, true, craftingWindowHolder, asBulkData(), asCachedSearchData(), currentSortingData(),
               getSelectedWindow(), freq);
     }
 
@@ -77,8 +78,8 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     protected void addContainerTrackers() {
-        if (stack.getItem() instanceof IItemContainerTracker containerTracker) {
-            containerTracker.addContainerTrackers(this, stack);
+        if (itemAccess.getResource().getItem() instanceof IItemContainerTracker containerTracker) {
+            containerTracker.addContainerTrackers(this, itemAccess);
         }
         track(SyncableFrequency.create(FrequencyTypes.QIO, this::getFrequency, f -> freq = f));
     }
@@ -89,12 +90,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (offhandSlots.isEmpty()) {
             //If we don't have a slot relating to offhand data, add a syncable itemstack to track any changes that might happen to the stack
             // as some of them may need to be reflected in the GUI https://github.com/mekanism/Mekanism/issues/7923
-            track(SyncableItemStack.create(inv.player::getOffhandItem, item -> {
-                inv.player.setItemSlot(EquipmentSlot.OFFHAND, item);
-                if (hand == InteractionHand.OFF_HAND && stack.is(item.getItem())) {
-                    stack = item;
-                }
-            }));
+            track(SyncableItemStack.create(inv.player::getOffhandItem, item -> inv.player.setItemSlot(EquipmentSlot.OFFHAND, item)));
         }
     }
 
@@ -106,16 +102,6 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
                 @Override
                 public boolean mayPickup(@NotNull Player player) {
                     return false;
-                }
-
-                @Override
-                public void setChanged() {
-                    super.setChanged();
-                    ItemStack item = getItem();
-                    if (stack.is(item.getItem())) {
-                        //Track changes to the main hand's slot
-                        stack = item;
-                    }
                 }
             };
         }
@@ -140,24 +126,28 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return IItemSecurityUtils.INSTANCE.canAccess(player, stack);
+        return IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess);
     }
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return !this.stack.isEmpty() && player.getItemInHand(this.hand).is(this.stack.getItem());
+        return isValidType(itemAccess.getResource());
+    }
+
+    protected boolean isValidType(ItemResource itemType) {
+        return !itemType.isEmpty() && MekanismItems.PORTABLE_QIO_DASHBOARD.is(itemType);
     }
 
     @Override
     public boolean shiftClickIntoFrequency() {
-        //Shouldn't be empty but validate it
-        return !this.stack.isEmpty() && stack.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
+        ItemResource resource = itemAccess.getResource();
+        //Shouldn't be empty, as otherwise stillValid would fail, but validate it just in case
+        return !resource.isEmpty() && resource.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
     }
 
     @Override
     public void toggleTargetDirection() {
         //Change the data client side so that it is reflected in the gui as we don't handle updating client side data
         PacketUtils.sendToServer(new PacketItemGuiInteract(ItemGuiInteraction.TARGET_DIRECTION_BUTTON, this.hand));
-        //stack.set(MekanismDataComponents.INSERT_INTO_FREQUENCY, !stack.getData(MekanismDataComponents.INSERT_INTO_FREQUENCY));
     }
 }

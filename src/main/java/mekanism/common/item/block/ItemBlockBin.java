@@ -59,7 +59,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
     }
 
     @Override
-    public boolean canContentsDrop(ItemStack stack) {
+    public boolean canContentsDrop(ItemResource itemType) {
         return getTier() != BinTier.CREATIVE;
     }
 }

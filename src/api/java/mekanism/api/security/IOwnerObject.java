@@ -3,8 +3,9 @@ package mekanism.api.security;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Expose this as a capability on items, entities, or block entities to represent it is an object that can be "owned".
@@ -34,15 +35,16 @@ public interface IOwnerObject {
     @Nullable
     String getOwnerName();
 
-    /**
-     * Sets the owner of this object to the given user.
-     *
-     * @param owner Owner or {@code null} to remove the current owner.
-     *
-     * @apiNote This method should not be called by addons unless it is on one of your own objects; for example to transfer the set owner from an item stack to an entity
-     * when placing an entity.
-     */
-    void setOwnerUUID(@Nullable UUID owner);
+    /// Sets the owner of this object to the given user.
+    ///
+    /// @param owner       Owner or `null` to remove the current owner.
+    /// @param transaction The current transaction context if any that this operation is part of.
+    ///
+    /// @implNote Only implementations for items currently support rolling back via the passed in transaction.
+    /// @apiNote This method should not be called by addons unless it is on one of your own objects; for example to transfer the set owner from an item stack to an entity
+    /// when placing an entity.
+    /// @since 10.8.0
+    void setOwnerUUID(@Nullable UUID owner, @Nullable TransactionContext transaction);
 
     /**
      * Helper method to check if the given player is the owner of this object.
@@ -51,7 +53,7 @@ public interface IOwnerObject {
      *
      * @return {@code true} if the player is the owner, {@code false} if the player isn't the owner or there is no owner currently set.
      */
-    default boolean ownerMatches(@NotNull Player player) {
+    default boolean ownerMatches(@NonNull Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
         return player.getUUID().equals(getOwnerUUID());
     }

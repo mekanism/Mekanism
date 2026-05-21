@@ -55,8 +55,8 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return new BasicInventorySlot(canExtract, canInsert, validator, listener, x, y);
     }
 
-    //TODO - 26.1: Figure out what automation type this should have
-    private final ItemAccess itemAccess = new InventorySlotItemAccess(this, AutomationType.MANUAL);
+    //TODO - 26.1: Figure out what automation type this should have, or if it should be hardcoded to automation type internal?
+    private final ItemAccess itemAccess = new InventorySlotItemAccess(this, AutomationType.INTERNAL);
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;

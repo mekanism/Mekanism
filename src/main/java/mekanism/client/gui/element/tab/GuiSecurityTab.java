@@ -30,6 +30,7 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
@@ -74,7 +75,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @NotNull InteractionHand hand) {
-        this(gui, new SecurityInfoProvider<>(IItemSecurityUtils.INSTANCE, () -> minecraft.player.getItemInHand(hand)), 34, hand);
+        this(gui, new SecurityInfoProvider<>(IItemSecurityUtils.INSTANCE, () -> InventoryUtils.playerHandAccess(minecraft.player, hand)), 34, hand);
     }
 
     private GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y, @Nullable InteractionHand hand) {

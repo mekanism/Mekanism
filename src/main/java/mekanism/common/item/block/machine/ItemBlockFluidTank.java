@@ -113,9 +113,11 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
-            if (ItemSecurityUtils.get().tryClaimItem(level, player, stack)) {
+            //TODO - 26.1: Should this use this or forPlayerInteraction
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, null)) {
                 return InteractionResult.SUCCESS;
-            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
                 return InteractionResult.FAIL;
             } else if (stack.count() > 1) {
                 //Skip if the item is stacked
@@ -123,8 +125,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             }
             SoundEvent milkSound = getMilkSound(entity);
             if (milkSound != null) {
-                //TODO - 26.1: Should the item access come from the stack or the player and hand
-                ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+                ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
                 if (fluidHandler == null) {
                     //If there isn't a fluid handler then there is something wrong with the stack, treat it as a normal stack and skip
                     return InteractionResult.PASS;
@@ -171,14 +172,15 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (!getMode(stack)) {
+        //TODO - 26.1: Re-evaluate this item access (and more accurately the usages of stack)
+        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+        if (!getMode(itemAccess.getResource())) {
             return InteractionResult.PASS;
-        } else if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
-            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
-        } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+        } else if (ItemSecurityUtils.get().tryClaimItem(world, player, itemAccess, null)) {
+            return InteractionResult.SUCCESS.heldItemTransformedTo(itemAccess.getResource().toStack(itemAccess.getAmount()));
+        } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
             return InteractionResult.FAIL;
-        } else if (stack.count() > 1) {
+        } else if (itemAccess.getAmount() > 1) {
             //Skip if the item is stacked
             return InteractionResult.PASS;
         }
@@ -193,14 +195,13 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             return InteractionResult.FAIL;
         }
         //TODO - 26.1: Evaluate FluidUtil#tryPickupFluid for this and for pumps
-
-        //TODO - 26.1: Re-evaluate this item access (and more accurately the usages of stack)
-        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
         ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
         if (fluidHandler == null) {
             //If something went wrong, and we don't have a fluid handler fail
             return InteractionResult.FAIL;
         }
+        //TODO - 26.1: Re-evaluate this, and if we should get it from the item access
+        ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!player.mayUseItemAt(pos, result.getDirection(), stack)) {
                 return InteractionResult.FAIL;

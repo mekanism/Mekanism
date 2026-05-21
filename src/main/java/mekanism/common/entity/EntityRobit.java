@@ -125,6 +125,7 @@ import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -431,10 +432,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.asStack();
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
-            mekHandler.getContainer(0).copyContents(energyContainer);
-        }
         ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
             IInventorySlot inventorySlot = inventorySlots.get(slot);
@@ -445,13 +442,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }
-        ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-        if (security != null) {
-            security.setOwnerUUID(getOwnerUUID());
-            security.setSecurityMode(getSecurityMode());
-        }
         stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
         stack.set(MekanismDataComponents.ROBIT_SKIN, getSkinId());
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
+            mekHandler.getContainer(0).copyContents(energyContainer);
+        }
+        ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
+        if (security != null) {
+            security.setOwnerUUID(getOwnerUUID(), null);
+            security.setSecurityMode(getSecurityMode(), null);
+        }
         return stack;
     }
 
@@ -492,8 +494,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
     @Override
     public void readAdditionalSaveData(@NotNull ValueInput input) {
         super.readAdditionalSaveData(input);
-        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
+        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(ownerUUID -> setOwnerUUID(ownerUUID, null));
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> setSecurityMode(mode, null));
         setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
@@ -557,18 +559,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
     }
 
     @Override
-    public void setSecurityMode(@NotNull SecurityMode mode) {
+    public void setSecurityMode(@NotNull SecurityMode mode, @Nullable TransactionContext transaction) {
         SecurityMode current = getSecurityMode();
         if (current != mode) {
             entityData.set(SECURITY, mode);
-            onSecurityChanged(current, mode);
-        }
-    }
-
-    @Override
-    public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        if (!level().isClientSide()) {
-            EntitySecurityUtils.get().securityChanged(playersUsing, this, old, mode);
+            if (!level().isClientSide()) {
+                EntitySecurityUtils.get().securityChanged(playersUsing, this, current, mode);
+            }
         }
     }
 
@@ -581,7 +578,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
     }
 
     @Override
-    public void setOwnerUUID(UUID uuid) {
+    public void setOwnerUUID(UUID uuid, @Nullable TransactionContext transaction) {
         entityData.set(OWNER_UUID, uuid);
         entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
     }

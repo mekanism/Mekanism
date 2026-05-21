@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -57,7 +56,11 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
 
     @Override
     public void onContentsChanged() {
-        Objects.requireNonNull(parent, "Incorrect deserialisation, setParent not called").onContentsChanged();
+        //TODO - 26.1: Switch back to this once we make make it so onContentsChanged isn't called for deserialization?
+        //Objects.requireNonNull(parent, "Incorrect deserialisation, setParent not called").onContentsChanged();
+        if (parent != null) {
+            parent.onContentsChanged();
+        }
     }
 
     record SlotData(int slot, ItemResource itemType, long amount) {
