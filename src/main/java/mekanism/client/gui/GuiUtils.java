@@ -32,24 +32,6 @@ public class GuiUtils {
     private GuiUtils() {
     }
 
-    // Note: Does not validate that the passed in dimensions are valid
-    // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
-    // where the background texture is a single color
-    @Deprecated(forRemoval = true)//replace with proper gui sprite
-    public static void renderExtendedTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
-        int textureWidth = 2 * sideWidth + 1;
-        int textureHeight = 2 * sideHeight + 1;
-        blitNineSlicedSized(guiGraphics, resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
-    }
-
-    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
-    // small textures will tank FPS due to tiling
-    @Deprecated(forRemoval = true)//replace with proper gui sprite
-    public static void renderBackgroundTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int texSideWidth, int texSideHeight, int left, int top, int width,
-          int height, int textureWidth, int textureHeight) {
-        blitNineSlicedSized(guiGraphics, resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
-    }
-
     public static void drawOutline(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int color) {
         fill(guiGraphics, x, y, width, 1, color);
         fill(guiGraphics, x, y + height - 1, width, 1, color);

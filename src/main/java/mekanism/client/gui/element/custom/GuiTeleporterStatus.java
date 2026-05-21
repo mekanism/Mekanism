@@ -35,8 +35,8 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    protected int getButtonTextureY(boolean hoveredOrFocused) {
-        return 1;
+    protected Identifier getButtonVariant(boolean hoveredOrFocused) {
+        return ButtonBackground.DEFAULT.base();//todo - 26.1: check me
     }
 
     @Override

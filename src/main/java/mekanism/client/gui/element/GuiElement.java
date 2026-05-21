@@ -14,7 +14,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -44,6 +44,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -280,13 +281,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int zOffset, int totalOffset) {
+    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (visible) {
-            Matrix3x2fStack pose = guiGraphics.pose();
-            //TODO - 26.1 - zIndex
-            //pose.translate(0, 0, zOffset);
-            // update the max total offset to prevent clashing of future overlays
-            GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
             // render background overlay and children above everything else
             renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             // render children just above background overlay
@@ -298,11 +294,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             }
             renderForeground(guiGraphics, mouseX, mouseY);
             // translate forward to render child foreground
-            for (GuiElement child : children) {//Only apply the z shift to each child instead of having future children be translated by more as well
+            for (GuiElement child : children) {
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
-                pose.pushMatrix();
-                child.onRenderForeground(guiGraphics, mouseX, mouseY, 50, totalOffset + 50);
-                pose.popMatrix();
+                child.onRenderForeground(guiGraphics, mouseX, mouseY);
             }
         }
     }
@@ -537,13 +531,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return height;
     }
 
-    /**
-     * Override this if you do not want {@link #drawButton(GuiGraphicsExtractor, int, int)} to reset the color before drawing.
-     */
-    protected boolean resetColorBeforeRender() {
-        return true;
-    }
-
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, mouseX, mouseY, GuiElement::isMouseOver);
@@ -647,30 +634,22 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    protected int getButtonTextureY(boolean hoveredOrFocused) {
+    protected Identifier getButtonVariant(boolean hoveredOrFocused) {
         if (!this.active) {
-            return 0;
+            return buttonBackground.inactive();
         } else if (hoveredOrFocused) {
-            return 2;
+            return buttonBackground.focus();
         }
-        return 1;
+        return buttonBackground.base();
     }
 
-    /**
-     * Based on the code in AbstractButton#renderWidget
-     */
+    protected int getButtonBlitColor() {
+        return CommonColors.WHITE;//no color by default
+    }
+
     protected void drawButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        if (resetColorBeforeRender()) {
-            MekanismRenderer.resetColor(guiGraphics);
-        }
-        Identifier texture = buttonBackground.getTexture();
-        //RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
-        //RenderSystem.enableDepthTest();
-        int i = getButtonTextureY(isMouseOverCheckWindows(mouseX, mouseY));
-        //Note: SliceWidth and sliceHeight are copied from AbstractButton
-        GuiUtils.blitNineSlicedSized(guiGraphics, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 20, 4, BUTTON_TEX_X,
-              BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
+        Identifier texture = getButtonVariant(isMouseOverCheckWindows(mouseX, mouseY));
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), getButtonBlitColor());
     }
 
     @Deprecated(forRemoval = true)
@@ -718,18 +697,30 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public enum ButtonBackground {
-        DEFAULT(MekanismUtils.getResource(ResourceType.GUI, "button.png")),
-        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png")),
+        DEFAULT(Mekanism.rl("button")),
+        DIGITAL(Mekanism.rl("button_digital")),
         NONE(null);
 
-        private final Identifier texture;
+        private final Identifier base;
+        private final Identifier focus;
+        private final Identifier inactive;//i.e. disabled?
 
-        ButtonBackground(Identifier texture) {
-            this.texture = texture;
+        ButtonBackground(Identifier base) {
+            this.base = base;
+            this.focus = base != null ? base.withSuffix("_focus") : null;
+            this.inactive = base != null ? base.withSuffix("_inactive") : null;
         }
 
-        public Identifier getTexture() {
-            return texture;
+        public Identifier base() {
+            return base;
+        }
+
+        public Identifier focus() {
+            return focus;
+        }
+
+        public Identifier inactive() {
+            return inactive;
         }
     }
 

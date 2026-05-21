@@ -38,7 +38,7 @@ public class MekanismImageButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), 0, 0, getButtonWidth(), getButtonHeight(), textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
     protected Identifier getResource() {

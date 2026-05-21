@@ -87,9 +87,9 @@ sourceSets {
         }
         resources {
             include('**/**')
-            // copy everything else, but blender and bbmodel files.
+            // copy everything else, but blender, psd, and bbmodel files.
             // And also exclude the cache of the generated data from what gets built
-            exclude('**/*.blend', '**/*.bbmodel', '.cache')
+            exclude('**/*.blend', '**/*.bbmodel', '**/*.psd', '.cache')
             //Add the generated main module resources
             srcDirs += ['src/datagen/generated/mekanism']
         }

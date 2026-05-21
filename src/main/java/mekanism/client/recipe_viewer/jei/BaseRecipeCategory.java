@@ -215,7 +215,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         int zOffset = 0;//200;
         for (GuiElement element : guiElements) {
             matrix.pushMatrix();
-            element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
+            element.onRenderForeground(guiGraphics, x, y);
             matrix.popMatrix();
         }
     }

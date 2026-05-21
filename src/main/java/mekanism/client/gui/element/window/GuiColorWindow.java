@@ -14,6 +14,7 @@ import mekanism.client.gui.element.custom.GuiEntityPreview;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
@@ -35,7 +36,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiColorWindow extends GuiWindow {
 
-    public static final Identifier TRANSPARENCY_GRID = MekanismUtils.getResource(ResourceType.GUI, "transparency_grid.png");
+    //TODO - 26.1: confirm tile blit works
+    public static final Identifier TRANSPARENCY_GRID = Mekanism.rl("transparency_grid");
     private static final Identifier HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
     private static final int S_TILES = 10, V_TILES = 10;
 
@@ -216,8 +218,7 @@ public class GuiColorWindow extends GuiWindow {
 
     private void drawTransparencyGrid(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         if (handlesAlpha) {
-            //TODO - 26.1: gui rendering
-            //guiGraphics.blit(TRANSPARENCY_GRID, x, y, 0, 0, width, height);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, TRANSPARENCY_GRID, x, y, width, height);
         }
     }
 

@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,9 +24,6 @@ public class FilterSelectButton extends MekanismButton {
 
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (resetColorBeforeRender()) {
-            MekanismRenderer.resetColor(guiGraphics);
-        }
         //TODO - 26.1 Gui blend
         //RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();

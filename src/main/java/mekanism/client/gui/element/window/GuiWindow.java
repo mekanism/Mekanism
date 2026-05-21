@@ -3,7 +3,6 @@ package mekanism.client.gui.element.window;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -21,6 +20,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -158,11 +158,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             //TODO - 26.1: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
-            MekanismRenderer.color(0xFFFFFF, 0.75F);
-            //TODO - 26.1 RenderSystem.enableBlend();
-            //TODO - 26.1 RenderSystem.defaultBlendFunc();
-            GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
-            MekanismRenderer.resetColor(guiGraphics);
+            //todo - 26.1: check this vs the old. Looks rather strong on top of other windows
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.SHADOW, relativeX - 3, relativeY - 3, width + 6, height + 6, ARGB.color(0.75F, 0xFFFFFF));
         }
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
@@ -197,13 +194,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void renderBlur(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(0xFFFFFF, 0.3F);
-        //TODO - 26.1 RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
-        //RenderSystem.disableDepthTest();
-        GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
-        MekanismRenderer.resetColor(guiGraphics);
-        //RenderSystem.enableDepthTest();
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.BLUR, relativeX, relativeY, width, height, ARGB.color(0.3F, 0xFFFFFF));
     }
 
     public final boolean togglePinned(GuiElement toggler, MouseButtonEvent event, boolean isDoubleClick) {
