@@ -280,13 +280,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int zOffset, int totalOffset) {
+    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (visible) {
-            Matrix3x2fStack pose = guiGraphics.pose();
-            //TODO - 26.1 - zIndex
-            //pose.translate(0, 0, zOffset);
-            // update the max total offset to prevent clashing of future overlays
-            GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
             // render background overlay and children above everything else
             renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             // render children just above background overlay
@@ -298,11 +293,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             }
             renderForeground(guiGraphics, mouseX, mouseY);
             // translate forward to render child foreground
-            for (GuiElement child : children) {//Only apply the z shift to each child instead of having future children be translated by more as well
+            for (GuiElement child : children) {
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
-                pose.pushMatrix();
-                child.onRenderForeground(guiGraphics, mouseX, mouseY, 50, totalOffset + 50);
-                pose.popMatrix();
+                child.onRenderForeground(guiGraphics, mouseX, mouseY);
             }
         }
     }

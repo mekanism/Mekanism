@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.emi.widget;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.Widget;
 import java.util.Collections;
@@ -45,7 +44,7 @@ public class MekanismEmiWidget extends Widget {
         // and as our categories don't support windows we don't need to worry about that
         int zOffset = 200;
         pose.popMatrix();
-        element.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
+        element.onRenderForeground(guiGraphics, mouseX, mouseY);
         pose.popMatrix();
         pose.popMatrix();
     }

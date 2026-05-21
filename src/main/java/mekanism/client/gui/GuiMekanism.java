@@ -67,8 +67,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     private boolean hasClicked = false;
 
-    public static int maxZOffset;
-
     protected GuiMekanism(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
     }
@@ -384,10 +382,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override//TODO - 26.1: review `pose` used for zindex stuff
     protected void extractLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        //PoseStack pose = guiGraphics.pose();
-        //pose.pushPose();
-        //Shift forward as far as tooltips get shifted so that we don't risk intersecting the rendered items
-        //pose.translate(0, 0, 400);
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
                 element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
@@ -395,13 +389,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
-        int zOffset = 200;
-        //maxZOffset = zOffset;
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
-                //pose.pushPose();
-                element.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
-                //pose.popPose();
+                element.onRenderForeground(guiGraphics, mouseX, mouseY);
             }
         }
 
@@ -413,27 +403,17 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // we need to do this based on what the max is after having rendered the previous
             // window as while the windows don't necessarily overlap, if they do we want to
             // ensure that there is no clipping
-            //zOffset = maxZOffset + 150;
-            //pose.pushPose();
-            overlay.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
+            overlay.onRenderForeground(guiGraphics, mouseX, mouseY);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
                 overlay.renderBlur(guiGraphics);
             }
-            //pose.popPose();
         }
-        //pose.popPose();
-        //Additionally hacky offset to make it so that we render above items in higher z-levels for things like tooltips and held items
-        maxZOffset += 200;
-        // then render tooltips, translating above max z offset to prevent clashing
-        // It is IMPORTANT that we do this to ensure any delayed rendering we do the for the tooltip happens above the other things
-        // and so that we let the translation leak out into the super method so that the carried item renders at the correct z level
-        //pose.translate(0, 0, maxZOffset);
+    }
 
-        //pose.pushPose();
-        //Note: Because we are doing this from extractLabels instead of as part of a render override,
-        // we need to unshift back to the position the other methods expect to be called from
-        /*pose.translate(-leftPos, -topPos, 0);
+    @Override//todo - 26.1: fix tooltips showing for elements hidden by windows
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractTooltip(guiGraphics, mouseX, mouseY);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
             tooltipElement = (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
@@ -441,28 +421,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         if (tooltipElement != null) {
             tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }
-        renderTooltip(guiGraphics, mouseX, mouseY);
-        pose.popPose();*/
     }
 
-    /**
-     * @implNote Copy of super, but adjusts the z value for tooltip rendering
-     *///TODO - 26.1: tooltips?
-    /*@Override
-    public final void renderWithTooltip(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in extractLabels
-        // then we make sure to clean them up here
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        render(graphics, mouseX, mouseY, partialTick);
-        if (deferredTooltipRendering != null) {
-            //Note: render has a pop at the end of it in vanilla, so we have to apply the deferred tooltip rendering again
-            pose.translate(0, 0, maxZOffset);
-            graphics.setTooltipForNextFrame(font, deferredTooltipRendering.tooltip(), deferredTooltipRendering.positioner(), mouseX, mouseY);
-            clearTooltipForNextRenderPass();
-        }
-        pose.popPose();
-    }*/
 
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     }
