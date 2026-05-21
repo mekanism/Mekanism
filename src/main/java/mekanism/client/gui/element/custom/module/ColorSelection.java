@@ -18,6 +18,7 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -57,8 +58,7 @@ class ColorSelection extends MiniElement<Integer> {
         int yTarget = getRelativeY() + OFFSET_Y;
         GuiUtils.drawOutline(guiGraphics, xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
         //Render the transparency grid inside it
-        //TODO - 26.1: rendering
-        //guiGraphics.blit(TODO pipeline?,GuiColorWindow.TRANSPARENCY_GRID, xTarget + 1, yTarget + 1, 0, 0, 16, 16);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiColorWindow.TRANSPARENCY_GRID, xTarget + 1, yTarget + 1, 16, 16);
         //Draw color
         GuiUtils.fill(guiGraphics, xTarget + 1, yTarget + 1, 16, 16, data.get());
     }
