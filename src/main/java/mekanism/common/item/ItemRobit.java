@@ -80,8 +80,9 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         }
         tooltipAdder.accept(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
         tooltipAdder.accept(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
+        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
     }
 
     @NotNull
@@ -102,6 +103,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                 EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
                     robit.setHome(chargepad.getTileGlobalPos());
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
+                    ItemResource itemType = itemAccess.getResource();
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(itemAccess, 0);
                     if (energyContainer != null) {
                         robit.getEnergyContainer().copyContents(energyContainer);
@@ -115,14 +117,14 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                         robit.setOwnerUUID(ownerUUID, null);
                     }
                     List<IInventorySlot> robitSlots = robit.getInventorySlots();
-                    ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
+                    ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = ContainerType.ITEM.createHandlerIfData(itemAccess);
                     if (stackInventory != null) {
                         int slot = 0;
                         for (IInventorySlot container : stackInventory.getContainers()) {
                             robitSlots.get(slot++).copyContents(container);
                         }
                     }
-                    Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
+                    Component name = itemType.get(MekanismDataComponents.ROBIT_NAME);
                     if (name != null) {
                         robit.setCustomName(name);
                     }
@@ -130,8 +132,8 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     if (securityObject != null) {
                         robit.setSecurityMode(securityObject.getSecurityMode(), null);
                     }
-                    robit.setSkin(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
-                    robit.setDefaultSkinManuallySelected(stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
+                    robit.setSkin(itemType.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
+                    robit.setDefaultSkinManuallySelected(itemType.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
                 }, pos, EntitySpawnReason.SPAWN_ITEM_USE, false, false);
                 if (spawnedRobit == null) {
                     return InteractionResult.FAIL;

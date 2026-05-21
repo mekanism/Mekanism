@@ -8,7 +8,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,9 +22,9 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     private final LongSupplier maxEnergy;
     private final LongSupplier rate;
 
-    public ComponentBackedEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
-        super(attachedTo, containerIndex);
+        super(attachedAccess, containerIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.maxEnergy = maxEnergy;
@@ -51,7 +51,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
-        setContents(getAttached(), energy);
+        setContents(getAttached(), energy, transaction, true);
     }
 
     protected long clampEnergy(long energy) {
@@ -60,8 +60,8 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    protected void setContents(AttachedEnergy attachedEnergy, Long energy) {
-        super.setContents(attachedEnergy, clampEnergy(energy));
+    protected boolean setContents(AttachedEnergy attachedEnergy, Long energy, @Nullable TransactionContext transaction, boolean checkChanged) {
+        return super.setContents(attachedEnergy, clampEnergy(energy), transaction, checkChanged);
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -95,10 +95,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
             return 0;
         }
         long toAdd = Math.min(amount, needed);
-        updateSnapshots(transaction);
         // Note: We just set it as unchecked as we have already validated it
-        setContents(attachedEnergy, currentStored + toAdd);
-        return toAdd;
+        if (setContents(attachedEnergy, currentStored + toAdd, transaction, false)) {
+            return toAdd;
+        }
+        //If we couldn't update the backing item access, return that we didn't actually insert anything
+        return 0;
     }
 
     @Override
@@ -119,12 +121,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         long toRemove = Math.min(amount, currentStored);
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
-        if (toRemove > 0) {
-            updateSnapshots(transaction);
-            //Shrink the stack by the amount removed
-            setContents(attachedEnergy, currentStored - toRemove);
+        //Shrink the stack by the amount removed
+        if (toRemove > 0 && setContents(attachedEnergy, currentStored - toRemove, transaction, false)) {
+            return toRemove;
         }
-        return toRemove;
+        //If we couldn't update the backing item access, return that we didn't actually extract anything
+        return 0;
     }
 
     @Override

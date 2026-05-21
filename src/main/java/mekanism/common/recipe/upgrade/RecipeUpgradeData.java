@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -46,32 +45,33 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     /**
      * @return {@code false} if it failed to apply to the stack due to being invalid
      */
-    boolean applyToStack(ItemStack stack);
+    boolean applyToStack(ItemAccess itemAccess);
 
     @NotNull
-    static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {
+    static Set<RecipeUpgradeType> getSupportedTypes(ItemAccess itemAccess) {
         //TODO: Add more types of data that can be transferred such as side configs, bucket mode, dumping mode
-        if (stack.isEmpty()) {
+        ItemResource itemType = itemAccess.getResource();
+        if (itemType.isEmpty()) {
             return Collections.emptySet();
         }
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
-        Item item = stack.getItem();
+        Item item = itemType.getItem();
         if (item instanceof BlockItem blockItem && Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class)) {
             supportedTypes.add(RecipeUpgradeType.UPGRADE);
         }
-        if (ContainerType.ENERGY.supports(stack)) {
+        if (ContainerType.ENERGY.supports(itemType)) {
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (ContainerType.FLUID.supports(stack)) {
+        if (ContainerType.FLUID.supports(itemType)) {
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (ContainerType.CHEMICAL.supports(stack)) {
+        if (ContainerType.CHEMICAL.supports(itemType)) {
             supportedTypes.add(RecipeUpgradeType.CHEMICAL);
         }
-        if (ContainerType.ITEM.supports(stack) || item instanceof ItemBlockPersonalStorage) {
+        if (ContainerType.ITEM.supports(itemType) || item instanceof ItemBlockPersonalStorage) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccess.forStack(stack)) != null) {
+        if (IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess) != null) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -90,9 +90,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <CONTAINER extends ValueIOSerializable, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack,
+    private static <CONTAINER extends ValueIOSerializable, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(ItemAccess itemAccess,
           ContainerType<CONTAINER, ?, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
-        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
+        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
 
@@ -100,23 +100,23 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      * Make sure to validate with getSupportedTypes before calling this
      */
     @Nullable
-    static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
+    static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess) {
         return switch (type) {
-            case ENERGY -> getContainerUpgradeData(stack, ContainerType.ENERGY, EnergyRecipeData::new);
-            case FLUID -> getContainerUpgradeData(stack, ContainerType.FLUID, FluidRecipeData::new);
-            case CHEMICAL -> getContainerUpgradeData(stack, ContainerType.CHEMICAL, ChemicalRecipeData::new);
+            case ENERGY -> getContainerUpgradeData(itemAccess, ContainerType.ENERGY, EnergyRecipeData::new);
+            case FLUID -> getContainerUpgradeData(itemAccess, ContainerType.FLUID, FluidRecipeData::new);
+            case CHEMICAL -> getContainerUpgradeData(itemAccess, ContainerType.CHEMICAL, ChemicalRecipeData::new);
             case ITEM -> {
                 List<IInventorySlot> slots;
-                if (stack.getItem() instanceof ItemBlockPersonalStorage) {
-                    var inv = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
+                if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage) {
+                    var inv = PersonalStorageManager.getInventoryIfPresent(itemAccess);
                     slots = inv != null ? inv.getContainers() : Collections.emptyList();
                 } else {
-                    slots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
+                    slots = ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess);
                 }
                 yield slots.isEmpty() ? null : new ItemRecipeData(slots);
             }
             case LOCK -> {
-                ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
+                ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(itemAccess);
                 //If there is no inventory, or it isn't locked just skip
                 if (slot == null) {
                     yield null;
@@ -125,7 +125,6 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield lockType.isEmpty() ? null : new LockRecipeData(lockType);
             }
             case SECURITY -> {
-                ItemAccess itemAccess = ItemAccess.forStack(stack);
                 UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                 if (ownerUUID == null) {
                     yield null;
@@ -136,9 +135,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
-            case SORTING -> stack.getOrDefault(MekanismDataComponents.SORTING, false) ? SortingRecipeData.SORTING : null;
+            case SORTING -> itemAccess.getResource().getOrDefault(MekanismDataComponents.SORTING, false) ? SortingRecipeData.SORTING : null;
             case UPGRADE -> {
-                UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+                UpgradeAware upgradeAware = itemAccess.getResource().get(MekanismDataComponents.UPGRADES);
                 if (upgradeAware != null) {
                     Map<Upgrade, Integer> upgrades = upgradeAware.upgrades();
                     List<IInventorySlot> slots = upgradeAware.asInventorySlots();
@@ -149,10 +148,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield null;
             }
             case QIO_DRIVE -> {
-                DriveMetadata data = stack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
+                DriveMetadata data = itemAccess.getResource().getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
                 if (data.count() > 0 && data.types() > 0) {
                     //If we don't have any stored items don't actually grab any recipe data
-                    DriveContents contents = stack.get(MekanismDataComponents.DRIVE_CONTENTS);
+                    DriveContents contents = itemAccess.getResource().get(MekanismDataComponents.DRIVE_CONTENTS);
                     if (contents != null) {
                         yield new QIORecipeData(data, contents);
                     }

@@ -25,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> {
@@ -53,7 +54,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         ChemicalTankTier tier = getTier();
-        StorageUtils.addStoredSubstance(stack, tooltipAdder, tier == ChemicalTankTier.CREATIVE);
+        StorageUtils.addStoredSubstance(ItemAccess.forStack(stack), tooltipAdder, tier == ChemicalTankTier.CREATIVE);
         if (tier == ChemicalTankTier.CREATIVE) {
             tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
@@ -80,6 +81,6 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
     }
 }

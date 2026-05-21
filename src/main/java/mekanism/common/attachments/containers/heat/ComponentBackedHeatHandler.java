@@ -7,14 +7,15 @@ import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapacitorData, IHeatCapacitor, AttachedHeat> implements IMekanismHeatHandler {
 
-    public ComponentBackedHeatHandler(ContainerType<IHeatCapacitor, AttachedHeat, ? extends ComponentBackedHeatHandler> containerType, ItemStack attachedTo, int totalCapacitors) {
-        super(containerType, attachedTo, totalCapacitors);
+    public ComponentBackedHeatHandler(ContainerType<IHeatCapacitor, AttachedHeat, ? extends ComponentBackedHeatHandler> containerType, ItemAccess attachedAccess,
+          int totalCapacitors) {
+        super(containerType, attachedAccess, totalCapacitors);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapac
             if (index > 0 && index < size()) {
                 //Get the default. This isn't the cleanest way to look it up, but as we never use this method for component backed heat handlers
                 // it should be fine for now
-                return containerType().createNewAttachment(attachedTo).get(index);
+                return containerType().createNewAttachment(attachedAccess.getResource()).get(index);
             }
             //Allow it to fall through and cause an index out of bounds exception
         }

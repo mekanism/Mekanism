@@ -110,8 +110,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 laserRefraction = 0.2;
             }
             case CHESTPLATE -> {
-                chemicalTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, itemType -> {
+                chemicalTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, itemAccess -> {
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
+                    ItemResource itemType = itemAccess.getResource();
+                    if (itemType.isEmpty()) {
+                        return 0;
+                    }
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
                 }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
@@ -151,12 +155,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltipAdder);
         } else {
-            StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, true);
             if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredChemical(stack, tooltipAdder);
+                StorageUtils.addStoredChemical(itemAccess, tooltipAdder);
             }
             if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(stack, tooltipAdder);
+                StorageUtils.addStoredFluid(itemAccess, tooltipAdder);
             }
             tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
@@ -270,14 +275,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         //Note: The all our providers only expose the capabilities (both those via attachments and those here) if the required configs for initializing that capability are loaded
-        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
+        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, _) -> {
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
             }
             return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(armorType));
         }, this);
 
-        event.registerItem(Capabilities.LASER_DISSIPATION, (stack, ctx) -> {
+        event.registerItem(Capabilities.LASER_DISSIPATION, (stack, _) -> {
             //Note: This doesn't rely on configs, so we can skip the gear loaded check
             return isModuleEnabled(stack, MekanismModules.LASER_DISSIPATION_UNIT) ? LaserDissipationHandler.create(laserDissipation, laserRefraction) : null;
         }, this);

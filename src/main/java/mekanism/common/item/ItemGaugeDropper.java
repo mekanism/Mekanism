@@ -32,11 +32,11 @@ import org.jetbrains.annotations.Nullable;
 public class ItemGaugeDropper extends Item {
 
     public static final MergedTankCreator MERGED_TANK_CREATOR = new MergedTankCreator(
-          (type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex,
+          (type, attachedAccess, containerIndex) -> new ComponentBackedChemicalTank(attachedAccess, containerIndex,
                 ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
           ),
-          (type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex,
+          (type, attachedAccess, containerIndex) -> new ComponentBackedFluidTank(attachedAccess, containerIndex,
                 ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity
           )
@@ -58,11 +58,12 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        FluidStack fluid = StorageUtils.getFirstFluidFromAttachment(stack);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        FluidStack fluid = StorageUtils.getFirstFluidFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
-            return FluidUtils.getRGBDurabilityForDisplay(stack);
+            return FluidUtils.getRGBDurabilityForDisplay(itemAccess);
         }
-        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(itemAccess);
     }
 
     @NotNull
@@ -93,6 +94,6 @@ public class ItemGaugeDropper extends Item {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredSubstance(stack, tooltipAdder, false);
+        StorageUtils.addStoredSubstance(ItemAccess.forStack(stack), tooltipAdder, false);
     }
 }

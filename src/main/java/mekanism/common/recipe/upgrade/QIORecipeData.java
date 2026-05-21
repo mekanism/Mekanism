@@ -13,7 +13,9 @@ import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -60,21 +62,26 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (itemMap.isEmpty()) {
             //If we have nothing present then it is a success, but if we have data that says we should
             // have items, but we don't then fail
             return itemCount == 0;
         }
-        IQIODriveItem driveItem = (IQIODriveItem) stack.getItem();
+        ItemResource itemType = itemAccess.getResource();
+        IQIODriveItem driveItem = (IQIODriveItem) itemType.getItem();
         if (itemCount == 0 || itemCount > driveItem.getCountCapacity() || itemMap.size() > driveItem.getTypeCapacity()) {
             //If we have items stored but no types, have more items stored than the output item supports, or have more types stored
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        stack.set(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()));
-        //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
-        stack.set(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
-        return true;
+        try (Transaction transaction = Transaction.openRoot()) {
+            itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()))
+                  //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
+                  .with(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
+            int exchanged = itemAccess.exchange(itemType, itemAccess.getAmount(), transaction);
+            transaction.commit();
+            return exchanged != 0;
+        }
     }
 }

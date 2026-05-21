@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,8 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
 
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(itemAccess);
         BinTier tier = getTier();
         if (slot != null && tier != null) {
             if (slot.isEmpty()) {

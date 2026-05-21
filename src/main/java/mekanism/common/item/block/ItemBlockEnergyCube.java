@@ -23,13 +23,14 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -73,7 +74,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+        StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }

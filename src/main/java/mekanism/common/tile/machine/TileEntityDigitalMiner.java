@@ -106,6 +106,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -761,13 +762,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         markForSave();
     }
 
-    public static boolean isSavedReplaceTarget(ItemStack stack, ItemResource target) {
+    public static boolean isSavedReplaceTarget(ItemAccess itemAccess, ItemResource target) {
+        ItemResource itemType = itemAccess.getResource();
+        if (itemType.isEmpty()) {
+            return false;
+        }
         //This method is here to make it easier to maintain parity if we change the logic of isReplaceTarget
-        if (stack.getOrDefault(MekanismDataComponents.INVERSE, false)) {
-            Item inverseReplaceTarget = stack.getOrDefault(MekanismDataComponents.REPLACE_STACK, Items.AIR);
+        if (itemType.getOrDefault(MekanismDataComponents.INVERSE, false)) {
+            Item inverseReplaceTarget = itemType.getOrDefault(MekanismDataComponents.REPLACE_STACK, Items.AIR);
             return inverseReplaceTarget != Items.AIR && target.is(inverseReplaceTarget);
         }
-        FilterAware filterAware = stack.get(MekanismDataComponents.FILTER_AWARE);
+        FilterAware filterAware = itemType.get(MekanismDataComponents.FILTER_AWARE);
         return filterAware != null && filterAware.anyEnabledMatch(MinerFilter.class, filter -> filter.replaceTargetMatches(target));
     }
 

@@ -104,11 +104,11 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
                 SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
+                    resource = resource.without(type);
+                    if (resource.getItem() instanceof IColoredItem) {
+                        resource = resource.without(MekanismDataComponents.COLOR);
+                    }
                     try (Transaction transaction = Transaction.openRoot()) {
-                        resource = resource.without(type);
-                        if (resource.getItem() instanceof IColoredItem) {
-                            resource = resource.without(MekanismDataComponents.COLOR);
-                        }
                         //TODO - 26.1: Should we check we managed to exchange it all?
                         itemAccess.exchange(resource, itemAccess.getAmount(), transaction);
                         transaction.commit();

@@ -12,8 +12,8 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -22,15 +22,15 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
 
-    public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    public ComponentBackedChemicalTank(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
-        this(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
+        this(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
     }
 
-    public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    public ComponentBackedChemicalTank(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity,
           @Nullable ChemicalAttributeValidator attributeValidator) {
-        super(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity);
+        super(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity);
         this.attributeValidator = attributeValidator;
     }
 

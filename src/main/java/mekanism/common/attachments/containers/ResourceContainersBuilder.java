@@ -14,8 +14,8 @@ import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
 public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTAINER extends ComponentBackedResourceContainer<RESOURCE>,
@@ -36,7 +36,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
         return (BUILDER) this;
     }
 
-    protected abstract CONTAINER createBasicContainer(ItemStack attachedTo, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
+    protected abstract CONTAINER createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity);
 
     public final <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
@@ -49,7 +49,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     }
 
     public final BUILDER addBasic(LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
+        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
               containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
     }
 
@@ -58,18 +58,18 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     }
 
     public final BUILDER addBasic(LongSupplier capacity) {
-        return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
+        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
               containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               defaultRate(), capacity));
     }
 
     public final BUILDER addBasicExtractable(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
+        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
               containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 
     public final BUILDER addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
+        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
               containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 

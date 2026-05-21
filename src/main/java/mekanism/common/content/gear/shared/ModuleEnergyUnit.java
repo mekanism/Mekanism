@@ -18,16 +18,16 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 @ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
-    public static long getEnergyCapacity(ItemStack stack, LongSupplier base) {
-        return getEnergyValue(stack, base);
+    public static long getEnergyCapacity(ItemAccess attachedAccess, LongSupplier base) {
+        return getEnergyValue(attachedAccess, base);
     }
 
-    public static long getChargeRate(ItemStack stack, LongSupplier base) {
-        return getEnergyValue(stack, base);
+    public static long getChargeRate(ItemAccess attachedAccess, LongSupplier base) {
+        return getEnergyValue(attachedAccess, base);
     }
 
-    private static long getEnergyValue(ItemStack stack, LongSupplier base) {
-        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
+    private static long getEnergyValue(ItemAccess attachedAccess, LongSupplier base) {
+        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(attachedAccess.getResource(), MekanismModules.ENERGY_UNIT);
         if (module == null) {
             return base.getAsLong();
         }

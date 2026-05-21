@@ -42,15 +42,15 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap) {
-        addStoredEnergy(stack, tooltipAdder, showMissingCap, MekanismLang.STORED_ENERGY);
+    public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap) {
+        addStoredEnergy(itemAccess, tooltipAdder, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+    public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
         if (energyHandlerItem == null) {
             //Fall back to trying to look up the stored energy by the container type if the stack doesn't expose it
-            energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
+            energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(itemAccess);
         }
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.size();
@@ -63,11 +63,11 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         }
     }
 
-    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+    public static void addStoredChemical(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder) {
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
-            handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
+            handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
@@ -84,12 +84,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         }
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
-        addStoredFluid(stack, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
+    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder) {
+        addStoredFluid(itemAccess, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
-        addStoredFluid(stack, tooltipAdder, emptyLangEntry, (stored, emptyLang) -> {
+    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
+        addStoredFluid(itemAccess, tooltipAdder, emptyLangEntry, (stored, emptyLang) -> {
             if (stored.isEmpty()) {
                 return emptyLang.translateColored(EnumColor.GRAY);
             }
@@ -98,12 +98,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         });
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
+    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
-        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(itemAccess);
         if (handler == null) {
             //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
-            handler = ContainerType.FLUID.createHandlerIfData(stack);
+            handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
@@ -118,9 +118,9 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     /**
      * @implNote Assumes there is only one "type" per substance type
      */
-    public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
-        LargeResourceStack<FluidResource> fluidStack = getStoredFluidFromAttachment(stack);
-        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(stack, ContainerType.CHEMICAL, LargeResourceStack.CHEMICAL_HELPER);
+    public static void addStoredSubstance(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
+        LargeResourceStack<FluidResource> fluidStack = getStoredFluidFromAttachment(itemAccess);
+        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(itemAccess, ContainerType.CHEMICAL, LargeResourceStack.CHEMICAL_HELPER);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translate());
             return;
@@ -162,9 +162,9 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull//TODO - 26.1: Update docs
-    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemStack stack,
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemAccess itemAccess,
           ContainerType<CONTAINER, ?, ?> containerType, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
-        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
+        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
         return switch (containers.size()) {
             case 0 -> stackHelper.empty();
             case 1 -> containers.getFirst().asStack();
@@ -200,8 +200,8 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static LargeResourceStack<FluidResource> getStoredFluidFromAttachment(ItemStack stack) {
-        return getStoredContentsFromAttachment(stack, ContainerType.FLUID, LargeResourceStack.FLUID_HELPER);
+    public static LargeResourceStack<FluidResource> getStoredFluidFromAttachment(ItemAccess itemAccess) {
+        return getStoredContentsFromAttachment(itemAccess, ContainerType.FLUID, LargeResourceStack.FLUID_HELPER);
     }
 
     /**
@@ -210,8 +210,8 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      *
      * @return the first found fluid FOR DISPLAY. Do NOT modify.
      */
-    public static FluidStack getFirstFluidFromAttachment(ItemStack stack) {
-        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+    public static FluidStack getFirstFluidFromAttachment(ItemAccess itemAccess) {
+        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(itemAccess);
         return switch (containers.size()) {
             case 0 -> FluidStack.EMPTY;
             case 1 -> {
@@ -236,8 +236,8 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * @return the first found chemical FOR DISPLAY. Do NOT modify.
      */
     @NotNull
-    public static ChemicalResource getFirstChemicalFromAttachment(ItemStack stack) {
-        List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
+    public static ChemicalResource getFirstChemicalFromAttachment(ItemAccess itemAccess) {
+        List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(itemAccess);
         int size = containers.size();
         return switch (size) {
             case 0 -> ChemicalResource.EMPTY;
@@ -253,24 +253,13 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         };
     }
 
-    /**
-     * Gets the energy if one is stored from an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
-     */
-    public static long getStoredEnergyFromAttachment(ItemStack stack) {
-        long energy = 0;
-        for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
-            energy = MathUtils.addClamped(energy, energyContainer.energy());
-        }
-        return energy;
-    }
-
     public static ItemStack getFilledEnergyVariant(Holder<Item> toFill) {
         return getFilledEnergyVariant(new ItemStack(toFill));
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
-        IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
+        ItemAccess itemAccess = ItemAccess.forStack(toFill);
+        IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(itemAccess);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getContainers()) {
                 energyContainer.setEnergy(energyContainer.capacity(), null);

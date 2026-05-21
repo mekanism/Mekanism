@@ -6,7 +6,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
@@ -14,17 +14,17 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedEnergyCubeContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockEnergyCube item)) {
+    public static ComponentBackedEnergyCubeContainer create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int containerIndex) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockEnergyCube item)) {
             throw new IllegalStateException("Attached to should always be an energy cube item");
         }
-        return new ComponentBackedEnergyCubeContainer(attachedTo, containerIndex, item.getTier());
+        return new ComponentBackedEnergyCubeContainer(attachedAccess, containerIndex, item.getTier());
     }
 
     private final boolean isCreative;
 
-    private ComponentBackedEnergyCubeContainer(ItemStack attachedTo, int containerIndex, EnergyCubeTier tier) {
-        super(attachedTo, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getMaxEnergy);
+    private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, int containerIndex, EnergyCubeTier tier) {
+        super(attachedAccess, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getMaxEnergy);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 

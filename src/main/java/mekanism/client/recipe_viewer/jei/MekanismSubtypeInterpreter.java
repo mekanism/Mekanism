@@ -32,7 +32,8 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
         }
         List<Object> subTypeData = null;
 
-        ResourceHandler<ChemicalResource> chemicalHandler = getChemicalHandler(stack);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ResourceHandler<ChemicalResource> chemicalHandler = getChemicalHandler(itemAccess);
         if (chemicalHandler != null) {
             for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {
                 ChemicalResource chemicalType = chemicalHandler.getResource(tank);
@@ -43,7 +44,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        ResourceHandler<FluidResource> fluidHandler = getFluidHandler(stack);
+        ResourceHandler<FluidResource> fluidHandler = getFluidHandler(itemAccess);
         if (fluidHandler != null) {
             for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
                 FluidResource fluidType = fluidHandler.getResource(tank);
@@ -55,7 +56,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        IStrictEnergyHandler energyHandler = getEnergyHandler(stack);
+        IStrictEnergyHandler energyHandler = getEnergyHandler(itemAccess);
         if (energyHandler != null) {
             for (int container = 0, containers = energyHandler.size(); container < containers; container++) {
                 //TODO: Should we just be storing the amount of stored energy??
@@ -73,28 +74,28 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
     }
 
     @Nullable
-    private static ResourceHandler<ChemicalResource> getChemicalHandler(ItemStack stack) {
-        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
+    private static ResourceHandler<ChemicalResource> getChemicalHandler(ItemAccess itemAccess) {
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
         if (handler == null) {
-            return Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.CHEMICAL.getCapability(itemAccess);
         }
         return handler;
     }
 
     @Nullable
-    private static ResourceHandler<FluidResource> getFluidHandler(ItemStack stack) {
-        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(stack);
+    private static ResourceHandler<FluidResource> getFluidHandler(ItemAccess itemAccess) {
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
         if (handler == null) {
-            return Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.FLUID.getCapability(itemAccess);
         }
         return handler;
     }
 
     @Nullable
-    private static IStrictEnergyHandler getEnergyHandler(ItemStack stack) {
-        IStrictEnergyHandler handler = ContainerType.ENERGY.createHandlerIfData(stack);
+    private static IStrictEnergyHandler getEnergyHandler(ItemAccess itemAccess) {
+        IStrictEnergyHandler handler = ContainerType.ENERGY.createHandlerIfData(itemAccess);
         if (handler == null) {
-            return Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.STRICT_ENERGY.getCapability(itemAccess);
         }
         return handler;
     }

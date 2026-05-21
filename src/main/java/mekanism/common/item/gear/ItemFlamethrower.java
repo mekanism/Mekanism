@@ -66,7 +66,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(stack, tooltipAdder);
+        StorageUtils.addStoredChemical(ItemAccess.forStack(stack), tooltipAdder);
         tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
@@ -151,7 +151,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
     }
 
     @Override

@@ -80,13 +80,13 @@ public final class InventoryUtils {
             if (itemType.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(itemType)) {
                     scalar = inventory.getScalar(itemAccess);
-                    dropItemContents(level, blockPos, inventory.getDroppedSlots(stack), scalar, dropper);
+                    dropItemContents(level, blockPos, inventory.getDroppedSlots(itemAccess), scalar, dropper);
                 } else {
                     //Explicitly denying dropping items
                     return;
                 }
             } else if (ContainerType.ITEM.supports(itemType)) {
-                dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
+                dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess), scalar, dropper);
             }
             UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {

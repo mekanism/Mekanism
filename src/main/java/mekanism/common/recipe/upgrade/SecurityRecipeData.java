@@ -7,7 +7,6 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +34,7 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
-        //TODO - 26.1: Test that this properly updates the stack in place (it should)
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+    public boolean applyToStack(ItemAccess itemAccess) {
         IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
         if (ownerObject != null) {
             try (Transaction transaction = Transaction.openRoot()) {

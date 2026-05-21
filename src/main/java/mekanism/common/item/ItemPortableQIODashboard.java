@@ -64,9 +64,10 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 

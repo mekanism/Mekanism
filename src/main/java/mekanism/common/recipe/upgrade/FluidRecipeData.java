@@ -7,7 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
@@ -30,11 +30,11 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (fluidTanks.isEmpty()) {
             return true;
         }
-        ComponentBackedResourceHandler<FluidResource, IFluidTank> outputHandler = ContainerType.FLUID.createHandler(stack);
+        ComponentBackedResourceHandler<FluidResource, IFluidTank> outputHandler = ContainerType.FLUID.createHandler(itemAccess);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

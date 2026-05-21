@@ -41,7 +41,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -57,8 +56,9 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-@NothingNullByDefault//TODO - 26.1: move these to resource handlers?
+@NothingNullByDefault
 public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>,
       HANDLER extends ComponentBackedHandler<?, CONTAINER, ATTACHED>> {
 
@@ -66,7 +66,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
     //TODO - 26.1 - these collect/apply methods should be static, they don't actually use the tile. QIO has an item override, but other than that the inheritance is irrelevant
-    //possibly change to use copy?
+    // possibly change to use copy?
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(
           MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER,
           ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
@@ -181,15 +181,15 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     //TODO - 1.21: Do we want to have create in the name instead of get
-    public List<CONTAINER> getAttachmentContainersIfPresent(ItemStack stack) {
-        HANDLER handler = createHandlerIfData(stack);
+    public List<CONTAINER> getAttachmentContainersIfPresent(ItemAccess itemAccess) {
+        HANDLER handler = createHandlerIfData(itemAccess);
         return handler == null ? Collections.emptyList() : handler.getContainers();
     }
 
-    public int getContainerCount(ItemInstance stack) {
-        ATTACHED attached = getOrEmpty(stack);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> int getContainerCount(ITEM instance) {
+        ATTACHED attached = getOrEmpty(instance);
         if (attached.isEmpty()) {
-            return getContainerCount(stack.typeHolder().value());
+            return getContainerCount(instance.typeHolder().value());
         }
         //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
         return attached.size();
@@ -202,27 +202,27 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     @Nullable//TODO - 26.1: remove me, just use caps
-    public HANDLER createHandlerIfData(ItemStack stack) {
-        ATTACHED attached = getOrEmpty(stack);
+    public HANDLER createHandlerIfData(ItemAccess itemAccess) {
+        ATTACHED attached = getOrEmpty(itemAccess);
         //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        return attached.isEmpty() ? null : handlerConstructor.create(this, stack, attached.size());
+        return attached.isEmpty() ? null : handlerConstructor.create(this, itemAccess, attached.size());
     }
 
-    @Nullable//TODO - 26.1: Should this just use caps?
-    public HANDLER createHandler(ItemStack stack) {
+    @Nullable//TODO - 26.1: Should this ne private and just force usage of caps for public?
+    public HANDLER createHandler(ItemAccess itemAccess) {
         //TODO - 1.21: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
-        int count = getContainerCount(stack);
+        int count = getContainerCount(itemAccess.getResource());
         if (count == 0) {
             return null;
         }
-        return handlerConstructor.create(this, stack, count);
+        return handlerConstructor.create(this, itemAccess, count);
     }
 
-    public ATTACHED createNewAttachment(ItemStack stack) {
+    public ATTACHED createNewAttachment(ItemResource itemType) {
         //TODO - 1.1: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
-        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(stack.getItem());
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(itemType.getItem());
         if (lazy == null) {
             return emptyAttachment;
         }
@@ -234,35 +234,37 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return containerCreator.initStorage(count);
     }
 
+    public ATTACHED getOrEmpty(ItemAccess itemAccess) {
+        return getOrEmpty(itemAccess.getResource());
+    }
+
     public ATTACHED getOrEmpty(DataComponentGetter stack) {
         return stack.getOrDefault(component, emptyAttachment);
     }
 
     //TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
-    public CONTAINER createContainer(ItemStack attachedTo, int containerIndex) {
-        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> creator = knownDefaultCreators.get(attachedTo.getItem());
+    public CONTAINER createContainer(ItemAccess attachedAccess, int containerIndex) {
+        Item attachedTo = attachedAccess.getResource().getItem();
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> creator = knownDefaultCreators.get(attachedTo);
         if (creator != null) {
-            return creator.get().create(this, attachedTo, containerIndex);
+            return creator.get().create(this, attachedAccess, containerIndex);
         }
-        throw new IllegalArgumentException("No known containers for item " + attachedTo.getItem());
+        throw new IllegalArgumentException("No known containers for item " + attachedTo);
     }
 
-    protected ICapabilityProvider<ItemStack, ItemAccess, ? super HANDLER> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
-        if (exposeWhenStacked) {
-            return getCapabilityProvider(requiredConfigs);
-        } else if (requiredConfigs.length == 0) {
-            return (stack, context) -> stack.count() == 1 ? createHandler(stack) : null;
-        }
-        //Only expose the capabilities if the required configs are loaded
-        return (stack, context) -> stack.count() == 1 && hasRequiredConfigs(requiredConfigs) ? createHandler(stack) : null;
-    }
-
-    protected ICapabilityProvider<ItemStack, ItemAccess, ? super HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
+    protected ICapabilityProvider<ItemStack, @NonNull ItemAccess, ? super HANDLER> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
         if (requiredConfigs.length == 0) {
-            return (stack, context) -> createHandler(stack);
+            return (_, itemAccess) -> exposeWhenStacked || itemAccess.getAmount() == 1 ? createHandler(itemAccess) : null;
         }
         //Only expose the capabilities if the required configs are loaded
-        return (stack, context) -> hasRequiredConfigs(requiredConfigs) ? createHandler(stack) : null;
+        return (_, itemAccess) -> {
+            if (exposeWhenStacked || itemAccess.getAmount() == 1) {
+                if (hasRequiredConfigs(requiredConfigs)) {
+                    return createHandler(itemAccess);
+                }
+            }
+            return null;
+        };
     }
 
     private static boolean hasRequiredConfigs(IMekanismConfig... requiredConfigs) {
@@ -353,7 +355,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     private interface HandlerConstructor<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>,
           HANDLER extends ComponentBackedHandler<?, CONTAINER, ATTACHED>> {
 
-        HANDLER create(ContainerType<CONTAINER, ATTACHED, HANDLER> containerType, ItemStack attachedTo, int totalContainers);
+        HANDLER create(ContainerType<CONTAINER, ATTACHED, HANDLER> containerType, ItemAccess attachedAccess, int totalContainers);
     }
 
     @FunctionalInterface

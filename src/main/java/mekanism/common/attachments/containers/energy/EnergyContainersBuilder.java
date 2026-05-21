@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainersBuilder {
 
-    private static final IBasicContainerCreator<? extends ComponentBackedEnergyContainer> MEKASUIT = (type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(
-          attachedTo, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-          () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate),
-          () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity)
-    );
+    private static final IBasicContainerCreator<? extends ComponentBackedEnergyContainer> MEKASUIT = (_, attachedAccess, containerIndex) ->
+          new ComponentBackedNoClampEnergyContainer(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
+                () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaSuitBaseChargeRate),
+                () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaSuitBaseEnergyCapacity)
+          );
 
     public static EnergyContainersBuilder builder() {
         return new EnergyContainersBuilder();
@@ -39,13 +39,14 @@ public class EnergyContainersBuilder {
     }
 
     public EnergyContainersBuilder addBasic(LongSupplier rate, LongSupplier maxEnergy) {
-        return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
-              ConstantPredicates.alwaysTrue(), rate, maxEnergy));
+        return addContainer((_, attachedAccess, containerIndex) ->
+              new ComponentBackedEnergyContainer(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), rate, maxEnergy));
     }
 
     public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, LongSupplier rate,
           LongSupplier maxEnergy) {
-        return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, canExtract, canInsert, rate, maxEnergy));
+        return addContainer((_, attachedAccess, containerIndex) ->
+              new ComponentBackedEnergyContainer(attachedAccess, containerIndex, canExtract, canInsert, rate, maxEnergy));
     }
 
     public EnergyContainersBuilder addContainer(IBasicContainerCreator<? extends ComponentBackedEnergyContainer> capacitor) {

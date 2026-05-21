@@ -8,7 +8,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,13 +30,13 @@ public class ChemicalRecipeData implements RecipeUpgradeData<ChemicalRecipeData>
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (this.tanks.isEmpty()) {
             return true;
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> outputHandler = ContainerType.CHEMICAL.createHandler(stack);
+        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> outputHandler = ContainerType.CHEMICAL.createHandler(itemAccess);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

@@ -12,20 +12,21 @@ import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
-        return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex);
+    public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int containerIndex) {
+        return new ComponentBackedResistiveEnergyContainer(attachedAccess, containerIndex);
     }
 
-    private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex) {
-        super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
+    private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess, int containerIndex) {
+        super(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
     }
 
     @Override
@@ -51,13 +52,16 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     public long getEnergyPerTick() {
-        return attachedTo.getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
+        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
     }
 
     private void updateEnergyUsage(long energyUsage) {
-        attachedTo.set(MekanismDataComponents.ENERGY_USAGE, energyUsage);
-        //Clamp the energy
-        setEnergy(energy(), null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Note: The attached access should handle snapshotting the backing stack
+            attachedAccess.exchange(attachedAccess.getResource().with(MekanismDataComponents.ENERGY_USAGE, energyUsage), attachedAccess.getAmount(), transaction);
+            //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
+            transaction.commit();
+        }
     }
 
     @Override

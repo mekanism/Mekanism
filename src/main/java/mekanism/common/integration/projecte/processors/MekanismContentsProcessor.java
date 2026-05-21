@@ -57,13 +57,14 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     public long recalculateEMC(@NotNull ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC) throws ArithmeticException {
         IEMCProxy emcProxy = IEMCProxy.INSTANCE;
         ItemStack stack = info.createStack();
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
         //Stored items
-        currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(stack));
+        currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess));
         if (currentEMC == 0) {
             //Something that is stored cannot be converted into EMC
             return 0;
         }
-        AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
+        AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(itemAccess);
         if (personalStorage != null) {//Items stored in a personal chest or barrel
             currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getContainers());
             if (currentEMC == 0) {

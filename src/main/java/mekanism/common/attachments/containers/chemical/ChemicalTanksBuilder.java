@@ -11,7 +11,7 @@ import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ResourceContainersBuilder;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalResource, ComponentBackedChemicalTank, ChemicalTanksBuilder> {
 
@@ -33,8 +33,8 @@ public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalReso
     }
 
     @Override
-    protected ComponentBackedChemicalTank createBasicContainer(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    protected ComponentBackedChemicalTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
-        return new ComponentBackedChemicalTank(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
+        return new ComponentBackedChemicalTank(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
     }
 }

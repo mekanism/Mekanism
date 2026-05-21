@@ -1,18 +1,20 @@
 package mekanism.common.attachments.containers;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends SnapshotJournal<TYPE> {
+public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> {
 
-    //TODO - 26.1: I suspect we should change this ItemStack attachedTo into an ItemAccess
-    protected final ItemStack attachedTo;
+    protected final ItemAccess attachedAccess;
     protected final int containerIndex;
 
-    protected ComponentBackedContainer(ItemStack attachedTo, int containerIndex) {
-        this.attachedTo = attachedTo;
+    protected ComponentBackedContainer(ItemAccess attachedAccess, int containerIndex) {
+        this.attachedAccess = attachedAccess;
         this.containerIndex = containerIndex;
     }
 
@@ -21,14 +23,20 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
     protected abstract ContainerType<?, ATTACHED, ?> containerType();
 
     protected ATTACHED getAttached() {
-        return containerType().getOrEmpty(attachedTo);
+        return containerType().getOrEmpty(attachedAccess);
     }
 
     protected TYPE getContents(ATTACHED attached) {
         return attached.getOrDefault(containerIndex);
     }
 
-    protected void setContents(ATTACHED attached, TYPE value) {
+    protected boolean setContents(ATTACHED attached, TYPE value, @Nullable TransactionContext transaction, boolean checkChanged) {
+        ItemResource attachedTo = attachedAccess.getResource();
+        if (attachedTo.isEmpty()) {
+            //If the item has become empty, just exit
+            //TODO - 26.1: Do we want to log a warning?
+            return false;
+        }
         //If we don't actually have an attachment present yet, we need to ensure we try to create a new one
         if (attached.isEmpty()) {
             //If we don't have an attachment, attempt to create a new one
@@ -36,39 +44,19 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
             if (attached.isEmpty()) {
                 //If we can't figure out how to handle the attachment for the item, just exit
                 // Note: We don't need to consider removing an existing attachment as we know we don't have one
-                return;
+                return false;
             }
         }
-        if (shouldUpdate(attached, value)) {
-            //TODO - 26.1: Do we want to be calling onContentsChanged here or should we instead just be marking the snapshot as taken here above setting it
-            attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, value));
+        if (checkChanged && getContents(attached).equals(value)) {
+            //Nothing to change, just return false
+            return false;
         }
-    }
-
-    protected boolean shouldUpdate(ATTACHED attached, TYPE value) {
-        //If both stacks are empty we don't do anything
-        //TODO - 1.21: Do we want to do a matches check instead of just seeing if both are empty
-        // Or maybe only do that in the non overloaded setStack so as a way to potentially avoid the extra lookup here when we know
-        // we only call this method if something has changed
-        return !isEmpty(value) || !isEmpty(getContents(attached));
-    }
-
-    @Override
-    protected TYPE createSnapshot() {
-        return getContents(getAttached());
-    }
-
-    @Override
-    protected void revertToSnapshot(TYPE snapshot) {
-        setContents(getAttached(), snapshot);
-    }
-
-    @Override
-    protected void onRootCommit(TYPE originalState) {
-        super.onRootCommit(originalState);
-        //TODO - 26.1: Evaluate if shouldUpdate is a good metric for if we should be calling onContentsChanged here, or if we even need to have contents listeners for our component backed containers
-        if (shouldUpdate(getAttached(), originalState)) {
-            //Fire content change listeners during root commit if the final state is different from the original one
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            //Note: The attached access should handle snapshotting the backing stack
+            int exchanged = attachedAccess.exchange(attachedTo.with(containerType().getComponentType(), attached.with(containerIndex, value)), attachedAccess.getAmount(), subTransaction);
+            subTransaction.commit();
+            //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
+            return exchanged != 0;
         }
     }
 }

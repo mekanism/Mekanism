@@ -96,19 +96,20 @@ public class MekanismEmi implements EmiPlugin {
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         Set<Object> representation = new HashSet<>();
         ItemStack stack = emiStack.getItemStack();
-        addChemicalComponent(representation, stack);
-        addFluidComponent(representation, stack);
-        addEnergyComponent(representation, stack);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        addChemicalComponent(representation, itemAccess);
+        addFluidComponent(representation, itemAccess);
+        addEnergyComponent(representation, itemAccess);
         if (!representation.isEmpty()) {
             return representation;
         }
         return null;
     });
 
-    private static void addChemicalComponent(Set<Object> representation, ItemStack stack) {
-        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
+    private static void addChemicalComponent(Set<Object> representation, ItemAccess itemAccess) {
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
         if (handler == null) {
-            handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         }
         if (handler != null) {
             int tanks = handler.size();
@@ -127,10 +128,10 @@ public class MekanismEmi implements EmiPlugin {
         }
     }
 
-    private static void addFluidComponent(Set<Object> representation, ItemStack stack) {
-        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(stack);
+    private static void addFluidComponent(Set<Object> representation, ItemAccess itemAccess) {
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
         if (handler == null) {
-            handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            handler = Capabilities.FLUID.getCapability(itemAccess);
         }
         if (handler != null) {
             int tanks = handler.size();
@@ -149,10 +150,10 @@ public class MekanismEmi implements EmiPlugin {
         }
     }
 
-    private static void addEnergyComponent(Set<Object> representation, ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
+    private static void addEnergyComponent(Set<Object> representation, ItemAccess itemAccess) {
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(itemAccess);
         if (energyHandlerItem == null) {
-            energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
+            energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
         }
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.size();

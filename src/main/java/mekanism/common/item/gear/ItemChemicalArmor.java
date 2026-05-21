@@ -15,6 +15,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem, ICustomCreativeTabContents {
@@ -34,7 +35,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(stack, tooltipAdder);
+        StorageUtils.addStoredChemical(ItemAccess.forStack(stack), tooltipAdder);
     }
 
     @Override
@@ -49,7 +50,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
     }
 
     @Override

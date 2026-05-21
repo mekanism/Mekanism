@@ -6,9 +6,9 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @NothingNullByDefault
 public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatCapacitorData, AttachedHeat> implements IHeatCapacitor {
@@ -17,16 +17,20 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     private final double inverseInsulationCoefficient;
     private final HeatCapacitorData defaultData;
 
-    public ComponentBackedHeatCapacitor(ItemStack attachedTo, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
-        this(attachedTo, slotIndex, inverseConductionCoefficient, inverseInsulationCoefficient, HeatAPI.DEFAULT_HEAT_CAPACITY);
+    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
+        this(attachedAccess, slotIndex, inverseConductionCoefficient, inverseInsulationCoefficient, HeatAPI.DEFAULT_HEAT_CAPACITY);
     }
 
-    public ComponentBackedHeatCapacitor(ItemStack attachedTo, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
+    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           double defaultHeatCapacity) {
-        super(attachedTo, slotIndex);
+        super(attachedAccess, slotIndex);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
         this.defaultData = new HeatCapacitorData(defaultHeatCapacity);
+    }
+
+    protected boolean setContents(AttachedHeat attached, HeatCapacitorData value) {
+        return setContents(attached, value, null, true);
     }
 
     @Override
@@ -83,11 +87,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     public void setHeat(double heat) {
         AttachedHeat attachedHeat = getAttached();
         setContents(attachedHeat, getContents(attachedHeat).withHeat(heat));
-    }
-
-    @Override//TODO - 1.21: Re-evaluate this override
-    protected boolean shouldUpdate(AttachedHeat attached, HeatCapacitorData value) {
-        return !getContents(attached).equals(value);
     }
 
     @Override

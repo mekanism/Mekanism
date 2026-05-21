@@ -61,7 +61,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
     }
 
     @Override

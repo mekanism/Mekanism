@@ -6,8 +6,8 @@ import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTa
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 //TODO: Re-evaluate/rethink this as using rawtypes to get around things like this is very cursed
 @NothingNullByDefault
@@ -23,19 +23,19 @@ public class MergedTankCreator implements IBasicContainerCreator {
         this.fluidCreator = fluidCreator;
     }
 
-    private MergedTank createMergedTank(ContainerType containerType, ItemStack attachedTo, int containerIndex) {
+    private MergedTank createMergedTank(ContainerType containerType, ItemAccess attachedAccess, int containerIndex) {
         return MergedTank.create(
-              fluidCreator.create(containerType, attachedTo, containerIndex),
-              chemicalCreator.create(containerType, attachedTo, containerIndex)
+              fluidCreator.create(containerType, attachedAccess, containerIndex),
+              chemicalCreator.create(containerType, attachedAccess, containerIndex)
         );
     }
 
     @Override
-    public ValueIOSerializable create(ContainerType containerType, ItemStack attachedTo, int containerIndex) {
+    public ValueIOSerializable create(ContainerType containerType, ItemAccess attachedAccess, int containerIndex) {
         if (containerType == ContainerType.FLUID) {
-            return createMergedTank(containerType, attachedTo, containerIndex).getFluidTank();
+            return createMergedTank(containerType, attachedAccess, containerIndex).getFluidTank();
         } else if (containerType == ContainerType.CHEMICAL) {
-            return createMergedTank(containerType, attachedTo, containerIndex).getChemicalTank();
+            return createMergedTank(containerType, attachedAccess, containerIndex).getChemicalTank();
         }
         throw new IllegalStateException("Unexpected container type " + containerType.getComponentName() + " for merged tank creation");
     }

@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
@@ -60,7 +61,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     @Nullable
     @Override
     public TankRenderState extractArgument(ItemStack stack) {
-        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(stack);
+        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(ItemAccess.forStack(stack));
         float fluidScale = 0;
         int fluidLight = 0;
         int fluidColor = 0;

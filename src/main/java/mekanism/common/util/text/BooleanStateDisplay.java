@@ -7,7 +7,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @MethodsAreNotNullByDefault
 public abstract class BooleanStateDisplay implements IHasTextComponent {
@@ -45,8 +45,8 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
             return value ? YES : NO;
         }
 
-        public static YesNo hasInventory(ItemStack stack) {
-            return of(ContainerType.ITEM.getAttachmentContainersIfPresent(stack).stream().anyMatch(slot -> !slot.isEmpty()), true);
+        public static YesNo hasInventory(ItemAccess itemAccess) {
+            return of(ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess).stream().anyMatch(slot -> !slot.isEmpty()), true);
         }
 
         public static YesNo of(boolean value, boolean colored) {

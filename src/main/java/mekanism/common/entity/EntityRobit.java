@@ -432,7 +432,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.asStack();
-        ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
+            mekHandler.getContainer(0).copyContents(energyContainer);
+        }
+        ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(itemAccess), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
             IInventorySlot inventorySlot = inventorySlots.get(slot);
             if (!inventorySlot.isEmpty()) {
@@ -444,11 +449,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         }
         stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
         stack.set(MekanismDataComponents.ROBIT_SKIN, getSkinId());
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
-            mekHandler.getContainer(0).copyContents(energyContainer);
-        }
         ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID(), null);

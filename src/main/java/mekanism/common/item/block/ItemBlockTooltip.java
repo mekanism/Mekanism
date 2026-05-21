@@ -104,15 +104,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccess.forStack(stack), tooltipAdder);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
-        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
+        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(itemAccess);
         if (!fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
-            tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+            tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
@@ -127,7 +128,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCapOrTooltips()) {
-            StorageUtils.addStoredEnergy(stack, tooltipAdder, false);
+            StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, false);
         }
     }
 
@@ -171,10 +172,10 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-            return builder.addContainer((type, attachedTo, containerIndex) -> {
+            return builder.addContainer((_, attachedAccess, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-                LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
-                return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
+                LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
+                return new ComponentBackedNoClampEnergyContainer(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
                       () -> MekanismUtils.calculateUsage(capacity.getAsLong()), capacity);
             });
         }
@@ -205,13 +206,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
         // for how much energy a machine can store changes
         private final LongSupplier baseStorage;
-        private final ItemStack stack;
+        private final ItemAccess attachedAccess;
         private int lastInstalled;
         private long value;
 
-        private UpgradeBasedUnsignedLongCache(ItemStack stack, LongSupplier baseStorage) {
-            this.stack = stack;
-            UpgradeAware upgradeAware = this.stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
+        private UpgradeBasedUnsignedLongCache(ItemAccess attachedAccess, LongSupplier baseStorage) {
+            this.attachedAccess = attachedAccess;
+            UpgradeAware upgradeAware = this.attachedAccess.getResource().getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             this.lastInstalled = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             this.baseStorage = baseStorage;
             this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.getAsLong());
@@ -219,7 +220,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
         @Override
         public long getAsLong() {
-            UpgradeAware upgradeAware = stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
+            UpgradeAware upgradeAware = attachedAccess.getResource().getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             if (installed != lastInstalled) {
                 lastInstalled = installed;

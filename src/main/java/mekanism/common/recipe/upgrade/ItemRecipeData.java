@@ -11,7 +11,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -35,11 +34,11 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (slots.isEmpty()) {
             return true;
         }
-        if (stack.getItem() instanceof ItemBlockPersonalStorage<?>) {
+        if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage<?>) {
             //Add the slots in the same way we would for a PersonalStorageItemInventory and if we can transfer to the item,
             // we will copy them over directly
             List<IInventorySlot> stackSlots = new ArrayList<>();
@@ -47,11 +46,11 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             //TODO: Improve the logic so that it maybe tries multiple different slot combinations
             if (applyToStack(stackSlots, slots)) {
                 //We managed to transfer it all into valid slots, so save it as a new inventory
-                return PersonalStorageManager.createInventoryFor(ItemAccess.forStack(stack), stackSlots);
+                return PersonalStorageManager.createInventoryFor(itemAccess, stackSlots);
             }
             return false;
         }
-        ComponentBackedResourceHandler<ItemResource, IInventorySlot> outputHandler = ContainerType.ITEM.createHandler(stack);
+        ComponentBackedResourceHandler<ItemResource, IInventorySlot> outputHandler = ContainerType.ITEM.createHandler(itemAccess);
         //Something went wrong, fail
         return outputHandler != null && applyToStack(outputHandler.getContainers(), slots);
     }

@@ -40,7 +40,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredFluid(stack, tooltipAdder, MekanismLang.EMPTY);
+        StorageUtils.addStoredFluid(ItemAccess.forStack(stack), tooltipAdder, MekanismLang.EMPTY);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return FluidUtils.getRGBDurabilityForDisplay(stack);
+        return FluidUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
     }
 
     @Override

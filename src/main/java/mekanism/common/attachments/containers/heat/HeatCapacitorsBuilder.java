@@ -25,8 +25,8 @@ public class HeatCapacitorsBuilder {
     }
 
     public HeatCapacitorsBuilder addBasic(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
-        return addCapacitor(heatCapacity, (type, attachedTo, containerIndex) -> new ComponentBackedHeatCapacitor(attachedTo, containerIndex, inverseConductionCoefficient,
-              inverseInsulationCoefficient, heatCapacity));
+        return addCapacitor(heatCapacity, (_, attachedAccess, containerIndex) ->
+              new ComponentBackedHeatCapacitor(attachedAccess, containerIndex, inverseConductionCoefficient, inverseInsulationCoefficient, heatCapacity));
     }
 
     public HeatCapacitorsBuilder addCapacitor(IBasicContainerCreator<? extends ComponentBackedHeatCapacitor> capacitor) {

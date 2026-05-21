@@ -18,6 +18,7 @@ import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -28,15 +29,15 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     private final boolean isCreative;
 
-    public static ComponentBackedBinInventorySlot create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int tankIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockBin item)) {
+    public static ComponentBackedBinInventorySlot create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockBin item)) {
             throw new IllegalStateException("Attached to should always be a bin item");
         }
-        return new ComponentBackedBinInventorySlot(attachedTo, tankIndex, item.getTier());
+        return new ComponentBackedBinInventorySlot(attachedAccess, tankIndex, item.getTier());
     }
 
-    private ComponentBackedBinInventorySlot(ItemStack attachedTo, int slotIndex, BinTier tier) {
-        super(attachedTo, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator, false, tier.getStorage());
+    private ComponentBackedBinInventorySlot(ItemAccess attachedAccess, int slotIndex, BinTier tier) {
+        super(attachedAccess, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator, false, tier.getStorage());
         isCreative = tier == BinTier.CREATIVE;
     }
 
@@ -58,10 +59,12 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
                     }
                 }
                 //If we managed to insert anything, set the contents to the maximum amount of that item type
-                updateSnapshots(transaction);
-                setContents(attachedItems, resource, capacityAsLong(resource));
-                //Return that we accepted the entire amount we were passed
-                return amount;
+                if (setContents(attachedItems, resource, capacityAsLong(resource), transaction)) {
+                    //Return that we accepted the entire amount we were passed
+                    return amount;
+                }
+                //If we couldn't update the backing item access, return that we didn't actually insert anything
+                return 0;
             }
         }
         if (isCreative) {
@@ -106,16 +109,24 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      *
      * @see BinInventorySlot#setLockType(ItemResource)
      */
-    public void setLockType(ItemResource lockType) {
+    public boolean setLockType(ItemResource lockType) {
+        ItemResource resource = attachedAccess.getResource();
         if (lockType.isEmpty()) {
-            attachedTo.remove(MekanismDataComponents.LOCK);
+            resource = resource.without(MekanismDataComponents.LOCK);
         } else {
-            attachedTo.set(MekanismDataComponents.LOCK, LockData.create(lockType));
+            resource = resource.with(MekanismDataComponents.LOCK, LockData.create(lockType));
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Note: The attached access should handle snapshotting the backing stack
+            int exchanged = attachedAccess.exchange(resource, attachedAccess.getAmount(), transaction);
+            transaction.commit();
+            //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
+            return exchanged != 0;
         }
     }
 
     public ItemResource getLockType() {
-        return attachedTo.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
+        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
     }
 
     @Override

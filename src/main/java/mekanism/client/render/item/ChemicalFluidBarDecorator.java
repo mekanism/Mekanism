@@ -16,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
@@ -42,8 +43,9 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         yOffset += 12;
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
         for (ContainerType<? extends IChemicalTank, ?, ?> chemicalContainerType : chemicalContainerTypes) {
-            List<? extends IChemicalTank> tanks = chemicalContainerType.getAttachmentContainersIfPresent(stack);
+            List<? extends IChemicalTank> tanks = chemicalContainerType.getAttachmentContainersIfPresent(itemAccess);
             int tank = getDisplayTank(tanks.size());
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
@@ -54,7 +56,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
 
         if (showFluid) {
-            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(itemAccess);
             int tank = getDisplayTank(tanks.size());
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));

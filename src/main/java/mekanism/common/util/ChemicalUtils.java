@@ -60,7 +60,8 @@ public class ChemicalUtils {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Chemical> provider) {
-        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> attachment = ContainerType.CHEMICAL.createHandler(toFill);
+        ItemAccess itemAccess = ItemAccess.forStack(toFill);
+        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> attachment = ContainerType.CHEMICAL.createHandler(itemAccess);
         if (attachment != null) {
             ChemicalResource chemicalType = ChemicalResource.of(provider);
             for (IChemicalTank tank : attachment.getContainers()) {
@@ -71,8 +72,8 @@ public class ChemicalUtils {
         return toFill;
     }
 
-    public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        ChemicalResource chemicalType = StorageUtils.getFirstChemicalFromAttachment(stack);
+    public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
+        ChemicalResource chemicalType = StorageUtils.getFirstChemicalFromAttachment(itemAccess);
         return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
     }
 

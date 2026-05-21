@@ -7,7 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,11 +29,11 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (energyContainers.isEmpty()) {
             return true;
         }
-        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.createHandler(stack);
+        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.createHandler(itemAccess);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

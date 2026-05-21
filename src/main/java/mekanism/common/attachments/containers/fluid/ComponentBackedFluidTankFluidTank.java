@@ -6,7 +6,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -17,15 +17,15 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
 
     private final boolean isCreative;
 
-    public static ComponentBackedFluidTankFluidTank create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int tankIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockFluidTank item)) {
+    public static ComponentBackedFluidTankFluidTank create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockFluidTank item)) {
             throw new IllegalStateException("Attached to should always be a fluid tank item");
         }
-        return new ComponentBackedFluidTankFluidTank(attachedTo, tankIndex, item.getTier());
+        return new ComponentBackedFluidTankFluidTank(attachedAccess, tankIndex, item.getTier());
     }
 
-    private ComponentBackedFluidTankFluidTank(ItemStack attachedTo, int tankIndex, FluidTankTier tier) {
-        super(attachedTo, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
+    private ComponentBackedFluidTankFluidTank(ItemAccess attachedAccess, int tankIndex, FluidTankTier tier) {
+        super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
         isCreative = tier == FluidTankTier.CREATIVE;
     }
 

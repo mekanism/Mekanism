@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -17,7 +17,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
       implements IContentsListener {
 
     private final ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType;
-    protected final ItemStack attachedTo;
+    protected final ItemAccess attachedAccess;
     private final int totalContainers;
 
     @Nullable
@@ -25,10 +25,10 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
     private int numNotInitialized;
 
     //TODO - 1.21: Do we want to validate slot indices are within range?
-    protected ComponentBackedHandler(ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType, ItemStack attachedTo,
+    protected ComponentBackedHandler(ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType, ItemAccess attachedAccess,
           int totalContainers) {
         this.containerType = containerType;
-        this.attachedTo = attachedTo;
+        this.attachedAccess = attachedAccess;
         this.totalContainers = totalContainers;
     }
 
@@ -37,7 +37,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
     }
 
     protected ATTACHED getAttached() {
-        return containerType.getOrEmpty(attachedTo);
+        return containerType.getOrEmpty(attachedAccess);
     }
 
     public TYPE getContents(int index) {
@@ -67,7 +67,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
 
     private CONTAINER initializeContainer(int index) {
         //Create a new container for the given index, and set it as initialized
-        CONTAINER container = containerType.createContainer(attachedTo, index);
+        CONTAINER container = containerType.createContainer(attachedAccess, index);
         containers().set(index, container);
         numNotInitialized--;
         return container;

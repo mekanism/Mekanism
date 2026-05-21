@@ -51,7 +51,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+        StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack))));
     }
 

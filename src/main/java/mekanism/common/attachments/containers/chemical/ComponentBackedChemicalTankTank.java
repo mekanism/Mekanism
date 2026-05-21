@@ -8,7 +8,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
@@ -21,15 +21,15 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
 
     private final boolean isCreative;
 
-    public static ComponentBackedChemicalTankTank create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int tankIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockChemicalTank item)) {
+    public static ComponentBackedChemicalTankTank create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockChemicalTank item)) {
             throw new IllegalStateException("Attached to should always be a chemical tank item");
         }
-        return new ComponentBackedChemicalTankTank(attachedTo, tankIndex, item.getTier());
+        return new ComponentBackedChemicalTankTank(attachedAccess, tankIndex, item.getTier());
     }
 
-    private ComponentBackedChemicalTankTank(ItemStack attachedTo, int tankIndex, ChemicalTankTier tier) {
-        super(attachedTo, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+    private ComponentBackedChemicalTankTank(ItemAccess attachedAccess, int tankIndex, ChemicalTankTier tier) {
+        super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               tier::getTransferRate, tier::getCapacity, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
         isCreative = tier == ChemicalTankTier.CREATIVE;
     }

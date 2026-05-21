@@ -5,14 +5,15 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Long, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
 
-    public ComponentBackedEnergyHandler(ContainerType<IEnergyContainer, AttachedEnergy, ? extends ComponentBackedEnergyHandler> containerType, ItemStack attachedTo, int totalContainers) {
-        super(containerType, attachedTo, totalContainers);
+    public ComponentBackedEnergyHandler(ContainerType<IEnergyContainer, AttachedEnergy, ? extends ComponentBackedEnergyHandler> containerType, ItemAccess attachedAccess,
+          int totalContainers) {
+        super(containerType, attachedAccess, totalContainers);
     }
 
     @Override

@@ -9,8 +9,8 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
@@ -25,9 +25,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     private final LongSupplier capacity;
     private final IntSupplier rate;
 
-    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
+    public ComponentBackedResourceContainer(ItemAccess attachedAccess, int slotIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity) {
-        super(attachedTo, slotIndex);
+        super(attachedAccess, slotIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
@@ -50,11 +50,12 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     @Override
     public void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction) {
-        setContents(getAttached(), contents);
+        setContents(getAttached(), contents, transaction, true);
     }
 
-    protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        setContents(attached, stackHelper().createStack(type, storedAmount));
+    protected boolean setContents(AttachedResources<RESOURCE> attached, RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, TransactionContext transaction) {
+        //Note: We don't havea to check for changes as we know we only call this if things actually would be inserted/extracted which means that the contents changed
+        return setContents(attached, stackHelper().createStack(type, storedAmount), transaction, false);
     }
 
     @Override
@@ -127,12 +128,14 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             return 0;
         }
         int toAdd = Math.min(amount, Ints.saturatedCast(needed));
-        updateSnapshots(transaction);
         //Note: We let setStack handle updating the backing holding stack
         // We use current.getCount + toAdd so that if we are empty we end up at toAdd
         // but if we aren't then we grow by the given amount
-        setContents(attached, resource, currentAmount + toAdd);
-        return toAdd;
+        if (setContents(attached, resource, currentAmount + toAdd, transaction)) {
+            return toAdd;
+        }
+        //If we couldn't update the backing item access, return that we didn't actually insert anything
+        return 0;
     }
 
     @Override
@@ -155,11 +158,11 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
-        if (toRemove > 0) {
-            updateSnapshots(transaction);
-            //Shrink the stack by the amount removed
-            setContents(attached, currentType, currentStored - toRemove);
+        //Shrink the stack by the amount removed
+        if (toRemove > 0 && setContents(attached, currentType, currentStored - toRemove, transaction)) {
+            return toRemove;
         }
-        return toRemove;
+        //If we couldn't update the backing item access, return that we didn't actually extract anything
+        return 0;
     }
 }

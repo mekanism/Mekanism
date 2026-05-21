@@ -30,7 +30,8 @@ public final class FluidUtils {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
-        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(toFill);
+        ItemAccess itemAccess = ItemAccess.forStack(toFill);
+        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(itemAccess);
         if (attachment != null) {
             FluidResource fluidType = FluidResource.of(fluid);
             for (IFluidTank fluidTank : attachment.getContainers()) {
@@ -41,8 +42,8 @@ public final class FluidUtils {
         return toFill;
     }
 
-    public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        return getRGBDurabilityForDisplay(StorageUtils.getFirstFluidFromAttachment(stack));
+    public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
+        return getRGBDurabilityForDisplay(StorageUtils.getFirstFluidFromAttachment(itemAccess));
     }
 
     public static int getRGBDurabilityForDisplay(FluidStack stack) {

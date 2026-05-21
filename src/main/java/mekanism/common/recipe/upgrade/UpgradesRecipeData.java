@@ -16,8 +16,9 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -60,12 +61,13 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(ItemAccess itemAccess) {
         if (upgrades.isEmpty() && slots.stream().allMatch(IInventorySlot::isEmpty)) {
             return true;
         }
+        ItemResource itemType = itemAccess.getResource();
         Set<Upgrade> supportedUpgrades = Collections.emptySet();
-        if (stack.getItem() instanceof BlockItem blockItem) {
+        if (itemType.getItem() instanceof BlockItem blockItem) {
             AttributeUpgradeSupport upgradeSupport = Attribute.get(blockItem.getBlock(), AttributeUpgradeSupport.class);
             if (upgradeSupport != null) {
                 supportedUpgrades = upgradeSupport.supportedUpgrades();
@@ -122,9 +124,12 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        stack.set(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.createStack(inputType, inputAmount),
-              LargeResourceStack.ITEM_HELPER.createStack(outputType, outputAmount)));
-        //Try merging stored stacks
-        return true;
+        try (Transaction transaction = Transaction.openRoot()) {
+            itemType = itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.createStack(inputType, inputAmount),
+                  LargeResourceStack.ITEM_HELPER.createStack(outputType, outputAmount)));
+            int exchanged = itemAccess.exchange(itemType, itemAccess.getAmount(), transaction);
+            transaction.commit();
+            return exchanged != 0;
+        }
     }
 }

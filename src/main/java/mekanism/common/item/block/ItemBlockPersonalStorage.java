@@ -94,8 +94,8 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     }
 
     @Override
-    public List<IInventorySlot> getDroppedSlots(ItemStack stack) {
-        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(ItemAccess.forStack(stack));
+    public List<IInventorySlot> getDroppedSlots(ItemAccess itemAccess) {
+        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(itemAccess);
         if (itemInventory == null) {
             return Collections.emptyList();
         }

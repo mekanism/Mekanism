@@ -10,7 +10,7 @@ import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ResourceContainersBuilder;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidTanksBuilder extends ResourceContainersBuilder<FluidResource, ComponentBackedFluidTank, FluidTanksBuilder> {
@@ -33,8 +33,8 @@ public class FluidTanksBuilder extends ResourceContainersBuilder<FluidResource, 
     }
 
     @Override
-    protected ComponentBackedFluidTank createBasicContainer(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
+    protected ComponentBackedFluidTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, LongSupplier capacity) {
-        return new ComponentBackedFluidTank(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity);
+        return new ComponentBackedFluidTank(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity);
     }
 }

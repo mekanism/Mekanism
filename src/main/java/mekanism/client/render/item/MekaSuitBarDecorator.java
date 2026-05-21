@@ -14,6 +14,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -32,14 +33,15 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        if (tryRender(guiGraphics, stack, xOffset, yOffset, armor.getChemicalTankSpecs())) {
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        if (tryRender(guiGraphics, itemAccess, xOffset, yOffset, armor.getChemicalTankSpecs())) {
             yOffset--;
         }
 
         List<GenericTankSpec<FluidResource>> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
-            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-            int tank = getDisplayTank(fluidTankSpecs, ItemResource.of(stack), tanks.size());
+            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(itemAccess);
+            int tank = getDisplayTank(fluidTankSpecs, itemAccess.getResource(), tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
             } else if (tanks.isEmpty()) {
@@ -49,10 +51,10 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xOffset, int yOffset, List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs) {
+    private boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemAccess itemAccess, int xOffset, int yOffset, List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty()) {
-            List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
-            int tank = getDisplayTank(chemicalTankSpecs, ItemResource.of(stack), tanks.size());
+            List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(itemAccess);
+            int tank = getDisplayTank(chemicalTankSpecs, itemAccess.getResource(), tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
             } else if (tanks.isEmpty()) {

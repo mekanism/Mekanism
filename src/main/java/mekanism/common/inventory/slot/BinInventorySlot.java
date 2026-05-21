@@ -16,10 +16,10 @@ import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySl
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -32,10 +32,11 @@ public class BinInventorySlot extends BasicInventorySlot {
     public static final Predicate<ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);
 
     @Nullable
-    public static ComponentBackedBinInventorySlot getForStack(ItemStack stack) {
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
+    public static ComponentBackedBinInventorySlot getForAccess(ItemAccess itemAccess) {
+        ItemResource resource = itemAccess.getResource();
+        if (!resource.isEmpty() && resource.getItem() instanceof ItemBlockBin) {
             //TODO - 26.1: Should this use getAttachmentContainersIfPresent
-            ComponentBackedResourceHandler<ItemResource, IInventorySlot> attachment = ContainerType.ITEM.createHandler(stack);
+            ComponentBackedResourceHandler<ItemResource, IInventorySlot> attachment = ContainerType.ITEM.createHandler(itemAccess);
             if (attachment != null) {
                 List<IInventorySlot> slots = attachment.getContainers();
                 if (slots.size() == 1) {

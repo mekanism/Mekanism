@@ -87,7 +87,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
-        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
+        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(ItemAccess.forStack(stack));
         if (fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {

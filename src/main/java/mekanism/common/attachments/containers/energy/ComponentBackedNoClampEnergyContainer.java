@@ -4,15 +4,15 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class ComponentBackedNoClampEnergyContainer extends ComponentBackedEnergyContainer {
 
-    public ComponentBackedNoClampEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
+    public ComponentBackedNoClampEnergyContainer(ItemAccess attachedAccess, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
-        super(attachedTo, containerIndex, canExtract, canInsert, rate, maxEnergy);
+        super(attachedAccess, containerIndex, canExtract, canInsert, rate, maxEnergy);
     }
 
     @Override

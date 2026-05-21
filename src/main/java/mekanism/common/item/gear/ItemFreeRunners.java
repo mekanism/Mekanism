@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -34,8 +33,8 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>,
       IHasConditionalAttributes, IFreeRunnerItem {
@@ -56,7 +55,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+        StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
@@ -104,7 +103,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
-            StorageUtils.addStoredEnergy(stack, list::add, true, MekanismLang.FREE_RUNNERS_STORED);
+            StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), list::add, true, MekanismLang.FREE_RUNNERS_STORED);
         }
     }
 

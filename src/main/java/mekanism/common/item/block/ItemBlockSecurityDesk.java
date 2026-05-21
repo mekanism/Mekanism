@@ -26,7 +26,8 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileE
     protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: We manually override this as we don't want to display the security mode for the security desk as while it technically
         // has one in reality it is always private
-        IItemSecurityUtils.INSTANCE.addOwnerTooltip(ItemAccess.forStack(stack), tooltipAdder);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IItemSecurityUtils.INSTANCE.addOwnerTooltip(itemAccess, tooltipAdder);
+        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
     }
 }
