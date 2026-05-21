@@ -4,7 +4,6 @@ import com.mojang.math.Axis;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.robit.RobitSkin;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -19,6 +18,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
@@ -96,7 +96,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     private static void renderSlotBackground(@NotNull GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
-        GuiUtils.renderBackgroundTexture(guiGraphics, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, size, size, slotX, slotY);
     }
 
     @Override

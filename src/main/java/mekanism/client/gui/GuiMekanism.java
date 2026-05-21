@@ -54,8 +54,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
     
     public static final Identifier BASE_BACKGROUND_SLICE = Mekanism.rl("base");
-    public static final Identifier SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
-    public static final Identifier BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
+    public static final Identifier SHADOW = Mekanism.rl("shadow");
+    public static final Identifier BLUR = Mekanism.rl("blur");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected boolean initialFocusSet;

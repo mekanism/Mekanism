@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
 import java.util.function.IntSupplier;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.util.MekanismUtils;
@@ -30,8 +29,7 @@ public class GuiScrollBar extends GuiScrollableElement {
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw background and border
-        GuiUtils.renderBackgroundTexture(guiGraphics, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_BORDER_SIZE, GuiElementHolder.HOLDER_BORDER_SIZE, relativeX, relativeY,
-              barWidth + 2, height, 256, 256);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiElementHolder.HOLDER, relativeX, relativeY, barWidth + 2, height);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
