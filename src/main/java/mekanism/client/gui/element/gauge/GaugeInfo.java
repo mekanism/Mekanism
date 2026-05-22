@@ -1,19 +1,18 @@
 package mekanism.client.gui.element.gauge;
 
 import mekanism.api.text.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public enum GaugeInfo {
-    STANDARD("normal.png", 2, 2, null),
-    BLUE("blue.png", 2, 2, EnumColor.DARK_BLUE),
-    RED("red.png", 2, 2, EnumColor.DARK_RED),
-    YELLOW("yellow.png", 2, 2, EnumColor.YELLOW),
-    ORANGE("orange.png", 2, 2, EnumColor.ORANGE),
-    AQUA("aqua.png", 2, 2, EnumColor.AQUA);
+    STANDARD("normal", 2, 2, null),
+    BLUE("blue", 2, 2, EnumColor.DARK_BLUE),
+    RED("red", 2, 2, EnumColor.DARK_RED),
+    YELLOW("yellow", 2, 2, EnumColor.YELLOW),
+    ORANGE("orange", 2, 2, EnumColor.ORANGE),
+    AQUA("aqua", 2, 2, EnumColor.AQUA);
 
     @Nullable
     private final EnumColor color;
@@ -22,7 +21,7 @@ public enum GaugeInfo {
     private final Identifier resourceLocation;
 
     GaugeInfo(String texture, int sideWidth, int sideHeight, @Nullable EnumColor color) {
-        this.resourceLocation = MekanismUtils.getResource(ResourceType.GUI_GAUGE, texture);
+        this.resourceLocation = Mekanism.rl(texture).withPrefix("gauge/");
         this.sideWidth = sideWidth;
         this.sideHeight = sideHeight;
         this.color = color;
