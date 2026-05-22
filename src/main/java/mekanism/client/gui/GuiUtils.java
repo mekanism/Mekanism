@@ -14,7 +14,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +63,6 @@ public class GuiUtils {
     //Copied from JEI
     public static void drawTiledSpriteVanilla(GuiGraphicsExtractor guiGraphics, int posX, int posY, int tiledWidth, int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite) {
         SpriteContents spriteContents = sprite.contents();
-        GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(spriteContents.width(), spriteContents.height());
 
         posY = posY + tiledHeight - scaledAmount;
 
@@ -79,10 +77,10 @@ public class GuiUtils {
                   scaledAmount,
                   0,
                   0,
-                  tileScaling.width(),
-                  tileScaling.height(),
-                  tileScaling.width(),
-                  tileScaling.height(),
+                  spriteContents.width(),
+                  spriteContents.height(),
+                  spriteContents.width(),
+                  spriteContents.height(),
                   color
             );
         }
