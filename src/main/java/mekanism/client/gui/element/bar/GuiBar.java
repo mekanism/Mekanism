@@ -49,7 +49,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        renderExtendedTexture(guiGraphics, BAR, 2, 2);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency

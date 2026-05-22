@@ -652,12 +652,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), getButtonBlitColor());
     }
 
-    @Deprecated(forRemoval = true)
-    protected void renderExtendedTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-        //GuiUtils.renderExtendedTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-    }
-
     @Override
     public void playDownSound(@NotNull SoundManager soundHandler) {
         if (clickSound != null) {
