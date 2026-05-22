@@ -158,7 +158,7 @@ public class GuiRadialSelector extends Screen {
                 drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.3F, 0.3F, 0.3F, 0.5F);
             }
             // draw icon
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACK_BUTTON, -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACK_BUTTON, -12, -18, 0, 0, 24, 24, 18, 18, 18, 18);
             textToDraw.add(new PositionedText(0, 0, MekanismLang.BACK.translate()));
         } else {
             overBackButton = false;
@@ -172,7 +172,7 @@ public class GuiRadialSelector extends Screen {
             float x = Mth.cos(angle) * MIDDLE_DISTANCE;
             float y = Mth.sin(angle) * MIDDLE_DISTANCE;
             // draw icon
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, mode.icon(), Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, mode.icon(), Math.round(x - 12), Math.round(y - 20), 0, 0, 24, 24, 18, 18, 18, 18);
             // queue label
             textToDraw.add(new PositionedText(x, y, mode.sliceName()));
         }

@@ -51,7 +51,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * texWidth);
         if (displayInt > 0) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, calculateScaled(widthScale, displayInt), texHeight, displayInt, texHeight, texWidth, texHeight);
         }
     }
 }

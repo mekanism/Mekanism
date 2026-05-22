@@ -13,7 +13,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiTankBar.ResourceTankInfoProvider;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketUtils;
@@ -73,7 +72,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         return tooltips;
     }
 
-    protected abstract void applyRenderColor(GuiGraphicsExtractor guiGraphics, RESOURCE resource, long amount);
+    protected abstract int getRenderColor(RESOURCE resource, long amount);
 
     protected abstract TextureAtlasSprite getIcon(RESOURCE resource);
 
@@ -84,14 +83,12 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
             if (displayInt > 0) {
                 RESOURCE stored = container.resource();
-                applyRenderColor(guiGraphics, stored, container.amountAsLong());
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored, container.amountAsLong()));
                 } else {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored, container.amountAsLong()));
                 }
-                MekanismRenderer.resetColor(guiGraphics);
             }
         }
     }

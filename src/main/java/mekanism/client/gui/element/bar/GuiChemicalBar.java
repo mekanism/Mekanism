@@ -8,7 +8,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -38,8 +37,8 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics, ChemicalResource resource, long amount) {
-        MekanismRenderer.color(resource);
+    protected int getRenderColor(ChemicalResource resource, long amount) {
+        return MekanismRenderer.color(resource);
     }
 
     @Override

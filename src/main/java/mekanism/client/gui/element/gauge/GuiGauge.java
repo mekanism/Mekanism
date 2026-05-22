@@ -10,7 +10,6 @@ import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
@@ -72,14 +71,15 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         return gaugeType.getGaugeInfo();
     }
 
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
+    protected int getRenderColor() {
+        return -1;
     }
 
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
-        renderExtendedTexture(guiGraphics, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, color.getResourceLocation(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         if (!dummy) {
             renderContents(guiGraphics);
         }
@@ -95,9 +95,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
-            applyRenderColor(guiGraphics);
-            drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
-            MekanismRenderer.resetColor(guiGraphics);
+            drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT, getRenderColor());
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;
@@ -111,7 +109,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
 
     public void drawBarOverlay(GuiGraphicsExtractor guiGraphics) {
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, getWidth() - 2, getHeight() - 2, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override

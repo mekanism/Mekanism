@@ -11,7 +11,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -57,8 +56,8 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(getTypeOrDummy());
+    protected int getRenderColor() {
+        return MekanismRenderer.color(getTypeOrDummy());
     }
 
     @Override

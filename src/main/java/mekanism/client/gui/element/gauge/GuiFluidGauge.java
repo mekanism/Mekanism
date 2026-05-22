@@ -10,7 +10,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -66,10 +65,10 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
+    protected int getRenderColor() {
         FluidResource type = getTypeOrDummy();
         IFluidTank container = getContainer();
-        MekanismRenderer.color(type.toStack(container == null || container.isEmpty() ? FluidType.BUCKET_VOLUME : container.amountAsInt()));
+        return MekanismRenderer.color(type.toStack(container == null || container.isEmpty() ? FluidType.BUCKET_VOLUME : container.amountAsInt()));
     }
 
     @Override
