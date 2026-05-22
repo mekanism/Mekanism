@@ -37,7 +37,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
     }
 
     @Override
-    protected int getRenderColor(ChemicalResource resource, long amount) {
+    protected int getRenderColor(ChemicalResource resource) {
         return MekanismRenderer.color(resource);
     }
 

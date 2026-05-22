@@ -1,6 +1,5 @@
 package mekanism.common.integration.lookingat;
 
-import com.google.common.primitives.Ints;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
@@ -19,7 +18,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -82,8 +80,7 @@ public class FluidElement extends LookingAtElement {
 
     @Override
     protected int getRenderColor() {
-    //todo: not a stack?
-        return MekanismRenderer.color(stored.resource().toStack(Ints.saturatedCast(stored.amount())));
+        return MekanismRenderer.color(stored.resource());
     }
 
     @Override

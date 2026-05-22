@@ -29,9 +29,8 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     }
 
     @Override
-    protected int getRenderColor(FluidResource resource, long amount) {
-    //todo: not this?
-        return MekanismRenderer.color(resource.toStack(Ints.saturatedCast(amount)));
+    protected int getRenderColor(FluidResource resource) {
+        return MekanismRenderer.color(resource);
     }
 
     @Override

@@ -72,7 +72,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         return tooltips;
     }
 
-    protected abstract int getRenderColor(RESOURCE resource, long amount);
+    protected abstract int getRenderColor(RESOURCE resource);
 
     protected abstract TextureAtlasSprite getIcon(RESOURCE resource);
 
@@ -85,9 +85,9 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
                 RESOURCE stored = container.resource();
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored, container.amountAsLong()));
+                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
                 } else {
-                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored, container.amountAsLong()));
+                    drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT, getRenderColor(stored));
                 }
             }
         }
