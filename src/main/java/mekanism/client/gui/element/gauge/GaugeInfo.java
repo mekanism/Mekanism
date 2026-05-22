@@ -7,37 +7,25 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public enum GaugeInfo {
-    STANDARD("normal", 2, 2, null),
-    BLUE("blue", 2, 2, EnumColor.DARK_BLUE),
-    RED("red", 2, 2, EnumColor.DARK_RED),
-    YELLOW("yellow", 2, 2, EnumColor.YELLOW),
-    ORANGE("orange", 2, 2, EnumColor.ORANGE),
-    AQUA("aqua", 2, 2, EnumColor.AQUA);
+    STANDARD("normal", null),
+    BLUE("blue", EnumColor.DARK_BLUE),
+    RED("red", EnumColor.DARK_RED),
+    YELLOW("yellow", EnumColor.YELLOW),
+    ORANGE("orange", EnumColor.ORANGE),
+    AQUA("aqua", EnumColor.AQUA);
 
     @Nullable
     private final EnumColor color;
-    private final int sideWidth;
-    private final int sideHeight;
     private final Identifier resourceLocation;
 
-    GaugeInfo(String texture, int sideWidth, int sideHeight, @Nullable EnumColor color) {
+    GaugeInfo(String texture, @Nullable EnumColor color) {
         this.resourceLocation = Mekanism.rl(texture).withPrefix("gauge/");
-        this.sideWidth = sideWidth;
-        this.sideHeight = sideHeight;
         this.color = color;
     }
 
     @Nullable
     public EnumColor getColor() {
         return color;
-    }
-
-    public int getSideWidth() {
-        return sideWidth;
-    }
-
-    public int getSideHeight() {
-        return sideHeight;
     }
 
     public Identifier getResourceLocation() {

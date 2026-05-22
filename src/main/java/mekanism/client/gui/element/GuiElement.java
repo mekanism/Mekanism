@@ -51,8 +51,7 @@ import org.joml.Matrix3x2fStack;
 
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
-
-    private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
+    
     public static final Identifier WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
     public static final Identifier WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
     protected static Supplier<SoundEvent> BUTTON_CLICK_SOUND = SoundEvents.UI_BUTTON_CLICK::value;
