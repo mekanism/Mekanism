@@ -120,7 +120,7 @@ public class FilterButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getButtonX(), getButtonY(), 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, getButtonWidth(), getButtonHeight(), TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override

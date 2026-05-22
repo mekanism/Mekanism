@@ -111,7 +111,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
 
     public void drawBarOverlay(GuiGraphicsExtractor guiGraphics) {
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, getWidth() - 2, getHeight() - 2, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
