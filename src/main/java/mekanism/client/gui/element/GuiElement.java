@@ -51,7 +51,7 @@ import org.joml.Matrix3x2fStack;
 
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
-    
+
     public static final Identifier WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
     public static final Identifier WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
     protected static Supplier<SoundEvent> BUTTON_CLICK_SOUND = SoundEvents.UI_BUTTON_CLICK::value;
@@ -105,6 +105,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     /// Perform pre [#extractRenderState] tasks like update visibility.
     ///
     /// Only works under [GuiMekanism]
+    ///
+    /// This exists because [AbstractWidget#extractRenderState(GuiGraphicsExtractor, int, int, float)] is final
     public void updateBeforeExtract() {
     }
 
