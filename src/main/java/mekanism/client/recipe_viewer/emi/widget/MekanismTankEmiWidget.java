@@ -52,13 +52,14 @@ public class MekanismTankEmiWidget extends SlotWidget {
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);
         if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;
+            int color;
             if (stack instanceof ChemicalEmiStack chemicalEmiStack) {
                 ChemicalStack chemicalStack = chemicalEmiStack.getStack();
-                MekanismRenderer.color(chemicalStack);
+                color = MekanismRenderer.color(chemicalStack);
                 sprite = MekanismRenderer.getChemicalTexture(chemicalStack);
             } else if (stack.getKey() instanceof Fluid fluid) {
                 FluidStack fluidStack = new FluidStack(fluid.builtInRegistryHolder(), Ints.saturatedCast(ingredient.getAmount()), stack.getComponentChanges());
-                MekanismRenderer.color(fluidStack);
+                color = MekanismRenderer.color(fluidStack);
                 sprite = MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL);
             } else {
                 return;
@@ -75,8 +76,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
                 desiredHeight = height;
             }
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(graphics, x, y, height, width, desiredHeight, sprite, 16, 16, 0, TilingDirection.UP_RIGHT);
-            MekanismRenderer.resetColor(graphics);
+            GuiUtils.drawTiledSprite(graphics, x, y, height, width, desiredHeight, sprite, 16, 16, 0, TilingDirection.UP_RIGHT, color);
         }
         if (this.gauge != null) {
             Matrix3x2fStack matrix = graphics.pose();

@@ -9,7 +9,6 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -32,8 +31,8 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics, FluidStack stack) {
-        MekanismRenderer.color(stack);
+    protected int getRenderColor(FluidStack stack) {
+        return MekanismRenderer.color(stack);
     }
 
     @Override

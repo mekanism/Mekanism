@@ -13,7 +13,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -114,8 +113,8 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
+    protected int getRenderColor() {
+        return MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
     }
 
     @Override

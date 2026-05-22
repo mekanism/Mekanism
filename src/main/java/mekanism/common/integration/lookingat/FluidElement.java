@@ -8,7 +8,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -75,9 +74,8 @@ public class FluidElement extends LookingAtElement {
     }
 
     @Override
-    protected boolean applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(stored);
-        return true;
+    protected int getRenderColor() {
+        return MekanismRenderer.color(stored);
     }
 
     @Override

@@ -60,21 +60,24 @@ public class GuiUtils {
         }
     }
 
-    //Copied from JEI
-    public static void drawTiledSpriteVanilla(GuiGraphicsExtractor guiGraphics, int posX, int posY, int tiledWidth, int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite) {
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, int color) {
+        if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
+            return;
+        }
         SpriteContents spriteContents = sprite.contents();
 
-        posY = posY + tiledHeight - scaledAmount;
+        yPosition = yPosition + desiredHeight - yOffset;
 
-        guiGraphics.enableScissor(posX, posY, posX + tiledWidth, posY + scaledAmount);
+        guiGraphics.enableScissor(xPosition, yPosition, xPosition + desiredWidth, yOffset + yOffset);
         {
             guiGraphics.blitTiledSprite(
                   RenderPipelines.GUI_TEXTURED,
                   sprite,
-                  posX,
-                  posY,
-                  tiledWidth,
-                  scaledAmount,
+                  xPosition,
+                  yPosition,
+                  desiredWidth,
+                  yOffset,
                   0,
                   0,
                   spriteContents.width(),
@@ -85,19 +88,8 @@ public class GuiUtils {
             );
         }
         guiGraphics.disableScissor();
-    }
-
-    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection) {
-        drawTiledSprite(guiGraphics, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, textureWidth, textureHeight, zLevel, tilingDirection, true);
-    }
-
-    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, boolean blend) {
-        if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
-            return;
-        }
-        //TODO - 26.1 drawTiledSprite
+        //TODO - 26.1: Sara to look at reimplementing this. Either Scissor tweaks or custom GuiRenderState
+        //nb: blend is already enabled with RenderPipelines.GUI_TEXTURED and this method was never called with false
         /*RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         int xTileCount = desiredWidth / textureWidth;

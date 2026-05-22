@@ -669,8 +669,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     protected void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-          TilingDirection tilingDirection) {
-        GuiUtils.drawTiledSprite(guiGraphics, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, 0, tilingDirection);
+          TilingDirection tilingDirection, int color) {
+        GuiUtils.drawTiledSprite(guiGraphics, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, 0, tilingDirection, color);
     }
 
     @Override
