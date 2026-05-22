@@ -53,6 +53,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -156,6 +157,13 @@ public class MekanismRenderer {
         return -1;
     }
 
+    public static int color(@NotNull FluidResource fluid) {
+        if (!fluid.isEmpty()) {
+            return getColorARGB(fluid);
+        }
+        return -1;
+    }
+
     public static int color(@NotNull ChemicalStack chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             return color(chemicalStack.getChemicalTint(), 1F);
@@ -175,13 +183,13 @@ public class MekanismRenderer {
         return getColorARGB(color.getPackedColor(), alpha);
     }
 
-    public static int getColorARGB(@NotNull FluidStack fluidStack) {
-        FluidModel fluidModel = getFluidModel(fluidStack);
+    public static int getColorARGB(@NotNull TypedInstance<Fluid> typedInstance) {
+        FluidModel fluidModel = getFluidModel(typedInstance);
         FluidTintSource tintSource = fluidModel.fluidTintSource();
         if (tintSource == null) {
             return 0xFFFFFFFF;
         }
-        return tintSource.colorAsStack(fluidStack);
+        return tintSource.color(typedInstance.typeHolder().value().defaultFluidState());
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {
