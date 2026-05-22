@@ -695,8 +695,8 @@ methods:
       number of Superheating Elements
     methodName: getBoilCapacity
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the rate of boiling (mB/t)
     methodName: getBoilRate
     returns:

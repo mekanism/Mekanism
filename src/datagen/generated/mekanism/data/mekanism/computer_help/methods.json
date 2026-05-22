@@ -374,8 +374,8 @@
       "description": "Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements",
       "methodName": "getBoilCapacity",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {

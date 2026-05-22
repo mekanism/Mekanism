@@ -11,6 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -73,7 +74,7 @@ public class ItemGaugeDropper extends Item {
             if (world.isClientSide()) {
                 return InteractionResult.SUCCESS_SERVER;
             }
-            ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+            ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
             dumpHandler(Capabilities.FLUID.getCapability(itemAccess));
             dumpHandler(Capabilities.CHEMICAL.getCapability(itemAccess));
             //TODO - 26.1: Is this the correct way to transform the output?

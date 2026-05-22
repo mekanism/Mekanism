@@ -68,7 +68,8 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     }
 
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ITEM stack,
+          DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
         return IModuleHelper.INSTANCE.getIfEnabled(stack, type);
     }
 

@@ -8,6 +8,7 @@ import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -44,8 +45,7 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        //TODO - 26.1: Do we need to bypass creative handling of forPlayerInteraction?
-        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
         if (itemAccess.getAmount() > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
                 interaction.consume(itemAccess, player, extra, transaction);

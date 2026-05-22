@@ -7,6 +7,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
@@ -113,7 +114,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
             return InteractionResult.PASS;
         }
         if (player.canEat(false)) {
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forPlayerInteraction(player, hand));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.playerHandAccess(player, hand));
             if (fluidHandler != null) {
                 try (Transaction simulation = Transaction.openRoot()) {
                     int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();

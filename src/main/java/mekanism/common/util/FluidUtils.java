@@ -68,7 +68,7 @@ public final class FluidUtils {
         //TODO - 26.1: Figure out whether there are cases where we would want it without the oneByOne access
         // And if we should get the item access from the player's interaction hand or from the passed stack.
         // I think the adding back to inventory part needs the player interaction item access?
-        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccess.forPlayerInteraction(player, hand).oneByOne());
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(InventoryUtils.playerHandAccess(player, hand).oneByOne());
         if (handler == null) {
             return false;
         }

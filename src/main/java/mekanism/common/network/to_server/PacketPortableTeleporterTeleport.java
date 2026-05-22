@@ -14,6 +14,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +68,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (!player.isCreative()) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forPlayerInteraction(player, currentHand));
+                            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(InventoryUtils.playerHandAccess(player, currentHand));
                             if (energyHandler == null || EnergyUtils.extractManual(energyHandler, energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
                                 return;

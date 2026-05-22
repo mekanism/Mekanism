@@ -33,7 +33,7 @@ Bio Generator,getBioFuelFilledPercentage,,Number (double),,false,Get the filled 
 Bio Generator,getBioFuelNeeded,,Number (long),,false,Get the amount needed to fill the biofuel tank.
 Bio Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item.
 Bio Generator,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel slot.
-Boiler Multiblock (formed),getBoilCapacity,,Number (long),,false,"Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements"
+Boiler Multiblock (formed),getBoilCapacity,,Number (int),,false,"Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements"
 Boiler Multiblock (formed),getBoilRate,,Number (int),,false,Get the rate of boiling (mB/t)
 Boiler Multiblock (formed),getCooledCoolant,,Table (ChemicalStack),,false,Get the contents of the cooled coolant tank.
 Boiler Multiblock (formed),getCooledCoolantCapacity,,Number (long),,false,Get the capacity of the cooled coolant tank.

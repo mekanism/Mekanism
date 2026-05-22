@@ -41,6 +41,7 @@ import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -122,13 +123,14 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
-        if (!(instance instanceof ItemStack stack)) {
+        if (!(instance instanceof ItemStack stack) || stack.isEmpty()) {
             return false;
         }
-        IModuleContainer container = moduleContainer(stack);
+        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        IModuleContainer container = moduleContainer(itemAccess.getResource());
         if (container != null) {
             if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-                return hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
+                return hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(itemAccess, 0));
             }
             for (IModule<?> module : container.modules()) {
                 if (module.isEnabled() && canPerformAction(module, container, stack, action)) {
@@ -400,9 +402,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @NotNull
     @Override
     public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
-            IModule<ModuleTeleportationUnit> module = getEnabledModule(stack, MekanismModules.TELEPORTATION_UNIT);
+            ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+            IModule<ModuleTeleportationUnit> module = getEnabledModule(itemAccess.getResource(), MekanismModules.TELEPORTATION_UNIT);
             if (module != null) {
                 BlockHitResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
                 //If we don't require a block target or are not a miss, allow teleporting
@@ -414,21 +416,22 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         if (distance < 5) {
                             return InteractionResult.PASS;
                         }
-                        //TODO - 26.1: Review usages of ItemAccess#forPlayerInteraction to see if any should bypass the infinite materials check like ItemAccess#forPlayerSlot allows
-                        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forPlayerInteraction(player, hand));
-                        if (energyHandler == null) {
-                            return InteractionResult.PASS;
-                        }
-                        long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
                         try (Transaction transaction = Transaction.openRoot()) {
-                            if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) < energyNeeded) {
-                                //Not enough energy to operate
-                                return InteractionResult.PASS;
+                            if (!player.isCreative()) {
+                                IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+                                if (energyHandler == null) {
+                                    return InteractionResult.PASS;
+                                }
+                                long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
+                                if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) < energyNeeded) {
+                                    //Not enough energy to operate
+                                    return InteractionResult.PASS;
+                                }
                             }
                             double targetX = pos.getX() + 0.5;
                             double targetY = pos.getY() + 1.5;
                             double targetZ = pos.getZ() + 0.5;
-                            MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, (ServerLevel) player.level(), targetX, targetY, targetZ, stack, result);
+                            MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, (ServerLevel) player.level(), targetX, targetY, targetZ, itemAccess, result);
                             if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                                 //Fail if the event was cancelled
                                 return InteractionResult.FAIL;

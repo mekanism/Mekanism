@@ -18,6 +18,7 @@ import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
@@ -173,7 +174,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         //TODO - 26.1: Re-evaluate this item access (and more accurately the usages of stack)
-        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
         if (!getMode(itemAccess.getResource())) {
             return InteractionResult.PASS;
         } else if (ItemSecurityUtils.get().tryClaimItem(world, player, itemAccess, null)) {
