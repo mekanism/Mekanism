@@ -87,9 +87,9 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -404,8 +404,8 @@ public final class MekanismUtils {
         return Mekanism.rl(type.getPrefix() + name);
     }
 
-    public static boolean lighterThanAirGas(FluidStack stack) {
-        return stack.is(Tags.Fluids.GASEOUS) && stack.getFluidType().getDensity(stack) <= 0;
+    public static boolean lighterThanAirGas(FluidResource resource) {
+        return resource.is(Tags.Fluids.GASEOUS) && resource.getFluidType().isLighterThanAir();
     }
 
     public static boolean isLiquidBlock(Block block) {

@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,11 +53,10 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
         FluidResource fluidType = generator.bioFuelTank.resource();
-        FluidStack fluid = fluidType.toStack(generator.bioFuelTank.amountAsInt());
         float fluidScale = generator.bioFuelTank.amountAsLong() / (float) generator.bioFuelTank.capacityAsLong(fluidType);
-        state.model = getModel(fluid, generator.getDirection(), fluidScale);
+        state.model = getModel(fluidType, generator.getDirection(), fluidScale);
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
-        state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
+        state.tint = MekanismRenderer.getColorARGB(fluidType, fluidScale);
     }
 
     @Override
@@ -79,9 +77,9 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         return !tile.bioFuelTank.isEmpty() && super.shouldRender(tile, camera);
     }
 
-    private Model3D getModel(FluidStack fluid, Direction side, float fluidScale) {
+    private Model3D getModel(FluidResource fluidType, Direction side, float fluidScale) {
         Int2ObjectMap<Model3D> modelMap = fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>());
-        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
+        int stage = ModelRenderer.getStage(fluidType, stages, fluidScale);
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D()

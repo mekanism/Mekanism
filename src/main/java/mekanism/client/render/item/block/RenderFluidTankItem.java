@@ -22,7 +22,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3fc;
@@ -71,11 +70,10 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
             IFluidTank container = attachment.getContainer(0);
             FluidResource fluidType = container.resource();
             if (!fluidType.isEmpty()) {
-                FluidStack fluid = fluidType.toStack(container.amountAsInt());
                 fluidScale = (float) container.amountAsLong() / container.capacityAsLong(fluidType);
-                fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
-                fluidLight = fluidType.getFluidType().getLightLevel(fluid);
-                fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                fluidModel = RenderFluidTank.getFluidModel(fluidType, fluidScale);
+                fluidLight = fluidType.getFluidType().getLightLevel();
+                fluidColor = MekanismRenderer.getColorARGB(fluidType, fluidScale);
                 fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, MekanismRenderer.FluidTextureType.STILL));
             }
         }

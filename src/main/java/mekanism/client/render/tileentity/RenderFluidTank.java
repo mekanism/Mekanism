@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -52,12 +52,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         //TODO - 26.1: Should we by copying the fluid stacks? - Pup. I think we should pass the texture instead - thiakil
-        state.fluid = tank.fluidTank.resource().toStack(tank.fluidTank.amountAsInt());
+        state.fluid = tank.fluidTank.resource();
         state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
         state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;
         state.fluidTexture = state.fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(state.fluid, FluidTextureType.STILL));
-        FluidStack valveFluid = tank.getValveFluid();
+        FluidResource valveFluid = tank.getValveFluid();
         if (!valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(valveFluid)) {
             //If it is lighter than air we don't need to render the valve
             state.valveFluid = valveFluid;
@@ -79,7 +79,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         if (!state.valveFluid.isEmpty()) {
-            Model3D object = getValveModel(state.valveFluid, state.fluidScale);
+            Model3D object = getValveModel(state.fluidScale);
             RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
         }
     }
@@ -89,7 +89,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return ProfilerConstants.FLUID_TANK;
     }
 
-    private Model3D getValveModel(FluidStack fluid, float fluidScale) {
+    private Model3D getValveModel(float fluidScale) {
         int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
         Model3D model = cachedValveFluids.get(stage);
         if (model == null) {
@@ -103,8 +103,8 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return model;
     }
 
-    public static Model3D getFluidModel(FluidStack fluid, float fluidScale) {
-        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
+    public static Model3D getFluidModel(FluidResource fluidType, float fluidScale) {
+        int stage = ModelRenderer.getStage(fluidType, stages, fluidScale);
         Model3D model = cachedCenterFluids.get(stage);
         if (model == null) {
             model = new Model3D()
@@ -120,12 +120,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     public static class FluidTankRenderState extends BlockEntityRenderState {
 
-        //TODO - 26.1: Store the textures instead of the fluid stacks
-        public FluidStack fluid = FluidStack.EMPTY;
+        //TODO - 26.1: Store the textures instead of the fluid types
+        public FluidResource fluid = FluidResource.EMPTY;
         public int fluidTint = 0xFFFFFFFF;
         public int fluidGlow;
         public float fluidScale;
-        public FluidStack valveFluid = FluidStack.EMPTY;
+        public FluidResource valveFluid = FluidResource.EMPTY;
         public int valveTint = 0xFFFFFFFF;
         public int valveGlow;
         @Nullable

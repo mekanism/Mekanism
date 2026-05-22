@@ -2,10 +2,9 @@ package mekanism.client.render.data;
 
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ChemicalRenderData extends RenderData {
 
-    public final Holder<Chemical> chemical;
+    public final ChemicalResource chemical;
 
-    public ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, Holder<Chemical> chemical) {
+    public ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, ChemicalResource chemical) {
         super(renderLocation, width, height, length);
         this.chemical = chemical;
     }
@@ -46,14 +45,14 @@ public class ChemicalRenderData extends RenderData {
     }
 
     protected boolean equalsCommonChemical(@NotNull Object o) {
-        return super.equals(o) && chemical.is(((ChemicalRenderData) o).chemical);
+        return super.equals(o) && chemical.equals(((ChemicalRenderData) o).chemical);
     }
 
     public static class Scaled extends ChemicalRenderData implements ScaledRenderData {
 
         private final float scale;
 
-        public Scaled(BlockPos renderLocation, int width, int height, int length, Holder<Chemical> chemical, float scale) {
+        public Scaled(BlockPos renderLocation, int width, int height, int length, ChemicalResource chemical, float scale) {
             super(renderLocation, width, height, length, chemical);
             this.scale = scale;
         }

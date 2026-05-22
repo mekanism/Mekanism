@@ -1,16 +1,14 @@
 package mekanism.client.render.data;
 
 import java.util.Objects;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.render.ModelRenderer;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.TypedInstance;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -52,36 +50,39 @@ public abstract class RenderData {
 
     public static class Builder<DATA_TYPE extends RenderData> {
 
-        private final Holder<Chemical> chemical;
-        private final FluidStack fluid;
+        private final ChemicalResource chemical;
+        private final FluidResource fluid;
         @Nullable
         private BlockPos location;
         private int height;
         private int length;
         private int width;
 
-        private Builder(Holder<Chemical> chemical, FluidStack fluid) {
+        private Builder(ChemicalResource chemical, FluidResource fluid) {
             this.chemical = chemical;
             this.fluid = fluid;
         }
 
-        public static Builder<ChemicalRenderData> create(TypedInstance<Chemical> chemical) {
-            Holder<Chemical> chemicalHolder = chemical.typeHolder();
-            if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        public static Builder<ChemicalRenderData> create(IChemicalTank tank) {
+            return create(tank.resource());
+        }
+
+        public static Builder<ChemicalRenderData> create(ChemicalResource chemical) {
+            if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
-            return new Builder<>(chemical.typeHolder(), FluidStack.EMPTY);
+            return new Builder<>(chemical, FluidResource.EMPTY);
         }
 
         public static Builder<FluidRenderData> create(IFluidTank tank) {
-            return create(tank.resource().toStack(tank.amountAsInt()));
+            return create(tank.resource());
         }
 
-        public static Builder<FluidRenderData> create(FluidStack fluid) {
+        public static Builder<FluidRenderData> create(FluidResource fluid) {
             if (fluid.isEmpty()) {
                 throw new IllegalArgumentException("Fluid may not be empty");
             }
-            return new Builder<>(MekanismAPI.EMPTY_CHEMICAL_HOLDER, fluid);
+            return new Builder<>(ChemicalResource.EMPTY, fluid);
         }
 
         public Builder<DATA_TYPE> location(BlockPos renderLocation) {
@@ -120,7 +121,7 @@ public abstract class RenderData {
             RenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData(location, width, height, length, fluid);
-            } else if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            } else if (!chemical.isEmpty()) {
                 data = new ChemicalRenderData(location, width, height, length, chemical);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");
@@ -136,7 +137,7 @@ public abstract class RenderData {
             ScaledRenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData.Scaled(location, width, height, length, fluid, scale);
-            } else if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            } else if (!chemical.isEmpty()) {
                 data = new ChemicalRenderData.Scaled(location, width, height, length, chemical, scale);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");

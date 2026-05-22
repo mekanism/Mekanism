@@ -60,7 +60,6 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
@@ -360,8 +359,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         valveJournal.fluid = input.read(SerializationConstants.VALVE, FluidResource.CODEC).orElse(FluidResource.EMPTY);
     }
 
-    public FluidStack getValveFluid() {
-        return valveJournal.fluid.toStack(1);
+    public FluidResource getValveFluid() {
+        return valveJournal.fluid;
     }
 
     //Methods relating to IComputerTile

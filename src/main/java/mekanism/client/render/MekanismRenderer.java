@@ -13,7 +13,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
@@ -192,19 +191,19 @@ public class MekanismRenderer {
         return tintSource.color(typedInstance.typeHolder().value().defaultFluidState());
     }
 
-    public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {
-        if (fluidStack.isEmpty()) {
+    public static int getColorARGB(@NotNull FluidResource fluidType, float fluidScale) {
+        if (fluidType.isEmpty()) {
             return 0xFFFFFFFF;
         }
-        int color = getColorARGB(fluidStack);
-        if (MekanismUtils.lighterThanAirGas(fluidStack)) {
+        int color = getColorARGB(fluidType);
+        if (MekanismUtils.lighterThanAirGas(fluidType)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
             return getColorARGB(color, Math.min(1, fluidScale + 0.2F));
         }
         return color;
     }
 
-    public static int getColorARGB(@NotNull ChemicalStack stack, float scale) {
+    public static int getColorARGB(@NotNull TypedInstance<Chemical> stack, float scale) {
         return getColorARGB(stack.typeHolder(), scale);
     }
 
@@ -230,8 +229,8 @@ public class MekanismRenderer {
         return ARGB.color(alpha, rgb);
     }
 
-    public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
-        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluidType().getLightLevel(fluid));
+    public static int calculateGlowLight(int combinedLight, @NotNull FluidResource fluidType) {
+        return fluidType.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluidType.getFluidType().getLightLevel());
     }
 
     public static int calculateGlowLight(int combinedLight, int glow) {

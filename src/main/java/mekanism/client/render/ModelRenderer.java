@@ -11,8 +11,8 @@ import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 public final class ModelRenderer {
@@ -27,8 +27,8 @@ public final class ModelRenderer {
     //this can probably also be moved to an int key
     private static final Map<ValveRenderData, Float2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
-    public static int getStage(FluidStack stack, int stages, double scale) {
-        return getStage(MekanismUtils.lighterThanAirGas(stack), stages, scale);
+    public static int getStage(FluidResource fluidType, int stages, double scale) {
+        return getStage(MekanismUtils.lighterThanAirGas(fluidType), stages, scale);
     }
 
     public static int getStage(boolean gaseous, int stages, double scale) {

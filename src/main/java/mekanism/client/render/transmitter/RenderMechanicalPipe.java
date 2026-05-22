@@ -31,7 +31,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,16 +69,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (fluidType.isEmpty()) {
             return;//Shouldn't be the case but validate it
         }
-        //TODO - 26.1: Re-evaluate this
-        FluidStack fluidStack = fluidType.toStack(1);
         state.currentScale = network.currentScale;
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
-        state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
+        state.fluidTint = MekanismRenderer.getColorARGB(fluidType, state.currentScale);
 
-        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
+        int stage = Math.max(3, ModelRenderer.getStage(fluidType, stages, state.currentScale));
         state.stage = stage;
         //TODO - 26.1: Should we overwrite lightCoords with glow?
-        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
+        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidType);
 
 
         List<String> connectionContents = new ArrayList<>();
@@ -104,7 +101,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         state.connectionContents = connectionContents;
         //Render the base part if there is a horizontal connection, or we only have one vertical connection
         boolean renderBase = hasHorizontalSide || verticalSides < 2;
-        Model3D model = getModel(fluidStack, stage, renderBase);
+        Model3D model = getModel(stage, renderBase);
         for (Direction side : EnumUtils.DIRECTIONS) {
             //Render the side if there is no connection on that side, or it is a vertical connection, we have at least one side, and we are not full
             // We also render for push and pull as they use slightly smaller fill models which then means we would have
@@ -117,7 +114,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             ConnectionType connectionType = transmitter.getConnectionType(side);
             if (connectionType == ConnectionType.NORMAL) {
                 //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
-                state.sideModels.add(getModel(side, fluidStack, stage));
+                state.sideModels.add(getModel(side, stage));
             }
         }
     }
@@ -162,15 +159,15 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         return false;
     }
 
-    private Model3D getModel(FluidStack fluid, int stage, boolean hasSides) {
-        return getModel(null, fluid, stage, hasSides);
+    private Model3D getModel(int stage, boolean hasSides) {
+        return getModel(null, stage, hasSides);
     }
 
-    private Model3D getModel(Direction side, FluidStack fluid, int stage) {
-        return getModel(side, fluid, stage, false);
+    private Model3D getModel(Direction side, int stage) {
+        return getModel(side, stage, false);
     }
 
-    private Model3D getModel(@Nullable Direction side, FluidStack fluid, int stage, boolean renderBase) {
+    private Model3D getModel(@Nullable Direction side, int stage, boolean renderBase) {
         int sideOrdinal;
         if (side == null) {
             sideOrdinal = renderBase ? 7 : 6;

@@ -41,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -80,10 +79,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         Level level = liquifier.getLevel();
         if (!liquifier.fluidTank.isEmpty()) {
             FluidResource paste = liquifier.fluidTank.resource();
-            FluidStack pasteStack = paste.toStack(liquifier.fluidTank.amountAsInt());
             float fluidScale = liquifier.fluidTank.amountAsLong() / (float) liquifier.fluidTank.capacityAsLong(paste);
-            state.pasteTint = MekanismRenderer.getColorARGB(pasteStack, fluidScale);
-            state.pasteModel = getPasteModel(pasteStack, fluidScale);
+            state.pasteTint = MekanismRenderer.getColorARGB(paste, fluidScale);
+            state.pasteModel = getPasteModel(paste, fluidScale);
             state.pasteTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL));
         } else {
             state.pasteModel = null;
@@ -171,7 +169,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(FluidStack paste, float fluidScale) {
+    private Model3D getPasteModel(FluidResource paste, float fluidScale) {
         int stage = ModelRenderer.getStage(paste, stages, fluidScale);
         Model3D model = cachedModels.get(stage);
         if (model == null) {

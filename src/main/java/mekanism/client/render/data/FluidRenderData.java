@@ -4,15 +4,15 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FluidRenderData extends RenderData {
 
-    public final FluidStack fluidType;
+    public final FluidResource fluidType;
 
-    public FluidRenderData(BlockPos renderLocation, int width, int height, int length, FluidStack fluidType) {
+    public FluidRenderData(BlockPos renderLocation, int width, int height, int length, FluidResource fluidType) {
         super(renderLocation, width, height, length);
         this.fluidType = fluidType;
     }
@@ -38,7 +38,7 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public int hashCode() {
-        return 31 * super.hashCode() + FluidStack.hashFluidAndComponents(fluidType);
+        return 31 * super.hashCode() + fluidType.hashCode();
     }
 
     @Override
@@ -52,14 +52,14 @@ public class FluidRenderData extends RenderData {
     }
 
     protected boolean equalsCommonFluid(Object data) {
-        return super.equals(data) && FluidStack.isSameFluidSameComponents(fluidType, ((FluidRenderData) data).fluidType);
+        return super.equals(data) && fluidType.equals(((FluidRenderData) data).fluidType);
     }
 
     public static class Scaled extends FluidRenderData implements ScaledRenderData {
 
         private final float scale;
 
-        public Scaled(BlockPos renderLocation, int width, int height, int length, FluidStack fluidType, float scale) {
+        public Scaled(BlockPos renderLocation, int width, int height, int length, FluidResource fluidType, float scale) {
             super(renderLocation, width, height, length, fluidType);
             this.scale = scale;
         }
