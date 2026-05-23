@@ -138,7 +138,6 @@ public class GeneratorsClientRegistration {
         }
         //Reset any cached models now that the atlases are built
         RenderBioGenerator.resetCachedModels();
-        RenderFissionReactor.resetCachedModels();
         GeneratorsSpecialColors.GUI_OBJECTS.parse(MekanismGenerators.rl("textures/colormap/gui_objects.png"));
     }
 

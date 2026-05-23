@@ -542,59 +542,19 @@ public class RenderResizableCuboid {
             FaceDisplay faceDisplay = isInsideBounds(camPos, renderStartPos.getX(), renderStartPos.getY(), renderStartPos.getZ(), renderStartPos.getX() + physicalLength,
                   renderStartPos.getY() + physicalHeight, renderStartPos.getZ() + physicalWidth) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveRenderData valveRenderData : valves) {
-                renderValve(camPos, matrix, renderType, nodeCollector, terPos, overlay, valveRenderData, glowLight, faceDisplay, valveTexture, fluidColor, mainFluidHeight);
+                renderValve(camPos, matrix, renderType, nodeCollector, terPos, overlay, valveRenderData, glowLight, faceDisplay, valveTexture, fluidColor, mainFluidHeight, physicalHeight);
             }
         }
     }
 
-    private static void renderValve(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, BlockPos rendererPos, int overlay, ValveRenderData valveRenderData, int glow, FaceDisplay faceDisplay, TexturePicker valveTexture, int fluidColor, float mainFluidHeight) {
+    private static void renderValve(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, BlockPos rendererPos, int overlay, ValveRenderData valveRenderData, int glow, FaceDisplay faceDisplay, TexturePicker valveTexture, int fluidColor, float mainFluidHeight, int physicalHeight) {
         Direction side = valveRenderData.getSide();
-        if (ModelRenderer.shouldSkipValveRender(mainFluidHeight, side, valveRenderData.height, valveRenderData.getValveFluidHeight())) {
+        if (ModelRenderer.shouldSkipValveRender(mainFluidHeight, side, physicalHeight, valveRenderData.getValveFluidHeight())) {
             return;
-        }
-        //todo move these to the ValveData?
-        float minX, minY, minZ;
-        float maxX, maxY, maxZ;
-        MekanismRenderer.TMP_SideRenderCheck renderCheck = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
-        if (mainFluidHeight == 0) {
-            renderCheck = MekanismRenderer.TMP_SideRenderCheck.NOT_DOWN;
-        }
-        minX = 0.3F;
-        maxX = 0.7F;
-        //Y defaults to horizonal facing values
-        minY = mainFluidHeight - valveRenderData.getValveFluidHeight() + 0.01F;
-        maxY = 0.7F;
-        minZ = 0.3F;
-        maxZ = 0.7F;
-        switch (side) {
-            case DOWN -> {
-                minY = mainFluidHeight + 1.01F;
-                maxY = 1.5F;
-            }
-            case UP -> {
-                minY = mainFluidHeight - valveRenderData.height - 0.01F;
-                maxY = -0.01F;
-            }
-            case NORTH -> {
-                minZ = 1.02F;
-                maxZ = 1.4F;
-            }
-            case SOUTH -> {
-                minZ = -0.4F;
-                maxZ = -0.03F;
-            }
-            case WEST -> {
-                minX = 1.02F;
-                maxX = 1.4F;
-            }
-            case EAST -> {
-                minX = -0.4F;
-                maxX = -0.03F;
-            }
         }
         matrix.pushPose();
         matrix.translate(valveRenderData.getValveLocation().getX() - rendererPos.getX(), valveRenderData.getValveLocation().getY() - rendererPos.getY(), valveRenderData.getValveLocation().getZ() - rendererPos.getZ());
-        renderCube(renderCheck, minX, minY, minZ, maxX, maxY, maxZ, matrix, renderType, nodeCollector, fluidColor, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()), valveTexture);
+        renderCube(valveRenderData.renderCheck, valveRenderData.minX, valveRenderData.minY, valveRenderData.minZ, valveRenderData.maxX, valveRenderData.maxY, valveRenderData.maxZ, matrix, renderType, nodeCollector, fluidColor, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()), valveTexture);
         matrix.popPose();
 
     }

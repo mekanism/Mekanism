@@ -1,23 +1,18 @@
 package mekanism.generators.client.render;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.RenderResizableCuboid;
-import mekanism.client.render.data.RenderData;
-import mekanism.client.render.data.RenderData.ScaledRenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.RenderFissionReactor.FissionRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -26,7 +21,6 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -40,25 +34,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing, FissionRenderState> {
 
-    private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
-    private static final Cache<ScaledRenderData, Model3D> cachedCoolantModels = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(5, TimeUnit.MINUTES).build();
     private static final int GLOW_ARGB = ARGB.color(0.6F, 0x76E0EC);
     //TODO: Replace using a model for glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
     // transparency sort ordering
-
-    private static Model3D getCoolantModel(ScaledRenderData renderData) {
-        Model3D model = cachedCoolantModels.getIfPresent(renderData);
-        if (model == null) {
-            model = ModelRenderer.getModel(renderData.asRenderData(), renderData.scale());
-            cachedCoolantModels.put(renderData, model);
-        }
-        return model;
-    }
-
-    public static void resetCachedModels() {
-        cachedHeatedCoolantModels.clear();
-    }
 
     public RenderFissionReactor(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -74,29 +53,34 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(reactor, state, partialTick, cameraPosition, breakProgress);
         FissionReactorMultiblockData multiblock = reactor.getMultiblock();
-        state.heatedCoolantScale = multiblock.prevHeatedCoolantScale;
-        state.coolantScale = multiblock.prevCoolantScale;
+        state.gather(multiblock);
+        float heatedCoolantScale = multiblock.prevHeatedCoolantScale;
+        float coolantScale = multiblock.prevCoolantScale;
 
         state.coolantTexture = null;
         state.heatedCoolantTexture = null;
+        boolean isGaseous = false;
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
             FluidStack fluid = multiblock.coolantTank.getFluidTank().getFluid();
-            state.coolantData = RenderData.Builder.create(fluid).of(multiblock).buildScaled(state.coolantScale);
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
+            isGaseous = MekanismUtils.lighterThanAirGas(fluid);
+            state.coolantGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
+            state.coolantColor = MekanismRenderer.getColorARGB(fluid, coolantScale);
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             ChemicalStack chemicalStack = multiblock.coolantTank.getChemicalTank().getStack();
-            state.coolantData = RenderData.Builder.create(chemicalStack).of(multiblock).buildScaled(state.coolantScale);
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+            isGaseous = chemicalStack.is(MekanismAPITags.Chemicals.GASEOUS);
+            state.coolantGlow = LightCoordsUtil.FULL_SKY;//todo not fullbright chemicals?
+            state.coolantColor = MekanismRenderer.getColorARGB(chemicalStack, coolantScale);
         }
-        if (state.coolantData != null) {
-            state.coolantModel = getCoolantModel(state.coolantData);
+        if (state.coolantTexture != null) {
+            state.coolantMaxY = ModelRenderer.getMaxY(state.height, coolantScale, isGaseous);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
             ChemicalStack chemicalStack = multiblock.heatedCoolantTank.getStack();
-            state.heatedCoolantData = RenderData.Builder.create(chemicalStack).of(multiblock).build();
-            //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
-            state.heatedCoolantModel = cachedHeatedCoolantModels.computeIfAbsent(state.heatedCoolantData, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
             state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+            state.heatedCoolantMaxY = ModelRenderer.getMaxY(state.height, heatedCoolantScale, chemicalStack.is(MekanismAPITags.Chemicals.GASEOUS));
+            state.heatedCoolantColor = MekanismRenderer.getColorARGB(chemicalStack, heatedCoolantScale);
         }
 
         if (multiblock.isBurning()) {
@@ -122,11 +106,12 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             }
             //profiler.pop();
         }
-        if (state.coolantData != null && state.coolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantModel.minX, state.coolantModel.minY, state.coolantModel.minZ, state.coolantModel.maxX, state.coolantModel.maxY, state.coolantModel.maxZ, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width, state.coolantData.asRenderData().height);
+        if (state.coolantTexture != null) {
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.coolantMaxY, state.width - 0.02F, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantGlow, state.coolantColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
         }
-        if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantModel.minX, state.heatedCoolantModel.minY, state.heatedCoolantModel.minZ, state.heatedCoolantModel.maxX, state.heatedCoolantModel.maxY, state.heatedCoolantModel.maxZ, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width, state.heatedCoolantData.height);
+        if (state.heatedCoolantTexture != null) {
+            //uses a slightly shrunken version of the model to prevent z-fighting
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL, 0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
         }
     }
 
@@ -135,22 +120,19 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         return GeneratorsProfilerConstants.FISSION_REACTOR;
     }
 
-    public static class FissionRenderState extends BlockEntityRenderState {
+    public static class FissionRenderState extends MultiblockContentsRenderState {
 
         public List<FormedAssembly> assemblies = new ArrayList<>();
-        @Nullable
-        public ScaledRenderData coolantData;
+
         @Nullable
         public RenderResizableCuboid.TexturePicker coolantTexture;
-        @Nullable
-        public Model3D coolantModel;
-        public float coolantScale;
-        @Nullable
-        public RenderData heatedCoolantData;
+        public float coolantMaxY;
+        public int coolantGlow;
+        public int coolantColor;
+
         @Nullable
         public RenderResizableCuboid.TexturePicker heatedCoolantTexture;
-        @Nullable
-        public Model3D heatedCoolantModel;
-        public float heatedCoolantScale;
+        public float heatedCoolantMaxY;
+        public int heatedCoolantColor;
     }
 }

@@ -293,7 +293,6 @@ public class MekanismRenderer {
         RenderTransmitterBase.onStitch();
 
         //Reset any cached models now that the atlases are built
-        ModelRenderer.resetCachedModels();
         RenderDigitalMiner.resetCachedVisuals();
         RenderDimensionalStabilizer.resetCachedVisuals();
         RenderPigmentMixer.resetCached();
