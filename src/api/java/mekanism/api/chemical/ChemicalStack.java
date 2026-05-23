@@ -30,12 +30,11 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: Look at FluidStack and cleanup what extra things we might be defining
-public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey, IWithData<Chemical> {
+public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey {
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
 
@@ -401,13 +400,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
             //If advanced tooltips are on, display the registry name
             tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, typeHolder().getRegisteredName()));
         }
-    }
-
-    @Nullable
-    @Override
-    public <T> T getData(DataMapType<Chemical, T> type) {
-        //Note: We only accept reference holders, and reference holders can be queried directly for data
-        return typeHolder().getData(type);
     }
 
     @Override

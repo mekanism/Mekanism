@@ -73,7 +73,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
         } else if (state.renderData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.tankTexture, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.tankTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
         }
     }
 
