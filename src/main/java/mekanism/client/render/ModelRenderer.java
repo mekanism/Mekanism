@@ -1,19 +1,15 @@
 package mekanism.client.render;
 
-import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
-import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.RenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
 
 public final class ModelRenderer {
 
@@ -24,8 +20,6 @@ public final class ModelRenderer {
 
     //TODO - 26.1: this can be replaced with an int key, packing the l,w,h into it
     private static final Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterData = new Object2ObjectOpenHashMap<>();
-    //this can probably also be moved to an int key
-    private static final Map<ValveRenderData, Float2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
     public static int getStage(FluidStack stack, int stages, double scale) {
         return getStage(MekanismUtils.lighterThanAirGas(stack), stages, scale);
@@ -64,41 +58,16 @@ public final class ModelRenderer {
         return model;
     }
 
-    @Nullable
-    public static Model3D getValveModel(ValveRenderData data, float height) {
-        if (switch (data.getSide()) {
-            case DOWN -> height >= 0.49F;
-            case UP -> height >= data.height;
-            default -> height - data.getValveFluidHeight() >= 0.69F;
-        }) {
-            return null;
-        }
-        Float2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(data, d -> new Float2ObjectOpenHashMap<>());
-        Model3D model = modelMap.get(height);
-        if (model == null) {
-            model = new Model3D()
-                  .setSideRender(Direction.DOWN, height == 0)
-                  .xBounds(0.3F, 0.7F)
-                  .zBounds(0.3F, 0.7F);
-            Direction side = data.getSide();
-            if (side.getAxis().isHorizontal()) {
-                model.yBounds(height - data.getValveFluidHeight() + 0.01F, 0.7F);
-            }
-            switch (side) {
-                case DOWN -> model.yBounds(height + 1.01F, 1.5F);
-                case UP -> model.yBounds(height - data.height - 0.01F, -0.01F);
-                case NORTH -> model.zBounds(1.02F, 1.4F);
-                case SOUTH -> model.zBounds(-0.4F, -0.03F);
-                case WEST -> model.xBounds(1.02F, 1.4F);
-                case EAST -> model.xBounds(-0.4F, -0.03F);
-            }
-            modelMap.put(height, model);
-        }
-        return model;
+    //todo: unsure if valveHeight and valveFluidHeight are actually different?? too much indirection in RenderData subclass
+    public static boolean shouldSkipValveRender(float mainFluidHeight, Direction valveSide, int valveHeight, int valveFluidHeight) {
+        return switch (valveSide) {
+            case DOWN -> mainFluidHeight >= 0.49F;
+            case UP -> mainFluidHeight >= valveHeight;
+            default -> mainFluidHeight - valveFluidHeight >= 0.69F;
+        };
     }
 
     public static void resetCachedModels() {
         cachedCenterData.clear();
-        cachedValveFluids.clear();
     }
 }

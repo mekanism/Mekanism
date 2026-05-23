@@ -61,7 +61,7 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
             if (object != null) {
                 OrderedSubmitNodeCollector nodeCollector = new HackyNodeCollector(renderer);
                 //todo - 26.1: this is overkill, it's only really a single face... also requires wrapping in a NodeCollector
-                RenderResizableCuboid.renderCube(object, matrix, Sheets.translucentBlockSheet(), nodeCollector, transmissionColor, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, viewPosition, null, tex);
+                RenderResizableCuboid.renderCube(object, object.minX, object.minY, object.minZ, object.maxX, object.maxY, object.maxZ, matrix, Sheets.translucentBlockSheet(), nodeCollector, transmissionColor, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, viewPosition, null, tex);
             }
             matrix.popPose();
         }

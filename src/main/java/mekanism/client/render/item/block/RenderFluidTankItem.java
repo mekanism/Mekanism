@@ -6,12 +6,12 @@ import java.util.function.Consumer;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.ModelUtil;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.TexturePicker;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -39,9 +39,9 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         if (argument == null) {
             return;
         }
-        if (argument.fluidScale > 0) {
+        if (argument.contentsMaxY > 0) {
             int lightToUse = MekanismRenderer.calculateGlowLight(lightCoords, argument.fluidLight);
-            RenderResizableCuboid.renderCube(argument.fluidModel(), poseStack, Sheets.translucentBlockSheet(), submitNodeCollector,
+            RenderResizableCuboid.renderCube(MekanismRenderer.TMP_SideRenderCheck.NOT_DOWN, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MIN_Y, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MAX_XZ, argument.contentsMaxY, RenderFluidTank.CONTENTS_MAX_XZ, poseStack, Sheets.translucentBlockSheet(), submitNodeCollector,
                   argument.fluidColor, lightToUse, overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT,
                   Minecraft.getInstance().gameRenderer.getMainCamera().position(), null, argument.fluidTexture);
         }
@@ -59,16 +59,15 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     @Override
     public TankRenderState extractArgument(ItemStack stack) {
         IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(stack);
-        float fluidScale = 0;
         int fluidLight = 0;
         int fluidColor = 0;
-        Model3D fluidModel = null;
+        float contentsMaxY = 0;
         TexturePicker fluidTexture = null;
         if (attachment != null) {
             FluidStack fluid = attachment.getFluidInTank(0);
             if (!fluid.isEmpty()) {
-                fluidScale = (float) fluid.amount() / attachment.getTankCapacity(0);
-                fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
+                float fluidScale = (float) fluid.amount() / attachment.getTankCapacity(0);
+                contentsMaxY = fluidScale > 0 ? RenderFluidTank.contentsMaxY(fluidScale, MekanismUtils.lighterThanAirGas(fluid)) : 0;
                 fluidLight = fluid.getFluidType().getLightLevel(fluid);
                 fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
                 fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
@@ -79,10 +78,10 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         BlockModelRenderState blockModel = new BlockModelRenderState();
         mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
         //blockModel.tintLayers().add(tierTint);
-        return new TankRenderState(fluidScale, fluidLight, fluidColor, fluidModel, fluidTexture, blockModel);
+        return new TankRenderState(fluidLight, fluidColor, contentsMaxY, fluidTexture, blockModel);
     }
 
-    public record TankRenderState(float fluidScale, int fluidLight, int fluidColor, @Nullable Model3D fluidModel, @Nullable TexturePicker fluidTexture,
+    public record TankRenderState(int fluidLight, int fluidColor, float contentsMaxY, @Nullable TexturePicker fluidTexture,
                                   BlockModelRenderState blockModelRenderState) {
     }
 

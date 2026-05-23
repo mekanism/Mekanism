@@ -19,8 +19,6 @@ import org.joml.Vector3f;
 public class TransmitterRenderState extends BlockEntityRenderState {
 
     @Nullable
-    public MekanismRenderer.Model3D model;
-    @Nullable
     public List<String> connectionContents;
 
     public static class BufferedTransmitterRenderState extends TransmitterRenderState {
@@ -43,6 +41,8 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public int glow;
         public int stage;
         public List<MekanismRenderer.Model3D> sideModels = new ArrayList<>();
+        @Nullable
+        public MekanismRenderer.Model3D model;
     }
 
     public static class TransporterRenderState extends TransmitterRenderState {

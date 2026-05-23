@@ -72,7 +72,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
         Model3D model3D = model.get();
-        RenderResizableCuboid.renderCube(model3D, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+        RenderResizableCuboid.renderCube(model3D, model3D.minX, model3D.minY, model3D.minZ, model3D.maxX, model3D.maxY, model3D.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
         poseStack.popPose();
     }
 

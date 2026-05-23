@@ -62,16 +62,18 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         RenderType renderType = Sheets.translucentBlockSheet();
+        if (state.renderData == null) {
+            return;
+        }
+        MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(fluidRenderData, state.scale);
             int fluidColor = fluidRenderData.getColorARGB();
             int fluidColorScaled = fluidRenderData.getColorARGB(state.scale);
             int glowLight = fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.tankTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
-            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
-        } else if (state.renderData != null) {
-            MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.tankTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, model.minX, model.minY, model.minZ, model.maxX, model.maxY, model.maxZ, state.tankTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
+            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight, model.maxY - model.minY);
+        } else {
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, model.minX, model.minY, model.minZ, model.maxX, model.maxY, model.maxZ, state.tankTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
         }
     }
 

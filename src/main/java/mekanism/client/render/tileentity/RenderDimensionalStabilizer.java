@@ -148,7 +148,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
             //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds of block sized quads?
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+            RenderResizableCuboid.renderCube(state.model, state.model.minX, state.model.minY, state.model.minZ, state.model.maxX, state.model.maxY, state.model.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
             poseStack.popPose();
         }
     }

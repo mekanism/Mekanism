@@ -1,17 +1,13 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderTeleporter.TeleporterRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -20,7 +16,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
@@ -30,13 +25,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter, TeleporterRenderState> {
 
-    private static final Map<Direction, Model3D> modelCache = new EnumMap<>(Direction.class);
-    private static final Map<Direction, Model3D> rotatedModelCache = new EnumMap<>(Direction.class);
-
-    public static void resetCachedModels() {
-        modelCache.clear();
-        rotatedModelCache.clear();
-    }
+    public static final float MIN_SIDE_BOUND1 = 0.46F;
+    public static final float MIN_SIDE_BOUND2 = 0;
+    public static final float MAX_SIDE_BOUND1 = 0.54F;
+    public static final float MAX_SIDE_BOUND2 = 1;
 
     public RenderTeleporter(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -52,61 +44,83 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(teleporter, state, partialTick, cameraPosition, breakProgress);
         state.tint = MekanismRenderer.getColorARGB(teleporter.getColor(), 0.75F);
-        state.model = getOverlayModel(teleporter.frameDirection(), teleporter.frameRotated());
+
+        Direction direction = Objects.requireNonNullElse(teleporter.frameDirection(), Direction.UP);
+        boolean rotated = teleporter.frameRotated();
+
+        if (direction.getAxis().isHorizontal()) {
+            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.Y_AXIS;
+        } else if (rotated) {
+            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.X_AXIS;
+        } else {
+            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.Z_AXIS;
+        }
+
+        int min = direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
+        int max = direction.getAxisDirection() == AxisDirection.POSITIVE ? 3 : 0;
+
+        setBounds(state, direction, rotated, min, max);
+    }
+
+    /// This is ugly, but is the only way to do it without capturing lambdas
+    private static void setBounds(TeleporterRenderState state, Direction direction, boolean rotated, int min, int max) {
+        switch (direction.getAxis()) {
+            case X -> {
+                if (rotated) {
+                    state.minY = MIN_SIDE_BOUND1;
+                    state.maxY = MAX_SIDE_BOUND1;
+                    state.minZ = MIN_SIDE_BOUND2;
+                    state.maxZ = MAX_SIDE_BOUND2;
+                } else {
+                    state.minZ = MIN_SIDE_BOUND1;
+                    state.maxZ = MAX_SIDE_BOUND1;
+                    state.minY = MIN_SIDE_BOUND2;
+                    state.maxY = MAX_SIDE_BOUND2;
+                }
+                state.minX = min;
+                state.maxX = max;
+            }
+            case Y -> {
+                if (rotated) {
+                    state.minX = MIN_SIDE_BOUND1;
+                    state.maxX = MAX_SIDE_BOUND1;
+                    state.minZ = MIN_SIDE_BOUND2;
+                    state.maxZ = MAX_SIDE_BOUND2;
+                } else {
+                    state.minZ = MIN_SIDE_BOUND1;
+                    state.maxZ = MAX_SIDE_BOUND1;
+                    state.minX = MIN_SIDE_BOUND2;
+                    state.maxX = MAX_SIDE_BOUND2;
+                }
+                state.minY = min;
+                state.maxY = max;
+            }
+            case Z -> {
+                if (rotated) {
+                    state.minY = MIN_SIDE_BOUND1;
+                    state.maxY = MAX_SIDE_BOUND1;
+                    state.minX = MIN_SIDE_BOUND2;
+                    state.maxX = MAX_SIDE_BOUND2;
+                } else {
+                    state.minX = MIN_SIDE_BOUND1;
+                    state.maxX = MAX_SIDE_BOUND1;
+                    state.minY = MIN_SIDE_BOUND2;
+                    state.maxY = MAX_SIDE_BOUND2;
+                }
+                state.minZ = min;
+                state.maxZ = max;
+            }
+        }
     }
 
     @Override
     public void submit(TeleporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.model != null) {
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), MekanismRenderer.teleporterPortal);
-        }
+        RenderResizableCuboid.renderCube(state.renderAxis, state.minX, state.minY, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), MekanismRenderer.teleporterPortal);
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.TELEPORTER;
-    }
-
-    private Model3D getOverlayModel(@Nullable Direction direction, boolean rotated) {
-        if (direction == null) {
-            direction = Direction.UP;
-        }
-        Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
-        Model3D model = cache.get(direction);
-        if (model == null) {
-            model = new Model3D();
-            Axis renderAxis = direction.getAxis().isHorizontal() ? Axis.Y : rotated ? Axis.X : Axis.Z;
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                model.setSideRender(direction, side.getAxis() == renderAxis);
-            }
-            int min = direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
-            int max = direction.getAxisDirection() == AxisDirection.POSITIVE ? 3 : 0;
-            switch (direction.getAxis()) {
-                case X -> {
-                    setDimensions(rotated, model::zBounds, model::yBounds);
-                    model.xBounds(min, max);
-                }
-                case Y -> {
-                    setDimensions(rotated, model::zBounds, model::xBounds);
-                    model.yBounds(min, max);
-                }
-                case Z -> {
-                    setDimensions(rotated, model::xBounds, model::yBounds);
-                    model.zBounds(min, max);
-                }
-            }
-            cache.put(direction, model);
-        }
-        return model;
-    }
-
-    private void setDimensions(boolean rotated, ModelBoundsSetter setter1, ModelBoundsSetter setter2) {
-        if (rotated) {
-            setDimensions(false, setter2, setter1);
-        } else {
-            setter1.set(0.46F, 0.54F);
-            setter2.set(0, 1);
-        }
     }
 
     @Override
@@ -128,8 +142,9 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     public static class TeleporterRenderState extends BlockEntityRenderState {
 
-        @Nullable
-        public Model3D model;
+        public float minX, minY, minZ;
+        public float maxX, maxY, maxZ;
         public int tint = 0xFFFFFFFF;
+        public MekanismRenderer.TMP_SideRenderCheck renderAxis = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
     }
 }

@@ -3,8 +3,6 @@ package mekanism.client.render.tileentity;
 import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,6 @@ import java.util.WeakHashMap;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier.LiquifierRenderState;
@@ -32,7 +29,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material.Baked;
-import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -50,15 +46,10 @@ import org.joml.Vector3f;
 @NothingNullByDefault
 public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileEntityNutritionalLiquifier, LiquifierRenderState> {
 
-    private static final Int2ObjectMap<Model3D> cachedModels = new Int2ObjectOpenHashMap<>();
     private static final Map<TileEntityNutritionalLiquifier, PseudoParticleData> particles = new WeakHashMap<>();
     private static final int stages = 40;
     private static final float BLADE_SPEED = 25F;
     private static final float ROTATE_SPEED = 10F;
-
-    public static void resetCachedModels() {
-        cachedModels.clear();
-    }
 
     private final ItemModelResolver itemModelResolver;
 
@@ -81,10 +72,10 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             FluidStack paste = liquifier.fluidTank.getFluid();
             float fluidScale = paste.amount() / (float) liquifier.fluidTank.getCapacity();
             state.pasteTint = MekanismRenderer.getColorARGB(paste, fluidScale);
-            state.pasteModel = getPasteModel(paste, fluidScale);
+            state.stage = ModelRenderer.getStage(paste, stages, fluidScale);
             state.pasteTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL));
         } else {
-            state.pasteModel = null;
+            state.stage = 0;
         }
         state.active = liquifier.getActive();
         if (state.active) {
@@ -102,8 +93,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
     @Override
     public void submit(LiquifierRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.pasteModel != null) {
-            RenderResizableCuboid.renderCube(state.pasteModel, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
+        if (state.stage != 0) {
+            RenderResizableCuboid.renderCube(MekanismRenderer.TMP_SideRenderCheck.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F, 0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
         //TODO - 26.1: rendering
         /*if (state.active) {
@@ -169,32 +160,16 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(FluidStack paste, float fluidScale) {
-        int stage = ModelRenderer.getStage(paste, stages, fluidScale);
-        Model3D model = cachedModels.get(stage);
-        if (model == null) {
-            model = new Model3D()
-                  .setSideRender(Direction.DOWN, false)
-                  .setSideRender(Direction.UP, stage < stages)
-                  .xBounds(0.001F, 0.999F)
-                  .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
-                  .zBounds(0.001F, 0.999F);
-            cachedModels.put(stage, model);
-        }
-        return model;
-    }
-
     public static class LiquifierRenderState extends BlockEntityRenderState {
 
         public final ItemStackRenderState item = new ItemStackRenderState();
         public float bladeRotation;
         public float itemRotation;
         public boolean active;
-        @Nullable
-        public Model3D pasteModel;
         public int pasteTint = 0xFFFFFFFF;
         @Nullable
         public RenderResizableCuboid.TexturePicker pasteTexture;
+        public int stage;
     }
 
     private static class PseudoParticleData {

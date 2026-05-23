@@ -94,12 +94,12 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
             int fluidColor = state.waterData.getColorARGB();
             int fluidColorScaled = state.waterData.getColorARGB(state.waterScale);
             int glowLight = state.waterData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.waterTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height);
-            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, fluidColor, glowLight);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, fluidModel.minX, fluidModel.minY, fluidModel.minZ, fluidModel.maxX, fluidModel.maxY, fluidModel.maxZ, state.waterTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height);
+            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, fluidColor, glowLight, fluidModel.maxY - fluidModel.minY);
         }
         if (state.steamScale > 0 && state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, model.minX, model.minY, model.minZ, model.maxX, model.maxY, model.maxZ, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
         }
     }
 

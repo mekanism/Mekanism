@@ -101,7 +101,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         state.connectionContents = connectionContents;
         //Render the base part if there is a horizontal connection, or we only have one vertical connection
         boolean renderBase = hasHorizontalSide || verticalSides < 2;
-        Model3D model = getModel(fluidStack, stage, renderBase);
+        Model3D model = getModel(stage, renderBase);
         for (Direction side : EnumUtils.DIRECTIONS) {
             //Render the side if there is no connection on that side, or it is a vertical connection, we have at least one side, and we are not full
             // We also render for push and pull as they use slightly smaller fill models which then means we would have
@@ -114,7 +114,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             ConnectionType connectionType = transmitter.getConnectionType(side);
             if (connectionType == ConnectionType.NORMAL) {
                 //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
-                state.sideModels.add(getModel(side, fluidStack, stage));
+                state.sideModels.add(getModel(side, stage));
             }
         }
     }
@@ -126,10 +126,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         for (Model3D side : state.sideModels) {
-            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(side, side.minX, side.minY, side.minZ, side.maxX, side.maxY, side.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         if (state.model != null) {
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(state.model, state.model.minX, state.model.minY, state.model.minZ, state.model.maxX, state.model.maxY, state.model.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         //todo - 26.1: rendering
         if (state.connectionContents != null && !state.connectionContents.isEmpty()) {
@@ -159,15 +159,15 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         return false;
     }
 
-    private Model3D getModel(FluidStack fluid, int stage, boolean hasSides) {
-        return getModel(null, fluid, stage, hasSides);
+    private Model3D getModel(int stage, boolean hasSides) {
+        return getModel(null, stage, hasSides);
     }
 
-    private Model3D getModel(Direction side, FluidStack fluid, int stage) {
-        return getModel(side, fluid, stage, false);
+    private Model3D getModel(Direction side, int stage) {
+        return getModel(side, stage, false);
     }
 
-    private Model3D getModel(@Nullable Direction side, FluidStack fluid, int stage, boolean renderBase) {
+    private Model3D getModel(@Nullable Direction side, int stage, boolean renderBase) {
         int sideOrdinal;
         if (side == null) {
             sideOrdinal = renderBase ? 7 : 6;

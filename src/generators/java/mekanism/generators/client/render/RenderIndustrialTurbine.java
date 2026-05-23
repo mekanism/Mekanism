@@ -59,7 +59,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
     public void submit(TurbineRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, model.minX, model.minY, model.minZ, model.maxX, model.maxY, model.maxZ, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
         }
     }
 

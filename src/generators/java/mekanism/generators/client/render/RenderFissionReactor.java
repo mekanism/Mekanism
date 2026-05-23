@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
@@ -44,15 +43,9 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
     private static final Cache<ScaledRenderData, Model3D> cachedCoolantModels = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(5, TimeUnit.MINUTES).build();
     private static final int GLOW_ARGB = ARGB.color(0.6F, 0x76E0EC);
-    //TODO: Replace using a model here for the glow with using FuelAssemblyBakedModel as it should provide a performance boost
+    //TODO: Replace using a model for glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
     // transparency sort ordering
-    private static final MekanismRenderer.LazyModel glowModel = new LazyModel(() -> new Model3D()
-          .xBounds(0.05F, 0.95F)
-          .yBounds(0.01F, 0.99F)
-          .zBounds(0.05F, 0.95F)
-          .setSideRender(direction -> direction.getAxis().isHorizontal())
-    );
 
     private static Model3D getCoolantModel(ScaledRenderData renderData) {
         Model3D model = cachedCoolantModels.getIfPresent(renderData);
@@ -65,7 +58,6 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
 
     public static void resetCachedModels() {
         cachedHeatedCoolantModels.clear();
-        glowModel.reset();
     }
 
     public RenderFissionReactor(BlockEntityRendererProvider.Context context) {
@@ -119,24 +111,22 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         if (!state.assemblies.isEmpty()) {
             //TODO - 26.1: Profiler?
             //profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
-            Model3D model = glowModel.get();
             for (FormedAssembly assembly : state.assemblies) {
                 BlockPos assemblyPos = assembly.pos();
                 poseStack.pushPose();
                 poseStack.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 poseStack.scale(1, assembly.height() + 0.625F, 1);
-                RenderResizableCuboid.renderCube(model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(assemblyPos), MekanismRenderer.WHITE_ICON_GETTER);
+                RenderResizableCuboid.renderCube(MekanismRenderer.TMP_SideRenderCheck.HORIZONTAL, 0.05F, 0.01F, 0.05F, 0.95F, 0.99F, 0.95F, poseStack, Sheets.translucentBlockSheet(), nodeCollector, GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(assemblyPos), MekanismRenderer.WHITE_ICON_GETTER);
                 poseStack.popPose();
             }
             //profiler.pop();
         }
-        //TODO - 26.1 - renderObject
         if (state.coolantData != null && state.coolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width, state.coolantData.asRenderData().height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantModel.minX, state.coolantModel.minY, state.coolantModel.minZ, state.coolantModel.maxX, state.coolantModel.maxY, state.coolantModel.maxZ, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width, state.coolantData.asRenderData().height);
         }
         if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width, state.heatedCoolantData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantModel.minX, state.heatedCoolantModel.minY, state.heatedCoolantModel.minZ, state.heatedCoolantModel.maxX, state.heatedCoolantModel.maxY, state.heatedCoolantModel.maxZ, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width, state.heatedCoolantData.height);
         }
     }
 

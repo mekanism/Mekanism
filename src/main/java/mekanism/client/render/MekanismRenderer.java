@@ -20,11 +20,8 @@ import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
-import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
-import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
@@ -299,13 +296,10 @@ public class MekanismRenderer {
         ModelRenderer.resetCachedModels();
         RenderDigitalMiner.resetCachedVisuals();
         RenderDimensionalStabilizer.resetCachedVisuals();
-        RenderFluidTank.resetCachedModels();
-        RenderNutritionalLiquifier.resetCachedModels();
         RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
         RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
-        RenderTeleporter.resetCachedModels();
         SINGLE_TEXTURE_PICKERS.clear();
         VALVE_FLUID_TEX_CACHE.clear();
 
@@ -329,8 +323,20 @@ public class MekanismRenderer {
         FLOWING
     }
 
+    public interface TMP_SideRenderCheck {
+
+        boolean shouldRenderSide(Direction side);
+
+        TMP_SideRenderCheck RENDER_ALL = _ -> true;
+        TMP_SideRenderCheck NOT_DOWN = dir -> dir != Direction.DOWN;
+        TMP_SideRenderCheck HORIZONTAL = dir -> dir.getAxis().isHorizontal();
+        TMP_SideRenderCheck X_AXIS = dir -> dir.getAxis() == Direction.Axis.X;
+        TMP_SideRenderCheck Y_AXIS = dir -> dir.getAxis() == Direction.Axis.Y;
+        TMP_SideRenderCheck Z_AXIS = dir -> dir.getAxis() == Direction.Axis.Z;
+    }
+
     //TODO - 26.1: Thiakil to poke at this
-    public static final class Model3D {
+    public static final class Model3D implements TMP_SideRenderCheck {
 
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
