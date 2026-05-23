@@ -1,18 +1,12 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.EnumMap;
-import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
@@ -24,7 +18,6 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -32,8 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator, BioGeneratorRenderState> {
-
-    private static final Map<Direction, Int2ObjectMap<Model3D>> fuelModels = new EnumMap<>(Direction.class);
+    
     private static final int stages = 40;
     public static final float MODEL_MIN_Y_PAD = 0.4385F;
     public static final float MODEL_Y_STAGE_FRACTION = 0.4375F;
@@ -45,10 +37,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public static final float MODEL_Z_MIN_SOUTH = 0.125F;
     public static final float MODEL_Z_MIN_WEST = 0.187F;
     public static final float MODEL_Z_MIN_EAST = 0.186F;
-
-    public static void resetCachedModels() {
-        fuelModels.clear();
-    }
 
     public RenderBioGenerator(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -65,7 +53,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
         FluidStack fluid = generator.bioFuelTank.getFluid();
         float fluidScale = fluid.amount() / (float) generator.bioFuelTank.getCapacity();
-        state.model = getModel(fluid, generator.getDirection(), fluidScale);
         state.maxY = MODEL_MIN_Y_PAD + MODEL_Y_STAGE_FRACTION * getFluidStagePercent(fluidScale, MekanismUtils.lighterThanAirGas(fluid));
         switch (generator.getDirection()) {
             case NORTH -> {
@@ -95,6 +82,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
+        state.renderCheck = MekanismRenderer.TMP_SideRenderCheck.UP_AND_SINGLE_HORIZONTAL.getOrDefault(generator.getDirection().getOpposite(), MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL);
     }
 
     private static float getFluidStagePercent(float fluidScale, boolean gaseous) {
@@ -103,9 +91,9 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     @Override
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.model != null) {
+        if (state.fluidTexture != null) {
             //TODO - 26.1: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
-            RenderResizableCuboid.renderCube(state.model, state.minX, MODEL_MIN_Y_PAD, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(state.renderCheck, state.minX, MODEL_MIN_Y_PAD, state.minZ, state.maxX, state.maxY, state.maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
     }
 
@@ -119,45 +107,14 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         return !tile.bioFuelTank.isEmpty() && super.shouldRender(tile, camera);
     }
 
-    private Model3D getModel(FluidStack fluid, Direction side, float fluidScale) {
-        Int2ObjectMap<Model3D> modelMap = fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>());
-        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
-        Model3D model = modelMap.get(stage);
-        if (model == null) {
-            model = new Model3D()
-                  .yBounds(MODEL_MIN_Y_PAD, MODEL_MIN_Y_PAD + MODEL_Y_STAGE_FRACTION * (stage / (float) stages));
-            Direction opposite = side.getOpposite();
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                model.setSideRender(direction, direction == Direction.UP || direction == opposite);
-            }
-            switch (side) {
-                case NORTH -> model
-                      .xBounds(MODEL_X_MIN_NORTH_SOUTH, MODEL_X_MAX_NORTH_SOUTH)
-                      .zBounds(MODEL_Z_MIN_NORTH, MODEL_Z_MAX_NORTH);
-                case SOUTH -> model
-                      .xBounds(MODEL_X_MIN_NORTH_SOUTH, MODEL_X_MAX_NORTH_SOUTH)
-                      .zBounds(MODEL_Z_MIN_SOUTH, MODEL_Z_MIN_NORTH);
-                case WEST -> model
-                      .xBounds(MODEL_Z_MIN_NORTH, MODEL_Z_MAX_NORTH)
-                      .zBounds(MODEL_Z_MIN_WEST, MODEL_X_MAX_NORTH_SOUTH);
-                case EAST -> model
-                      .xBounds(MODEL_Z_MIN_SOUTH, MODEL_Z_MIN_NORTH)
-                      .zBounds(MODEL_Z_MIN_EAST, MODEL_X_MAX_NORTH_SOUTH);
-            }
-            modelMap.put(stage, model);
-        }
-        return model;
-    }
-
     public static class BioGeneratorRenderState extends BlockEntityRenderState {
 
-        @Nullable
-        public Model3D model;
         public float minX, minZ;
         public float maxX, maxY, maxZ;
         public int tint = 0xFFFFFFFF;
         @Nullable
         public RenderResizableCuboid.TexturePicker fluidTexture;
+        public MekanismRenderer.TMP_SideRenderCheck renderCheck = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
 
     }
 }

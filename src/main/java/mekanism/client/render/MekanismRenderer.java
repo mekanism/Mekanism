@@ -1,14 +1,17 @@
 package mekanism.client.render;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
@@ -18,8 +21,6 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
-import mekanism.client.render.tileentity.RenderDigitalMiner;
-import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -293,8 +294,6 @@ public class MekanismRenderer {
         RenderTransmitterBase.onStitch();
 
         //Reset any cached models now that the atlases are built
-        RenderDigitalMiner.resetCachedVisuals();
-        RenderDimensionalStabilizer.resetCachedVisuals();
         RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
         RenderSeismicVibrator.resetCached();
@@ -332,6 +331,19 @@ public class MekanismRenderer {
         TMP_SideRenderCheck X_AXIS = dir -> dir.getAxis() == Direction.Axis.X;
         TMP_SideRenderCheck Y_AXIS = dir -> dir.getAxis() == Direction.Axis.Y;
         TMP_SideRenderCheck Z_AXIS = dir -> dir.getAxis() == Direction.Axis.Z;
+
+        Map<Direction, TMP_SideRenderCheck> UP_AND_SINGLE_HORIZONTAL = Arrays.stream(EnumUtils.HORIZONTAL_DIRECTIONS)
+              .collect(
+                    Collectors.toMap(
+                          Function.identity(),
+                          dir -> check -> check == Direction.UP || check == dir
+                    )
+              );
+
+        static TMP_SideRenderCheck fromArray(boolean[] arr) {
+            Preconditions.checkArgument(arr.length == EnumUtils.DIRECTIONS.length, "Must be same dimensions as Direction");
+            return dir -> arr[dir.ordinal()];
+        }
     }
 
     //TODO - 26.1: Thiakil to poke at this
@@ -415,29 +427,6 @@ public class MekanismRenderer {
         public interface ModelBoundsSetter {
 
             Model3D set(float min, float max);
-        }
-    }
-
-    public static class LazyModel implements Supplier<Model3D> {
-
-        private final Supplier<Model3D> supplier;
-        @Nullable
-        private Model3D model;
-
-        public LazyModel(Supplier<Model3D> supplier) {
-            this.supplier = supplier;
-        }
-
-        public void reset() {
-            model = null;
-        }
-
-        @Override
-        public Model3D get() {
-            if (model == null) {
-                model = supplier.get();
-            }
-            return model;
         }
     }
 
