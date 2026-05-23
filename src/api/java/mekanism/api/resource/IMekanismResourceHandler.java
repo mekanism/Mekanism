@@ -235,6 +235,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     /// Determines which automation type methods defined via [ResourceHandler] methods will use.
     private AutomationType defaultAutomationType() {
         //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
-        return AutomationType.INTERNAL;
+        // I think it used to fall back to internal due to technically being the null side, but I think external makes more sense
+        return AutomationType.EXTERNAL;
     }
 }

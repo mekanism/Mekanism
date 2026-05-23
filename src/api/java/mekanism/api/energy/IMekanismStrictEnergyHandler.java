@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
@@ -60,13 +61,13 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
-        return insert(index, amount, transaction, AutomationType.INTERNAL);
+        return insert(index, amount, transaction, defaultAutomationType());
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
-        return insert(amount, transaction, AutomationType.INTERNAL);
+        return insert(amount, transaction, defaultAutomationType());
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -90,13 +91,13 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
-        return extract(index, amount, transaction, AutomationType.INTERNAL);
+        return extract(index, amount, transaction, defaultAutomationType());
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
-        return extract(amount, transaction, AutomationType.INTERNAL);
+        return extract(amount, transaction, defaultAutomationType());
     }
 
     @Override
@@ -113,5 +114,12 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
             }
         }
         return true;
+    }
+
+    /// Determines which automation type methods defined via [ResourceHandler] methods will use.
+    private AutomationType defaultAutomationType() {
+        //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
+        // I think it used to fall back to internal due to technically being the null side, but I think external makes more sense
+        return AutomationType.EXTERNAL;
     }
 }
