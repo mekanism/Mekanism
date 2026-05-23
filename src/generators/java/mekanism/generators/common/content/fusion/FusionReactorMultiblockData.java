@@ -11,6 +11,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
@@ -29,6 +30,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismChemicals;
@@ -42,7 +44,6 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsItems;
-import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.SharedConstants;
@@ -133,7 +134,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
-    final ReactorInventorySlot reactorSlot;
+    final BasicInventorySlot reactorSlot;
 
     private final PlasmaJournal plasmaJournal = new PlasmaJournal();
     private boolean clientBurning;
@@ -162,7 +163,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
               () -> inverseInsulation, () -> biomeAmbientTemp, this));
-        inventorySlots.add(reactorSlot = ReactorInventorySlot.at(GeneratorsItems.HOHLRAUM::is, this, 85, 39));
+        inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
     @Override
