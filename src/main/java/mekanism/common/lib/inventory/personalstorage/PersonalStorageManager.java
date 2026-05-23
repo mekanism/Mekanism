@@ -16,6 +16,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.storage.SavedDataStorage;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,7 +25,6 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsAreNotNullByDefault
@@ -139,15 +139,12 @@ public class PersonalStorageManager {
             ItemResource resource = itemAccess.getResource();
             UUID storageId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
             if (storageId != null) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason? Also is there any case this can be called from within a transactional context?
-                    itemAccess.exchange(resource.without(MekanismDataComponents.PERSONAL_STORAGE_ID), itemAccess.getAmount(), transaction);
-                    //If there actually was an id stored then remove the corresponding inventory
-                    PersonalStorageData data = forOwner(owner);
-                    if (data != null) {
-                        data.removeInventory(storageId);
-                    }
-                    transaction.commit();
+                //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason? Also is there any case this can be called from within a transactional context?
+                ItemAccessUtils.exchange(itemAccess, resource.without(MekanismDataComponents.PERSONAL_STORAGE_ID), null);
+                //If there actually was an id stored then remove the corresponding inventory
+                PersonalStorageData data = forOwner(owner);
+                if (data != null) {
+                    data.removeInventory(storageId);
                 }
             }
         }
@@ -158,11 +155,8 @@ public class PersonalStorageManager {
         UUID invId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
         if (invId == null) {
             invId = UUID.randomUUID();
-            try (Transaction transaction = Transaction.openRoot()) {
-                //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason? Also is there any case this can be called from within a transactional context?
-                itemAccess.exchange(resource.with(MekanismDataComponents.PERSONAL_STORAGE_ID, invId), itemAccess.getAmount(), transaction);
-                transaction.commit();
-            }
+            //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason? Also is there any case this can be called from within a transactional context?
+            ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.PERSONAL_STORAGE_ID, invId), null);
         }
         return invId;
     }

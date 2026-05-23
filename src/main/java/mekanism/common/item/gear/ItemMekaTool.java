@@ -41,7 +41,7 @@ import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnergyUtils;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -403,7 +403,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
         if (!world.isClientSide()) {
-            ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+            ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
             IModule<ModuleTeleportationUnit> module = getEnabledModule(itemAccess.getResource(), MekanismModules.TELEPORTATION_UNIT);
             if (module != null) {
                 BlockHitResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());

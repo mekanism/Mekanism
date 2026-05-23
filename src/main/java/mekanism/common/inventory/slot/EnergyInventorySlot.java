@@ -14,7 +14,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> HAS_ENERGY_HANDLER = itemType -> EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType)) != null;
+    public static final Predicate<ItemResource> HAS_ENERGY_HANDLER = itemType -> EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType)) != null;
 
     /**
      * Gets the recipe for converting the given ItemResource into energy
@@ -59,7 +59,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         }, itemType -> {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted
-            return EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType)) != null || getPotentialConversion(worldSupplier.get(), itemType) != null;
+            return EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType)) != null || getPotentialConversion(worldSupplier.get(), itemType) != null;
         }, listener, x, y);
     }
 
@@ -84,7 +84,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     private static boolean drainInsertCheck(IEnergyContainer energyContainer, ItemResource itemType) {
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
         if (itemEnergyHandler == null) {
             return false;
         }
@@ -106,7 +106,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillInsertCheck(ItemResource itemType) {
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
         //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
         // that might be less than a single unit and thus can't be extracted
         if (itemEnergyHandler == null) {

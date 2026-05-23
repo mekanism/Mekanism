@@ -11,7 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnergyUtils;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.network.chat.Component;
@@ -58,7 +58,7 @@ public class ItemSeismicReader extends ItemEnergized {
             player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
             return InteractionResult.SUCCESS_SERVER;
         } else if (!player.isCreative()) {
-            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(InventoryUtils.playerHandAccess(player, hand));
+            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
             if (energyHandler == null) {
                 player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
                 return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?

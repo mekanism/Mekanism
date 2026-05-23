@@ -8,7 +8,7 @@ import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -18,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionHand hand, int extra) implements IMekanismPacket {
@@ -45,25 +43,21 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (itemAccess.getAmount() > 0) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                interaction.consume(itemAccess, player, extra, transaction);
-                transaction.commit();
-            }
+            interaction.consume(itemAccess, player, extra);
         }
     }
 
     public enum ItemGuiInteraction {
-        TARGET_DIRECTION_BUTTON((itemAccess, _, _, transaction) -> {
+        TARGET_DIRECTION_BUTTON((itemAccess, _, _) -> {
             ItemResource resource = itemAccess.getResource();
             boolean currentValue = resource.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
-            resource = resource.with(MekanismDataComponents.INSERT_INTO_FREQUENCY, !currentValue);
-            itemAccess.exchange(resource, itemAccess.getAmount(), transaction);
+            ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.INSERT_INTO_FREQUENCY, !currentValue), null);
         }),
 
-        NEXT_SECURITY_MODE((itemAccess, player, _, transaction) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), transaction)),
-        PREVIOUS_SECURITY_MODE((itemAccess, player, _, transaction) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), transaction));
+        NEXT_SECURITY_MODE((itemAccess, player, _) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), null)),
+        PREVIOUS_SECURITY_MODE((itemAccess, player, _) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), null));
 
         public static final IntFunction<ItemGuiInteraction> BY_ID = ByIdMap.continuous(ItemGuiInteraction::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ItemGuiInteraction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ItemGuiInteraction::ordinal);
@@ -74,14 +68,14 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
             this.consumerForItem = consumerForItem;
         }
 
-        public void consume(ItemAccess itemAccess, Player player, int extra, TransactionContext transaction) {
-            consumerForItem.accept(itemAccess, player, extra, transaction);
+        public void consume(ItemAccess itemAccess, Player player, int extra) {
+            consumerForItem.accept(itemAccess, player, extra);
         }
 
         @FunctionalInterface
         private interface ConsumerForItem {
 
-            void accept(ItemAccess itemAccess, Player player, int extra, TransactionContext transaction);
+            void accept(ItemAccess itemAccess, Player player, int extra);
         }
     }
 }

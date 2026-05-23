@@ -1,9 +1,9 @@
 package mekanism.common.attachments.containers;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -51,12 +51,8 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
             //Nothing to change, just return false
             return false;
         }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            //Note: The attached access should handle snapshotting the backing stack
-            int exchanged = attachedAccess.exchange(attachedTo.with(containerType().getComponentType(), attached.with(containerIndex, value)), attachedAccess.getAmount(), subTransaction);
-            subTransaction.commit();
-            //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
-            return exchanged != 0;
-        }
+        //Note: The attached access should handle snapshotting the backing stack
+        //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
+        return ItemAccessUtils.exchange(attachedAccess, attachedTo.with(containerType().getComponentType(), attached.with(containerIndex, value)), transaction);
     }
 }

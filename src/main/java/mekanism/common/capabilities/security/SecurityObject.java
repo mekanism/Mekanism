@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -27,9 +28,9 @@ public class SecurityObject extends OwnerObject implements ISecurityObject {
         SecurityMode securityMode = resource.getOrDefault(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
         if (securityMode != mode) {
             if (mode == SecurityMode.PUBLIC) {
-                updateResource(resource.without(MekanismDataComponents.SECURITY), transaction);
+                ItemAccessUtils.exchange(itemAccess, resource.without(MekanismDataComponents.SECURITY), transaction);
             } else {
-                updateResource(resource.with(MekanismDataComponents.SECURITY, mode), transaction);
+                ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.SECURITY, mode), transaction);
             }
             //Note: For now we don't bother booting players out of item containers if the security mode on the item itself changed
             // as that requires the player that can change the security mode to be holding the item, so they are the only one who

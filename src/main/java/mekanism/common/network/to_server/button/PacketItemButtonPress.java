@@ -10,7 +10,7 @@ import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -46,7 +46,7 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         ItemResource itemType = itemAccess.getResource();
         if (itemType.getItem() instanceof IGuiItem) {
             MenuProvider provider = buttonClicked.getProvider(itemType, hand);

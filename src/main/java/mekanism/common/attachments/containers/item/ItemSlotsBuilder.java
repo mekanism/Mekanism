@@ -36,7 +36,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -100,7 +100,7 @@ public class ItemSlotsBuilder {
     };
     //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
     // We also allow energy conversion of items that can be converted
-    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType)) != null || EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
+    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType)) != null || EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FILL_CONVERT_ENERGY_SLOT_CREATOR = (_, attachedAccess, containerIndex) ->
           new ComponentBackedInventorySlot(attachedAccess, containerIndex, FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT, FILL_CONVERT_ENERGY_SLOT_CAN_INSERT, FILL_CONVERT_ENERGY_SLOT_VALIDATOR);
 
@@ -109,7 +109,7 @@ public class ItemSlotsBuilder {
             return true;
         }
         //Inversion of the insert check
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
         if (itemEnergyHandler == null) {
             return true;
         }
@@ -118,7 +118,7 @@ public class ItemSlotsBuilder {
         }
     };
     private static final BiPredicate<ItemResource, AutomationType> DRAIN_ENERGY_SLOT_CAN_INSERT = (itemType, _) -> {
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
         //if we can accept any energy that is currently stored in the container, then we allow inserting the item
         if (itemEnergyHandler == null) {
             return false;
@@ -259,7 +259,7 @@ public class ItemSlotsBuilder {
     private boolean canFluidFill(ItemAccess attachedAccess, int tankIndex, ItemResource itemType) {
         IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedAccess, tankIndex);
         //TODO - 26.1: Figure out item access
-        return FluidInventorySlot.canFill(fluidTank, InventoryUtils.queryOnlyAccess(itemType));
+        return FluidInventorySlot.canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType));
     }
 
     public ItemSlotsBuilder addFluidFillSlot(int tankIndex) {
@@ -271,7 +271,7 @@ public class ItemSlotsBuilder {
         return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.manualOnly(), (itemType, _) -> {
             //Copy of FluidInventorySlot's drain insert predicate
             //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
                 AttachedResources<FluidResource> attachedFluids = ContainerType.FLUID.getOrEmpty(attachedAccess);
@@ -295,7 +295,7 @@ public class ItemSlotsBuilder {
         return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.manualOnly(), (itemType, _) -> {
             //Copy of FluidInventorySlot#getInputPredicate
             //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedAccess, tankIndex);
                 return FluidInventorySlot.canInput(fluidHandler, fluidTank);
@@ -307,7 +307,7 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidRotarySlot(int tankIndex) {
         return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.manualOnly(), (itemType, _) -> {
             //Copy of FluidInventorySlot's rotary insert predicate
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 boolean mode = attachedAccess.getResource().getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
                 //Mode == true if fluid to chemical
@@ -340,7 +340,7 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidFuelSlot(int tankIndex, Predicate<ItemResource> hasFuelValue) {
         //Copy of FluidFuelInventorySlot's forFuel insert and extract predicates
         return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, _) -> {
-            ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (handler != null) {
                 int tanks = handler.size();
                 if (tanks > 0) {
@@ -363,7 +363,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalDrainInsert(ItemAccess attachedAccess, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getDrainInsertPredicate
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (handler != null) {
             IChemicalTank tank = ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex);
             return ChemicalInventorySlot.canDrainInsert(tank, handler);
@@ -373,7 +373,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalFillExtract(ItemAccess attachedAccess, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillExtractPredicate
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (handler == null) {
             return true;
         }
@@ -383,7 +383,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalFillInsert(ItemAccess attachedAccess, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#fillInsertCheck
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (handler != null) {
             IChemicalTank chemicalTank = ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex);
             return ChemicalInventorySlot.fillInsertCheck(chemicalTank, handler);

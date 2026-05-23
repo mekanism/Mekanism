@@ -7,10 +7,10 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
@@ -40,10 +40,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
                     resource = resource.with(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, inputSlot.asStack()));
                     //Note: This save listener is called from within `SnapshotJournal#onRootCommit`, but it is safe to open a new transaction
                     // from here thanks to https://github.com/neoforged/NeoForge/pull/2714
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        this.itemAccess.exchange(resource, this.itemAccess.getAmount(), transaction);
-                        transaction.commit();
-                    }
+                    ItemAccessUtils.exchange(this.itemAccess, resource, null);
                 }
             });
             craftingWindows[tableIndex] = craftingWindow;

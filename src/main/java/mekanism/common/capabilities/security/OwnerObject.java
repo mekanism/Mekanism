@@ -5,11 +5,11 @@ import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IOwnerObject;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,16 +50,7 @@ public class OwnerObject implements IOwnerObject {
                       .without(MekanismDataComponents.TELEPORTER_FREQUENCY)
                       .without(MekanismDataComponents.QIO_FREQUENCY);
             }
-            updateResource(resource.with(MekanismDataComponents.OWNER, owner), transaction);
-        }
-    }
-
-    protected void updateResource(ItemResource resource, @Nullable TransactionContext transaction) {
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            //Note: ItemAccess#exchange technically allows passing a null transaction context, but we don't do so
-            //TODO - 26.1: Do we care about the result of the exchange method anywhere?
-            itemAccess.exchange(resource, itemAccess.getAmount(), subTransaction);
-            subTransaction.commit();
+            ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.OWNER, owner), transaction);
         }
     }
 }

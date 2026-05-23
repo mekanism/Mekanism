@@ -15,10 +15,10 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -124,12 +124,8 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        try (Transaction transaction = Transaction.openRoot()) {
-            itemType = itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.createStack(inputType, inputAmount),
-                  LargeResourceStack.ITEM_HELPER.createStack(outputType, outputAmount)));
-            int exchanged = itemAccess.exchange(itemType, itemAccess.getAmount(), transaction);
-            transaction.commit();
-            return exchanged != 0;
-        }
+        itemType = itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.createStack(inputType, inputAmount),
+              LargeResourceStack.ITEM_HELPER.createStack(outputType, outputAmount)));
+        return ItemAccessUtils.exchange(itemAccess, itemType, null);
     }
 }

@@ -14,7 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -31,7 +31,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             if (!automationType.isExternal()) {
                 return true;
             }
-            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
                 case FLUID -> !FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess);
                 case CHEMICAL -> !ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
@@ -42,7 +42,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             if (automationType.isInternal()) {
                 return true;
             }
-            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
                 case FLUID -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess);
                 case CHEMICAL -> ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
@@ -64,7 +64,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             if (automationType.isInternal()) {
                 return true;
             }
-            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
                 //Only allow inserting internally for "fluid output" slots
                 case FLUID -> automationType.isInternal();

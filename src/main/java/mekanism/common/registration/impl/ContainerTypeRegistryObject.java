@@ -7,7 +7,7 @@ import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registration.MekanismDeferredHolder;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -77,7 +77,7 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
     }
 
     public void tryOpenGui(ServerPlayer player, InteractionHand hand) {
-        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         ItemResource itemType = itemAccess.getResource();
         MenuProvider provider = getProvider(itemType.getHoverName(), hand, itemType, true);
         if (provider != null) {

@@ -12,7 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.network.chat.Component;
@@ -75,7 +75,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
     }
 
     public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, BiConsumer<ServerPlayer, InteractionHand> openGui) {
-        ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (!tryClaimItem(level, player, itemAccess, null)) {
             if (!INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
                 return InteractionResult.FAIL;

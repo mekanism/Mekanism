@@ -12,14 +12,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.registries.datamaps.DataMapType;
-import net.neoforged.neoforge.registries.datamaps.IWithData;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
-import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: Update docs on this
 @NothingNullByDefault
-public final class ChemicalResource implements RegisteredResource<Chemical>, IHasTextComponent, IHasTranslationKey, IWithData<Chemical> {
+public final class ChemicalResource implements RegisteredResource<Chemical>, IHasTextComponent, IHasTranslationKey {
 
     /**
      * The empty resource instance of a {@link ChemicalResource}
@@ -102,13 +99,6 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
      */
     public Chemical getChemical() {
         return value();
-    }
-
-    @Nullable
-    @Override
-    public <T> T getData(DataMapType<Chemical, T> type) {//TODO - 26.1: https://github.com/neoforged/NeoForge/pull/3185
-        //Note: We only accept reference holders, and reference holders can be queried directly for data
-        return typeHolder().getData(type);
     }
 
     /**

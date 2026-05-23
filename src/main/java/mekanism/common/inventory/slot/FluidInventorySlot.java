@@ -13,7 +13,7 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -42,7 +42,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     protected static boolean canInput(IFluidTank fluidTank, ItemResource itemType) {
-        return canInput(fluidTank, InventoryUtils.queryOnlyAccess(itemType));
+        return canInput(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType));
     }
 
     protected static boolean canInput(IFluidTank fluidTank, ItemAccess itemAccess) {
@@ -86,7 +86,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             if (automationType.isInternal()) {
                 return true;
             }
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -119,7 +119,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     public static boolean canFill(IFluidTank fluidTank, ItemResource itemType) {
         //TODO - 26.1: Figure out item access
-        return canFill(fluidTank, InventoryUtils.queryOnlyAccess(itemType));
+        return canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType));
     }
 
     public static boolean canFill(IFluidTank fluidTank, ItemAccess itemAccess) {
@@ -166,7 +166,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 return true;
             }
             //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
                 if (fluidTank.isEmpty()) {

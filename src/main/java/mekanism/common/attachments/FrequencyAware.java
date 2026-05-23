@@ -23,6 +23,7 @@ import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.core.component.DataComponentGetter;
@@ -36,7 +37,6 @@ import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,11 +108,8 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
                     if (resource.getItem() instanceof IColoredItem) {
                         resource = resource.without(MekanismDataComponents.COLOR);
                     }
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Should we check we managed to exchange it all?
-                        itemAccess.exchange(resource, itemAccess.getAmount(), transaction);
-                        transaction.commit();
-                    }
+                    //TODO - 26.1: Should we check we managed to exchange it all?
+                    ItemAccessUtils.exchange(itemAccess, resource, null);
                 }
             }
         }

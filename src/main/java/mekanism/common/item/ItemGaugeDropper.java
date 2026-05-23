@@ -1,9 +1,9 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
@@ -11,7 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -74,7 +74,7 @@ public class ItemGaugeDropper extends Item {
             if (world.isClientSide()) {
                 return InteractionResult.SUCCESS_SERVER;
             }
-            ItemAccess itemAccess = InventoryUtils.playerHandAccess(player, hand);
+            ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
             dumpHandler(Capabilities.FLUID.getCapability(itemAccess));
             dumpHandler(Capabilities.CHEMICAL.getCapability(itemAccess));
             //TODO - 26.1: Is this the correct way to transform the output?

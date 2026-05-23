@@ -11,11 +11,11 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -56,12 +56,9 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private void updateEnergyUsage(long energyUsage) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            //Note: The attached access should handle snapshotting the backing stack
-            attachedAccess.exchange(attachedAccess.getResource().with(MekanismDataComponents.ENERGY_USAGE, energyUsage), attachedAccess.getAmount(), transaction);
-            //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
-            transaction.commit();
-        }
+        //Note: The attached access should handle snapshotting the backing stack
+        ItemAccessUtils.exchange(attachedAccess, attachedAccess.getResource().with(MekanismDataComponents.ENERGY_USAGE, energyUsage), null);
+        //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
     }
 
     @Override

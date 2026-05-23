@@ -17,7 +17,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +41,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillOrConvertExtractCheck(IChemicalTank chemicalTank, Supplier<Level> levelSupplier, ItemResource itemType) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (handler != null) {
             for (int tank = 0, size = handler.size(); tank < size; tank++) {
                 ChemicalResource stored = handler.getResource(tank);
@@ -60,7 +60,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillOrConvertInsertCheck(IChemicalTank chemicalTank, Supplier<Level> levelSupplier, ItemResource itemType) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (handler != null && fillInsertCheck(chemicalTank, handler)) {
             return true;
         }
@@ -85,7 +85,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             //Always allow extracting items manually or internally
             return true;
         }
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         return handler == null || fillExtractCheck(chemicalTank, handler);
     }
 
@@ -120,7 +120,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     public static boolean canDrainInsert(IChemicalTank chemicalTank, ItemResource itemType) {
         //TODO - 26.1: Figure out item access
-        return canDrainInsert(chemicalTank, InventoryUtils.queryOnlyAccess(itemType));
+        return canDrainInsert(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType));
     }
 
     public static boolean canDrainInsert(IChemicalTank chemicalTank, ItemAccess itemAccess) {
@@ -158,7 +158,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, InventoryUtils.queryOnlyAccess(itemType)), listener, x, y);
+              (itemType, _) -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**
@@ -167,7 +167,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> fillInsertCheck(chemicalTank, InventoryUtils.queryOnlyAccess(itemType)), listener, x, y);
+              (itemType, _) -> fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**

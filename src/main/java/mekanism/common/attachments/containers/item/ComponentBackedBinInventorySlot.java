@@ -15,6 +15,7 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -110,19 +111,13 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      * @see BinInventorySlot#setLockType(ItemResource)
      */
     public boolean setLockType(ItemResource lockType) {
+        //Note: The attached access should handle snapshotting the backing stack
+        //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
         ItemResource resource = attachedAccess.getResource();
         if (lockType.isEmpty()) {
-            resource = resource.without(MekanismDataComponents.LOCK);
-        } else {
-            resource = resource.with(MekanismDataComponents.LOCK, LockData.create(lockType));
+            return ItemAccessUtils.exchange(attachedAccess, resource.without(MekanismDataComponents.LOCK), null);
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            //Note: The attached access should handle snapshotting the backing stack
-            int exchanged = attachedAccess.exchange(resource, attachedAccess.getAmount(), transaction);
-            transaction.commit();
-            //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
-            return exchanged != 0;
-        }
+        return ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.LOCK, LockData.create(lockType)), null);
     }
 
     public ItemResource getLockType() {

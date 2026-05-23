@@ -13,9 +13,9 @@ import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -75,13 +75,9 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()))
-                  //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
-                  .with(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
-            int exchanged = itemAccess.exchange(itemType, itemAccess.getAmount(), transaction);
-            transaction.commit();
-            return exchanged != 0;
-        }
+        itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()))
+              //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
+              .with(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
+        return ItemAccessUtils.exchange(itemAccess, itemType, null);
     }
 }

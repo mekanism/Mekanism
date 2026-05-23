@@ -10,7 +10,7 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -43,7 +43,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 //Always allow manual or internal interaction
                 return true;
             }
-            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
+            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
             if (itemHandler != null) {
                 for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
                     FluidResource fluidType = itemHandler.getResource(tank);

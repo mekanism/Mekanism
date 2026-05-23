@@ -20,17 +20,14 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.access.SideEffectFreeItemAccess;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,20 +42,6 @@ import org.jetbrains.annotations.Contract;
 public final class InventoryUtils {
 
     private InventoryUtils() {
-    }
-
-    /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
-    public static ItemAccess playerHandAccess(Player player, InteractionHand hand) {
-        //TODO - 26.1: See what should be moved to this from forPlayerInteraction
-        return ItemAccess.forPlayerSlot(player, switch (hand) {
-            case MAIN_HAND -> player.getInventory().getSelectedSlot();
-            case OFF_HAND -> Inventory.SLOT_OFFHAND;
-        });
-    }
-
-    //TODO - 26.1: Re-evaluate usages and add docs stating assumptions around using this
-    public static ItemAccess queryOnlyAccess(ItemResource itemType) {
-        return new SideEffectFreeItemAccess(itemType);
     }
 
     /**

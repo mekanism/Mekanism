@@ -5,7 +5,7 @@ import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,7 +22,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
           IMekanismItemContainerFactory<CONTAINER> constructor) {
         return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
             InteractionHand hand = buf.readEnum(InteractionHand.class);
-            return constructor.create(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand));
+            return constructor.create(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand));
         });
     }
 
@@ -30,7 +30,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
           IMekanismSidedItemContainerFactory<CONTAINER> constructor) {
         return new MekanismItemContainerType<>(typeValidator, constructor, (id, inv, buf) -> {
             InteractionHand hand = buf.readEnum(InteractionHand.class);
-            return constructor.create(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand), true);
+            return constructor.create(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand), true);
         });
     }
 
@@ -39,7 +39,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
               (id, inv, hand, itemAccess) -> new PortableQIODashboardContainer(id, inv, hand, itemAccess, false, BulkQIOData.INITIAL_SERVER),
               (id, inv, buf) -> {
                   InteractionHand hand = buf.readEnum(InteractionHand.class);
-                  return new PortableQIODashboardContainer(id, inv, hand, InventoryUtils.playerHandAccess(inv.player, hand), true, BulkQIOData.fromPacket(buf));
+                  return new PortableQIODashboardContainer(id, inv, hand, ItemAccessUtils.playerHandAccess(inv.player, hand), true, BulkQIOData.fromPacket(buf));
               }
         );
     }
@@ -64,7 +64,7 @@ public class MekanismItemContainerType<CONTAINER extends AbstractContainerMenu> 
     @Nullable
     public MenuConstructor create(InteractionHand hand, ItemResource itemType) {
         if (!itemType.isEmpty() && typeValidator.test(itemType.getItem())) {
-            return (id, inv, player) -> mekanismConstructor.create(id, inv, hand, InventoryUtils.playerHandAccess(player, hand));
+            return (id, inv, player) -> mekanismConstructor.create(id, inv, hand, ItemAccessUtils.playerHandAccess(player, hand));
         }
         return null;
     }
