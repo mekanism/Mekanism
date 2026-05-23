@@ -21,21 +21,21 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
 
     public static UpgradeInventorySlot input(@Nullable IContentsListener listener, Set<Upgrade> supportedTypes) {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
-        return new UpgradeInventorySlot(listener, (itemType, automationType) -> {
+        return new UpgradeInventorySlot(ConstantPredicates.notExternal(), (itemType, _) -> {
             if (itemType.getItem() instanceof IUpgradeItem upgradeItem) {
                 Upgrade upgradeType = upgradeItem.getUpgradeType();
                 return supportedTypes.contains(upgradeType);
             }
             return false;
-        });
+        }, listener);
     }
 
     public static UpgradeInventorySlot output(@Nullable IContentsListener listener) {
-        return new UpgradeInventorySlot(listener, ConstantPredicates.internalOnly());
+        return new UpgradeInventorySlot(ConstantPredicates.manualOnly(), ConstantPredicates.internalOnly(), listener);
     }
 
-    private UpgradeInventorySlot(@Nullable IContentsListener listener, BiPredicate<ItemResource, AutomationType> canInsert) {
-        super(ConstantPredicates.manualOnly(), canInsert, itemType -> itemType.getItem() instanceof IUpgradeItem, listener, 0, 0);
+    private UpgradeInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener) {
+        super(canExtract, canInsert, itemType -> itemType.getItem() instanceof IUpgradeItem, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 
