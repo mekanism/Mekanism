@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
@@ -112,25 +111,10 @@ public final class MekanismUtils {
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
-    //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
-    // Deciding on how to implement it into the API will need more thought as we want to keep overriding implementations as simple as
-    // possible, and also ideally would use our normal logger instead of the API logger
-    public static void logMismatchedStackSize(long actual, long expected) {
-        if (expected != actual) {
-            Mekanism.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected);
-            if (MekanismAPI.debug) {
-                Mekanism.logger.error("Location ", new Exception());
-            }
-        }
-    }
-
-    public static void logExpectedZero(long actual) {
-        if (actual != 0L) {
-            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual);
-            if (MekanismAPI.debug) {
-                Mekanism.logger.error("Location ", new Exception());
-            }
-        }
+    //TODO - 26.1: Docs and re-evaluate usages/if we can avoid having to do it/can provide the transactional context
+    @SuppressWarnings("deprecation")
+    public static Transaction openTransactionSafe() {
+        return Transaction.open(Transaction.getCurrentOpenedTransaction());
     }
 
     public static Component logFormat(Object message) {

@@ -273,13 +273,19 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void nextMode() {
         editMode = editMode.getNext();
-        markForSave();
+        editModeChanged();
     }
 
     @Override
     public void previousMode() {
         editMode = editMode.getPrevious();
-        setChanged();
+        editModeChanged();
+    }
+
+    private void editModeChanged() {
+        //Reset the transfer direction if the edit mode changes so that it can better determine the direction if it has been changed to BOTH
+        inputSlot.resetLastTransferDirection();
+        markForSave();
     }
 
     @Override
@@ -369,7 +375,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         validateSecurityIsPublic();
         if (editMode != mode) {
             editMode = mode;
-            markForSave();
+            editModeChanged();
         }
     }
 

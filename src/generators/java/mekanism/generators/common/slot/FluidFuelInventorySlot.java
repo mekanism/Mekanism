@@ -10,6 +10,7 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -38,11 +39,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             throw new IllegalArgumentException("Fuel fluid type cannot be empty");
         }
         return new FluidFuelInventorySlot(fluidTank, fuelType, fuelValue, (itemType, automationType) -> {
-            if (automationType.isManual()) {
-                //Always allow manual interaction
+            if (!automationType.isExternal()) {
+                //Always allow manual or internal interaction
                 return true;
             }
-            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
+            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
             if (itemHandler != null) {
                 for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
                     FluidResource fluidType = itemHandler.getResource(tank);
@@ -56,7 +57,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             return fuelValue.applyAsInt(itemType) == 0;
-        }, (itemType, _) -> fuelValue.applyAsInt(itemType) > 0 || canFill(fluidTank, itemType), listener, x, y);
+        }, (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) > 0 || canFill(fluidTank, itemType), listener, x, y);
     }
 
     private final ToIntFunction<ItemResource> fuelValue;
@@ -76,7 +77,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         if (!isEmpty()) {
             int needed = fluidTank.getNeededAsInt(fluidTank.resource());
             //Fill the tank from the item
-            if (needed > 0 && !fillTank()) {
+            if (needed > 0 && !fillTankFromSlot()) {
                 //If filling from item failed, try doing it by conversion
                 ItemResource currentType = resource();
                 int fuel = fuelValue.applyAsInt(currentType);

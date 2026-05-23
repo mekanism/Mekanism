@@ -20,6 +20,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.access.SideEffectFreeItemAccess;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
@@ -53,6 +54,11 @@ public final class InventoryUtils {
             case MAIN_HAND -> player.getInventory().getSelectedSlot();
             case OFF_HAND -> Inventory.SLOT_OFFHAND;
         });
+    }
+
+    //TODO - 26.1: Re-evaluate usages and add docs stating assumptions around using this
+    public static ItemAccess queryOnlyAccess(ItemResource itemType) {
+        return new SideEffectFreeItemAccess(itemType);
     }
 
     /**

@@ -13,6 +13,7 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.util.InventoryUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -21,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccess.forStack(itemType.toStack())) != null;
+    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(InventoryUtils.queryOnlyAccess(itemType)) != null;
     public static final BiPredicate<ItemResource, AutomationType> LOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) != null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(InventoryUtils.queryOnlyAccess(itemType)) != null;
     public static final BiPredicate<ItemResource, AutomationType> LOCK_INSERT_PREDICATE = (itemType, automationType) ->
           //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
-          automationType.isInternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) == null;
+          automationType.isInternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(InventoryUtils.queryOnlyAccess(itemType)) == null;
     public static final BiPredicate<ItemResource, AutomationType> UNLOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack())) == null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(InventoryUtils.queryOnlyAccess(itemType)) == null;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
@@ -41,7 +42,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
             //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
             return true;
         }
-        UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccess.forStack(itemType.toStack()));
+        UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(InventoryUtils.queryOnlyAccess(itemType));
         return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
     }
 

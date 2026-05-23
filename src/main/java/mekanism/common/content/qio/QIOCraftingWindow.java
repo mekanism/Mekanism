@@ -448,11 +448,11 @@ public class QIOCraftingWindow implements IContentsListener {
                     ItemStack remainder = remaining.get(subIndex);
                     int index = getIndexFromRemaining(craftingInput, subIndex);
                     IInventorySlot inputSlot = inputSlots[index];
-                    if (inputSlot.amountAsInt() > 1) {
+                    if (inputSlot.amountAsLong() > 1) {
                         //If the input slot contains an item that is stacked, reduce the size of it by one
                         //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
                         useInput(inputSlot, transaction);
-                    } else if (inputSlot.amountAsInt() == 1) {
+                    } else if (inputSlot.amountAsLong() == 1) {
                         //Else if the input slot only has a single item in it, try removing from the frequency
                         if (frequency == null || remainderHelper.isStackStillValid(world, remainder, index)) {
                             //If the remaining item is still valid for the recipe in that slot, or we don't have a frequency, and it is the
@@ -549,11 +549,11 @@ public class QIOCraftingWindow implements IContentsListener {
                 ItemStack remainder = remaining.get(subIndex);
                 int index = getIndexFromRemaining(craftingInput, subIndex);
                 IInventorySlot inputSlot = inputSlots[index];
-                if (inputSlot.amountAsInt() > 1) {
+                if (inputSlot.amountAsLong() > 1) {
                     //If the input slot contains an item that is stacked, reduce the size of it by one
                     //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
                     useInput(inputSlot, transaction);
-                } else if (inputSlot.amountAsInt() == 1) {
+                } else if (inputSlot.amountAsLong() == 1) {
                     //Else if the input slot only has a single item in it, try removing from the frequency
                     if (frequency == null || remainderHelper.isStackStillValid(world, remainder, index)) {
                         //If we have no frequency or the remaining item is still valid for the recipe in that slot,

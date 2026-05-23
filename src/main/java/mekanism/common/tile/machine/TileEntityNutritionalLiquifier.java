@@ -148,7 +148,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        containerFillSlot.drainTank(containerOutputSlot);
+        containerFillSlot.drainTankIntoSlot(containerOutputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
         float pasteScale = MekanismUtils.getScale(lastPasteScale, fluidTank);
         if (MekanismUtils.scaleChanged(pasteScale, lastPasteScale)) {

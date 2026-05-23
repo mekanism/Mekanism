@@ -8,6 +8,7 @@ import mekanism.common.attachments.containers.ContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Range;
 
+//TODO - 26.1: Look at ItemAccessResourceHandler, and make it so that it returns proper values for when the access is empty
 @NothingNullByDefault
 public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Long, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
 

@@ -241,7 +241,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        fluidSlot.fillTank();
+        fluidSlot.fillTankFromSlot();
 
         leftOutputSlot.drainTank();
         rightOutputSlot.drainTank();

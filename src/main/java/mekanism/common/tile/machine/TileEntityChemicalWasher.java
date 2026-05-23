@@ -160,7 +160,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        fluidSlot.fillTank(fluidOutputSlot);
+        fluidSlot.fillTankFromSlot(fluidOutputSlot);
         slurryOutputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;

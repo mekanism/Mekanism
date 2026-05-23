@@ -182,6 +182,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public void setContainerEditMode(ContainerEditMode mode) {
         if (editMode != mode) {
             editMode = mode;
+            //Reset the transfer direction if the edit mode changes so that it can better determine the direction if it has been changed to BOTH
+            inputSlot.resetLastTransferDirection();
             markDirty();
         }
     }

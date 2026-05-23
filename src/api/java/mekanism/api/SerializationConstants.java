@@ -170,7 +170,6 @@ public final class SerializationConstants {
     public static final String DIRECTION = "direction";
     public static final String DISABLED = "disabled";
     public static final String DISTANCE = "distance";
-    public static final String DRAINING = "draining";
     public static final String DRIVES = "drives";
     public static final String DUMP_LEFT = "dump_left";
     public static final String DUMP_MODE = "dumping";
@@ -186,7 +185,6 @@ public final class SerializationConstants {
     public static final String ENUMS = "enums";
     public static final String EXTENDS = "extends";
     public static final String FIELDS = "fields";
-    public static final String FILLING = "filling";
     public static final String FILTER = "filter";
     public static final String FILTERS = "filters";
     public static final String FINISHED = "finished";
@@ -229,6 +227,8 @@ public final class SerializationConstants {
     public static final String KEY = "key";
     public static final String LAST_FIRED = "last_fired";
     public static final String LAST_PROCESSED = "last_processed";
+    /// @since 10.8.0
+    public static final String LAST_TRANSFER_DIRECTION = "last_transfer_direction";
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
     /// @since 10.8.0

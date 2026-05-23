@@ -202,11 +202,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (mode) {//Fluid to Gas
-            fluidInputSlot.fillTank(fluidOutputSlot);
+            fluidInputSlot.fillTankFromSlot(fluidOutputSlot);
             gasInputSlot.drainTank();
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();
-            fluidInputSlot.drainTank(fluidOutputSlot);
+            fluidInputSlot.drainTankIntoSlot(fluidOutputSlot);
         }
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;

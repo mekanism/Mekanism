@@ -146,7 +146,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        inputSlot.drainTank(outputSlot);
+        inputSlot.drainTankIntoSlot(outputSlot);
         long clientEnergyUsed = 0L;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.resource()))) {
             long energyPerTick = energyContainer.getEnergyPerTick();

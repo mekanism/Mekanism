@@ -9,12 +9,15 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,16 +26,30 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        BiPredicate<ItemResource, AutomationType> insertPredicate = (itemType, _) -> switch (mergedTank.getCurrentType()) {
-            case FLUID -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemType);
-            case CHEMICAL -> ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemType);
-            //Tank is empty, check if any insert predicate is valid
-            case EMPTY -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemType) ||
-                          ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemType);
-        };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
-        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> automationType.isManual() || !insertPredicate.test(itemType, automationType),
-              insertPredicate, listener, x, y);
+        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> {
+            if (!automationType.isExternal()) {
+                return true;
+            }
+            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            return switch (mergedTank.getCurrentType()) {
+                case FLUID -> !FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess);
+                case CHEMICAL -> !ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
+                //Tank is empty, check if any insert predicate is valid
+                case EMPTY -> !FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess) && !ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
+            };
+        }, (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
+            }
+            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            return switch (mergedTank.getCurrentType()) {
+                case FLUID -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess);
+                case CHEMICAL -> ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
+                //Tank is empty, check if any insert predicate is valid
+                case EMPTY -> FluidInventorySlot.canInput(mergedTank.getFluidTank(), itemAccess) || ChemicalInventorySlot.canDrainInsert(mergedTank.getChemicalTank(), itemAccess);
+            };
+        }, listener, x, y);
     }
 
     public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
@@ -43,25 +60,30 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
                 return true;
             }
             return ChemicalInventorySlot.fillExtractCheck(mergedTank.getChemicalTank(), itemType, automationType);
-        }, (itemType, automationType) -> switch (mergedTank.getCurrentType()) {
-            //Only allow inserting internally for "fluid output" slots
-            case FLUID -> automationType.isInternal();
-            case CHEMICAL -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
-            case EMPTY -> {
-                //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
-                if (automationType.isInternal() && Capabilities.FLUID.hasCapability(itemType)) {
-                    yield true;
-                }
-                //otherwise, only allow it if one of the chemical insert predicates matches
-                yield ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
+        }, (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
             }
+            ItemAccess itemAccess = InventoryUtils.queryOnlyAccess(itemType);
+            return switch (mergedTank.getCurrentType()) {
+                //Only allow inserting internally for "fluid output" slots
+                case FLUID -> automationType.isInternal();
+                case CHEMICAL -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemAccess);
+                case EMPTY -> {
+                    //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
+                    if (automationType.isInternal() && Capabilities.FLUID.hasCapability(itemAccess)) {
+                        yield true;
+                    }
+                    //otherwise, only allow it if one of the chemical insert predicates matches
+                    yield ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemAccess);
+                }
+            };
         }, listener, x, y);
     }
 
-    // used by IFluidHandlerSlot
-    private boolean isDraining;
-    private boolean isFilling;
     private final MergedTank mergedTank;
+    // used by IFluidHandlerSlot
+    private LastTransferDirection lastTransferDirection = LastTransferDirection.UNKNOWN;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
@@ -75,51 +97,44 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     }
 
     @Override
-    public boolean isDraining() {
-        return isDraining;
+    public LastTransferDirection getLastTransferDirection() {
+        return lastTransferDirection;
     }
 
     @Override
-    public boolean isFilling() {
-        return isFilling;
-    }
-
-    @Override
-    public void setDraining(boolean draining) {
-        isDraining = draining;
-    }
-
-    @Override
-    public void setFilling(boolean filling) {
-        isFilling = filling;
+    public void setLastTransferDirection(LastTransferDirection direction) {
+        this.lastTransferDirection = direction;
     }
 
     @Override
     public void copyContents(IResourceContainer<ItemResource> other) {
         super.copyContents(other);
         if (other instanceof IFluidHandlerSlot otherSlot) {
-            setDraining(otherSlot.isDraining());
-            setFilling(otherSlot.isDraining());
+            setLastTransferDirection(otherSlot.getLastTransferDirection());
+        }
+    }
+
+    @Override
+    public void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
+        super.onContentsChanged(originalState);
+        if (isEmpty()) {
+            //If we are now empty, reset the last transfer direction as it is no longer valid
+            resetLastTransferDirection();
         }
     }
 
     @Override
     public void serialize(ValueOutput output) {
         super.serialize(output);
-        if (isDraining) {
-            output.putBoolean(SerializationConstants.DRAINING, true);
-        }
-        if (isFilling) {
-            output.putBoolean(SerializationConstants.FILLING, true);
+        if (lastTransferDirection != LastTransferDirection.UNKNOWN) {
+            output.store(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC, lastTransferDirection);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         super.deserialize(input);
-        //Grab the booleans regardless if they are present as if they aren't that means they are false
-        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, false);
-        isFilling = input.getBooleanOr(SerializationConstants.FILLING, false);
+        setLastTransferDirection(input.read(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC).orElse(LastTransferDirection.UNKNOWN));
     }
 
     public void drainChemicalTank() {
@@ -129,5 +144,4 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     public void fillChemicalTank() {
         ChemicalInventorySlot.fillTank(this, mergedTank.getChemicalTank(), itemAccess());
     }
-
 }

@@ -180,6 +180,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             ResourceHandler<ItemResource> inventory = getCapForSide(side);
             if (inventory != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Ensure we aren't pulling more than max stack size at once(?)
                     TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount(), transaction);
                     //There's a stack available to insert into the network...
                     if (!request.isEmpty()) {

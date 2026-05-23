@@ -14,7 +14,6 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,25 +35,11 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
         return access.getCapability(item());
     }
 
-    @Nullable
-    default ITEM_HANDLER getCapability(ItemResource itemType) {
-        //TODO - 26.1: Re-evaluate callers and usage of this as it really doesn't make much sense
-        // and especially for fluid interaction we should be trying a few things, whether it works stacked and then oneByOne
-        return getCapability(ItemAccess.forStack(itemType.toStack()));
-    }
-
     /**
      * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemAccess)} and null checking.
      */
     default boolean hasCapability(ItemAccess access) {
         return getCapability(access) != null;
-    }
-
-    /**
-     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemResource)} and null checking.
-     */
-    default boolean hasCapability(ItemResource itemType) {
-        return getCapability(itemType) != null;
     }
 
     @Nullable

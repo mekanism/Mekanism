@@ -10,8 +10,11 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -34,12 +37,17 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot input(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> canInput(fluidTank, itemType), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) ->
+              automationType.isInternal() || canInput(fluidTank, itemType), listener, x, y);
     }
 
     protected static boolean canInput(IFluidTank fluidTank, ItemResource itemType) {
+        return canInput(fluidTank, InventoryUtils.queryOnlyAccess(itemType));
+    }
+
+    protected static boolean canInput(IFluidTank fluidTank, ItemAccess itemAccess) {
         //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
+        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
         return fluidHandler != null && canInput(fluidHandler, fluidTank);
     }
 
@@ -59,9 +67,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //we return if there is at least one empty tank in the item so that we can then drain into it
             return hasEmpty;
         }
-        //TODO - 26.1: Are our insert predicates and stuff ever ran from within a transactional context?
-        // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Note: We try to insert a bucket's amount to work around buckets not being able to be filled with a smaller amount
             // We try to insert more than a bucket though in case we have more, and it lets us get a better estimate on some custom handlers
             //TODO - 26.1: Re-evaluate this, do we want to just pass a bucket volume to it so that it potentially has to do less checking
@@ -76,8 +82,11 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot rotary(IFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> {
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
+            }
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -104,12 +113,13 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot fill(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> canFill(fluidTank, itemType), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) ->
+              automationType.isInternal() || canFill(fluidTank, itemType), listener, x, y);
     }
 
     public static boolean canFill(IFluidTank fluidTank, ItemResource itemType) {
         //TODO - 26.1: Figure out item access
-        return canFill(fluidTank, ItemAccess.forStack(itemType.toStack()));
+        return canFill(fluidTank, InventoryUtils.queryOnlyAccess(itemType));
     }
 
     public static boolean canFill(IFluidTank fluidTank, ItemAccess itemAccess) {
@@ -129,13 +139,12 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     private static boolean simulateCanInsert(IFluidTank fluidTank, FluidResource fluidType, int amount) {
-        //TODO - 26.1: Are call sites ever in a transactional context?
-        /*try (Transaction simulation = Transaction.openRoot()) {
+        /*try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             return fluidTank.insert(fluidType, amount, simulation, AutomationType.INTERNAL) > 0;
         }*/
         //TODO - 26.1: This used to do a full on simulation, do we need to check to make sure it isn't full or is not checking it actually more accurate for what we want
         // If so we can easily check that it isn't full if the resource type matches, or we might want to go back to simulation,
-        // even though that means we mightneed to be careful about the transactional context
+        // even though that means we might need to be careful about the transactional context
         if (fluidTank.isValidForInsertion(fluidType, AutomationType.INTERNAL)) {
             //Calculate if the fluid is ever valid for insertion into the fluid tank
             //If it is and our tank is currently empty or has the same type of resource
@@ -152,17 +161,18 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot drain(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.manualOnly(), (itemType, _) -> {
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
+            }
             //TODO - 26.1: Figure out fluid handlers, this used to be a one by one
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(InventoryUtils.queryOnlyAccess(itemType));
             if (fluidHandler != null) {
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
                 if (fluidTank.isEmpty()) {
                     return isNonFullFluidContainer(fluidHandler);
                 }
-                //TODO - 26.1: Are our insert predicates and stuff ever ran from within a transactional context?
-                // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
-                try (Transaction simulation = Transaction.openRoot()) {
+                try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
                     //TODO - 26.1: Do we need to do similar to the canInput that checks for bucket volume?
                     return fluidHandler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation) > 0;
                 }
@@ -178,8 +188,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     protected final IFluidTank fluidTank;
-    private boolean isDraining;
-    private boolean isFilling;
+    private LastTransferDirection lastTransferDirection = LastTransferDirection.UNKNOWN;
 
     protected FluidInventorySlot(IFluidTank fluidTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
@@ -196,31 +205,29 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public boolean isDraining() {
-        return isDraining;
+    public LastTransferDirection getLastTransferDirection() {
+        return lastTransferDirection;
     }
 
     @Override
-    public boolean isFilling() {
-        return isFilling;
-    }
-
-    @Override
-    public void setDraining(boolean draining) {
-        isDraining = draining;
-    }
-
-    @Override
-    public void setFilling(boolean filling) {
-        isFilling = filling;
+    public void setLastTransferDirection(LastTransferDirection direction) {
+        this.lastTransferDirection = direction;
     }
 
     @Override
     public void copyContents(IResourceContainer<ItemResource> other) {
         super.copyContents(other);
         if (other instanceof IFluidHandlerSlot otherSlot) {
-            setDraining(otherSlot.isDraining());
-            setFilling(otherSlot.isDraining());
+            setLastTransferDirection(otherSlot.getLastTransferDirection());
+        }
+    }
+
+    @Override
+    public void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
+        super.onContentsChanged(originalState);
+        if (isEmpty()) {
+            //If we are now empty, reset the last transfer direction as it is no longer valid
+            resetLastTransferDirection();
         }
     }
 
@@ -228,19 +235,14 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public void serialize(ValueOutput output) {
         super.serialize(output);
         //TODO - 1.21: These two states don't get persisted anymore when breaking blocks that have fluid inventory slots
-        if (isDraining) {
-            output.putBoolean(SerializationConstants.DRAINING, true);
-        }
-        if (isFilling) {
-            output.putBoolean(SerializationConstants.FILLING, true);
+        if (lastTransferDirection != LastTransferDirection.UNKNOWN) {
+            output.store(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC, lastTransferDirection);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         super.deserialize(input);
-        //Grab the booleans regardless if they are present as if they aren't that means they are false
-        isDraining = input.getBooleanOr(SerializationConstants.DRAINING, false);
-        isFilling = input.getBooleanOr(SerializationConstants.FILLING, false);
+        setLastTransferDirection(input.read(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC).orElse(LastTransferDirection.UNKNOWN));
     }
 }

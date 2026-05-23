@@ -14,6 +14,8 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -23,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> DRAIN_VALIDATOR = EnergyCompatUtils::hasStrictEnergyHandler;
+    public static final Predicate<ItemResource> HAS_ENERGY_HANDLER = itemType -> EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType)) != null;
 
     /**
      * Gets the recipe for converting the given ItemResource into energy
@@ -57,7 +59,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         }, itemType -> {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted
-            return EnergyCompatUtils.hasStrictEnergyHandler(itemType) || getPotentialConversion(worldSupplier.get(), itemType) != null;
+            return EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType)) != null || getPotentialConversion(worldSupplier.get(), itemType) != null;
         }, listener, x, y);
     }
 
@@ -67,7 +69,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !fillInsertCheck(itemType),
-              (itemType, _) -> fillInsertCheck(itemType), EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
+              (itemType, _) -> fillInsertCheck(itemType), HAS_ENERGY_HANDLER, listener, x, y);
     }
 
     /**
@@ -78,11 +80,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !drainInsertCheck(energyContainer, itemType),
-              (itemType, _) -> drainInsertCheck(energyContainer, itemType), DRAIN_VALIDATOR, listener, x, y);
+              (itemType, _) -> drainInsertCheck(energyContainer, itemType), HAS_ENERGY_HANDLER, listener, x, y);
     }
 
     private static boolean drainInsertCheck(IEnergyContainer energyContainer, ItemResource itemType) {
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
         if (itemEnergyHandler == null) {
             return false;
         }
@@ -98,19 +100,19 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             return false;
         }
         //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
-        try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             return itemEnergyHandler.insert(storedEnergy, simulation) > 0;
         }
     }
 
     public static boolean fillInsertCheck(ItemResource itemType) {
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(InventoryUtils.queryOnlyAccess(itemType));
         //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
         // that might be less than a single unit and thus can't be extracted
         if (itemEnergyHandler == null) {
             return false;
         }
-        try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             return itemEnergyHandler.extract(Long.MAX_VALUE, simulation) > 0L;
         }
     }

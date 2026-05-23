@@ -125,7 +125,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        inputSlot.fillTank(outputSlot);
+        inputSlot.fillTankFromSlot(outputSlot);
         long clientEnergyUsed = 0L;
         if (canFunction() && fluidTank.amountAsInt() >= FluidType.BUCKET_VOLUME) {
             try (Transaction transaction = Transaction.openRoot()) {

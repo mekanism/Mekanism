@@ -17,6 +17,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,7 +41,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillOrConvertExtractCheck(IChemicalTank chemicalTank, Supplier<Level> levelSupplier, ItemResource itemType) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
         if (handler != null) {
             for (int tank = 0, size = handler.size(); tank < size; tank++) {
                 ChemicalResource stored = handler.getResource(tank);
@@ -58,7 +60,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillOrConvertInsertCheck(IChemicalTank chemicalTank, Supplier<Level> levelSupplier, ItemResource itemType) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
         if (handler != null && fillInsertCheck(chemicalTank, handler)) {
             return true;
         }
@@ -79,11 +81,11 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillExtractCheck(IChemicalTank chemicalTank, ItemResource itemType, AutomationType automationType) {
-        if (automationType.isManual()) {
-            //Always allow extracting items manually
+        if (!automationType.isExternal()) {
+            //Always allow extracting items manually or internally
             return true;
         }
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(InventoryUtils.queryOnlyAccess(itemType));
         return handler == null || fillExtractCheck(chemicalTank, handler);
     }
 
@@ -100,8 +102,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         return true;
     }
 
-    public static boolean fillInsertCheck(IChemicalTank chemicalTank, ItemResource itemType) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
+    public static boolean fillInsertCheck(IChemicalTank chemicalTank, ItemAccess itemAccess) {
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         return handler != null && fillInsertCheck(chemicalTank, handler);
     }
 
@@ -118,7 +120,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     public static boolean canDrainInsert(IChemicalTank chemicalTank, ItemResource itemType) {
         //TODO - 26.1: Figure out item access
-        return canDrainInsert(chemicalTank, ItemAccess.forStack(itemType.toStack()));
+        return canDrainInsert(chemicalTank, InventoryUtils.queryOnlyAccess(itemType));
     }
 
     public static boolean canDrainInsert(IChemicalTank chemicalTank, ItemAccess itemAccess) {
@@ -132,9 +134,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             //TODO - 26.1: Should we make this also have the chemical type have to match a desired type???
             return !ResourceHandlerUtil.isFull(handler);
         }
-        //TODO - 26.1: Are our insert predicates and stuff ever ran from within a transactional context?
-        // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
             return handler.insert(chemicalTank.resource(), chemicalTank.amountAsInt(), simulation) > 0;
         }
@@ -158,7 +158,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, itemType), listener, x, y);
+              (itemType, _) -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, InventoryUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**
@@ -167,7 +167,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> fillInsertCheck(chemicalTank, itemType), listener, x, y);
+              (itemType, _) -> fillInsertCheck(chemicalTank, InventoryUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**
@@ -183,8 +183,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     //TODO - 26.1: Make a helper that uses generics for this and fluid inventory slot rather than having it be duplicated
     private static boolean simulateCanInsert(IChemicalTank chemicalTank, ChemicalResource chemicalType, int amount) {
-        //TODO - 26.1: Are call sites ever in a transactional context?
-        /*try (Transaction simulation = Transaction.openRoot()) {
+        /*try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             return chemicalTank.insert(chemicalType, amount, simulation, AutomationType.INTERNAL) > 0;
         }*/
         //TODO - 26.1: This used to do a full on simulation, do we need to check to make sure it isn't full or is not checking it actually more accurate for what we want

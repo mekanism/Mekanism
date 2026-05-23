@@ -163,8 +163,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
         tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
                          ((double) height() / MAX_HEIGHT);
-        inputOutputSlot.drainTank(outputOutputSlot);
-        inputInputSlot.fillTank(outputInputSlot);
+        inputOutputSlot.drainTankIntoSlot(outputOutputSlot);
+        inputInputSlot.fillTankFromSlot(outputInputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (!Mth.equal(scale, prevScale)) {

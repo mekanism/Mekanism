@@ -7,6 +7,7 @@ import mekanism.api.resource.LargeResourceStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
+//TODO - 26.1: Look at ItemAccessResourceHandler, and make it so that it returns proper values for when the access is empty
 @NothingNullByDefault
 public class ComponentBackedResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>>
       extends ComponentBackedHandler<LargeResourceStack<RESOURCE>, CONTAINER, AttachedResources<RESOURCE>> implements IMekanismResourceHandler<RESOURCE, CONTAINER> {
