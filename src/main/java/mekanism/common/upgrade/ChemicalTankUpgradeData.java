@@ -2,7 +2,7 @@ package mekanism.common.upgrade;
 
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
+import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;

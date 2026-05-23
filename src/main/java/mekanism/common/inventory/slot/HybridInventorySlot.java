@@ -13,7 +13,6 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
-import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;

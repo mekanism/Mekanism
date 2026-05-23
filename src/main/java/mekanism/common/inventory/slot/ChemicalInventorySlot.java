@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot.chemical;
+package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -15,7 +15,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
