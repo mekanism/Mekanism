@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table;
-import com.google.gson.JsonObject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +77,7 @@ import net.neoforged.neoforge.client.model.block.CompositeBlockModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
+import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
@@ -495,7 +495,10 @@ public class MekanismModelProvider extends BaseModelProvider {
                     multiVariant
               )
         );
-        ModelTemplate template = new TransmitterItemModelTemplate(baseModel.modelLocation(), TRANSMITTER_ITEM_PART_VISIBILITY);
+        ModelTemplate template = ExtendedModelTemplateBuilder.builder()
+              .parent(baseModel.modelLocation())
+              .partVisibilities(TRANSMITTER_ITEM_PART_VISIBILITY)
+              .build();
         blockModels.itemModelOutput.accept(registryObject.asItem(), ItemModelUtils.plainModel(template.create(registryObject.asItem(), NO_TEXTURES, blockModels.modelOutput)));
     }
 
@@ -785,29 +788,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         @Override
         public CustomUnbakedBlockStateModel toUnbaked() {
             return this.blockStateModel;
-        }
-    }
-
-    //TODO - 26.1: class can be replaced with ExtendedModelTemplateBuilder if https://github.com/neoforged/NeoForge/pull/3166 is merged
-    private static class TransmitterItemModelTemplate extends ModelTemplate {
-
-        private final Map<String, Boolean> partVisibility;
-
-        public TransmitterItemModelTemplate(Identifier parent, Map<String, Boolean> partVisibility) {
-            super(Optional.of(parent), Optional.empty());
-            this.partVisibility = partVisibility;
-        }
-
-        @Override
-        public JsonObject createBaseTemplate(Identifier target, Map<TextureSlot, Material> slots) {
-            JsonObject root = super.createBaseTemplate(target, slots);
-            JsonObject visibilityJson = new JsonObject();
-            for (Map.Entry<String, Boolean> entry : partVisibility.entrySet()) {
-                visibilityJson.addProperty(entry.getKey(), entry.getValue());
-            }
-            root.add("visibility", visibilityJson);
-
-            return root;
         }
     }
 }

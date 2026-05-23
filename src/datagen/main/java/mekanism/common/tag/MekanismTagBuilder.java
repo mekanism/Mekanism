@@ -67,7 +67,7 @@ public class MekanismTagBuilder<TYPE> {
     }
 
     public MekanismTagBuilder<TYPE> replace(boolean value) {
-        builder.replace(value);
+        builder.setReplace(value);
         return this;
     }
 
