@@ -1,12 +1,11 @@
 package mekanism.client.render.transmitter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,9 +39,9 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public int fluidTint = 0XFFFFFFFF;
         public int glow;
         public int stage;
-        public List<MekanismRenderer.Model3D> sideModels = new ArrayList<>();
-        @Nullable
-        public MekanismRenderer.Model3D model;
+        public boolean[] renderSideModel = new boolean[EnumUtils.DIRECTIONS.length];
+        public boolean[] coreSideRender = new boolean[0];
+        public boolean renderBase;
     }
 
     public static class TransporterRenderState extends TransmitterRenderState {

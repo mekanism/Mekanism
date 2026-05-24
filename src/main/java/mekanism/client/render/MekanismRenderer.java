@@ -23,7 +23,6 @@ import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
-import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
@@ -295,7 +294,6 @@ public class MekanismRenderer {
 
         //Reset any cached models now that the atlases are built
         RenderPigmentMixer.resetCached();
-        RenderMechanicalPipe.onStitch();
         RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         SINGLE_TEXTURE_PICKERS.clear();
