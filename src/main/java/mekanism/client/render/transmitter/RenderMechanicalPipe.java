@@ -37,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe, PipeRenderState> {
 
-    private static final int stages = 100;
-    private static final float height = 0.45F;
-    private static final float offset = 0.02F;
+    private static final int STAGES = 100;
+    private static final float HEIGHT = 0.45F;
+    private static final float OFFSET = 0.02F;
     //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support.
     // 6 is used for null side, and 7 is used for null side but flowing vertically
     private static final Int2ObjectMap<Int2ObjectMap<Model3D>> cachedLiquids = new Int2ObjectArrayMap<>(8);
@@ -73,7 +73,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL));
         state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
 
-        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
+        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, STAGES, state.currentScale));
         state.stage = stage;
         //TODO - 26.1: Should we overwrite lightCoords with glow?
         state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
@@ -106,7 +106,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             //Render the side if there is no connection on that side, or it is a vertical connection, we have at least one side, and we are not full
             // We also render for push and pull as they use slightly smaller fill models which then means we would have
             // small gaps if we didn't render
-            model.setSideRender(side, renderSides[side.ordinal()] || (side.getAxis().isVertical() && renderBase && stage != stages - 1));
+            model.setSideRender(side, renderSides[side.ordinal()] || (side.getAxis().isVertical() && renderBase && stage != STAGES - 1));
         }
         state.model = model;
         state.sideModels.clear();
@@ -178,25 +178,25 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D();
-            float stageRatio = (stage / (float) stages) * height;
+            float stageRatio = (stage / (float) STAGES) * HEIGHT;
             if (side == null) {
                 float min;
                 float max;
                 if (renderBase) {
-                    min = 0.25F + offset;
-                    max = 0.75F - offset;
+                    min = 0.25F + OFFSET;
+                    max = 0.75F - OFFSET;
                 } else {
                     min = 0.5F - stageRatio / 2;
                     max = 0.5F + stageRatio / 2;
                 }
                 return model.xBounds(min, max)
-                      .yBounds(0.25F + offset, 0.25F + offset + stageRatio)
+                      .yBounds(0.25F + OFFSET, 0.25F + OFFSET + stageRatio)
                       .zBounds(min, max);
             }
             model.setSideRender(side, false)
                   .setSideRender(side.getOpposite(), false);
             if (side.getAxis().isHorizontal()) {
-                model.yBounds(0.25F + offset, 0.25F + offset + stageRatio);
+                model.yBounds(0.25F + OFFSET, 0.25F + OFFSET + stageRatio);
                 if (side.getAxis() == Axis.Z) {
                     return setHorizontalBounds(side, model::xBounds, model::zBounds);
                 }
@@ -207,9 +207,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             model.xBounds(min, max)
                   .zBounds(min, max);
             if (side == Direction.DOWN) {
-                model.yBounds(0, 0.25F + offset);
+                model.yBounds(0, 0.25F + OFFSET);
             } else {//Up
-                model.yBounds(0.25F + offset + stageRatio, 1);
+                model.yBounds(0.25F + OFFSET + stageRatio, 1);
             }
             modelMap.put(stage, model);
         }
@@ -217,10 +217,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     private static Model3D setHorizontalBounds(Direction horizontal, ModelBoundsSetter axisBased, ModelBoundsSetter directionBased) {
-        axisBased.set(0.25F + offset, 0.75F - offset);
+        axisBased.set(0.25F + OFFSET, 0.75F - OFFSET);
         if (horizontal.getAxisDirection() == AxisDirection.POSITIVE) {
-            return directionBased.set(0.75F - offset, 1);
+            return directionBased.set(0.75F - OFFSET, 1);
         }
-        return directionBased.set(0, 0.25F + offset);
+        return directionBased.set(0, 0.25F + OFFSET);
     }
 }
