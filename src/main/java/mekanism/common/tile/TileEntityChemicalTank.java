@@ -121,8 +121,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        drainSlot.drainTank();
-        fillSlot.fillTank();
+        drainSlot.drainTankIntoSlot();
+        fillSlot.fillTankFromSlot();
         if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
             ChemicalResource chemicalType = chemicalTank.resource();
             if (!chemicalType.isEmpty()) {

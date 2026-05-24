@@ -38,7 +38,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     private ComponentBackedBinInventorySlot(ItemAccess attachedAccess, int slotIndex, BinTier tier) {
-        super(attachedAccess, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator, false, tier.getStorage());
+        super(attachedAccess, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator, false, tier::getStorage);
         isCreative = tier == BinTier.CREATIVE;
     }
 

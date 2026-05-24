@@ -121,7 +121,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     }
 
     //TODO - 26.1: review this
-    public ItemAccess itemAccess() {
+    public ItemAccess asItemAccess() {
         return itemAccess;
     }
 }

@@ -181,7 +181,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     private boolean fillContainerFromItem() {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemAccess());
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(asItemAccess());
         if (itemEnergyHandler == null) {
             return false;
         }
@@ -222,7 +222,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (isEmpty() || energyContainer.isEmpty()) {
             return;
         }
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemAccess());
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(asItemAccess());
         if (itemEnergyHandler == null) {
             return;
         }

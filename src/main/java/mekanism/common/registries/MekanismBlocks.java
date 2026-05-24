@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -365,7 +364,7 @@ public class MekanismBlocks {
                       .addBasic(TileEntityMetallurgicInfuser.MAX_INFUSE, MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputB)
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInfusionFillOrConvertSlot(0)
+                      .addChemicalFillOrConvertSlot(0)
                       .addInput(MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputA)
                       .addOutput()
                       .addEnergy()
@@ -442,8 +441,8 @@ public class MekanismBlocks {
                       .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInputChemical)
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addChemicalRotaryDrainSlot(0)
-                      .addChemicalRotaryFillSlot(0)
+                      .addChemicalRotarySlot(0)
+                      .addOutput()
                       .addFluidRotarySlot(0)
                       .addOutput()
                       .addEnergy()
@@ -1063,7 +1062,7 @@ public class MekanismBlocks {
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addBasicFactorySlots(processes, recipeInputPredicate)
-                            .addInfusionFillOrConvertSlot(0)
+                            .addChemicalFillOrConvertSlot(0)
                             .addEnergy()
                             .build()
                       );

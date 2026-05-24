@@ -169,9 +169,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        leftInputSlot.fillTank();
-        rightInputSlot.fillTank();
-        outputSlot.drainTank();
+        leftInputSlot.fillTankFromSlot();
+        rightInputSlot.fillTankFromSlot();
+        outputSlot.drainTankIntoSlot();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;
     }

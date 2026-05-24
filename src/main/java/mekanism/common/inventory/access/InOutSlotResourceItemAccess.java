@@ -6,7 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
-import mekanism.common.inventory.slot.IFluidHandlerSlot.LastTransferDirection;
+import mekanism.common.inventory.slot.ResourceHandlerSlot.LastTransferDirection;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;

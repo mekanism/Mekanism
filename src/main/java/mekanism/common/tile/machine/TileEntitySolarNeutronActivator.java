@@ -150,8 +150,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         if (!settingsChecked) {
             recheckSettings();
         }
-        inputSlot.fillTank();
-        outputSlot.drainTank();
+        inputSlot.fillTankFromSlot();
+        outputSlot.drainTankIntoSlot();
         productionRate = recalculateProductionRate();
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;

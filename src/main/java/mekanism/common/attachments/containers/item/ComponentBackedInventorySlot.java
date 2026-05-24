@@ -1,6 +1,8 @@
 package mekanism.common.attachments.containers.item;
 
 import java.util.function.BiPredicate;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -16,17 +18,19 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedInventorySlot extends ComponentBackedResourceContainer<ItemResource> implements IInventorySlot {
 
+    private static final IntSupplier NO_LIMIT = () -> Integer.MAX_VALUE;
+    private static final LongSupplier ABSOLUTE_MAX_STACK_SIZE = () -> Item.ABSOLUTE_MAX_STACK_SIZE;
+
     private final boolean obeyStackLimit;
 
     public ComponentBackedInventorySlot(ItemAccess attachedAccess, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator) {
-        this(attachedAccess, slotIndex, canExtract, canInsert, validator, true, Item.ABSOLUTE_MAX_STACK_SIZE);
+        this(attachedAccess, slotIndex, canExtract, canInsert, validator, true, ABSOLUTE_MAX_STACK_SIZE);
     }
 
     public ComponentBackedInventorySlot(ItemAccess attachedAccess, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, boolean obeyStackLimit, @Range(from = 0, to = Long.MAX_VALUE) long limit) {
-        //TODO - 26.1: Re-evaluate how we are doing the rate and limit for this
-        super(attachedAccess, slotIndex, canExtract, canInsert, validator, () -> Integer.MAX_VALUE, () -> limit);
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, boolean obeyStackLimit, LongSupplier limit) {
+        super(attachedAccess, slotIndex, canExtract, canInsert, validator, NO_LIMIT, limit);
         this.obeyStackLimit = obeyStackLimit;
     }
 

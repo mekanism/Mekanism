@@ -16,7 +16,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -43,21 +42,15 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 //Always allow manual or internal interaction
                 return true;
             }
-            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
-            if (itemHandler != null) {
-                for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
-                    FluidResource fluidType = itemHandler.getResource(tank);
-                    if (!fluidType.isEmpty() && fluidTank.isValid(fluidType)) {
-                        //False if the items contents are still valid
-                        return false;
-                    }
-                }
-                //Only allow extraction if our item is out of fluid, but also verify there is no conversion for it
-            }
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
-            return fuelValue.applyAsInt(itemType) == 0;
-        }, (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) > 0 || canFill(fluidTank, itemType), listener, x, y);
+            return fuelValue.applyAsInt(itemType) == 0 && !canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item());
+        }, (itemType, automationType) -> {
+            if (automationType.isInternal() || fuelValue.applyAsInt(itemType) > 0) {
+                return true;
+            }
+            return canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item());
+        }, listener, x, y);
     }
 
     private final ToIntFunction<ItemResource> fuelValue;
@@ -79,13 +72,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Fill the tank from the item
             if (needed > 0 && !fillTankFromSlot()) {
                 //If filling from item failed, try doing it by conversion
-                ItemResource currentType = resource();
-                int fuel = fuelValue.applyAsInt(currentType);
+                int fuel = fuelValue.applyAsInt(resource());
                 if (fuel > 0 && fuel <= needed) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (FuelInventorySlot.consumeAndReplace(this, transaction)) {
-                            int inserted = fluidTank.insert(FluidResource.of(fuelType), fuel, transaction, AutomationType.INTERNAL);
-                            if (inserted == fuel) {
+                            if (fluidTank.insert(FluidResource.of(fuelType), fuel, transaction, AutomationType.INTERNAL) == fuel) {
                                 //If we were able to insert it all the fuel into the fluid tank, commit all of the changes
                                 transaction.commit();
                             }

@@ -293,7 +293,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private void vaporiseHohlraum() {
         if (!reactorSlot.isEmpty()) {
             if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
-                ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
+                ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess());
                 if (handler != null) {
                     //Validate that the handler has some fusion fuel in it
                     ChemicalResource fuelType = ResourceUtils.getTypeToExtract(fuelTank, handler, AutomationType.INTERNAL, null);

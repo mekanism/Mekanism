@@ -56,7 +56,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void unlock(UUID ownerUUID, TransactionContext transaction) {
         if (!isEmpty()) {
-            ItemAccess itemAccess = itemAccess();
+            ItemAccess itemAccess = asItemAccess();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
@@ -73,7 +73,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void lock(UUID ownerUUID, SecurityFrequency frequency, TransactionContext transaction) {
         if (!isEmpty()) {
-            ItemAccess itemAccess = itemAccess();
+            ItemAccess itemAccess = asItemAccess();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();

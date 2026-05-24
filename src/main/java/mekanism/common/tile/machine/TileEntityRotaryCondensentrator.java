@@ -1,7 +1,6 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -39,13 +38,12 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -112,10 +110,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemInput", docPlaceholder = "gas item input slot")
     ChemicalInventorySlot gasInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemOutput", docPlaceholder = "gas item output slot")
-    ChemicalInventorySlot gasOutputSlot;
+    OutputInventorySlot gasOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput", docPlaceholder = "fluid item input slot")
     FluidInventorySlot fluidInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput", docPlaceholder = "fluid item ouput slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput", docPlaceholder = "fluid item output slot")
     OutputInventorySlot fluidOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
@@ -183,16 +181,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        BooleanSupplier modeSupplier = this::getMode;
-        builder.addContainer(gasInputSlot = ChemicalInventorySlot.rotaryDrain(gasTank, modeSupplier, listener, 5, 25));
-        builder.addContainer(gasOutputSlot = ChemicalInventorySlot.rotaryFill(gasTank, modeSupplier, listener, 5, 56));
-        builder.addContainer(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, modeSupplier, listener, 155, 25));
+        builder.addContainer(gasInputSlot = ChemicalInventorySlot.rotary(gasTank, () -> !getMode(), listener, 5, 25));
+        builder.addContainer(gasOutputSlot = OutputInventorySlot.at(listener, 5, 56));
+        builder.addContainer(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, this::getMode, listener, 155, 25));
         builder.addContainer(fluidOutputSlot = OutputInventorySlot.at(listener, 155, 56));
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 155, 5));
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);
-        gasInputSlot.setSlotOverlay(SlotOverlay.PLUS);
-        gasOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
-        gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidInputSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
     }
@@ -203,9 +197,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         energySlot.fillContainerOrConvert();
         if (mode) {//Fluid to Gas
             fluidInputSlot.fillTankFromSlot(fluidOutputSlot);
-            gasInputSlot.drainTank();
+            gasInputSlot.drainTankIntoSlot(gasOutputSlot);
         } else {//Gas to Fluid
-            gasOutputSlot.fillTank();
+            gasInputSlot.fillTankFromSlot(gasOutputSlot);
             fluidInputSlot.drainTankIntoSlot(fluidOutputSlot);
         }
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);

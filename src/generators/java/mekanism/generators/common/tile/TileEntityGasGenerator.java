@@ -81,7 +81,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
-        fuelSlot.fillTank();
+        fuelSlot.fillTankFromSlot();
         gasUsedLastTick = 0;
 
         if (!fuelTank.isEmpty() && canFunction() && cachedFuel != null) {

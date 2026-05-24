@@ -22,6 +22,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
@@ -49,7 +50,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     HybridInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
-    HybridInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     private long tankCapacity;
     public float prevScale;
 
@@ -67,27 +68,16 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        inventorySlots.add(inputSlot = HybridInventorySlot.inputOrDrain(mergedTank, this, 146, 21));
-        inventorySlots.add(outputSlot = HybridInventorySlot.outputOrFill(mergedTank, this, 146, 51));
+        inventorySlots.add(inputSlot = HybridInventorySlot.input(mergedTank, this, 146, 21));
+        inventorySlots.add(outputSlot = OutputInventorySlot.at(this, 146, 51));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
-        outputSlot.setSlotType(ContainerSlotType.OUTPUT);
         return inventorySlots;
     }
 
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
-        CurrentType type = mergedTank.getCurrentType();
-        if (type == CurrentType.EMPTY) {
-            inputSlot.handleTank(outputSlot, editMode);
-            inputSlot.drainChemicalTank();//todo will this do anything if empty??
-            outputSlot.fillChemicalTank();
-        } else if (type == CurrentType.FLUID) {
-            inputSlot.handleTank(outputSlot, editMode);
-        } else { //Chemicals
-            inputSlot.drainChemicalTank();
-            outputSlot.fillChemicalTank();
-        }
+        inputSlot.handleTank(outputSlot, editMode);
         float scale = getScale();
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;

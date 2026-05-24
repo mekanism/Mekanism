@@ -150,7 +150,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
-        outputSlot.drainTank();
+        outputSlot.drainTankIntoSlot();
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

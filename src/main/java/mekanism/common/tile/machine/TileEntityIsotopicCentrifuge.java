@@ -138,8 +138,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        inputSlot.fillTank();
-        outputSlot.drainTank();
+        inputSlot.fillTankFromSlot();
+        outputSlot.drainTankIntoSlot();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;
     }

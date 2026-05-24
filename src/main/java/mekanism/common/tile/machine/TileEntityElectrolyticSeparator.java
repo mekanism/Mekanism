@@ -243,8 +243,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         energySlot.fillContainerOrConvert();
         fluidSlot.fillTankFromSlot();
 
-        leftOutputSlot.drainTank();
-        rightOutputSlot.drainTank();
+        leftOutputSlot.drainTankIntoSlot();
+        rightOutputSlot.drainTankIntoSlot();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
 
         handleTank(leftTank, dumpLeft);
