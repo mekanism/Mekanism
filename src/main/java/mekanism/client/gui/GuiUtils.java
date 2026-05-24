@@ -60,24 +60,25 @@ public class GuiUtils {
         }
     }
 
+    //TODO - 26.1: Remove unused/redundant params
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, int color) {
-        if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
+        if (desiredWidth == 0 || desiredHeight == 0) {
             return;
         }
         SpriteContents spriteContents = sprite.contents();
-
-        yPosition = yPosition + desiredHeight - yOffset;
-
-        guiGraphics.enableScissor(xPosition, yPosition, xPosition + desiredWidth, yOffset + yOffset);
+        int yStart = yPosition + yOffset - desiredHeight;
+        guiGraphics.enableScissor(xPosition, yStart, xPosition + desiredWidth, yStart + desiredHeight);
         {
+            int xShift = tilingDirection.getXShift(desiredWidth, spriteContents.width());
+            int yShift = tilingDirection.getYShift(desiredHeight, spriteContents.height());
             guiGraphics.blitTiledSprite(
                   RenderPipelines.GUI_TEXTURED,
                   sprite,
-                  xPosition,
-                  yPosition,
-                  desiredWidth,
-                  yOffset,
+                  xPosition - xShift,
+                  yStart - yShift,
+                  desiredWidth + xShift,
+                  desiredHeight + yShift,
                   0,
                   0,
                   spriteContents.width(),
@@ -88,78 +89,6 @@ public class GuiUtils {
             );
         }
         guiGraphics.disableScissor();
-        //TODO - 26.1: Sara to look at reimplementing this. Either Scissor tweaks or custom GuiRenderState
-        //nb: blend is already enabled with RenderPipelines.GUI_TEXTURED and this method was never called with false
-        /*RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-        int xTileCount = desiredWidth / textureWidth;
-        int xRemainder = desiredWidth - (xTileCount * textureWidth);
-        int yTileCount = desiredHeight / textureHeight;
-        int yRemainder = desiredHeight - (yTileCount * textureHeight);
-        int yStart = yPosition + yOffset;
-        float uMin = sprite.getU0();
-        float uMax = sprite.getU1();
-        float vMin = sprite.getV0();
-        float vMax = sprite.getV1();
-        float uDif = uMax - uMin;
-        float vDif = vMax - vMin;
-        if (blend) {
-            RenderSystem.enableBlend();
-        }
-        //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does
-        BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            int width = (xTile == xTileCount) ? xRemainder : textureWidth;
-            if (width == 0) {
-                break;
-            }
-            int x = xPosition + (xTile * textureWidth);
-            int maskRight = textureWidth - width;
-            int shiftedX = x + textureWidth - maskRight;
-            float uLocalDif = uDif * maskRight / textureWidth;
-            float uLocalMin;
-            float uLocalMax;
-            if (tilingDirection.right) {
-                uLocalMin = uMin;
-                uLocalMax = uMax - uLocalDif;
-            } else {
-                uLocalMin = uMin + uLocalDif;
-                uLocalMax = uMax;
-            }
-            for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int height = (yTile == yTileCount) ? yRemainder : textureHeight;
-                if (height == 0) {
-                    //Note: We don't want to fully break out because our height will be zero if we are looking to
-                    // draw the remainder, but there is no remainder as it divided evenly
-                    break;
-                }
-                int y = yStart - ((yTile + 1) * textureHeight);
-                int maskTop = textureHeight - height;
-                float vLocalDif = vDif * maskTop / textureHeight;
-                float vLocalMin;
-                float vLocalMax;
-                if (tilingDirection.down) {
-                    vLocalMin = vMin;
-                    vLocalMax = vMax - vLocalDif;
-                } else {
-                    vLocalMin = vMin + vLocalDif;
-                    vLocalMax = vMax;
-                }
-                vertexBuffer.addVertex(matrix4f, x, y + textureHeight, zLevel)
-                      .setUv(uLocalMin, vLocalMax);
-                vertexBuffer.addVertex(matrix4f, shiftedX, y + textureHeight, zLevel)
-                      .setUv(uLocalMax, vLocalMax);
-                vertexBuffer.addVertex(matrix4f, shiftedX, y + maskTop, zLevel)
-                      .setUv(uLocalMax, vLocalMin);
-                vertexBuffer.addVertex(matrix4f, x, y + maskTop, zLevel)
-                      .setUv(uLocalMin, vLocalMin);
-            }
-        }
-        BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
-        if (blend) {
-            RenderSystem.disableBlend();
-        }*/
     }
 
     // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
@@ -310,6 +239,22 @@ public class GuiUtils {
         TilingDirection(boolean down, boolean right) {
             this.down = down;
             this.right = right;
+        }
+
+        public int getXShift(int desiredWidth, int spriteWidth) {
+            return right ? 0 : getShift(desiredWidth, spriteWidth);
+        }
+
+        public int getYShift(int desiredHeight, int spriteHeight) {
+            return down ? 0 : getShift(desiredHeight, spriteHeight);
+        }
+
+        private int getShift(int desired, int sprite) {
+            int remainder = desired % sprite;
+            if (remainder == 0) {
+                return 0;
+            }
+            return sprite - remainder;
         }
     }
 }
