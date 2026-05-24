@@ -8,6 +8,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
@@ -35,9 +36,13 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.NonNull;
 
 //TODO - 26.1: Do we want this to extend ResourceContainersBuilder
 public class ItemSlotsBuilder {
@@ -254,27 +259,60 @@ public class ItemSlotsBuilder {
         return addSlot(DRAIN_ENERGY_SLOT_CREATOR);
     }
 
-    public ItemSlotsBuilder addFluidFillSlot(int tankIndex) {
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), (itemType, automationType) -> {
+    private <RESOURCE extends Resource> ItemSlotsBuilder addResourceFillSlot(ContainerType<? extends IResourceContainer<RESOURCE>, ?, ?> containerType,
+          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability, int tankIndex) {
+        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
+            if (!automationType.isExternal()) {
+                return true;
+            }
+            return !ResourceHandlerSlot.canFill(attachedAccess, containerType, itemCapability, tankIndex, itemType);
+        }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
             }
-            return ResourceHandlerSlot.canFill(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType);
+            return ResourceHandlerSlot.canFill(attachedAccess, containerType, itemCapability, tankIndex, itemType);
         }, ConstantPredicates.alwaysTrue()));
+    }
+
+    public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {
+        return addResourceFillSlot(ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex);
+    }
+
+    public ItemSlotsBuilder addFluidFillSlot(int tankIndex) {
+        return addResourceFillSlot(ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex);
+    }
+
+    private <RESOURCE extends Resource> ItemSlotsBuilder addResourceDrainSlot(ContainerType<? extends IResourceContainer<RESOURCE>, ?, ?> containerType,
+          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability, int tankIndex) {
+        //Copy of logic from FluidInventorySlot#drain
+        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
+            if (!automationType.isExternal()) {
+                return true;
+            }
+            return !ResourceHandlerSlot.canDrain(attachedAccess, containerType, itemCapability, tankIndex, itemType);
+        }, (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
+            }
+            return ResourceHandlerSlot.canDrain(attachedAccess, containerType, itemCapability, tankIndex, itemType);
+        }, ConstantPredicates.alwaysTrue()));
+    }
+
+    public ItemSlotsBuilder addChemicalDrainSlot(int tankIndex) {
+        return addResourceDrainSlot(ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex);
     }
 
     public ItemSlotsBuilder addFluidDrainSlot(int tankIndex) {
-        //Copy of FluidInventorySlot's drain insert predicate
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), (itemType, automationType) -> {
-            if (automationType.isInternal()) {
-                return true;
-            }
-            return ResourceHandlerSlot.canDrain(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType);
-        }, ConstantPredicates.alwaysTrue()));
+        return addResourceDrainSlot(ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex);
     }
 
     public ItemSlotsBuilder addFluidInputSlot(int tankIndex) {
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.notExternal(), (itemType, automationType) -> {
+        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
+            if (!automationType.isExternal()) {
+                return true;
+            }
+            return !ResourceHandlerSlot.canInput(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType);
+        }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
             }
@@ -282,19 +320,31 @@ public class ItemSlotsBuilder {
         }, ConstantPredicates.alwaysTrue()));
     }
 
-    public ItemSlotsBuilder addFluidRotarySlot(int tankIndex) {
-        //Copy of logic from FluidInventorySlot#rotary
+    private static boolean getRotaryMode(ItemAccess attachedAccess) {
+        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
+    }
+
+    private <RESOURCE extends Resource> ItemSlotsBuilder addRotarySlot(ContainerType<? extends IResourceContainer<RESOURCE>, ?, ?> containerType,
+          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability, int tankIndex, boolean rotaryMode) {
         return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
             if (!automationType.isExternal()) {
                 return true;
             }
-            return !ResourceHandlerSlot.canRotaryInsert(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType, getRotaryMode(attachedAccess));
+            return !ResourceHandlerSlot.canRotaryInsert(attachedAccess, containerType, itemCapability, tankIndex, itemType, rotaryMode == getRotaryMode(attachedAccess));
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
             }
-            return ResourceHandlerSlot.canRotaryInsert(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType, getRotaryMode(attachedAccess));
+            return ResourceHandlerSlot.canRotaryInsert(attachedAccess, containerType, itemCapability, tankIndex, itemType, rotaryMode == getRotaryMode(attachedAccess));
         }, ConstantPredicates.alwaysTrue()));
+    }
+
+    public ItemSlotsBuilder addFluidRotarySlot(int tankIndex) {
+        return addRotarySlot(ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, true);
+    }
+
+    public ItemSlotsBuilder addChemicalRotarySlot(int tankIndex) {
+        return addRotarySlot(ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, false);
     }
 
     public ItemSlotsBuilder addFluidFuelSlot(int tankIndex, Predicate<ItemResource> hasFuelValue) {
@@ -311,20 +361,6 @@ public class ItemSlotsBuilder {
                 return true;
             }
             return ResourceHandlerSlot.canFill(attachedAccess, ContainerType.FLUID, Capabilities.FLUID.item(), tankIndex, itemType);
-        }, ConstantPredicates.alwaysTrue()));
-    }
-
-    public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
-            if (!automationType.isExternal()) {
-                return true;
-            }
-            return !ResourceHandlerSlot.canFill(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType);
-        }, (itemType, automationType) -> {
-            if (automationType.isInternal()) {
-                return true;
-            }
-            return ResourceHandlerSlot.canFill(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType);
         }, ConstantPredicates.alwaysTrue()));
     }
 
@@ -346,38 +382,5 @@ public class ItemSlotsBuilder {
             // no handler on the item, AND no conversion recipe
             return ChemicalInventorySlot.canFillOrConvert(ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex), () -> null, itemType);
         }, ConstantPredicates.alwaysTrue()));
-    }
-
-    public ItemSlotsBuilder addChemicalDrainSlot(int tankIndex) {
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
-            if (!automationType.isExternal()) {
-                return true;
-            }
-            return !ResourceHandlerSlot.canDrain(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType);
-        }, (itemType, automationType) -> {
-            if (automationType.isInternal()) {
-                return true;
-            }
-            return ResourceHandlerSlot.canDrain(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType);
-        }, ConstantPredicates.alwaysTrue()));
-    }
-
-    public ItemSlotsBuilder addChemicalRotarySlot(int tankIndex) {
-        //Copy of logic from ChemicalInventorySlot#rotary
-        return addSlot((_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
-            if (!automationType.isExternal()) {
-                return true;
-            }
-            return !ResourceHandlerSlot.canRotaryInsert(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType, !getRotaryMode(attachedAccess));
-        }, (itemType, automationType) -> {
-            if (automationType.isInternal()) {
-                return true;
-            }
-            return ResourceHandlerSlot.canRotaryInsert(attachedAccess, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item(), tankIndex, itemType, !getRotaryMode(attachedAccess));
-        }, ConstantPredicates.alwaysTrue()));
-    }
-
-    private static boolean getRotaryMode(ItemAccess attachedAccess) {
-        return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
     }
 }

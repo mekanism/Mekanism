@@ -7,7 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -26,8 +25,8 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
         //TODO: Rename this method maybe? It is basically used as an "input" slot where it accepts either an empty container to try and take stuff
         // OR accepts a fluid container tha that has contents that match the handler for purposes of filling the handler
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) ->
-              automationType.isInternal() || canInput(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+        return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canInput(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()),
+              (itemType, automationType) -> automationType.isInternal() || canInput(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
     }
 
     /**
@@ -45,8 +44,8 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
      */
     public static FluidInventorySlot fill(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) ->
-              automationType.isInternal() || canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+        return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()),
+              (itemType, automationType) -> automationType.isInternal() || canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
     }
 
     /**
@@ -56,8 +55,8 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
      */
     public static FluidInventorySlot drain(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.notExternal(), (itemType, automationType) ->
-              automationType.isInternal() || canDrain(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+        return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canDrain(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()),
+              (itemType, automationType) -> automationType.isInternal() || canDrain(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
     }
 
     protected final IFluidTank fluidTank;
