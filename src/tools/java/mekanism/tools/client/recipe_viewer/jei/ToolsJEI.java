@@ -36,20 +36,18 @@ public class ToolsJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registry) {
-        if (MekanismJEI.shouldLoad()) {
-            //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
-            for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
-                RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {
-                    if (item instanceof ItemMekanismShield shieldItem) {
-                        return shieldItem.getRepairMaterial().getItems();
-                    } else if (item instanceof ArmorItem armorItem) {
-                        return armorItem.getMaterial().value().repairIngredient().get().getItems();
-                    } else if (item instanceof TieredItem tieredItem) {
-                        return tieredItem.getTier().getRepairIngredient().getItems();
-                    }
-                    return null;
-                });
-            }
+        //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
+        for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
+            RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {
+                if (item instanceof ItemMekanismShield shieldItem) {
+                    return shieldItem.getRepairMaterial().getItems();
+                } else if (item instanceof ArmorItem armorItem) {
+                    return armorItem.getMaterial().value().repairIngredient().get().getItems();
+                } else if (item instanceof TieredItem tieredItem) {
+                    return tieredItem.getTier().getRepairIngredient().getItems();
+                }
+                return null;
+            });
         }
     }
 }
