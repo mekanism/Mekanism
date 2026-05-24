@@ -149,7 +149,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
         //Only allow extraction
-        builder.addContainer(gasTank = BasicChemicalTank.create(CAPACITY, (_, automationType) -> automationType.isManual() || mode,
+        builder.addContainer(gasTank = BasicChemicalTank.create(CAPACITY, (_, automationType) -> !automationType.isExternal() || mode,
               (_, automationType) -> automationType.isInternal() || !mode, this::isValidGas, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         return builder.build();
     }
@@ -162,7 +162,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
-        builder.addContainer(fluidTank = BasicFluidTank.create(CAPACITY, (_, automationType) -> automationType.isManual() || !mode,
+        builder.addContainer(fluidTank = BasicFluidTank.create(CAPACITY, (_, automationType) -> !automationType.isExternal() || !mode,
               (_, automationType) -> automationType.isInternal() || mode, this::isValidFluid, recipeCacheListener));
         return builder.build();
     }

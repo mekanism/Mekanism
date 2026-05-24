@@ -42,15 +42,15 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, (itemType, automationType) -> {
-            if (automationType.isManual()) {
-                //Always allow manually extracting
+            if (!automationType.isExternal()) {
+                //Always allow manual or internal extractions
                 return true;
             }
             //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
             // or we are no longer a valid conversion, this might happen after a reload for example
             return !fillInsertCheck(itemType) && getPotentialConversion(worldSupplier.get(), itemType) == null;
-        }, (itemType, _) -> {
-            if (fillInsertCheck(itemType)) {
+        }, (itemType, automationType) -> {
+            if (automationType.isInternal() || fillInsertCheck(itemType)) {
                 return true;
             }
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
@@ -68,8 +68,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !fillInsertCheck(itemType),
-              (itemType, _) -> fillInsertCheck(itemType), HAS_ENERGY_HANDLER, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !fillInsertCheck(itemType),
+              (itemType, automationType) -> automationType.isInternal() || fillInsertCheck(itemType), HAS_ENERGY_HANDLER, listener, x, y);
     }
 
     /**
@@ -79,8 +79,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> automationType.isManual() || !drainInsertCheck(energyContainer, itemType),
-              (itemType, _) -> drainInsertCheck(energyContainer, itemType), HAS_ENERGY_HANDLER, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !drainInsertCheck(energyContainer, itemType),
+              (itemType, automationType) -> automationType.isInternal() || drainInsertCheck(energyContainer, itemType), HAS_ENERGY_HANDLER, listener, x, y);
     }
 
     private static boolean drainInsertCheck(IEnergyContainer energyContainer, ItemResource itemType) {

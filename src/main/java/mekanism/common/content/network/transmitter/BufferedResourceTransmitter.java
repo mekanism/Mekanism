@@ -3,6 +3,8 @@ package mekanism.common.content.network.transmitter;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -44,7 +46,8 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
           TransmissionType... transmissionTypes) {
         super(tile, transmissionTypes);
         this.stackHelper = stackHelper;
-        this.bufferContainer = bufferCreator.create(getCapacity(), this);
+        //Note: We don't allow external interactions to force pull out of our transmitters
+        this.bufferContainer = bufferCreator.create(getCapacity(), ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), this);
         this.containers = Collections.singletonList(this.bufferContainer);
         saveShare = this.stackHelper.empty();
     }
@@ -242,6 +245,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @FunctionalInterface
     protected interface BufferCreator<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> {
 
-        CONTAINER create(long capacity, IContentsListener listener);
+        CONTAINER create(long capacity, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator,
+              IContentsListener listener);
     }
 }

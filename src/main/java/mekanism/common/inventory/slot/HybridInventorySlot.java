@@ -65,8 +65,8 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             }
             ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
-                //Only allow inserting internally for "fluid output" slots
-                case FLUID -> automationType.isInternal();
+                //Only allow inserting internally for "fluid output" slots (which we already handled above)
+                case FLUID -> true;
                 case CHEMICAL -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemAccess);
                 case EMPTY -> {
                     //Tank is empty, if the item is a fluid handler, and it is an internal check allow it

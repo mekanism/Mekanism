@@ -18,14 +18,11 @@ import org.jetbrains.annotations.Range;
 public class BasicFluidTank extends BasicResourceContainer<FluidResource> implements IFluidTank {
 
     public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+        return create(capacity, ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener);
+        return create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
     public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,

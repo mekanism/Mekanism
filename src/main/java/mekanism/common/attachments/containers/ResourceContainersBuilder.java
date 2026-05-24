@@ -50,7 +50,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
 
     public final BUILDER addBasic(LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
+              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
     }
 
     public final BUILDER addBasic(long capacity) {
@@ -59,7 +59,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
 
     public final BUILDER addBasic(LongSupplier capacity) {
         return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               defaultRate(), capacity));
     }
 

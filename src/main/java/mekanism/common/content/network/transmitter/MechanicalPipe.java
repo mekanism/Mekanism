@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import java.util.Collection;
 import java.util.UUID;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -32,11 +31,7 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
-        //TODO - 26.1: Why does the mechanical pipe not allow extracting from the container, but the tube does? We should make them behave the same
-        // because either the handler already protects against extracting, or we shouldn't allow it. Especially given we likely have cases where we want
-        // to allow internal extraction
-        super(tile, LargeResourceStack.FLUID_HELPER, (capacity, listener) -> BasicFluidTank.create(capacity, ConstantPredicates.manualOnly(),
-              ConstantPredicates.alwaysTrueBi(), listener), TransmissionType.FLUID);
+        super(tile, LargeResourceStack.FLUID_HELPER, BasicFluidTank::create, TransmissionType.FLUID);
     }
 
     @Override

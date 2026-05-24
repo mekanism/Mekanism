@@ -19,10 +19,9 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class VariableCapacityChemicalTank extends BasicChemicalTank {
 
-    public static IChemicalTank createAllValid(LongSupplier capacity, @Nullable IContentsListener listener) {
-        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
-        return new VariableCapacityChemicalTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
+    public static IChemicalTank createAllValid(LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {
+        return create(capacity, canExtract, canInsert, validator, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
     public static IChemicalTank output(LongSupplier capacity, Predicate<ChemicalResource> validator, @Nullable IContentsListener listener) {

@@ -22,8 +22,8 @@ public class FuelInventorySlot extends BasicInventorySlot {
 
     public static FuelInventorySlot forFuel(ToIntFunction<ItemResource> fuelValue, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        return new FuelInventorySlot((itemType, automationType) -> automationType.isManual() || fuelValue.applyAsInt(itemType) == 0,
-              (itemType, _) -> fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), listener, x, y);
+        return new FuelInventorySlot((itemType, automationType) -> !automationType.isExternal() || fuelValue.applyAsInt(itemType) == 0,
+              (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
     private FuelInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator,

@@ -29,8 +29,6 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
-        //TODO - 26.1 Re-evaluate extract predicates, as we now use internal in more places rather than direct size modification,
-        // so there is a chance that we need to make some of the predicates more lenient
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;

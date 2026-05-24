@@ -146,8 +146,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) ->
-              automationType.isManual() || !modeSupplier.getAsBoolean() || !canDrainInsert(chemicalTank, itemType),
-              (itemType, _) -> modeSupplier.getAsBoolean() && canDrainInsert(chemicalTank, itemType), listener, x, y);
+              !automationType.isExternal() || !modeSupplier.getAsBoolean() || !canDrainInsert(chemicalTank, itemType),
+              (itemType, automationType) -> automationType.isInternal() || modeSupplier.getAsBoolean() && canDrainInsert(chemicalTank, itemType), listener, x, y);
     }
 
     /**
@@ -157,7 +157,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
+              (itemType, automationType) ->
+                    automationType.isInternal() || !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**
@@ -166,7 +167,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> fillExtractCheck(chemicalTank, itemType, automationType),
-              (itemType, _) -> fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || fillInsertCheck(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType)), listener, x, y);
     }
 
     /**
@@ -176,8 +177,18 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      */
     public static ChemicalInventorySlot drain(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
-        return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> automationType.isManual() || !canDrainInsert(chemicalTank, itemType),
-              (itemType, _) -> canDrainInsert(chemicalTank, itemType), listener, x, y);
+        return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canDrainInsert(chemicalTank, itemType),
+              (itemType, automationType) -> automationType.isInternal() || canDrainInsert(chemicalTank, itemType), listener, x, y);
+    }
+
+    /**
+     * Fills the tank from this item OR converts the given item to a gas
+     */
+    public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
+        Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
+        return new ChemicalInventorySlot(gasTank, worldSupplier, (itemType, automationType) -> !automationType.isExternal() || fillOrConvertExtractCheck(gasTank, worldSupplier, itemType),
+              (itemType, automationType) -> automationType.isInternal() || fillOrConvertInsertCheck(gasTank, worldSupplier, itemType), listener, x, y);
     }
 
     //TODO - 26.1: Make a helper that uses generics for this and fluid inventory slot rather than having it be duplicated
@@ -200,8 +211,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     private final Supplier<Level> worldSupplier;
     protected final IChemicalTank chemicalTank;
 
-    protected ChemicalInventorySlot(IChemicalTank chemicalTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener,
-          int x, int y) {
+    protected ChemicalInventorySlot(IChemicalTank chemicalTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
+          @Nullable IContentsListener listener, int x, int y) {
         this(chemicalTank, () -> null, canExtract, canInsert, listener, x, y);
     }
 
@@ -219,16 +230,6 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         setSlotType(ContainerSlotType.EXTRA);
         this.chemicalTank = chemicalTank;
         this.worldSupplier = worldSupplier;
-    }
-
-    /**
-     * Fills the tank from this item OR converts the given item to a gas
-     */
-    public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
-        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
-        Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new ChemicalInventorySlot(gasTank, worldSupplier, (itemType, automationType) -> automationType.isManual() || fillOrConvertExtractCheck(gasTank, worldSupplier, itemType),
-              (itemType, _) -> fillOrConvertInsertCheck(gasTank, worldSupplier, itemType), listener, x, y);
     }
 
     /**

@@ -192,7 +192,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         //Allow insertion manually or internally, or if it is a replace stack
         BiPredicate<ItemResource, AutomationType> canInsert = (itemType, automationType) -> !automationType.isExternal() || isReplaceTarget(itemType);
         //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
-        //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
         BiPredicate<ItemResource, AutomationType> canExtract = (itemType, automationType) -> !automationType.isExternal() || !isReplaceTarget(itemType);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {

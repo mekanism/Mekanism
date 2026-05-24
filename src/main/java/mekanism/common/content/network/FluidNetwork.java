@@ -3,7 +3,6 @@ package mekanism.common.content.network;
 import java.util.Collection;
 import java.util.UUID;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> {
 
     public FluidNetwork(UUID networkID) {
-        super(networkID, (capacity, listener) -> VariableCapacityFluidTank.create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener));
+        super(networkID, VariableCapacityFluidTank::create);
     }
 
     public FluidNetwork(Collection<FluidNetwork> networks) {

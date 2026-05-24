@@ -6,8 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
+import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -40,7 +44,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     protected DynamicBufferedResourceNetwork(UUID networkID, ContainerCreator<RESOURCE, CONTAINER> containerCreator) {
         super(networkID);
-        this.container = containerCreator.create(this::getCapacity, this);
+        this.container = containerCreator.create(this::getCapacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), this);
         this.containers = Collections.singletonList(this.container);
     }
 
@@ -251,6 +255,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @FunctionalInterface
     protected interface ContainerCreator<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> {
 
-        CONTAINER create(LongSupplier capacity, IContentsListener listener);
+        CONTAINER create(LongSupplier capacity, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
+              Predicate<RESOURCE> validator, IContentsListener listener);
     }
 }
