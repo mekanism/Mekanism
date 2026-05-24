@@ -10,7 +10,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
@@ -341,90 +340,6 @@ public class MekanismRenderer {
         static TMP_SideRenderCheck fromArray(boolean[] arr) {
             Preconditions.checkArgument(arr.length == EnumUtils.DIRECTIONS.length, "Must be same dimensions as Direction");
             return dir -> arr[dir.ordinal()];
-        }
-    }
-
-    //TODO - 26.1: Thiakil to poke at this
-    public static final class Model3D implements TMP_SideRenderCheck {
-
-        public float minX, minY, minZ;
-        public float maxX, maxY, maxZ;
-
-        private final boolean[] renderSides = {true, true, true, true, true, true};
-
-        public Model3D setSideRender(Predicate<Direction> shouldRender) {
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                setSideRender(direction, shouldRender.test(direction));
-            }
-            return this;
-        }
-
-        public Model3D setSideRender(Direction side, boolean value) {
-            renderSides[side.ordinal()] = value;
-            return this;
-        }
-
-        public boolean shouldRenderSide(Direction side) {
-            return renderSides[side.ordinal()];
-        }
-
-        public Model3D copy() {
-            Model3D copy = new Model3D();
-            System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
-            return copy.bounds(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-
-        public Model3D shrink(float amount) {
-            return grow(-amount);
-        }
-
-        public Model3D grow(float amount) {
-            return bounds(minX - amount, minY - amount, minZ - amount, maxX + amount, maxY + amount, maxZ + amount);
-        }
-
-        public Model3D xBounds(float min, float max) {
-            this.minX = min;
-            this.maxX = max;
-            return this;
-        }
-
-        public Model3D yBounds(float min, float max) {
-            this.minY = min;
-            this.maxY = max;
-            return this;
-        }
-
-        public Model3D zBounds(float min, float max) {
-            this.minZ = min;
-            this.maxZ = max;
-            return this;
-        }
-
-        public Model3D bounds(float min, float max) {
-            return bounds(min, min, min, max, max, max);
-        }
-
-        public Model3D bounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-            return xBounds(minX, maxX)
-                  .yBounds(minY, maxY)
-                  .zBounds(minZ, maxZ);
-        }
-
-        public Model3D prepSingleFaceModelSize(Direction face) {
-            bounds(0, 1);
-            return switch (face) {
-                case DOWN -> yBounds(-0.01F, -0.001F);
-                case UP -> yBounds(1.001F, 1.01F);
-                case NORTH -> zBounds(-0.01F, -0.001F);
-                case SOUTH -> zBounds(1.001F, 1.01F);
-                case WEST -> xBounds(-0.01F, -0.001F);
-                case EAST -> xBounds(1.001F, 1.01F);
-            };
-        }
-
-        public interface ModelBoundsSetter {
-
-            Model3D set(float min, float max);
         }
     }
 
