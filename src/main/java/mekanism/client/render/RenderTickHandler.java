@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import java.util.Objects;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
@@ -98,7 +96,6 @@ public class RenderTickHandler {
     public static final Minecraft minecraft = Minecraft.getInstance();
 
     private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
-    private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final BoltRenderer boltRenderer = new BoltRenderer();
     private static final Map<Class<?>, Boolean> IS_EMI_SCREEN = new HashMap<>();
 
@@ -109,7 +106,6 @@ public class RenderTickHandler {
     }
 
     public static void resetCached() {
-        cachedOverlays.clear();
         cachedWireFrames.clear();
     }
 
@@ -482,17 +478,6 @@ public class RenderTickHandler {
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {
         world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
-    }
-
-    public static Model3D getOverlayModel(Direction side, TransmissionType type) {
-        Map<TransmissionType, Model3D> modelMap = cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class));
-        Model3D model = modelMap.get(type);
-        if (model == null) {
-            model = new Model3D()
-                  .prepSingleFaceModelSize(side);
-            modelMap.put(type, model);
-        }
-        return model;
     }
 
     @NullMarked
