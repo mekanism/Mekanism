@@ -86,14 +86,7 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
                 target.addHandler(handler);
             }
         }
-        if (target == null) {
-            return 0;
-        }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            long sent = EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, subTransaction);
-            subTransaction.commit();
-            return sent;
-        }
+        return EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, transaction);
     }
 
     /// @return amount transferred

@@ -147,14 +147,7 @@ public final class ResourceUtils {
                 }
             }
         }
-        if (target == null) {
-            return 0;
-        }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            int sent = EmitUtils.sendToAcceptors(target, resourceAmount, resourceType, subTransaction);
-            subTransaction.commit();
-            return sent;
-        }
+        return EmitUtils.sendToAcceptors(target, resourceAmount, resourceType, transaction);
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void clampContents(CONTAINER container) {

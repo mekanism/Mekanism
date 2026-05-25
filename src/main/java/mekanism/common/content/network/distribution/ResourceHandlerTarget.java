@@ -9,9 +9,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class ResourceHandlerTarget<RESOURCE extends Resource> extends Target<ResourceHandler<RESOURCE>, RESOURCE> {
 
-    public ResourceHandlerTarget() {
-    }
-
     public ResourceHandlerTarget(Collection<ResourceHandler<RESOURCE>> allHandlers) {
         super(allHandlers);
     }

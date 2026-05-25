@@ -59,15 +59,17 @@ public class ItemNetworkReader extends ItemEnergized {
             if (tile != null) {
                 if (!player.isCreative()) {
                     long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
-                    IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
-                    if (energyHandler == null) {
-                        return InteractionResult.FAIL;
-                    }
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        if (EnergyUtils.extractManual(energyHandler, energyPerUse, transaction) < energyPerUse) {
+                    if (energyPerUse > 0) {
+                        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
+                        if (energyHandler == null) {
                             return InteractionResult.FAIL;
                         }
-                        transaction.commit();
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            if (EnergyUtils.extractManual(energyHandler, energyPerUse, transaction) < energyPerUse) {
+                                return InteractionResult.FAIL;
+                            }
+                            transaction.commit();
+                        }
                     }
                 }
                 Direction opposite = context.getClickedFace().getOpposite();

@@ -17,7 +17,7 @@ public class IntegerSplitInfo extends SplitInfo {
     }
 
     @Override
-    public void send(long amountNeeded) {
+    public void send(long amountNeeded, boolean decrementTargets) {
         //If we are giving it, then lower the amount we are checking/splitting
         int amountNeededInt = Ints.saturatedCast(amountNeeded);
         amountToSplit -= amountNeededInt;

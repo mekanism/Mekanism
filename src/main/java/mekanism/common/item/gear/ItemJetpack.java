@@ -95,14 +95,13 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.CHEST) {
-            ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, getMode(stack)));
             long stored = 0;
             long capacity = 1;
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
-                capacity = handler.getCapacityAsLong(0, handler.getResource(0));
+                capacity = handler.getCapacityAsLong(0, ChemicalResource.of(getChemicalType()));
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored, String.format(Locale.ROOT, "%.0f", 100.0 * stored / capacity)));
         }

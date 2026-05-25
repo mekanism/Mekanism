@@ -7,9 +7,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
 
-    public EnergyAcceptorTarget() {
-    }
-
     public EnergyAcceptorTarget(Collection<IStrictEnergyHandler> allHandlers) {
         super(allHandlers);
     }

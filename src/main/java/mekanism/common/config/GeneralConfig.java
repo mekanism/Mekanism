@@ -19,6 +19,7 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.SharedConstants;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.food.FoodConstants;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -268,7 +269,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         nutritionalPasteSaturation = CachedFloatValue.wrap(this, MekanismConfigTranslations.GENERAL_PASTE_SATURATION.applyToBuilder(builder)
               .defineInRange("saturation", 0.8, 0, 100));
         nutritionalPasteMBPerFood = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_PASTE_PER_FOOD.applyToBuilder(builder)
-              .defineInRange("mbPerFood", 50, 1, Integer.MAX_VALUE));
+              .defineInRange("mbPerFood", 50, 1, Integer.MAX_VALUE / FoodConstants.MAX_FOOD));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_BOILER.applyToBuilder(builder).push("boiler");

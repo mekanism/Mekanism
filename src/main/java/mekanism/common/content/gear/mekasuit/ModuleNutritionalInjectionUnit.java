@@ -41,7 +41,6 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 long energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.openRoot()) {
-                    //TODO - 26.1: Is there a worry of this multiplication overflowing?
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                     if (foodToFill == 0) {
                         return;

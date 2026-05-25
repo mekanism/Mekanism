@@ -8,6 +8,7 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.food.FoodConstants;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -273,7 +274,7 @@ public class GearConfig extends BaseMekanismConfig {
               "gravitationalModulation", 1_000L, 0, Long.MAX_VALUE / ModuleGravitationalModulatingUnit.BOOST_ENERGY_MULTIPLIER);
         mekaSuitEnergyUsageVisionEnhancement = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_VISION, "visionEnhancement", 500L);
         mekaSuitEnergyUsageHydrostaticRepulsion = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_SWIM, "hydrostaticRepulsion", 500L);
-        mekaSuitEnergyUsageNutritionalInjection = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_FOOD, "nutritionalInjection", 20_000L);
+        mekaSuitEnergyUsageNutritionalInjection = CachedLongValue.define(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_FOOD, "nutritionalInjection", 20_000L, 0, Long.MAX_VALUE / FoodConstants.MAX_FOOD);
         mekaSuitEnergyUsageItemAttraction = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_MAGNET, "itemAttraction", 250L);
         builder.pop();
 

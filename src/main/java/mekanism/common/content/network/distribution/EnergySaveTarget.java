@@ -10,9 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
 
-    public EnergySaveTarget() {
-    }
-
     public EnergySaveTarget(Collection<HANDLER> allHandlers) {
         super(allHandlers);
     }

@@ -56,19 +56,19 @@ public class FuelInventorySlot extends BasicInventorySlot {
         }
         ItemResource currentType = fuelSlot.resource();
         //Try to consume the current item
-        int extracted = fuelSlot.extract(currentType, 1, transaction, AutomationType.INTERNAL);
-        if (extracted != 1) {
+        if (fuelSlot.extract(currentType, 1, transaction, AutomationType.INTERNAL) == 0) {
             return false;
         }
         UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
         if (remainder == null) {
+            //No remainder, we can just return that consuming was successful
             return true;
         }
         //If the item has a container, then try to insert the container, if there was more than one of the current type stored
         // this will fail unless for some reason the item is being converted into itself and is effectively an infinite source
         ItemStackTemplate container = remainder.convertInto();
-        int inserted = fuelSlot.insert(ItemResource.of(container), container.count(), transaction, AutomationType.INTERNAL);
+        int containerSize = container.count();
         //If we couldn't insert the entire use remainder, return that the transaction should bail
-        return inserted == container.count();
+        return fuelSlot.insert(ItemResource.of(container), containerSize, transaction, AutomationType.INTERNAL) == containerSize;
     }
 }

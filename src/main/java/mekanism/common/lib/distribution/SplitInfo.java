@@ -9,14 +9,7 @@ public abstract class SplitInfo {
     /**
      * Represents whether the amount per target distribution has changed. This may happen if a target doesn't need as much as we are willing to offer it in the split.
      */
-    public boolean amountPerChanged = false;
-    /**
-     * Determines whether the number of targets to split amount should be decreased.
-     *
-     * @implNote This is only set to false briefly when handling accepting contents with remainders to allow them to accept some of the contents without being marked as
-     * fully accounted for.
-     */
-    protected boolean decrementTargets = true;
+    protected boolean amountPerChanged = false;
 
     protected SplitInfo(int totalTargets) {
         this.toSplitAmong = totalTargets;
@@ -24,12 +17,12 @@ public abstract class SplitInfo {
 
     /**
      * Marks the given amount as being accounted for and "sent". Decrements {@link #getUnsent() how much we have left to send} and increments
-     * {@link #getTotalSent() how much we have sent}. If {@link #decrementTargets} is true, this also will reduce the number of targets to split among, and recalculate
-     * how much we can provide each target.
+     * {@link #getTotalSent() how much we have sent}.
      *
-     * @param amountNeeded Amount needed by the target and that we are accounting as having been sent to the target.
+     * @param amountNeeded     Amount needed by the target and that we are accounting as having been sent to the target.
+     * @param decrementTargets Whether this method should reduce the number of targets to split among, and recalculate how much we can provide each target.
      */
-    public abstract void send(long amountNeeded);
+    public abstract void send(long amountNeeded, boolean decrementTargets);
 
     /**
      * {@return the "share" each target should get when distributing in an even split}

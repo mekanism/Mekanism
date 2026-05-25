@@ -21,7 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -31,22 +30,12 @@ import org.jetbrains.annotations.Nullable;
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasConditionalAttributes {
 
     @Nullable
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer moduleContainer(ITEM itemType) {
-        return IModuleHelper.INSTANCE.getModuleContainer(itemType);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer moduleContainer(ITEM instance) {
+        return IModuleHelper.INSTANCE.getModuleContainer(instance);
     }
 
-    @Nullable
-    default IModuleContainer moduleContainer(ItemInstance instance) {
-        if (instance instanceof ItemStack stack) {
-            return IModuleHelper.INSTANCE.getModuleContainer(stack);
-        } else if (IModuleHelper.INSTANCE.isModuleContainer(instance)) {
-            return ModuleHelper.get().getModuleContainerUnsafe(instance);
-        }
-        return null;
-    }
-
-    default Collection<? extends IModule<?>> getModules(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getAllModules(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Collection<? extends IModule<?>> getModules(ITEM instance) {
+        return IModuleHelper.INSTANCE.getAllModules(instance);
     }
 
     @Override
@@ -62,19 +51,19 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         module.getCustomInstance().adjustAttributes(module, event);
     }
 
-    default boolean hasInstalledModules(ItemStack stack) {
-        IModuleContainer container = moduleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasInstalledModules(ITEM instance) {
+        IModuleContainer container = moduleContainer(instance);
         return container != null && container.installedCount() > 0;
     }
 
     @Nullable
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ITEM stack,
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ITEM instance,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        return IModuleHelper.INSTANCE.getIfEnabled(stack, type);
+        return IModuleHelper.INSTANCE.getIfEnabled(instance, type);
     }
 
-    default void addModuleDetails(ItemStack stack, Consumer<Component> tooltipAdder) {
-        for (IModule<?> module : getModules(stack)) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> void addModuleDetails(ITEM instance, Consumer<Component> tooltipAdder) {
+        for (IModule<?> module : getModules(instance)) {
             ModuleData<?> data = module.getUntypedData();
             if (module.getInstalledCount() > 1) {
                 Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
@@ -85,13 +74,13 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         }
     }
 
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasModule(ITEM itemType, Holder<ModuleData<?>> type) {
-        IModuleContainer container = moduleContainer(itemType);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasModule(ITEM instance, Holder<ModuleData<?>> type) {
+        IModuleContainer container = moduleContainer(instance);
         return container != null && container.has(type);
     }
 
-    default boolean isModuleEnabled(ItemStack stack, Holder<ModuleData<?>> type) {
-        return IModuleHelper.INSTANCE.isEnabled(stack, type);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isModuleEnabled(ITEM instance, Holder<ModuleData<?>> type) {
+        return IModuleHelper.INSTANCE.isEnabled(instance, type);
     }
 
     @Override

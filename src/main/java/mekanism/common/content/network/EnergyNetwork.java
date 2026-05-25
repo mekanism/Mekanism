@@ -100,9 +100,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
-            long energy = energyContainer.energy();
-            EmitUtils.sendToAcceptors(saveTarget, energy, ENERGY, transaction);
-            saveTarget.save(null);
+            EmitUtils.sendToAcceptors(saveTarget, energyContainer.energy(), ENERGY, transaction);
+            saveTarget.save(transaction);
         }
     }
 

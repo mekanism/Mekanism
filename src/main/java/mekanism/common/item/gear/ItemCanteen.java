@@ -75,7 +75,6 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.openRoot()) {
-                    //TODO - 26.1: Is there a worry of this multiplication overflowing?
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
                 if (foodToFill > 0) {
