@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-//TODO - 26.1: Re-evaluate
 public record UUIDItemResource(UUID uuid, ItemResource itemType) {
 
     //TODO: Eventually we might want to make it so that we only need to sync the hashed item for types we haven't sent a given client yet so that then

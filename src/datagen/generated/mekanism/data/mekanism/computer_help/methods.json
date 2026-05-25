@@ -290,8 +290,8 @@
       "description": "Get the type of item the Bin is locked to (or Air if not locked)",
       "methodName": "getLock",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (ItemResource)",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
     {
@@ -2350,7 +2350,7 @@
     {
       "methodName": "getItemType",
       "returns": {
-        "type": "ItemResource",
+        "type": "Table (ItemResource)",
         "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
@@ -2368,7 +2368,7 @@
       "methodName": "setItemType",
       "params": [
         {
-          "type": "ItemResource",
+          "type": "Table (ItemResource)",
           "java_type": "net.neoforged.neoforge.transfer.item.ItemResource",
           "name": "itemType"
         }
@@ -5690,7 +5690,7 @@
     {
       "methodName": "getTargetItem",
       "returns": {
-        "type": "ItemResource",
+        "type": "Table (ItemResource)",
         "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
@@ -6081,7 +6081,7 @@
       }
     },
     {
-      "description": "Get the contents of the fluid item ouput slot.",
+      "description": "Get the contents of the fluid item output slot.",
       "methodName": "getFluidItemOutput",
       "returns": {
         "type": "Table (ItemStack)",

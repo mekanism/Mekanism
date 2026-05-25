@@ -22,7 +22,7 @@ Antiprotonic Nucleosynthesizer,getInputChemicalNeeded,,Number (long),,false,Get 
 Antiprotonic Nucleosynthesizer,getInputItem,,Table (ItemStack),,false,Get the contents of the input item slot.
 Antiprotonic Nucleosynthesizer,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
 Bin,getCapacity,,Number (long),,false,Get the maximum number of items the bin can contain.
-Bin,getLock,,Table (ItemStack),,false,Get the type of item the Bin is locked to (or Air if not locked)
+Bin,getLock,,Table (ItemResource),,false,Get the type of item the Bin is locked to (or Air if not locked)
 Bin,getStored,,Table (ItemStack),,false,Get the contents of the bin.
 Bin,isLocked,,boolean,,false,"If true, the Bin is locked to a particular item type."
 Bin,lock,,,,false,"Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked"
@@ -263,9 +263,9 @@ Filter Wrapper (Digital Miner),getRequiresReplacement,,boolean,,false,
 Filter Wrapper (Digital Miner),hasBlacklistedElement,,boolean,,false,
 Filter Wrapper (Digital Miner),setReplaceTarget,value: String (Item),,,false,
 Filter Wrapper (Digital Miner),setRequiresReplacement,value: boolean,,,false,
-Filter Wrapper (ItemStack),getItemType,,ItemResource,,false,
+Filter Wrapper (ItemStack),getItemType,,Table (ItemResource),,false,
 Filter Wrapper (ItemStack),setItem,item: String (Item),,,false,
-Filter Wrapper (ItemStack),setItemType,itemType: ItemResource,,,false,
+Filter Wrapper (ItemStack),setItemType,itemType: Table (ItemResource),,,false,
 Filter Wrapper (Logistical Sorter),clone,,Table (SorterFilter),,false,
 Filter Wrapper (Logistical Sorter),getAllowDefault,,boolean,,false,
 Filter Wrapper (Logistical Sorter),getColor,,String (EnumColor),,false,
@@ -646,7 +646,7 @@ QIO Machine with Filter,getFilters,,List (Table (QIOFilter)),,false,
 QIO Machine with Filter,removeFilter,filter: Table (QIOFilter),boolean,,true,
 QIO Redstone Adapter,clearTargetItem,,,,true,
 QIO Redstone Adapter,getFuzzyMode,,boolean,,false,
-QIO Redstone Adapter,getTargetItem,,ItemResource,,false,
+QIO Redstone Adapter,getTargetItem,,Table (ItemResource),,false,
 QIO Redstone Adapter,getTriggerAmount,,Number (long),,false,
 QIO Redstone Adapter,invertSignal,,,,true,
 QIO Redstone Adapter,isInverted,,boolean,,false,
@@ -693,7 +693,7 @@ Rotary Condensentrator,getFluid,,Table (FluidStack),,false,Get the contents of t
 Rotary Condensentrator,getFluidCapacity,,Number (long),,false,Get the capacity of the fluid tank.
 Rotary Condensentrator,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid tank.
 Rotary Condensentrator,getFluidItemInput,,Table (ItemStack),,false,Get the contents of the fluid item input slot.
-Rotary Condensentrator,getFluidItemOutput,,Table (ItemStack),,false,Get the contents of the fluid item ouput slot.
+Rotary Condensentrator,getFluidItemOutput,,Table (ItemStack),,false,Get the contents of the fluid item output slot.
 Rotary Condensentrator,getFluidNeeded,,Number (long),,false,Get the amount needed to fill the fluid tank.
 Rotary Condensentrator,getGas,,Table (ChemicalStack),,false,Get the contents of the gas tank.
 Rotary Condensentrator,getGasCapacity,,Number (long),,false,Get the capacity of the gas tank.

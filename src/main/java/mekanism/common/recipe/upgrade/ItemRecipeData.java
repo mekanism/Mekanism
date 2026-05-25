@@ -62,6 +62,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                     int amount = slot.amountAsInt();
                     //TODO - 26.1: The automation type here doesn't matter because we create slots that are always allowed to be interacted with
                     // but we should decide what one makes the most sense (probably whatever we decide to use for IMekanismResourceHandler#insert's default automation type
+                    //TODO - 26.1: How does this work for bins if they are configured to more than max int? Do we need to special case them?
                     int inserted = InventoryUtils.insertItem(outputSlots, slot.resource(), amount, transaction, AutomationType.MANUAL);
                     if (inserted < amount) {
                         //If we have a remainder something failed so bail

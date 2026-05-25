@@ -7,7 +7,7 @@ built_in_tables:
         description: The Chemical's registered name
         java_type: net.minecraft.resources.Identifier
         type: String (Identifier)
-    human_name: ChemicalResource
+    human_name: Table (ChemicalResource)
   mekanism.api.chemical.ChemicalStack:
     description: An amount of Gas/Fluid/Slurry/Pigment
     fields:
@@ -318,7 +318,7 @@ built_in_tables:
         description: The Fluid's registered name, e.g. minecraft:water
         java_type: net.minecraft.resources.Identifier
         type: String (Identifier)
-    human_name: FluidResource
+    human_name: Table (FluidResource)
   net.neoforged.neoforge.transfer.item.ItemResource:
     description: An item type
     fields:
@@ -330,7 +330,7 @@ built_in_tables:
         description: The Item's registered name
         java_type: net.minecraft.world.item.Item
         type: String (Item)
-    human_name: ItemResource
+    human_name: Table (ItemResource)
 enums:
   mekanism.api.RelativeSide:
   - FRONT
@@ -641,8 +641,8 @@ methods:
   - description: Get the type of item the Bin is locked to (or Air if not locked)
     methodName: getLock
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: net.neoforged.neoforge.transfer.item.ItemResource
+      type: Table (ItemResource)
   - description: Get the contents of the bin.
     methodName: getStored
     returns:
@@ -1912,7 +1912,7 @@ methods:
   - methodName: getItemType
     returns:
       java_type: net.neoforged.neoforge.transfer.item.ItemResource
-      type: ItemResource
+      type: Table (ItemResource)
   - methodName: setItem
     params:
     - java_type: net.minecraft.world.item.Item
@@ -1922,7 +1922,7 @@ methods:
     params:
     - java_type: net.neoforged.neoforge.transfer.item.ItemResource
       name: itemType
-      type: ItemResource
+      type: Table (ItemResource)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
     returns:
@@ -3886,7 +3886,7 @@ methods:
   - methodName: getTargetItem
     returns:
       java_type: net.neoforged.neoforge.transfer.item.ItemResource
-      type: ItemResource
+      type: Table (ItemResource)
   - methodName: getTriggerAmount
     returns:
       java_type: long
@@ -4119,7 +4119,7 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
-  - description: Get the contents of the fluid item ouput slot.
+  - description: Get the contents of the fluid item output slot.
     methodName: getFluidItemOutput
     returns:
       java_type: net.minecraft.world.item.ItemStack

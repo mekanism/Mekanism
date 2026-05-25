@@ -9,7 +9,6 @@ import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import org.jetbrains.annotations.NotNull;
 
-//TODO - 26.1: Potentially rename this interface
 public interface IMultiblockContents extends IMekanismHeatHandler {
 
     @NotNull

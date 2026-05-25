@@ -34,7 +34,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -219,8 +218,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @ComputerMethod(methodDescription = "Get the type of item the Bin is locked to (or Air if not locked)")
-    ItemStack getLock() {//TODO - 26.1: Do we want this to just directly return the ItemResource?
-        return binSlot.getLockType().toStack();
+    ItemResource getLock() {
+        return binSlot.getLockType();
     }
 
     @ComputerMethod(methodDescription = "Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked")
