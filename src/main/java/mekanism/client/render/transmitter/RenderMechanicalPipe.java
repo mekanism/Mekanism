@@ -117,7 +117,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         float stageRatio = (state.stage / (float) STAGES) * HEIGHT;
 
         boolean[] reusedSideRenderCheck = new boolean[EnumUtils.DIRECTIONS.length];
-        MekanismRenderer.TMP_SideRenderCheck sideRenderCheck = MekanismRenderer.TMP_SideRenderCheck.fromArray(reusedSideRenderCheck);
+        RenderResizableCuboid.TMP_SideRenderCheck sideRenderCheck = RenderResizableCuboid.TMP_SideRenderCheck.fromArray(reusedSideRenderCheck);
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!state.renderSideModel[side.ordinal()]) {
                 continue;
@@ -181,7 +181,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 min = 0.5F - stageRatio / 2;
                 max = 0.5F + stageRatio / 2;
             }
-            RenderResizableCuboid.renderCube(MekanismRenderer.TMP_SideRenderCheck.fromArray(state.coreSideRender), min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.TMP_SideRenderCheck.fromArray(state.coreSideRender), min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
 
         //todo - 26.1: rendering

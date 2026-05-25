@@ -49,11 +49,11 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         boolean rotated = teleporter.frameRotated();
 
         if (direction.getAxis().isHorizontal()) {
-            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.Y_AXIS;
+            state.renderAxis = RenderResizableCuboid.TMP_SideRenderCheck.Y_AXIS;
         } else if (rotated) {
-            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.X_AXIS;
+            state.renderAxis = RenderResizableCuboid.TMP_SideRenderCheck.X_AXIS;
         } else {
-            state.renderAxis = MekanismRenderer.TMP_SideRenderCheck.Z_AXIS;
+            state.renderAxis = RenderResizableCuboid.TMP_SideRenderCheck.Z_AXIS;
         }
 
         int min = direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
@@ -145,6 +145,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
         public int tint = 0xFFFFFFFF;
-        public MekanismRenderer.TMP_SideRenderCheck renderAxis = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
+        public RenderResizableCuboid.TMP_SideRenderCheck renderAxis = RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL;
     }
 }

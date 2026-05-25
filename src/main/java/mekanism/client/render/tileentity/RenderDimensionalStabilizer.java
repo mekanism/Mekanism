@@ -101,7 +101,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         BlockPos pos = state.blockPos;
         boolean[] renderSides = new boolean[EnumUtils.DIRECTIONS.length];
         Arrays.fill(renderSides, false);
-        MekanismRenderer.TMP_SideRenderCheck piecesCheck = MekanismRenderer.TMP_SideRenderCheck.fromArray(renderSides);
+        RenderResizableCuboid.TMP_SideRenderCheck piecesCheck = RenderResizableCuboid.TMP_SideRenderCheck.fromArray(renderSides);
         for (RenderPiece piece : state.renderPieces) {
             //Set the visibility of the sides that are going to render for this piece
             renderSides[Direction.NORTH.ordinal()] = piece.renderNorth;

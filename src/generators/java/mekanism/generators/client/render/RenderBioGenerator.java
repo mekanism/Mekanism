@@ -82,7 +82,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
-        state.renderCheck = MekanismRenderer.TMP_SideRenderCheck.UP_AND_SINGLE_HORIZONTAL.getOrDefault(generator.getDirection().getOpposite(), MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL);
+        state.renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.UP_AND_SINGLE_HORIZONTAL.getOrDefault(generator.getDirection().getOpposite(), RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL);
     }
 
     private static float getFluidStagePercent(float fluidScale, boolean gaseous) {
@@ -114,7 +114,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         public int tint = 0xFFFFFFFF;
         @Nullable
         public RenderResizableCuboid.TexturePicker fluidTexture;
-        public MekanismRenderer.TMP_SideRenderCheck renderCheck = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
+        public RenderResizableCuboid.TMP_SideRenderCheck renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL;
 
     }
 }

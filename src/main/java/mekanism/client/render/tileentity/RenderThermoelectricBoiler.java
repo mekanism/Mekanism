@@ -93,11 +93,11 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
     public void submit(BoilerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         RenderType renderType = Sheets.translucentBlockSheet();
         if (state.waterTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.waterMaxY, state.width - 0.02F, state.waterTexture, OverlayTexture.NO_OVERLAY, state.waterGlow, state.waterColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.waterMaxY, state.width - 0.02F, state.waterTexture, OverlayTexture.NO_OVERLAY, state.waterGlow, state.waterColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.renderLocation, state.length, state.width, state.height, state.waterColor, state.waterGlow, state.waterMaxY - 0.01F);
         }
         if (state.steamTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width, state.steamHeight);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width, state.steamHeight);
         }
     }
 

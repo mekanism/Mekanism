@@ -1,7 +1,7 @@
 package mekanism.client.render.data;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,9 +14,9 @@ public class ValveRenderData {
     private final BlockPos valveLocation;
     public final float minX, minY, minZ;
     public final float maxX, maxY, maxZ;
-    public final MekanismRenderer.TMP_SideRenderCheck renderCheck;
+    public final RenderResizableCuboid.TMP_SideRenderCheck renderCheck;
 
-    private ValveRenderData(Direction side, BlockPos valveLocation, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, MekanismRenderer.TMP_SideRenderCheck renderCheck, BlockPos renderLocation) {
+    private ValveRenderData(Direction side, BlockPos valveLocation, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, RenderResizableCuboid.TMP_SideRenderCheck renderCheck, BlockPos renderLocation) {
         //super(renderData.location, renderData.width, renderData.height, renderData.length, renderData.fluidType);
         this.side = side;
         this.minX = minX;
@@ -34,9 +34,9 @@ public class ValveRenderData {
     public static ValveRenderData get(ValveData valveData, float mainFluidHeight, BlockPos renderLocation, int multiblockHeight) {
         float minX, minY, minZ;
         float maxX, maxY, maxZ;
-        MekanismRenderer.TMP_SideRenderCheck renderCheck = MekanismRenderer.TMP_SideRenderCheck.RENDER_ALL;
+        RenderResizableCuboid.TMP_SideRenderCheck renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL;
         if (mainFluidHeight == 0) {
-            renderCheck = MekanismRenderer.TMP_SideRenderCheck.NOT_DOWN;
+            renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.NOT_DOWN;
         }
 
         BlockPos valveLocation = valveData.location;

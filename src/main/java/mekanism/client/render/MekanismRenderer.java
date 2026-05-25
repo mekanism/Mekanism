@@ -1,16 +1,12 @@
 package mekanism.client.render;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
@@ -316,31 +312,6 @@ public class MekanismRenderer {
     public enum FluidTextureType {
         STILL,
         FLOWING
-    }
-
-    public interface TMP_SideRenderCheck {
-
-        boolean shouldRenderSide(Direction side);
-
-        TMP_SideRenderCheck RENDER_ALL = _ -> true;
-        TMP_SideRenderCheck NOT_DOWN = dir -> dir != Direction.DOWN;
-        TMP_SideRenderCheck HORIZONTAL = dir -> dir.getAxis().isHorizontal();
-        TMP_SideRenderCheck X_AXIS = dir -> dir.getAxis() == Direction.Axis.X;
-        TMP_SideRenderCheck Y_AXIS = dir -> dir.getAxis() == Direction.Axis.Y;
-        TMP_SideRenderCheck Z_AXIS = dir -> dir.getAxis() == Direction.Axis.Z;
-
-        Map<Direction, TMP_SideRenderCheck> UP_AND_SINGLE_HORIZONTAL = Arrays.stream(EnumUtils.HORIZONTAL_DIRECTIONS)
-              .collect(
-                    Collectors.toMap(
-                          Function.identity(),
-                          dir -> check -> check == Direction.UP || check == dir
-                    )
-              );
-
-        static TMP_SideRenderCheck fromArray(boolean[] arr) {
-            Preconditions.checkArgument(arr.length == EnumUtils.DIRECTIONS.length, "Must be same dimensions as Direction");
-            return dir -> arr[dir.ordinal()];
-        }
     }
 
     public record ValveTextureGetter(TextureAtlasSprite still, TextureAtlasSprite flowing) implements RenderResizableCuboid.TexturePicker {
