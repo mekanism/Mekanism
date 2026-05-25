@@ -112,7 +112,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainer();
+        energySlot.drainContainerIntoSlot();
         fuelSlot.fillOrBurn();
         long prev = getEnergyContainer().energy();
         heatCapacitor.handleHeat(getBoost());

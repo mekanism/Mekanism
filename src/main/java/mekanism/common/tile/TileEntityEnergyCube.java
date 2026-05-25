@@ -100,7 +100,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        chargeSlot.drainContainer();
+        chargeSlot.drainContainerIntoSlot();
         dischargeSlot.fillContainerOrConvert();
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
         if (MekanismUtils.scaleChanged(newScale, prevScale)) {

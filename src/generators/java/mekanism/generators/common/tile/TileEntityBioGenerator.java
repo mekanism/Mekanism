@@ -79,7 +79,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainer();
+        energySlot.drainContainerIntoSlot();
         fuelSlot.fillOrBurn();
         boolean isActive = false;
         if (canFunction() && !bioFuelTank.isEmpty()) {

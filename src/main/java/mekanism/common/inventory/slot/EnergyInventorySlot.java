@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
@@ -88,10 +88,14 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (itemEnergyHandler == null) {
             return false;
         }
+        return drainInsertCheck(energyContainer, itemEnergyHandler);
+    }
+
+    public static boolean drainInsertCheck(IEnergyContainer energyContainer, IStrictEnergyHandler itemEnergyHandler) {
         long storedEnergy = energyContainer.energy();
         if (storedEnergy == 0L) {
             //If the energy container is empty, accept the energy item as long as it is not full
-            for (int container = 0; container < itemEnergyHandler.size(); container++) {
+            for (int container = 0, size = itemEnergyHandler.size(); container < size; container++) {
                 if (itemEnergyHandler.getNeededEnergy(container) > 0L) {
                     //True if we have any space in this container
                     return true;
@@ -138,26 +142,24 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Fills the energy container from slot, allowing for the item to also be converted to energy if need be (example redstone -> energy)
      */
     public void fillContainerOrConvert() {
-        if (!isEmpty() && energyContainer.getNeeded() > 0L) {
-            //Fill the container from the item
-            if (!fillContainerFromItem()) {
-                //If filling from item failed, try doing it by conversion
-                ItemStack current = resource().toStack(amountAsInt());
-                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
-                if (foundRecipe != null) {
-                    ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-                    if (!itemInput.isEmpty()) {
-                        try (Transaction transaction = Transaction.openRoot()) {
-                            int recipeNeeded = itemInput.count();
-                            //Try to extract the amount we need from our slot
-                            if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded) {
-                                //If we succeeded, then try to insert the produced energy into our container
-                                long output = foundRecipe.getOutput(itemInput);
-                                //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                                if (energyContainer.insert(output, transaction, AutomationType.MANUAL) == output) {
-                                    // if we succeeded, commit the changes
-                                    transaction.commit();
-                                }
+        //Fill the container from the item
+        if (!fillContainerFromSlot()) {
+            //If filling from item failed, try doing it by conversion
+            ItemStack current = resource().toStack(amountAsInt());
+            ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                if (!itemInput.isEmpty()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int recipeNeeded = itemInput.count();
+                        //Try to extract the amount we need from our slot
+                        if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded) {
+                            //If we succeeded, then try to insert the produced energy into our container
+                            long output = foundRecipe.getOutput(itemInput);
+                            //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                            if (energyContainer.insert(output, transaction, AutomationType.MANUAL) == output) {
+                                // if we succeeded, commit the changes
+                                transaction.commit();
                             }
                         }
                     }
@@ -169,17 +171,10 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Fills energy container from slot, does not try converting the item via any conversions conversion
      */
-    public void fillContainer() {
-        if (!isEmpty() && energyContainer.getNeeded() > 0L) {
-            //Try filling from the container's item
-            fillContainerFromItem();
+    public boolean fillContainerFromSlot() {
+        if (isEmpty() || energyContainer.getNeeded() == 0) {
+            return false;
         }
-    }
-
-    /**
-     * @implNote Does not pre-check if the current stack is empty or that the energy container needs any energy
-     */
-    private boolean fillContainerFromItem() {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(asItemAccess());
         if (itemEnergyHandler == null) {
@@ -196,18 +191,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             }
             //Simulate inserting energy from each container in the item into our container
             long inserted = energyContainer.insert(energyInItem, transaction, AutomationType.INTERNAL);
-            if (inserted == 0) {
-                //Nothing can be inserted into our container, exit
-                return false;
-            }
-            //If we can actually insert any energy, then extract up to as much energy as we were able to accept from the item
-            long extractedEnergy = itemEnergyHandler.extract(inserted, transaction);
-            if (extractedEnergy == inserted) {
-                //If we were able to actually extract it from the item, then insert it into our energy container
+            if (inserted > 0 && itemEnergyHandler.extract(inserted, transaction) == inserted) {
+                //If we can actually insert any energy, then extract up to as much energy as we were able to accept from the item
+                //If we were able to actually extract it from the item, then commit the changes
                 transaction.commit();
                 //and mark that we were able to transfer at least some of it
-                //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
-                //onContentsChanged();
                 return true;
             }
             return false;
@@ -217,7 +205,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Drains container into slot
      */
-    public void drainContainer() {
+    public void drainContainerIntoSlot() {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         if (isEmpty() || energyContainer.isEmpty()) {
             return;
@@ -243,8 +231,6 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (extractedEnergy == inserted) {
                     //If we were able to actually extract it from our energy container, then commit all the changes
                     transaction.commit();
-                    //TODO - 26.1: I think the onContentsChanged should be handled by the item access and committing the transaction?
-                    //onContentsChanged();
                 }
             }
         }

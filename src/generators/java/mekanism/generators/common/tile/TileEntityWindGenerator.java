@@ -23,7 +23,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +57,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainer();
+        energySlot.drainContainerIntoSlot();
         // If we're in a blacklisted dimension, there's nothing more to do
         if (isBlacklistDimension) {
             return sendUpdatePacket;

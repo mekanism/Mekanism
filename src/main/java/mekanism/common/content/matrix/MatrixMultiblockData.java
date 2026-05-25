@@ -102,7 +102,7 @@ public class MatrixMultiblockData extends MultiblockData {
         // We tick the main energy container before adding/draining from the slots, so that we make sure
         // they get first "pickings" at attempting to get or give power, without having to worry about the
         // rate limit of the structure being used up by the ports
-        energyInputSlot.drainContainer();
+        energyInputSlot.drainContainerIntoSlot();
         energyOutputSlot.fillContainerOrConvert();
         if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
             EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer(), null);

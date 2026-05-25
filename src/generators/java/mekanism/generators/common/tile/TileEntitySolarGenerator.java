@@ -24,7 +24,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +65,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (solarCheck == null) {
             recheckSettings();
         }
-        energySlot.drainContainer();
+        energySlot.drainContainerIntoSlot();
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
