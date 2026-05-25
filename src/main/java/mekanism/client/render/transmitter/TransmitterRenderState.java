@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderResizableCuboid;
+import mekanism.client.render.RenderResizableCuboid.SideRender.SideRenderFlags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -40,7 +41,7 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public int glow;
         public int stage;
         public boolean[] renderSideModel = new boolean[EnumUtils.DIRECTIONS.length];
-        public boolean[] coreSideRender = new boolean[0];
+        public @SideRenderFlags byte coreSideRender = 0;
         public boolean renderBase;
     }
 

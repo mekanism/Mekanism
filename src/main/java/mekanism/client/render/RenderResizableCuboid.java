@@ -1,13 +1,8 @@
 package mekanism.client.render;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
@@ -19,7 +14,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -38,7 +35,7 @@ public class RenderResizableCuboid {
     private RenderResizableCuboid() {
     }
 
-    public static void renderCube(TMP_SideRenderCheck sidesToRender, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, PoseStack matrix, RenderType renderType, OrderedSubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
+    public static void renderCube(@SideRender.SideRenderFlags byte sidesToRender, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, PoseStack matrix, RenderType renderType, OrderedSubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos, TexturePicker spriteFromDirection) {
         renderCube(sidesToRender, cubeMinX, cubeMinY, cubeMinZ, cubeMaxX, cubeMaxY, cubeMaxZ, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb, spriteFromDirection);
     }
@@ -55,7 +52,7 @@ public class RenderResizableCuboid {
     /// In many cases, the boxing is for static values, so there is really no point aside from 'code tidyness'.
     ///
     /// We can revisit this if value types become a thing.
-    public static void renderCube(TMP_SideRenderCheck sidesToRender, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, PoseStack matrix, RenderType renderType, OrderedSubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
+    public static void renderCube(@SideRender.SideRenderFlags byte sidesToRender, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, PoseStack matrix, RenderType renderType, OrderedSubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor, TexturePicker spriteFromDirection) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
@@ -148,8 +145,8 @@ public class RenderResizableCuboid {
         matrix.popPose();
     }
 
-    private static boolean shouldRenderSide(TMP_SideRenderCheck sidesToRender, Direction direction) {
-        return sidesToRender.shouldRenderSide(direction);
+    private static boolean shouldRenderSide(@SideRender.SideRenderFlags byte sidesToRender, Direction direction) {
+        return (sidesToRender & SideRender.DIRECTION_TO_FACE[direction.ordinal()]) != 0;
     }
 
     private static void renderSideZAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int northColor, int southColor) {
@@ -569,7 +566,7 @@ public class RenderResizableCuboid {
     }
 
     //TODO - 26.1: Should we no-op all the cases of scale == 0
-    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, TMP_SideRenderCheck sideRenderCheck, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, TexturePicker spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, float physicalHeight) {
+    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, @SideRender.SideRenderFlags byte sideRenderCheck, float cubeMinX, float cubeMinY, float cubeMinZ, float cubeMaxX, float cubeMaxY, float cubeMaxZ, TexturePicker spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, float physicalHeight) {
         matrix.pushPose();
         matrix.translate(renderStartPos.getX() - terPos.getX(), renderStartPos.getY() - terPos.getY(), renderStartPos.getZ() - terPos.getZ());
         FaceDisplay faceDisplay = getFaceDisplay(camPos, renderStartPos, physicalLength, physicalWidth, physicalHeight);
@@ -580,28 +577,61 @@ public class RenderResizableCuboid {
     /// avoid allocating a new one just to be non-null
     private static final Vector3f UNUSED = new Vector3f();
 
-    public interface TMP_SideRenderCheck {
+    public static class SideRender {
 
-        boolean shouldRenderSide(Direction side);
+        @MagicConstant(flags = {FACE_DOWN, FACE_UP, FACE_NORTH, FACE_SOUTH, FACE_WEST, FACE_EAST})
+        public @interface SideRenderFlags {}
 
-        TMP_SideRenderCheck RENDER_ALL = _ -> true;
-        TMP_SideRenderCheck NOT_DOWN = dir -> dir != Direction.DOWN;
-        TMP_SideRenderCheck HORIZONTAL = dir -> dir.getAxis().isHorizontal();
-        TMP_SideRenderCheck X_AXIS = dir -> dir.getAxis() == Axis.X;
-        TMP_SideRenderCheck Y_AXIS = dir -> dir.getAxis() == Axis.Y;
-        TMP_SideRenderCheck Z_AXIS = dir -> dir.getAxis() == Axis.Z;
+        public static final byte FACE_DOWN = 1 << 0;
+        public static final byte FACE_UP = 1 << 1;
+        public static final byte FACE_NORTH = 1 << 2;
+        public static final byte FACE_SOUTH = 1 << 3;
+        public static final byte FACE_WEST = 1 << 4;
+        public static final byte FACE_EAST = 1 << 5;
 
-        Map<Direction, TMP_SideRenderCheck> UP_AND_SINGLE_HORIZONTAL = Arrays.stream(EnumUtils.HORIZONTAL_DIRECTIONS)
-              .collect(
-                    Collectors.toMap(
-                          Function.identity(),
-                          dir -> check -> check == Direction.UP || check == dir
-                    )
-              );
+        public static final @SideRenderFlags byte ALL_FACES = FACE_DOWN | FACE_UP | FACE_NORTH | FACE_SOUTH | FACE_WEST | FACE_EAST;
+        public static final @SideRenderFlags byte NOT_DOWN = FACE_UP | FACE_NORTH | FACE_SOUTH | FACE_WEST | FACE_EAST;
+        public static final @SideRenderFlags byte HORIZONTAL = FACE_NORTH | FACE_SOUTH | FACE_WEST | FACE_EAST;
+        public static final @SideRenderFlags byte X_AXIS = FACE_WEST | FACE_EAST;
+        public static final @SideRenderFlags byte Z_AXIS = FACE_NORTH | FACE_SOUTH;
+        public static final @SideRenderFlags byte Y_AXIS = FACE_DOWN | FACE_UP;
 
-        static TMP_SideRenderCheck fromArray(boolean[] arr) {
-            Preconditions.checkArgument(arr.length == EnumUtils.DIRECTIONS.length, "Must be same dimensions as Direction");
-            return dir -> arr[dir.ordinal()];
+        public static final @SideRenderFlags byte[] DIRECTION_TO_FACE = Util.make(new byte[6], mapping -> {
+            mapping[Direction.DOWN.ordinal()] = FACE_DOWN;
+            mapping[Direction.UP.ordinal()] = FACE_UP;
+            mapping[Direction.NORTH.ordinal()] = FACE_NORTH;
+            mapping[Direction.SOUTH.ordinal()] = FACE_SOUTH;
+            mapping[Direction.WEST.ordinal()] = FACE_WEST;
+            mapping[Direction.EAST.ordinal()] = FACE_EAST;
+        });
+
+        @SuppressWarnings({"MagicConstant", "RedundantSuppression"})//IJ is silly
+        public static @SideRenderFlags byte of(Direction dir) {
+            return DIRECTION_TO_FACE[dir.ordinal()];
+        }
+
+        public static @SideRenderFlags byte from(boolean down, boolean up, boolean north, boolean south, boolean west, boolean east) {
+            byte output = 0;
+            if (down) {
+                output |= FACE_DOWN;
+            }
+            if (up) {
+                output |= FACE_UP;
+            }
+            if (north) {
+                output |= FACE_NORTH;
+            }
+            if (south) {
+                output |= FACE_SOUTH;
+            }
+            if (west) {
+                output |= FACE_WEST;
+            }
+            if (east) {
+                output |= FACE_EAST;
+            }
+
+            return output;
         }
     }
 

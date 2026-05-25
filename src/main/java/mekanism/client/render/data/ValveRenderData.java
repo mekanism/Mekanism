@@ -14,9 +14,9 @@ public class ValveRenderData {
     private final BlockPos valveLocation;
     public final float minX, minY, minZ;
     public final float maxX, maxY, maxZ;
-    public final RenderResizableCuboid.TMP_SideRenderCheck renderCheck;
+    public final @RenderResizableCuboid.SideRender.SideRenderFlags byte renderCheck;
 
-    private ValveRenderData(Direction side, BlockPos valveLocation, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, RenderResizableCuboid.TMP_SideRenderCheck renderCheck, BlockPos renderLocation) {
+    private ValveRenderData(Direction side, BlockPos valveLocation, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, @RenderResizableCuboid.SideRender.SideRenderFlags byte renderCheck, BlockPos renderLocation) {
         //super(renderData.location, renderData.width, renderData.height, renderData.length, renderData.fluidType);
         this.side = side;
         this.minX = minX;
@@ -34,9 +34,9 @@ public class ValveRenderData {
     public static ValveRenderData get(ValveData valveData, float mainFluidHeight, BlockPos renderLocation, int multiblockHeight) {
         float minX, minY, minZ;
         float maxX, maxY, maxZ;
-        RenderResizableCuboid.TMP_SideRenderCheck renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL;
+        byte renderCheck = RenderResizableCuboid.SideRender.ALL_FACES;
         if (mainFluidHeight == 0) {
-            renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.NOT_DOWN;
+            renderCheck = RenderResizableCuboid.SideRender.NOT_DOWN;
         }
 
         BlockPos valveLocation = valveData.location;

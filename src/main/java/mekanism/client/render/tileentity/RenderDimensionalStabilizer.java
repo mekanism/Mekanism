@@ -11,10 +11,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -99,16 +99,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     @Override
     public void submit(StabilizerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         BlockPos pos = state.blockPos;
-        boolean[] renderSides = new boolean[EnumUtils.DIRECTIONS.length];
-        Arrays.fill(renderSides, false);
-        RenderResizableCuboid.TMP_SideRenderCheck piecesCheck = RenderResizableCuboid.TMP_SideRenderCheck.fromArray(renderSides);
         for (RenderPiece piece : state.renderPieces) {
-            //Set the visibility of the sides that are going to render for this piece
-            renderSides[Direction.NORTH.ordinal()] = piece.renderNorth;
-            renderSides[Direction.EAST.ordinal()] = piece.renderEast;
-            renderSides[Direction.SOUTH.ordinal()] = piece.renderSouth;
-            renderSides[Direction.WEST.ordinal()] = piece.renderWest;
-
             int xChunkOffset = piece.x - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             int zChunkOffset = piece.z - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             ChunkPos startChunk = new ChunkPos(state.chunkX + xChunkOffset, state.chunkZ + zChunkOffset);
@@ -143,7 +134,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, state.minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
-            RenderResizableCuboid.renderCube(piecesCheck, 0, 0, 0, 1, 1, 1, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+            RenderResizableCuboid.renderCube(piece.sidesToRender(), 0, 0, 0, 1, 1, 1, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
             poseStack.popPose();
         }
     }
@@ -269,6 +260,10 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     }
 
     public record RenderPiece(int x, int xLength, int z, int zLength, boolean renderNorth, boolean renderSouth, boolean renderEast, boolean renderWest) {
+
+        public @SideRender.SideRenderFlags byte sidesToRender() {
+            return RenderResizableCuboid.SideRender.from(false, false, renderNorth, renderSouth, renderWest, renderEast);
+        }
     }
     
     public static class StabilizerRenderState extends BlockEntityRenderState {

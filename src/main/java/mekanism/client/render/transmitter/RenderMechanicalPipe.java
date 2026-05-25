@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
+import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
@@ -91,13 +92,16 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         //Render the base part if there is a horizontal connection, or we only have one vertical connection
         boolean renderBase = hasHorizontalSide || verticalSides < 2;
         state.renderBase = renderBase;
+        @SideRender.SideRenderFlags byte coreSideRender = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             //Render the side if there is no connection on that side, or it is a vertical connection, we have at least one side, and we are not full
             // We also render for push and pull as they use slightly smaller fill models which then means we would have
             // small gaps if we didn't render
-            renderSides[side.ordinal()] = renderSides[side.ordinal()] || (side.getAxis().isVertical() && renderBase && stage != STAGES - 1);
+            if (renderSides[side.ordinal()] || (renderBase && stage != STAGES - 1 && side.getAxis().isVertical())) {
+                coreSideRender |= SideRender.of(side);
+            }
         }
-        state.coreSideRender = renderSides;
+        state.coreSideRender = coreSideRender;
         Arrays.fill(state.renderSideModel, false);
         for (Direction side : EnumUtils.DIRECTIONS) {
             ConnectionType connectionType = transmitter.getConnectionType(side);
@@ -116,15 +120,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         float stageRatio = (state.stage / (float) STAGES) * HEIGHT;
 
-        boolean[] reusedSideRenderCheck = new boolean[EnumUtils.DIRECTIONS.length];
-        RenderResizableCuboid.TMP_SideRenderCheck sideRenderCheck = RenderResizableCuboid.TMP_SideRenderCheck.fromArray(reusedSideRenderCheck);
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!state.renderSideModel[side.ordinal()]) {
                 continue;
             }
-            Arrays.fill(reusedSideRenderCheck, true);
-            reusedSideRenderCheck[side.ordinal()] = false;
-            reusedSideRenderCheck[side.getOpposite().ordinal()] = false;
+            //all face except side and side-opposite
+            //noinspection MagicConstant - hush
+            @SideRender.SideRenderFlags
+            byte sideRenderCheck = (byte) (SideRender.ALL_FACES ^ SideRender.of(side) ^ SideRender.of(side.getOpposite()));
 
             float minX, minY, minZ;
             float maxX, maxY, maxZ;
@@ -181,7 +184,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 min = 0.5F - stageRatio / 2;
                 max = 0.5F + stageRatio / 2;
             }
-            RenderResizableCuboid.renderCube(RenderResizableCuboid.TMP_SideRenderCheck.fromArray(state.coreSideRender), min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
 
         //todo - 26.1: rendering

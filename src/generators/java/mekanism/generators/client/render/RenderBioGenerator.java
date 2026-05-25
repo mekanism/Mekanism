@@ -6,6 +6,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
+import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
@@ -82,7 +83,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
-        state.renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.UP_AND_SINGLE_HORIZONTAL.getOrDefault(generator.getDirection().getOpposite(), RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL);
+        //noinspection MagicConstant
+        state.renderCheck = (byte) (SideRender.FACE_UP | SideRender.of(generator.getDirection().getOpposite()));
     }
 
     private static float getFluidStagePercent(float fluidScale, boolean gaseous) {
@@ -114,7 +116,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         public int tint = 0xFFFFFFFF;
         @Nullable
         public RenderResizableCuboid.TexturePicker fluidTexture;
-        public RenderResizableCuboid.TMP_SideRenderCheck renderCheck = RenderResizableCuboid.TMP_SideRenderCheck.RENDER_ALL;
+        public @SideRender.SideRenderFlags byte renderCheck = SideRender.ALL_FACES;
 
     }
 }
