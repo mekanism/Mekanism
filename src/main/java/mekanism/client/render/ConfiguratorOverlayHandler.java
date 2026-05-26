@@ -14,9 +14,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
 
@@ -26,6 +28,13 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
     private final TransmissionType type;
     private final Direction face;
     private final int transmissionColor;
+    //Must be in same order as Direction
+    private static final Quaternionf[] V_ROT = new Quaternionf[]{
+          new Quaternionf().setAngleAxis(180 * Mth.DEG_TO_RAD, 0, 1, 0),//south
+          new Quaternionf().setAngleAxis(90 * Mth.DEG_TO_RAD, 0, 1, 0),//west
+          new Quaternionf().setAngleAxis(270 * Mth.DEG_TO_RAD, 0, 1, 0)//east
+    };
+    private static final int V_ROT_OFFSET = Direction.SOUTH.ordinal();
 
     public ConfiguratorOverlayHandler(BlockPos pos, TransmissionType type, Direction face, int transmissionColor) {
         this.pos = pos;
@@ -44,10 +53,13 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
             poseStack.pushPose();
             poseStack.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
 
-            //todo - 26.1: rotate when up/down so the sprite is always correct per the user's perspective?
-            //Vector3fc vecForDirection = face.getUnitVec3f();
-            //poseStack.rotateAround(new Quaternionf().setAngleAxis(90 * Mth.DEG_TO_RAD, vecForDirection.x(), vecForDirection.y(), vecForDirection.z()), 0.5F, 0.5F, 0.5F);
-            //poseStack.rotateAround(face.getRotation(), 0.5F, 0.5F, 0.5F);
+            //if top/bottom face, try to rotate so the bottom is as close to screen bottom as we can get
+            if (face == Direction.UP || face == Direction.DOWN) {
+                Direction cameraFacing = Direction.fromYRot(levelRenderState.cameraRenderState.yRot);
+                if (cameraFacing != Direction.NORTH) {
+                    poseStack.rotateAround(V_ROT[cameraFacing.ordinal() - V_ROT_OFFSET], 0.5F, 1, 0.5F);
+                }
+            }
 
             PoseStack.Pose pose = poseStack.last();
             Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
