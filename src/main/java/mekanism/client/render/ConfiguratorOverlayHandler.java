@@ -1,39 +1,26 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.common.lib.transmitter.TransmissionType;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
 
@@ -41,6 +28,13 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
     private final TransmissionType type;
     private final Direction face;
     private final int transmissionColor;
+    //Must be in same order as Direction
+    private static final Quaternionf[] V_ROT = new Quaternionf[]{
+          new Quaternionf().setAngleAxis(180 * Mth.DEG_TO_RAD, 0, 1, 0),//south
+          new Quaternionf().setAngleAxis(90 * Mth.DEG_TO_RAD, 0, 1, 0),//west
+          new Quaternionf().setAngleAxis(270 * Mth.DEG_TO_RAD, 0, 1, 0)//east
+    };
+    private static final int V_ROT_OFFSET = Direction.SOUTH.ordinal();
 
     public ConfiguratorOverlayHandler(BlockPos pos, TransmissionType type, Direction face, int transmissionColor) {
         this.pos = pos;
@@ -51,91 +45,46 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
 
     @Override
     @NullMarked
-    public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack matrix, boolean translucentPass, LevelRenderState levelRenderState) {
+    public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack poseStack, boolean translucentPass, LevelRenderState levelRenderState) {
         if (renderState.isTranslucent() == translucentPass) {
             Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-            matrix.pushPose();
-            matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-            MekanismRenderer.SingleTexturePicker tex = MekanismRenderer.overlays.get(type);
-            MekanismRenderer.Model3D object = RenderTickHandler.getOverlayModel(face, type);
-            if (object != null) {
-                OrderedSubmitNodeCollector nodeCollector = new HackyNodeCollector(renderer);
-                //todo - 26.1: this is overkill, it's only really a single face... also requires wrapping in a NodeCollector
-                RenderResizableCuboid.renderCube(object, matrix, Sheets.translucentBlockSheet(), nodeCollector, transmissionColor, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, viewPosition, null, tex);
+            TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
+            VertexConsumer buffer = renderer.getBuffer(RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS));
+            poseStack.pushPose();
+            poseStack.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
+
+            //if top/bottom face, try to rotate so the bottom is as close to screen bottom as we can get
+            if (face == Direction.UP || face == Direction.DOWN) {
+                Direction cameraFacing = Direction.fromYRot(levelRenderState.cameraRenderState.yRot);
+                if (cameraFacing != Direction.NORTH) {
+                    poseStack.rotateAround(V_ROT[cameraFacing.ordinal() - V_ROT_OFFSET], 0.5F, 1, 0.5F);
+                }
             }
-            matrix.popPose();
+
+            PoseStack.Pose pose = poseStack.last();
+            Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
+            Matrix4f matrix = pose.pose();
+
+            //face draw code donated by XFactHD
+            FaceInfo faceInfo = FaceInfo.fromFacing(face);
+            for (int vertex = 0; vertex < 4; vertex++) {
+                FaceInfo.VertexInfo vertInfo = faceInfo.getVertexInfo(vertex);
+                float x = vertInfo.xFace().select(0, 0, 0, 1, 1, 1) + face.getStepX() * 0.01F;
+                float y = vertInfo.yFace().select(0, 0, 0, 1, 1, 1) + face.getStepY() * 0.01F;
+                float z = vertInfo.zFace().select(0, 0, 0, 1, 1, 1) + face.getStepZ() * 0.01F;
+                float u = vertex < 2 ? 0 : 1;
+                float v = vertex == 0 || vertex == 3 ? 0 : 1;
+                buffer.addVertex(matrix, x, y, z)
+                      .setColor(transmissionColor)
+                      .setUv(sprite.getU(u), sprite.getV(v))
+                      .setOverlay(OverlayTexture.NO_OVERLAY)
+                      .setLight(LightCoordsUtil.FULL_BRIGHT)
+                      .setNormal(normal.x, normal.y, normal.z);
+            }
+
+            poseStack.popPose();
         }
         return false;
     }
 
-    @NullMarked
-    private record HackyNodeCollector(MultiBufferSource.BufferSource renderer) implements OrderedSubmitNodeCollector {
-
-        @Override
-        public void submitCustomGeometry(PoseStack poseStack, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer customGeometryRenderer) {
-            customGeometryRenderer.render(poseStack.last(), renderer.getBuffer(renderType));
-        }
-
-        //nothing else supported
-
-        @Override
-        public void submitShadow(PoseStack poseStack, float radius, List<EntityRenderState.ShadowPiece> pieces) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitNameTag(PoseStack poseStack, @Nullable Vec3 nameTagAttachment, int offset, Component name, boolean seeThrough, int lightCoords, double distanceToCameraSq, CameraRenderState camera) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitText(PoseStack poseStack, float x, float y, FormattedCharSequence string, boolean dropShadow, Font.DisplayMode displayMode, int lightCoords, int color, int backgroundColor, int outlineColor) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitFlame(PoseStack poseStack, EntityRenderState renderState, Quaternionf rotation) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitLeash(PoseStack poseStack, EntityRenderState.LeashState leashState) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public <S> void submitModel(Model<? super S> model, S state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitModelPart(ModelPart modelPart, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, @Nullable TextureAtlasSprite sprite, boolean sheeted, boolean hasFoil, int tintedColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay, int outlineColor) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState movingBlockRenderState) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitBreakingBlockModel(PoseStack poseStack, BlockStateModel model, long seed, int progress) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, ItemStackRenderState.FoilType foilType) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void submitParticleGroup(SubmitNodeCollector.ParticleGroupRenderer particleGroupRenderer) {
-            throw new UnsupportedOperationException();
-        }
-    }
 }

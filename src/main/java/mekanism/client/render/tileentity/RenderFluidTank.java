@@ -1,12 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
@@ -21,7 +18,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -29,18 +25,16 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank, FluidTankRenderState> {
 
-    private static final Int2ObjectMap<Model3D> cachedCenterFluids = new Int2ObjectOpenHashMap<>();
-    private static final Int2ObjectMap<Model3D> cachedValveFluids = new Int2ObjectOpenHashMap<>();
-
     private static final int stages = 1_400;
+    public static final float CONTENTS_MIN_XZ = 0.135F;
+    public static final float CONTENTS_MAX_XZ = 0.865F;
+    public static final float CONTENTS_MIN_Y = 0.12375F;
+    public static final float VALVE_MIN_XZ = 0.3225F;
+    public static final float VALVE_MAX_XZ = 0.6775F;
+    public static final float VALVE_MAX_Y = 0.87625F;
 
     public RenderFluidTank(BlockEntityRendererProvider.Context context) {
         super(context);
-    }
-
-    public static void resetCachedModels() {
-        cachedCenterFluids.clear();
-        cachedValveFluids.clear();
     }
 
     @Override
@@ -51,18 +45,21 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
-        //TODO - 26.1: Should we by copying the fluid stacks? - Pup. I think we should pass the texture instead - thiakil
-        state.fluid = tank.fluidTank.getFluid();
-        state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
-        state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
-        state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;
-        state.fluidTexture = state.fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(state.fluid, FluidTextureType.STILL));
-        if (!tank.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tank.valveFluid)) {
+        FluidStack fluid = tank.fluidTank.getFluid();
+        state.fluidTint = MekanismRenderer.getColorARGB(fluid, state.fluidScale);
+        state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluid);
+        state.fluidScale = fluid.isEmpty() ? 0 : tank.prevScale;
+        boolean gaseous = MekanismUtils.lighterThanAirGas(fluid);
+        state.contentsMaxY = state.fluidScale > 0 ? contentsMaxY(state.fluidScale, gaseous) : 0;
+        state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
+
+        if (!tank.valveFluid.isEmpty() && !gaseous) {
             //If it is lighter than air we don't need to render the valve
-            state.valveFluid = tank.valveFluid;
-            state.valveTint = MekanismRenderer.getColorARGB(state.valveFluid);
-            state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.valveFluid);
-            state.valveFluidTexture = MekanismRenderer.getValveTexture(state.valveFluid);
+            FluidStack valveFluid = tank.valveFluid;
+            state.valveMinY = valveMinY(state.fluidScale);
+            state.valveTint = MekanismRenderer.getColorARGB(valveFluid);
+            state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, valveFluid);
+            state.valveFluidTexture = MekanismRenderer.getValveTexture(valveFluid);
         } else {
             state.valveFluidTexture = null;
         }
@@ -70,16 +67,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     @Override
     public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //todo - 26.1 rendering
-        //TODO move model gathering to the extract
         RenderType renderType = Sheets.translucentBlockSheet();
         if (state.fluidScale > 0) {
-            Model3D object = getFluidModel(state.fluid, state.fluidScale);
-            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, CONTENTS_MIN_XZ, CONTENTS_MIN_Y, CONTENTS_MIN_XZ, CONTENTS_MAX_XZ, state.contentsMaxY, CONTENTS_MAX_XZ, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
-        if (!state.valveFluid.isEmpty()) {
-            Model3D object = getValveModel(state.valveFluid, state.fluidScale);
-            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
+        if (state.valveFluidTexture != null) {
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.HORIZONTAL, VALVE_MIN_XZ, state.valveMinY, VALVE_MIN_XZ, VALVE_MAX_XZ, VALVE_MAX_Y, VALVE_MAX_XZ, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
         }
     }
 
@@ -88,43 +81,24 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return ProfilerConstants.FLUID_TANK;
     }
 
-    private Model3D getValveModel(FluidStack fluid, float fluidScale) {
-        int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-        Model3D model = cachedValveFluids.get(stage);
-        if (model == null) {
-            model = new Model3D()
-                  .setSideRender(side -> side.getAxis().isHorizontal())
-                  .xBounds(0.3225F, 0.6775F)
-                  .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
-                  .zBounds(0.3225F, 0.6775F);
-            cachedValveFluids.put(stage, model);
-        }
-        return model;
+    public static float valveMinY(float fluidScale) {
+        int stageToUse = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
+        float stageFraction = stageToUse / (float) stages;
+        return CONTENTS_MIN_Y + 0.7525F * stageFraction;
     }
 
-    public static Model3D getFluidModel(FluidStack fluid, float fluidScale) {
-        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
-        Model3D model = cachedCenterFluids.get(stage);
-        if (model == null) {
-            model = new Model3D()
-                  .setSideRender(Direction.DOWN, false)
-                  .setSideRender(Direction.UP, stage < stages)
-                  .xBounds(0.135F, 0.865F)
-                  .yBounds(0.12375F, 0.124F + 0.75225F * (stage / (float) stages))
-                  .zBounds(0.135F, 0.865F);
-            cachedCenterFluids.put(stage, model);
-        }
-        return model;
+    public static float contentsMaxY(float fluidScale, boolean gaseous) {
+        int stage = ModelRenderer.getStage(gaseous, stages, fluidScale);
+        return CONTENTS_MIN_Y + 0.75225F * (stage / (float) stages);
     }
 
     public static class FluidTankRenderState extends BlockEntityRenderState {
 
-        //TODO - 26.1: Store the textures instead of the fluid stacks
-        public FluidStack fluid = FluidStack.EMPTY;
+        public float contentsMaxY;
         public int fluidTint = 0xFFFFFFFF;
         public int fluidGlow;
         public float fluidScale;
-        public FluidStack valveFluid = FluidStack.EMPTY;
+        public float valveMinY;
         public int valveTint = 0xFFFFFFFF;
         public int valveGlow;
         @Nullable
