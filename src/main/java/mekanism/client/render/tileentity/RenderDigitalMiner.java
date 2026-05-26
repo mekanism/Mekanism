@@ -3,8 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.LazyModel;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderState;
@@ -27,17 +25,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner, DigitalMinerRenderState> {
 
-    private static final LazyModel model = new LazyModel(() -> new Model3D()
-          .bounds(0, 1)
-    );
-
     private static final int UP_DOWN_COLOR = ARGB.white(0.82F);
     private static final int EAST_WEST_COLOR = ARGB.white(0.78F);
     private static final int NORTH_SOUTH_COLOR = ARGB.white(0.8F);
-
-    public static void resetCachedVisuals() {
-        model.reset();
-    }
 
     public RenderDigitalMiner(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -71,8 +61,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               state.blockPos.getX() - state.radius, state.minY, state.blockPos.getZ() - state.radius,
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-        Model3D model3D = model.get();
-        RenderResizableCuboid.renderCube(model3D, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+        RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.ALL_FACES, 0, 0, 0, 1, 1, 1, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
         poseStack.popPose();
     }
 

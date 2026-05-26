@@ -6,13 +6,13 @@ import java.util.function.Consumer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.ModelUtil;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.TexturePicker;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -41,9 +41,9 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         if (argument == null) {
             return;
         }
-        if (argument.fluidScale > 0) {
+        if (argument.contentsMaxY > 0) {
             int lightToUse = MekanismRenderer.calculateGlowLight(lightCoords, argument.fluidLight);
-            RenderResizableCuboid.renderCube(argument.fluidModel(), poseStack, Sheets.translucentBlockSheet(), submitNodeCollector,
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MIN_Y, RenderFluidTank.CONTENTS_MIN_XZ, RenderFluidTank.CONTENTS_MAX_XZ, argument.contentsMaxY, RenderFluidTank.CONTENTS_MAX_XZ, poseStack, Sheets.translucentBlockSheet(), submitNodeCollector,
                   argument.fluidColor, lightToUse, overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT,
                   Minecraft.getInstance().gameRenderer.getMainCamera().position(), null, argument.fluidTexture);
         }
@@ -61,20 +61,19 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     @Override
     public TankRenderState extractArgument(ItemStack stack) {
         ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(ItemAccess.forStack(stack));
-        float fluidScale = 0;
         int fluidLight = 0;
         int fluidColor = 0;
-        Model3D fluidModel = null;
+        float contentsMaxY = 0;
         TexturePicker fluidTexture = null;
         if (attachment != null) {
             IFluidTank container = attachment.getContainer(0);
-            FluidResource fluidType = container.resource();
-            if (!fluidType.isEmpty()) {
-                fluidScale = (float) container.amountAsLong() / container.capacityAsLong(fluidType);
-                fluidModel = RenderFluidTank.getFluidModel(fluidType, fluidScale);
-                fluidLight = fluidType.getFluidType().getLightLevel();
-                fluidColor = MekanismRenderer.getColorARGB(fluidType, fluidScale);
-                fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, MekanismRenderer.FluidTextureType.STILL));
+            FluidResource fluid = container.resource();
+            if (!fluid.isEmpty()) {
+                float fluidScale = (float) container.amountAsLong() / container.capacityAsLong(fluid);
+                contentsMaxY = fluidScale > 0 ? RenderFluidTank.contentsMaxY(fluidScale, MekanismUtils.lighterThanAirGas(fluid)) : 0;
+                fluidLight = fluid.getFluidType().getLightLevel();//todo - 26.1: used to be stack, is that important anywhere?
+                fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             }
         }
         //todo - 26.1: do this with the block model from model manager (copy Energy cube item)
@@ -82,10 +81,10 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         BlockModelRenderState blockModel = new BlockModelRenderState();
         mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
         //blockModel.tintLayers().add(tierTint);
-        return new TankRenderState(fluidScale, fluidLight, fluidColor, fluidModel, fluidTexture, blockModel);
+        return new TankRenderState(fluidLight, fluidColor, contentsMaxY, fluidTexture, blockModel);
     }
 
-    public record TankRenderState(float fluidScale, int fluidLight, int fluidColor, @Nullable Model3D fluidModel, @Nullable TexturePicker fluidTexture,
+    public record TankRenderState(int fluidLight, int fluidColor, float contentsMaxY, @Nullable TexturePicker fluidTexture,
                                   BlockModelRenderState blockModelRenderState) {
     }
 

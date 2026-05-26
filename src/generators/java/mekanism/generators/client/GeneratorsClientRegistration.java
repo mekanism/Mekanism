@@ -136,9 +136,6 @@ public class GeneratorsClientRegistration {
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
-        //Reset any cached models now that the atlases are built
-        RenderBioGenerator.resetCachedModels();
-        RenderFissionReactor.resetCachedModels();
         GeneratorsSpecialColors.GUI_OBJECTS.parse(MekanismGenerators.rl("textures/colormap/gui_objects.png"));
     }
 

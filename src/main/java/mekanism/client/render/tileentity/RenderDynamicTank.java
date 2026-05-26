@@ -4,31 +4,31 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.RenderResizableCuboid;
-import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.tileentity.RenderDynamicTank.DynamicTankRenderState;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -48,59 +48,47 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         TankMultiblockData multiblock = tank.getMultiblock();
-        state.renderData = getRenderData(multiblock);
-        state.tankTexture = MekanismRenderer.getSinglePicker(getContentsTexture(multiblock));
-        state.scale = multiblock.prevScale;
+        state.gather(multiblock);
+
+        float scale = multiblock.prevScale;
         state.valves.clear();
         state.valveTexture = null;
-        if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().resource());
-            for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
-                state.valves.add(ValveRenderData.get(fluidRenderData, entry.getKey(), entry.getValue().side));
+
+        switch (multiblock.mergedTank.getCurrentType()) {
+            case FLUID -> {
+                FluidResource fluid = multiblock.getFluidTank().resource();
+                state.tankTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
+                state.tankGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
+                state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
+                state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
+                state.valveTexture = MekanismRenderer.getValveTexture(fluid);
+                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                    state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.tankMaxY - 0.01F, state.renderLocation, state.height));
+                }
+            }
+            case CHEMICAL -> {
+                ChemicalResource chemical = multiblock.getChemicalTank().resource();
+                state.tankTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemical));
+                state.tankGlow = LightCoordsUtil.FULL_SKY;
+                state.tankColor = MekanismRenderer.getColorARGB(chemical, scale);
+                state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, chemical.is(MekanismAPITags.Chemicals.GASEOUS));
+            }
+            case EMPTY -> {
+                state.tankTexture = null;
             }
         }
     }
 
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.tankTexture == null) {
+            return;
+        }
         RenderType renderType = Sheets.translucentBlockSheet();
-        if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(fluidRenderData, state.scale);
-            int fluidColor = fluidRenderData.getColorARGB();
-            int fluidColorScaled = fluidRenderData.getColorARGB(state.scale);
-            int glowLight = fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.tankTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
-            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
-        } else if (state.renderData != null) {
-            MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.tankTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
+        RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.tankMaxY, state.width - 0.02F, state.tankTexture, OverlayTexture.NO_OVERLAY, state.tankGlow, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
+        if (!state.valves.isEmpty()) {//redundant, but saves some stack space
+            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.renderLocation, state.length, state.width, state.height, state.tankColor, state.tankGlow, state.tankMaxY - 0.01F);
         }
-    }
-
-    @Nullable
-    private RenderData getRenderData(TankMultiblockData multiblock) {
-        CurrentType currentType = multiblock.mergedTank.getCurrentType();
-        if (currentType == CurrentType.EMPTY) {
-            return null;
-        }
-        return (switch (currentType) {
-            case FLUID -> RenderData.Builder.create(multiblock.getFluidTank());
-            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().resource());
-            default -> throw new IllegalStateException("Unknown current type.");
-        }).of(multiblock).build();
-    }
-
-    @Nullable
-    private TextureAtlasSprite getContentsTexture(TankMultiblockData multiblock) {
-        CurrentType currentType = multiblock.mergedTank.getCurrentType();
-        if (currentType == CurrentType.EMPTY) {
-            return null;
-        }
-        return switch (currentType) {
-            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().resource(), MekanismRenderer.FluidTextureType.STILL);
-            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().resource());
-            default -> throw new IllegalStateException("Unknown current type.");
-        };
     }
 
     @Override
@@ -113,14 +101,17 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         return super.shouldRender(tile, multiblock, camera) && !multiblock.isEmpty();
     }
 
-    public static class DynamicTankRenderState extends BlockEntityRenderState {
+    public static class DynamicTankRenderState extends MultiblockContentsRenderState {
 
         @Nullable
-        public RenderData renderData;
-        public float scale;
+        public RenderResizableCuboid.TexturePicker tankTexture;
+        public int tankColor;
+        public int tankGlow;
+        public float tankMaxY;
+
         public List<ValveRenderData> valves = new ArrayList<>();
-        public @Nullable RenderResizableCuboid.TexturePicker tankTexture;
         @Nullable
         public MekanismRenderer.ValveTextureGetter valveTexture;
+
     }
 }

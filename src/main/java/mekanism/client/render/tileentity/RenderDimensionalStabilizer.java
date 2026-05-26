@@ -3,15 +3,15 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.LazyModel;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
@@ -35,20 +35,13 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<TileEntityDimensionalStabilizer, StabilizerRenderState> {
-
-    private static final MekanismRenderer.LazyModel model = new LazyModel(() -> new Model3D()
-          .bounds(0, 1)
-          //Don't bother rendering the top or the bottom as it is always at world bounds
-          .setSideRender(direction -> direction.getAxis().isHorizontal())
-    );
-    //Note: We skip up and down as we never render them so no need to set the color
+    
     //TODO: At some point experiment with different colors to try and improve rendering of it when in a checkerboard pattern
     // so that it is clearer which ones are rendering and which are not, or maybe evaluate actually having the top and bottom render
     private static final int NORTH_SOUTH_COLOR = ARGB.white(0.82F);
     private static final int EAST_WEST_COLOR = ARGB.white(0.78F);
 
     public static void resetCachedVisuals() {
-        model.reset();
     }
 
     public RenderDimensionalStabilizer(BlockEntityRendererProvider.Context context) {
@@ -100,7 +93,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         BlockPos pos = state.blockPos;
         state.chunkX = SectionPos.blockToSectionCoord(pos.getX());
         state.chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
-        state.model = RenderDimensionalStabilizer.model.get();
         state.renderPieces = calculateRenderPieces(allRenderSides);
     }
 
@@ -108,11 +100,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     public void submit(StabilizerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         BlockPos pos = state.blockPos;
         for (RenderPiece piece : state.renderPieces) {
-            //Set the visibility of the sides that are going to render for this piece
-            state.model.setSideRender(Direction.NORTH, piece.renderNorth)
-                  .setSideRender(Direction.EAST, piece.renderEast)
-                  .setSideRender(Direction.SOUTH, piece.renderSouth)
-                  .setSideRender(Direction.WEST, piece.renderWest);
             int xChunkOffset = piece.x - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             int zChunkOffset = piece.z - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             ChunkPos startChunk = new ChunkPos(state.chunkX + xChunkOffset, state.chunkZ + zChunkOffset);
@@ -147,8 +134,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, state.minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
-            //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds of block sized quads?
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+            RenderResizableCuboid.renderCube(piece.sidesToRender(), 0, 0, 0, 1, 1, 1, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
             poseStack.popPose();
         }
     }
@@ -274,12 +260,15 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     }
 
     public record RenderPiece(int x, int xLength, int z, int zLength, boolean renderNorth, boolean renderSouth, boolean renderEast, boolean renderWest) {
+
+        public @SideRender.SideRenderFlags byte sidesToRender() {
+            return RenderResizableCuboid.SideRender.from(false, false, renderNorth, renderSouth, renderWest, renderEast);
+        }
     }
     
     public static class StabilizerRenderState extends BlockEntityRenderState {
 
-        public List<RenderPiece> renderPieces;
-        public Model3D model;
+        public List<RenderPiece> renderPieces = Collections.emptyList();
         public int chunkX;
         public int chunkZ;
         public int minY;

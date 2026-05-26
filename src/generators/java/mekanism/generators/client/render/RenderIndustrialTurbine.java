@@ -1,12 +1,13 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.MultiblockContentsRenderState;
 import mekanism.client.render.RenderResizableCuboid;
-import mekanism.client.render.data.RenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.generators.client.render.RenderIndustrialTurbine.TurbineRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
@@ -15,7 +16,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -40,26 +40,25 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(turbine, state, partialTick, cameraPosition, breakProgress);
         TurbineMultiblockData multiblock = turbine.getMultiblock();
-        state.steamScale = multiblock.prevSteamScale;
-        state.steamData = null;
+        state.gather(multiblock);
+        float steamScale = multiblock.prevSteamScale;
+        state.steamTexture = null;
         if (!multiblock.chemicalTank.isEmpty() && multiblock.length() > 0) {
             int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
+            state.height = height;
             if (height > 0) {
                 ChemicalResource chemicalType = multiblock.chemicalTank.resource();
-                state.steamData = RenderData.Builder.create(chemicalType)
-                      .of(multiblock)
-                      .height(height)
-                      .build();
                 state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
+                state.steamMaxY = ModelRenderer.getMaxY(state.height, steamScale, chemicalType.is(MekanismAPITags.Chemicals.GASEOUS));
+                state.steamColor = MekanismRenderer.getColorARGB(chemicalType, steamScale);
             }
         }
     }
 
     @Override
     public void submit(TurbineRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.steamData != null) {
-            MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
+        if (state.steamTexture != null) {
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
         }
     }
 
@@ -73,12 +72,10 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         return super.shouldRender(tile, multiblock, camera) && multiblock.complex != null;
     }
 
-    public static class TurbineRenderState extends BlockEntityRenderState {
-
-        @Nullable
-        public RenderData steamData;
-        public float steamScale;
+    public static class TurbineRenderState extends MultiblockContentsRenderState {
         @Nullable
         public RenderResizableCuboid.TexturePicker steamTexture;
+        public float steamMaxY;
+        public int steamColor;
     }
 }
