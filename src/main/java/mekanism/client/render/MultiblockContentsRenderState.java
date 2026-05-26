@@ -10,7 +10,7 @@ public class MultiblockContentsRenderState extends BlockEntityRenderState {
     public int length, width, height;
 
     public void gather(MultiblockData multiblock) {
-        renderLocation = Objects.requireNonNull(multiblock.renderLocation, "Render location may not be null.");
+        renderLocation = Objects.requireNonNull(multiblock.renderLocation, "Render location may not be null.").offset(1, 0, 1);
         length = multiblock.length() - 2;
         width = multiblock.width() - 2;
         height = multiblock.height() - 2;
