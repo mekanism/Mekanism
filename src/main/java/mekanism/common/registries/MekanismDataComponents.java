@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -169,10 +170,10 @@ public class MekanismDataComponents {
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ItemResource>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
-          builder -> builder.persistent(ItemResource.OPTIONAL_CODEC
-                .promotePartial(error -> Mekanism.logger.error("Failed to load item target: {}", error))
-                .orElse(ItemResource.EMPTY)
-          ).networkSynchronized(ItemResource.STREAM_CODEC)
+          builder -> builder.persistent(ItemResource.OPTIONAL_CODEC.orElse(
+                (Consumer<String>) error -> Mekanism.logger.error("Failed to load item target: {}", error),
+                ItemResource.EMPTY
+          )).networkSynchronized(ItemResource.STREAM_CODEC)
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DriveMetadata>> DRIVE_METADATA = DATA_COMPONENTS.simple("drive_metadata",
           builder -> builder.persistent(DriveMetadata.CODEC)

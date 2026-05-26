@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
@@ -98,9 +99,10 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
             }));
             Codec<LargeResourceStack<RESOURCE>> optionalCodec = ExtraCodecs.optionalEmptyMap(codec)
                   .xmap(optional -> optional.orElse(emptyStack), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
-            //TODO - 26.1: Re-evaluate this
-            Codec<LargeResourceStack<RESOURCE>> orEmptyCodec = optionalCodec.promotePartial(error -> MekanismAPI.logger.error("Tried to load invalid resource: '{}'", error))
-                  .orElse(emptyStack);
+            Codec<LargeResourceStack<RESOURCE>> orEmptyCodec = optionalCodec.orElse(
+                  (Consumer<String>) error -> MekanismAPI.logger.error("Tried to load invalid resource: '{}'", error),
+                  emptyStack
+            );
             return new StackHelper<>(emptyStack, codec, optionalCodec, orEmptyCodec, new StreamCodec<>() {
                 @NonNull
                 @Override

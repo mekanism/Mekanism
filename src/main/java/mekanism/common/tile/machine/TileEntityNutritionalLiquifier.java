@@ -229,14 +229,16 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putChild(SerializationConstants.FLUID, fluidTank);
-        output.store(SerializationConstants.ITEM, ItemResource.OPTIONAL_CODEC, lastPasteItem);
+        if (!lastPasteItem.isEmpty()) {
+            output.store(SerializationConstants.ITEM, ItemResource.CODEC, lastPasteItem);
+        }
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.FLUID, fluidTank);
-        lastPasteItem = input.read(SerializationConstants.ITEM, ItemResource.OPTIONAL_CODEC).orElse(ItemResource.EMPTY);
+        lastPasteItem = input.read(SerializationConstants.ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
     }
 
     //Methods relating to IComputerTile

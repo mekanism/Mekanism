@@ -40,6 +40,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
+        addRenderableWidget(new GuiDownArrow(this, 9, 44));
         addRenderableWidget(new GuiDownArrow(this, 159, 44));
         energyBar = addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))

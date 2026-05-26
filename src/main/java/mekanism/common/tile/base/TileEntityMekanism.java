@@ -423,7 +423,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      *
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
-    public final boolean hasInventory() {//TODO - 26.1: Should we throw this check in an interface?
+    public final boolean hasInventory() {
         return itemHandlerManager != null;
     }
 
@@ -431,7 +431,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return chemicalHandlerManager != null;
     }
 
-    public final boolean canHandleFluid() {//TODO - 26.1: Should we throw this check in an interface?
+    public final boolean canHandleFluid() {
         return fluidHandlerManager != null;
     }
 

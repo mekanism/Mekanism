@@ -47,8 +47,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(isProcessingResource, "The supplier that determines whether the resource is being processed cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canRotaryInsert(chemicalTank, itemType, Capabilities.CHEMICAL.item(), isProcessingResource),
-              (itemType, automationType) -> automationType.isInternal() || canRotaryInsert(chemicalTank, itemType, Capabilities.CHEMICAL.item(), isProcessingResource),
-              listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canRotaryInsert(chemicalTank, itemType, Capabilities.CHEMICAL.item(), isProcessingResource), listener, x, y);
     }
 
     /**
