@@ -97,6 +97,7 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.EventPriority;
@@ -111,6 +112,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -187,6 +189,15 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
+        NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
+            //Sync all Mekanism Recipes
+            //TODO: Evaluate if there is a way we want to do this that doesn't require syncing everything
+            //TODO - 26.1: How does this handle the builtin smelting recipes? Note: It might work currently even if this doesn't sync, just because JEI syncs the vanilla types
+            // in which case we need to mark the vanilla type that we wrap for syncing in case JEI isn't present
+            for (Holder<RecipeType<?>> entry : MekanismRecipeType.RECIPE_TYPES.getEntries()) {
+                event.sendRecipes(entry.value());
+            }
+        });
         modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
