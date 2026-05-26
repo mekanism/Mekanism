@@ -144,7 +144,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     @Override
     public @NotNull CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@NotNull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.crystallizing(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)

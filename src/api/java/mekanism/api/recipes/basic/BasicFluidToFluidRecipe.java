@@ -7,8 +7,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Contract;
 
@@ -29,23 +30,18 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     }
 
     @Override
-    public boolean test(FluidStack fluidStack) {
-        return this.input.test(fluidStack);
-    }
-
-    @Override
     public FluidStackIngredient getInput() {
         return input;
     }
 
     @Override
-    public List<FluidStack> getOutputDefinition() {
-        return Collections.singletonList(output.create());
+    public List<FluidStackTemplate> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override
     @Contract(pure = true)
-    public FluidStackTemplate getOutput(FluidStack input) {
+    public FluidStackTemplate getOutput(TypedInstance<Fluid> input) {
         return output;
     }
 

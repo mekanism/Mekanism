@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -136,7 +135,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         }
         BasicPressurizedReactionRecipe other = (BasicPressurizedReactionRecipe) o;
         return energyRequired == other.energyRequired && duration == other.duration && inputSolid.equals(other.inputSolid) && inputFluid.equals(other.inputFluid) &&
-               inputChemical.equals(other.inputChemical) && ItemStackTemplateHelper.matches(outputItem, other.outputItem) && outputChemical.equals(other.outputChemical);
+               inputChemical.equals(other.inputChemical) && Objects.equals(outputItem, other.outputItem) && outputChemical.equals(other.outputChemical);
     }
 
     @Override
@@ -148,8 +147,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         result = 31 * result + duration;
         result = 31 * result + outputChemical.hashCode();
         if (outputItem != null) {
-            result = 31 * result + ItemStackTemplateHelper.hashItemAndComponents(outputItem);
-            result = 31 * result + outputItem.count();
+            result = 31 * result + outputItem.hashCode();
         }
         return result;
     }

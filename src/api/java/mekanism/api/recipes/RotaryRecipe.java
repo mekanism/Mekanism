@@ -100,7 +100,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      */
-    public abstract List<FluidStack> getFluidOutputDefinition();
+    public abstract List<FluidStackTemplate> getFluidOutputDefinition();
 
     /**
      * Gets a new chemical output based on the given input.

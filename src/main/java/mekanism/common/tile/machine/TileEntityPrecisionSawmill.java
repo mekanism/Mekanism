@@ -133,7 +133,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @NotNull
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@NotNull SawmillRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.sawing(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)

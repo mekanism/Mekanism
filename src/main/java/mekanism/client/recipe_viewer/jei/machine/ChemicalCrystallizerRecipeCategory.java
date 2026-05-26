@@ -71,7 +71,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
         initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations(getSlotDisplayContext()))
               .setSlotName(CHEMICAL_INPUT);

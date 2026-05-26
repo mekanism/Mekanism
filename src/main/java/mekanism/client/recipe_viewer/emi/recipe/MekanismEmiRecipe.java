@@ -10,6 +10,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
@@ -31,8 +32,10 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -100,12 +103,12 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         catalysts.add(ingredient(RecipeViewerUtils.getStacksFor(ingredient, true)));
     }
 
-    protected void addItemOutputDefinition(List<ItemStack> definition) {
-        addOutputDefinition(definition.stream().map(EmiStack::of).toList());
+    protected void addItemOutputDefinition(List<ItemStackTemplate> definition) {
+        addOutputDefinition(definition.stream().map(ItemStackTemplate::create).map(EmiStack::of).toList());
     }
 
-    protected void addFluidOutputDefinition(List<FluidStack> definition) {
-        addOutputDefinition(definition.stream().map(NeoForgeEmiStack::of).toList());
+    protected void addFluidOutputDefinition(List<FluidStackTemplate> definition) {
+        addOutputDefinition(definition.stream().map(FluidStackTemplate::create).map(NeoForgeEmiStack::of).toList());
     }
 
     protected void addChemicalOutputDefinition(List<ChemicalStack> definition) {

@@ -11,7 +11,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.context.ContextMap;
@@ -47,27 +46,26 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     }
 
     @Override
-    public boolean test(ItemStack input) {
-        return this.input.test(input);
-    }
-
-    @Override
     public ItemStackIngredient getInput() {
         return input;
     }
 
     @Override
-    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input) {
+    public ItemStackTemplate getOutput(TypedInstance<Item> input) {
         ItemStack stack = IngredientCreatorAccess.item().createStack(input);
         return ItemStackTemplate.fromNonEmptyStack(wrapped.assemble(new SingleRecipeInput(stack)));
     }
 
     @Override
-    public List<ItemStack> getOutputDefinition() {
-        List<ItemStack> list = new ArrayList<>();
+    public List<ItemStackTemplate> getOutputDefinition() {
+        List<ItemStackTemplate> list = new ArrayList<>();
         for (RecipeDisplay display : wrapped.display()) {
             //TODO - 26.1 can we get a level here and use SlotDisplayContext.fromLevel()?
-            list.addAll(display.result().resolveForStacks(ContextMap.EMPTY));
+            for (ItemStack stack : display.result().resolveForStacks(ContextMap.EMPTY)) {
+                if (!stack.isEmpty()) {//TODO - 26.1: Can resolved stacks ever be empty?
+                    list.add(ItemStackTemplate.fromNonEmptyStack(stack));
+                }
+            }
         }
         return list;
     }

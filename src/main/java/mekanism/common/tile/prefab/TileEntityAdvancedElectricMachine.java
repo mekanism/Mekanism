@@ -178,10 +178,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
-            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler,
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler,
                   gasUsageMultiplier, used -> usedSoFar = used, outputHandler);
         } else {
-            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler, outputHandler);
+            cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler, outputHandler);
         }
         return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)

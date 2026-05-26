@@ -1,20 +1,12 @@
 package mekanism.api.recipes;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
-import net.minecraft.world.item.Item;
+import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -29,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
+public abstract class ItemStackToItemStackRecipe extends ItemInputRecipe<ItemStackTemplate> {
 
     protected final RecipeType<ItemStackToItemStackRecipe> recipeType;
 
@@ -38,58 +30,11 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
     }
 
     @Override
-    public abstract boolean test(ItemStack input);
-
-    @NotNull
-    @Override
     public ItemStack assemble(SingleRecipeInput input) {
         if (!isIncomplete() && test(input.item())) {
             return getOutput(input.item()).create();
         }
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.item());
-    }
-
-    /**
-     * Gets the input ingredient.
-     */
-    public abstract ItemStackIngredient getInput();
-
-    /**
-     * Gets a new output based on the given input.
-     *
-     * @param input Specific input.
-     *
-     * @return New output.
-     *
-     * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
-     * outputs where things like NBT may be different.
-     * @implNote The passed in input should <strong>NOT</strong> be modified.
-     */
-    @Contract(pure = true)
-    public abstract <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input);
-
-    /**
-     * For JEI, gets the output representations to display.
-     *
-     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
-     * TODO - 26.1 - can this use ItemStackTemplate?
-     */
-    public abstract List<ItemStack> getOutputDefinition();
-
-    @Override
-    public boolean isIncomplete() {
-        return getInput().hasNoMatchingInstances();
-    }
-
-    @Override
-    public void logMissingTags() {
-        getInput().logMissingTags();
     }
 
     @Override

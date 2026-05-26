@@ -168,10 +168,10 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
-            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
                   chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);
         } else {
-            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler);
+            cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler);
         }
         return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)

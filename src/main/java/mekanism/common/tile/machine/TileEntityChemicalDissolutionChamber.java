@@ -177,10 +177,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(@NotNull ChemicalDissolutionRecipe recipe, int cacheIndex) {
         CachedRecipe<ChemicalDissolutionRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
-            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.dissolution(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
                   injectUsageMultiplier, used -> usedSoFar = used, outputHandler);
         } else {
-            cachedRecipe = TwoInputCachedRecipe.itemChemicalToChemical(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
+            cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
         }
         return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)

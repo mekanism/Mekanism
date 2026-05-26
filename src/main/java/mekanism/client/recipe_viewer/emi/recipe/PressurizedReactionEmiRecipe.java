@@ -34,12 +34,12 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
             itemOutputs.add(output.item());
             chemicalOutputs.add(output.chemical());
         }
-        if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
+        if (itemOutputs.stream().allMatch(ItemStack::isEmpty)) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addItemOutputDefinition(itemOutputs);
         }
-        if (chemicalOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
+        if (chemicalOutputs.stream().allMatch(ChemicalStack::isEmpty)) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addChemicalOutputDefinition(chemicalOutputs);

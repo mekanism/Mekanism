@@ -11,9 +11,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
@@ -57,13 +55,8 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public <ITEM_INPUT extends TypedInstance<Item> & DataComponentHolder> ChemicalStack getOutput(ITEM_INPUT inputItem, TypedInstance<Chemical> inputChemical) {
+    public ChemicalStack getOutput(TypedInstance<Item> inputItem, TypedInstance<Chemical> inputChemical) {
         return output.copy();
-    }
-
-    @Override
-    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
     }
 
     @Override

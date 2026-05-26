@@ -115,13 +115,10 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     }
 
     @Override
-    protected void finishProcessing(int operations, TransactionContext transaction) {
-        //Validate something didn't go horribly wrong
-        if (output != null && !recipeItem.isEmpty() && !recipeFluid.isEmpty() && !recipeChemical.isEmpty()) {
-            itemInputHandler.use(recipeItem, operations, transaction);
-            fluidInputHandler.use(recipeFluid, operations, transaction);
-            chemicalInputHandler.use(recipeChemical, operations, transaction);
-            outputHandler.handleOutput(output, operations, transaction);
-        }
+    protected boolean finishProcessing(int operations, TransactionContext transaction) {
+        return itemInputHandler.use(recipeItem, operations, transaction) &&
+               fluidInputHandler.use(recipeFluid, operations, transaction) &&
+               chemicalInputHandler.use(recipeChemical, operations, transaction) &&
+               outputHandler.handleOutput(output, operations, transaction);
     }
 }

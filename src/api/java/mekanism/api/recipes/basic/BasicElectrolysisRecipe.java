@@ -3,14 +3,14 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
@@ -55,13 +55,8 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public boolean test(FluidStack fluidStack) {
-        return this.input.test(fluidStack);
-    }
-
-    @Override
     @Contract(value = "_ -> new", pure = true)
-    public ElectrolysisRecipeOutput getOutput(FluidStack input) {
+    public ElectrolysisRecipeOutput getOutput(TypedInstance<Fluid> input) {
         return new ElectrolysisRecipeOutput(leftChemicalOutput.copy(), rightChemicalOutput.copy());
     }
 

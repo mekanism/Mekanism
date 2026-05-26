@@ -127,7 +127,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @NotNull
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@NotNull CombinerRecipe recipe, int cacheIndex) {
-        return TwoInputCachedRecipe.combiner(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
+        return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(this::canFunction)
               .setActive(active -> setActiveState(active, cacheIndex))

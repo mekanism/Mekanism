@@ -22,8 +22,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class OutputHelper {
@@ -37,14 +36,13 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull ChemicalStack> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<ChemicalStack> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(ChemicalStack toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(tank, toOutput, operations, transaction);
+            public boolean handleOutput(@Nullable ChemicalStack toOutput, int operations, TransactionContext transaction) {
+                return OutputHelper.handleOutput(tank, toOutput, operations, transaction);
             }
 
             @Override
@@ -60,14 +58,13 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull FluidStackTemplate> getOutputHandler(IFluidTank tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<FluidStackTemplate> getOutputHandler(IFluidTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(tank, toOutput, operations, transaction);
+            public boolean handleOutput(@Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
+                return OutputHelper.handleOutput(tank, toOutput, operations, transaction);
             }
 
             @Override
@@ -83,14 +80,13 @@ public class OutputHelper {
      * @param slot                Slot to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull ItemStackTemplate> getOutputHandler(IInventorySlot slot, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<ItemStackTemplate> getOutputHandler(IInventorySlot slot, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(slot, toOutput, operations, transaction);
+            public boolean handleOutput(@Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
+                return OutputHelper.handleOutput(slot, toOutput, operations, transaction);
             }
 
             @Override
@@ -108,21 +104,43 @@ public class OutputHelper {
      * @param mainSlotNotEnoughSpaceError      The error to apply if the main output causes the recipe to not be able to perform any operations.
      * @param secondarySlotNotEnoughSpaceError The error to apply if the secondary output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull ChanceOutput> getOutputHandler(IInventorySlot mainSlot, RecipeError mainSlotNotEnoughSpaceError,
+    public static IOutputHandler<ChanceOutput> getOutputHandler(IInventorySlot mainSlot, RecipeError mainSlotNotEnoughSpaceError,
           IInventorySlot secondarySlot, RecipeError secondarySlotNotEnoughSpaceError) {
         Objects.requireNonNull(mainSlot, "Main slot cannot be null.");
         Objects.requireNonNull(secondarySlot, "Secondary/Extra slot cannot be null.");
         Objects.requireNonNull(mainSlotNotEnoughSpaceError, "Main slot not enough space error cannot be null.");
         Objects.requireNonNull(secondarySlotNotEnoughSpaceError, "Secondary/Extra slot not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(ChanceOutput toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(mainSlot, toOutput.getMainOutput(), operations, transaction);
-                //TODO: Batch this into a single addition call, by looping over and calculating things?
-                for (int i = 0; i < operations; i++) {
-                    OutputHelper.handleOutput(secondarySlot, toOutput.getSecondaryOutput(), 1, transaction);
+            public boolean handleOutput(@Nullable ChanceOutput toOutput, int operations, TransactionContext transaction) {
+                if (toOutput == null) {
+                    return false;
+                } else if (operations == 0) {
+                    return true;
                 }
+                ItemStackTemplate mainOutput = toOutput.getMainOutput();
+                //If we don't have a primary output, or we could add it all
+                if (mainOutput == null || OutputHelper.handleOutput(mainSlot, mainOutput, operations, transaction)) {
+                    ItemStackTemplate secondaryOutput = toOutput.getMaxSecondaryOutput();
+                    if (secondaryOutput != null) {
+                        ItemResource secondaryType = ItemResource.of(secondaryOutput);
+                        int scaledAmount = 0;
+                        for (int i = 0; i < operations; i++) {
+                            //Note: We know this should fit as we calculated how many operations can be performed based on the maximum amount of the secondary output
+                            ItemStackTemplate nextOutput = toOutput.nextSecondaryOutput();
+                            if (nextOutput != null) {
+                                scaledAmount += nextOutput.count();
+                            }
+                        }
+                        //If we produced a secondary output for our operations, validate that we could add it
+                        if (scaledAmount > 0) {
+                            //Note: We know this shouldn't overflow, as we clamped the operations based on usage in calculateOperationsCanSupport
+                            return OutputHelper.handleOutput(secondarySlot, secondaryType, scaledAmount, transaction);
+                        }
+                    }
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -136,25 +154,28 @@ public class OutputHelper {
     }
 
     /**
-     * Wraps a chemical tank and an inventory slot an {@link IOutputHandler}.
+     * Wraps a chemical tank and an inventory slot into an {@link IOutputHandler}.
      *
      * @param tank                    Tank to wrap.
      * @param slot                    Slot to wrap.
      * @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
      * @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull PressurizedReactionRecipeOutput> getOutputHandler(IInventorySlot slot, RecipeError slotNotEnoughSpaceError,
+    public static IOutputHandler<PressurizedReactionRecipeOutput> getOutputHandler(IInventorySlot slot, RecipeError slotNotEnoughSpaceError,
           IChemicalTank tank, RecipeError tankNotEnoughSpaceError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(slotNotEnoughSpaceError, "Slot not enough space error cannot be null.");
         Objects.requireNonNull(tankNotEnoughSpaceError, "Tank not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(PressurizedReactionRecipeOutput toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(slot, toOutput.item(), operations, transaction);
-                OutputHelper.handleOutput(tank, toOutput.chemical(), operations, transaction);
+            public boolean handleOutput(@Nullable PressurizedReactionRecipeOutput toOutput, int operations, TransactionContext transaction) {
+                if (toOutput == null) {
+                    return false;
+                }
+                ItemStackTemplate item = toOutput.item();
+                return (item == null || OutputHelper.handleOutput(slot, item, operations, transaction)) &&
+                       (toOutput.chemical().isEmpty() || OutputHelper.handleOutput(tank, toOutput.chemical(), operations, transaction));
             }
 
             @Override
@@ -168,7 +189,7 @@ public class OutputHelper {
     }
 
     /**
-     * Wraps a fluid tank and an inventory slot an {@link IOutputHandler}.
+     * Wraps a fluid tank and an inventory slot into an {@link IOutputHandler}.
      *
      * @param tank                    Tank to wrap.
      * @param slot                    Slot to wrap.
@@ -177,18 +198,20 @@ public class OutputHelper {
      *
      * @since 10.6.3
      */
-    public static IOutputHandler<@NotNull FluidOptionalItemOutput> getOutputHandler(IFluidTank tank, RecipeError tankNotEnoughSpaceError,
+    public static IOutputHandler<FluidOptionalItemOutput> getOutputHandler(IFluidTank tank, RecipeError tankNotEnoughSpaceError,
           IInventorySlot slot, RecipeError slotNotEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(tankNotEnoughSpaceError, "Tank not enough space error cannot be null.");
         Objects.requireNonNull(slotNotEnoughSpaceError, "Slot not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(FluidOptionalItemOutput toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(tank, toOutput.fluid(), operations, transaction);
-                OutputHelper.handleOutput(slot, toOutput.optionalItem(), operations, transaction);
+            public boolean handleOutput(@Nullable FluidOptionalItemOutput toOutput, int operations, TransactionContext transaction) {
+                if (toOutput == null) {
+                    return false;
+                }
+                return OutputHelper.handleOutput(tank, toOutput.fluid(), operations, transaction) &&
+                       (toOutput.optionalItem() == null || OutputHelper.handleOutput(slot, toOutput.optionalItem(), operations, transaction));
             }
 
             @Override
@@ -209,18 +232,20 @@ public class OutputHelper {
      * @param leftNotEnoughSpaceError  The error to apply if the left output causes the recipe to not be able to perform any operations.
      * @param rightNotEnoughSpaceError The error to apply if the right output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull ElectrolysisRecipeOutput> getOutputHandler(IChemicalTank leftTank, RecipeError leftNotEnoughSpaceError,
+    public static IOutputHandler<ElectrolysisRecipeOutput> getOutputHandler(IChemicalTank leftTank, RecipeError leftNotEnoughSpaceError,
           IChemicalTank rightTank, RecipeError rightNotEnoughSpaceError) {
         Objects.requireNonNull(leftTank, "Left tank cannot be null.");
         Objects.requireNonNull(rightTank, "Right tank cannot be null.");
         Objects.requireNonNull(leftNotEnoughSpaceError, "Left not enough space error cannot be null.");
         Objects.requireNonNull(rightNotEnoughSpaceError, "Right not enough space error cannot be null.");
         return new IOutputHandler<>() {
-
             @Override
-            public void handleOutput(ElectrolysisRecipeOutput toOutput, int operations, TransactionContext transaction) {
-                OutputHelper.handleOutput(leftTank, toOutput.left(), operations, transaction);
-                OutputHelper.handleOutput(rightTank, toOutput.right(), operations, transaction);
+            public boolean handleOutput(@Nullable ElectrolysisRecipeOutput toOutput, int operations, TransactionContext transaction) {
+                if (toOutput == null) {
+                    return false;
+                }
+                return OutputHelper.handleOutput(leftTank, toOutput.left(), operations, transaction) &&
+                       OutputHelper.handleOutput(rightTank, toOutput.right(), operations, transaction);
             }
 
             @Override
@@ -233,31 +258,29 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Adds {@code operations} operations worth of {@code toOutput} to the output.
-     *
-     * @param tank       Output.
-     * @param toOutput   Output result.
-     * @param operations Operations to perform.
-     */
-    private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations, TransactionContext transaction) {
-        if (operations > 0) {
-            //TODO - 26.1: Evaluate this and adjust things so that it shouldn't have to clamp
-            tank.insert(ChemicalResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
-        }
+    private static boolean handleOutput(IChemicalTank tank, @Nullable ChemicalStack toOutput, int operations, TransactionContext transaction) {
+        return toOutput != null && !toOutput.isEmpty() && handleOutput(tank, ChemicalResource.of(toOutput), toOutput.amount(), operations, transaction);
     }
 
-    private static void handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
-        if (operations > 0 && toOutput != null) {
-            fluidTank.insert(FluidResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
-        }
+    private static boolean handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
+        return toOutput != null && handleOutput(fluidTank, FluidResource.of(toOutput), toOutput.amount(), operations, transaction);
     }
 
-    //TODO - 26.1: Do we want to validate that the amount we expected to insert was able to be inserted before we commit? Probably
-    private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
-        if (operations > 0 && toOutput != null) {
-            inventorySlot.insert(ItemResource.of(toOutput), toOutput.count() * operations, transaction, AutomationType.INTERNAL);
+    private static boolean handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
+        return toOutput != null && handleOutput(inventorySlot, ItemResource.of(toOutput), toOutput.count(), operations, transaction);
+    }
+
+    private static <RESOURCE extends Resource> boolean handleOutput(IResourceContainer<RESOURCE> container, RESOURCE toOutput, int amount, int operations,
+          TransactionContext transaction) {
+        if (operations == 0) {
+            return true;
         }
+        //Note: We know this shouldn't overflow, as we clamped the operations based on usage in calculateOperationsCanSupport
+        return handleOutput(container, toOutput, amount * operations, transaction);
+    }
+
+    private static <RESOURCE extends Resource> boolean handleOutput(IResourceContainer<RESOURCE> container, RESOURCE toOutput, int scaledAmount, TransactionContext transaction) {
+        return container.insert(toOutput, scaledAmount, transaction, AutomationType.INTERNAL) == scaledAmount;
     }
 
     /**

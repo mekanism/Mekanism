@@ -659,7 +659,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
-        return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {
                       trackedErrors[i] = errors.contains(TRACKED_ERROR_TYPES.get(i));

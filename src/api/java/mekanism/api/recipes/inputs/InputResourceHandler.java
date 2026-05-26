@@ -2,16 +2,18 @@ package mekanism.api.recipes.inputs;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import mekanism.api.resource.IResourceContainer;
 import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to make this public and add docs?
 abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredResource<HOLDER_TYPE>, CONTAINER extends IResourceContainer<RESOURCE>,
@@ -27,8 +29,6 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
 
     protected abstract STACK getEmptyStack();
 
-    protected abstract boolean isEmpty(STACK stack);
-
     protected abstract int getAmount(STACK stack);
 
     protected abstract RESOURCE asResource(STACK stack);
@@ -43,17 +43,18 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
     }
 
     @Override
-    public void use(STACK recipeInput, int operations, TransactionContext transaction) {
-        //Ensure that we have operations to perform and the input is not empty. This if should really always be true if we got to finishProcessing
-        if (operations > 0 && !isEmpty(recipeInput)) {
-            //TODO - 26.1: Protect against overflow by adding a MathUtils#multiplyClamped for ints?
-            int amount = getAmount(recipeInput) * operations;
-            int extracted = container.extract(asResource(recipeInput), amount, transaction, AutomationType.INTERNAL);
-            //TODO - 26.1: We probably should abort if this fails to extract what we expect instead of just logging a warning
-            if (amount != extracted) {
-                MekanismAPI.logger.error("Stack size changed by a different amount ({}) than requested ({}).", extracted, amount, new Exception());
-            }
+    @Contract("null, _, _ -> false")
+    public boolean use(@Nullable STACK recipeInput, @Range(from = 0, to = Integer.MAX_VALUE) int operations, TransactionContext transaction) {
+        if (recipeInput == null || isEmpty(recipeInput)) {
+            //If there is no recipe input, something went wrong in calling this method, and return false. In theory this should never happen
+            return false;
+        } else if (operations == 0) {
+            //If we have no operations to perform just return that we used everything we needed to
+            return true;
         }
+        //Note: We know this shouldn't overflow, as we clamped the operations based on usage in calculateOperationsCanSupport
+        int amount = getAmount(recipeInput) * operations;
+        return container.extract(asResource(recipeInput), amount, transaction, AutomationType.INTERNAL) == amount;
     }
 
     @Override

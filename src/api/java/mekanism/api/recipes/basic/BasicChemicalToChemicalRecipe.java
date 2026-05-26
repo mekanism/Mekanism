@@ -4,9 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
@@ -37,11 +39,6 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
     }
 
     @Override
-    public boolean test(ChemicalStack chemicalStack) {
-        return input.test(chemicalStack);
-    }
-
-    @Override
     public ChemicalStackIngredient getInput() {
         return input;
     }
@@ -53,7 +50,7 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public ChemicalStack getOutput(ChemicalStack input) {
+    public ChemicalStack getOutput(TypedInstance<Chemical> input) {
         return output.copy();
     }
 

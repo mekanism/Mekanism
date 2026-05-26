@@ -9,13 +9,11 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of chemical chemical to chemical recipes.
@@ -32,13 +30,9 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
     private final Supplier<ChemicalStackIngredient> rightInput;
     private final BinaryOperator<ChemicalStack> outputGetter;
 
-    //Note: These shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
-    @Nullable
-    private ChemicalStack leftRecipeInput;
-    @Nullable
-    private ChemicalStack rightRecipeInput;
-    @Nullable
-    private ChemicalStack output;
+    private ChemicalStack leftRecipeInput = ChemicalStack.EMPTY;
+    private ChemicalStack rightRecipeInput = ChemicalStack.EMPTY;
+    private ChemicalStack output = ChemicalStack.EMPTY;
 
     /**
      * @param recipe            Recipe.
@@ -91,7 +85,7 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
                         rightIngredient = rightInput;
                     }
                     CachedRecipeHelper.twoInputCalculateOperationsThisTick(tracker, leftInputHandler, leftIngredient, rightInputHandler, rightIngredient, inputsSetter,
-                          outputHandler, outputGetter, outputSetter, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
+                          outputHandler, outputGetter, outputSetter);
                 }
             }
         }
@@ -108,12 +102,9 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
     }
 
     @Override
-    protected void finishProcessing(int operations, TransactionContext transaction) {
-        //Validate something didn't go horribly wrong
-        if (leftRecipeInput != null && rightRecipeInput != null && output != null && !leftRecipeInput.isEmpty() && !rightRecipeInput.isEmpty() && !output.isEmpty()) {
-            leftInputHandler.use(leftRecipeInput, operations, transaction);
-            rightInputHandler.use(rightRecipeInput, operations, transaction);
-            outputHandler.handleOutput(output, operations, transaction);
-        }
+    protected boolean finishProcessing(int operations, TransactionContext transaction) {
+        return leftInputHandler.use(leftRecipeInput, operations, transaction) &&
+               rightInputHandler.use(rightRecipeInput, operations, transaction) &&
+               outputHandler.handleOutput(output, operations, transaction);
     }
 }

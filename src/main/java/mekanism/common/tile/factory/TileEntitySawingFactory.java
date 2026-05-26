@@ -155,7 +155,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     @NotNull
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@NotNull SawmillRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.sawing(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(this::canFunction)
               .setActive(active -> setActiveState(active, cacheIndex))

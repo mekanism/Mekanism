@@ -15,7 +15,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -350,36 +349,42 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
                     updateErrors(Collections.emptySet());
                 }
             }
-            if (operations > 0) {
-                setActive.accept(true);
+            if (operations > 0 && useEnergy(operations, transaction)) {
                 //Always use energy, as that is a constant thing we can check
-                useEnergy(operations, transaction);
-                operatingTicks++;
                 int ticksRequired = requiredTicks.getAsInt();
-                if (operatingTicks >= ticksRequired) {
-                    operatingTicks = 0;
-                    //TODO - 26.1: Do we want to add some sort of validation that the inputs were able to be consumed and the output able to be placed
-                    finishProcessing(operations, transaction);
-                    transaction.commit();
-                    onFinish.run();
-                    resetCache();
-                } else {
+                if (operatingTicks >= ticksRequired - 1) {
+                    if (finishProcessing(operations, transaction)) {
+                        setActive.accept(true);
+                        transaction.commit();
+                        onFinish.run();
+                        resetCache();
+                        if (ticksRequired > 1) {
+                            operatingTicks = 0;
+                            //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
+                            operatingTicksChanged.accept(0);
+                        }
+                        return;
+                    }
+                } else if (useResources(operations, transaction)) {
                     //If we still have ticks left required to operate, use the contents
-                    useResources(operations, transaction);
+                    //TODO: Theoretically if we make sure that resources that get used are the last part of calculating operations in a given tick,
+                    // then we could have committing actually update based on how much was able to be consumed?
+                    setActive.accept(true);
                     transaction.commit();
+                    if (ticksRequired > 1) {
+                        //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
+                        operatingTicksChanged.accept(++operatingTicks);
+                    }
+                    return;
                 }
-                if (ticksRequired > 1) {
-                    //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
-                    operatingTicksChanged.accept(operatingTicks);
-                }
-            } else {
-                setActive.accept(false);
-                if (operations < 0) {
-                    //Reset the progress
-                    operatingTicks = 0;
-                    operatingTicksChanged.accept(operatingTicks);
-                    resetCache();
-                }
+                //TODO - 26.1: If we fail to use stuff, should we reset the progress?
+            }
+            setActive.accept(false);
+            if (operations < 0) {
+                //Reset the progress
+                operatingTicks = 0;
+                operatingTicksChanged.accept(operatingTicks);
+                resetCache();
             }
         }
     }
@@ -404,10 +409,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      * @param operations  Number of operations being performed.
      * @param transaction The transaction that this operation is part of.
      *
+     * @return {@code true} if enough resources was used.
+     *
      * @implNote It is safe to assume that {@link #calculateOperationsThisTick(OperationTracker)} will have been called before this method and there will be at least one
      * operation being performed. This means that caching of types can be done inside of {@link #calculateOperationsThisTick(OperationTracker)} and safely used here.
      */
-    protected void useResources(int operations, TransactionContext transaction) {
+    protected boolean useResources(int operations, TransactionContext transaction) {
+        return true;
     }
 
     /**
@@ -421,13 +429,16 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @param operations  Number of operations being performed.
      * @param transaction The transaction that this operation is part of.
+     *
+     * @return {@code true} if enough energy was used.
      */
-    protected void useEnergy(int operations, TransactionContext transaction) {
+    protected boolean useEnergy(int operations, TransactionContext transaction) {
         long energy = perTickEnergy.getAsLong();
         if (this.multipleOperationsCost) {
-            energy = MathUtils.multiplyClamped(energy, operations);
+            //Note: We know this shouldn't overflow, as we clamped the operations based on energy usage in calculateOperationsThisTick
+            energy *= operations;
         }
-        energyUsage.useEnergy(energy, transaction);
+        return energyUsage.useEnergy(energy, transaction) == energy;
     }
 
     /**
@@ -477,11 +488,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      * @param operations  Number of operations being performed.
      * @param transaction The transaction that this operation is part of.
      *
+     * @return {@code true} if inputs were consumed and outputs added.
+     *
      * @implNote It is safe to assume that {@link #calculateOperationsThisTick(OperationTracker)} will have been called before this method and there will be at least one
      * operation being performed. This means that caching of types and outputs can be done inside of {@link #calculateOperationsThisTick(OperationTracker)} and safely
      * used here.
      */
-    protected abstract void finishProcessing(int operations, TransactionContext transaction);
+    protected abstract boolean finishProcessing(int operations, TransactionContext transaction);
 
     /**
      * Gets the actual recipe object this {@link CachedRecipe} has cached and operates on.

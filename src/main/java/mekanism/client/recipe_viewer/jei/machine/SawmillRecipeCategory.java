@@ -52,7 +52,7 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<SawmillRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         SawmillRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
-        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 4, output.getY() + 4, recipe.getMainOutputDefinition());
-        initItem(builder, RecipeIngredientRole.OUTPUT, output.getX() + 20, output.getY() + 4, recipe.getSecondaryOutputDefinition());
+        initItem(builder, output.getX() + 4, output.getY() + 4, recipe.getMainOutputDefinition());
+        initItem(builder, output.getX() + 20, output.getY() + 4, recipe.getSecondaryOutputDefinition());
     }
 }

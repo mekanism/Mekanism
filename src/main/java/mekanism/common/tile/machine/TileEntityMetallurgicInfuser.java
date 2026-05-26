@@ -173,10 +173,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
-            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler,
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler,
                   chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);
         } else {
-            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler);
+            cachedRecipe = new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler);
         }
         return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)

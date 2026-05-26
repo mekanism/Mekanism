@@ -49,6 +49,7 @@ public class InputHelper {
      * @param tank Tank to wrap.
      */
     public static IInputHandler<Chemical, @NotNull ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
+        //TODO - 26.1: Should this use the normal get input handler for if the recipe isn't per tick chemical usage? Or how do we do handling for that
         return new ChemicalInputHandler(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
             @Override
             protected void resetProgress(OperationTracker tracker) {
@@ -81,7 +82,7 @@ public class InputHelper {
         }
 
         @Override
-        protected boolean isEmpty(ItemStack stack) {
+        public boolean isEmpty(ItemStack stack) {
             return stack.isEmpty();
         }
 
@@ -113,7 +114,7 @@ public class InputHelper {
         }
 
         @Override
-        protected boolean isEmpty(FluidStack stack) {
+        public boolean isEmpty(FluidStack stack) {
             return stack.isEmpty();
         }
 
@@ -145,7 +146,7 @@ public class InputHelper {
         }
 
         @Override
-        protected boolean isEmpty(ChemicalStack stack) {
+        public boolean isEmpty(ChemicalStack stack) {
             return stack.isEmpty();
         }
 

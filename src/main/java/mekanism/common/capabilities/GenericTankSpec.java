@@ -66,11 +66,6 @@ public class GenericTankSpec<RESOURCE extends Resource> {
         }
     }
 
-    public static <RESOURCE extends Resource> GenericTankSpec<RESOURCE> create(IntSupplier rate, LongSupplier capacity) {
-        return new GenericTankSpec<>(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
-              ConstantPredicates.alwaysTrue());
-    }
-
     public static <RESOURCE extends Resource> GenericTankSpec<RESOURCE> createFillOnly(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return createFillOnly(rate, capacity, isValid, ConstantPredicates.alwaysTrue());
     }

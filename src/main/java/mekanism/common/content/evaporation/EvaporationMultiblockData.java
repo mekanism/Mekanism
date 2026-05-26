@@ -275,7 +275,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @NotNull
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@NotNull FluidToFluidRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.fluidToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {
                       trackedErrors[i] = errors.contains(TRACKED_ERROR_TYPES.get(i));

@@ -52,6 +52,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -292,6 +293,10 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return empty;
     }
 
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, GuiSlot slot, List<ItemStackTemplate> stacks) {
+        return initItem(builder, RecipeIngredientRole.OUTPUT, slot, stacks.stream().map(ItemStackTemplate::create).toList());
+    }
+
     protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, List<ItemStack> stacks) {
         return initItem(builder, role, slot.getX(), slot.getY(), stacks);
     }
@@ -305,9 +310,17 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
               .addItemStacks(stacks);
     }
 
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int x, int y, List<ItemStackTemplate> stacks) {
+        return initItem(builder, RecipeIngredientRole.INPUT, x, y, stacks.stream().map(ItemStackTemplate::create).toList());
+    }
+
     protected IRecipeSlotBuilder initItems(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, List<ItemStackTemplate> stacks) {
         return builder.addSlot(role, x + 1, y + 1)
               .addItemStacks(stacks.stream().map(ItemStackTemplate::create).toList());
+    }
+
+    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, GuiGauge<?> gauge, List<FluidStackTemplate> stacks) {
+        return initFluid(builder, RecipeIngredientRole.OUTPUT, gauge, stacks.stream().map(FluidStackTemplate::create).toList());
     }
 
     protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {

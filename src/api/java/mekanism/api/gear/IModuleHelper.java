@@ -133,47 +133,47 @@ public interface IModuleHelper {
     /**
      * Helper method to check if an item has a module installed and the module is enabled.
      *
-     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
-     * @param type  Module type.
+     * @param instance Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param type     Module type.
      *
      * @return {@code true} if the item has the module installed and enabled.
      *
      * @since 10.7.11
      */
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isEnabled(ITEM itemType, Holder<ModuleData<?>> type) {
-        IModuleContainer container = getModuleContainer(itemType);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isEnabled(ITEM instance, Holder<ModuleData<?>> type) {
+        IModuleContainer container = getModuleContainer(instance);
         return container != null && container.hasEnabled(type);
     }
 
     /**
      * Helper method to try and load a module from an item.
      *
-     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
-     * @param type  Module type.
+     * @param instance Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param type     Module type.
      *
      * @return Module, or {@code null} if no module of the given type is installed.
      *
      * @since 10.7.11
      */
     @Nullable
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ITEM itemType,
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ITEM instance,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        IModuleContainer container = getModuleContainer(itemType);
+        IModuleContainer container = getModuleContainer(instance);
         return container == null ? null : container.get(type);
     }
 
     /**
      * {@return the module if it is installed on the given item and is currently enabled}
      *
-     * @param itemType Item type to check for being a module container and then to retrieve the container of.
-     * @param type  Module type.
+     * @param instance Item instance to check for being a module container and then to retrieve the container of.
+     * @param type     Module type.
      *
      * @since 10.7.11
      */
     @Nullable
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ITEM itemType,
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ITEM instance,
           DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        IModuleContainer container = getModuleContainer(itemType);
+        IModuleContainer container = getModuleContainer(instance);
         return container == null ? null : container.getIfEnabled(type);
     }
 
@@ -196,12 +196,12 @@ public interface IModuleHelper {
     /**
      * {@return module container for the item, or null if the item is empty or not a module container}
      *
-     * @param itemType Item typee to check for being a module container and then to retrieve the container of.
+     * @param instance Item instance to check for being a module container and then to retrieve the container of.
      *
      * @since 10.5.15
      */
     @Nullable
-    <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer getModuleContainer(ITEM itemType);
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer getModuleContainer(ITEM instance);
 
     /**
      * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the item is empty or not a module container}
@@ -259,26 +259,26 @@ public interface IModuleHelper {
     /**
      * {@return all the installed modules on an item, or empty if the item doesn't support modules}
      *
-     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param instance Module container, for example a Meka-Tool or MekaSuit piece.
      */
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Collection<? extends IModule<?>> getAllModules(ITEM itemType) {
-        IModuleContainer container = getModuleContainer(itemType);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Collection<? extends IModule<?>> getAllModules(ITEM instance) {
+        IModuleContainer container = getModuleContainer(instance);
         return container == null ? Collections.emptyList() : container.modules();
     }
 
     /**
      * Gets a list of all modules on an item that have a custom module matching a given class.
      *
-     * @param itemType       Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param instance    Module container, for example a Meka-Tool or MekaSuit piece.
      * @param moduleClass Class representing the type of module's to load.
      *
      * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
      */
     @SuppressWarnings("unchecked")
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> getAllModules(ITEM itemType,
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> getAllModules(ITEM instance,
           Class<MODULE> moduleClass) {
         List<IModule<? extends MODULE>> list = new ArrayList<>();
-        for (IModule<?> module : getAllModules(itemType)) {
+        for (IModule<?> module : getAllModules(instance)) {
             if (moduleClass.isInstance(module.getCustomInstance())) {
                 list.add((IModule<? extends MODULE>) module);
             }
@@ -289,12 +289,12 @@ public interface IModuleHelper {
     /**
      * Gets all the module types on an item.
      *
-     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param instance Module container, for example a Meka-Tool or MekaSuit piece.
      *
      * @return Module types on an item.
      */
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Set<ModuleData<?>> getAllTypes(ITEM itemType) {
-        IModuleContainer container = getModuleContainer(itemType);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Set<ModuleData<?>> getAllTypes(ITEM instance) {
+        IModuleContainer container = getModuleContainer(instance);
         return container != null ? container.moduleTypes() : Collections.emptySet();
     }
 

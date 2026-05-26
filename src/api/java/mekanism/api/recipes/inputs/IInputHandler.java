@@ -5,12 +5,15 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface describing handling of an input.
  *
  * @param <HOLDER_TYPE> Type of input handled by this handler.
- * @param <STACK>      Stack Type of HOLDERTYPE.
+ * @param <STACK>       Stack Type of HOLDERTYPE.
  */
 @NothingNullByDefault
 public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> {
@@ -32,6 +35,11 @@ public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_T
      */
     STACK getInput();
 
+    /// Helper method to check if a given instance of the input is empty.
+    ///
+    /// @since 10.8.0
+    boolean isEmpty(STACK stack);
+
     /**
      * Gets a copy of the recipe's ingredient that matches the stored input.
      *
@@ -41,14 +49,16 @@ public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_T
      */
     STACK getRecipeInput(InputIngredient<HOLDER_TYPE, STACK> recipeIngredient);
 
-    /**
-     * Adds {@code operations} operations worth of {@code recipeInput} from the input.
-     *
-     * @param recipeInput Recipe input result.
-     * @param operations  Operations to perform.
-     * @param transaction The transaction that this operation is part of.
-     */
-    void use(STACK recipeInput, int operations, TransactionContext transaction);
+    /// Adds `operations` operations worth of `recipeInput` from the input.
+    ///
+    /// @param recipeInput Recipe input result.
+    /// @param operations  Operations to perform.
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return If the `recipeInput` is null or empty `false`. Otherwise, `true` if there are no operations to perform, or enough input was used to perform all the
+    /// operations.
+    @Contract("null, _, _ -> false")
+    boolean use(@Nullable STACK recipeInput, @Range(from = 0, to = Integer.MAX_VALUE) int operations, TransactionContext transaction);
 
     /**
      * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called

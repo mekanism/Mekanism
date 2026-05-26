@@ -3,6 +3,8 @@ package mekanism.api.recipes.outputs;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface describing handling of an output.
@@ -12,14 +14,16 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 @ParametersAreNotNullByDefault
 public interface IOutputHandler<OUTPUT> {
 
-    /**
-     * Adds {@code operations} operations worth of {@code toOutput} to the output.
-     *
-     * @param toOutput    Output result.
-     * @param operations  Operations to perform.
-     * @param transaction The transaction that this operation is part of.
-     */
-    void handleOutput(OUTPUT toOutput, int operations, TransactionContext transaction);
+    /// Adds `operations` operations worth of `toOutput` to the output.
+    ///
+    /// @param toOutput    Output result.
+    /// @param operations  Operations to perform.
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return If the `toOutput` is null or empty `false`. Otherwise, `true` if there are no operations to perform, or the produced output for all the operations was
+    /// added.
+    @Contract("null, _, _ -> false")
+    boolean handleOutput(@Nullable OUTPUT toOutput, int operations, TransactionContext transaction);
 
     /**
      * Calculates how many operations the output has room for and updates the given operation tracker. It can be assumed that when this method is called

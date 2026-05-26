@@ -3,19 +3,15 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class BasicCombinerRecipe extends CombinerRecipe {
@@ -37,11 +33,6 @@ public class BasicCombinerRecipe extends CombinerRecipe {
     }
 
     @Override
-    public boolean test(ItemStack input, ItemStack extra) {
-        return mainInput.test(input) && extraInput.test(extra);
-    }
-
-    @Override
     public ItemStackIngredient getMainInput() {
         return mainInput;
     }
@@ -52,14 +43,14 @@ public class BasicCombinerRecipe extends CombinerRecipe {
     }
 
     @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(@NotNull INPUT input, @NotNull INPUT extra) {
+    @Contract(pure = true)
+    public ItemStackTemplate getOutput(TypedInstance<Item> input, TypedInstance<Item> extra) {
         return output;
     }
 
     @Override
-    public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output.create());
+    public List<ItemStackTemplate> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     public ItemStackTemplate getOutputRaw() {
@@ -79,15 +70,14 @@ public class BasicCombinerRecipe extends CombinerRecipe {
             return false;
         }
         BasicCombinerRecipe other = (BasicCombinerRecipe) o;
-        return mainInput.equals(other.mainInput) && extraInput.equals(other.extraInput) && ItemStackTemplateHelper.matches(output, other.output);
+        return mainInput.equals(other.mainInput) && extraInput.equals(other.extraInput) && output.equals(other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = mainInput.hashCode();
         hash = 31 * hash + extraInput.hashCode();
-        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(output);
-        hash = 31 * hash + output.count();
+        hash = 31 * hash + output.hashCode();
         return hash;
     }
 }

@@ -10,7 +10,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -211,7 +210,7 @@ public class MekanismRecipeSerializer {
               IngredientCreatorAccess.chemicalStack().streamCodec(), PressurizedReactionRecipe::getInputChemical,
               ByteBufCodecs.VAR_LONG, PressurizedReactionRecipe::getEnergyRequired,
               ByteBufCodecs.VAR_INT, PressurizedReactionRecipe::getDuration,
-              ItemStackTemplateHelper.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputItemOptional,
+              ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), BasicPressurizedReactionRecipe::getOutputItemOptional,
               ChemicalStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputChemical,
               factory
         ));

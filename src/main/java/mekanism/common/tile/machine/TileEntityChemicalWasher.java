@@ -191,7 +191,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @NotNull
     @Override
     public CachedRecipe<FluidChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull FluidChemicalToChemicalRecipe recipe, int cacheIndex) {
-        return TwoInputCachedRecipe.fluidChemicalToChemical(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
+        return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)

@@ -5,15 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
@@ -56,24 +53,19 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     }
 
     @Override
-    public boolean test(ItemStack stack) {
-        return this.input.test(stack);
-    }
-
-    @Override
     @Contract("_ -> new")
-    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ChanceOutput getOutput(INPUT input) {
+    public ChanceOutput getOutput(TypedInstance<Item> input) {
         return new BasicChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }
 
-    @Override// TODO - 26.1 - see if template can be used
-    public List<ItemStack> getMainOutputDefinition() {
-        return mainOutput == null ? Collections.emptyList() : Collections.singletonList(mainOutput.create());
+    @Override
+    public List<ItemStackTemplate> getMainOutputDefinition() {
+        return mainOutput == null ? Collections.emptyList() : Collections.singletonList(mainOutput);
     }
 
     @Override
-    public List<ItemStack> getSecondaryOutputDefinition() {
-        return secondaryOutput == null ? Collections.emptyList() : Collections.singletonList(secondaryOutput.create());
+    public List<ItemStackTemplate> getSecondaryOutputDefinition() {
+        return secondaryOutput == null ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
     }
 
     @Override
@@ -117,18 +109,16 @@ public class BasicSawmillRecipe extends SawmillRecipe {
             return false;
         }
         BasicSawmillRecipe other = (BasicSawmillRecipe) o;
-        return secondaryChance == other.secondaryChance && input.equals(other.input) && ItemStackTemplateHelper.matches(mainOutput, other.mainOutput) &&
-               ItemStackTemplateHelper.matches(secondaryOutput, other.secondaryOutput);
+        return secondaryChance == other.secondaryChance && input.equals(other.input) && Objects.equals(mainOutput, other.mainOutput) &&
+               Objects.equals(secondaryOutput, other.secondaryOutput);
     }
 
     @Override
     public int hashCode() {
         int hash = 31 * input.hashCode() + Double.hashCode(secondaryChance);
-        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(mainOutput);
-        hash = 31 * hash + (mainOutput != null ? mainOutput.count() : 0);
+        hash = 31 * hash + (mainOutput == null ? 0 : mainOutput.hashCode());
         if (secondaryOutput != null) {
-            hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(secondaryOutput);
-            hash = 31 * hash + secondaryOutput.count();
+            hash = 31 * hash + secondaryOutput.hashCode();
         }
         return hash;
     }

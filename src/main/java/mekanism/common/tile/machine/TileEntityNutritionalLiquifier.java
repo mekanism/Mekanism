@@ -203,7 +203,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @NotNull
     @Override
     public CachedRecipe<BasicItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.itemToFluidOptionalItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)

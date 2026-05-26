@@ -175,8 +175,8 @@ public class ModuleHelper implements IModuleHelper {//TODO - 26.1: Evaluate movi
 
     @Override
     @Nullable
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> ModuleContainer getModuleContainer(ITEM stack) {
-        return isModuleContainer(stack) ? getModuleContainerUnsafe(stack) : null;
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> ModuleContainer getModuleContainer(ITEM instance) {
+        return isModuleContainer(instance) ? getModuleContainerUnsafe(instance) : null;
     }
 
     public ModuleContainer getModuleContainerUnsafe(DataComponentGetter dataComponentGetter) {

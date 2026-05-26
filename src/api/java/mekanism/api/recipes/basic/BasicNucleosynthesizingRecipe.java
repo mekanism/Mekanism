@@ -3,18 +3,14 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
@@ -68,16 +64,10 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public <ITEM_INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(ITEM_INPUT inputItem, TypedInstance<Chemical> inputChemical) {
+    @Contract(pure = true)
+    public ItemStackTemplate getOutput(TypedInstance<Item> inputItem, TypedInstance<Chemical> inputChemical) {
         return output;
     }
-
-    @Override
-    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
-    }
-
     @Override
     public List<ItemStackTemplate> getOutputDefinition() {
         return Collections.singletonList(output);
@@ -102,7 +92,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         }
         BasicNucleosynthesizingRecipe other = (BasicNucleosynthesizingRecipe) o;
         return duration == other.duration && perTickUsage == other.perTickUsage && itemInput.equals(other.itemInput) && chemicalInput.equals(other.chemicalInput) &&
-               ItemStackTemplateHelper.matches(output, other.output);
+               output.equals(other.output);
     }
 
     @Override
@@ -111,8 +101,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         result = 31 * result + chemicalInput.hashCode();
         result = 31 * result + duration;
         result = 31 * result + Boolean.hashCode(perTickUsage);
-        result = 31 * result + ItemStackTemplateHelper.hashItemAndComponents(output);
-        result = 31 * result + output.count();
+        result = 31 * result + output.hashCode();
         return result;
     }
 }

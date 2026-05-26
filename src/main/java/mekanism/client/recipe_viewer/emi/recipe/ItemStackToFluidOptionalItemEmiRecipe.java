@@ -17,6 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<BasicItemStackToFluidOptionalItemRecipe> {
 
@@ -27,21 +28,17 @@ public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<Bas
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());
         List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
-        List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
-        List<ItemStack> itemOutputs = new ArrayList<>();
+        List<FluidStackTemplate> fluidOutputs = new ArrayList<>(outputDefinition.size());
+        List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         for (FluidOptionalItemOutput output : outputDefinition) {
-            fluidOutputs.add(output.fluid().create());
+            fluidOutputs.add(output.fluid());
             ItemStackTemplate optionalItem = output.optionalItem();
             if (optionalItem != null) {
-                itemOutputs.add(optionalItem.create());
+                itemOutputs.add(optionalItem);
             }
         }
         addFluidOutputDefinition(fluidOutputs);
-        if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
-            addOutputDefinition(Collections.emptyList());
-        } else {
-            addItemOutputDefinition(itemOutputs);
-        }
+        addItemOutputDefinition(itemOutputs);
     }
 
     @Override
