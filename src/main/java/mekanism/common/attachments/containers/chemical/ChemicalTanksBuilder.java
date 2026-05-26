@@ -6,6 +6,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ResourceContainersBuilder;
@@ -13,7 +14,7 @@ import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.config.MekanismConfig;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
-public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalResource, ComponentBackedChemicalTank, ChemicalTanksBuilder> {
+public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalResource, IChemicalTank, ChemicalTanksBuilder> {
 
     public static ChemicalTanksBuilder builder() {
         return new ChemicalTanksBuilder();
@@ -23,7 +24,7 @@ public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalReso
     }
 
     @Override
-    public BaseContainerCreator<AttachedResources<ChemicalResource>, ComponentBackedChemicalTank> build() {
+    public BaseContainerCreator<AttachedResources<ChemicalResource>, IChemicalTank> build() {
         return new BaseContainerBuilder<>(containerCreators, LargeResourceStack.CHEMICAL_HELPER);
     }
 
@@ -33,7 +34,7 @@ public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalReso
     }
 
     @Override
-    protected ComponentBackedChemicalTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    protected IChemicalTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
         return new ComponentBackedChemicalTank(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
     }

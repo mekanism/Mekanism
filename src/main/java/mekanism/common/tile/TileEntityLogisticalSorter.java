@@ -8,7 +8,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
@@ -102,7 +103,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Note: We don't persist items because the slot we have is only actually for the transporters to connect visually
         return type != ContainerType.ITEM && super.persists(type);
     }
@@ -356,7 +357,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return false;
     }
 

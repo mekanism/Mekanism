@@ -17,11 +17,11 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -39,8 +39,8 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     protected final CONTAINER container;
     private final List<CONTAINER> containers;
-    private RESOURCE lastType = getEmptyType();
-    protected long prevTransferAmount;
+    private RESOURCE lastType = containerType().emptyResource();
+    private long prevTransferAmount;
 
     protected DynamicBufferedResourceNetwork(UUID networkID, ContainerCreator<RESOURCE, CONTAINER> containerCreator) {
         super(networkID);
@@ -48,7 +48,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         this.containers = Collections.singletonList(this.container);
     }
 
-    protected abstract RESOURCE getEmptyType();
+    protected abstract ResourceContainerType<RESOURCE, CONTAINER> containerType();
 
     public final CONTAINER getContainer() {
         return this.container;
@@ -126,7 +126,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     @Override
     public void clampBuffer() {
-        ResourceUtils.clampContents(container);
+        containerType().clampContents(container);
     }
 
     @Override

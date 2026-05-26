@@ -3,8 +3,7 @@ package mekanism.common.util;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -14,10 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public final class FluidUtils {
@@ -26,39 +25,27 @@ public final class FluidUtils {
     }
 
     public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid) {
-        return getFilledVariant(new ItemStack(toFill), fluid);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
-        ItemAccess itemAccess = ItemAccess.forStack(toFill);
-        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(itemAccess);
-        if (attachment != null) {
-            FluidResource fluidType = FluidResource.of(fluid);
-            for (IFluidTank fluidTank : attachment.getContainers()) {
-                fluidTank.setContents(fluidType, fluidTank.capacityAsLong(fluidType), null);
-            }
-        }
-        //The item is now filled return it for convenience
-        return toFill;
+        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
+        return ContainerType.FLUID.getFilledVariant(itemAccess, FluidResource.of(fluid));
     }
 
     public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
-        return getRGBDurabilityForDisplay(StorageUtils.getFirstFluidFromAttachment(itemAccess));
+        return getRGBDurabilityForDisplay(ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess));
     }
 
-    public static int getRGBDurabilityForDisplay(FluidStack stack) {
-        if (stack.isEmpty()) {
+    public static int getRGBDurabilityForDisplay(FluidResource fluidType) {
+        if (fluidType.isEmpty()) {
             return 0xFFFFFFFF;
         }
         //TODO: Technically doesn't support things where the color is part of the texture such as lava
         // for chemicals it is supported via allowing people to override getColorRepresentation in their
         // chemicals
-        if (stack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
+        if (fluidType.getFluid().isSame(Fluids.LAVA)) {//Special case lava
             return 0xFFDB6B19;
         } else if (FMLEnvironment.getDist().isClient()) {
             //Note: We can only return an accurate result on the client side. This method should never be called from the server
             // but in case it is make sure we only run on the client side
-            return MekanismRenderer.getColorARGB(stack);
+            return MekanismRenderer.getColorARGB(fluidType);
         }
         return 0xFFFFFFFF;
     }

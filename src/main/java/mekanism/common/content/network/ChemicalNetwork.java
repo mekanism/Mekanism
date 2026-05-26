@@ -7,6 +7,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
@@ -61,8 +63,8 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
     }
 
     @Override
-    protected ChemicalResource getEmptyType() {
-        return ChemicalResource.EMPTY;
+    protected ResourceContainerType<ChemicalResource, IChemicalTank> containerType() {
+        return ContainerType.CHEMICAL;
     }
 
     public static class ChemicalTransferEvent extends TransferEvent<ChemicalNetwork> {

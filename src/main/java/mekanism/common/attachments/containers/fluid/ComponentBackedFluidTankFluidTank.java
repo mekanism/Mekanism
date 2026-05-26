@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.fluid;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -17,7 +16,7 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
 
     private final boolean isCreative;
 
-    public static ComponentBackedFluidTankFluidTank create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+    public static ComponentBackedFluidTankFluidTank create(ItemAccess attachedAccess, int tankIndex) {
         if (!(attachedAccess.getResource().getItem() instanceof ItemBlockFluidTank item)) {
             throw new IllegalStateException("Attached to should always be a fluid tank item");
         }

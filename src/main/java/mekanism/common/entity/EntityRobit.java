@@ -41,8 +41,8 @@ import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -437,12 +437,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
             mekHandler.getContainer(0).copyContents(energyContainer);
         }
-        ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(itemAccess), "Robit Handler expected");
-        for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
-            IInventorySlot inventorySlot = inventorySlots.get(slot);
-            if (!inventorySlot.isEmpty()) {
-                stackInventory.getContainer(slot).copyContents(inventorySlot);
-            }
+        AttachedResources<ItemResource> items = ContainerType.ITEM.attachedCopyOf(inventorySlots);
+        if (items != null) {
+            stack.set(ContainerType.ITEM.getComponentType(), items);
         }
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());

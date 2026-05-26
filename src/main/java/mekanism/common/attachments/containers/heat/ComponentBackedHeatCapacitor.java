@@ -5,7 +5,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -39,7 +40,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    protected ContainerType<?, AttachedHeat, ?> containerType() {
+    protected IContainerType<?, AttachedHeat> containerType() {
         return ContainerType.HEAT;
     }
 

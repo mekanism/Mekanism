@@ -9,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -16,7 +17,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
+@NothingNullByDefault
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
@@ -37,6 +38,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
     }
+
+    @Override
+    protected abstract ResourceContainerType<RESOURCE, ? extends IResourceContainer<RESOURCE>> containerType();
 
     @Override
     protected boolean isEmpty(LargeResourceStack<RESOURCE> stack) {
@@ -86,7 +90,6 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getInsertionRate(AutomationType automationType) {
-        //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
     }

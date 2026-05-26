@@ -16,6 +16,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -439,8 +440,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (getLevel() != null && !isRemote()) {
-                ResourceUtils.clampContents(waterTank);
-                ResourceUtils.clampContents(steamTank);
+                ContainerType.FLUID.clampContents(waterTank);
+                ContainerType.CHEMICAL.clampContents(steamTank);
             }
             markDirty();
         }
@@ -472,7 +473,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
+        return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(fuelTank);
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")

@@ -2,7 +2,7 @@ package mekanism.common.item.interfaces;
 
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 

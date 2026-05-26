@@ -10,7 +10,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.IContainerHolder;
@@ -72,7 +73,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         if (type == ContainerType.CHEMICAL) {
             return false;
         }

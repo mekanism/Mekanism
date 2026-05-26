@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
         List<Object> subTypeData = null;
 
         ItemAccess itemAccess = ItemAccess.forStack(stack);
-        ResourceHandler<ChemicalResource> chemicalHandler = getChemicalHandler(itemAccess);
+        ResourceHandler<ChemicalResource> chemicalHandler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (chemicalHandler != null) {
             for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {
                 ChemicalResource chemicalType = chemicalHandler.getResource(tank);
@@ -44,7 +43,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        ResourceHandler<FluidResource> fluidHandler = getFluidHandler(itemAccess);
+        ResourceHandler<FluidResource> fluidHandler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (fluidHandler != null) {
             for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
                 FluidResource fluidType = fluidHandler.getResource(tank);
@@ -56,7 +55,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        IStrictEnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        IStrictEnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (energyHandler != null) {
             for (int container = 0, containers = energyHandler.size(); container < containers; container++) {
                 //TODO: Should we just be storing the amount of stored energy??
@@ -71,32 +70,5 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
         return subTypeData;
-    }
-
-    @Nullable
-    private static ResourceHandler<ChemicalResource> getChemicalHandler(ItemAccess itemAccess) {
-        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
-        if (handler == null) {
-            return Capabilities.CHEMICAL.getCapability(itemAccess);
-        }
-        return handler;
-    }
-
-    @Nullable
-    private static ResourceHandler<FluidResource> getFluidHandler(ItemAccess itemAccess) {
-        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
-        if (handler == null) {
-            return Capabilities.FLUID.getCapability(itemAccess);
-        }
-        return handler;
-    }
-
-    @Nullable
-    private static IStrictEnergyHandler getEnergyHandler(ItemAccess itemAccess) {
-        IStrictEnergyHandler handler = ContainerType.ENERGY.createHandlerIfData(itemAccess);
-        if (handler == null) {
-            return Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        }
-        return handler;
     }
 }

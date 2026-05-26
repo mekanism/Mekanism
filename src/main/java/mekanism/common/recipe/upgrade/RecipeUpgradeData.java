@@ -14,8 +14,9 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
@@ -25,6 +26,7 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.machine.ItemBlockFactory;
+import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
@@ -91,7 +93,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
     private static <CONTAINER extends ValueIOSerializable, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(ItemAccess itemAccess,
-          ContainerType<CONTAINER, ?, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
+          IContainerType<CONTAINER, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
         List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
@@ -108,8 +110,11 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM -> {
                 List<IInventorySlot> slots;
                 if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage) {
-                    var inv = PersonalStorageManager.getInventoryIfPresent(itemAccess);
-                    slots = inv != null ? inv.getContainers() : Collections.emptyList();
+                    AbstractPersonalStorageItemInventory inv = PersonalStorageManager.getInventoryIfPresent(itemAccess);
+                    if (inv == null) {
+                        yield null;
+                    }
+                    slots = inv.getContainers();
                 } else {
                     slots = ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess);
                 }

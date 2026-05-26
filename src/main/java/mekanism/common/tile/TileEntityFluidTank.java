@@ -11,7 +11,8 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ResourceContainerWrapper;
@@ -239,11 +240,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public int getRedstoneLevel() {
-        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
+        return ContainerType.FLUID.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
     }
 

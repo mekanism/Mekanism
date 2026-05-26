@@ -10,6 +10,7 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -29,7 +30,6 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.tile.multiblock.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -142,8 +142,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     protected int getMultiblockRedstoneLevel() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> ResourceUtils.getRedstoneSignalFromContainer(getFluidTank());
-            case CHEMICAL -> ResourceUtils.getRedstoneSignalFromContainer(getChemicalTank());
+            case FLUID -> ContainerType.FLUID.getRedstoneSignalFromContainer(getFluidTank());
+            case CHEMICAL -> ContainerType.CHEMICAL.getRedstoneSignalFromContainer(getChemicalTank());
             default -> Redstone.SIGNAL_NONE;
         };
     }

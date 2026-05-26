@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.energy;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedEnergyCubeContainer create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int containerIndex) {
+    public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess, int containerIndex) {
         if (!(attachedAccess.getResource().getItem() instanceof ItemBlockEnergyCube item)) {
             throw new IllegalStateException("Attached to should always be an energy cube item");
         }

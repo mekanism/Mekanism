@@ -6,7 +6,8 @@ import java.util.function.UnaryOperator;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -53,7 +54,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
         bus.addListener(EventPriority.LOWEST, ModifyDefaultComponentsEvent.class, event -> forEntries(registryObject -> {
             if (ContainerType.anySupports(registryObject)) {
                 event.modify(registryObject, (components, _, item) -> {
-                    for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+                    for (IContainerType<?, ?> type : ContainerType.TYPES) {
                         type.addDefault(item, components);
                     }
                 });

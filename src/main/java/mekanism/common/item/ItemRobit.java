@@ -1,18 +1,15 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.SecurityObject;
@@ -116,14 +113,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     } else {
                         robit.setOwnerUUID(ownerUUID, null);
                     }
-                    List<IInventorySlot> robitSlots = robit.getInventorySlots();
-                    ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = ContainerType.ITEM.createHandlerIfData(itemAccess);
-                    if (stackInventory != null) {
-                        int slot = 0;
-                        for (IInventorySlot container : stackInventory.getContainers()) {
-                            robitSlots.get(slot++).copyContents(container);
-                        }
-                    }
+                    ContainerType.ITEM.copyToContainers(robit.getInventorySlots(), itemAccess.getResource());
                     Component name = itemType.get(MekanismDataComponents.ROBIT_NAME);
                     if (name != null) {
                         robit.setCustomName(name);

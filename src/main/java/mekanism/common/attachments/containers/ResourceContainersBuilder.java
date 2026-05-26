@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
@@ -18,10 +19,10 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTAINER extends ComponentBackedResourceContainer<RESOURCE>,
+public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       BUILDER extends ResourceContainersBuilder<RESOURCE, CONTAINER, BUILDER>> {
 
-    protected final List<IBasicContainerCreator<? extends CONTAINER>> containerCreators = new ArrayList<>();
+    protected final List<IBasicContainerCreator<CONTAINER>> containerCreators = new ArrayList<>();
 
     protected ResourceContainersBuilder() {
     }
@@ -31,7 +32,7 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     protected abstract IntSupplier defaultRate();
 
     @SuppressWarnings("unchecked")
-    public final BUILDER addContainer(IBasicContainerCreator<? extends CONTAINER> tank) {
+    public final BUILDER addContainer(IBasicContainerCreator<CONTAINER> tank) {
         containerCreators.add(tank);
         return (BUILDER) this;
     }
@@ -49,8 +50,8 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     }
 
     public final BUILDER addBasic(LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
+        return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
+              ConstantPredicates.alwaysTrueBi(), isValid, defaultRate(), capacity));
     }
 
     public final BUILDER addBasic(long capacity) {
@@ -58,33 +59,37 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     }
 
     public final BUILDER addBasic(LongSupplier capacity) {
-        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+        return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
+              ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               defaultRate(), capacity));
     }
 
     public final BUILDER addBasicExtractable(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
+        return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(),
+              ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 
     public final BUILDER addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
-        return addContainer((_, attachedAccess, containerIndex) -> createBasicContainer(attachedAccess,
-              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
+        return addContainer((attachedAccess, containerIndex) -> createBasicContainer(attachedAccess, containerIndex, ConstantPredicates.notExternal(),
+              ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 
-    public static class BaseContainerBuilder<RESOURCE extends Resource, CONTAINER extends ComponentBackedResourceContainer<RESOURCE>> extends
+    public static class BaseContainerBuilder<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends
           BaseContainerCreator<AttachedResources<RESOURCE>, CONTAINER> {
 
         private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
 
-        public BaseContainerBuilder(List<IBasicContainerCreator<? extends CONTAINER>> creators, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
+        public BaseContainerBuilder(List<IBasicContainerCreator<CONTAINER>> creators, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
             super(creators);
             this.stackHelper = stackHelper;
         }
 
         @Override
-        public AttachedResources<RESOURCE> initStorage(int containers) {
+        public AttachedResources<RESOURCE> initStorage() {
+            int containers = totalContainers();
+            if (containers == 0) {
+                return AttachedResources.empty();
+            }
             return AttachedResources.create(containers, stackHelper.empty());
         }
     }

@@ -22,6 +22,7 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -35,7 +36,6 @@ import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -211,12 +211,12 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
         if (shouldCache(CacheSubstance.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
-                ResourceUtils.clampContents(tank);
+                ContainerType.FLUID.clampContents(tank);
             }
         }
         if (shouldCache(CacheSubstance.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks()) {
-                ResourceUtils.clampContents(tank);
+                ContainerType.CHEMICAL.clampContents(tank);
             }
         }
         if (shouldCache(CacheSubstance.ENERGY)) {

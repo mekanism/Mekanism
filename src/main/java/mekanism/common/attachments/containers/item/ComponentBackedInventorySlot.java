@@ -7,9 +7,9 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -35,7 +35,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     }
 
     @Override
-    protected ContainerType<?, AttachedResources<ItemResource>, ?> containerType() {
+    protected ResourceContainerType<ItemResource, IInventorySlot> containerType() {
         return ContainerType.ITEM;
     }
 

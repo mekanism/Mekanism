@@ -17,7 +17,6 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTankTank;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTankFluidTank;
@@ -25,6 +24,7 @@ import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -1004,7 +1004,8 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_chemical_tank", (properties, color) -> new BlockTileModel<>(type, BlockTile.defaultProperties(properties).mapColor(color)), ItemBlockChemicalTank::new)
               .forItemHolder(holder -> holder
                     .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                          .addContainer(ComponentBackedChemicalTankTank::create).build()
+                          .addContainer(ComponentBackedChemicalTankTank::create)
+                          .build()
                     ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                           .addChemicalDrainSlot(0)
                           .addChemicalFillSlot(0)

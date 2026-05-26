@@ -2,12 +2,12 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.util.ResourceUtils;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,7 @@ public class ChemicalRecipeData implements RecipeUpgradeData<ChemicalRecipeData>
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> outputHandler = ContainerType.CHEMICAL.createHandler(itemAccess);
+        ResourceHandler<ChemicalResource> outputHandler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
@@ -47,7 +47,7 @@ public class ChemicalRecipeData implements RecipeUpgradeData<ChemicalRecipeData>
                     ChemicalResource fluidType = tank.resource();
                     int toInsert = tank.amountAsInt();
                     //Insert into the output using manual as the automation type
-                    if (outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL) < toInsert) {
+                    if (ResourceUtils.insertManual(outputHandler, fluidType, toInsert, transaction) < toInsert) {
                         //If we have a remainder something failed so bail
                         return false;
                     }

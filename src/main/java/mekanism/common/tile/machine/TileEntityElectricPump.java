@@ -17,7 +17,8 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -386,11 +387,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     public int getRedstoneLevel() {
-        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
+        return ContainerType.FLUID.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
     }
 

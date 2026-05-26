@@ -12,7 +12,7 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.attachments.FrequencyAware;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;

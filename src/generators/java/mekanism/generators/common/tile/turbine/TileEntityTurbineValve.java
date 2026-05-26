@@ -6,7 +6,8 @@ import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -37,7 +38,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle gas when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.CHEMICAL || type == ContainerType.ENERGY) {
             return false;

@@ -25,19 +25,14 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.api.resource.IResourceContainer;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.energy.AttachedEnergy;
-import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.heat.HeatCapacitorData;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -105,7 +100,6 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -140,9 +134,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
@@ -355,21 +349,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Should data related to the given type be persisted in this tile save
      */
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(@UnknownNullability IContainerType<?, ?> type) {
         return type.canHandle(this);
     }
 
     /**
      * Should data related to the given type be transferred to the item
      */
-    public boolean persistsToItem(ContainerType<?, ?, ?> type) {
+    public boolean persistsToItem(IContainerType<?, ?> type) {
         return persists(type);
     }
 
     /**
      * Should data related to the given type be synced to the client in the GUI
      */
-    public boolean syncs(ContainerType<?, ?, ?> type) {
+    public boolean syncs(IContainerType<?, ?> type) {
         return persists(type);
     }
 
@@ -751,7 +745,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             recalculateUpgrades(Upgrade.SPEED);//force buffer to update
         }
         readSustainedData(input);
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.readFrom(input, this);
             }
@@ -777,7 +771,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         writeSustainedData(output);
 
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.saveTo(output, this);
             }
@@ -830,7 +824,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
 
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (persistsToItem(type)) {
                 type.copyToTile(this, input);
             }
@@ -853,7 +847,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.addRemapEntries(remapEntries);
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (persistsToItem(type) && !remapEntries.contains(type.getComponentType().get())) {
                 //Ensure we add any container types that we only conditionally added
                 remapEntries.add(type.getComponentType().get());
@@ -893,7 +887,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.collectImplicitComponents(builder);
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (persistsToItem(type)) {
                 type.copyFromTile(this, builder);
             }
@@ -1126,7 +1120,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return ResourceUtils.getRedstoneSignalFromContainers(getInventorySlots());
+                return ContainerType.ITEM.getRedstoneSignalFromContainers(getInventorySlots());
             }
             //TODO: Do we want some other defaults as well?
         }
@@ -1138,7 +1132,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      *
      * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
      */
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         //Assume that items make it dirty unless otherwise overridden, as we use this before we can call hasInventory
         // and if we aren't using an inventory as our comparator thing we will be overriding this method anyway
         // and if we don't have an inventory we can't assign this listener to anything as adding slots and assigning it
@@ -1146,7 +1140,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return type == ContainerType.ITEM;
     }
 
-    protected final IContentsListener getListener(ContainerType<?, ?, ?> type, IContentsListener saveOnlyListener) {
+    protected final IContentsListener getListener(IContainerType<?, ?> type, IContentsListener saveOnlyListener) {
         //If we don't support comparators we can just skip having a special one that only marks for save as our
         // setChanged won't actually do anything so there is no reason to bother creating a save only listener
         return !supportsComparator() || makesComparatorDirty(type) ? this : saveOnlyListener;
@@ -1209,38 +1203,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void onContentsChanged() {
         setChanged();
     }
-
-    private <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void applyContainers(List<CONTAINER> containers,
-          AttachedResources<RESOURCE> attachedResources) {
-        List<LargeResourceStack<RESOURCE>> attachedContainers = attachedResources.containers();
-        int size = attachedContainers.size();
-        if (size == containers.size()) {
-            for (int i = 0; i < size; i++) {
-                containers.get(i).setContents(attachedContainers.get(i), null);
-            }
-        }
-    }
-
-    private <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> AttachedResources<RESOURCE> collectContainers(List<CONTAINER> containers) {
-        boolean hasNonEmpty = false;
-        List<LargeResourceStack<RESOURCE>> stacks = new ArrayList<>(containers.size());
-        for (CONTAINER container : containers) {
-            stacks.add(container.asStack());
-            if (!container.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
-    }
-
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedResources<ItemResource> attachedItems) {
-        applyContainers(slots, attachedItems);
-    }
-
-    @Nullable
-    public AttachedResources<ItemResource> collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
-        return collectContainers(slots);
-    }
     //End methods ITileContainer
 
     //Methods for implementing IMekanismChemicalHandler
@@ -1276,28 +1238,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public final List<IChemicalTank> getChemicalTanks() {
         return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(null);
     }
-
-    public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedResources<ChemicalResource> attachedChemicals) {
-        applyContainers(tanks, attachedChemicals);
-    }
-
-    @Nullable
-    public AttachedResources<ChemicalResource> collectChemicalTanks(DataComponentMap.Builder builder, List<IChemicalTank> tanks) {
-        //Skip tiles that have no gas tanks and skip the creative chemical tank
-        boolean hasNonEmpty = false;
-        List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(tanks.size());
-        boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation();
-        for (IChemicalTank tank : tanks) {
-            if (tank.isEmpty() || skipRadioactive && tank.resource().isRadioactive()) {
-                //If the tank is empty or has a radioactive gas, treat it as empty
-                stacks.add(LargeResourceStack.CHEMICAL_HELPER.empty());
-            } else {
-                hasNonEmpty = true;
-                stacks.add(tank.asStack());
-            }
-        }
-        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
-    }
     //End methods IMekanismChemicalHandler
 
     //Methods for implementing IMekanismFluidHandler
@@ -1309,15 +1249,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     public final List<IFluidTank> getFluidTanks() {
         return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(null);
-    }
-
-    public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedResources<FluidResource> attachedFluids) {
-        applyContainers(tanks, attachedFluids);
-    }
-
-    @Nullable
-    public AttachedResources<FluidResource> collectFluidTanks(DataComponentMap.Builder builder, List<IFluidTank> tanks) {
-        return collectContainers(tanks);
     }
     //End methods IMekanismFluidHandler
 
@@ -1340,29 +1271,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public final long getInputRate() {
         LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
         return lastEnergyTracker == null ? 0 : lastEnergyTracker.getLastEnergyReceived();
-    }
-
-    public void applyEnergyContainers(DataComponentGetter input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
-        List<Long> stored = attachedEnergy.containers();
-        int size = stored.size();
-        if (size == containers.size()) {
-            for (int i = 0; i < size; i++) {
-                containers.get(i).setEnergy(stored.get(i), null);
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedEnergy collectEnergyContainers(DataComponentMap.Builder builder, List<IEnergyContainer> containers) {
-        boolean hasNonEmpty = false;
-        List<Long> stored = new ArrayList<>(containers.size());
-        for (IEnergyContainer container : containers) {
-            stored.add(container.energy());
-            if (!container.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedEnergy(stored) : null;
     }
     //End methods IMekanismStrictEnergyHandler
 
@@ -1408,36 +1316,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatHandlerManager != null ? heatHandlerManager.getContainers(side) : Collections.emptyList();
-    }
-
-    public void applyHeatCapacitors(DataComponentGetter input, List<IHeatCapacitor> capacitors, AttachedHeat attachedHeat) {
-        List<HeatCapacitorData> stored = attachedHeat.containers();
-        int size = stored.size();
-        if (size == capacitors.size()) {
-            for (int i = 0; i < size; i++) {
-                IHeatCapacitor capacitor = capacitors.get(i);
-                HeatCapacitorData data = stored.get(i);
-                if (data.heat().isPresent()) {
-                    capacitor.setHeat(data.heat().getAsDouble());
-                }
-                if (capacitor instanceof BasicHeatCapacitor basic) {
-                    basic.setHeatCapacity(data.capacity(), false);
-                }
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedHeat collectHeatCapacitors(DataComponentMap.Builder builder, List<IHeatCapacitor> capacitors) {
-        List<HeatCapacitorData> stored = new ArrayList<>(capacitors.size());
-        for (IHeatCapacitor capacitor : capacitors) {
-            if (capacitor.isAmbientTemperature()) {
-                stored.add(new HeatCapacitorData(capacitor.getHeatCapacity()));
-            } else {
-                stored.add(new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity()));
-            }
-        }
-        return new AttachedHeat(stored);
     }
     //End methods for IInWorldHeatHandler
 

@@ -15,9 +15,9 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -108,7 +108,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
-        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(itemAccess);
+        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         if (!fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
@@ -172,7 +172,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-            return builder.addContainer((_, attachedAccess, containerIndex) -> {
+            return builder.addContainer((attachedAccess, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
                 return new ComponentBackedNoClampEnergyContainer(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),

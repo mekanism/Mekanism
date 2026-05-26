@@ -5,7 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 

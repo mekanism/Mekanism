@@ -7,7 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.inventory.slot.QIODriveSlot;

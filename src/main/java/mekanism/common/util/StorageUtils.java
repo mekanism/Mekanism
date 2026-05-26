@@ -6,20 +6,17 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
@@ -32,7 +29,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,11 +43,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem == null) {
-            //Fall back to trying to look up the stored energy by the container type if the stack doesn't expose it
-            energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(itemAccess);
-        }
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.size();
             for (int container = 0; container < energyContainerCount; container++) {
@@ -64,11 +56,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static void addStoredChemical(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder) {
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
-        if (handler == null) {
-            //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
-            handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
-        }
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
                 ChemicalResource chemicalInTank = handler.getResource(tank);
@@ -100,11 +88,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
-        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(itemAccess);
-        if (handler == null) {
-            //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
-            handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
-        }
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
                 //TODO - 26.1: Custom function for storedFunction rather than converting this back into a stack?
@@ -119,8 +103,8 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * @implNote Assumes there is only one "type" per substance type
      */
     public static void addStoredSubstance(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
-        LargeResourceStack<FluidResource> fluidStack = getStoredFluidFromAttachment(itemAccess);
-        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(itemAccess, ContainerType.CHEMICAL, LargeResourceStack.CHEMICAL_HELPER);
+        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
+        LargeResourceStack<ChemicalResource> chemicalStack = ContainerType.CHEMICAL.getStoredContentsFromAttachment(itemAccess);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translate());
             return;
@@ -157,111 +141,15 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         return 0;
     }
 
-    /**
-     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have a fluid handler provided as a capability
-     * from our item, but it may have stored data in its container from when it was a block
-     */
-    @NotNull//TODO - 26.1: Update docs
-    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemAccess itemAccess,
-          ContainerType<CONTAINER, ?, ?> containerType, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
-        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
-        return switch (containers.size()) {
-            case 0 -> stackHelper.empty();
-            case 1 -> containers.getFirst().asStack();
-            default -> {
-                RESOURCE type = stackHelper.empty().resource();
-                long storedAmount = 0;
-                for (CONTAINER container : containers) {
-                    if (container.isEmpty()) {
-                        continue;
-                    }
-                    RESOURCE tankType = container.resource();
-                    long tankAmount = container.amountAsLong();
-                    if (type.isEmpty()) {
-                        type = tankType;
-                        storedAmount = tankAmount;
-                    } else if (tankType.equals(type)) {
-                        if (storedAmount < Long.MAX_VALUE - tankAmount) {
-                            storedAmount += tankAmount;
-                        } else {
-                            storedAmount = Long.MAX_VALUE;
-                            break;
-                        }
-                    }
-                    //Note: If we have multiple tanks that have different types stored we only return the first type
-                }
-                yield stackHelper.createStack(type, storedAmount);
-            }
-        };
-    }
-
-    /**
-     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have a fluid handler provided as a capability
-     * from our item, but it may have stored data in its container from when it was a block
-     */
-    @NotNull
-    public static LargeResourceStack<FluidResource> getStoredFluidFromAttachment(ItemAccess itemAccess) {
-        return getStoredContentsFromAttachment(itemAccess, ContainerType.FLUID, LargeResourceStack.FLUID_HELPER);
-    }
-
-    /**
-     * Gets the FIRST fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have a fluid handler provided as a
-     * capability from our item, but it may have stored data in its container from when it was a block. Do NOT modify the result
-     *
-     * @return the first found fluid FOR DISPLAY. Do NOT modify.
-     */
-    public static FluidStack getFirstFluidFromAttachment(ItemAccess itemAccess) {
-        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(itemAccess);
-        return switch (containers.size()) {
-            case 0 -> FluidStack.EMPTY;
-            case 1 -> {
-                IFluidTank tank = containers.getFirst();
-                yield tank.resource().toStack(tank.amountAsInt());
-            }
-            default -> {
-                for (IFluidTank tank : containers) {
-                    if (!tank.isEmpty()) {
-                        yield tank.resource().toStack(tank.amountAsInt());
-                    }
-                }
-                yield FluidStack.EMPTY;
-            }
-        };
-    }
-
-    /**
-     * Gets the FIRST chemical stored in an item's container by checking the attachment. This is for cases when we may not actually have a chemical handler provided as a
-     * capability from our item, but it may have stored data in its container from when it was a block. Do NOT modify the result
-     *
-     * @return the first found chemical FOR DISPLAY. Do NOT modify.
-     */
-    @NotNull
-    public static ChemicalResource getFirstChemicalFromAttachment(ItemAccess itemAccess) {
-        List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(itemAccess);
-        int size = containers.size();
-        return switch (size) {
-            case 0 -> ChemicalResource.EMPTY;
-            case 1 -> containers.getFirst().resource();
-            default -> {
-                for (IChemicalTank tank : containers) {
-                    if (!tank.isEmpty()) {
-                        yield tank.resource();
-                    }
-                }
-                yield ChemicalResource.EMPTY;
-            }
-        };
-    }
-
     public static ItemStack getFilledEnergyVariant(Holder<Item> toFill) {
         return getFilledEnergyVariant(new ItemStack(toFill));
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
         ItemAccess itemAccess = ItemAccess.forStack(toFill);
-        IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(itemAccess);
-        if (attachment != null) {
-            for (IEnergyContainer energyContainer : attachment.getContainers()) {
+        IStrictEnergyHandler capability = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+        if (capability instanceof IMekanismStrictEnergyHandler handler) {
+            for (IEnergyContainer energyContainer : handler.getContainers()) {
                 energyContainer.setEnergy(energyContainer.capacity(), null);
             }
         }
@@ -377,11 +265,10 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd, TransactionContext transaction) {
         validateSizeMatches(containers, toAdd, "energy container");
-        //TODO - 26.1: Make use of the transaction?
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), null);
+            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), transaction);
         }
     }
 

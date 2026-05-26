@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.UUID;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
@@ -51,8 +53,8 @@ public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, 
     }
 
     @Override
-    protected FluidResource getEmptyType() {
-        return FluidResource.EMPTY;
+    protected ResourceContainerType<FluidResource, IFluidTank> containerType() {
+        return ContainerType.FLUID;
     }
 
     public static class FluidTransferEvent extends TransferEvent<FluidNetwork> {

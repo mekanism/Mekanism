@@ -6,7 +6,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int containerIndex) {
+    public static ComponentBackedResistiveEnergyContainer create(ItemAccess attachedAccess, int containerIndex) {
         return new ComponentBackedResistiveEnergyContainer(attachedAccess, containerIndex);
     }
 

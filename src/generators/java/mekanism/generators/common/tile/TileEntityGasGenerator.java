@@ -13,7 +13,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
@@ -24,9 +25,8 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
-import mekanism.common.util.ResourceUtils;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -119,11 +119,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
+        return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(fuelTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.CHEMICAL;
     }
 

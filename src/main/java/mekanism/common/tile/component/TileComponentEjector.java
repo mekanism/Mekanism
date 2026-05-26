@@ -22,7 +22,7 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.IMultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -240,7 +240,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @SuppressWarnings("unchecked")
     private <RESOURCE extends Resource> void emitResource(ServerLevel level, BlockPos pos, Set<Direction> sides, Object container,
-          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, IMultiTypeCapability<ResourceHandler<RESOURCE>, ?> capability, IntSupplier ejectRate) {
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<ResourceHandler<RESOURCE>> capability, IntSupplier ejectRate) {
         List<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
             BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction> cache = (BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>) typeCapabilityCaches.get(side);

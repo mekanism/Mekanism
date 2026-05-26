@@ -6,11 +6,12 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.util.InventoryUtils;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -50,9 +51,9 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             }
             return false;
         }
-        ComponentBackedResourceHandler<ItemResource, IInventorySlot> outputHandler = ContainerType.ITEM.createHandler(itemAccess);
+        ResourceHandler<ItemResource> handler = ContainerType.ITEM.getCapOrUnexposed(itemAccess);
         //Something went wrong, fail
-        return outputHandler != null && applyToStack(outputHandler.getContainers(), slots);
+        return handler instanceof IMekanismResourceHandler<ItemResource, ?> outputHandler && applyToStack((List<IInventorySlot>) outputHandler.getContainers(), slots);
     }
 
     private static boolean applyToStack(List<IInventorySlot> outputSlots, List<IInventorySlot> dataSlots) {

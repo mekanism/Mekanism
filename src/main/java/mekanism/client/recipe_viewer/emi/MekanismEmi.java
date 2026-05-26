@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
@@ -60,7 +59,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.Capabilities;
@@ -107,10 +106,7 @@ public class MekanismEmi implements EmiPlugin {
     });
 
     private static void addChemicalComponent(Set<Object> representation, ItemAccess itemAccess) {
-        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(itemAccess);
-        if (handler == null) {
-            handler = Capabilities.CHEMICAL.getCapability(itemAccess);
-        }
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             int tanks = handler.size();
             if (tanks == 1) {
@@ -129,10 +125,7 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addFluidComponent(Set<Object> representation, ItemAccess itemAccess) {
-        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(itemAccess);
-        if (handler == null) {
-            handler = Capabilities.FLUID.getCapability(itemAccess);
-        }
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             int tanks = handler.size();
             if (tanks == 1) {
@@ -151,10 +144,7 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addEnergyComponent(Set<Object> representation, ItemAccess itemAccess) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(itemAccess);
-        if (energyHandlerItem == null) {
-            energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        }
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.size();
             if (containers == 1) {

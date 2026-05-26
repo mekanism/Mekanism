@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;

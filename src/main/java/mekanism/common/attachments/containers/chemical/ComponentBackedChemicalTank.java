@@ -9,9 +9,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +35,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     }
 
     @Override
-    protected ContainerType<?, AttachedResources<ChemicalResource>, ?> containerType() {
+    protected ResourceContainerType<ChemicalResource, IChemicalTank> containerType() {
         return ContainerType.CHEMICAL;
     }
 

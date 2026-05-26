@@ -9,7 +9,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
@@ -205,7 +206,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         //Comparators are handled via the multiblock, no special listeners are needed
         return false;
     }
@@ -334,7 +335,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         if (type == ContainerType.ITEM) {
             return false;
         }

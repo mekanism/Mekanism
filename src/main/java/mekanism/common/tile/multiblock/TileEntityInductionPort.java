@@ -7,7 +7,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.ProxiedContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -40,7 +41,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle energy when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.ENERGY) {
             return false;

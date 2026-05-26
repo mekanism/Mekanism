@@ -12,7 +12,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
@@ -194,7 +195,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(BlockEntityTarget.BLOCK_ENTITY));
                 }
-                for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+                for (IContainerType<?, ?> type : ContainerType.TYPES) {
                     List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
                     int attachmentContainers = type.getContainerCount(blockItem);
                     if (containers.size() == attachmentContainers) {

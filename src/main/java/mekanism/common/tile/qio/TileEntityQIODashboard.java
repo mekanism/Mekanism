@@ -1,13 +1,9 @@
 package mekanism.common.tile.qio;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -18,7 +14,6 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
@@ -29,7 +24,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,37 +65,6 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
             builder.addContainer(craftingWindow.getOutputSlot());
         }
         return builder.build();
-    }
-
-    @Override
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedResources<ItemResource> attachedItems) {
-        List<LargeResourceStack<ItemResource>> stacks = attachedItems.containers();
-        int size = stacks.size();
-        if (size == slots.size()) {
-            for (int i = 0; i < size; i++) {
-                IInventorySlot slot = slots.get(i);
-                if (slot instanceof CraftingWindowOutputInventorySlot) {
-                    slot.setEmpty();
-                } else {
-                    slot.setContents(stacks.get(i), null);
-                }
-            }
-        }
-    }
-
-    @Nullable
-    @Override
-    public AttachedResources<ItemResource> collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
-        boolean hasNonEmpty = false;
-        List<LargeResourceStack<ItemResource>> stacks = new ArrayList<>(slots.size());
-        for (IInventorySlot slot : slots) {
-            LargeResourceStack<ItemResource> stack = slot instanceof CraftingWindowOutputInventorySlot ? LargeResourceStack.ITEM_HELPER.empty() : slot.asStack();
-            stacks.add(stack);
-            if (!stack.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
     }
 
     @Override

@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -34,7 +35,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID) {
             return false;

@@ -5,7 +5,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -21,7 +20,7 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
 
     private final boolean isCreative;
 
-    public static ComponentBackedChemicalTankTank create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+    public static ComponentBackedChemicalTankTank create(ItemAccess attachedAccess, int tankIndex) {
         if (!(attachedAccess.getResource().getItem() instanceof ItemBlockChemicalTank item)) {
             throw new IllegalStateException("Attached to should always be a chemical tank item");
         }

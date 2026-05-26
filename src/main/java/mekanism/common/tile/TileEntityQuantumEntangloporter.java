@@ -16,9 +16,9 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.IMultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
@@ -159,7 +159,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         // don't persist ANY substance types
         return false;
     }
@@ -201,7 +201,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> caches = capabilityCaches.computeIfAbsent(transmissionType, type -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<?, @Nullable Direction> cache = caches.get(side);
         if (cache == null) {
-            IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
+            MultiTypeCapability<HANDLER> capability = (MultiTypeCapability<HANDLER>) switch (transmissionType) {
                 case FLUID -> Capabilities.FLUID;
                 case CHEMICAL -> Capabilities.CHEMICAL;
                 default -> null;

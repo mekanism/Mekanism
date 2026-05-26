@@ -12,12 +12,12 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
@@ -85,11 +85,11 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
         try (Transaction transaction = Transaction.openRoot()) {
             // Items
-            ResourceUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
+            ContainerType.ITEM.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
             // Fluid
-            ResourceUtils.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
+            ContainerType.FLUID.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
             // Chemical
-            ResourceUtils.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
+            ContainerType.CHEMICAL.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
             // Energy
             StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers(), transaction);
             // Heat
@@ -210,9 +210,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
               HEAT
         };
 
-        private final ContainerType<ELEMENT, ?, ?> containerType;
+        private final IContainerType<ELEMENT, ?> containerType;
 
-        public CacheSubstance(ContainerType<ELEMENT, ?, ?> containerType) {
+        public CacheSubstance(IContainerType<ELEMENT, ?> containerType) {
             this.containerType = containerType;
         }
 

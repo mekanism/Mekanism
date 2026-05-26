@@ -5,9 +5,11 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
+import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.FluidUtils;
@@ -23,23 +25,23 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemGaugeDropper extends Item {
 
-    public static final MergedTankCreator MERGED_TANK_CREATOR = new MergedTankCreator(
-          (type, attachedAccess, containerIndex) -> new ComponentBackedChemicalTank(attachedAccess, containerIndex,
-                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
-          ),
-          (type, attachedAccess, containerIndex) -> new ComponentBackedFluidTank(attachedAccess, containerIndex,
+    public static final IBasicContainerCreator<MergedTank> MERGED_TANK_CREATOR = (attachedAccess, containerIndex) -> MergedTank.create(
+          new ComponentBackedFluidTank(attachedAccess, containerIndex,
                 ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
                 MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity
+          ),
+          new ComponentBackedChemicalTank(attachedAccess, containerIndex,
+                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
           )
     );
 
@@ -60,9 +62,9 @@ public class ItemGaugeDropper extends Item {
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
         ItemAccess itemAccess = ItemAccess.forStack(stack);
-        FluidStack fluid = StorageUtils.getFirstFluidFromAttachment(itemAccess);
+        FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
-            return FluidUtils.getRGBDurabilityForDisplay(itemAccess);
+            return FluidUtils.getRGBDurabilityForDisplay(fluid);
         }
         return ChemicalUtils.getRGBDurabilityForDisplay(itemAccess);
     }

@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -20,7 +21,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
 
     protected abstract boolean isEmpty(TYPE value);
 
-    protected abstract ContainerType<?, ATTACHED, ?> containerType();
+    protected abstract IContainerType<?, ATTACHED> containerType();
 
     protected ATTACHED getAttached() {
         return containerType().getOrEmpty(attachedAccess);

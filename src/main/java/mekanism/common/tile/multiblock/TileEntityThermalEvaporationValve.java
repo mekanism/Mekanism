@@ -3,7 +3,8 @@ package mekanism.common.tile.multiblock;
 import mekanism.api.IContentsListener;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -30,7 +31,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.HEAT) {
             return false;

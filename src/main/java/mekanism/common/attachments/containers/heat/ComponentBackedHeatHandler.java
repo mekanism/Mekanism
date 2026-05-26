@@ -5,7 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
@@ -13,8 +13,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapacitorData, IHeatCapacitor, AttachedHeat> implements IMekanismHeatHandler {
 
-    public ComponentBackedHeatHandler(ContainerType<IHeatCapacitor, AttachedHeat, ? extends ComponentBackedHeatHandler> containerType, ItemAccess attachedAccess,
-          int totalCapacitors) {
+    public ComponentBackedHeatHandler(IContainerType<IHeatCapacitor, AttachedHeat> containerType, ItemAccess attachedAccess, int totalCapacitors) {
         super(containerType, attachedAccess, totalCapacitors);
     }
 

@@ -20,6 +20,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
@@ -608,7 +609,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
+        return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(fuelTank);
     }
 
     public void setRateLimit(double rate) {

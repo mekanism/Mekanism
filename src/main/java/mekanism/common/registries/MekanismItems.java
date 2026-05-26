@@ -10,12 +10,12 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
@@ -121,8 +121,13 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
-          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder().addContainer(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
-          .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder().addContainer(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                .addContainer((attachedAccess, containerIndex) -> ItemGaugeDropper.MERGED_TANK_CREATOR.create(attachedAccess, containerIndex).getChemicalTank())
+                .build(), MekanismConfig.gear
+          ).addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                .addContainer((attachedAccess, containerIndex) -> ItemGaugeDropper.MERGED_TANK_CREATOR.create(attachedAccess, containerIndex).getFluidTank())
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new)
@@ -281,7 +286,7 @@ public class MekanismItems {
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
-                .addContainer((_, attachedAccess, containerIndex) -> new ComponentBackedNoClampEnergyContainer(
+                .addContainer((attachedAccess, containerIndex) -> new ComponentBackedNoClampEnergyContainer(
                       attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
                       () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate),
                       () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity)))

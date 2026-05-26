@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.attachments.containers.type.IContainerType;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Range;
 public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER>
       implements IContentsListener {
 
-    private final ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType;
+    private final IContainerType<CONTAINER, ATTACHED> containerType;
     protected final ItemAccess attachedAccess;
     private final int totalContainers;
 
@@ -25,14 +26,13 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
     private int numNotInitialized;
 
     //TODO - 1.21: Do we want to validate slot indices are within range?
-    protected ComponentBackedHandler(ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType, ItemAccess attachedAccess,
-          int totalContainers) {
+    protected ComponentBackedHandler(IContainerType<CONTAINER, ATTACHED> containerType, ItemAccess attachedAccess, int totalContainers) {
         this.containerType = containerType;
         this.attachedAccess = attachedAccess;
         this.totalContainers = totalContainers;
     }
 
-    protected final ContainerType<CONTAINER, ATTACHED, ? extends ComponentBackedHandler<TYPE, CONTAINER, ATTACHED>> containerType() {
+    protected final IContainerType<CONTAINER, ATTACHED> containerType() {
         return containerType;
     }
 

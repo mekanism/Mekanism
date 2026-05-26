@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -8,11 +7,9 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -34,18 +31,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Nullable
     public static ComponentBackedBinInventorySlot getForAccess(ItemAccess itemAccess) {
         ItemResource resource = itemAccess.getResource();
-        if (!resource.isEmpty() && resource.getItem() instanceof ItemBlockBin) {
-            //TODO - 26.1: Should this use getAttachmentContainersIfPresent
-            ComponentBackedResourceHandler<ItemResource, IInventorySlot> attachment = ContainerType.ITEM.createHandler(itemAccess);
-            if (attachment != null) {
-                List<IInventorySlot> slots = attachment.getContainers();
-                if (slots.size() == 1) {
-                    IInventorySlot slot = slots.getFirst();
-                    if (slot instanceof ComponentBackedBinInventorySlot binSlot) {
-                        return binSlot;
-                    }
-                }
-            }
+        if (!resource.isEmpty() && resource.getItem() instanceof ItemBlockBin && ContainerType.ITEM.createContainer(itemAccess, 0) instanceof ComponentBackedBinInventorySlot binSlot) {
+            return binSlot;
         }
         return null;
     }

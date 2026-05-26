@@ -10,7 +10,6 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
@@ -30,7 +29,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     private final boolean isCreative;
 
-    public static ComponentBackedBinInventorySlot create(ContainerType<?, ?, ?> ignored, ItemAccess attachedAccess, int tankIndex) {
+    public static ComponentBackedBinInventorySlot create(ItemAccess attachedAccess, int tankIndex) {
         if (!(attachedAccess.getResource().getItem() instanceof ItemBlockBin item)) {
             throw new IllegalStateException("Attached to should always be a bin item");
         }

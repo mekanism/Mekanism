@@ -5,12 +5,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
@@ -20,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,25 +54,13 @@ public class ChemicalUtils {
         }).getItemHolder();
     }
 
-    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> provider) {
-        return getFilledVariant(new ItemStack(toFill), provider);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, Holder<Chemical> provider) {
-        ItemAccess itemAccess = ItemAccess.forStack(toFill);
-        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> attachment = ContainerType.CHEMICAL.createHandler(itemAccess);
-        if (attachment != null) {
-            ChemicalResource chemicalType = ChemicalResource.of(provider);
-            for (IChemicalTank tank : attachment.getContainers()) {
-                tank.setContents(chemicalType, tank.capacityAsLong(chemicalType), null);
-            }
-        }
-        //The item is now filled return it for convenience
-        return toFill;
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> chemical) {
+        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
+        return ContainerType.CHEMICAL.getFilledVariant(itemAccess, ChemicalResource.of(chemical));
     }
 
     public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
-        ChemicalResource chemicalType = StorageUtils.getFirstChemicalFromAttachment(itemAccess);
+        ChemicalResource chemicalType = ContainerType.CHEMICAL.getFirstResourceFromAttachment(itemAccess);
         return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
     }
 

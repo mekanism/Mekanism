@@ -8,7 +8,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -136,7 +137,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     }
 
     @Override
-    public boolean persistsToItem(ContainerType<?, ?, ?> type) {
+    public boolean persistsToItem(IContainerType<?, ?> type) {
         return type != ContainerType.ITEM && super.persistsToItem(type);
     }
 }

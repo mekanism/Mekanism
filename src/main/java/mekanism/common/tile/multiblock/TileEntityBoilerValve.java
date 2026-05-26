@@ -11,7 +11,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.Capabilities;
@@ -58,7 +59,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle fluid or gas when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.CHEMICAL) {
             return false;

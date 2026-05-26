@@ -23,8 +23,8 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
-import mekanism.api.resource.IResourceContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.IContainerHolder;
@@ -53,7 +53,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -253,12 +252,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Override
     public int getRedstoneLevel() {
-        IResourceContainer<?> tank = mode ? fluidTank : gasTank;
-        return ResourceUtils.getRedstoneSignalFromContainer(tank);
+        if (mode) {
+            return ContainerType.FLUID.getRedstoneSignalFromContainer(fluidTank);
+        }
+        return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(gasTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID || type == ContainerType.CHEMICAL;
     }
 

@@ -8,7 +8,7 @@ import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.attachments.containers.ResourceContainersBuilder;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -54,13 +54,13 @@ public class GenericTankSpec<RESOURCE extends Resource> {
     }
 
     //TODO - 1.20.5: Re-evaluate this
-    public <CONTAINER extends ComponentBackedResourceContainer<RESOURCE>> void addTank(ResourceContainersBuilder<RESOURCE, CONTAINER, ?> builder,
+    public <CONTAINER extends IResourceContainer<RESOURCE>> void addTank(ResourceContainersBuilder<RESOURCE, CONTAINER, ?> builder,
           ComponentTankFromSpecCreator<RESOURCE, CONTAINER> tankCreator) {
         if (itemBasedCapacity == null) {
-            builder.addContainer((_, attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
+            builder.addContainer((attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
                   (resource, automationType) -> canInsert.test(resource, automationType, attachedAccess), isValid, rate, capacity));
         } else {
-            builder.addContainer((_, attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
+            builder.addContainer((attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
                   (chemicalType, automationType) -> canInsert.test(chemicalType, automationType, attachedAccess), isValid, rate, () -> itemBasedCapacity.applyAsLong(attachedAccess)
             ));
         }
@@ -92,7 +92,7 @@ public class GenericTankSpec<RESOURCE extends Resource> {
     }
 
     @FunctionalInterface
-    public interface ComponentTankFromSpecCreator<RESOURCE extends Resource, CONTAINER extends ComponentBackedResourceContainer<RESOURCE>> {
+    public interface ComponentTankFromSpecCreator<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> {
 
         CONTAINER create(ItemAccess attachedAccess, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
               Predicate<RESOURCE> isValid, IntSupplier rate, LongSupplier capacity);

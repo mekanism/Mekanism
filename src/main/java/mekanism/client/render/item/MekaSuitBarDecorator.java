@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.client.Minecraft;

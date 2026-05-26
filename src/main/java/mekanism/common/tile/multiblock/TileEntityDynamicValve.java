@@ -3,7 +3,8 @@ package mekanism.common.tile.multiblock;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     }
     
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.CHEMICAL) {
             return false;
