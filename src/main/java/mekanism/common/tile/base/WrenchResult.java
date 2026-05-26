@@ -12,7 +12,7 @@ public enum WrenchResult {
 
     public InteractionResult getInteractionResult() {
         return switch (this) {
-            case PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
+            case PASS -> InteractionResult.PASS;
             case RADIOACTIVE -> InteractionResult.FAIL;
             default -> InteractionResult.SUCCESS;
         };
