@@ -1,10 +1,10 @@
 package mekanism.client.render.item;
 
-import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
@@ -74,13 +74,9 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     }
 
     private static void renderBar(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, long amount, long capacity, int color) {
-        int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
+        int pixelWidth = StorageUtils.getBarWidth(MathUtils.divideToLevel(amount, capacity));
         GuiUtils.fill(guiGraphics, xOffset + 2 + pixelWidth, yOffset, 13 - pixelWidth, 1, 0xFF000000);
         GuiUtils.fill(guiGraphics, xOffset + 2, yOffset, pixelWidth, 1, color | 0xFF000000);
-    }
-
-    private static int convertWidth(double width) {
-        return Ints.saturatedCast(Math.round(13.0F * width));
     }
 
     static int getDisplayTank(int tanks) {

@@ -146,7 +146,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override

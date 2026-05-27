@@ -51,7 +51,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override

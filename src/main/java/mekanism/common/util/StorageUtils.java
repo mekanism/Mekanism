@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -23,10 +22,12 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -215,16 +216,27 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         return TextComponentUtil.build(color, text);
     }
 
-    public static int getBarWidth(ItemStack stack) {
-        if (stack.count() > 1) {
-            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
-            // but we may as well short circuit it here
-            return 0;
-        }
-        return Ints.saturatedCast(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
+    public static int getBarWidth(double ratio) {
+        return Mth.clamp(Math.round(Item.MAX_BAR_WIDTH * (float) ratio), 0, Item.MAX_BAR_WIDTH);
     }
 
-    private static double getDurabilityForDisplay(ItemStack stack) {
+    public static boolean isBarVisible(ItemStack stack) {
+        //TODO - 26.1: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
+        //If we are currently stacked, don't display the bar as it will overlap the stack count
+        if (stack.count() == 1) {
+            //We also don't display the bar if there is nothing stored in any of the containers
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
+                return true;
+            }
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+            return fluidHandler != null && !ResourceHandlerUtil.isEmpty(fluidHandler);
+        }
+        return false;
+    }
+
+    public static int getBarWidth(ItemStack stack) {
         double bestRatio = 0;
         ItemAccess itemAccess = ItemAccess.forStack(stack);
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
@@ -232,7 +244,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             for (int chemTank = 0, chemTanks = handler.size(); chemTank < chemTanks; chemTank++) {
                 ChemicalResource chemicalType = handler.getResource(chemTank);
                 if (!chemicalType.isEmpty()) {
-                    bestRatio = Math.max(bestRatio, getRatio(handler.getAmountAsLong(chemTank), handler.getCapacityAsLong(chemTank, chemicalType)));
+                    bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(handler.getAmountAsLong(chemTank), handler.getCapacityAsLong(chemTank, chemicalType)));
                 }
             }
         }
@@ -242,22 +254,30 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
                 FluidResource currentType = fluidHandler.getResource(tank);
                 long stored = fluidHandler.getAmountAsLong(tank);
                 long capacity = fluidHandler.getCapacityAsLong(tank, currentType);
-                bestRatio = Math.max(bestRatio, getRatio(stored, capacity));
+                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(stored, capacity));
             }
         }
-        return 1 - bestRatio;
+        return getBarWidth(bestRatio);
+    }
+
+    public static boolean isEnergyBarVisible(ItemStack stack) {
+        //TODO - 26.1: Re-evaluate this, we now expose the capability when stacked, so we should potentially have the energy bar display
+        //If we are currently stacked, don't display the bar as it will overlap the stack count
+        if (stack.count() == 1) {
+            //We also don't display the bar if there is nothing stored in any of the containers
+            IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+            if (energyHandlerItem != null) {
+                for (int container = 0, containers = energyHandlerItem.size(); container < containers; container++) {
+                    if (energyHandlerItem.getAmountAsLong(container) > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public static int getEnergyBarWidth(ItemStack stack) {
-        if (stack.count() > 1) {
-            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
-            // but we may as well short circuit it here
-            return 0;
-        }
-        return Ints.saturatedCast(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
-    }
-
-    private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandlerItem != null) {
@@ -266,11 +286,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
                 bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getAmountAsLong(container), energyHandlerItem.getCapacityAsLong(container)));
             }
         }
-        return 1 - bestRatio;
-    }
-
-    public static double getRatio(long amount, long capacity) {
-        return capacity == 0 ? 1 : amount / (double) capacity;
+        return getBarWidth(bestRatio);
     }
 
     public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd, TransactionContext transaction) {

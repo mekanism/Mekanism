@@ -8,12 +8,12 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodConstants;
@@ -83,7 +83,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                         stored += inTank;
                     }
                 }
-                ratio = StorageUtils.getRatio(stored, max);
+                ratio = MathUtils.divideToLevel(stored, max);
             }
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(icon, ratio));
         }

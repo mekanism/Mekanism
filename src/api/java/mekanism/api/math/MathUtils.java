@@ -108,7 +108,7 @@ public class MathUtils {
      * @since 10.6.6
      */
     public static double divideToLevel(double numerator, double toDivide) {
-        return toDivide == 0D || numerator > toDivide ? 1 : numerator / toDivide;
+        return toDivide == 0D || numerator >= toDivide ? 1 : numerator / toDivide;
     }
 
     /**

@@ -65,13 +65,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        // No bar for empty or stacked containers as bars are drawn on top of stack count number
-        if (stack.count() > 1) {
-            //Note: Technically this is handled by the below checks as the capability isn't exposed,
-            // but we may as well short circuit it here
-            return false;
-        }
-        return ChemicalUtils.hasAnyChemical(stack);
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override

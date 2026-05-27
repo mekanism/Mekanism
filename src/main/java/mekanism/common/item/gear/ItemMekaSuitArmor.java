@@ -184,7 +184,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isEnergyBarVisible(stack);
     }
 
     @Override

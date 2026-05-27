@@ -1,13 +1,11 @@
 package mekanism.common.util;
 
-import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
@@ -64,21 +62,13 @@ public class ChemicalUtils {
         return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
     }
 
-    public static boolean hasAnyChemical(ItemStack stack) {
-        return hasChemical(stack, ConstantPredicates.alwaysTrue());
-    }
-
     public static boolean hasChemicalOfType(ItemStack stack, Holder<Chemical> type) {
-        ChemicalResource chemicalType = ChemicalResource.of(type);
-        return hasChemical(stack, chemicalType::equals);
-    }
-
-    public static boolean hasChemical(ItemStack stack, Predicate<ChemicalResource> validityCheck) {
+        ChemicalResource typeToCheck = ChemicalResource.of(type);
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         if (handler != null) {
             for (int tank = 0, size = handler.size(); tank < size; tank++) {
                 ChemicalResource chemicalType = handler.getResource(tank);
-                if (!chemicalType.isEmpty() && validityCheck.test(chemicalType)) {
+                if (!chemicalType.isEmpty() && chemicalType.equals(typeToCheck)) {
                     return true;
                 }
             }

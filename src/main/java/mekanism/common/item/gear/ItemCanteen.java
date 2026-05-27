@@ -46,7 +46,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override

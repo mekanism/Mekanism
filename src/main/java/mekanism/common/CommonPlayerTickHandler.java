@@ -29,7 +29,6 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -69,7 +68,7 @@ public class CommonPlayerTickHandler {
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
         return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank scubaTank &&
-               mask.getItem() instanceof ItemScubaMask && ChemicalUtils.hasAnyChemical(tank) && scubaTank.getMode(tank);
+               mask.getItem() instanceof ItemScubaMask && scubaTank.hasChemical(tank) && scubaTank.getMode(tank);
     }
 
     public static float getStepBoost(Player player) {
@@ -203,7 +202,7 @@ public class CommonPlayerTickHandler {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && ChemicalUtils.hasAnyChemical(chestStack)) {
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && tank.hasChemical(chestStack)) {
                     event.setCanceled(true);
                     return;
                 }

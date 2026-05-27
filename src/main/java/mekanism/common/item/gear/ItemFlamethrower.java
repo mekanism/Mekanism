@@ -88,7 +88,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player != null && ChemicalUtils.hasChemicalOfType(context.getItemInHand(), getChemicalType())) {
+        if (player != null && hasChemical(context.getItemInHand())) {
             player.startUsingItem(context.getHand());
             return InteractionResult.CONSUME;
         }
@@ -99,7 +99,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (ChemicalUtils.hasChemicalOfType(stack, getChemicalType())) {
+        if (hasChemical(stack)) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
             return InteractionResult.SUCCESS;
@@ -141,7 +141,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         //If a flamethrower has no gas it can't be idle
-        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtils.hasAnyChemical(stack);
+        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower flamethrower && flamethrower.hasChemical(stack);
     }
 
     @NothingNullByDefault

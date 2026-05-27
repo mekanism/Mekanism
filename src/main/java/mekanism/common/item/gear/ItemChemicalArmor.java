@@ -40,7 +40,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isEnergyBarVisible(stack);
     }
 
     @Override

@@ -13,6 +13,7 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.IHasTextComponent;
@@ -53,7 +54,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
                 long stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
+                double ratio = MathUtils.divideToLevel(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
