@@ -849,9 +849,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addRemapEntries(remapEntries);
         }
         for (IContainerType<?, ?> type : ContainerType.TYPES) {
-            if (persistsToItem(type) && !remapEntries.contains(type.getComponentType().get())) {
-                //Ensure we add any container types that we only conditionally added
-                remapEntries.add(type.getComponentType().get());
+            if (persistsToItem(type)) {
+                DataComponentType<?> componentType = type.getComponentType().get();
+                if (!remapEntries.contains(componentType)) {
+                    //Ensure we add any container types that we only conditionally added
+                    remapEntries.add(componentType);
+                }
             }
         }
         if (this instanceof ITileFilterHolder<?> && !remapEntries.contains(MekanismDataComponents.FILTER_AWARE.get())) {

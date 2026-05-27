@@ -24,6 +24,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class EnergyCompatUtils {
 
@@ -118,22 +119,17 @@ public class EnergyCompatUtils {
 
     @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemAccess itemAccess) {
-        if (!itemAccess.getResource().isEmpty()) {
-            return getStrictEnergyHandler(itemAccess, IEnergyCompat::getStrictEnergyHandler);
-        }
-        return null;
+        //Note: We short circuit if the access has nothing stored
+        return itemAccess.getAmount() == 0 ? null : getStrictEnergyHandler(itemAccess, IEnergyCompat::getStrictEnergyHandler);
     }
 
     @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@Nullable Entity entity) {
-        if (entity != null) {
-            return getStrictEnergyHandler(entity, IEnergyCompat::getStrictEnergyHandler);
-        }
-        return null;
+        return entity == null ? null : getStrictEnergyHandler(entity, IEnergyCompat::getStrictEnergyHandler);
     }
 
     @Nullable
-    private static <OBJECT> IStrictEnergyHandler getStrictEnergyHandler(OBJECT object, BiFunction<IEnergyCompat, OBJECT, IStrictEnergyHandler> getter) {
+    private static <OBJECT> IStrictEnergyHandler getStrictEnergyHandler(OBJECT object, BiFunction<@NonNull IEnergyCompat, @NonNull OBJECT, IStrictEnergyHandler> getter) {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
                 IStrictEnergyHandler handler = getter.apply(energyCompat, object);

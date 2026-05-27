@@ -41,7 +41,6 @@ import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.Capabilities;
@@ -439,10 +438,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
                 containers.getFirst().copyContents(energyContainer);
             }
         }
-        AttachedResources<ItemResource> items = ContainerType.ITEM.attachedCopyOf(inventorySlots);
-        if (items != null) {
-            stack.set(ContainerType.ITEM.getComponentType(), items);
-        }
+        ContainerType.ITEM.attachCopyToStack(inventorySlots, stack);
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }

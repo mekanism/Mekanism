@@ -78,18 +78,20 @@ public class TileEntityChargepad extends TileEntityMekanism {
                         active = true;
                     }
                 }
+                if (active) {
+                    transaction.commit();
+                }
             }
         }
-        if (active != getActive()) {
-            setActive(active);
-        }
+        setActive(active);
         return sendUpdatePacket;
     }
 
     private boolean chargeHandler(@Nullable ResourceHandler<ItemResource> itemHandler, TransactionContext transaction) {
         //Ensure that we have an item handler capability, because if for example the player is dead we will not
         if (itemHandler != null) {
-            //TODO - 26.1: We are using this as a energy per target per tick limit. Do we want to somehow document that fact for the chargepad's limit
+            //TODO - 26.1: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
+            // Do we want to somehow document that fact for the chargepad's limit
             long energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {
                 long inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);

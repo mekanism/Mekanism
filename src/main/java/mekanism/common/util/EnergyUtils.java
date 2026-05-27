@@ -103,36 +103,17 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     /// @return amount transferred
-    public static long charge(IEnergyContainer energyContainer, ItemAccess itemAccess, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
-        return amount == 0 ? 0 : charge(energyContainer, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
+    public static long charge(IEnergyContainer chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {
+        return amount == 0 ? 0 : charge(chargeFrom, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
     }
 
     /// @return amount transferred
-    public static long charge(IEnergyContainer energyContainer, @Nullable IStrictEnergyHandler handler, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
-        if (amount == 0 || handler == null) {
-            return 0;
-        }
-        long toExtract;
-        try (Transaction simulation = Transaction.open(transaction)) {//TODO - 26.1: Re-evaluate this simulation
-            toExtract = handler.extract(amount, simulation);
-        }
-        if (toExtract > 0) {
-            //If we can actually insert any energy into the item
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                long extracted = energyContainer.extract(toExtract, subTransaction, AutomationType.MANUAL);
-                long inserted = handler.insert(extracted, subTransaction);
-                if (inserted == extracted) {
-                    subTransaction.commit();
-                    return inserted;
-                }
-            }
-        }
-        return 0;
+    public static long charge(IEnergyContainer chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {
+        return charge(chargeFrom, handlerToCharge, amount, transaction, (container, toExtract, tx) -> container.extract(toExtract, tx, AutomationType.MANUAL));
     }
 
     /// @return amount transferred
     public static long chargeContents(IStrictEnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, long amount, TransactionContext transaction) {
-        //TODO - 26.1: Docs
         long charged = 0;
         for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
             charged += charge(chargeFrom, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
@@ -144,30 +125,43 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     /// @return amount transferred
-    public static long charge(IStrictEnergyHandler chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
+    public static long charge(IStrictEnergyHandler chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {
         return amount == 0 ? 0 : charge(chargeFrom, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
     }
 
     /// @return amount transferred
-    public static long charge(IStrictEnergyHandler chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
+    public static long charge(IStrictEnergyHandler chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {
+        return charge(chargeFrom, handlerToCharge, amount, transaction, EnergyUtils::extractManual);
+    }
+
+    /// @return amount transferred
+    private static <CONTAINER> long charge(CONTAINER chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction,
+          EnergyExtractor<CONTAINER> extractor) {
         if (amount == 0 || handlerToCharge == null) {
             return 0;
         }
-        long toExtract;
-        try (Transaction simulation = Transaction.open(transaction)) {//TODO - 26.1: Re-evaluate this simulation
-            toExtract = handlerToCharge.extract(amount, simulation);
-        }
-        if (toExtract > 0) {
-            //If we can actually insert any energy into the item
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                long extracted = extractManual(chargeFrom, toExtract, subTransaction);
-                long inserted = handlerToCharge.insert(extracted, subTransaction);
-                if (inserted == extracted) {
-                    subTransaction.commit();
-                    return inserted;
-                }
+        long toTransfer;
+        try (Transaction simulation = Transaction.open(transaction)) {
+            toTransfer = handlerToCharge.insert(amount, simulation);
+            if (toTransfer == 0) {
+                //Validate we can actually insert anything into the handler we are trying to charge
+                return 0;
             }
         }
-        return 0;
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            long extracted = extractor.extract(chargeFrom, toTransfer, subTransaction);
+            long inserted = handlerToCharge.insert(extracted, subTransaction);
+            if (inserted == extracted) {
+                subTransaction.commit();
+                return inserted;
+            }
+            return 0;
+        }
+    }
+
+    @FunctionalInterface
+    private interface EnergyExtractor<CONTAINER> {
+
+        long extract(CONTAINER container, long amount, TransactionContext transaction);
     }
 }

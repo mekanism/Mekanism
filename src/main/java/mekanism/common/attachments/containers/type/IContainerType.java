@@ -13,6 +13,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -127,6 +128,13 @@ public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED 
     void copyToContainers(List<CONTAINER> containers, ATTACHED attached);
 
     void copyFromTile(TileEntityMekanism tile, DataComponentMap.Builder builder);
+
+    default void attachCopyToStack(List<CONTAINER> containers, ItemStack stack) {
+        ATTACHED attached = attachedCopyOf(containers);
+        if (attached != null) {
+            stack.set(getComponentType(), attached);
+        }
+    }
 
     @Nullable
     ATTACHED attachedCopyOf(List<CONTAINER> containers);
