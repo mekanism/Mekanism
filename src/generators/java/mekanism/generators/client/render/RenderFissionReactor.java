@@ -107,11 +107,11 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             //profiler.pop();
         }
         if (state.coolantTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.coolantMaxY, state.width - 0.02F, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantGlow, state.coolantColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.coolantMaxY, state.width - 0.02F, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantGlow, state.coolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
         if (state.heatedCoolantTexture != null) {
             //uses a slightly shrunken version of the model to prevent z-fighting
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width, state.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
     }
 
