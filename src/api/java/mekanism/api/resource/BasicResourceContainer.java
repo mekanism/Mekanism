@@ -105,7 +105,11 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(RESOURCE resource) {
-        return capacity;
+        //Ensure the resource is valid, and otherwise return zero
+        if (resource.isEmpty() || isValid(resource)) {
+            return capacity;
+        }
+        return 0;
     }
 
     /**

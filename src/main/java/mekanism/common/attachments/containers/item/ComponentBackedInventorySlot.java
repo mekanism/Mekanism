@@ -42,6 +42,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(ItemResource resource) {
+        //Note: The below logic gracefully handles when zero is returned from super due to the resource not being valid
         long limit = super.capacityAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }

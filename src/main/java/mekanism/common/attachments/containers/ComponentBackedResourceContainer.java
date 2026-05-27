@@ -65,6 +65,10 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(RESOURCE resource) {
+        if (!resource.isEmpty() && !isValid(resource)) {
+            //If the resource is not valid we need to return zero as the capacity
+            return 0;
+        }
         return capacity.getAsLong();
     }
 

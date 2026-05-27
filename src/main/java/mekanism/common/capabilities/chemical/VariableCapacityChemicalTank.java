@@ -79,6 +79,10 @@ public class VariableCapacityChemicalTank extends BasicChemicalTank {
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(ChemicalResource resource) {
-        return capacity.getAsLong();
+        //Ensure the resource is valid, and otherwise return zero
+        if (resource.isEmpty() || isValid(resource)) {
+            return capacity.getAsLong();
+        }
+        return 0;
     }
 }

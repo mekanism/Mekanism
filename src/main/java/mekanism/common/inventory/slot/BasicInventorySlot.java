@@ -85,6 +85,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(ItemResource resource) {
+        //Note: The below logic gracefully handles when zero is returned from super due to the resource not being valid
         long capacity = super.capacityAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(capacity, resource.getMaxStackSize()) : capacity;
     }
