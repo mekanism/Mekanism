@@ -7,6 +7,8 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -92,7 +94,19 @@ public interface IFreeRunnerItem {
         return getFreeRunners(entity, stack -> {
             if (stack.getItem() instanceof IFreeRunnerItem) {
                 IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-                return energyHandler != null && !energyHandler.isEmpty();
+                if (energyHandler instanceof IMekanismStrictEnergyHandler mekHandler) {
+                    for (IEnergyContainer container : mekHandler.getContainers()) {
+                        if (!container.isEmpty()) {
+                            return true;
+                        }
+                    }
+                } else if (energyHandler != null) {
+                    for (int i = 0, size = energyHandler.size(); i < size; i++) {
+                        if (energyHandler.getAmountAsLong(i) > 0) {
+                            return true;
+                        }
+                    }
+                }
             }
             return false;
         });

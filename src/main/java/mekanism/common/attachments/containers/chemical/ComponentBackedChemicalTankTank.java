@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -35,25 +36,27 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int insert(AttachedResources<ChemicalResource> attached, ChemicalResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount,
+          long capacity, ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.insert(resource, amount, simulation, automationType);
+                return super.insert(attached, currentType, currentAmount, capacity, resource, amount, simulation, automationType);
             }
         }
-        return super.insert(resource, amount, transaction, automationType);
+        return super.insert(attached, currentType, currentAmount, capacity, resource, amount, transaction, automationType);
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    public int extract(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int extract(AttachedResources<ChemicalResource> attached, ChemicalResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount,
+          ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
-            //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.extract(resource, amount, simulation, automationType);
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.extract(attached, currentType, currentAmount, resource, amount, simulation, automationType);
             }
         }
-        return super.extract(resource, amount, transaction, automationType);
+        return super.extract(attached, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 }

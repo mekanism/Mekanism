@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.IContainerHolder;
@@ -17,7 +18,6 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,7 +76,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
                     }
                     int toInsert = drop.count();
                     //Try inserting it first where it can stack and then into empty slots
-                    toInsert -= InventoryUtils.insertItem(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
+                    toInsert -= ContainerType.ITEM.insertInto(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
                     if (toInsert > 0) {
                         //If we have some drop left over that we couldn't fit, then spawn it into the world
                         // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
@@ -99,7 +99,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         try (Transaction transaction = Transaction.openRoot()) {
             ItemStack stack = entity.getItem();
             //Try inserting it first where it can stack and then into empty slots
-            int inserted = InventoryUtils.insertItem(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
+            int inserted = ContainerType.ITEM.insertInto(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
             if (inserted == stack.count()) {
                 //If we have finished grabbing it all then remove the entity
                 entity.discard();

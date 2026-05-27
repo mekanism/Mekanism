@@ -30,6 +30,7 @@ import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.capabilities.Capabilities;
@@ -663,7 +664,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         for (ItemStack stack : toInsert) {
             if (!stack.isEmpty()) {//Sanitize that we don't have any empty stacks
                 int amountToInsert = stack.count();
-                int inserted = InventoryUtils.insertItem(mainSlots, ItemResource.of(stack), amountToInsert, transaction, AutomationType.INTERNAL);
+                int inserted = ContainerType.ITEM.insertInto(mainSlots, ItemResource.of(stack), amountToInsert, transaction, AutomationType.INTERNAL);
                 if (inserted < amountToInsert) {
                     //We couldn't fit it all inside the inventory
                     return false;
@@ -699,7 +700,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 int toInsert = entry.getIntValue();
                 //Note: Inserting properly handles oversized stacks, so we don't have to handle the case that amount might be greater than
                 // the max stack size here as the different slots will only accept up to the item's max stack size
-                toInsert -= InventoryUtils.insertItem(mainSlots, entry.getKey(), toInsert, transaction, AutomationType.INTERNAL);
+                toInsert -= ContainerType.ITEM.insertInto(mainSlots, entry.getKey(), toInsert, transaction, AutomationType.INTERNAL);
                 //Note: We do not need to mark the miner for saving if something gets moved from overflow to a slot as the slot will do so
                 // when it accepts the item, so we can skip marking that we need to save because overflow changed
                 if (toInsert == 0) {

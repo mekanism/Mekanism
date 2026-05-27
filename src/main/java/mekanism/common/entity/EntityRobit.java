@@ -74,7 +74,6 @@ import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -361,7 +360,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
             for (ItemEntity item : items) {
                 ItemStack stack = item.getItem();
                 int toPickUp = stack.count();
-                int inserted = InventoryUtils.insertItem(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
+                int inserted = ContainerType.ITEM.insertInto(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
                 if (inserted > 0) {
                     transaction.commit();
                     take(item, inserted);
@@ -434,8 +433,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         ItemStack stack = MekanismItems.ROBIT.asStack();
         ItemAccess itemAccess = ItemAccess.forStack(stack);
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler && mekHandler.size() > 0) {
-            mekHandler.getContainer(0).copyContents(energyContainer);
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler) {
+            List<IEnergyContainer> containers = mekHandler.getContainers();
+            if (!containers.isEmpty()) {
+                containers.getFirst().copyContents(energyContainer);
+            }
         }
         AttachedResources<ItemResource> items = ContainerType.ITEM.attachedCopyOf(inventorySlots);
         if (items != null) {
@@ -483,7 +485,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
         ContainerType.ITEM.saveTo(output, inventorySlots);
-        ContainerType.ENERGY.saveTo(output, getContainers());
+        ContainerType.ENERGY.saveTo(output, energyContainers);
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
     }
@@ -497,7 +499,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
         ContainerType.ITEM.readFrom(input, inventorySlots);
-        ContainerType.ENERGY.readFrom(input, getContainers());
+        ContainerType.ENERGY.readFrom(input, energyContainers);
         progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
     }

@@ -6,17 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.containers.type.ContainerType;
-import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
@@ -32,9 +33,9 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,10 +93,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <CONTAINER extends ValueIOSerializable, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(ItemAccess itemAccess,
-          IContainerType<CONTAINER, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
+    private static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> ResourceRecipeData<RESOURCE, CONTAINER> getContainerUpgradeData(
+          ItemAccess itemAccess, ResourceContainerType<RESOURCE, CONTAINER> containerType) {
         List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
-        return containers.isEmpty() ? null : creator.apply(containers);
+        return containers.isEmpty() ? null : new ResourceRecipeData<>(containerType, containers);
     }
 
     /**
@@ -104,9 +105,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     @Nullable
     static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess) {
         return switch (type) {
-            case ENERGY -> getContainerUpgradeData(itemAccess, ContainerType.ENERGY, EnergyRecipeData::new);
-            case FLUID -> getContainerUpgradeData(itemAccess, ContainerType.FLUID, FluidRecipeData::new);
-            case CHEMICAL -> getContainerUpgradeData(itemAccess, ContainerType.CHEMICAL, ChemicalRecipeData::new);
+            case ENERGY -> {
+                List<IEnergyContainer> containers = ContainerType.ENERGY.getAttachmentContainersIfPresent(itemAccess);
+                yield containers.isEmpty() ? null : new EnergyRecipeData(containers);
+            }
+            case FLUID -> getContainerUpgradeData(itemAccess, ContainerType.FLUID);
+            case CHEMICAL -> getContainerUpgradeData(itemAccess, ContainerType.CHEMICAL);
             case ITEM -> {
                 List<IInventorySlot> slots;
                 if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage) {

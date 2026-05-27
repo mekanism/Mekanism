@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -232,8 +231,7 @@ public class ItemSlotsBuilder {
             if (itemEnergyHandler == null) {
                 return true;
             }
-            IEnergyContainer energyContainer = ContainerType.ENERGY.createContainer(attachedAccess, energyIndex);
-            return !EnergyInventorySlot.drainInsertCheck(energyContainer, itemEnergyHandler);
+            return !EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), itemEnergyHandler);
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
@@ -242,8 +240,7 @@ public class ItemSlotsBuilder {
             if (itemEnergyHandler == null) {
                 return false;
             }
-            IEnergyContainer energyContainer = ContainerType.ENERGY.createContainer(attachedAccess, energyIndex);
-            return EnergyInventorySlot.drainInsertCheck(energyContainer, itemEnergyHandler);
+            return EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), itemEnergyHandler);
         }, EnergyInventorySlot.HAS_ENERGY_HANDLER));
     }
 

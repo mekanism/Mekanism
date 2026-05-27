@@ -2,41 +2,31 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import mekanism.common.util.InventoryUtils;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
-
-    private final List<IInventorySlot> slots;
+public class ItemRecipeData extends ResourceRecipeData<ItemResource, IInventorySlot> {
 
     ItemRecipeData(List<IInventorySlot> slots) {
-        this.slots = slots;
+        super(ContainerType.ITEM, slots);
     }
 
-    @Nullable
     @Override
-    public ItemRecipeData merge(ItemRecipeData other) {
-        List<IInventorySlot> allSlots = new ArrayList<>(slots);
-        allSlots.addAll(other.slots);
-        return new ItemRecipeData(allSlots);
+    protected ItemRecipeData createFromMerge(List<IInventorySlot> containers) {
+        return new ItemRecipeData(containers);
     }
 
     @Override
     public boolean applyToStack(ItemAccess itemAccess) {
-        if (slots.isEmpty()) {
+        if (containers.isEmpty()) {
             return true;
         }
         if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage<?>) {
@@ -44,35 +34,21 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             // we will copy them over directly
             List<IInventorySlot> stackSlots = new ArrayList<>();
             PersonalStorageManager.createSlots(stackSlots::add, ConstantPredicates.alwaysTrueBi(), null);
-            //TODO: Improve the logic so that it maybe tries multiple different slot combinations
-            if (applyToStack(stackSlots, slots)) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (IInventorySlot slot : containers) {
+                    if (!slot.isEmpty()) {
+                        long amount = slot.amountAsLong();
+                        if (insertInto(stackSlots, slot.resource(), amount, transaction) < amount) {
+                            //If we have a remainder something failed so bail
+                            return false;
+                        }
+                    }
+                }
+                transaction.commit();
                 //We managed to transfer it all into valid slots, so save it as a new inventory
                 return PersonalStorageManager.createInventoryFor(itemAccess, stackSlots);
             }
-            return false;
         }
-        ResourceHandler<ItemResource> handler = ContainerType.ITEM.getCapOrUnexposed(itemAccess);
-        //Something went wrong, fail
-        return handler instanceof IMekanismResourceHandler<ItemResource, ?> outputHandler && applyToStack((List<IInventorySlot>) outputHandler.getContainers(), slots);
-    }
-
-    private static boolean applyToStack(List<IInventorySlot> outputSlots, List<IInventorySlot> dataSlots) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            for (IInventorySlot slot : dataSlots) {
-                if (!slot.isEmpty()) {
-                    int amount = slot.amountAsInt();
-                    //TODO - 26.1: The automation type here doesn't matter because we create slots that are always allowed to be interacted with
-                    // but we should decide what one makes the most sense (probably whatever we decide to use for IMekanismResourceHandler#insert's default automation type
-                    //TODO - 26.1: How does this work for bins if they are configured to more than max int? Do we need to special case them?
-                    int inserted = InventoryUtils.insertItem(outputSlots, slot.resource(), amount, transaction, AutomationType.MANUAL);
-                    if (inserted < amount) {
-                        //If we have a remainder something failed so bail
-                        return false;
-                    }
-                }
-            }
-            transaction.commit();
-            return true;
-        }
+        return super.applyToStack(itemAccess);
     }
 }

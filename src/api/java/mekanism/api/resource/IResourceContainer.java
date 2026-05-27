@@ -152,6 +152,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     }
 
     //TODO - 26.1: Re-evaluate callers of this method that used to use IChemicalTank#getNeeded. Do they need to know it as a long? Most probably don't
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)//TODO - 26.1: Docs
     default long getNeededAsLong(RESOURCE resource) {
         return Math.max(0, capacityAsLong(resource) - amountAsLong());
@@ -191,8 +192,9 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// Convenience method for checking if this container is empty.
     ///
     /// @return `true` if the container is empty, `false` otherwise.
+    @NonExtendable
     default boolean isEmpty() {
-        return asStack().isEmpty();
+        return amountAsLong() == 0;
     }
 
     /// Convenience method for emptying this [IResourceContainer].
@@ -218,7 +220,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
     /// cycle.
     ///
-    /// @param other Container to copy data from.
+    /// @param other Container to copy data from. Might be [`wrapped`][ResourceContainerWrapper].
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     default void copyContents(IResourceContainer<RESOURCE> other) {
@@ -229,6 +231,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction);
 
     //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional
+    @NonExtendable
     default void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, @Nullable TransactionContext transaction) {
         setContents(stackHelper().createStack(type, storedAmount), transaction);
     }

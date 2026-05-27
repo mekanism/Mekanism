@@ -21,6 +21,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
@@ -51,7 +52,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
@@ -436,7 +436,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     // Theoretically this if statement should never be true as it always returns true for if extracting is allowed
                     return false;
                 }
-                int inserted = InventoryUtils.insertItem(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
+                int inserted = ContainerType.ITEM.insertInto(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
                 if (inserted < stored) {
                     //Failed to insert the removed contents into the input slots, so mark that we failed to handle at least one of the slots,
                     // and continue onto the next one
@@ -515,7 +515,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             ItemResource resource = recipeSlot.resource();
             if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = InventoryUtils.insertItem(inputSlots, resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
+                    int inserted = ContainerType.ITEM.insertInto(inputSlots, resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
                     if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                         //If we are able to fully extract from the recipe slot the amount that we inserted into the input slots
                         // then commit the change. We rely on the fact that our recipe slot should always be able to extract
@@ -681,7 +681,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         // We can then continue on to the next slot if we did not fit it all and try to insert it.
         // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
         // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-        int inserted = InventoryUtils.insertItem(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL);
+        int inserted = ContainerType.ITEM.insertInto(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL);
         return inserted == amount;
     }
 

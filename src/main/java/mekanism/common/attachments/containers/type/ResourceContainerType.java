@@ -73,12 +73,14 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
                 CONTAINER container = containers.get(i);
+                LargeResourceStack<RESOURCE> stack;
                 if (container instanceof CraftingWindowOutputInventorySlot) {
                     //TODO: Can we do this handling for the crafting window output slot in a more generic way?
-                    container.setEmpty();
+                    stack = stackHelper().empty();
                 } else {
-                    container.setContents(attachedContainers.get(i), null);
+                    stack = attachedContainers.get(i);
                 }
+                container.setContents(stack, null);
             }
         }
     }
@@ -105,6 +107,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
 
     public ItemStack getFilledVariant(ItemAccess itemAccess, RESOURCE resource) {
         if (capability.getCapability(itemAccess) instanceof IMekanismResourceHandler<RESOURCE, ?> handler) {
+            //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
             for (IResourceContainer<RESOURCE> container : handler.getContainers()) {
                 container.setContents(resource, container.capacityAsLong(resource), null);
             }
@@ -115,6 +118,8 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
 
     /// Gets the resource stored in an item's container by checking the attachment. This is for cases when we may not actually have a resource handler provided as a
     /// capability from our item, but it may have stored data in its container from when it was a block
+    ///
+    /// @implNote The returned stack is not scaled by the size of the passed item access.
     public LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemAccess itemAccess) {
         List<CONTAINER> containers = getAttachmentContainersIfPresent(itemAccess);
         return switch (containers.size()) {
@@ -152,19 +157,12 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     ///
     /// @return the first found resource FOR DISPLAY
     public RESOURCE getFirstResourceFromAttachment(ItemAccess itemAccess) {
-        List<CONTAINER> containers = getAttachmentContainersIfPresent(itemAccess);
-        return switch (containers.size()) {
-            case 0 -> emptyResource();
-            case 1 -> containers.getFirst().resource();
-            default -> {
-                for (CONTAINER container : containers) {
-                    if (!container.isEmpty()) {
-                        yield container.resource();
-                    }
-                }
-                yield emptyResource();
+        for (CONTAINER container : getAttachmentContainersIfPresent(itemAccess)) {
+            if (!container.isEmpty()) {
+                return container.resource();
             }
-        };
+        }
+        return emptyResource();
     }
 
     public void clampContents(CONTAINER container) {
@@ -246,6 +244,73 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
             }
         }
         return Redstone.SIGNAL_NONE;
+    }
+
+    //TODO - 26.1: Docs
+    public boolean areContainersEmpty(List<CONTAINER> containers) {
+        for (CONTAINER container : containers) {
+            if (!container.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /// Helper to first try inserting ignoring empty containers, and then insert not ignoring empty containers
+    ///
+    /// @param handler        Containers to insert into
+    /// @param resource       Type of resource to insert.
+    /// @param amount         Amount of the resource to insert.
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method to interact with containers using if a Mekanism handler is found
+    ///
+    /// @return Amount inserted
+    ///
+    /// @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
+    public int insertInto(ResourceHandler<RESOURCE> handler, RESOURCE resource, final int amount, TransactionContext transaction, AutomationType automationType) {
+        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
+            return insertInto(mekHandler.getContainers(), resource, amount, transaction, automationType);
+        }
+        return ResourceHandlerUtil.insertStacking(handler, resource, amount, transaction);
+    }
+
+    /// Helper to first try inserting ignoring empty containers, and then insert not ignoring empty containers
+    ///
+    /// @param containers     Containers to insert into
+    /// @param resource       Type of resource to insert.
+    /// @param amount         Amount of the resource to insert.
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this container is being interacted from.
+    ///
+    /// @return Amount inserted
+    ///
+    /// @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
+    public int insertInto(List<? extends IResourceContainer<RESOURCE>> containers, RESOURCE resource, final int amount, TransactionContext transaction,
+          AutomationType automationType) {
+        if (containers.isEmpty()) {
+            return 0;
+        } else if (containers.size() == 1) {
+            return containers.getFirst().insert(resource, amount, transaction, automationType);
+        }
+        int inserted = 0;
+        List<IResourceContainer<RESOURCE>> emptyContainers = new ArrayList<>(containers.size());
+        for (IResourceContainer<RESOURCE> container : containers) {
+            if (container.isEmpty()) {
+                emptyContainers.add(container);
+            } else {
+                inserted += container.insert(resource, amount - inserted, transaction, automationType);
+                if (inserted == amount) {
+                    return inserted;
+                }
+            }
+        }
+        for (IResourceContainer<RESOURCE> container : emptyContainers) {
+            inserted += container.insert(resource, amount - inserted, transaction, automationType);
+            if (inserted == amount) {
+                return inserted;
+            }
+        }
+        return inserted;
     }
 
     static class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {

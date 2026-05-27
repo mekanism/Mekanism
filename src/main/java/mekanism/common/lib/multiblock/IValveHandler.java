@@ -84,6 +84,8 @@ public interface IValveHandler {
         }
 
         public void onTransfer(TransactionContext transaction) {
+            //Note: This makes no assumptions about if the multiblock is formed or not, as the multiblock is responsible for using the values,
+            // and if it is not formed then they won't be used
             updateSnapshots(transaction);
             activeTicks = SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
         }

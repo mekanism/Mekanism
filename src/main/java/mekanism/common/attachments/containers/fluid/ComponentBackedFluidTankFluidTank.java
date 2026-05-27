@@ -3,6 +3,7 @@ package mekanism.common.attachments.containers.fluid;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -30,25 +31,27 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int insert(AttachedResources<FluidResource> attached, FluidResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, long capacity,
+          FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.insert(resource, amount, simulation, automationType);
+                return super.insert(attached, currentType, currentAmount, capacity, resource, amount, simulation, automationType);
             }
         }
-        return super.insert(resource, amount, transaction, automationType);
+        return super.insert(attached, currentType, currentAmount, capacity, resource, amount, transaction, automationType);
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    public int extract(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int extract(AttachedResources<FluidResource> attached, FluidResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount,
+          FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
-            //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.extract(resource, amount, simulation, automationType);
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.extract(attached, currentType, currentAmount, resource, amount, simulation, automationType);
             }
         }
-        return super.extract(resource, amount, transaction, automationType);
+        return super.extract(attached, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 }

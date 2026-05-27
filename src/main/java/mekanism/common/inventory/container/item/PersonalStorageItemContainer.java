@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container.item;
 
-import java.util.List;
 import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -40,9 +39,8 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     @Override
     protected void addSlots() {
         super.addSlots();
-        //Get all the inventory slots the tile has
-        List<IInventorySlot> inventorySlots = itemInventory.getContainers();
-        for (IInventorySlot inventorySlot : inventorySlots) {
+        //Get all the inventory slots the item has
+        for (IInventorySlot inventorySlot : itemInventory.getContainers()) {
             Slot containerSlot = inventorySlot.createContainerSlot();
             if (containerSlot != null) {
                 addSlot(containerSlot);

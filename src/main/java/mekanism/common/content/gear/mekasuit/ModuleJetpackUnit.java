@@ -14,6 +14,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -72,17 +73,17 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void onRemoved(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean last) {
         //Vent the excess hydrogen from the jetpack
+        //TODO - 26.1: Test that this still works
         ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-        if (chemicalHandler != null) {
-            for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {
-                ChemicalResource storedType = chemicalHandler.getResource(tank);
+        if (chemicalHandler instanceof IMekanismResourceHandler<ChemicalResource, ?> handler) {
+            //Note: Just directly interact with the containers as we want to change the entire access and don't care about
+            // splitting between multiple items if for some reason the player has an oversized stack of the MekaSuit
+            for (IResourceContainer<ChemicalResource> container : handler.getContainers()) {
+                ChemicalResource storedType = container.resource();
                 if (!storedType.isEmpty()) {
-                    long capacity = chemicalHandler.getCapacityAsLong(tank, storedType);
-                    if (chemicalHandler.getAmountAsLong(tank) > capacity) {
-                        //TODO - 26.1: Figure out how to reimplement this
-                        if (chemicalHandler instanceof IMekanismResourceHandler<ChemicalResource, ?> mekChemicalHandler) {
-                            mekChemicalHandler.getContainer(tank).setContents(storedType, capacity, null);
-                        }
+                    long capacity = container.capacityAsLong(storedType);
+                    if (container.amountAsLong() > capacity) {
+                        container.setContents(storedType, capacity, null);
                     }
                 }
             }

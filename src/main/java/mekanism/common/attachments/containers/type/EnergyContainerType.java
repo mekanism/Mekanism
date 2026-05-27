@@ -27,8 +27,8 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     }
 
     @Override
-    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
-        EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(exposeWhenStacked, requiredConfigs));
+    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
+        EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(requiredConfigs));
     }
 
     @Override

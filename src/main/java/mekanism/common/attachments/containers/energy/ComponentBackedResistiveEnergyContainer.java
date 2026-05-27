@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -55,9 +56,13 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private void updateEnergyUsage(long energyUsage) {
-        //Note: The attached access should handle snapshotting the backing stack
-        ItemAccessUtils.exchange(attachedAccess, attachedAccess.getResource().with(MekanismDataComponents.ENERGY_USAGE, energyUsage), null);
-        //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
+        ItemResource resource = attachedAccess.getResource();
+        //Ensure the backing item has not somehow become empty
+        if (!resource.isEmpty()) {
+            //Note: The attached access should handle snapshotting the backing stack
+            ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.ENERGY_USAGE, energyUsage), null);
+            //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
+        }
     }
 
     @Override

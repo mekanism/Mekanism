@@ -20,13 +20,14 @@ import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItem
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.components.DataComponentProcessor;
 import moze_intel.projecte.api.components.IDataComponentProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -56,8 +57,9 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     @Range(from = 0, to = Long.MAX_VALUE)
     public long recalculateEMC(@NotNull ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC) throws ArithmeticException {
         IEMCProxy emcProxy = IEMCProxy.INSTANCE;
-        ItemStack stack = info.createStack();
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        //TODO: ItemInfo will probably just become an ItemResource natively, but for now we just build a resource from it
+        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(info.getItem(), info.getComponentsPatch()));
+        ItemResource resource = itemAccess.getResource();
         //Stored items
         currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess));
         if (currentEMC == 0) {
@@ -72,7 +74,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
                 return 0;
             }
         }
-        UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+        UpgradeAware upgradeAware = resource.get(MekanismDataComponents.UPGRADES);
         if (upgradeAware != null) {//Stored upgrades
             for (Map.Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
                 long upgradeEmc = this.upgradeEmc.getLong(entry.getKey());
@@ -89,7 +91,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
             }
         }
         //Stored modules
-        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(stack)) {
+        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(resource)) {
             long moduleEmc = moduleDataEmc.getLong(module.getUntypedData());
             if (moduleEmc == 0) {
                 //A module is stored that doesn't have an emc value. Don't allow consuming it

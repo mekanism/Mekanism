@@ -1,9 +1,7 @@
-package mekanism.common.capabilities;
+package mekanism.api.resource;
 
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.IResourceContainer;
-import mekanism.api.resource.LargeResourceStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -11,23 +9,29 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 26.1: Do we want to expose this to the API?
+@NothingNullByDefault//TODO - 26.1: Docs
 public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     protected final CONTAINER internal;
 
-    public ResourceContainerWrapper(CONTAINER internal) {
+    protected ResourceContainerWrapper(CONTAINER internal) {
         this.internal = internal;
+    }
+
+    //TODO  - 26.1: Docs stating that it is mainly just for usage of if a container is wrapped
+    public IResourceContainer<RESOURCE> getInternal() {
+        IResourceContainer<RESOURCE> internal = this.internal;
+        if (internal instanceof ResourceContainerWrapper<RESOURCE, ?> wrapper) {
+            //For cases like valve fluid wrappers that are wrapping a merged tank
+            // We want to return the actual source container
+            return wrapper.getInternal();
+        }
+        return internal;
     }
 
     @Override
     public void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction) {
         internal.setContents(contents, transaction);
-    }
-
-    @Override
-    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, @Nullable TransactionContext transaction) {
-        internal.setContents(type, storedAmount, transaction);
     }
 
     @Override
@@ -43,13 +47,7 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public boolean isEmpty() {
-        return internal.isEmpty();
-    }
-
-    @Override
     public void copyContents(IResourceContainer<RESOURCE> other) {
-        //TODO - 26.1: Evaluate how this method interacts with things doing instance checks
         internal.copyContents(other);
     }
 
@@ -83,12 +81,6 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(RESOURCE resource) {
         return internal.capacityAsLong(resource);
-    }
-
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long getNeededAsLong(RESOURCE resource) {
-        return internal.getNeededAsLong(resource);
     }
 
     @Override

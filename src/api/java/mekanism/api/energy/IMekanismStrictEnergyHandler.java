@@ -7,6 +7,7 @@ import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 
 @FunctionalInterface
@@ -59,12 +60,14 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler {
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return insert(index, amount, transaction, defaultAutomationType());
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return insert(amount, transaction, defaultAutomationType());
@@ -89,31 +92,24 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler {
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return extract(index, amount, transaction, defaultAutomationType());
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return extract(amount, transaction, defaultAutomationType());
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return getContainer(index).getNeeded();
-    }
-
-    @Override
-    default boolean isEmpty() {
-        for (IEnergyContainer container : getContainers()) {
-            if (!container.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /// Determines which automation type methods defined via [ResourceHandler] methods will use.

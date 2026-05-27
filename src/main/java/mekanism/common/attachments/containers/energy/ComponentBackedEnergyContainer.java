@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+/// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
+/// on the backing item access' size.
 @NothingNullByDefault
 public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Long, AttachedEnergy> implements IEnergyContainer {
 

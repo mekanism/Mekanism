@@ -248,7 +248,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               new ItemStack(MekanismBlocks.CREATIVE_BIN),
               new ItemStack(MekanismBlocks.CREATIVE_FLUID_TANK),
               new ItemStack(MekanismBlocks.CREATIVE_CHEMICAL_TANK),
-              ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_INPUT)
+              ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_INPUT).toStack()
         ), MekanismAliases.STORAGE_TRASHCAN, MekanismAliases.STORAGE_VOID);
     }
 

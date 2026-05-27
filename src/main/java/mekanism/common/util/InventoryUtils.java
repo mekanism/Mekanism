@@ -20,7 +20,6 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.registries.MekanismDataComponents;
@@ -34,9 +33,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 
 public final class InventoryUtils {
@@ -179,73 +176,6 @@ public final class InventoryUtils {
             }
         }
         return request;
-    }
-
-    /**
-     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
-     *
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param automationType The method that this slot is being interacted from.
-     *
-     * @return Amount inserted
-     *
-     * @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
-     */
-    public static int insertItem(List<? extends IInventorySlot> slots, ItemResource itemType, final int amount, TransactionContext transaction, AutomationType automationType) {
-        int amountToInsert = amount;
-        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, true, false, automationType);
-        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, false, false, automationType);
-        //Return how much was actually inserted
-        return amount - amountToInsert;
-    }
-
-    /**
-     * Helper to try inserting a given amount of a resource into a list of inventory slots only inserting into either empty slots or inserting into non-empty slots.
-     *
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
-     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
-     * @param automationType The method that this slot is being interacted from.
-     *
-     * @return Amount inserted
-     *
-     * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, SelectedWindowData)
-     */
-    public static int insertItem(List<? extends IInventorySlot> slots, ItemResource itemType, final int amount, TransactionContext transaction, boolean ignoreEmpty,
-          boolean checkAll, AutomationType automationType) {
-        if (itemType.isEmpty() || amount == 0) {
-            //Skip doing anything if the stack is already empty.
-            // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
-            return 0;
-        }
-        int toInsert = amount;
-        for (IInventorySlot slot : slots) {
-            if (!checkAll && ignoreEmpty == slot.isEmpty()) {
-                //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
-                continue;
-            }
-            toInsert -= slot.insert(itemType, toInsert, transaction, automationType);
-            if (toInsert == 0) {
-                break;
-            }
-        }
-        return amount - toInsert;
-    }
-
-    //TODO - 26.1: Docs and maybe move this to a more generic resource util class?
-    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> boolean areContainersEmpty(List<CONTAINER> containers) {
-        for (CONTAINER container : containers) {
-            if (!container.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @FunctionalInterface

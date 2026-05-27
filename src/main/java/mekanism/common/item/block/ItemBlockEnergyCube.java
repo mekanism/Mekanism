@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -105,7 +106,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
-            tabOutput.accept(withCreativeSideConfig(ALL_INPUT));
+            tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());
             tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT)));
         } else {
             tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
@@ -117,10 +118,9 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return getTier() != EnergyCubeTier.CREATIVE;
     }
 
-    public static ItemStack withCreativeSideConfig(AttachedSideConfig config) {
-        ItemStack stack = new ItemStack(MekanismBlocks.CREATIVE_ENERGY_CUBE);
-        stack.set(MekanismDataComponents.SIDE_CONFIG, config);
-        return stack;
+    public static ItemResource withCreativeSideConfig(AttachedSideConfig config) {
+        return ItemResource.of(MekanismBlocks.CREATIVE_ENERGY_CUBE)
+              .with(MekanismDataComponents.SIDE_CONFIG, config);
     }
 
     @Override

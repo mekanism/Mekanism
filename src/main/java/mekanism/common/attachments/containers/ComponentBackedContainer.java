@@ -34,8 +34,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
     protected boolean setContents(ATTACHED attached, TYPE value, @Nullable TransactionContext transaction, boolean checkChanged) {
         ItemResource attachedTo = attachedAccess.getResource();
         if (attachedTo.isEmpty()) {
-            //If the item has become empty, just exit
-            //TODO - 26.1: Do we want to log a warning?
+            //If the backing item has become empty, just exit and return that we couldn't set the contents
             return false;
         }
         //If we don't actually have an attachment present yet, we need to ensure we try to create a new one

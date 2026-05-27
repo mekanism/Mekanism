@@ -160,8 +160,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         long needed = capacityAsLong(resource) - currentStored;
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
-        if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
+        if (needed <= 0 || !canInsert.test(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
+            //Note: We check directly against canInsert, as the capacity returns zero if isValid is false
             return 0;
         } else if (!isEmpty() && !this.current.matches(resource)) {
             //Fail if the type being inserted doesn't match our current stored type

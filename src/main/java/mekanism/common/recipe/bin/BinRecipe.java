@@ -3,7 +3,6 @@ package mekanism.common.recipe.bin;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
@@ -12,11 +11,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 @NothingNullByDefault
 public abstract class BinRecipe extends CustomRecipe {
 
-    protected static ComponentBackedBinInventorySlot convertToSlot(ItemStack binStack) {
-        return convertToSlot(ItemAccess.forStack(binStack));
-    }
-
-    //TODO - 26.1: Should any call sites use this instead?
     protected static ComponentBackedBinInventorySlot convertToSlot(ItemAccess binAccess) {
         ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(binAccess);
         if (slot == null) {

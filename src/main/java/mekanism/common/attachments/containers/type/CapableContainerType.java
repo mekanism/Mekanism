@@ -45,7 +45,7 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
           IMekanismConfig... requiredConfigs) {
         super.addDefaultCreators(eventBus, item, defaultCreator, requiredConfigs);
         if (eventBus != null) {
-            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, false, requiredConfigs));
+            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, requiredConfigs));
         }
     }
 
@@ -59,32 +59,23 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
         return handler;
     }
 
-    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
-        event.registerItem(capability.item(), getCapabilityProvider(exposeWhenStacked, requiredConfigs), item);
+    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
+        event.registerItem(capability.item(), getCapabilityProvider(requiredConfigs), item);
     }
 
-    protected ICapabilityProvider<ItemStack, @NonNull ItemAccess, HANDLER> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
+    protected ICapabilityProvider<ItemStack, @NonNull ItemAccess, HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
         if (requiredConfigs.length == 0) {
-            return (_, itemAccess) -> exposeWhenStacked || itemAccess.getAmount() == 1 ? createHandler(itemAccess) : null;
+            return (_, itemAccess) -> createHandler(itemAccess);
         }
         //Only expose the capabilities if the required configs are loaded
         return (_, itemAccess) -> {
-            if (exposeWhenStacked || itemAccess.getAmount() == 1) {
-                if (hasRequiredConfigs(requiredConfigs)) {
-                    return createHandler(itemAccess);
+            for (IMekanismConfig requiredConfig : requiredConfigs) {
+                if (!requiredConfig.isLoaded()) {
+                    return null;
                 }
             }
-            return null;
+            return createHandler(itemAccess);
         };
-    }
-
-    private static boolean hasRequiredConfigs(IMekanismConfig... requiredConfigs) {
-        for (IMekanismConfig requiredConfig : requiredConfigs) {
-            if (!requiredConfig.isLoaded()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Nullable

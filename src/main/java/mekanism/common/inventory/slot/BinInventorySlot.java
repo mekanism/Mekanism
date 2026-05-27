@@ -8,6 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -63,7 +64,7 @@ public class BinInventorySlot extends BasicInventorySlot {
             if (isLocked() && !lockType.equals(resource)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
-            } else if (isCreative && !automationType.isExternal()) {
+            } else if (isCreative && automationType.isManual()) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
                 try (Transaction simulation = Transaction.open(transaction)) {
@@ -150,6 +151,9 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public void copyContents(IResourceContainer<ItemResource> other) {
+        if (other instanceof ResourceContainerWrapper<ItemResource, ?> wrapper) {
+            other = wrapper.getInternal();
+        }
         super.copyContents(other);
         if (other instanceof BinInventorySlot otherSlot) {
             setLockType(otherSlot.getLockType());

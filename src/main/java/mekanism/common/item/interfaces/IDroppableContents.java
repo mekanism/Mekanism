@@ -32,6 +32,7 @@ public interface IDroppableContents {
 
         @Override
         default List<IInventorySlot> getDroppedSlots(ItemAccess itemAccess) {
+            //Note: Just directly interact with the containers as #getScalar will handle scaling the amounts
             return ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess);
         }
     }

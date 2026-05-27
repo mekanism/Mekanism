@@ -11,6 +11,7 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 
 /// A generic handler for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
@@ -140,12 +141,14 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return insert(index, resource, amount, transaction, defaultAutomationType());
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return insert(resource, amount, transaction, defaultAutomationType());
@@ -209,6 +212,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         //TODO - 26.1: Evaluate calls to this for all our interactions with resource handlers and see what can be moved over to indexless interactions
@@ -216,6 +220,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     }
 
     @Override
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return extract(resource, amount, transaction, defaultAutomationType());

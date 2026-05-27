@@ -36,16 +36,9 @@ public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Di
     }
 
     @Nullable
-    public HANDLER getCapability(ItemAccess access) {
+    public HANDLER getCapability(ItemAccess access) {//TODO - 26.1: Re-evaluate callers and if any of them need to be oneByOne
         //Note: Safety handling of empty stack is done when looking up the provider inside getCapability's implementation
         return access.getCapability(item());
-    }
-
-    /**
-     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemAccess)} and null checking.
-     */
-    public boolean hasCapability(ItemAccess access) {
-        return getCapability(access) != null;
     }
 
     @Nullable

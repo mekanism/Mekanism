@@ -4,7 +4,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.common.capabilities.ResourceContainerWrapper;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;

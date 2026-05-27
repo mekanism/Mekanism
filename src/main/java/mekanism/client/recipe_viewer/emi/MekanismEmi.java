@@ -74,6 +74,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -85,6 +86,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
@@ -199,8 +201,9 @@ public class MekanismEmi implements EmiPlugin {
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
             //Handle items
-            ItemAccess itemAccess = ItemAccess.forStack(new ItemStack(item));
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
+            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(item));
+            if (Capabilities.STRICT_ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
+                Capabilities.FLUID.getCapability(itemAccess) != null) {
                 registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }
         }

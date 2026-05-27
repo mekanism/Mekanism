@@ -39,10 +39,16 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         //Note: While technically we could use IModule#getEnergyContainer as it is just a helper,
         // we choose not to so that the behavior is clearer when the module was the last module
         // and technically is no longer installed in the module container
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));//TODO - 26.1: check itemaccess
+        //TODO - 26.1: Test that this still works
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+            //Note: Just directly interact with the containers as we want to change the entire access and don't care about
+            // splitting between multiple items if for some reason the player has an oversized stack of the MekaSuit
             for (IEnergyContainer energyContainer : energyHandler.getContainers()) {
-                energyContainer.setEnergy(Math.min(energyContainer.energy(), energyContainer.capacity()), null);
+                long capacity = energyContainer.capacity();
+                if (energyContainer.energy() > capacity) {
+                    energyContainer.setEnergy(capacity, null);
+                }
             }
         }
     }

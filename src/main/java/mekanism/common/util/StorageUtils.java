@@ -29,6 +29,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -142,19 +143,23 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static ItemStack getFilledEnergyVariant(Holder<Item> toFill) {
-        return getFilledEnergyVariant(new ItemStack(toFill));
+        return getFilledEnergyVariant(ItemResource.of(toFill));
     }
 
-    public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
-        ItemAccess itemAccess = ItemAccess.forStack(toFill);
+    public static ItemStack getFilledEnergyVariant(ItemResource toFill) {
+        return getFilledEnergyVariant(ItemAccessUtils.queryOnlyAccess(toFill));
+    }
+
+    public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess) {
         IStrictEnergyHandler capability = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
         if (capability instanceof IMekanismStrictEnergyHandler handler) {
+            //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
             for (IEnergyContainer energyContainer : handler.getContainers()) {
                 energyContainer.setEnergy(energyContainer.capacity(), null);
             }
         }
         //The item is now filled return it for convenience
-        return toFill;
+        return itemAccess.getResource().toStack(itemAccess.getAmount());
     }
 
     @Nullable//TODO - 26.1: Evaluate usages and probably try to remove this method
@@ -168,10 +173,15 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     @Nullable
-    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess, int container) {//TODO - 26.1: Re-evaluate callers
+    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess, int container) {
+        //TODO - 26.1: Re-evaluate callers
+        //TODO - 26.1: Should we just remove this method all together? If the passed item access is stacked, then this will return a container that doesn't care about scaling
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler && container >= 0 && container < energyHandler.size()) {
-            return energyHandler.getContainer(container);
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+            List<IEnergyContainer> containers = energyHandler.getContainers();
+            if (container >= 0 && container < containers.size()) {
+                return containers.get(container);
+            }
         }
         return null;
     }

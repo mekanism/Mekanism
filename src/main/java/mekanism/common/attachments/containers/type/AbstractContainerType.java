@@ -78,7 +78,7 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     public List<CONTAINER> getAttachmentContainersIfPresent(ItemAccess itemAccess) {
         HANDLER handler = createHandlerIfData(itemAccess);
         if (handler instanceof ComponentBackedHandler) {
-            return ((ComponentBackedHandler<?, CONTAINER, ?>) handler).getContainers();
+            return ((ComponentBackedHandler<?, CONTAINER, ?, ?>) handler).getContainers();
         }
         return Collections.emptyList();
     }
@@ -115,8 +115,10 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         return stack.getOrDefault(getComponentType(), emptyAttachment);
     }
 
-    @Override//TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
+    @Override
     public CONTAINER createContainer(ItemAccess attachedAccess, int containerIndex) {
+        //TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
+        // Also I theoretically users of this bypass any checks for if the attached access is stacked, but I believe all uses are fine with directly acting on the stack (validate this)
         Item attachedTo = attachedAccess.getResource().getItem();
         IContainerCreator<CONTAINER, ATTACHED> containerCreator = getCreator(attachedTo);
         if (containerCreator == null) {

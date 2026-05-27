@@ -1,8 +1,10 @@
 package mekanism.common.capabilities.proxy;
 
+import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -18,6 +20,10 @@ public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandle
     public ProxyResourceHandler(IMekanismResourceHandler<RESOURCE, ?> handler, @Nullable Direction side, @Nullable IHolder holder) {
         super(side, holder);
         this.handler = handler;
+    }
+
+    public List<? extends IResourceContainer<RESOURCE>> getProxiedContainers() {
+        return handler.getContainers();
     }
 
     @Override

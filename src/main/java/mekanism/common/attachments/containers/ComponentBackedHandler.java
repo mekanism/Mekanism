@@ -1,8 +1,6 @@
 package mekanism.common.attachments.containers;
 
-import java.util.AbstractList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -13,9 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER> {
+public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>,
+      CONTAINER_TYPE extends IContainerType<CONTAINER, ATTACHED>> {
 
-    private final IContainerType<CONTAINER, ATTACHED> containerType;
+    private final CONTAINER_TYPE containerType;
     protected final ItemAccess attachedAccess;
     private final int totalContainers;
 
@@ -24,13 +23,13 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
     private int numNotInitialized;
 
     //TODO - 1.21: Do we want to validate slot indices are within range?
-    protected ComponentBackedHandler(IContainerType<CONTAINER, ATTACHED> containerType, ItemAccess attachedAccess, int totalContainers) {
+    protected ComponentBackedHandler(CONTAINER_TYPE containerType, ItemAccess attachedAccess, int totalContainers) {
         this.containerType = containerType;
         this.attachedAccess = attachedAccess;
         this.totalContainers = totalContainers;
     }
 
-    protected final IContainerType<CONTAINER, ATTACHED> containerType() {
+    protected final CONTAINER_TYPE containerType() {
         return containerType;
     }
 
@@ -52,7 +51,13 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
         return containers;
     }
 
-    public List<CONTAINER> getContainers() {
+    protected boolean isAccessInvalid() {
+        //TODO - 26.1: Should we have a predicate that checks the item type to see if it is still valid?
+        // Probably, or maybe just store the initial item the access was on and only support it changing components but not the core type?
+        return attachedAccess.getAmount() == 0;
+    }
+
+    public final List<CONTAINER> getContainers() {
         List<CONTAINER> containers = containers();
         //Ensure all our containers are initialized. This short circuits if they are, and if they aren't it initializes any ones that haven't been initialized yet
         for (int i = 0, size = containers.size(); numNotInitialized > 0 && i < size; i++) {
@@ -79,34 +84,8 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
         return container == null ? initializeContainer(index) : container;
     }
 
-    @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int size() {
         return totalContainers;
-    }
-
-    @Override
-    public CONTAINER get(int index) {
-        return getContainer(index);
-    }
-
-    @Override
-    public Iterator<CONTAINER> iterator() {
-        return new ContainerIterator();
-    }
-
-    private class ContainerIterator implements Iterator<CONTAINER> {
-
-        private int cursor = 0;
-
-        @Override
-        public boolean hasNext() {
-            return cursor != size();
-        }
-
-        @Override
-        public CONTAINER next() {
-            return getContainer(cursor++);
-        }
     }
 }

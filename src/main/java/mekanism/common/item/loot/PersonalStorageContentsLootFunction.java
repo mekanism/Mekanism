@@ -7,11 +7,11 @@ import java.util.Set;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,17 +49,21 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
         if (blockEntity instanceof TileEntityPersonalStorage personalStorage) {
             List<IInventorySlot> tileSlots = personalStorage.getInventorySlots();
             //Validate that at least one slot has something stored
-            if (!InventoryUtils.areContainersEmpty(tileSlots)) {
+            if (!ContainerType.ITEM.areContainersEmpty(tileSlots)) {
                 AbstractPersonalStorageItemInventory destInv;
                 if (EffectiveSide.get().isClient()) {
                     destInv = new ClientSidePersonalStorageInventory();
                 } else {
                     destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack)), "Inventory not available?!");
                 }
-                for (int i = 0, size = tileSlots.size(); i < size; i++) {
-                    IInventorySlot tileSlot = tileSlots.get(i);
-                    if (!tileSlot.isEmpty()) {
-                        destInv.getContainer(i).copyContents(tileSlot);
+                int size = tileSlots.size();
+                List<IInventorySlot> containers = destInv.getContainers();
+                if (containers.size() == size) {//TODO - 26.1: If they don't match how should we handle it?
+                    for (int i = 0; i < size; i++) {
+                        IInventorySlot tileSlot = tileSlots.get(i);
+                        if (!tileSlot.isEmpty()) {
+                            containers.get(i).copyContents(tileSlot);
+                        }
                     }
                 }
             }

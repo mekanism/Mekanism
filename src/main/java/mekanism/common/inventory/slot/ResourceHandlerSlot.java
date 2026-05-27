@@ -14,6 +14,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.inventory.access.InOutSlotResourceItemAccess;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
@@ -74,6 +75,9 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     @Override
     public void copyContents(IResourceContainer<ItemResource> other) {
+        if (other instanceof ResourceContainerWrapper<ItemResource, ?> wrapper) {
+            other = wrapper.getInternal();
+        }
         super.copyContents(other);
         if (other instanceof ResourceHandlerSlot otherSlot) {
             setLastTransferDirection(otherSlot.getLastTransferDirection());
@@ -332,8 +336,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         if (resourceHandler == null) {
             return false;
         }
-        IResourceContainer<RESOURCE> resourceContainer = containerType.createContainer(attachedAccess, containerIndex);
-        return canInput(resourceContainer, resourceHandler);
+        return canInput(containerType.createContainer(attachedAccess, containerIndex), resourceHandler);
     }
 
     public static <RESOURCE extends Resource> boolean canInput(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
@@ -373,8 +376,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         if (resourceHandler == null) {
             return false;
         }
-        IResourceContainer<RESOURCE> resourceContainer = containerType.createContainer(attachedAccess, containerIndex);
-        return canFill(resourceContainer, resourceHandler);
+        return canFill(containerType.createContainer(attachedAccess, containerIndex), resourceHandler);
     }
 
     private static <RESOURCE extends Resource> boolean canFill(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
@@ -407,8 +409,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         if (resourceHandler == null) {
             return false;
         }
-        IResourceContainer<RESOURCE> resourceContainer = containerType.createContainer(attachedAccess, containerIndex);
-        return canDrain(resourceContainer, resourceHandler);
+        return canDrain(containerType.createContainer(attachedAccess, containerIndex), resourceHandler);
     }
 
     private static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
@@ -435,8 +436,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         if (resourceHandler == null) {
             return false;
         }
-        IResourceContainer<RESOURCE> resourceContainer = containerType.createContainer(attachedAccess, containerIndex);
-        return canRotaryInsert(resourceContainer, resourceHandler, isProcessingResource);
+        return canRotaryInsert(containerType.createContainer(attachedAccess, containerIndex), resourceHandler, isProcessingResource);
     }
 
     private static <RESOURCE extends Resource> boolean canRotaryInsert(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler,

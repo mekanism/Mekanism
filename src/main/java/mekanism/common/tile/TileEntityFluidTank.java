@@ -15,7 +15,7 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ResourceContainerWrapper;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;

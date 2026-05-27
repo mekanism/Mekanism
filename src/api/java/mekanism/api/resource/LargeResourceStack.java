@@ -10,6 +10,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.math.MathUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NonNull;
 
 //TODO - 26.1: Docs and reference ResourceStack
@@ -40,6 +42,20 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
     public boolean isEmpty() {
         //Note: We validate in the constructor that resource returns true for empty only when amount is zero
         return amount == 0;
+    }
+
+    /// Scales this resource stack by the given amount, clamping at max long.
+    ///
+    /// @param scale Amount to scale by, must be at least 1.
+    ///
+    /// @return a large resource stack with the amount scaled by the given scale, but the resource staying the same.
+    public LargeResourceStack<RESOURCE> scale(@Range(from = 1, to = Integer.MAX_VALUE) int scale) {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("Scale must be a positive integer");
+        } else if (scale == 1) {
+            return this;
+        }
+        return new LargeResourceStack<>(resource, MathUtils.multiplyClamped(amount, scale));
     }
 
     public boolean matches(RESOURCE resource) {

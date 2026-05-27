@@ -1,13 +1,12 @@
 
 package mekanism.common.attachments.containers.item;
 
-import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.inventory.slot.BinInventorySlot;
@@ -15,7 +14,6 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemAccessUtils;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -43,23 +41,23 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int insert(AttachedResources<ItemResource> attachedItems, ItemResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, ItemResource resource,
-          @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int insert(AttachedResources<ItemResource> attached, ItemResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, long capacity,
+          ItemResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (currentType.isEmpty()) {
             ItemResource lockType = getLockType();
             if (!lockType.isEmpty() && !resource.equals(lockType)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
-            } else if (isCreative && !automationType.isExternal()) {
+            } else if (isCreative && automationType.isManual()) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    if (super.insert(attachedItems, currentType, currentAmount, resource, amount, simulation, automationType) == 0) {
+                    if (super.insert(attached, currentType, currentAmount, capacity, resource, amount, simulation, automationType) == 0) {
                         return 0;
                     }
                 }
                 //If we managed to insert anything, set the contents to the maximum amount of that item type
-                if (setContents(attachedItems, resource, capacityAsLong(resource), transaction)) {
+                if (setContents(attached, resource, capacity, transaction)) {
                     //Return that we accepted the entire amount we were passed
                     return amount;
                 }
@@ -70,38 +68,23 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.insert(attachedItems, currentType, currentAmount, resource, amount, simulation, automationType);
+                return super.insert(attached, currentType, currentAmount, capacity, resource, amount, simulation, automationType);
             }
         }
-        return super.insert(attachedItems, currentType, currentAmount, resource, amount, transaction, automationType);
+        return super.insert(attached, currentType, currentAmount, capacity, resource, amount, transaction, automationType);
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
-    public int extract(ItemResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int extract(AttachedResources<ItemResource> attached, ItemResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, ItemResource resource,
+          @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             try (Transaction simulation = Transaction.open(transaction)) {
                 //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
-                return super.extract(resource, amount, simulation, automationType);
+                return super.extract(attached, currentType, currentAmount, resource, amount, simulation, automationType);
             }
         }
-        return super.extract(resource, amount, transaction, automationType);
-    }
-
-    /**
-     * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
-     *
-     * @return The "bottom" stack for the bin
-     *
-     * @apiNote The returned stack can be safely modified.
-     */
-    public ItemStack getBottomStack() {
-        if (isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        LargeResourceStack<ItemResource> stack = asStack();
-        ItemResource current = stack.resource();
-        return current.toStack(Math.min(Ints.saturatedCast(stack.amount()), current.getMaxStackSize()));
+        return super.extract(attached, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 
     /**
@@ -113,6 +96,10 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         //Note: The attached access should handle snapshotting the backing stack
         //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
         ItemResource resource = attachedAccess.getResource();
+        if (resource.isEmpty()) {
+            //If the backing item has become empty, just exit and return that we couldn't set the contents
+            return false;
+        }
         if (lockType.isEmpty()) {
             return ItemAccessUtils.exchange(attachedAccess, resource.without(MekanismDataComponents.LOCK), null);
         }
@@ -125,6 +112,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     @Override
     public void copyContents(IResourceContainer<ItemResource> other) {
+        if (other instanceof ResourceContainerWrapper<ItemResource, ?> wrapper) {
+            other = wrapper.getInternal();
+        }
         super.copyContents(other);
         if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
             setLockType(otherSlot.getLockType());

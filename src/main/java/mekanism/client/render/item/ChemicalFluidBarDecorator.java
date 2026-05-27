@@ -3,11 +3,12 @@ package mekanism.client.render.item;
 import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
@@ -17,7 +18,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
@@ -41,43 +42,41 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
         ItemAccess itemAccess = ItemAccess.forStack(stack);
-        if (showChemical) {
-            List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(itemAccess);
-            int tank = getDisplayTank(tanks.size());
-            if (tank != -1) {
-                renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
-                yOffset--;
-            } else if (tanks.isEmpty()) {
-                renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
-            }
+        if (showChemical && renderBars(guiGraphics, xOffset, yOffset, ContainerType.CHEMICAL, itemAccess, ChemicalResource::getChemicalColorRepresentation)) {
+            yOffset--;
         }
 
         if (showFluid) {
-            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(itemAccess);
-            int tank = getDisplayTank(tanks.size());
-            if (tank != -1) {
-                renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
-            } else if (tanks.isEmpty()) {
-                renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
-            }
+            renderBars(guiGraphics, xOffset, yOffset, ContainerType.FLUID, itemAccess, FluidUtils::getRGBDurabilityForDisplay);
         }
         return true;
     }
 
-    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
-        ChemicalResource chemicalType = tank.resource();
-        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.capacityAsLong(chemicalType), chemicalType.getChemicalColorRepresentation());
+    private static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, ResourceContainerType<RESOURCE, ?> containerType,
+          ItemAccess itemAccess, ToIntFunction<RESOURCE> color) {
+        //Note: We just directly query the stored contents of the containers and don't care about the size of the item access
+        List<? extends IResourceContainer<RESOURCE>> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
+        return renderBars(guiGraphics, xOffset, yOffset, containers, getDisplayTank(containers.size()), color);
     }
 
-    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IFluidTank tank) {
-        FluidResource fluidType = tank.resource();
-        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.capacityAsLong(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType));
+    protected static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset,
+          List<? extends IResourceContainer<RESOURCE>> containers, int index, ToIntFunction<RESOURCE> color) {
+        if (index != -1) {
+            IResourceContainer<RESOURCE> container = containers.get(index);
+            RESOURCE resource = container.resource();
+            renderBar(guiGraphics, xOffset, yOffset, container.amountAsLong(), container.capacityAsLong(resource), color.applyAsInt(resource));
+        } else if (containers.isEmpty()) {
+            renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
+        } else {
+            return false;
+        }
+        return true;
     }
 
-    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
+    private static void renderBar(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
-        GuiUtils.fill(guiGraphics, stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
-        GuiUtils.fill(guiGraphics, stackXPos + 2, yPos, pixelWidth, 1, color | 0xFF000000);
+        GuiUtils.fill(guiGraphics, xOffset + 2 + pixelWidth, yOffset, 13 - pixelWidth, 1, 0xFF000000);
+        GuiUtils.fill(guiGraphics, xOffset + 2, yOffset, pixelWidth, 1, color | 0xFF000000);
     }
 
     private static int convertWidth(double width) {
