@@ -3,15 +3,15 @@ package mekanism.api.energy;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
+@FunctionalInterface
 @NothingNullByDefault
-public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, IContentsListener {
+public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler {
 
     List<IEnergyContainer> getContainers();
 

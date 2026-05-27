@@ -140,7 +140,8 @@ import org.jetbrains.annotations.UnknownNullability;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable {
+      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
+      IContentsListener {
 
     /**
      * The players currently using this block.
@@ -263,28 +264,28 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         IContainerHolder<IChemicalTank> initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
         if (initialChemicalTanks != null) {
-            capabilityHandlerManagers.add(chemicalHandlerManager = new ResourceHandlerManager<>(Capabilities.CHEMICAL, initialChemicalTanks, this));
+            capabilityHandlerManagers.add(chemicalHandlerManager = new ResourceHandlerManager<>(Capabilities.CHEMICAL, initialChemicalTanks));
         } else {
             chemicalHandlerManager = null;
         }
 
         IContainerHolder<IFluidTank> initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
         if (initialFluidTanks != null) {
-            capabilityHandlerManagers.add(fluidHandlerManager = new ResourceHandlerManager<>(Capabilities.FLUID, initialFluidTanks, this));
+            capabilityHandlerManagers.add(fluidHandlerManager = new ResourceHandlerManager<>(Capabilities.FLUID, initialFluidTanks));
         } else {
             fluidHandlerManager = null;
         }
 
         IContainerHolder<IEnergyContainer> initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
-            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this, () -> level == null ? 0 : level.getGameTime()));
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, () -> level == null ? 0 : level.getGameTime()));
         } else {
             energyHandlerManager = null;
         }
 
         IContainerHolder<IInventorySlot> initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
         if (initialInventory != null) {
-            capabilityHandlerManagers.add(itemHandlerManager = new ResourceHandlerManager<>(Capabilities.ITEM, initialInventory, this));
+            capabilityHandlerManagers.add(itemHandlerManager = new ResourceHandlerManager<>(Capabilities.ITEM, initialInventory));
         } else {
             itemHandlerManager = null;
         }
@@ -1140,7 +1141,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return type == ContainerType.ITEM;
     }
 
-    protected final IContentsListener getListener(IContainerType<?, ?> type, IContentsListener saveOnlyListener) {
+    private IContentsListener getListener(IContainerType<?, ?> type, IContentsListener saveOnlyListener) {
         //If we don't support comparators we can just skip having a special one that only marks for save as our
         // setChanged won't actually do anything so there is no reason to bother creating a save only listener
         return !supportsComparator() || makesComparatorDirty(type) ? this : saveOnlyListener;

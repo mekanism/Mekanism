@@ -50,7 +50,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
+public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IContentsListener {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**

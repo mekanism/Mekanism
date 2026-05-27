@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
@@ -66,7 +67,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements ITileHeatHandler {
+public class InventoryFrequency extends Frequency implements ITileHeatHandler, IContentsListener {
 
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),

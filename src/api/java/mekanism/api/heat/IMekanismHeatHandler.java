@@ -1,13 +1,13 @@
 package mekanism.api.heat;
 
 import java.util.List;
-import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
+@FunctionalInterface
 @NothingNullByDefault
-public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListener {
+public interface IMekanismHeatHandler extends ISidedHeatHandler {
 
     /**
      * Used to check if an instance of {@link IMekanismHeatHandler} actually has the ability to handle heat.

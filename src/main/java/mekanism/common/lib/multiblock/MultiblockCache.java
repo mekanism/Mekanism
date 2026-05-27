@@ -98,10 +98,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     }
 
-    @Override
-    public void onContentsChanged() {
-    }
-
     @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots() {
@@ -144,7 +140,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IInventorySlot> ITEMS = new CacheSubstance<>(ContainerType.ITEM) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0));
+                cache.inventorySlots.add(BasicInventorySlot.at(null, 0, 0));
             }
 
             @Override
@@ -156,7 +152,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.fluidTanks.add(BasicFluidTank.create(Long.MAX_VALUE, cache));
+                cache.fluidTanks.add(BasicFluidTank.create(Long.MAX_VALUE, null));
             }
 
             @Override
@@ -168,7 +164,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.chemicalTanks.add(BasicChemicalTank.createAllValid(Long.MAX_VALUE, cache));
+                cache.chemicalTanks.add(BasicChemicalTank.createAllValid(Long.MAX_VALUE, null));
             }
 
             @Override
@@ -180,7 +176,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, cache));
+                cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, null));
             }
 
             @Override
@@ -192,7 +188,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IHeatCapacitor> HEAT = new CacheSubstance<>(ContainerType.HEAT) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, cache));
+                cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, null));
             }
 
             @Override

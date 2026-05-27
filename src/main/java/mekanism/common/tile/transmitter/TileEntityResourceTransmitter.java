@@ -56,7 +56,7 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
             public boolean canExtract(@Nullable Direction direction) {
                 return TileEntityResourceTransmitter.this.canExtract(direction);
             }
-        }, null));
+        }));
     }
 
     @Override

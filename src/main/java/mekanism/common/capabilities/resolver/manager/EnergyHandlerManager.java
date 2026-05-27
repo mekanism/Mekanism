@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -34,17 +33,10 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
     private IStrictEnergyHandler readOnlyHandler;
     private final IContainerHolder<IEnergyContainer> holder;
 
-    public EnergyHandlerManager(IContainerHolder<IEnergyContainer> holder, @Nullable IContentsListener changeListener, LongSupplier gameTimeSupplier) {
+    public EnergyHandlerManager(IContainerHolder<IEnergyContainer> holder, LongSupplier gameTimeSupplier) {
         this.holder = holder;
         this.lastEnergyTracker = new LastEnergyTracker(gameTimeSupplier);
         this.proxyCreator = (side, energyHolder) -> new ProxyStrictEnergyHandler(new IMekanismStrictEnergyHandler() {
-            @Override
-            public void onContentsChanged() {
-                if (changeListener != null) {
-                    changeListener.onContentsChanged();
-                }
-            }
-
             @Override
             public List<IEnergyContainer> getContainers() {
                 return energyHolder.getContainers(side);

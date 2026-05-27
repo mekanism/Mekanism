@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.type.IContainerType;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -14,8 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER>
-      implements IContentsListener {
+public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER> {
 
     private final IContainerType<CONTAINER, ATTACHED> containerType;
     protected final ItemAccess attachedAccess;
@@ -90,10 +88,6 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
     @Override
     public CONTAINER get(int index) {
         return getContainer(index);
-    }
-
-    @Override
-    public void onContentsChanged() {
     }
 
     @Override

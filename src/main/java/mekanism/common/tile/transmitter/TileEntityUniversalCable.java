@@ -51,7 +51,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             public boolean canExtract(@Nullable Direction direction) {
                 return TileEntityUniversalCable.this.canExtract(direction);
             }
-        }, null, () -> level == null ? 0 : level.getGameTime()));
+        }, () -> level == null ? 0 : level.getGameTime()));
     }
 
     @Override
