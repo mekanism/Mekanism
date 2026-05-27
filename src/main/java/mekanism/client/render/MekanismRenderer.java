@@ -318,7 +318,10 @@ public class MekanismRenderer {
 
         @Override
         public TextureAtlasSprite apply(Direction direction) {
-            return null;
+            return switch (direction) {
+                case UP, DOWN -> still;
+                default -> flowing;
+            };
         }
 
         public static ValveTextureGetter create(Fluid fluid) {
