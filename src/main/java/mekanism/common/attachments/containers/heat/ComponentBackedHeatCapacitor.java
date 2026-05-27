@@ -18,10 +18,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     private final double inverseInsulationCoefficient;
     private final HeatCapacitorData defaultData;
 
-    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
-        this(attachedAccess, slotIndex, inverseConductionCoefficient, inverseInsulationCoefficient, HeatAPI.DEFAULT_HEAT_CAPACITY);
-    }
-
     public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           double defaultHeatCapacity) {
         super(attachedAccess, slotIndex);

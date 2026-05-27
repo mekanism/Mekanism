@@ -5,26 +5,18 @@ import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.heat.ComponentBackedHeatHandler;
 import mekanism.common.attachments.containers.heat.HeatCapacitorData;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @NothingNullByDefault
-public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat, IHeatHandler> {
+public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> {
 
     HeatContainerType() {
         super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, AttachedHeat.EMPTY,
               TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::canHandleHeat);
-    }
-
-    @Override
-    protected IHeatHandler createHandler(ItemAccess attachedAccess, int totalContainers) {
-        return new ComponentBackedHeatHandler(this, attachedAccess, totalContainers);
     }
 
     @Override

@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>, HANDLER>
-      extends AbstractContainerType<CONTAINER, ATTACHED, HANDLER> {
+      extends AbstractContainerType<CONTAINER, ATTACHED> {
 
     protected final MultiTypeCapability<HANDLER> capability;
 
@@ -47,16 +47,6 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
         if (eventBus != null) {
             eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, requiredConfigs));
         }
-    }
-
-    @Nullable
-    public HANDLER getCapOrUnexposed(ItemAccess itemAccess) {
-        HANDLER handler = capability.getCapability(itemAccess);
-        if (handler == null) {
-            //Fall back to the raw unexposed handler if it isn't exposed as a capability
-            return createHandlerIfData(itemAccess);
-        }
-        return handler;
     }
 
     public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
@@ -83,7 +73,10 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
         ItemResource resource = itemAccess.getResource();
         int count;
         ATTACHED attached = getOrEmpty(resource);
-        if (attached.isEmpty()) {//TODO: Are there any cases where the attached is empty, but we have containers?
+        if (attached.isEmpty()) {
+            //TODO: Are there any cases where the attached is empty, but we have containers?
+            //TODO - 26.1: Re-evaluate this branch not just being zero and then returning null is the only difference for what getCapOrUnexposed
+            // (which would use createHandlerIfData) previously did
             count = getContainerCount(resource.typeHolder().value());
         } else {
             //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
@@ -93,5 +86,14 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
             return null;
         }
         return createHandler(itemAccess, count);
+    }
+
+    protected abstract HANDLER createHandler(ItemAccess attachedAccess, int totalContainers);
+
+    @Nullable
+    public HANDLER getCapOrUnexposed(ItemAccess itemAccess) {
+        HANDLER handler = capability.getCapability(itemAccess);
+        //Fall back to the raw unexposed handler if it isn't exposed as a capability
+        return handler == null ? createHandler(itemAccess) : handler;
     }
 }

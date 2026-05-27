@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers.type;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.IAttachedContainers;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
@@ -27,7 +27,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>, HANDLER>
+public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>>
       implements IContainerType<CONTAINER, ATTACHED> {
 
     private final Map<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
@@ -74,13 +74,19 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<CONTAINER> getAttachmentContainersIfPresent(ItemAccess itemAccess) {
-        HANDLER handler = createHandlerIfData(itemAccess);
-        if (handler instanceof ComponentBackedHandler) {
-            return ((ComponentBackedHandler<?, CONTAINER, ?, ?>) handler).getContainers();
+        ATTACHED attached = getOrEmpty(itemAccess);
+        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
+        if (attached.isEmpty()) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        //Note: Bypass creating an intermediary handler object as it is not necessary
+        int totalContainers = attached.size();
+        List<CONTAINER> containers = new ArrayList<>(totalContainers);
+        for (int index = 0; index < totalContainers; index++) {
+            containers.add(createContainer(itemAccess, index));
+        }
+        return containers;
     }
 
     @Nullable
@@ -94,15 +100,6 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         IContainerCreator<CONTAINER, ATTACHED> creator = getCreator(item);
         return creator == null ? 0 : creator.totalContainers();
     }
-
-    @Nullable//TODO - 26.1: remove me, just use caps
-    protected HANDLER createHandlerIfData(ItemAccess itemAccess) {
-        ATTACHED attached = getOrEmpty(itemAccess);
-        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        return attached.isEmpty() ? null : createHandler(itemAccess, attached.size());
-    }
-
-    protected abstract HANDLER createHandler(ItemAccess attachedAccess, int totalContainers);
 
     @Override
     public ATTACHED createNewAttachment(ItemResource itemType) {
@@ -118,7 +115,7 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     @Override
     public CONTAINER createContainer(ItemAccess attachedAccess, int containerIndex) {
         //TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
-        // Also I theoretically users of this bypass any checks for if the attached access is stacked, but I believe all uses are fine with directly acting on the stack (validate this)
+        //TODO - 26.1: Theoretically users of this bypass any checks for if the attached access is stacked, but I believe all uses are fine with directly acting on the stack (validate this)
         Item attachedTo = attachedAccess.getResource().getItem();
         IContainerCreator<CONTAINER, ATTACHED> containerCreator = getCreator(attachedTo);
         if (containerCreator == null) {
