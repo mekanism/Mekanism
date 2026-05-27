@@ -18,7 +18,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -43,7 +42,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.base.holiday.HolidayManager;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
@@ -430,21 +428,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.asStack();
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler mekHandler) {
-            List<IEnergyContainer> containers = mekHandler.getContainers();
-            if (!containers.isEmpty()) {
-                containers.getFirst().copyContents(energyContainer);
-            }
-        }
+        ContainerType.ENERGY.attachCopyToStack(energyContainers, stack);
         ContainerType.ITEM.attachCopyToStack(inventorySlots, stack);
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }
         stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
         stack.set(MekanismDataComponents.ROBIT_SKIN, getSkinId());
-        ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
+        ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(ItemAccess.forStack(stack));
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID(), null);
             security.setSecurityMode(getSecurityMode(), null);

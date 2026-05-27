@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
@@ -21,7 +20,6 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -101,10 +99,6 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     robit.setHome(chargepad.getTileGlobalPos());
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
                     ItemResource itemType = itemAccess.getResource();
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(itemAccess, 0);
-                    if (energyContainer != null) {
-                        robit.getEnergyContainer().copyContents(energyContainer);
-                    }
                     UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                     if (ownerUUID == null) {
                         robit.setOwnerUUID(player.getUUID(), null);
@@ -113,7 +107,8 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     } else {
                         robit.setOwnerUUID(ownerUUID, null);
                     }
-                    ContainerType.ITEM.copyToContainers(robit.getInventorySlots(), itemAccess.getResource());
+                    ContainerType.ENERGY.copyToContainers(robit.getContainers(), itemType);
+                    ContainerType.ITEM.copyToContainers(robit.getInventorySlots(), itemType);
                     Component name = itemType.get(MekanismDataComponents.ROBIT_NAME);
                     if (name != null) {
                         robit.setCustomName(name);
