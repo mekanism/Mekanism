@@ -172,6 +172,7 @@ public class RenderTickHandler {
         }
         if (LateEffectQueue.hasEffects()) {
             LateEffectQueue.renderAndClear(event.getPoseStack(), renderer, levelState.cameraRenderState, levelState.gameTime, MekanismRenderer.getPartialTick());
+            renderer.endBatch();
         }
     }
 
