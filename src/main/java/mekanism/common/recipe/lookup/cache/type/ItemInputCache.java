@@ -27,13 +27,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
     }
 
     private boolean mapIngredient(RECIPE recipe, Ingredient input) {
-        if (input.isSimple()) {
-            //Simple ingredients don't actually check anything related to NBT,
-            // so we can add the items to our base/raw input cache directly
-            for (Holder<Item> item : input.getValues()) {
-                addInputCache(item.value(), recipe);
-            }
-        } else if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
+        if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
             //Special handling for neo's compound ingredient to map all children as best as we can
             // as maybe some of them are simple
             boolean result = false;
@@ -47,9 +41,18 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
             for (Holder<Item> holder : componentIngredient.itemSet()) {
                 addNbtInputCache(holder, components, recipe);
             }
+        } else if (input.getCustomIngredient() != null) {
+            //Other custom ingredients cannot be expanded via Ingredient#getValues in 26.1,
+            // so we fall back to the complex recipe path and test them on demand.
+            return true;
+        } else if (input.isSimple()) {
+            //Simple ingredients don't actually check anything related to NBT,
+            // so we can add the items to our base/raw input cache directly
+            for (Holder<Item> item : input.getValues()) {
+                addInputCache(item.value(), recipe);
+            }
         } else {
-            //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
-            // and instead have to just mark it as complex and test as needed
+            //Non-simple ingredients without a dedicated mapping path are treated as complex and tested on demand.
             return true;
         }
         return false;
