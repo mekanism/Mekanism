@@ -126,13 +126,6 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler {
         return extract(amount, transaction, defaultAutomationType());
     }
 
-    @Override
-    @NonExtendable
-    @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return getContainer(index).getNeeded();
-    }
-
     /// Determines which automation type methods defined via [ResourceHandler] methods will use.
     private AutomationType defaultAutomationType() {
         //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?

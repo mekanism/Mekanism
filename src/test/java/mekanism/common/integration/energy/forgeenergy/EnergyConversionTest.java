@@ -425,10 +425,6 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             public List<IEnergyContainer> getContainers() {
                 return containers;
             }
-
-            @Override
-            public void onContentsChanged() {
-            }
         }, getConverter(conversionRate));
     }
 

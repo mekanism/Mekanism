@@ -41,12 +41,6 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
-        return handler.getNeededEnergy(container);
-    }
-
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
     public long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return readOnlyInsert() ? amount : handler.insert(index, amount, transaction, AutomationType.handler(side));
     }

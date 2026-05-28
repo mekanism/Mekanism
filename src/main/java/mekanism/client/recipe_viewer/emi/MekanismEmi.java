@@ -150,15 +150,13 @@ public class MekanismEmi implements EmiPlugin {
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.size();
             if (containers == 1) {
-                long neededEnergy = energyHandlerItem.getNeededEnergy(0);
-                if (neededEnergy == 0L) {
+                if (energyHandlerItem.getAmountAsLong(0) >= energyHandlerItem.getCapacityAsLong(0)) {
                     representation.add("filled");
                 }
             } else if (containers > 1) {
                 StringBuilder component = new StringBuilder();
                 for (int container = 0; container < containers; container++) {
-                    long neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                    if (neededEnergy == 0L) {
+                    if (energyHandlerItem.getAmountAsLong(container) >= energyHandlerItem.getCapacityAsLong(container)) {
                         component.append("filled");
                     } else {
                         component.append("empty");

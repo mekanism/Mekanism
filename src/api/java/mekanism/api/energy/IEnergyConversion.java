@@ -28,6 +28,9 @@ public interface IEnergyConversion {
      * @return Joules.
      */
     default long convertFrom(long energy) {
+        if (energy == 0) {
+            return 0;
+        }
         return MathUtils.clampToLong(energy * getConversion());
     }
 
@@ -39,6 +42,9 @@ public interface IEnergyConversion {
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
     default int convertToAsInt(long joules) {
+        if (joules == 0) {
+            return 0;
+        }
         return Ints.saturatedCast(convertTo(joules));
     }
 
@@ -50,6 +56,9 @@ public interface IEnergyConversion {
      * @return Amount of energy. (Units matching this conversion)
      */
     default long convertTo(long joules) {
+        if (joules == 0) {
+            return 0;
+        }
         return MathUtils.clampToLong(convertToDouble(joules));
     }
 

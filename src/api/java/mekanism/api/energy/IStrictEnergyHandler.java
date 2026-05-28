@@ -32,18 +32,6 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
         return Ints.saturatedCast(getCapacityAsLong(index));
     }
 
-    /**
-     * Retrieves the amount of energy that is needed to fill a given container.
-     *
-     * @param index Container to query.
-     *
-     * @return The energy needed to fill the container.
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return Math.max(0L, getCapacityAsLong(index) - getAmountAsLong(index));
-    }
-
     @Range(from = 0, to = Long.MAX_VALUE)
     long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction);
 
