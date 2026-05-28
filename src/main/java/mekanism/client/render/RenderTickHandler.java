@@ -162,14 +162,13 @@ public class RenderTickHandler {
         }
     }
 
-    @SubscribeEvent//TODO - 26.1 is this a correct replacement?
+    @SubscribeEvent
     public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
         if (boltRenderer.hasBoltsToRender()) {
-            //TODO - 26.1: Figure out if this is still valid as the buffer
-            /*MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             LevelRenderState levelState = event.getLevelRenderState();
             boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
-            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);*/
+            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
         }
     }
 
@@ -191,7 +190,7 @@ public class RenderTickHandler {
             PlayerModel model = renderer.getModel();
             AvatarRenderState renderState = renderer.createRenderState();
             renderer.extractRenderState(player, renderState, MekanismRenderer.getPartialTick());
-            //TODO - 26.1 model.setAllVisible(true);
+            //TODO - 26.1: PlayerModel no longer has setAllVisible, visibility is controlled via render state
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
             boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
             if (rightHand) {

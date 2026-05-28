@@ -80,17 +80,16 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         screen.drawScrollingString(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 0,
               screen.getHeight() - font().lineHeight - 2, TextAlignment.CENTER, screenTextColor(), 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        //TODO - 26.1: gui rendering
-        //PoseStack pose = guiGraphics.pose();
-        //pose.pushPose();
-        //pose.translate(0, 0, 100);
-        ////TODO - 26.1: I think it is this?
-        ////guiGraphics.submitGuiElementRenderState();
-        //MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
-        //float partialTicks = MekanismRenderer.getPartialTick();
-        //bolt.update(this, boltSupplier.get(), partialTicks);
-        //bolt.render(gameTime, partialTicks, pose, renderer);
-        //renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
-        //pose.popPose();
+        //TODO - 26.1: GuiGraphics.pose() now returns Matrix3x2fStack (2D only), and GuiGraphicsExtractor
+        // no longer exposes bufferSource(). GUI custom 3D rendering needs architectural rework.
+        /*PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 100);
+        MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
+        float partialTicks = MekanismRenderer.getPartialTick();
+        bolt.update(this, boltSupplier.get(), partialTicks);
+        bolt.render(Minecraft.getInstance().level.getGameTime(), partialTicks, pose, renderer);
+        renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+        pose.popPose();*/
     }
 }

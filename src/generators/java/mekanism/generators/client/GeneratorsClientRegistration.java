@@ -57,14 +57,6 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //TODO - 26.1 fluid models
-        /*event.enqueueWork(() -> {
-            //Set fluids to a translucent render layer
-            for (Holder<Fluid> fluid : GeneratorsFluids.FLUIDS.getFluidEntries()) {
-                ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
-            }
-        });*/
-
         //TODO - 26.1 Models
         // adv solar gen requires to be translated up 1 block, so handle the model separately
         /*ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,

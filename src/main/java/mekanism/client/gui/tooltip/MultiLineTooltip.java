@@ -8,7 +8,6 @@ import net.minecraft.network.chat.contents.PlainTextContents.LiteralContents;
 
 class MultiLineTooltip {
 
-    //TODO - 26.1: test this works
     static Tooltip create(List<Component> message) {
         MutableComponent parent = MutableComponent.create(new LiteralContents(""));
         for (Component component : message) {

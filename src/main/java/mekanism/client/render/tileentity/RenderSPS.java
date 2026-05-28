@@ -96,7 +96,6 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         if (sps.orbitEffects.size() > targetEffectCount) {
             sps.orbitEffects.poll();
         } else if (sps.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
-            //TODO - 26.1: Do we want to just use the level's random instead?
             sps.orbitEffects.add(new SPSOrbitEffect(multiblock, state.center));
         }
     }
@@ -114,13 +113,11 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         poseStack.translate(-state.blockPos.getX(), -state.blockPos.getY(), -state.blockPos.getZ());
 
         if (state.processed > 0 && state.center != null) {
-            //TODO - 26.1: ProfilerConstants.SPS_CORE ?
             CORE.setPos(state.center);
             CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
             //BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
         }
 
-        //TODO - 26.1: ProfilerConstants.SPS_ORBIT ?
         /*for (SPSOrbitEffect effect : sps.orbitEffects) {
             BillboardingEffectRenderer.render(effect, camera, renderer, poseStack, renderTick, partialTick);
         }*/
