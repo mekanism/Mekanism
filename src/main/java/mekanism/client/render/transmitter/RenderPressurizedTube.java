@@ -4,15 +4,19 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.transmitter.TransmitterRenderState.TubeRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,14 +47,21 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 
     @Override
     public void submit(TubeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //todo - 26.1: rendering
-        /*if (state.chemicalTexture != null) {
-            poseStack.pushPose();
-            poseStack.translate(0.5, 0.5, 0.5);
-            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), state.chemicalTint, state.currentScale,
-                  LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.chemicalTexture);
-            poseStack.popPose();
-        }*/
+        if (state.chemicalTexture == null || state.currentScale <= 0) {
+            return;
+        }
+        int color = MekanismRenderer.getColorARGB(state.chemicalTint, state.currentScale);
+        float min = 0.3F;
+        float max = 0.7F;
+        RenderResizableCuboid.renderCube(
+              RenderResizableCuboid.SideRender.ALL_FACES,
+              min, min, min, max, max, max,
+              poseStack, Sheets.translucentBlockSheet(), nodeCollector,
+              color, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+              RenderResizableCuboid.FaceDisplay.FRONT,
+              camera.pos, Vec3.atLowerCornerOf(state.blockPos),
+              MekanismRenderer.getSinglePicker(state.chemicalTexture)
+        );
     }
 
     @Override

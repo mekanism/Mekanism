@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelEnergyCore;
+import mekanism.client.render.LateEffectQueue;
 import mekanism.client.render.tileentity.RenderEnergyCube.EnergyCubeRenderState;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
@@ -22,6 +23,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
@@ -65,24 +67,24 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
 
     @Override
     public void submit(EnergyCubeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        float scaledTicks = 4 * state.ticks;
-        poseStack.pushPose();
-        poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.scale(0.4F, 0.4F, 0.4F);
-        poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks)) / 7, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
-        poseStack.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
-        nodeCollector.submitModelPart(
-              this.energyCore,
-              poseStack,
-              ModelEnergyCore.RENDER_TYPE,
-              LightCoordsUtil.FULL_BRIGHT,
-              OverlayTexture.NO_OVERLAY,
-              null,
-              state.coreTint,
-              null//No break overlay for the core
-        );
-        poseStack.popPose();
+        // Queue core as late FX: entityCutout via SubmitNodeCollector may not render correctly in 26.1 BER context.
+        // Using MultiBufferSource directly in AfterTranslucentParticles ensures the core is visible.
+        BlockPos pos = state.blockPos;
+        float ticks = state.ticks;
+        int tint = state.coreTint;
+        LateEffectQueue.add((fxPoseStack, bufferSource, fxCamera, gameTime, partialTicks) -> {
+            fxPoseStack.pushPose();
+            fxPoseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+            float scaledTicks = 4 * ticks;
+            fxPoseStack.translate(0.5, 0.5, 0.5);
+            fxPoseStack.scale(0.4F, 0.4F, 0.4F);
+            fxPoseStack.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            fxPoseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
+            fxPoseStack.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
+            var buffer = bufferSource.getBuffer(ModelEnergyCore.RENDER_TYPE);
+            energyCore.render(fxPoseStack, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, tint);
+            fxPoseStack.popPose();
+        });
     }
 
     @Override
