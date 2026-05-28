@@ -53,7 +53,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
               min, min, min, max, max, max,
               poseStack, Sheets.translucentBlockSheet(), nodeCollector,
               state.tempColor, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-              RenderResizableCuboid.FaceDisplay.FRONT,
+              RenderResizableCuboid.FaceDisplay.BOTH,
               camera.pos, Vec3.atLowerCornerOf(state.blockPos),
               MekanismRenderer.getSinglePicker(MekanismRenderer.heatIcon)
         );

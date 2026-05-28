@@ -55,7 +55,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
               min, min, min, max, max, max,
               poseStack, Sheets.translucentBlockSheet(), nodeCollector,
               color, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-              RenderResizableCuboid.FaceDisplay.FRONT,
+              RenderResizableCuboid.FaceDisplay.BOTH,
               camera.pos, Vec3.atLowerCornerOf(state.blockPos),
               MekanismRenderer.getSinglePicker(MekanismRenderer.energyIcon)
         );
