@@ -164,11 +164,14 @@ public class RenderTickHandler {
 
     @SubscribeEvent
     public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
+        MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+        LevelRenderState levelState = event.getLevelRenderState();
         if (boltRenderer.hasBoltsToRender()) {
-            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            LevelRenderState levelState = event.getLevelRenderState();
             boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+        }
+        if (LateEffectQueue.hasEffects()) {
+            LateEffectQueue.renderAndClear(event.getPoseStack(), renderer, levelState.cameraRenderState, levelState.gameTime, MekanismRenderer.getPartialTick());
         }
     }
 

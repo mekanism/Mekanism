@@ -1,10 +1,15 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.render.LateEffectQueue;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -98,30 +103,50 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         } else if (sps.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
             sps.orbitEffects.add(new SPSOrbitEffect(multiblock, state.center));
         }
+
+        Vec3 blockPosVec = Vec3.atLowerCornerOf(pos);
+
+        // Queue bolts as late FX
+        if (bolts.hasBoltsToRender()) {
+            LateEffectQueue.add((poseStack, bufferSource, camera, gameTime, partialTicks) -> {
+                poseStack.pushPose();
+                poseStack.translate(-blockPosVec.x, -blockPosVec.y, -blockPosVec.z);
+                bolts.render(gameTime, partialTicks, poseStack, bufferSource);
+                poseStack.popPose();
+                bufferSource.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            });
+        }
+
+        // Queue core billboard as late FX
+        if (state.processed > 0 && state.center != null) {
+            CORE.setPos(state.center);
+            CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
+            LateEffectQueue.add((poseStack, bufferSource, camera, gameTime, partialTicks) -> {
+                poseStack.pushPose();
+                poseStack.translate(-blockPosVec.x, -blockPosVec.y, -blockPosVec.z);
+                BillboardingEffectRenderer.render(CORE, camera, bufferSource, poseStack, (int) gameTime, partialTicks);
+                poseStack.popPose();
+            });
+        }
+
+        // Queue orbit billboards as late FX
+        List<SPSOrbitEffect> orbitSnapshot = new ArrayList<>(sps.orbitEffects);
+        if (!orbitSnapshot.isEmpty()) {
+            LateEffectQueue.add((poseStack, bufferSource, camera, gameTime, partialTicks) -> {
+                poseStack.pushPose();
+                poseStack.translate(-blockPosVec.x, -blockPosVec.y, -blockPosVec.z);
+                for (SPSOrbitEffect effect : orbitSnapshot) {
+                    BillboardingEffectRenderer.render(effect, camera, bufferSource, poseStack, (int) gameTime, partialTicks);
+                }
+                poseStack.popPose();
+            });
+        }
     }
 
     @Override
     public void submit(SPSRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.1: Figure out how to render these things, should they potentially use the CustomGeometryRenderer thing?
-        // I think the billboarding effects might be able to use a model part, which then might let them be ordered properly in terms of transparency
-        //bolts.render(partialTick, poseStack, renderer);
-
-        poseStack.pushPose();
-        //Because our center points are the center of the multiblock, we translate back to 0,0,0
-        //TODO - 26.1: Test this is the proper way to handle that we used to shift the billboarding effect renderer by the camera position
-        // when we were batching rendering of billboarding effects
-        poseStack.translate(-state.blockPos.getX(), -state.blockPos.getY(), -state.blockPos.getZ());
-
-        if (state.processed > 0 && state.center != null) {
-            CORE.setPos(state.center);
-            CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
-            //BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
-        }
-
-        /*for (SPSOrbitEffect effect : sps.orbitEffects) {
-            BillboardingEffectRenderer.render(effect, camera, renderer, poseStack, renderTick, partialTick);
-        }*/
-        poseStack.popPose();
+        // Geometric FX (bolts + billboards) are rendered as late effects via LateEffectQueue
+        // in RenderTickHandler.renderWorldAfterParticles(). No submit-time geometry needed.
     }
 
     private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, Vec3 center) {

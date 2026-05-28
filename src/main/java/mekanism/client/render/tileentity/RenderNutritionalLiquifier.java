@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import mekanism.api.annotations.NothingNullByDefault;
+import com.mojang.math.Axis;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier.LiquifierRenderState;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Camera;
@@ -96,26 +99,24 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         if (state.stage != 0) {
             RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F, 0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
-        //TODO - 26.1: rendering
-        /*if (state.active) {
+        if (state.active) {
             //Render the blade at the correct rotation if we are active
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.bladeRotation));
             poseStack.translate(-0.5, -0.5, -0.5);
-            nodeCollector.submitModel(
-                  MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
-                  Unit.INSTANCE,
+            nodeCollector.submitBlockModel(
                   poseStack,
-                  Sheets.solidBlockSheet(),
+                  Sheets.cutoutBlockSheet(),
+                  MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel(),
+                  BlockModelRenderState.EMPTY_TINTS,
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
-                  0,//No outline
-                  state.breakProgress
+                  0//No outline
             );
             poseStack.popPose();
         }
-        //Render the item and particle
+        //Render the item
         if (!state.item.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.6, 0.5);
@@ -125,33 +126,12 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             }
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
-            if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
-                //TODO - 26.1: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
-                //Render eating particles
-                PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
-                if (isTickingNormally(tile)) {
-                    //Don't add particles if the game is paused
-                    if (pseudoParticles.lastTick != gameTime) {
-                        pseudoParticles.lastTick = gameTime;
-                        pseudoParticles.particles.removeIf(PseudoParticle::tick);
-                    }
-                    int rate = Minecraft.getInstance().options.particles().get() == ParticleStatus.DECREASED ? 10 : 3;
-                    if (gameTime % rate == 0) {
-                        pseudoParticles.particles.add(new PseudoParticle(state.item, tile.getLevel().random));
-                    }
-                }
-                //Render particles
-                VertexConsumer buffer = renderer.getBuffer(MekanismRenderType.NUTRITIONAL_PARTICLE);
-                poseStack.pushPose();
-                poseStack.translate(0.5, 0.55, 0.5);
-                Matrix4f matrix4f = poseStack.last().pose();
-                for (PseudoParticle particle : pseudoParticles.particles) {
-                    particle.render(matrix4f, buffer, partialTick, state.lightCoords);
-                }
-                poseStack.popPose();
-            } else {
-                particles.remove(tile);
-            }
+        }
+        //TODO - 26.1: Pseudo-particles are late FX that need MultiBufferSource.
+        // They should be transitioned to LateEffectQueue once NUTRITIONAL_PARTICLE render type is restored.
+        /*if (state.active && !state.item.isEmpty() && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
+            PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
+            ...
         }*/
     }
 
