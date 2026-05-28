@@ -269,7 +269,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     /// @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
     public int insertInto(ResourceHandler<RESOURCE> handler, RESOURCE resource, final int amount, TransactionContext transaction, AutomationType automationType) {
         if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
-            return insertInto(mekHandler.getContainers(), resource, amount, transaction, automationType);
+            return mekHandler.insert(resource, amount, transaction, automationType);
         }
         return ResourceHandlerUtil.insertStacking(handler, resource, amount, transaction);
     }
@@ -287,6 +287,8 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     /// @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
     public int insertInto(List<? extends IResourceContainer<RESOURCE>> containers, RESOURCE resource, final int amount, TransactionContext transaction,
           AutomationType automationType) {
+        //TODO: Would it be simpler to just make an IMekanismResourceHandler that returns the containers and then call insert on it?
+        // Or better yet if we have a handler anywhere this is called, then directly use it
         if (containers.isEmpty()) {
             return 0;
         } else if (containers.size() == 1) {

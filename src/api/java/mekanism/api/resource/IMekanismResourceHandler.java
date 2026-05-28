@@ -89,7 +89,8 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     /// Inserts up to the given amount of a resource into the handler.
     ///
     /// This function is preferred to the [index-specific overload][#insert(int, Resource, int, TransactionContext, AutomationType)] since it lets the handler decide how
-    /// to distribute the resource.
+    /// to distribute the resource. The default distribution method for Mekanism resource handlers is to try combine the resource with existing "stacks", and then fall
+    /// back to inserting into empty containers afterward.
     ///
     /// This method is expected to be more efficient than callers trying to find a suitable index for insertion themselves.
     ///
@@ -110,13 +111,12 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        //TODO - 26.1: Add comments and document how this inserts into non empty matching containers first?
-        // Also re-evaluate if that is actually the behavior we want vs making call sites use something like ResourceHandlerUtil#insertStacking
-        // We used to only have this for chemical and fluid handlers, which we only had one or two tanks in general, so is that a feature that we ever made use of?
         List<CONTAINER> containers = getContainers();
         if (containers.isEmpty()) {
+            //If there are no containers we can skip initializing the empty container list and just return that nothing can be inserted
             return 0;
         } else if (containers.size() == 1) {
+            //If there is only a single container, then we want to try to insert into it regardless of if it is empty
             return containers.getFirst().insert(resource, amount, transaction, automationType);
         }
         int inserted = 0;

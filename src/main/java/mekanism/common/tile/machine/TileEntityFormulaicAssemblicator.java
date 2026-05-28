@@ -681,8 +681,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         // We can then continue on to the next slot if we did not fit it all and try to insert it.
         // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
         // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-        int inserted = ContainerType.ITEM.insertInto(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL);
-        return inserted == amount;
+        return ContainerType.ITEM.insertInto(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL) == amount;
     }
 
     public void encodeFormula() {

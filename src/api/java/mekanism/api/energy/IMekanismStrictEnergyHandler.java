@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.AutomationType;
@@ -49,11 +50,31 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler {
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
         MekanismPreconditions.checkNonNegative(amount);
+        List<IEnergyContainer> containers = getContainers();
+        if (containers.isEmpty()) {
+            //If there are no containers we can skip initializing the empty container list and just return that nothing can be inserted
+            return 0;
+        } else if (containers.size() == 1) {
+            //If there is only a single container, then we want to try to insert into it regardless of if it is empty
+            return containers.getFirst().insert(amount, transaction, automationType);
+        }
+        //Note: In general one of the two if statements above is going to be hit
         long inserted = 0;
-        for (IEnergyContainer container : getContainers()) {
+        List<IEnergyContainer> emptyContainers = new ArrayList<>(containers.size());
+        for (IEnergyContainer container : containers) {
+            if (container.isEmpty()) {
+                emptyContainers.add(container);
+            } else {
+                inserted += container.insert(amount - inserted, transaction, automationType);
+                if (inserted == amount) {
+                    return inserted;
+                }
+            }
+        }
+        for (IEnergyContainer container : emptyContainers) {
             inserted += container.insert(amount - inserted, transaction, automationType);
             if (inserted == amount) {
-                break;
+                return inserted;
             }
         }
         return inserted;
