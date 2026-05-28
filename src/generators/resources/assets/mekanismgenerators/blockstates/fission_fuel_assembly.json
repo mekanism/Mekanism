@@ -1,7 +1,10 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/fission/fuel_assembly"
+      "type": "mekanismgenerators:fuel_assembly",
+      "base_model": "mekanismgenerators:block/fission/fuel_assembly",
+      "glow_model": "mekanismgenerators:block/fission/fuel_assembly_glow",
+      "state": {}
     }
   }
 }

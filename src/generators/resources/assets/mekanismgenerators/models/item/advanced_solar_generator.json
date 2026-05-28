@@ -1,3 +1,5 @@
 {
-  "parent": "mekanismgenerators:block/advanced_solar_generator"
+  "model": {
+    "type": "mekanismgenerators:advanced_solar"
+  }
 }

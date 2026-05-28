@@ -42,10 +42,14 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import mekanism.generators.client.model.FuelAssemblyModel;
+import mekanism.generators.client.render.item.RenderAdvancedSolarItem;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -57,14 +61,6 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //TODO - 26.1 Models
-        // adv solar gen requires to be translated up 1 block, so handle the model separately
-        /*ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
-              QuadTransformation.translate(0, 1, 0)));*/
-        //TODO: Eventually make use of these custom model wrappers
-        //ClientRegistration.addCustomModel(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.75));
-        //ClientRegistration.addCustomModel(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.375));
-
         IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
         moduleHelper.addMekaSuitModuleModels(MekanismGenerators.rl("models/entity/mekasuit_modules.obj"));
         moduleHelper.addMekaSuitModuleModelSpec("solar_helmet", GeneratorsModules.SOLAR_RECHARGING_UNIT, EquipmentSlot.HEAD);
@@ -121,6 +117,16 @@ public class GeneratorsClientRegistration {
     @SubscribeEvent
     public static void fluidModels(RegisterFluidModelsEvent event) {
         ClientRegistrationUtil.registerFluidModels(event, GeneratorsFluids.FLUIDS);
+    }
+
+    @SubscribeEvent
+    public static void registerModels(RegisterBlockStateModels event) {
+        event.registerModel(FuelAssemblyModel.Unbaked.ID, FuelAssemblyModel.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
+        event.register(MekanismGenerators.rl("advanced_solar"), RenderAdvancedSolarItem.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

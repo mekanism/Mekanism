@@ -1,0 +1,41 @@
+{
+	"credit": "Mekanism glow overlay",
+	"textures": {
+		"glow": "mekanism:block/overlay/overlay_white"
+	},
+	"render_type": "minecraft:translucent",
+	"elements": [
+		{
+			"name": "glow_north",
+			"from": [0.5, 0.5, 0.5],
+			"to": [15.5, 15.5, 0.6],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#glow"}
+			}
+		},
+		{
+			"name": "glow_south",
+			"from": [0.5, 0.5, 15.4],
+			"to": [15.5, 15.5, 15.5],
+			"faces": {
+				"south": {"uv": [0, 0, 16, 16], "texture": "#glow"}
+			}
+		},
+		{
+			"name": "glow_east",
+			"from": [15.4, 0.5, 0.5],
+			"to": [15.5, 15.5, 15.5],
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#glow"}
+			}
+		},
+		{
+			"name": "glow_west",
+			"from": [0.5, 0.5, 0.5],
+			"to": [0.6, 15.5, 15.5],
+			"faces": {
+				"west": {"uv": [0, 0, 16, 16], "texture": "#glow"}
+			}
+		}
+	]
+}
