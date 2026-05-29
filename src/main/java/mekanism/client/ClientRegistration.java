@@ -511,10 +511,6 @@ public class ClientRegistration {
         event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS);
         event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS);
 
-        //TODO - 26.1 renderers
-        /*ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
-              MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
-*/
         event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK);
         ClientRegistrationUtil.registerBlockExtensions(event, MekanismBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, MekanismFluids.FLUIDS);
