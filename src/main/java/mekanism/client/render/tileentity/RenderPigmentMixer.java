@@ -14,11 +14,14 @@ import mekanism.client.render.tileentity.RenderPigmentMixer.PigmentMixerRenderSt
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,17 +72,15 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(shift, 0, shift);
         poseStack.mulPose(Axis.YN.rotationDegrees(state.rotation));
         poseStack.translate(-shift, 0, -shift);
-        //TODO - 26.1: rendering
-        /*nodeCollector.submitModel(
-              MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(),
-              Unit.INSTANCE,
+        nodeCollector.submitBlockModel(
               poseStack,
-              renderType,
+              Sheets.cutoutBlockSheet(),
+              MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(),
+              BlockModelRenderState.EMPTY_TINTS,
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
-              0,//TODO - 26.1: Test that this works as no outline, and if it doesn't fix all the other places we pass zero for the outline color
-              state.breakProgress
-        );*/
+              0
+        );
         poseStack.popPose();
     }
 
