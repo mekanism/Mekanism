@@ -162,7 +162,7 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
-import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -468,7 +468,7 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockTintSources.constant(-1), QIOBlockTintSource.INSTANCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockColors.BLANK_LAYER, QIOBlockTintSource.INSTANCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
         ClientRegistrationUtil.registerBlockColorHandler(event, LogisticalTransporterBlockTintSource.INSTANCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
