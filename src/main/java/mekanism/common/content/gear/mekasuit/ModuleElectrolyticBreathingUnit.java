@@ -63,7 +63,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         }
         if (productionRate > 0) {
             int maxRate;
-            long usage = MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity());
+            int usage = MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity());
             try (Transaction simulation = Transaction.openRoot()) {
                 //Calculate the max rate based on how much energy is available and can be extracted
                 long energyRate = module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, productionRate), simulation) / usage;

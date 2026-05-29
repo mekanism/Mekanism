@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
@@ -25,6 +26,10 @@ public interface IEnergyContainer extends ValueIOSerializable {
     @Range(from = 0, to = Long.MAX_VALUE)
     long energy();
 
+    default int energyAsInt() {
+        return Ints.saturatedCast(energy());
+    }
+
     /// Overrides the amount of energy in this [IEnergyContainer].
     ///
     /// @param energy      Energy to set this container's contents to. Must be greater than or equal to 0.
@@ -44,8 +49,8 @@ public interface IEnergyContainer extends ValueIOSerializable {
     /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
     /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
     /// energy container.
-    @Range(from = 0, to = Long.MAX_VALUE)
-    long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
     /// Tries to extract up to the given amount of energy from this container.
     ///
@@ -60,8 +65,8 @@ public interface IEnergyContainer extends ValueIOSerializable {
     /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
     /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
     /// energy container.
-    @Range(from = 0, to = Long.MAX_VALUE)
-    long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
     /// Returns the capacity (maximum amount of energy) of this container, as a `long`.
     ///
@@ -71,6 +76,10 @@ public interface IEnergyContainer extends ValueIOSerializable {
     /// @return the capacity in this container, as a long
     @Range(from = 0, to = Long.MAX_VALUE)
     long capacity();
+
+    default int capacityAsInt() {
+        return Ints.saturatedCast(capacity());
+    }
 
     /// {@return whether it is generally allowed to be extracted from this container using the given automation type}
     ///
@@ -103,6 +112,10 @@ public interface IEnergyContainer extends ValueIOSerializable {
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeeded() {
         return Math.max(0L, capacity() - energy());
+    }
+
+    default int getNeededAsInt() {
+        return Ints.saturatedCast(getNeeded());
     }
 
     @Override

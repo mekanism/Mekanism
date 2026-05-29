@@ -19,14 +19,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
-    public static final long USAGE_MULTIPLIER = 4;
+    public static final int USAGE_MULTIPLIER = 4;
 
     public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ResistiveHeaterEnergyContainer(electricBlock.getUsage() * USAGE_MULTIPLIER, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
+        return new ResistiveHeaterEnergyContainer((long) USAGE_MULTIPLIER * electricBlock.getUsage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
     }
 
-    private ResistiveHeaterEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    private ResistiveHeaterEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
@@ -36,7 +36,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return true;
     }
 
-    public void updateEnergyUsage(long energyUsage) {
+    public void updateEnergyUsage(int energyUsage) {
         currentEnergyPerTick = energyUsage;
         setMaxEnergy(MathUtils.multiplyClamped(energyUsage, USAGE_MULTIPLIER));
     }
@@ -54,12 +54,12 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     @Override
     public void serialize(ValueOutput output) {
         super.serialize(output);
-        output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
+        output.putInt(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
+        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
         super.deserialize(input);
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -41,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -117,12 +117,13 @@ public class LookingAtUtils {
             }
         }
         MultiblockData structure = getMultiblock(tile);
-        IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
+        EnergyHandler energyCapability = Capabilities.ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (energyCapability != null) {
             displayEnergy(info, energyCapability);
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
-            for (IEnergyContainer container : structure.getEnergyContainers()) {
+            IEnergyContainer container = structure.getEnergyContainer();
+            if (container != null) {
                 info.addEnergyElement(new EnergyElement(container.energy(), container.capacity()));
             }
         }
@@ -135,7 +136,7 @@ public class LookingAtUtils {
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
                         fallback = pipe.getTransmitter().getTransmitterNetwork().getLastType();
                     }
-                    if (fluidHandler instanceof ProxyResourceHandler<FluidResource> proxiedHandler) {
+                    if (fluidHandler instanceof ProxyResourceHandler<FluidResource, ?> proxiedHandler) {
                         addFluidTanks(info, proxiedHandler.getProxiedContainers(), fallback);
                     } else {
                         //Fallback handling if it is not our fluid handler (probably never gets used)
@@ -174,11 +175,8 @@ public class LookingAtUtils {
         info.addFluidElement(new FluidElement(fluidType, stored, capacity));
     }
 
-    private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
-        int containers = energyHandler.size();
-        for (int container = 0; container < containers; container++) {
-            info.addEnergyElement(new EnergyElement(energyHandler.getAmountAsLong(container), energyHandler.getCapacityAsLong(container)));
-        }
+    private static void displayEnergy(LookingAtHelper info, EnergyHandler energyHandler) {
+        info.addEnergyElement(new EnergyElement(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong()));
     }
 
     private static void addChemicalInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
@@ -191,7 +189,7 @@ public class LookingAtUtils {
                     fallback = network.getLastType();
                 }
             }
-            if (handler instanceof ProxyResourceHandler<ChemicalResource> proxiedHandler) {
+            if (handler instanceof ProxyResourceHandler<ChemicalResource, ?> proxiedHandler) {
                 addChemicalTanks(info, proxiedHandler.getProxiedContainers(), fallback);
             } else {
                 for (int i = 0, size = handler.size(); i < size; i++) {

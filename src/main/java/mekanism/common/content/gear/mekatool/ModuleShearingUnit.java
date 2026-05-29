@@ -49,7 +49,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             if (stack.is(MekanismItems.MEKA_TOOL)) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
-                long cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+                int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
                 return module.hasEnoughEnergy(stack, cost);
             }
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
@@ -73,7 +73,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             // and wraps the entire hitting the entity within their transaction?
             try (Transaction transaction = Transaction.openRoot()) {
                 Level level = entity.level();
-                long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+                int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
                 if (module.useEnergy(player, stack, cost, transaction) == cost && shearEntity(entity, player, stack, level, entity.blockPosition())) {
                     if (!level.isClientSide()) {
                         transaction.commit();
@@ -88,7 +88,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @NotNull
     @Override
     public InteractionResult onItemUse(IModule<ModuleShearingUnit> module, UseOnContext context) {
-        long cost = MekanismConfig.gear.mekaToolEnergyUsageShearTrim.get();
+        int cost = MekanismConfig.gear.mekaToolEnergyUsageShearTrim.get();
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
         //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
@@ -128,7 +128,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         // Should we be doing so here? I think at one point we did, so figure out what happened to it
         //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
         try (Transaction transaction = Transaction.openRoot()) {
-            long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+            int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
             //If we are able to use the energy we need to (or there is no cost) then try to see if any of the entities can be sheared
             if (module.useEnergy(null, stack, cost, transaction) == cost) {
                 for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {

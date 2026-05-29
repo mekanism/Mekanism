@@ -3,14 +3,12 @@ package mekanism.common;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.LongSupplier;
+import java.util.function.IntSupplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.MathUtils;
 import mekanism.common.base.KeySync;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -56,6 +54,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -246,9 +245,10 @@ public class CommonPlayerTickHandler {
         if (info != null && info.energyHandler != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            long energyRequirement = MathUtils.ceilToLong(info.energyCost.getAsLong() * amount);
+            //TODO - 26.1: Re-evaluate the Mth.ceil calls, is there a chance that it doesn't handle overflow correctly?
+            int energyRequirement = Mth.ceil(info.energyCost.getAsInt() * amount);
             float ratioAbsorbed;
-            if (energyRequirement == 0L) {
+            if (energyRequirement == 0) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
@@ -288,7 +288,7 @@ public class CommonPlayerTickHandler {
             IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
-                long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
+                int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 try (Transaction transaction = Transaction.openRoot()) {
                     //TODO - 26.1: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
@@ -316,21 +316,21 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemMekaSuitArmor) {
-            return new FallEnergyInfo(Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(feetStack)), MekanismConfig.gear.mekaSuitFallDamageRatio,
+            return new FallEnergyInfo(Capabilities.ENERGY.getCapability(ItemAccess.forStack(feetStack)), MekanismConfig.gear.mekaSuitFallDamageRatio,
                   MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
         ItemStack freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
         if (!freeRunners.isEmpty()) {
             ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
             if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).preventsFallDamage()) {
-                return new FallEnergyInfo(Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(freeRunners)), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                return new FallEnergyInfo(Capabilities.ENERGY.getCapability(ItemAccess.forStack(freeRunners)), MekanismConfig.gear.freeRunnerFallDamageRatio,
                       MekanismConfig.gear.freeRunnerFallEnergyCost);
             }
         }
         return null;
     }
 
-    private record FallEnergyInfo(@Nullable IStrictEnergyHandler energyHandler, FloatSupplier damageRatio, LongSupplier energyCost) {
+    private record FallEnergyInfo(@Nullable EnergyHandler energyHandler, FloatSupplier damageRatio, IntSupplier energyCost) {
     }
 
     @SubscribeEvent

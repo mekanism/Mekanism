@@ -3,15 +3,16 @@ package mekanism.common.tile;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
@@ -63,9 +65,9 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
      */
     public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true).setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, RelativeSide.FRONT);
-        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput(), false);
+        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, true).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer);
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getTransferRate(), false);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> canFunction());
     }
 
@@ -75,12 +77,10 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         tier = Attribute.getTier(getBlockHolder(), EnergyCubeTier.class);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
-        builder.addContainer(energyContainer = EnergyCubeEnergyContainer.create(tier, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = EnergyCubeEnergyContainer.create(tier, listener);
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
@@ -101,8 +101,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        chargeSlot.drainContainerIntoSlot();
-        dischargeSlot.fillContainerOrConvert();
+        chargeSlot.drainContainerIntoSlot(null);
+        dischargeSlot.fillContainerOrConvert(null);
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
         if (MekanismUtils.scaleChanged(newScale, prevScale)) {
             prevScale = newScale;
@@ -140,7 +140,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         }
     }
 
-    public EnergyCubeEnergyContainer getEnergyContainer() {
+    public EnergyCubeEnergyContainer energyContainer() {
         return energyContainer;
     }
 

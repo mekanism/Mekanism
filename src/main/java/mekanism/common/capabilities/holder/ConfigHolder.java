@@ -1,9 +1,6 @@
 package mekanism.common.capabilities.holder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,9 +13,8 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
-public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
+public abstract class ConfigHolder<TYPE> implements IHolder {
 
     private static final Predicate<ISlotInfo> CAN_INPUT = ISlotInfo::canInput;
     private static final Predicate<ISlotInfo> CAN_OUTPUT = ISlotInfo::canOutput;
@@ -26,7 +22,7 @@ public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
     /**
      * Dummy ISlotInfo used for representing we have no config
      */
-    private static final ISlotInfo NO_CONFIG = new ISlotInfo() {
+    protected static final ISlotInfo NO_CONFIG = new ISlotInfo() {
         @Override
         public boolean canInput() {
             return true;
@@ -49,11 +45,9 @@ public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
     };
 
     private final Map<Direction, ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
+    private final Function<ISlotInfo, TYPE> slotInfoParser;
     private final ISideConfiguration sideConfiguration;
     private final TransmissionType transmissionType;
-    private final List<CONTAINER> containers = new ArrayList<>();
-    @UnknownNullability
-    private final Function<ISlotInfo, List<CONTAINER>> slotInfoParser;
     @Nullable
     private Direction lastDirection;
 
@@ -61,15 +55,15 @@ public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
     private ConfigInfo lazyConfig;
     private boolean retrievedConfig;
 
-    public ConfigHolder(ISideConfiguration sideConfiguration, TransmissionType transmissionType, @UnknownNullability Function<ISlotInfo, List<CONTAINER>> slotInfoParser) {
+    public ConfigHolder(ISideConfiguration sideConfiguration, TransmissionType transmissionType, Function<ISlotInfo, TYPE> slotInfoParser) {
         this.sideConfiguration = sideConfiguration;
         this.transmissionType = transmissionType;
         this.slotInfoParser = slotInfoParser;
     }
 
-    void addContainer(@NotNull CONTAINER container) {
-        containers.add(container);
-    }
+    protected abstract TYPE defaultValue();
+
+    protected abstract TYPE allData();
 
     @Override
     public boolean canInsert(@Nullable Direction side) {
@@ -93,19 +87,17 @@ public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
         return slotInfo != null && interactPredicate.test(slotInfo);
     }
 
-    @NotNull
-    @Override
-    public List<CONTAINER> getContainers(@Nullable Direction side) {
+    protected TYPE getData(@org.jspecify.annotations.Nullable Direction side) {
         if (side == null) {
             //If we want the internal, give all of our slots
-            return containers;
+            return allData();
         }
         ISlotInfo slotInfo = getSlotInfo(side);
         if (slotInfo == NO_CONFIG) {
             //If we don't have a config (most likely case is it hasn't been set up yet, or we don't support this type of data in our configuration), just return all
-            return containers;
+            return allData();
         } else if (slotInfo == null) {
-            return Collections.emptyList();
+            return defaultValue();
         }
         return slotInfoParser.apply(slotInfo);
     }

@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
@@ -85,6 +84,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -146,24 +146,9 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addEnergyComponent(Set<Object> representation, ItemAccess itemAccess) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
-        if (energyHandlerItem != null) {
-            int containers = energyHandlerItem.size();
-            if (containers == 1) {
-                if (energyHandlerItem.getAmountAsLong(0) >= energyHandlerItem.getCapacityAsLong(0)) {
-                    representation.add("filled");
-                }
-            } else if (containers > 1) {
-                StringBuilder component = new StringBuilder();
-                for (int container = 0; container < containers; container++) {
-                    if (energyHandlerItem.getAmountAsLong(container) >= energyHandlerItem.getCapacityAsLong(container)) {
-                        component.append("filled");
-                    } else {
-                        component.append("empty");
-                    }
-                }
-                representation.add(component.toString());
-            }
+        EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        if (energyHandler != null && energyHandler.getAmountAsLong() >= energyHandler.getCapacityAsLong()) {
+            representation.add("filled");
         }
     }
 
@@ -200,7 +185,7 @@ public class MekanismEmi implements EmiPlugin {
         for (Holder<Item> item : items) {
             //Handle items
             ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(item));
-            if (Capabilities.STRICT_ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
+            if (Capabilities.ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
                 Capabilities.FLUID.getCapability(itemAccess) != null) {
                 registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }

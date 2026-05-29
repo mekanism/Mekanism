@@ -31,7 +31,7 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
     /**
      * Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
      */
-    public abstract long getEnergyMultiplier();
+    public abstract int getEnergyMultiplier();
 
     @Override
     public final RecipeType<ElectrolysisRecipe> getType() {

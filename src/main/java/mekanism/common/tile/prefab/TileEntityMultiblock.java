@@ -11,7 +11,7 @@ import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.FactoryRegistry;

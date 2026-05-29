@@ -7,15 +7,14 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
@@ -49,7 +48,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         if (multiblock.isFormed()) {
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.energy(), transaction, AutomationType.INTERNAL));
+                    multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.energyAsInt(), transaction, AutomationType.INTERNAL));
                     transaction.commit();
                 }
             }
@@ -57,12 +56,10 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         return needsPacket;
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return _ -> energyContainer;
     }
 
     @NotNull

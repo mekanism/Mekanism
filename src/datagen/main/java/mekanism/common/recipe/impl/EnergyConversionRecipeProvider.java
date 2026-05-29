@@ -22,12 +22,12 @@ class EnergyConversionRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "energy_conversion/";
-        long redstoneEnergy = 10_000L;
+        int redstoneEnergy = 10_000;
         addEnergyConversionRecipe(consumer, basePath, "redstone", Tags.Items.DUSTS_REDSTONE, redstoneEnergy);
         addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.Items.STORAGE_BLOCKS_REDSTONE, 9 * redstoneEnergy);
     }
 
-    private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, long output) {
+    private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, int output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
               IngredientCreatorAccess.item().from(this.items, inputTag),
               output

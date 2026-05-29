@@ -10,10 +10,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
+import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalResource;
@@ -51,10 +51,11 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ResourceHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.FilterManager;
@@ -69,6 +70,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLargeResourceStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -135,13 +137,15 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
       IContentsListener {
+
+    protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
 
     /**
      * The players currently using this block.
@@ -260,7 +264,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
 
-        List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
+        List<ICapabilityResolver<@Nullable Direction>> capabilityHandlerManagers = new ArrayList<>();
 
         IContainerHolder<IChemicalTank> initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
         if (initialChemicalTanks != null) {
@@ -276,7 +280,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             fluidHandlerManager = null;
         }
 
-        IContainerHolder<IEnergyContainer> initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
+        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
             capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, () -> level == null ? 0 : level.getGameTime()));
         } else {
@@ -940,11 +944,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
             trackLastEnergy(container);
-            for (IEnergyContainer energyContainer : getEnergyContainers()) {
+            IEnergyContainer energyContainer = getEnergyContainer();
+            if (energyContainer != null) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
                         container.track(SyncableLong.create(machineEnergy::capacity, machineEnergy::setMaxEnergy));
-                        container.track(SyncableLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                        container.track(SyncableInt.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
                 //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
@@ -1175,18 +1180,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
-            for (IEnergyContainer energyContainer : getEnergyContainers()) {
-                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
-                    machineEnergy.updateEnergyPerTick();
-                    machineEnergy.updateMaxEnergy();
-                }
+            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
+                machineEnergy.updateEnergyPerTick();
+                machineEnergy.updateMaxEnergy();
             }
         } else if (upgrade == Upgrade.ENERGY) {
-            for (IEnergyContainer energyContainer : getEnergyContainers()) {
-                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
-                    machineEnergy.updateEnergyPerTick();
-                    machineEnergy.updateMaxEnergy();
-                }
+            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
+                machineEnergy.updateEnergyPerTick();
+                machineEnergy.updateMaxEnergy();
             }
         }
     }
@@ -1257,14 +1258,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IMekanismFluidHandler
 
     //Methods for implementing IMekanismStrictEnergyHandler
-    @Nullable
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         return null;
     }
 
-    @NotNull
-    public final List<IEnergyContainer> getEnergyContainers() {
-        return energyHandlerManager == null ? Collections.emptyList() : energyHandlerManager.getContainers(null);
+    @Nullable
+    public final IEnergyContainer getEnergyContainer() {
+        return energyHandlerManager == null ? null : energyHandlerManager.getContainer(null);
     }
 
     @Nullable
@@ -1486,40 +1486,31 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // where being able to get a specific container's stored energy would be useful to their program. Alternatively we could
     // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
-    @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
-    long getTotalEnergy() {
-        return getTotalEnergy(IEnergyContainer::energy);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getEnergy() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.energy();
     }
 
-    @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
-    long getTotalMaxEnergy() {
-        return getTotalEnergy(IEnergyContainer::capacity);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getMaxEnergy() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.capacity();
     }
 
-    @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
-    long getTotalEnergyNeeded() {
-        return getTotalEnergy(IEnergyContainer::getNeeded);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getEnergyNeeded() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.getNeeded();
     }
 
-    private long getTotalEnergy(ToLongFunction<IEnergyContainer> getter) {
-        long total = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers();
-        for (IEnergyContainer energyContainer : energyContainers) {
-            total = MathUtils.addClamped(total, getter.applyAsLong(energyContainer));
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    double getEnergyFilledPercentage() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        if (energyContainer == null) {
+            return 1;
         }
-        return total;
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
-    double getTotalEnergyFilledPercentage() {
-        long stored = 0;
-        long max = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers();
-        for (IEnergyContainer energyContainer : energyContainers) {
-            stored = MathUtils.addClamped(stored, energyContainer.energy());
-            max = MathUtils.addClamped(max, energyContainer.capacity());
-        }
-        return MathUtils.divideToLevel(stored, max);
+        return MathUtils.divideToLevel(energyContainer.energy(), energyContainer.capacity());
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

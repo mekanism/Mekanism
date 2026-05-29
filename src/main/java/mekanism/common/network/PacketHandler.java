@@ -27,7 +27,6 @@ import mekanism.common.network.to_server.PacketAddTrusted;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGuiInteract;
-import mekanism.common.network.to_server.PacketGuiSetEnergy;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.network.to_server.PacketModeChange;
@@ -96,7 +95,6 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketGearStateUpdate.TYPE, PacketGearStateUpdate.STREAM_CODEC);
         registrar.play(PacketGuiInteract.TYPE, PacketGuiInteract.STREAM_CODEC);
         registrar.play(PacketItemGuiInteract.TYPE, PacketItemGuiInteract.STREAM_CODEC);
-        registrar.play(PacketGuiSetEnergy.TYPE, PacketGuiSetEnergy.STREAM_CODEC);
         registrar.play(PacketKey.TYPE, PacketKey.STREAM_CODEC);
         registrar.play(PacketModeChange.TYPE, PacketModeChange.STREAM_CODEC);
         registrar.play(PacketModeChangeCurios.TYPE, PacketModeChangeCurios.STREAM_CODEC);

@@ -9,9 +9,8 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.functions.LongObjectToLongFunction;
+import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -31,8 +30,10 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.ElectroSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -97,7 +98,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public static final long MAX_GAS = 2_400;
     public static final long MAX_FLUID = 24L * FluidType.BUCKET_VOLUME;
     private static final int BASE_DUMP_RATE = 8;
-    private static final LongObjectToLongFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR = (base, tile) -> base * tile.getRecipeEnergyMultiplier();
+    private static final IntObjectToIntFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR = (base, tile) -> base * tile.getRecipeEnergyMultiplier();
 
     /**
      * This separator's water slot.
@@ -122,7 +123,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
     public GasMode dumpRight = GasMode.IDLE;
     private long clientEnergyUsed = 1L;
-    private long recipeEnergyMultiplier = 1L;
+    private int recipeEnergyMultiplier = 1;
     private boolean isMakingHydrogen = false;
     private int baselineMaxOperations = 1;
     private int dumpRate = BASE_DUMP_RATE;
@@ -193,12 +194,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return builder.build();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
-        builder.addContainer(energyContainer = ElectroSeparatorEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        energyContainer = ElectroSeparatorEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener);
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
@@ -218,7 +217,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void onCachedRecipeChanged(@Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
         super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
-        recipeEnergyMultiplier = cachedRecipe == null ? 1L : cachedRecipe.getRecipe().getEnergyMultiplier();
+        recipeEnergyMultiplier = cachedRecipe == null ? 1 : cachedRecipe.getRecipe().getEnergyMultiplier();
         isMakingHydrogen = cachedRecipe != null && isHydrogenElectrolysis(cachedRecipe.getRecipe());
         energyContainer.updateEnergyPerTick();
         energyContainer.updateMaxEnergy();
@@ -240,7 +239,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         fluidSlot.fillTankFromSlot();
 
         leftOutputSlot.drainTankIntoSlot();
@@ -295,7 +294,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return super.canFunction() && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS || !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
     }
 
-    public long getRecipeEnergyMultiplier() {
+    public int getRecipeEnergyMultiplier() {
         return recipeEnergyMultiplier;
     }
 
@@ -344,7 +343,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    public ElectroSeparatorEnergyContainer getEnergyContainer() {
+    public ElectroSeparatorEnergyContainer energyContainer() {
         return energyContainer;
     }
 

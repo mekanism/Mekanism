@@ -10,8 +10,8 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -72,21 +72,21 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         builder.addContainer(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem, GeneratorsFluids.BIOETHANOL,
                     listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
-        builder.addContainer(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainerIntoSlot();
+        energySlot.drainContainerIntoSlot(null);
         fuelSlot.fillOrBurn();
         boolean isActive = false;
         if (canFunction() && !bioFuelTank.isEmpty()) {
             try (Transaction transaction = Transaction.openRoot()) {
-                long toGenerate = MekanismGeneratorsConfig.generators.bioGeneration.get();
+                int toGenerate = MekanismGeneratorsConfig.generators.bioGeneration.get();
                 //If we can insert all the energy we would generate, and can extract 1 mB of fuel
-                if (getEnergyContainer().insert(toGenerate, transaction, AutomationType.INTERNAL) == toGenerate &&
+                if (energyContainer().insert(toGenerate, transaction, AutomationType.INTERNAL) == toGenerate &&
                     bioFuelTank.extract(bioFuelTank.resource(), 1, transaction, AutomationType.INTERNAL) == 1) {
                     //Then mark the generator as active and commit the changes
                     isActive = true;
@@ -128,8 +128,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    long getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0L;
+    int getProductionRate() {
+        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0;
     }
     //End methods IComputerTile
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
@@ -15,11 +14,10 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
-import mekanism.common.lib.multiblock.MultiblockData.EnergyOutputTarget;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
@@ -32,13 +30,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     private final Map<Direction, BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
-    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyCapabilityCaches = new EnumMap<>(Direction.class);
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
@@ -58,10 +57,9 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         return _ -> getMultiblock().getFluidTanks();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        return _ -> getMultiblock().getEnergyContainers();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        return _ -> getMultiblock().getEnergyContainer();
     }
 
     @NotNull
@@ -87,13 +85,13 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
-    public void addEnergyTargetCapability(List<EnergyOutputTarget> outputTargets, Direction side) {
-        BlockEnergyCapabilityCache cache = energyCapabilityCaches.get(side);
+    public void addEnergyTargetCapability(List<CapabilityOutputTarget<EnergyHandler>> outputTargets, Direction side) {
+        BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache = energyCapabilityCaches.get(side);
         if (cache == null) {
-            cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.ENERGY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             energyCapabilityCaches.put(side, cache);
         }
-        outputTargets.add(new EnergyOutputTarget(cache, this::getActive));
+        outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
     @Nullable

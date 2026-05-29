@@ -1,7 +1,7 @@
 package mekanism.common.config;
 
 import mekanism.common.config.value.CachedBooleanValue;
-import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.config.value.CachedIntValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -9,84 +9,118 @@ public class UsageConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedLongValue enrichmentChamber;
-    public final CachedLongValue osmiumCompressor;
-    public final CachedLongValue combiner;
-    public final CachedLongValue crusher;
-    public final CachedLongValue metallurgicInfuser;
-    public final CachedLongValue purificationChamber;
-    public final CachedLongValue energizedSmelter;
-    public final CachedLongValue digitalMiner;
-    public final CachedLongValue electricPump;
-    public final CachedLongValue chargePad;
-    public final CachedLongValue rotaryCondensentrator;
-    public final CachedLongValue chemicalOxidizer;
-    public final CachedLongValue chemicalInfuser;
-    public final CachedLongValue chemicalInjectionChamber;
-    public final CachedLongValue precisionSawmill;
-    public final CachedLongValue chemicalDissolutionChamber;
-    public final CachedLongValue chemicalWasher;
-    public final CachedLongValue chemicalCrystallizer;
-    public final CachedLongValue seismicVibrator;
-    public final CachedLongValue pressurizedReactionBase;
-    public final CachedLongValue fluidicPlenisher;
-    public final CachedLongValue laser;
-    public final CachedLongValue formulaicAssemblicator;
-    public final CachedLongValue modificationStation;
-    public final CachedLongValue isotopicCentrifuge;
-    public final CachedLongValue nutritionalLiquifier;
-    public final CachedLongValue antiprotonicNucleosynthesizer;
-    public final CachedLongValue pigmentExtractor;
-    public final CachedLongValue pigmentMixer;
-    public final CachedLongValue paintingMachine;
-    public final CachedLongValue dimensionalStabilizer;
+    public final CachedIntValue enrichmentChamber;
+    public final CachedIntValue osmiumCompressor;
+    public final CachedIntValue combiner;
+    public final CachedIntValue crusher;
+    public final CachedIntValue metallurgicInfuser;
+    public final CachedIntValue purificationChamber;
+    public final CachedIntValue energizedSmelter;
+    public final CachedIntValue digitalMiner;
+    public final CachedIntValue electricPump;
+    public final CachedIntValue chargePad;
+    public final CachedIntValue rotaryCondensentrator;
+    public final CachedIntValue chemicalOxidizer;
+    public final CachedIntValue chemicalInfuser;
+    public final CachedIntValue chemicalInjectionChamber;
+    public final CachedIntValue precisionSawmill;
+    public final CachedIntValue chemicalDissolutionChamber;
+    public final CachedIntValue chemicalWasher;
+    public final CachedIntValue chemicalCrystallizer;
+    public final CachedIntValue seismicVibrator;
+    public final CachedIntValue pressurizedReactionBase;
+    public final CachedIntValue fluidicPlenisher;
+    public final CachedIntValue laser;
+    public final CachedIntValue formulaicAssemblicator;
+    public final CachedIntValue modificationStation;
+    public final CachedIntValue isotopicCentrifuge;
+    public final CachedIntValue nutritionalLiquifier;
+    public final CachedIntValue antiprotonicNucleosynthesizer;
+    public final CachedIntValue pigmentExtractor;
+    public final CachedIntValue pigmentMixer;
+    public final CachedIntValue paintingMachine;
+    public final CachedIntValue dimensionalStabilizer;
     public final CachedBooleanValue randomizedConsumption;
-    public final CachedLongValue teleporterBase;
-    public final CachedLongValue teleporterDistance;
-    public final CachedLongValue teleporterDimensionPenalty;
+    public final CachedIntValue teleporterBase;
+    public final CachedIntValue teleporterDistance;
+    public final CachedIntValue teleporterDimensionPenalty;
 
     UsageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        enrichmentChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_ENRICHMENT_CHAMBER, "enrichmentChamber", 5L);
-        osmiumCompressor = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_COMPRESSOR, "osmiumCompressor", 15L);
-        combiner = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_COMBINER, "combiner", 5L);
-        crusher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CRUSHER, "crusher", 8L);
-        metallurgicInfuser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_METALLURGIC_INFUSER, "metallurgicInfuser", 5L);
-        purificationChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PURIFICATION_CHAMBER, "purificationChamber", 10L);
-        energizedSmelter = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_SMELTER, "energizedSmelter", 5L);
-        digitalMiner = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_MINER, "digitalMiner", 40L);
-        electricPump = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PUMP, "electricPump", 2L);
-        chargePad = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CHARGEPAD, "chargepad", 1_024L);
-        rotaryCondensentrator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CONDENSENTRATOR, "rotaryCondensentrator", 2L);
-        chemicalOxidizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_OXIDIZER, "chemicalOxidizer", 15L);
-        chemicalInfuser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CHEMICAL_INFUSER, "chemicalInfuser", 15L);
-        chemicalInjectionChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_INJECTION_CHAMBER, "chemicalInjectionChamber", 15L);
-        precisionSawmill = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_SAWMILL, "precisionSawmill", 5L);
-        chemicalDissolutionChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CDC, "chemicalDissolutionChamber", 16L);
-        chemicalWasher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_WASHER, "chemicalWasher", 5L);
-        chemicalCrystallizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CRYSTALLIZER, "chemicalCrystallizer", 15L);
-        seismicVibrator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_VIBRATOR, "seismicVibrator", 5L);
-        pressurizedReactionBase = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PRC, "pressurizedReactionBase", 2L);
-        fluidicPlenisher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PLENISHER, "fluidicPlenisher", 2L);
-        laser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_LASER, "laser", 20L);
-        formulaicAssemblicator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_ASSEMBLICATOR, "formulaicAssemblicator", 5L);
-        modificationStation = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_MODIFICATION_STATION, "modificationStation", 10L);
-        isotopicCentrifuge = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CENTRIFUGE, "isotopicCentrifuge", 8L);
-        nutritionalLiquifier = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_LIQUIFIER, "nutritionalLiquifier", 8L);
-        antiprotonicNucleosynthesizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_NUCLEOSYNTHESIZER, "antiprotonicNucleosynthesizer", 15L);
-        pigmentExtractor = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_EXTRACTOR, "pigmentExtractor", 5L);
-        pigmentMixer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_MIXER, "pigmentMixer", 5L);
-        paintingMachine = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PAINTING, "paintingMachine", 5L);
-        dimensionalStabilizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_DIMENSIONAL_STABILIZER, "dimensionalStabilizer", 15L);
+        enrichmentChamber = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_ENRICHMENT_CHAMBER.applyToBuilder(builder)
+              .defineInRange("enrichmentChamber", 5, 0, Integer.MAX_VALUE));
+        osmiumCompressor = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_COMPRESSOR.applyToBuilder(builder)
+              .defineInRange("osmiumCompressor", 15, 0, Integer.MAX_VALUE));
+        combiner = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_COMBINER.applyToBuilder(builder)
+              .defineInRange("combiner", 5, 0, Integer.MAX_VALUE));
+        crusher = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CRUSHER.applyToBuilder(builder)
+              .defineInRange("crusher", 8, 0, Integer.MAX_VALUE));
+        metallurgicInfuser = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_METALLURGIC_INFUSER.applyToBuilder(builder)
+              .defineInRange("metallurgicInfuser", 5, 0, Integer.MAX_VALUE));
+        purificationChamber = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PURIFICATION_CHAMBER.applyToBuilder(builder)
+              .defineInRange("purificationChamber", 10, 0, Integer.MAX_VALUE));
+        energizedSmelter = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_SMELTER.applyToBuilder(builder)
+              .defineInRange("energizedSmelter", 5, 0, Integer.MAX_VALUE));
+        digitalMiner = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_MINER.applyToBuilder(builder)
+              .defineInRange("digitalMiner", 40, 0, Integer.MAX_VALUE));
+        electricPump = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PUMP.applyToBuilder(builder)
+              .defineInRange("electricPump", 2, 0, Integer.MAX_VALUE));
+        chargePad = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CHARGEPAD.applyToBuilder(builder)
+              .defineInRange("chargepad", 1_024, 0, Integer.MAX_VALUE));
+        rotaryCondensentrator = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CONDENSENTRATOR.applyToBuilder(builder)
+              .defineInRange("rotaryCondensentrator", 2, 0, Integer.MAX_VALUE));
+        chemicalOxidizer = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_OXIDIZER.applyToBuilder(builder)
+              .defineInRange("chemicalOxidizer", 15, 0, Integer.MAX_VALUE));
+        chemicalInfuser = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CHEMICAL_INFUSER.applyToBuilder(builder)
+              .defineInRange("chemicalInfuser", 15, 0, Integer.MAX_VALUE));
+        chemicalInjectionChamber = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_INJECTION_CHAMBER.applyToBuilder(builder)
+              .defineInRange("chemicalInjectionChamber", 15, 0, Integer.MAX_VALUE));
+        precisionSawmill = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_SAWMILL.applyToBuilder(builder)
+              .defineInRange("precisionSawmill", 5, 0, Integer.MAX_VALUE));
+        chemicalDissolutionChamber = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CDC.applyToBuilder(builder)
+              .defineInRange("chemicalDissolutionChamber", 16, 0, Integer.MAX_VALUE));
+        chemicalWasher = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_WASHER.applyToBuilder(builder)
+              .defineInRange("chemicalWasher", 5, 0, Integer.MAX_VALUE));
+        chemicalCrystallizer = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CRYSTALLIZER.applyToBuilder(builder)
+              .defineInRange("chemicalCrystallizer", 15, 0, Integer.MAX_VALUE));
+        seismicVibrator = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_VIBRATOR.applyToBuilder(builder)
+              .defineInRange("seismicVibrator", 5, 0, Integer.MAX_VALUE));
+        pressurizedReactionBase = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PRC.applyToBuilder(builder)
+              .defineInRange("pressurizedReactionBase", 2, 0, Integer.MAX_VALUE));
+        fluidicPlenisher = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PLENISHER.applyToBuilder(builder)
+              .defineInRange("fluidicPlenisher", 2, 0, Integer.MAX_VALUE));
+        laser = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_LASER.applyToBuilder(builder)
+              .defineInRange("laser", 20, 0, Integer.MAX_VALUE));
+        formulaicAssemblicator = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_ASSEMBLICATOR.applyToBuilder(builder)
+              .defineInRange("formulaicAssemblicator", 5, 0, Integer.MAX_VALUE));
+        modificationStation = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_MODIFICATION_STATION.applyToBuilder(builder)
+              .defineInRange("modificationStation", 10, 0, Integer.MAX_VALUE));
+        isotopicCentrifuge = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_CENTRIFUGE.applyToBuilder(builder)
+              .defineInRange("isotopicCentrifuge", 8, 0, Integer.MAX_VALUE));
+        nutritionalLiquifier = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_LIQUIFIER.applyToBuilder(builder)
+              .defineInRange("nutritionalLiquifier", 8, 0, Integer.MAX_VALUE));
+        antiprotonicNucleosynthesizer = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_NUCLEOSYNTHESIZER.applyToBuilder(builder)
+              .defineInRange("antiprotonicNucleosynthesizer", 15, 0, Integer.MAX_VALUE));
+        pigmentExtractor = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_EXTRACTOR.applyToBuilder(builder)
+              .defineInRange("pigmentExtractor", 5, 0, Integer.MAX_VALUE));
+        pigmentMixer = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_MIXER.applyToBuilder(builder)
+              .defineInRange("pigmentMixer", 5, 0, Integer.MAX_VALUE));
+        paintingMachine = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_PAINTING.applyToBuilder(builder)
+              .defineInRange("paintingMachine", 5, 0, Integer.MAX_VALUE));
+        dimensionalStabilizer = CachedIntValue.wrap(this, MekanismConfigTranslations.ENERGY_USAGE_DIMENSIONAL_STABILIZER.applyToBuilder(builder)
+              .defineInRange("dimensionalStabilizer", 15, 0, Integer.MAX_VALUE));
         randomizedConsumption = CachedBooleanValue.wrap(this, MekanismConfigTranslations.SECONDARY_CHEMICAL_USAGE_RANDOMIZED.applyToBuilder(builder)
               .worldRestart()
               .define("randomizedConsumption", true));
 
         MekanismConfigTranslations.USAGE_TELEPORTER.applyToBuilder(builder).push("teleporter");
-        teleporterBase = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_BASE, "base", 100L);
-        teleporterDistance = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_DISTANCE, "distance", 2L);
-        teleporterDimensionPenalty = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_PENALTY, "dimensionPenalty", 1000L);
+        teleporterBase = CachedIntValue.wrap(this, MekanismConfigTranslations.USAGE_TELEPORTER_BASE.applyToBuilder(builder)
+              .defineInRange("base", 100, 0, Integer.MAX_VALUE));
+        teleporterDistance = CachedIntValue.wrap(this, MekanismConfigTranslations.USAGE_TELEPORTER_DISTANCE.applyToBuilder(builder)
+              .defineInRange("distance", 2, 0, Integer.MAX_VALUE));
+        teleporterDimensionPenalty = CachedIntValue.wrap(this, MekanismConfigTranslations.USAGE_TELEPORTER_PENALTY.applyToBuilder(builder)
+              .defineInRange("dimensionPenalty", 1000, 0, Integer.MAX_VALUE));
         builder.pop();
 
         configSpec = builder.build();

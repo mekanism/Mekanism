@@ -68,9 +68,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public int inputProcessed = 0;
 
-    public long receivedEnergy = 0;
+    public int receivedEnergy = 0;
     @ContainerSync
-    public long lastReceivedEnergy = 0;
+    public int lastReceivedEnergy = 0;
     @ContainerSync
     public double lastProcessed;
 
@@ -101,7 +101,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         boolean needsPacket = super.tick(world);
         double processed = 0;
         couldOperate = canOperate();
-        if (couldOperate && receivedEnergy > 0L) {
+        if (couldOperate && receivedEnergy > 0) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(outputTank.resource()) - 1);
@@ -134,7 +134,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), outputTank, null);
         }
         lastReceivedEnergy = receivedEnergy;
-        receivedEnergy = 0L;
+        receivedEnergy = 0;
         lastProcessed = processed;
 
         kill(world);
@@ -158,7 +158,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
         coilData.read(input);
-        lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        lastReceivedEnergy = input.getIntOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
         lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
@@ -166,7 +166,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void writeUpdateTag(@NotNull ValueOutput output) {
         super.writeUpdateTag(output);
         coilData.write(output);
-        output.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        output.putInt(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
         output.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
@@ -202,7 +202,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void kill(ServerLevel world) {
-        if (lastReceivedEnergy > 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<Entity> entitiesToDie = world.getEntitiesOfClass(Entity.class, deathZone);
             if (!entitiesToDie.isEmpty()) {
                 DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
@@ -253,7 +253,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         coilData.coilMap.put(portPos, new CoilData(portPos, side));
     }
 
-    public void supplyCoilEnergy(TileEntitySPSPort tile, long energy) {
+    public void supplyCoilEnergy(TileEntitySPSPort tile, int energy) {
         receivedEnergy = MathUtils.addClamped(receivedEnergy, energy);
         coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
@@ -262,8 +262,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return !inputTank.isEmpty() && outputTank.getNeededAsLong(outputTank.resource()) > 0;
     }
 
-    private static int getCoilLevel(long energy) {
-        if (energy == 0L) {
+    private static int getCoilLevel(int energy) {
+        if (energy == 0) {
             return 0;
         }
         return 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
@@ -347,7 +347,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             this.side = side;
         }
 
-        private void receiveEnergy(long energy) {
+        private void receiveEnergy(int energy) {
             laserLevel += getCoilLevel(energy);
         }
 

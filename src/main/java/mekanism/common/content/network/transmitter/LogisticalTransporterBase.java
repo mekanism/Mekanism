@@ -28,7 +28,6 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
@@ -105,14 +104,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
 
     @Override
-    protected AbstractAcceptorCache<ResourceHandler<ItemResource>, ?> createAcceptorCache() {
+    protected AcceptorCache<ResourceHandler<ItemResource>> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM.block());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public AcceptorCache<ResourceHandler<ItemResource>> getAcceptorCache() {
-        return (AcceptorCache<ResourceHandler<ItemResource>>) super.getAcceptorCache();
     }
 
     @Override

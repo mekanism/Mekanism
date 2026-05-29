@@ -35,12 +35,12 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 156, 40))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 156, 40))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityModificationStation> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityModificationStation> energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, isDoubleClick) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();

@@ -25,7 +25,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -88,7 +87,6 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (_, _) -> isFormed();
@@ -220,7 +218,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
             }
         }
         if (shouldCache(CacheSubstance.ENERGY)) {
-            for (IEnergyContainer container : getEnergyContainers()) {
+            IEnergyContainer container = getEnergyContainer();
+            if (container != null) {
                 container.setEnergy(Math.min(container.energy(), container.capacity()), null);
             }
         }
@@ -397,10 +396,15 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
     }
 
-    @NotNull
+    @Nullable
+    protected IEnergyContainer energyContainer() {
+        return null;
+    }
+
+    @Nullable
     @Override
-    public List<IEnergyContainer> getEnergyContainers() {
-        return isFormed() || isRemote() ? energyContainers : Collections.emptyList();
+    public IEnergyContainer getEnergyContainer() {
+        return isFormed() || isRemote() ? energyContainer() : null;
     }
 
     @NotNull
@@ -502,6 +506,9 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     }
 
     protected <CACHE, DATA> List<CACHE> getActiveOutputs(List<? extends OutputTarget<CACHE, DATA>> outputs, DATA data) {
+        if (outputs.isEmpty()) {
+            return Collections.emptyList();
+        }
         //TODO: Try to somehow cache which ones can currently output?
         List<CACHE> targets = new ArrayList<>(outputs.size());
         for (OutputTarget<CACHE, DATA> target : outputs) {
@@ -510,14 +517,6 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
             }
         }
         return targets;
-    }
-
-    public record EnergyOutputTarget(BlockEnergyCapabilityCache cache, BooleanSupplier isActive) implements OutputTarget<BlockEnergyCapabilityCache, Void> {
-
-        @Override
-        public boolean canOutput(Void unused) {
-            return isActive.getAsBoolean();
-        }
     }
 
     public record CapabilityOutputTarget<TYPE>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, BooleanSupplier isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, Void> {

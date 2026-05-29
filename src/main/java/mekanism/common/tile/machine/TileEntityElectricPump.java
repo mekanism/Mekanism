@@ -12,7 +12,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
@@ -22,8 +21,10 @@ import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -125,12 +126,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return builder.build();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
     @NotNull
@@ -146,11 +145,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         inputSlot.drainTankIntoSlot(outputSlot);
-        long clientEnergyUsed = 0L;
+        int clientEnergyUsed = 0;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.resource()))) {
-            long energyPerTick = energyContainer.getEnergyPerTick();
+            int energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     if (!activeType.isEmpty()) {
@@ -174,7 +173,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 }
             }
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
@@ -401,7 +400,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    public MachineEnergyContainer<TileEntityElectricPump> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityElectricPump> energyContainer() {
         return energyContainer;
     }
 

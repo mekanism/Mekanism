@@ -43,13 +43,13 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityDimensionalStabilizer> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityDimensionalStabilizer> energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
         int tileChunkX = SectionPos.blockToSectionCoord(tile.getBlockPos().getX());
         int tileChunkZ = SectionPos.blockToSectionCoord(tile.getBlockPos().getZ());
         for (int x = -TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x++) {

@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -31,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,17 +64,17 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 ServerLevel teleWorld = server == null ? null : server.getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
-                    long energyCost;
+                    int energyCost;
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (!player.isCreative()) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand));
+                            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand));
                             if (energyHandler == null || EnergyUtils.extractManual(energyHandler, energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
                                 return;
                             }
                         } else {
-                            energyCost = 0L;
+                            energyCost = 0;
                         }
                         //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
                         try {

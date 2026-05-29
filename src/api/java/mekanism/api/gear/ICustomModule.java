@@ -2,7 +2,7 @@ package mekanism.api.gear;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.LongSupplier;
+import java.util.function.IntSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.radial.RadialData;
@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -332,7 +331,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
      * @param energyCost      Energy cost per point of damage reduced.
      */
-    record ModuleDamageAbsorbInfo(@NotNull FloatSupplier absorptionRatio, @NotNull LongSupplier energyCost) {
+    record ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, IntSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.

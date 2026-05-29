@@ -16,7 +16,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public long receiveLaserEnergy(long energy, TransactionContext transaction) {
+    public int receiveLaserEnergy(int energy, TransactionContext transaction) {
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
             multiblock.addTemperatureFromEnergyInput(energy, transaction);

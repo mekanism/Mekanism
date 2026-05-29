@@ -225,7 +225,6 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
             try (Transaction transaction = Transaction.openRoot()) {
                 long current = container.amountAsLong();
                 prevTransferAmount = tickEmit(container.resource(), current, transaction);
-                //TODO - 26.1: Evaluate this
                 container.setContents(container.resource(), current - prevTransferAmount, transaction);
                 transaction.commit();
             }

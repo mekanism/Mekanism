@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -26,7 +25,6 @@ import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -60,6 +58,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -72,13 +71,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
-    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
-    private final LongSupplier energyEjectRate;
+    private final IntSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
     @Nullable//TODO: At some point it would be nice to be able to generify this further
@@ -99,11 +97,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this(tile, chemicalEjectRate, fluidEjectRate, null);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier energyEjectRate, boolean energyMarker) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier energyEjectRate, boolean energyMarker) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable IntSupplier energyEjectRate) {
         this.tile = tile;
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
@@ -198,10 +196,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                                 }
                             }
                             case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
-                                for (IEnergyContainer container : energySlotInfo.getContainers()) {
-                                    if (!container.isEmpty()) {
-                                        addData(outputData, container, outputSides);
-                                    }
+                                IEnergyContainer energyContainer = energySlotInfo.getContainer();
+                                if (energyContainer != null) {
+                                    addData(outputData, energyContainer, outputSides);
                                 }
                             }
                             default -> {
@@ -214,7 +211,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         if (outputData != null && !outputData.isEmpty()) {
             ServerLevel level = (ServerLevel) tile.getLevel();
             BlockPos pos = tile.getBlockPos();
-            Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
+            Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, _ -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
                 switch (type) {
@@ -222,16 +219,16 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     case FLUID -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.FLUID, fluidEjectRate);
                     case ENERGY -> {
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                        List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
+                        List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches = new ArrayList<>(sides.size());
                         for (Direction side : sides) {
-                            BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
+                            BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache = (BlockCapabilityCache<EnergyHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
                             if (cache == null) {
-                                cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
-                                energyCapabilityCache.put(side, cache);
+                                cache = Capabilities.ENERGY.createCache(level, pos.relative(side), side.getOpposite());
+                                typeCapabilityCaches.put(side, cache);
                             }
                             caches.add(cache);
                         }
-                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.capacity() : energyEjectRate.getAsLong(), null);
+                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.energyAsInt() : energyEjectRate.getAsInt(), null);
                     }
                 }
             }

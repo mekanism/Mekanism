@@ -10,7 +10,6 @@ import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
-import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +31,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ResourceHandler<ItemResource>> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ResourceHandler<FluidResource>> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, EnergyHandler> ENERGY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ENERGY.block());
 
     public static <CAP> ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, CAP> basicCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
         return (tile, context) -> {
@@ -60,8 +61,8 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         super(type, pos, state);
     }
 
-    protected final void addCapabilityResolvers(List<ICapabilityHandlerManager<?>> capabilityHandlerManagers) {
-        for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
+    protected final void addCapabilityResolvers(List<ICapabilityResolver<@Nullable Direction>> capabilityHandlerManagers) {
+        for (ICapabilityResolver<@Nullable Direction> capabilityHandlerManager : capabilityHandlerManagers) {
             //Add all managers that we support in our tile, as capability resolvers
             capabilityCache.addCapabilityResolver(capabilityHandlerManager);
         }
@@ -119,13 +120,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     public final void invalidateCapabilityAll(@NotNull BlockCapability<?, @Nullable Direction> capability) {
         capabilityCache.invalidateAll(capability);
-        invalidateCapabilities();
-    }
-
-    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, @Nullable Direction side) {
-        for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
-            capabilityCache.invalidate(capability, side);
-        }
         invalidateCapabilities();
     }
 

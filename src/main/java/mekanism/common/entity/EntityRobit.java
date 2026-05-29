@@ -17,7 +17,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.energy.IMekanismEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -90,6 +90,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -126,7 +127,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStrictEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
@@ -267,8 +268,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
-    private long getRoundedTravelEnergy() {
-        return MathUtils.ceilToLong(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
+    private int getRoundedTravelEnergy() {
+        return Mth.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 
     @Override
@@ -334,7 +335,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
                 goHome();
             }
 
-            energySlot.fillContainerOrConvert();
+            energySlot.fillContainerOrConvert(null);
             recipeCacheLookupMonitor.updateAndProcess();
 
             if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkinId() == MekanismRobitSkins.BASE) {
@@ -496,7 +497,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
         // and wraps the entire hitting the entity within their transaction?
         try (Transaction transaction = Transaction.openRoot()) {
-            energyContainer.extract(MathUtils.clampToLong(1_000D * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
+            energyContainer.extract(MathUtils.clampToInt(1_000 * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
             transaction.commit();
         }
         //Don't actually allow taking damage to reduce the robit's health
@@ -590,12 +591,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         return inventorySlots;
     }
 
-    @NotNull
-    @Override
-    public List<IEnergyContainer> getContainers() {
-        return energyContainers;
-    }
-
     @Override
     public void onContentsChanged() {
         //TODO: Do we need to save the things? Probably, if not remove the call to here from createNewCachedRecipe
@@ -630,6 +625,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         return findFirstRecipe(inputHandler);
     }
 
+    @Override
     public IEnergyContainer getEnergyContainer() {
         return energyContainer;
     }

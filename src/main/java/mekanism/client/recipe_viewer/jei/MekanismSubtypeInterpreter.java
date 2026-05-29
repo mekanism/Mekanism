@@ -3,13 +3,13 @@ package mekanism.client.recipe_viewer.jei;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,17 +55,12 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        IStrictEnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (energyHandler != null) {
-            for (int container = 0, containers = energyHandler.size(); container < containers; container++) {
-                //TODO: Should we just be storing the amount of stored energy??
-                if (energyHandler.getAmountAsLong(container) >= energyHandler.getCapacityAsLong(container)) {
-                    //Energy container is full
-                    subTypeData = tryAddData(subTypeData, true);
-                } else if (containers > 1) {
-                    //Energy container is not full
-                    subTypeData = tryAddData(subTypeData, false);
-                }
+            //TODO: Should we just be storing the amount of stored energy??
+            if (energyHandler.getAmountAsLong() >= energyHandler.getCapacityAsLong()) {
+                //Energy container is full
+                subTypeData = tryAddData(subTypeData, true);
             }
         }
         return subTypeData;

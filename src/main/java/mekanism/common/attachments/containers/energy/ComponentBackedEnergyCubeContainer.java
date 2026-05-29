@@ -23,13 +23,13 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     private final boolean isCreative;
 
     private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, int containerIndex, EnergyCubeTier tier) {
-        super(attachedAccess, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getMaxEnergy);
+        super(attachedAccess, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
@@ -40,8 +40,8 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

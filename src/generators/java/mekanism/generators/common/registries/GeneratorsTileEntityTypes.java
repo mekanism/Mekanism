@@ -1,7 +1,6 @@
 package mekanism.generators.common.registries;
 
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -109,8 +108,7 @@ public class GeneratorsTileEntityTypes {
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-          .without(Capabilities.CHEMICAL.block(), Capabilities.FLUID.block(), Capabilities.HEAT)
-          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
+          .without(Capabilities.CHEMICAL.block(), Capabilities.FLUID.block(), Capabilities.ENERGY.block(), Capabilities.HEAT)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorBlock::new)

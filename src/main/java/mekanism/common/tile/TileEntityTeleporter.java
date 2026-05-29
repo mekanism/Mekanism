@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
@@ -20,7 +21,6 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -32,8 +32,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -135,12 +136,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         cacheCoord();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return _ -> energyContainer;
     }
 
     @NotNull
@@ -217,7 +216,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             sendUpdatePacket = true;
         }
         teleDelay = Math.max(0, teleDelay - 1);
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         return sendUpdatePacket;
     }
 
@@ -284,10 +283,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
         }
         List<Entity> toTeleport = getToTeleport(sameDimension, targetWorld);
-        long sum = 0;
+        int sum = 0;
         for (Entity entity : toTeleport) {
-            long cost = calculateEnergyCost(entity, targetWorld, closestCoords);
-            long r = sum + cost;
+            int cost = calculateEnergyCost(entity, targetWorld, closestCoords);
+            int r = sum + cost;
             // HD 2-12 Overflow iff both arguments have the opposite sign of the result
             if (((sum ^ r) & (cost ^ r)) < 0) {
                 return NOT_ENOUGH_ENERGY;
@@ -352,7 +351,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     //Calculate energy cost before teleporting the entity, as after teleporting it
                     // the cost will be negligible due to being on top of the destination
-                    long energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+                    int energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
                     if (energyContainer.extract(energyCost, subTransaction, AutomationType.INTERNAL) < energyCost) {
                         //Failed to extract the energy we need for this action that we simulated we would have, skip teleporting this entity stack
                         continue;
@@ -477,7 +476,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      *
      * @apiNote Only call from the server side
      */
-    public static long calculateEnergyCost(Entity entity, GlobalPos pos) {
+    public static int calculateEnergyCost(Entity entity, GlobalPos pos) {
         if (entity.level() instanceof ServerLevel level) {
             Level targetWorld = level.getServer().getLevel(pos.dimension());
             if (targetWorld != null) {
@@ -487,12 +486,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return -1;
     }
 
-    public static long calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
-        long energyCost = MekanismConfig.usage.teleporterBase.get();
+    public static int calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
         boolean sameDimension = entity.level().dimension() == coords.dimension();
         BlockPos pos = coords.pos();
+        long distanceCost;
         if (sameDimension) {
-            energyCost += Math.round(MekanismConfig.usage.teleporterDistance.get() * Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())));
+            distanceCost = Math.round(MekanismConfig.usage.teleporterDistance.get() * Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
@@ -515,8 +514,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 zDifference = entity.getZ() - pos.getZ() * inverseScale;
             }
             double distance = Mth.length(xDifference, yDifference, zDifference);
-            energyCost += MekanismConfig.usage.teleporterDimensionPenalty.get() + Math.round(MekanismConfig.usage.teleporterDistance.get() * distance);
+            distanceCost = MekanismConfig.usage.teleporterDimensionPenalty.get() + Math.round(MekanismConfig.usage.teleporterDistance.get() * distance);
         }
+        int energyCost = MathUtils.addClamped(MekanismConfig.usage.teleporterBase.get(), Ints.saturatedCast(distanceCost));
         //Factor the number of passengers of this entity into the teleportation energy cost
         Set<Entity> passengers = new HashSet<>();
         fillIndirectPassengers(entity, sameDimension, targetWorld, passengers);
@@ -666,7 +666,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return getRedstoneLevel();
     }
 
-    public MachineEnergyContainer<TileEntityTeleporter> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityTeleporter> energyContainer() {
         return energyContainer;
     }
 

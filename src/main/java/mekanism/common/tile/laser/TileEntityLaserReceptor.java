@@ -15,7 +15,7 @@ public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser imple
     }
 
     @Override
-    public long receiveLaserEnergy(long energy, TransactionContext transaction) {
+    public int receiveLaserEnergy(int energy, TransactionContext transaction) {
         return energyContainer.insert(energy, transaction, AutomationType.INTERNAL);
     }
 

@@ -1,6 +1,5 @@
 package mekanism.api.recipes.cache;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -56,7 +54,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to doing nothing.
      */
-    private BooleanConsumer setActive = active -> {
+    private BooleanConsumer setActive = _ -> {
     };
 
     /**
@@ -78,13 +76,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to not requiring any energy.
      */
-    private LongSupplier perTickEnergy = ConstantPredicates.ZERO_LONG;
+    private IntSupplier perTickEnergy = ConstantPredicates.ZERO;
     /**
      * Gets the energy currently stored in the machine/object executing this {@link CachedRecipe}.
      *
      * @implNote Defaults to returning no energy stored.
      */
-    private LongSupplier storedEnergy = ConstantPredicates.ZERO_LONG;
+    private IntSupplier storedEnergy = ConstantPredicates.ZERO;
     /**
      * Called to consume energy and get how much was actually consumed.
      *
@@ -103,14 +101,14 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to doing nothing.
      */
-    private Consumer<OperationTracker> postProcessOperations = tracker -> {
+    private Consumer<OperationTracker> postProcessOperations = _ -> {
     };
     /**
      * Called when the errors for this cached recipe changes.
      *
      * @implNote Defaults to doing nothing.
      */
-    private Consumer<Set<RecipeError>> onErrorsChange = errors -> {
+    private Consumer<Set<RecipeError>> onErrorsChange = _ -> {
     };
 
     /**
@@ -123,7 +121,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to doing nothing.
      */
-    private IntConsumer operatingTicksChanged = ticks -> {
+    private IntConsumer operatingTicksChanged = _ -> {
     };
 
     /**
@@ -175,13 +173,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @apiNote If this method is not used, this {@link CachedRecipe} defaults to not requiring or using any energy.
      */
-    public CachedRecipe<RECIPE> setEnergyRequirements(LongSupplier perTickEnergy, IEnergyContainer energyContainer) {
+    public CachedRecipe<RECIPE> setEnergyRequirements(IntSupplier perTickEnergy, IEnergyContainer energyContainer) {
         //TODO: Re-evaluate if we want to change this to a system similar to the InputHandler, so that we can simulate extracting energy
         // from our container, it likely is not worth it as if we make the assumption we can extract all stored energy it cuts down on
         // processing. If we move the energy requirement checks to after checking about inputs it may become worthwhile
         this.perTickEnergy = Objects.requireNonNull(perTickEnergy, "The per tick energy cannot be null.");
         Objects.requireNonNull(energyContainer, "Energy container cannot be null.");
-        this.storedEnergy = energyContainer::energy;
+        this.storedEnergy = energyContainer::energyAsInt;
         this.energyUsage = (energy, transaction) -> energyContainer.extract(energy, transaction, AutomationType.INTERNAL);
         return this;
     }
@@ -433,7 +431,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      * @return {@code true} if enough energy was used.
      */
     protected boolean useEnergy(int operations, TransactionContext transaction) {
-        long energy = perTickEnergy.getAsLong();
+        int energy = perTickEnergy.getAsInt();
         if (this.multipleOperationsCost) {
             //Note: We know this shouldn't overflow, as we clamped the operations based on energy usage in calculateOperationsThisTick
             energy *= operations;
@@ -453,15 +451,15 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      */
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         if (tracker.shouldContinueChecking()) {
-            long energyPerTick = perTickEnergy.getAsLong();
+            int energyPerTick = perTickEnergy.getAsInt();
             //If we don't have an energy requirement, don't bother lowering the number of operations
             if (energyPerTick > 0) {
                 int operations;
                 try (Transaction simulation = tracker.openSimulation()) {
                     //Validate how much energy we are able to extract from the stored value
-                    long availableEnergy = energyUsage.useEnergy(storedEnergy.getAsLong(), simulation);
+                    int availableEnergy = energyUsage.useEnergy(storedEnergy.getAsInt(), simulation);
                     //Make sure we don't have any integer overflow in calculating how much we have room for
-                    operations = Ints.saturatedCast(availableEnergy / energyPerTick);
+                    operations = availableEnergy / energyPerTick;
                 }
                 //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
                 // operation count due to energy
@@ -510,7 +508,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
         /// @param transaction The transaction that this operation is part of.
         ///
         /// @return amount of energy used
-        long useEnergy(long energyToUse, TransactionContext transaction);
+        int useEnergy(int energyToUse, TransactionContext transaction);
     }
 
     /**

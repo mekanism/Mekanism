@@ -2,6 +2,7 @@ package mekanism.api.functions;
 
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -29,6 +30,12 @@ public class ConstantPredicates {
      * @since 10.6.6
      */
     public static final LongSupplier ZERO_LONG = () -> 0;
+    /**
+     * A supplier that returns {@code 0L}.
+     *
+     * @since 10.8.0
+     */
+    public static final IntSupplier ZERO = () -> 0;
 
     private static final Predicate<Object> alwaysTrue = t -> true;
     private static final BiPredicate<Object, Object> alwaysTrueBi = (t, u) -> true;

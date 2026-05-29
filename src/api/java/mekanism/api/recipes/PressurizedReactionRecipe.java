@@ -61,8 +61,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public abstract long getEnergyRequired();
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public abstract int getEnergyRequired();
 
     /**
      * Gets the base duration in ticks that this recipe takes to complete.

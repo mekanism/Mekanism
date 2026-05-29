@@ -3,14 +3,15 @@ package mekanism.common.util;
 import java.util.Collection;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.energy.IMekanismEnergyHandler;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
-import mekanism.common.integration.energy.EnergyCompatUtils;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -21,29 +22,29 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     private EnergyUtils() {
     }
 
-    public static long extractManual(IStrictEnergyHandler handler, long amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismStrictEnergyHandler mekHandler) {
+    public static int extractManual(EnergyHandler handler, int amount, TransactionContext transaction) {
+        if (handler instanceof IMekanismEnergyHandler mekHandler) {
             //Ensure droppers use the manual automation type
             return mekHandler.extract(amount, transaction, AutomationType.MANUAL);
         }
         return handler.extract(amount, transaction);
     }
 
-    public static long insertManual(IStrictEnergyHandler handler, long amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismStrictEnergyHandler mekHandler) {
+    public static int insertManual(EnergyHandler handler, int amount, TransactionContext transaction) {
+        if (handler instanceof IMekanismEnergyHandler mekHandler) {
             //Ensure droppers use the manual automation type
             return mekHandler.insert(amount, transaction, AutomationType.MANUAL);
         }
         return handler.insert(amount, transaction);
     }
 
-    public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
-        return emit(targets, energyContainer, energyContainer.capacity(), transaction);
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
+        return emit(targets, energyContainer, energyContainer.energyAsInt(), transaction);
     }
 
-    public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput, @Nullable TransactionContext transaction) {
-        if (!energyContainer.isEmpty() && maxOutput > 0L) {
-            long energyToSend;
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, int maxOutput, @Nullable TransactionContext transaction) {
+        if (!energyContainer.isEmpty() && maxOutput > 0) {
+            int energyToSend;
             try (Transaction simulation = Transaction.open(transaction)) {
                 energyToSend = energyContainer.extract(maxOutput, simulation, AutomationType.INTERNAL);
                 if (energyToSend == 0) {
@@ -53,7 +54,7 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
             }
             try (Transaction subTransaction = Transaction.open(transaction)) {
                 //We won't be able to extract the resource, just fail early
-                long sent = emit(targets, energyToSend, subTransaction);
+                int sent = emit(targets, energyToSend, subTransaction);
                 if (energyContainer.extract(sent, subTransaction, AutomationType.INTERNAL) == sent) {
                     //Validate that we were able to extract the amount we sent. In theory this should always be true
                     subTransaction.commit();
@@ -72,13 +73,13 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
      *
      * @return the amount of energy emitted
      */
-    public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend, @Nullable TransactionContext transaction) {
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, int energyToSend, @Nullable TransactionContext transaction) {
         if (energyToSend <= 0 || targets.isEmpty()) {
             return 0;
         }
         EnergyAcceptorTarget target = null;
-        for (BlockEnergyCapabilityCache capability : targets) {
-            IStrictEnergyHandler handler = capability.getCapability();
+        for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> capability : targets) {
+            EnergyHandler handler = capability.getCapability();
             if (handler != null) {
                 if (target == null) {
                     target = new EnergyAcceptorTarget(targets.size());
@@ -90,9 +91,9 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     /// @return amount transferred
-    public static long chargeContents(IEnergyContainer energyContainer, ResourceHandler<ItemResource> handler, long amount, TransactionContext transaction) {
+    public static int chargeContents(IEnergyContainer energyContainer, ResourceHandler<ItemResource> handler, int amount, TransactionContext transaction) {
         //TODO - 26.1: Docs
-        long charged = 0;
+        int charged = 0;
         for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
             charged += charge(energyContainer, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
             if (charged == amount) {
@@ -103,18 +104,18 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     /// @return amount transferred
-    public static long charge(IEnergyContainer chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {
-        return amount == 0 ? 0 : charge(chargeFrom, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
+    public static int charge(IEnergyContainer chargeFrom, ItemAccess itemAccess, int amount, TransactionContext transaction) {
+        return amount == 0 ? 0 : charge(chargeFrom, Capabilities.ENERGY.getCapability(itemAccess), amount, transaction);
     }
 
     /// @return amount transferred
-    public static long charge(IEnergyContainer chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {
+    public static int charge(IEnergyContainer chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction) {
         return charge(chargeFrom, handlerToCharge, amount, transaction, (container, toExtract, tx) -> container.extract(toExtract, tx, AutomationType.MANUAL));
     }
 
     /// @return amount transferred
-    public static long chargeContents(IStrictEnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, long amount, TransactionContext transaction) {
-        long charged = 0;
+    public static int chargeContents(EnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, int amount, TransactionContext transaction) {
+        int charged = 0;
         for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
             charged += charge(chargeFrom, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
             if (charged == amount) {
@@ -125,22 +126,22 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     /// @return amount transferred
-    public static long charge(IStrictEnergyHandler chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {
-        return amount == 0 ? 0 : charge(chargeFrom, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
+    public static int charge(EnergyHandler chargeFrom, ItemAccess itemAccess, int amount, TransactionContext transaction) {
+        return amount == 0 ? 0 : charge(chargeFrom, Capabilities.ENERGY.getCapability(itemAccess), amount, transaction);
     }
 
     /// @return amount transferred
-    public static long charge(IStrictEnergyHandler chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {
+    public static int charge(EnergyHandler chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction) {
         return charge(chargeFrom, handlerToCharge, amount, transaction, EnergyUtils::extractManual);
     }
 
     /// @return amount transferred
-    private static <CONTAINER> long charge(CONTAINER chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction,
+    private static <CONTAINER> int charge(CONTAINER chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction,
           EnergyExtractor<CONTAINER> extractor) {
         if (amount == 0 || handlerToCharge == null) {
             return 0;
         }
-        long toTransfer;
+        int toTransfer;
         try (Transaction simulation = Transaction.open(transaction)) {
             toTransfer = handlerToCharge.insert(amount, simulation);
             if (toTransfer == 0) {
@@ -149,8 +150,8 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
             }
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            long extracted = extractor.extract(chargeFrom, toTransfer, subTransaction);
-            long inserted = handlerToCharge.insert(extracted, subTransaction);
+            int extracted = extractor.extract(chargeFrom, toTransfer, subTransaction);
+            int inserted = handlerToCharge.insert(extracted, subTransaction);
             if (inserted == extracted) {
                 subTransaction.commit();
                 return inserted;
@@ -162,6 +163,6 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     @FunctionalInterface
     private interface EnergyExtractor<CONTAINER> {
 
-        long extract(CONTAINER container, long amount, TransactionContext transaction);
+        int extract(CONTAINER container, int amount, TransactionContext transaction);
     }
 }

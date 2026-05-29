@@ -24,7 +24,8 @@ public class ProbeConfigProvider implements IProbeConfigProvider {
     @Override
     public void getProbeConfig(IProbeConfig config, Player player, Level world, BlockState blockState, IProbeHitData data) {
         BlockEntity tile = WorldUtils.getTileEntity(world, data.getPos());
-        if (Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(world, data.getPos(), null, tile, null) != null) {
+        //TODO - 26.1: Make this only either be an instance check or check if it is a mek block
+        if (Capabilities.ENERGY.getCapabilityIfLoaded(world, data.getPos(), null, tile, null) != null) {
             config.setRFMode(0);
         }
         if (tile instanceof TileEntityUpdateable) {

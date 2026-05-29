@@ -5,7 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.common.capabilities.holder.IHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -13,16 +13,16 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandler implements ResourceHandler<RESOURCE> {
+public class ProxyResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends ProxyHandler<IContainerHolder<CONTAINER>> implements ResourceHandler<RESOURCE> {
 
-    private final IMekanismResourceHandler<RESOURCE, ?> handler;
+    private final IMekanismResourceHandler<RESOURCE, CONTAINER> handler;
 
-    public ProxyResourceHandler(IMekanismResourceHandler<RESOURCE, ?> handler, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyResourceHandler(IMekanismResourceHandler<RESOURCE, CONTAINER> handler, @Nullable Direction side, @Nullable IContainerHolder<CONTAINER> holder) {
         super(side, holder);
         this.handler = handler;
     }
 
-    public List<? extends IResourceContainer<RESOURCE>> getProxiedContainers() {
+    public List<CONTAINER> getProxiedContainers() {
         return handler.getContainers();
     }
 

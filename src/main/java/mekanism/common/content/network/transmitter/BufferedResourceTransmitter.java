@@ -66,12 +66,6 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         return getTier().getCapacity();
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public AcceptorCache<ResourceHandler<RESOURCE>> getAcceptorCache() {
-        return (AcceptorCache<ResourceHandler<RESOURCE>>) super.getAcceptorCache();
-    }
-
     public RESOURCE getCurrentSaveType() {
         return saveShare.resource();
     }

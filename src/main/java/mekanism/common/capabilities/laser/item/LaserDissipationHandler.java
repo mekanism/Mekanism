@@ -4,7 +4,7 @@ import mekanism.api.lasers.ILaserDissipation;
 
 public class LaserDissipationHandler implements ILaserDissipation {
 
-    public static LaserDissipationHandler create(double dissipationPercent, double refractionPercent) {
+    public static LaserDissipationHandler create(float dissipationPercent, float refractionPercent) {
         if (dissipationPercent < 0 || dissipationPercent > 1) {
             throw new IllegalArgumentException("Dissipation percent must be between zero and one inclusive");
         }
@@ -14,21 +14,21 @@ public class LaserDissipationHandler implements ILaserDissipation {
         return new LaserDissipationHandler(dissipationPercent, refractionPercent);
     }
 
-    private final double dissipationPercent;
-    private final double refractionPercent;
+    private final float dissipationPercent;
+    private final float refractionPercent;
 
-    private LaserDissipationHandler(double dissipationPercent, double refractionPercent) {
+    private LaserDissipationHandler(float dissipationPercent, float refractionPercent) {
         this.dissipationPercent = dissipationPercent;
         this.refractionPercent = refractionPercent;
     }
 
     @Override
-    public double getDissipationPercent() {
+    public float getDissipationPercent() {
         return dissipationPercent;
     }
 
     @Override
-    public double getRefractionPercent() {
+    public float getRefractionPercent() {
         return refractionPercent;
     }
 }

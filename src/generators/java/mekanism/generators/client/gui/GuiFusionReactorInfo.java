@@ -39,7 +39,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
               .setTooltip(TooltipUtils.BACK);
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),
+            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
         }));
         addRenderableWidget(new GuiHeatTab(this, () -> {

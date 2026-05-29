@@ -157,7 +157,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         }
         long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = capacityAsLong(resource) - currentStored;
+        int needed = Ints.saturatedCast(capacityAsLong(resource) - currentStored);
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0 || !canInsert.test(resource, automationType)) {
@@ -169,7 +169,8 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
             return 0;
         }
-        int toAdd = Math.min(amount, Ints.saturatedCast(needed));
+        int toAdd = Math.min(amount, needed);
+        //Note: We know toAdd is greater than zero, so we can just always call setContents
         setContents(resource, currentStored + toAdd, transaction);
         return toAdd;
     }
@@ -188,7 +189,6 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {
-            //Shrink the stack by the amount removed
             setContents(resource, currentStored - toRemove, transaction);
         }
         return toRemove;

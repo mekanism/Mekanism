@@ -36,7 +36,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 42, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
+            list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
             list.add(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)));
             if (tile.fluidTank.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());
@@ -46,13 +46,13 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             return list;
         }));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 6, 13));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
     }
 
     @Override

@@ -56,7 +56,7 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
 
     private boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module, ItemStack stack, TransactionContext transaction) {
         if (swimBoost && module.getInstalledCount() >= BOOST_STACKS) {
-            long usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
+            int usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
             //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
             return module.useEnergy(null, stack, usage, transaction, false) == usage;
         }

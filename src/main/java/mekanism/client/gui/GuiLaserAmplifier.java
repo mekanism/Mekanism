@@ -12,10 +12,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiSetEnergy;
-import mekanism.common.network.to_server.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -36,8 +33,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        energyGauge = addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergyContainer())))));
+        energyGauge = addRenderableWidget(new GuiEnergyGauge(tile.energyContainer(), GaugeType.STANDARD, this, 6, 10));
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer())))));
         addRenderableWidget(new GuiAmplifierTab(this, tile));
         timerField = addRenderableWidget(new GuiTextField(this, 96, 28, 36, 11));
         timerField.setMaxLength(4);
@@ -70,21 +67,21 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private long parseLong(GuiTextField textField) throws NumberFormatException {
+    //TODO - 26.1: Should we just make this be Integer.parseInt without any handling for E?
+    private int parseInt(GuiTextField textField) throws NumberFormatException {
         String text = textField.getText();
         if (text.contains("E")) {
             //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
             // we parse it as a floating long, ideally we could skip the big decimal side of things
             text = new BigDecimal(text).toPlainString();
         }
-        return Math.max(0L, Long.parseLong(text));
+        return Math.max(0, Integer.parseInt(text));
     }
 
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
-                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseLong(minField))));
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.MIN_THRESHOLD, tile.getBlockPos(), parseInt(minField)));
             } catch (NumberFormatException ignored) {
             }
             minField.setText("");
@@ -94,8 +91,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
             try {
-                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseLong(maxField))));
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.MAX_THRESHOLD, tile.getBlockPos(), parseInt(maxField)));
             } catch (NumberFormatException ignored) {
             }
             maxField.setText("");

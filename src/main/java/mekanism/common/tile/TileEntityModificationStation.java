@@ -2,15 +2,15 @@ package mekanism.common.tile;
 
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
@@ -38,6 +38,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
@@ -58,15 +59,13 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         super(MekanismBlocks.MODIFICATION_STATION, pos, state);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
-    public MachineEnergyContainer<TileEntityModificationStation> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityModificationStation> energyContainer() {
         return energyContainer;
     }
 
@@ -86,12 +85,12 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
-        long clientEnergyUsed = 0L;
+        energySlot.fillContainerOrConvert(null);
+        int clientEnergyUsed = 0;
         if (canFunction()) {
             boolean operated = false;
             if (!moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                long energyPerTick = energyContainer.getEnergyPerTick();
+                int energyPerTick = energyContainer.getEnergyPerTick();
                 try (Transaction transaction = Transaction.openRoot()) {
                     if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                         ItemResource moduleResource = moduleSlot.resource();
@@ -131,7 +130,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 operatingTicks = 0;
             }
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 

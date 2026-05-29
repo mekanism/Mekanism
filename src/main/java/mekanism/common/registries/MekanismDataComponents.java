@@ -163,10 +163,10 @@ public class MekanismDataComponents {
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DELAY = DATA_COMPONENTS.registerInt("delay");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MIN_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("min_threshold");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MAX_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("max_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MIN_THRESHOLD = DATA_COMPONENTS.registerNonNegativeInt("min_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MAX_THRESHOLD = DATA_COMPONENTS.registerNonNegativeInt("max_threshold");
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeLong("energy_usage");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeInt("energy_usage");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ItemResource>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",

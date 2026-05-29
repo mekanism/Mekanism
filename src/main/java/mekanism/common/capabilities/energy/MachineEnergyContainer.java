@@ -23,12 +23,12 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(electricBlock.getUsage() * 4, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
+        return new MachineEnergyContainer<>(4L * electricBlock.getUsage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
     }
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(electricBlock.getUsage() * 4, electricBlock.getUsage(), internalOnly, internalOnly, tile, listener);
+        return new MachineEnergyContainer<>(4L * electricBlock.getUsage(), electricBlock.getUsage(), internalOnly, internalOnly, tile, listener);
     }
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
@@ -41,11 +41,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     protected final TILE tile;
-    private final long baseEnergyPerTick;
+    private final int baseEnergyPerTick;
     private long currentMaxEnergy;
-    protected long currentEnergyPerTick;
+    protected int currentEnergyPerTick;
 
-    protected MachineEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, listener);
         this.baseEnergyPerTick = energyPerTick;
@@ -79,15 +79,15 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         setEnergy(energy(), null);
     }
 
-    public long getEnergyPerTick() {
+    public int getEnergyPerTick() {
         return currentEnergyPerTick;
     }
 
-    public long getBaseEnergyPerTick() {
+    public int getBaseEnergyPerTick() {
         return baseEnergyPerTick;
     }
 
-    public void setEnergyPerTick(long energyPerTick) {
+    public void setEnergyPerTick(int energyPerTick) {
         this.currentEnergyPerTick = energyPerTick;
     }
 
@@ -100,7 +100,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
             if (tile instanceof TileEntityFactory<?> factory) {
                 bufferMultipler = factory.tier.processes * bufferMultipler;
             }
-            setMaxEnergy(getEnergyPerTick() * bufferMultipler);
+            setMaxEnergy(getEnergyPerTick() * (long) bufferMultipler);
         } else if (tile.supportsUpgrade(Upgrade.ENERGY)) {
             setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
         }

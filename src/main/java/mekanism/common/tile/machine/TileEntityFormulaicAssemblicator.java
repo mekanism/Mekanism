@@ -15,7 +15,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
@@ -23,8 +22,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -123,12 +124,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
@@ -223,7 +222,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             //Mark as no longer needing to organize after organizing it so that it rearranging things doesn't cause it to organize again
             needsOrganize = false;
         }
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         if (getControlType() != RedstoneControl.PULSE) {
             pulseOperations = 0;
         } else if (canFunction()) {
@@ -234,7 +233,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
-        long clientEnergyUsed = 0L;
+        int clientEnergyUsed = 0;
         if (autoMode && !formula.isEmpty() && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -250,7 +249,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                 } else {
-                    long energyPerTick = energyContainer.getEnergyPerTick();
+                    int energyPerTick = energyContainer.getEnergyPerTick();
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                             clientEnergyUsed = energyPerTick;
@@ -265,7 +264,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 
@@ -735,7 +734,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer() {
         return energyContainer;
     }
 

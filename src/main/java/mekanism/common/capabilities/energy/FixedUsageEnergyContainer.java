@@ -5,7 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.functions.LongObjectToLongFunction;
+import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import org.jetbrains.annotations.NotNull;
@@ -14,23 +14,23 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends MachineEnergyContainer<TILE> {
 
-    public static <TILE extends TileEntityMekanism> FixedUsageEnergyContainer<TILE> input(TILE tile, LongObjectToLongFunction<TILE> baseEnergyCalculator,
+    public static <TILE extends TileEntityMekanism> FixedUsageEnergyContainer<TILE> input(TILE tile, IntObjectToIntFunction<TILE> baseEnergyCalculator,
           @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new FixedUsageEnergyContainer<>(electricBlock.getUsage() * 4, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
+        return new FixedUsageEnergyContainer<>(4L * electricBlock.getUsage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
     }
 
-    private final LongObjectToLongFunction<TILE> baseEnergyCalculator;
+    private final IntObjectToIntFunction<TILE> baseEnergyCalculator;
 
-    protected FixedUsageEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, TILE tile, LongObjectToLongFunction<TILE> baseEnergyCalculator, @Nullable IContentsListener listener) {
+    protected FixedUsageEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+          Predicate<@NotNull AutomationType> canInsert, TILE tile, IntObjectToIntFunction<TILE> baseEnergyCalculator, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
         this.baseEnergyCalculator = baseEnergyCalculator;
     }
 
     @Override
-    public long getBaseEnergyPerTick() {
-        return baseEnergyCalculator.applyAsLong(super.getBaseEnergyPerTick(), tile);
+    public int getBaseEnergyPerTick() {
+        return baseEnergyCalculator.applyAsInt(super.getBaseEnergyPerTick(), tile);
     }
 
     @Override

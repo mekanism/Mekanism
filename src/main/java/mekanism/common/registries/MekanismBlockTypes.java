@@ -906,7 +906,7 @@ public class MekanismBlockTypes {
     private static <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
               .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
-              .withEnergyConfig(tier::getMaxEnergy)
+              .withEnergyConfig(tier::getCapacity)
               .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateProperties.FACING))
               .withSideConfig(TransmissionType.ENERGY, TransmissionType.ITEM)
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)

@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.holder;
+package mekanism.common.capabilities.holder.container;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OverridingHolder<CONTAINER> extends BasicHolder<CONTAINER> {
+public class OverridingHolder<CONTAINER> extends BasicContainerHolder<CONTAINER> {
 
     private final Map<RelativeSide, List<CONTAINER>> sideOverrides = new EnumMap<>(RelativeSide.class);
 

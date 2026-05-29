@@ -13,7 +13,6 @@ import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleChemicalTransmitterValidator;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -35,7 +34,7 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     }
 
     @Override
-    protected AbstractAcceptorCache<ResourceHandler<ChemicalResource>, ?> createAcceptorCache() {
+    protected AcceptorCache<ResourceHandler<ChemicalResource>> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL.block());
     }
 

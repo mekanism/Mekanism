@@ -1,36 +1,4 @@
 {
-  "API Global: computerEnergyHelper": [
-    {
-      "description": "Convert Forge Energy to Mekanism Joules",
-      "methodName": "feToJoules",
-      "params": [
-        {
-          "type": "Number (long)",
-          "java_type": "long",
-          "name": "fe"
-        }
-      ],
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Convert Mekanism Joules to Forge Energy",
-      "methodName": "joulesToFE",
-      "params": [
-        {
-          "type": "Number (long)",
-          "java_type": "long",
-          "name": "joules"
-        }
-      ],
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    }
-  ],
   "API Global: computerFilterHelper": [
     {
       "description": "Create a Digital Miner Item Filter from an Item name",
@@ -3563,8 +3531,8 @@
     {
       "methodName": "getBurnRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -3621,8 +3589,8 @@
       "description": "Get the amount of energy produced by this generator in the last tick.",
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     }
   ],
@@ -4094,15 +4062,15 @@
     {
       "methodName": "getMaxThreshold",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMinThreshold",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -4127,8 +4095,8 @@
       "methodName": "setMaxThreshold",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "threshold"
         }
       ],
@@ -4138,8 +4106,8 @@
       "methodName": "setMinThreshold",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "threshold"
         }
       ],
@@ -5963,8 +5931,8 @@
     {
       "methodName": "getEnergyUsed",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -5993,8 +5961,8 @@
       "methodName": "setEnergyUsage",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "usage"
         }
       ],

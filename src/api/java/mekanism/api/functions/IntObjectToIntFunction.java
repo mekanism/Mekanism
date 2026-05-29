@@ -3,16 +3,16 @@ package mekanism.api.functions;
 import java.util.function.BiFunction;
 
 /**
- * Represents a function that accepts two arguments and produces a long-valued result. This is the {@code long}-producing primitive specialization for
+ * Represents a function that accepts two arguments and produces a int-valued result. This is the {@code int}-producing primitive specialization for
  * {@link BiFunction}.
  *
  * @param <U> the type of the second argument to the function
  *
- * @see java.util.function.ToLongBiFunction
- * @since 10.6.6
+ * @see java.util.function.ToIntBiFunction
+ * @since 10.8.0
  */
 @FunctionalInterface
-public interface LongObjectToLongFunction<U> {
+public interface IntObjectToIntFunction<U> {
 
     /**
      * Applies this function to the given arguments.
@@ -22,5 +22,5 @@ public interface LongObjectToLongFunction<U> {
      *
      * @return the function result
      */
-    long applyAsLong(long t, U u);
+    int applyAsInt(int t, U u);
 }

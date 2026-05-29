@@ -5,19 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.LongSupplier;
+import java.util.function.IntSupplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -75,6 +73,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
@@ -92,8 +91,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private final List<GenericTankSpec<FluidResource>> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
-    private final double laserDissipation;
-    private final double laserRefraction;
+    private final float laserDissipation;
+    private final float laserRefraction;
     private final ArmorType armorType;
 
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
@@ -106,8 +105,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 fluidTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
                       fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), itemType -> hasModule(itemType, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
-                laserDissipation = 0.15;
-                laserRefraction = 0.2;
+                laserDissipation = 0.15F;
+                laserRefraction = 0.2F;
             }
             case CHESTPLATE -> {
                 chemicalTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, itemAccess -> {
@@ -120,18 +119,18 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
                 }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
-                laserDissipation = 0.3;
-                laserRefraction = 0.4;
+                laserDissipation = 0.3F;
+                laserRefraction = 0.4F;
             }
             case LEGGINGS -> {
                 absorption = 0.3F;
-                laserDissipation = 0.1875;
-                laserRefraction = 0.25;
+                laserDissipation = 0.1875F;
+                laserRefraction = 0.25F;
             }
             case BOOTS -> {
                 absorption = 0.15F;
-                laserDissipation = 0.1125;
-                laserRefraction = 0.15;
+                laserDissipation = 0.1125F;
+                laserRefraction = 0.15F;
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
@@ -435,7 +434,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 ItemResource itemType = armorSlots.getResource(slot);
                 if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
                     ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
-                    IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+                    EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
                     if (energyHandler != null) {
                         FoundArmorDetails details = new FoundArmorDetails(energyHandler, armor.absorption);
                         armorDetails.add(details);
@@ -501,13 +500,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
     }
 
-    private static float absorbDamage(IStrictEnergyHandler energyHandler, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost, TransactionContext transaction) {
+    private static float absorbDamage(EnergyHandler energyHandler, float amount, float absorption, float currentAbsorbed, IntSupplier energyCost, TransactionContext transaction) {
         //Cap the amount that we can absorb to how much we have left to absorb
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            long usage = MathUtils.ceilToLong(energyCost.getAsLong() * toAbsorb);
-            if (usage == 0L) {
+            int usage = Mth.ceil(energyCost.getAsInt() * toAbsorb);
+            if (usage == 0) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 return absorption;
@@ -526,6 +525,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private record FoundArmorDetails(IStrictEnergyHandler energyHandler, float armorAbsorption) {
+    private record FoundArmorDetails(EnergyHandler energyHandler, float armorAbsorption) {
     }
 }

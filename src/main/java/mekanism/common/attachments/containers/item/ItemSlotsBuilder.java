@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
@@ -19,9 +18,9 @@ import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -36,6 +35,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
@@ -95,7 +95,7 @@ public class ItemSlotsBuilder {
     };
     //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
     // We also allow energy conversion of items that can be converted
-    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType)) != null || EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
+    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType)) != null || EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
     private static final IBasicContainerCreator<IInventorySlot> FILL_CONVERT_ENERGY_SLOT_CREATOR = (attachedAccess, containerIndex) ->
           new ComponentBackedInventorySlot(attachedAccess, containerIndex, FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT, FILL_CONVERT_ENERGY_SLOT_CAN_INSERT, FILL_CONVERT_ENERGY_SLOT_VALIDATOR);
 
@@ -227,20 +227,20 @@ public class ItemSlotsBuilder {
                 return true;
             }
             //Inversion of the insert check
-            IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
-            if (itemEnergyHandler == null) {
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+            if (energyHandler == null) {
                 return true;
             }
-            return !EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), itemEnergyHandler);
+            return !EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), energyHandler);
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
             }
-            IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(ItemAccessUtils.queryOnlyAccess(itemType));
-            if (itemEnergyHandler == null) {
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+            if (energyHandler == null) {
                 return false;
             }
-            return EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), itemEnergyHandler);
+            return EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), energyHandler);
         }, EnergyInventorySlot.HAS_ENERGY_HANDLER));
     }
 

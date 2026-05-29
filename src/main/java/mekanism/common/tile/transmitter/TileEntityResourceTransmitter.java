@@ -7,7 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.MultiTypeCapability;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.resolver.manager.ResourceHandlerManager;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.integration.computer.IComputerTile;

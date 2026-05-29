@@ -1,5 +1,6 @@
 package mekanism.common.content.network;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
@@ -21,12 +21,13 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener {
+public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener {
 
     //for emit utils
     public static final Void ENERGY = null;
@@ -48,7 +49,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && energyContainer.capacity() != 0L) {
+        if (!energyContainer.isEmpty() && energyContainer.capacity() > 0) {
             currentScale = (float) Math.min(1, ((double) energyContainer.energy() / energyContainer.capacity()));
         } else {
             currentScale = 0;
@@ -80,7 +81,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     public void absorbBuffer(UniversalCable transmitter) {
         long energy = transmitter.releaseShare();
-        if (energy != 0L) {
+        if (energy > 0) {
             energyContainer.setEnergy(energyContainer.energy() + energy, null);
         }
     }
@@ -112,20 +113,20 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             try (Transaction transaction = Transaction.openRoot()) {
                 long current = energyContainer.energy();
                 prevTransferAmount = tickEmit(current, transaction);
-                //TODO - 26.1: Evaluate this
                 energyContainer.setEnergy(current - prevTransferAmount, transaction);
                 transaction.commit();
             }
         }
     }
 
-    private long tickEmit(long energyToSend, TransactionContext transaction) {
-        Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+    private long tickEmit(long amountToSend, TransactionContext transaction) {
+        Collection<Map<Direction, EnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = null;
-        for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
-            for (IStrictEnergyHandler acceptor : acceptors.values()) {
+        int toSendAsInt = Ints.saturatedCast(amountToSend);
+        for (Map<Direction, EnergyHandler> acceptors : acceptorValues) {
+            for (EnergyHandler acceptor : acceptors.values()) {
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    if (acceptor.insert(energyToSend, simulation) > 0) {
+                    if (acceptor.insert(toSendAsInt, simulation) > 0) {
                         if (target == null) {
                             //Lazily initialize the target, which allows us to also skip attempting to start emitting
                             target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
@@ -135,7 +136,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, ENERGY, transaction);
+        return EmitUtils.sendToAcceptors(target, amountToSend, ENERGY, transaction);
     }
 
     @Override

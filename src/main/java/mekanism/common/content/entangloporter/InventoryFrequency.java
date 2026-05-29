@@ -22,7 +22,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -61,6 +60,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -119,7 +119,6 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     private List<IInventorySlot> inventorySlots;
     private List<IChemicalTank> chemicalTanks;
     private List<IFluidTank> fluidTanks;
-    private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
 
     /**
@@ -139,7 +138,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
         chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
-        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
+        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this);
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
               1_000, null, this));
     }
@@ -159,9 +158,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         return fluidTanks;
     }
 
-    @NotNull
-    public List<IEnergyContainer> getEnergyContainers() {
-        return energyContainers;
+    public IEnergyContainer getEnergyContainer() {
+        return storedEnergy;
     }
 
     @NotNull
@@ -261,8 +259,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        long toSend = storedEnergy.extract(storedEnergy.capacity(), simulation, AutomationType.INTERNAL);
-        if (toSend > 0L) {
+        int toSend = storedEnergy.extract(storedEnergy.energyAsInt(), simulation, AutomationType.INTERNAL);
+        if (toSend > 0) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);
@@ -289,12 +287,12 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         void extract(TransactionContext transaction);
     }
 
-    private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements TargetExecution, Consumer<IStrictEnergyHandler> {
+    private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements TargetExecution, Consumer<EnergyHandler> {
 
         private final IEnergyContainer storedEnergy;
-        private final long toSend;
+        private final int toSend;
 
-        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, long toSend) {
+        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, int toSend) {
             super(expectedSize);
             this.storedEnergy = storedEnergy;
             this.toSend = toSend;
@@ -303,7 +301,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         @Override
         public void extract(TransactionContext transaction) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                long sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
+                int sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
                 if (storedEnergy.extract(sent, transaction, AutomationType.INTERNAL) == sent) {
                     //If we were able to extract everything we thought we would be able to and had tried to send
                     // then commit all the changes
@@ -313,7 +311,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         }
 
         @Override
-        public void accept(IStrictEnergyHandler handler) {
+        public void accept(EnergyHandler handler) {
             addHandler(handler);
         }
     }

@@ -462,25 +462,6 @@ enums:
   - WEST
   - EAST
 methods:
-  'API Global: computerEnergyHelper':
-  - description: Convert Forge Energy to Mekanism Joules
-    methodName: feToJoules
-    params:
-    - java_type: long
-      name: fe
-      type: Number (long)
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Convert Mekanism Joules to Forge Energy
-    methodName: joulesToFE
-    params:
-    - java_type: long
-      name: joules
-      type: Number (long)
-    returns:
-      java_type: long
-      type: Number (long)
   'API Global: computerFilterHelper':
   - description: Create a Digital Miner Item Filter from an Item name
     methodName: createMinerItemFilter
@@ -2618,8 +2599,8 @@ methods:
   Gas Generator:
   - methodName: getBurnRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
@@ -2654,8 +2635,8 @@ methods:
   - description: Get the amount of energy produced by this generator in the last tick.
     methodName: getProductionRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   Generic Mekanism Machine:
   - methodName: getComparatorLevel
     restriction: COMPARATOR
@@ -2935,12 +2916,12 @@ methods:
       type: Number (int)
   - methodName: getMaxThreshold
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getMinThreshold
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getRedstoneOutputMode
     returns:
       java_type: mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput
@@ -2953,15 +2934,15 @@ methods:
     requires_public_security: true
   - methodName: setMaxThreshold
     params:
-    - java_type: long
+    - java_type: int
       name: threshold
-      type: Number (long)
+      type: Number (int)
     requires_public_security: true
   - methodName: setMinThreshold
     params:
-    - java_type: long
+    - java_type: int
       name: threshold
-      type: Number (long)
+      type: Number (int)
     requires_public_security: true
   - methodName: setRedstoneOutputMode
     params:
@@ -4050,8 +4031,8 @@ methods:
       type: Number (long)
   - methodName: getEnergyUsed
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getEnvironmentalLoss
     returns:
       java_type: double
@@ -4067,9 +4048,9 @@ methods:
       type: Number (double)
   - methodName: setEnergyUsage
     params:
-    - java_type: long
+    - java_type: int
       name: usage
-      type: Number (long)
+      type: Number (int)
     requires_public_security: true
   Resource Transmitter:
   - methodName: getBuffer

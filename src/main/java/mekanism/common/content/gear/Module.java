@@ -13,7 +13,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -128,18 +128,18 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Nullable
     @Override
     public IEnergyContainer getEnergyContainer(ItemStack stack) {
-        return StorageUtils.getEnergyContainer(stack, 0);
+        return StorageUtils.getEnergyContainer(stack);
     }
 
     @Nullable
     @Override
-    public IStrictEnergyHandler getEnergyHandler(ItemStack stack) {
+    public EnergyHandler getEnergyHandler(ItemStack stack) {
         //TODO - 26.1: Re-evaluate item access
-        return Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        return Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, long energy) {
+    public boolean hasEnoughEnergy(ItemStack stack, int energy) {
         if (energy == 0) {
             return true;
         }
@@ -148,13 +148,13 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction) {
+    public int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction) {
         //TODO - 26.1: Re-evaluate usages of this method, and see if any of them would be worth extracting the looking up the energy handler?
         return useEnergy(wearer, stack, energy, transaction, true);
     }
 
     @Override
-    public long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+    public int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
         if (energy == 0) {
             //If there is no energy requirement skip looking up the energy container
             return 0;
@@ -163,31 +163,31 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public long useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+    public int useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
         if (energyContainer == null) {
-            return 0L;
+            return 0;
         } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
             return energy;
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            long extracted = energyContainer.extract(energy, subTransaction, AutomationType.MANUAL);
+            int extracted = energyContainer.extract(energy, subTransaction, AutomationType.MANUAL);
             subTransaction.commit();
             return extracted;
         }
     }
 
     @Override
-    public long useEnergy(@Nullable LivingEntity wearer, @Nullable IStrictEnergyHandler energyHandler, long energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+    public int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
         if (energyHandler == null) {
-            return 0L;
+            return 0;
         } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
             //TODO - 26.1: Update comment
             return energy;
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            long extracted = EnergyUtils.extractManual(energyHandler,  energy, subTransaction);
+            int extracted = EnergyUtils.extractManual(energyHandler,  energy, subTransaction);
             subTransaction.commit();
             return extracted;
         }

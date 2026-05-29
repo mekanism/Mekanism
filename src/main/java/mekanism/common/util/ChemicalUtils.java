@@ -76,7 +76,7 @@ public class ChemicalUtils {
         return false;
     }
 
-    public static long hydrogenEnergyDensity() {
+    public static int hydrogenEnergyDensity() {
         ChemicalFuel fuel = MekanismChemicals.HYDROGEN.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
         return fuel == null ? 0 : fuel.energyDensity();
     }

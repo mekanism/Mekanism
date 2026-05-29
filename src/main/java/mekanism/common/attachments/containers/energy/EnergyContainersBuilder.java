@@ -2,6 +2,7 @@ package mekanism.common.attachments.containers.energy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -39,12 +40,12 @@ public class EnergyContainersBuilder {
         return addContainer(MEKASUIT);
     }
 
-    public EnergyContainersBuilder addBasic(LongSupplier rate, LongSupplier maxEnergy) {
+    public EnergyContainersBuilder addBasic(IntSupplier rate, LongSupplier maxEnergy) {
         return addContainer((attachedAccess, containerIndex) -> new ComponentBackedEnergyContainer(attachedAccess, containerIndex,
               BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), rate, maxEnergy));
     }
 
-    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, LongSupplier rate,
+    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, IntSupplier rate,
           LongSupplier maxEnergy) {
         return addContainer((attachedAccess, containerIndex) -> new ComponentBackedEnergyContainer(attachedAccess, containerIndex, canExtract, canInsert, rate, maxEnergy));
     }

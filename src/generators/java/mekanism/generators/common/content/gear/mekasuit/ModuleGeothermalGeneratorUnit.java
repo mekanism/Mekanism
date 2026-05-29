@@ -39,7 +39,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
             //Scale the amount absorbed by how many modules are installed out of the possible number installed
             float ratio = count / (float) maxSize;
             map.put(count, new ModuleDamageAbsorbInfo(new ConfigBasedCachedFloatSupplier(() -> MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * ratio,
-                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), ConstantPredicates.ZERO_LONG));
+                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), ConstantPredicates.ZERO));
         }
         return map;
     });
@@ -47,7 +47,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeeded() > 0L) {
+        if (energyContainer != null && energyContainer.getNeeded() > 0) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
             Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
@@ -86,7 +86,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     highestScaledDegrees = 200;
                 }
                 //Insert energy
-                long rate = MathUtils.clampToLong(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
+                int rate = MathUtils.clampToInt(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
                 try (Transaction transaction = Transaction.openRoot()) {
                     energyContainer.insert(rate, transaction, AutomationType.MANUAL);
                     transaction.commit();

@@ -1,19 +1,17 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnergyUtils;
@@ -27,10 +25,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChargepad extends TileEntityMekanism {
@@ -43,12 +41,10 @@ public class TileEntityChargepad extends TileEntityMekanism {
         super(MekanismBlocks.CHARGEPAD, pos, state);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK, RelativeSide.BOTTOM);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, Set.of(RelativeSide.BACK, RelativeSide.BOTTOM));
     }
 
     @Override
@@ -73,7 +69,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                                 active = true;
                             }
                         }
-                    } else if (provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(entity), transaction)) {
+                    } else if (provideEnergy(Capabilities.ENERGY.getCapability(entity), transaction)) {
                         //Note: Robits are handled by this path
                         active = true;
                     }
@@ -92,9 +88,9 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (itemHandler != null) {
             //TODO - 26.1: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
             // Do we want to somehow document that fact for the chargepad's limit
-            long energyToGive = energyContainer.getEnergyPerTick();
+            int energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {
-                long inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);
+                int inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);
                 if (inserted > 0) {
                     //Only allow charging one item per player each check of the chargepad
                     return true;
@@ -104,7 +100,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         return false;
     }
 
-    private boolean provideEnergy(@Nullable IStrictEnergyHandler energyHandler, TransactionContext transaction) {
+    private boolean provideEnergy(@Nullable EnergyHandler energyHandler, TransactionContext transaction) {
         return EnergyUtils.charge(energyContainer, energyHandler, energyContainer.getEnergyPerTick(), transaction) > 0;
     }
 

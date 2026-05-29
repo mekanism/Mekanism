@@ -16,7 +16,6 @@ import java.util.function.ToIntBiFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -26,8 +25,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -178,17 +179,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, () -> {
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, () -> {
             listener.onContentsChanged();
             for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
                 cacheLookupMonitor.unpause();
             }
-        }));
-        return builder.build();
+        });
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
@@ -221,7 +220,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
 
         handleSecondaryFuel();
         if (sortingNeeded && isSorting()) {
@@ -455,7 +454,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return false;
     }
 
-    public MachineEnergyContainer<TileEntityFactory<?>> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFactory<?>> energyContainer() {
         return energyContainer;
     }
 
@@ -474,7 +473,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            getEnergyContainer().copyContents(data.energyContainer);
+            energyContainer.copyContents(data.energyContainer);
             sorting = data.sorting;
             PathElement problemPath = problemPath();
             energySlot.copyContents(data.energySlot);

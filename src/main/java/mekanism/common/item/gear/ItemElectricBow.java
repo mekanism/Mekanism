@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -38,6 +37,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +58,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     @Override
     public boolean releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player && !player.isCreative()) {
-            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(bow));
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
             if (energyHandler == null) {
                 return false;
             }
@@ -66,7 +66,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
             // and wraps the entire hitting the entity within their transaction?
             // Either way should we maybe just compare against the stored energy instead of having to open a transaction
             try (Transaction simulation = Transaction.openRoot()) {
-                long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                 if (EnergyUtils.extractManual(energyHandler, energyNeeded, simulation) < energyNeeded) {
                     return false;
                 }
@@ -80,13 +80,13 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
           @NotNull List<ItemStack> potentialAmmo, float velocity, float inaccuracy, boolean critical, @Nullable LivingEntity target) {
         super.shoot(world, entity, hand, bow, potentialAmmo, velocity, inaccuracy, critical, target);
         if (entity instanceof Player player && !player.isCreative() && !potentialAmmo.isEmpty()) {
-            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(bow));
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
             if (energyHandler != null) {
                 //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
                 // and wraps the entire hitting the entity within their transaction?
                 try (Transaction transaction = Transaction.openRoot()) {
                     //Use energy
-                    long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                    int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                     EnergyUtils.extractManual(energyHandler, energyNeeded, transaction);
                     transaction.commit();
                 }

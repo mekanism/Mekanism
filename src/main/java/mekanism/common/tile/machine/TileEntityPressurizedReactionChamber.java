@@ -2,14 +2,12 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.PressurizedReactionRecipe;
@@ -26,8 +24,10 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.PRCEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -88,7 +88,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
                                                                                         "getOutputGasFilledPercentage"}, docPlaceholder = "gas output")
     public IChemicalTank outputGasTank;
 
-    private long recipeEnergyRequired = 0;
+    private int recipeEnergyRequired = 0;
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
     private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
@@ -106,7 +106,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);
-        configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputGasTank, outputGasTank, RelativeSide.RIGHT, false, true);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputGasTank, outputGasTank, false, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -140,12 +140,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return builder.build();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
-        builder.addContainer(energyContainer = PRCEnergyContainer.input(this, recipeCacheUnpauseListener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        energyContainer = PRCEnergyContainer.input(this, recipeCacheUnpauseListener);
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
@@ -167,7 +165,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         int recipeDuration;
         if (cachedRecipe == null) {
             recipeDuration = BASE_DURATION;
-            recipeEnergyRequired = 0L;
+            recipeEnergyRequired = 0;
         } else {
             PressurizedReactionRecipe recipe = cachedRecipe.getRecipe();
             recipeDuration = recipe.getDuration();
@@ -186,12 +184,12 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }
 
-    public long getRecipeEnergyRequired() {
+    public int getRecipeEnergyRequired() {
         return recipeEnergyRequired;
     }
 
@@ -226,7 +224,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
-    public PRCEnergyContainer getEnergyContainer() {
+    public PRCEnergyContainer energyContainer() {
         return energyContainer;
     }
 

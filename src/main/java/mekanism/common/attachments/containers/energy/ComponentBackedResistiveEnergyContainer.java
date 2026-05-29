@@ -26,7 +26,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess, int containerIndex) {
-        super(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
+        super(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO, ConstantPredicates.ZERO_LONG);
     }
 
     @Override
@@ -35,27 +35,27 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
     }
 
-    private long getRate() {
+    private int getRate() {
         return MekanismUtils.calculateUsage(this.capacity());
     }
 
     @Override
-    protected long getInsertionRate(AutomationType automationType) {
+    protected int getInsertionRate(AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Long.MAX_VALUE : getRate();
+        return automationType.isManual() ? Integer.MAX_VALUE : getRate();
     }
 
     @Override
-    protected long getExtractionRate(AutomationType automationType) {
+    protected int getExtractionRate(AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Long.MAX_VALUE : getRate();
+        return automationType.isManual() ? Integer.MAX_VALUE : getRate();
     }
 
-    public long getEnergyPerTick() {
+    public int getEnergyPerTick() {
         return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
     }
 
-    private void updateEnergyUsage(long energyUsage) {
+    private void updateEnergyUsage(int energyUsage) {
         ItemResource resource = attachedAccess.getResource();
         //Ensure the backing item has not somehow become empty
         if (!resource.isEmpty()) {
@@ -78,12 +78,12 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     @Override
     public void serialize(ValueOutput output) {
         super.serialize(output);
-        output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
+        output.putInt(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
+        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
         super.deserialize(input);
     }
 }

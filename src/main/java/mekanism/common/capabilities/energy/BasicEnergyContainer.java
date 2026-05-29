@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.energy;
 
+import com.google.common.primitives.Ints;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -97,9 +98,9 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
      * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
      */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertionRate(AutomationType automationType) {
-        return Long.MAX_VALUE;
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int getInsertionRate(AutomationType automationType) {
+        return Integer.MAX_VALUE;
     }
 
     /**
@@ -112,14 +113,14 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
      * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
      */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractionRate(AutomationType automationType) {
-        return Long.MAX_VALUE;
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int getExtractionRate(AutomationType automationType) {
+        return Integer.MAX_VALUE;
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0 || !isValidForInsertion(automationType)) {
             //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
@@ -127,21 +128,22 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         long currentStored = energy();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = capacity() - currentStored;
+        int needed = Ints.saturatedCast(capacity() - currentStored);
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
         }
-        long toAdd = Math.min(amount, needed);
+        int toAdd = Math.min(amount, needed);
+        //Note: We know toAdd is greater than zero, so we can just always call setEnergy
         setEnergy(currentStored + toAdd, transaction);
         return toAdd;
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         MekanismPreconditions.checkNonNegative(amount);
         if (isEmpty() || amount == 0 || !isValidForExtraction(automationType)) {
             //"Fail quick" if we are empty, nothing is being extracted, or if we can never extract from this slot
@@ -149,11 +151,10 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         long currentStored = energy();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
-        long toRemove = Math.min(amount, currentStored);
+        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {
-            //Shrink the stack by the amount removed
             setEnergy(currentStored - toRemove, transaction);
         }
         return toRemove;

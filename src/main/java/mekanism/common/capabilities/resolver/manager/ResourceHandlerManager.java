@@ -1,11 +1,9 @@
 package mekanism.common.capabilities.resolver.manager;
 
-import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.MultiTypeCapability;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -18,12 +16,7 @@ public class ResourceHandlerManager<RESOURCE extends Resource, CONTAINER extends
 
     public ResourceHandlerManager(MultiTypeCapability<ResourceHandler<RESOURCE>> supportedCapability, IContainerHolder<CONTAINER> holder) {
         super(holder, supportedCapability.block(), IContainerHolder::getContainers, (side, containerHolder) ->
-              new ProxyResourceHandler<>(new IMekanismResourceHandler<RESOURCE, CONTAINER>() {
-                  @Override
-                  public List<CONTAINER> getContainers() {
-                      return containerHolder.getContainers(side);
-                  }
-              }, side, containerHolder)
+              new ProxyResourceHandler<>(() -> containerHolder.getContainers(side), side, containerHolder)
         );
     }
 }

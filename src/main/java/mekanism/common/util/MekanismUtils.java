@@ -38,7 +38,6 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -322,9 +321,9 @@ public final class MekanismUtils {
      *
      * @return required energy per tick
      */
-    public static long getEnergyPerTick(IUpgradeTile tile, long def) {
+    public static int getEnergyPerTick(IUpgradeTile tile, int def) {
         if (tile.supportsUpgrades()) {
-            return MathUtils.ceilToLong(def * Math.pow(
+            return Mth.ceil(def * Math.pow(
                   MekanismConfig.general.maxUpgradeMultiplier.get(),
                   2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)
             ));
@@ -451,24 +450,8 @@ public final class MekanismUtils {
         }
     }
 
-    public static long calculateUsage(long capacity) {
-        return Math.max((long) (0.005 * capacity), 1);
-    }
-
-    public static Component getEnergyDisplayShort(long energy) {
-        EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertToDouble(energy), configured);
-    }
-
-    /**
-     * Convert from the unit defined in the configuration to joules.
-     *
-     * @param energy - energy to convert
-     *
-     * @return energy converted to joules
-     */
-    public static long convertToJoules(long energy) {
-        return EnergyUnit.getConfigured().convertFrom(energy);
+    public static int calculateUsage(long capacity) {
+        return Math.max(1, MathUtils.clampToInt(0.005 * capacity));
     }
 
     /**
@@ -706,7 +689,7 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, long baseBlastEnergy, long baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
+    public static void veinMineArea(IEnergyContainer energyContainer, int baseBlastEnergy, int baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
           ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
@@ -724,7 +707,7 @@ public final class MekanismUtils {
                 continue;
             }
             int distance = foundEntry.getIntValue();
-            long destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
+            int destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
             try (Transaction subTransaction = Transaction.open(transaction)) {
                 if (energyContainer.extract(destroyEnergy, subTransaction, AutomationType.MANUAL) < destroyEnergy) {
                     //If we don't have energy to break the block continue
@@ -809,12 +792,12 @@ public final class MekanismUtils {
     @FunctionalInterface
     public interface BlastEnergyFunction {
 
-        long calc(long baseBlastEnergy, float hardness);
+        int calc(int baseBlastEnergy, float hardness);
     }
 
     @FunctionalInterface
     public interface VeinEnergyFunction {
 
-        long calc(long baseVeinEnergy, float hardness, int distance, BlockState state);
+        int calc(int baseVeinEnergy, float hardness, int distance, BlockState state);
     }
 }

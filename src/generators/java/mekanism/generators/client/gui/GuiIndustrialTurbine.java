@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
@@ -59,7 +60,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public Component getTooltip() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return EnergyDisplay.of(multiblock.energyContainer).getTextComponent();
+                    return EnergyDisplay.of(multiblock.energyContainer()).getTextComponent();
                 }
                 return EnergyDisplay.ZERO.getTextComponent();
             }
@@ -68,7 +69,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public double getLevel() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return MathUtils.divideToLevel(multiblock.energyContainer.energy(), multiblock.energyContainer.capacity());
+                    IEnergyContainer energyContainer = multiblock.energyContainer();
+                    return MathUtils.divideToLevel(energyContainer.energy(), energyContainer.capacity());
                 }
                 return 1;
             }
@@ -99,7 +101,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer);
+                storing = EnergyDisplay.of(multiblock.energyContainer());
                 producing = EnergyDisplay.of(multiblock.getProductionRate());
             } else {
                 storing = EnergyDisplay.ZERO;

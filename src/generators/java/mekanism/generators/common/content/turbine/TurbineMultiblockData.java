@@ -23,7 +23,6 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -50,11 +49,13 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class TurbineMultiblockData extends MultiblockData {
 
@@ -62,7 +63,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     private final List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidOutputTargets = new ArrayList<>();
-    private final List<BlockEnergyCapabilityCache> energyOutputTargets = new ArrayList<>();
+    private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyOutputTargets = new ArrayList<>();
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
@@ -70,7 +71,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     public IFluidTank ventTank;
     @ContainerSync
-    public IEnergyContainer energyContainer;
+    private final IEnergyContainer energyContainer;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumpMode = GasMode.IDLE;
@@ -112,7 +113,12 @@ public class TurbineMultiblockData extends MultiblockData {
         fluidTanks.add(ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, _ -> isFormed(), automationType -> automationType.isInternal() && isFormed(), this);
-        energyContainers.add(energyContainer);
+    }
+
+    @NonNull
+    @Override
+    public IEnergyContainer energyContainer() {
+        return energyContainer;
     }
 
     @Override
@@ -143,15 +149,15 @@ public class TurbineMultiblockData extends MultiblockData {
 
         long energyNeeded = energyContainer.getNeeded();
         long flow = 0;
-        if (stored > 0 && energyNeeded > 0L) {
+        if (stored > 0 && energyNeeded > 0) {
             double energyMultiplier = (MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
                                       * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             if (energyMultiplier >= Mth.EPSILON) {
                 double rate = getMaxFlowRateDouble();
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier) * MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt()) * proportion;
-                long amountGenerated = MathUtils.clampToLong(energyMultiplier * (rate / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt()));
+                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier) * MekanismGeneratorsConfig.generators.turbineSteamDivisor.get()) * proportion;
+                int amountGenerated = MathUtils.clampToInt(energyMultiplier * (rate / MekanismGeneratorsConfig.generators.turbineSteamDivisor.get()));
                 if (rate > Mth.EPSILON && amountGenerated > 0) {
                     flow = MathUtils.clampToLong(rate);
                     flowRate = rate / origRate;

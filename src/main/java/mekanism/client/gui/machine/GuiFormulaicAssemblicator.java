@@ -51,9 +51,9 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
             if (tile.getAutoMode() && tile.hasRecipe()) {
-                MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.getEnergyContainer();
+                MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.energyContainer();
                 return energyContainer.getEnergyPerTick() > energyContainer.energy();
             }
             return false;
@@ -61,7 +61,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         //Overwrite the output slots with a "combined" slot
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         encodeFormulaButton = addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile))))
               .setTooltip(MekanismLang.ENCODE_FORMULA);

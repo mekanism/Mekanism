@@ -11,7 +11,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.MekanismLang;
@@ -19,8 +18,10 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -56,6 +57,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
@@ -99,12 +101,10 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return builder.build();
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
     @NotNull
@@ -124,12 +124,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         inputSlot.fillTankFromSlot(outputSlot);
-        long clientEnergyUsed = 0L;
+        int clientEnergyUsed = 0;
         if (canFunction() && fluidTank.amountAsLong() >= FluidType.BUCKET_VOLUME) {
             try (Transaction transaction = Transaction.openRoot()) {
-                long energyPerTick = energyContainer.getEnergyPerTick();
+                int energyPerTick = energyContainer.getEnergyPerTick();
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     operatingTicks++;
                     if (operatingTicks >= ticksRequired) {
@@ -157,7 +157,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 }
             }
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 
@@ -334,7 +334,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return usedEnergy;
     }
 
-    public MachineEnergyContainer<TileEntityFluidicPlenisher> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer() {
         return energyContainer;
     }
 

@@ -12,9 +12,9 @@ import net.minecraft.world.item.crafting.Recipe;
 public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder> {
 
     private final ItemStackIngredient input;
-    private final long output;
+    private final int output;
 
-    protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, long output) {
+    protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, int output) {
         this.input = input;
         this.output = output;
     }
@@ -30,8 +30,8 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, long output) {
-        if (output <= 0L) {
+    public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, int output) {
+        if (output <= 0) {
             throw new IllegalArgumentException("This energy conversion recipe requires an energy output greater than zero");
         }
         return new ItemStackToEnergyRecipeBuilder(input, output);

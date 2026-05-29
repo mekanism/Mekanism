@@ -7,9 +7,6 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -26,6 +23,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 
 public interface IFreeRunnerItem {
@@ -93,20 +91,8 @@ public interface IFreeRunnerItem {
     static ItemStack getActiveFreeRunners(LivingEntity entity) {
         return getFreeRunners(entity, stack -> {
             if (stack.getItem() instanceof IFreeRunnerItem) {
-                IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-                if (energyHandler instanceof IMekanismStrictEnergyHandler mekHandler) {
-                    for (IEnergyContainer container : mekHandler.getContainers()) {
-                        if (!container.isEmpty()) {
-                            return true;
-                        }
-                    }
-                } else if (energyHandler != null) {
-                    for (int i = 0, size = energyHandler.size(); i < size; i++) {
-                        if (energyHandler.getAmountAsLong(i) > 0) {
-                            return true;
-                        }
-                    }
-                }
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+                return energyHandler != null && energyHandler.getAmountAsLong() > 0;
             }
             return false;
         });

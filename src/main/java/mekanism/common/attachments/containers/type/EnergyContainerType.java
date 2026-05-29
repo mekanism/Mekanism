@@ -1,39 +1,41 @@
 package mekanism.common.attachments.containers.type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.IMekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.minecraft.core.component.DataComponentGetter;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public final class EnergyContainerType extends CapableContainerType<IEnergyContainer, AttachedEnergy, IStrictEnergyHandler> {
+public final class EnergyContainerType extends CapableContainerType<IEnergyContainer, AttachedEnergy, EnergyHandler> {
 
     EnergyContainerType() {
-        super(MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, Capabilities.STRICT_ENERGY,
-              AttachedEnergy.EMPTY, TileEntityMekanism::getEnergyContainers, TileEntityMekanism::canHandleEnergy);
+        super(MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, Capabilities.ENERGY,
+              AttachedEnergy.EMPTY, tile -> {
+                  //TODO - 26.1: Re-evaluate this
+                  IEnergyContainer energyContainer = tile.getEnergyContainer();
+                  return energyContainer == null ? Collections.emptyList() : Collections.singletonList(energyContainer);
+              }, TileEntityMekanism::canHandleEnergy);
     }
 
     @Override
-    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
-        EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(requiredConfigs));
-    }
-
-    @Override
-    protected IStrictEnergyHandler createHandler(ItemAccess attachedAccess, int totalContainers) {
+    protected EnergyHandler createHandler(ItemAccess attachedAccess, int totalContainers) {
         return new ComponentBackedEnergyHandler(this, attachedAccess, totalContainers);
+    }
+
+    public void copyToContainer(IEnergyContainer containers, DataComponentGetter componentGetter) {
+        //TODO - 26.1: Re-evaluate this
+        copyToContainers(Collections.singletonList(containers), componentGetter);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package mekanism.common.tile.machine;
 
+import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -12,8 +12,10 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
@@ -23,7 +25,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
@@ -38,6 +40,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
@@ -45,12 +48,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 5;
     public static final double INVERSE_INSULATION_COEFFICIENT = 10;
     //TODO: Eventually make this into a config at some point?
-    public static final long BASE_USAGE = 100L;
+    public static final int BASE_USAGE = 100;
 
     private float soundScale = 1;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
-    private long clientEnergyUsed = 0;
+    private int clientEnergyUsed = 0;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
@@ -62,12 +65,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = ResistiveHeaterEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = ResistiveHeaterEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
     }
 
     @NotNull
@@ -89,18 +90,18 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
-        long toUse = 0;
+        energySlot.fillContainerOrConvert(null);
+        int toUse = 0;
         if (canFunction()) {
             try (Transaction transaction = Transaction.openRoot()) {
                 toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
-                if (toUse > 0L) {
+                if (toUse > 0) {
                     heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
                     transaction.commit();
                 }
             }
         }
-        setActive(toUse > 0L);
+        setActive(toUse > 0);
         clientEnergyUsed = toUse;
         HeatTransfer transfer = simulate();
         lastEnvironmentLoss = transfer.environmentTransfer();
@@ -114,7 +115,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @ComputerMethod
-    public long getEnergyUsed() {
+    public int getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -128,8 +129,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return lastEnvironmentLoss;
     }
 
-    public void setEnergyUsageFromPacket(long floatingLong) {
-        energyContainer.updateEnergyUsage(floatingLong);
+    public void setEnergyUsageFromPacket(int usage) {
+        energyContainer.updateEnergyUsage(usage);
         markForSave();
     }
 
@@ -138,7 +139,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return Mth.sqrt(soundScale);
     }
 
-    public MachineEnergyContainer<TileEntityResistiveHeater> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityResistiveHeater> energyContainer() {
         return energyContainer;
     }
 
@@ -151,7 +152,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void setConfigurationData(ValueInput input, Player player) {
         super.setConfigurationData(input, player);
-        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(energyContainer::updateEnergyUsage);
+        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(energyContainer::updateEnergyUsage);
     }
 
     @Override
@@ -159,7 +160,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
-        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     @Override
@@ -195,7 +196,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setEnergyUsage(long usage) throws ComputerException {
+    void setEnergyUsage(int usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

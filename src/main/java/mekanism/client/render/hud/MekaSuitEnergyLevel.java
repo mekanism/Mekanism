@@ -41,14 +41,14 @@ public class MekaSuitEnergyLevel implements GuiLayer {
         for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
             ItemResource itemType = armorSlots.getResource(slot);
             if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor) {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot), 0);
+                IEnergyContainer container = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
                 if (container != null) {
                     capacity = MathUtils.addClamped(capacity, container.capacity());
                     stored = MathUtils.addClamped(stored, container.energy());
                 }
             }
         }
-        if (capacity != 0L) {
+        if (capacity > 0) {
             int x = graphics.guiWidth() / 2 - 91;
             int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
             int length = (int) Math.round(((double) stored / capacity) * 79);

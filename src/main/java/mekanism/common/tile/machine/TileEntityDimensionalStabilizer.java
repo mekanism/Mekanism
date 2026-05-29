@@ -6,15 +6,15 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.functions.LongObjectToLongFunction;
+import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -40,6 +40,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
 
@@ -48,7 +49,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public static final int ARRAY_SIZE = MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER;
     private static final String COMPUTER_RANGE_STR = "Range: [-" + MAX_LOAD_RADIUS + ", " + MAX_LOAD_RADIUS + "]";
     private static final String COMPUTER_RANGE_RAD = "Range: [1, " + MAX_LOAD_RADIUS + "]";
-    private static final LongObjectToLongFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.chunksLoaded);
+    private static final IntObjectToIntFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
@@ -69,12 +70,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener);
+        return _ -> energyContainer;
     }
 
     @NotNull
@@ -88,12 +87,12 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         //Only attempt to use power if chunk loading isn't disabled in the config
         boolean isActive = false;
         if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
             try (Transaction transaction = Transaction.openRoot()) {
-                long energyPerTick = energyContainer.getEnergyPerTick();
+                int energyPerTick = energyContainer.getEnergyPerTick();
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     isActive = true;
                     transaction.commit();
@@ -284,7 +283,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         getChunkLoader().refreshChunkTickets();
     }
 
-    public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> getEnergyContainer() {
+    public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer() {
         return energyContainer;
     }
 

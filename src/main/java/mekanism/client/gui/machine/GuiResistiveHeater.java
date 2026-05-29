@@ -14,8 +14,8 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
-import mekanism.common.network.to_server.PacketGuiSetEnergy;
-import mekanism.common.network.to_server.PacketGuiSetEnergy.GuiEnergyValue;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -41,17 +41,17 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 42, () -> List.of(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
-              MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
+              MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.energyContainer().getEnergyPerTick()))
         )).clearFormat());
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.energyContainer();
                   return energyContainer.isEmpty() && energyContainer.getEnergyPerTick() > 0;
               }).warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, () -> {
-                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);
             Component transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
@@ -76,8 +76,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             try {
-                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(Math.max(0, Long.parseLong(energyUsageField.getText())))));
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENERGY_USAGE, tile.getBlockPos(), Math.max(0, Integer.parseInt(energyUsageField.getText()))));
             } catch (NumberFormatException ignored) {
             }
             energyUsageField.setText("");

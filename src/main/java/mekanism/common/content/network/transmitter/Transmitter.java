@@ -14,7 +14,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -71,7 +71,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                 ConnectionType.NORMAL};
-    private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
+    private final AcceptorCache<ACCEPTOR> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
     protected boolean hasPullSide = false;
 
@@ -91,9 +91,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         Collections.addAll(supportedTransmissionTypes, transmissionTypes);
     }
 
-    protected abstract AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache();
+    protected abstract AcceptorCache<ACCEPTOR> createAcceptorCache();
 
-    public AbstractAcceptorCache<ACCEPTOR, ?> getAcceptorCache() {
+    public AcceptorCache<ACCEPTOR> getAcceptorCache() {
         return acceptorCache;
     }
 

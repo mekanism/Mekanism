@@ -2,7 +2,6 @@ package mekanism.common.content.gear.mekasuit;
 
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -22,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
@@ -42,7 +42,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     public void tickServer(IModule<ModuleChargeDistributionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         // charge inventory first
         if (chargeInventory) {
-            IStrictEnergyHandler energyHandler = module.getEnergyHandler(stack);
+            EnergyHandler energyHandler = module.getEnergyHandler(stack);
             if (energyHandler != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     chargeInventory(energyHandler, player, transaction);
@@ -62,7 +62,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         long availableEnergy = 0;
         for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
             //TODO - 26.1: Instead of just directly going off of energy containers, should we support charging other armor that exposes energy capabilities?
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot), 0);
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
             if (energyContainer != null) {
                 saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
                 //TODO - 26.1: Do we need to worry about overflow?
@@ -84,19 +84,12 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
     }
 
-    private void chargeInventory(IStrictEnergyHandler energyHandler, Player player, TransactionContext transaction) {
+    private void chargeInventory(EnergyHandler energyHandler, Player player, TransactionContext transaction) {
         //Only try to charge up to how much energy we actually have stored
-        long toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
-        long availableEnergy = 0;
-        for (int i = 0, size = energyHandler.size(); i < size; i++) {
-            availableEnergy += energyHandler.getAmountAsLong(i);
-            if (availableEnergy > toCharge) {
-                //If we have more energy available than our charge rate, stop calculating the amount available and just pretend we have the rate limit worth of energy
-                availableEnergy = toCharge;
-                break;
-            }
-        }
-        if (availableEnergy == 0L) {
+        int toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
+        //If we have more energy available than our charge rate, stop calculating the amount available and just pretend we have the rate limit worth of energy
+        int availableEnergy = Math.min(energyHandler.getAmountAsInt(), toCharge);
+        if (availableEnergy == 0) {
             return;
         }
         //TODO - 26.1: Evaluate the below which basically manually reimplements ItemAccess#forPlayerSlot but using the corresponding handlers
@@ -105,13 +98,13 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         int selectedSlot = player.getInventory().getSelectedSlot();
         // first try to charge mainhand/offhand item
         availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getHandSlots(), availableEnergy, transaction);
-        if (toCharge > 0L) {
+        if (toCharge > 0) {
             //TODO - 26.1: Should this just use the following, and not care that it "tries" to insert into the held hand a second time?
             // toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getMainSlots(), toCharge, transaction);
             for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
                 if (slot != selectedSlot) {
                     availableEnergy -= EnergyUtils.charge(energyHandler, ItemAccess.forHandlerIndexStrict(playerInv, slot), availableEnergy, transaction);
-                    if (availableEnergy == 0L) {
+                    if (availableEnergy == 0) {
                         return;
                     }
                 }

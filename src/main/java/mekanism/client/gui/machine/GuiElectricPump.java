@@ -36,7 +36,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 42, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
+            list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
             if (tile.fluidTank.isEmpty()) {
                 FluidResource fallBack = tile.getActiveType();
                 if (fallBack.isEmpty()) {
@@ -50,15 +50,15 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             return list;
         }));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.getEnergyContainer();
+                  MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 6, 13))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeededAsInt(tile.fluidTank.resource()) < tile.estimateIncrementAmount());
         //TODO: Eventually we may want to consider showing a warning if the block under the pump is of the wrong type or there wasn't a valid spot to suck
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.common.item;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,9 +58,9 @@ public class ItemNetworkReader extends ItemEnergized {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
                 if (!player.isCreative()) {
-                    long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
+                    int energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     if (energyPerUse > 0) {
-                        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
+                        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
                         if (energyHandler == null) {
                             return InteractionResult.FAIL;
                         }

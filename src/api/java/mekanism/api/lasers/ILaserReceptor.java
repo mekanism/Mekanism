@@ -15,7 +15,7 @@ public interface ILaserReceptor {
      *
      * @return Energy received
      */
-    long receiveLaserEnergy(long energy, TransactionContext transaction);
+    int receiveLaserEnergy(int energy, TransactionContext transaction);
 
     /**
      * Checks if a laser can break this receptor.

@@ -27,10 +27,10 @@ public class CrTRecipeComponents {
           new TypeToken<>() {},
           RecipeComponentEqualityCheckers::areNumbersEqual
     );
-    public static final IRecipeComponent<Long> ENERGY = IRecipeComponent.simple(
+    public static final IRecipeComponent<Integer> ENERGY = IRecipeComponent.simple(
           Mekanism.rl("energy"),
           new TypeToken<>() {},
-          Long::equals
+          Integer::equals
     );
     public static final IRecipeComponent<Boolean> PER_TICK_USAGE = IRecipeComponent.simple(
           Mekanism.rl("per_tick_usage"),

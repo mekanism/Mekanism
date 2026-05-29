@@ -22,7 +22,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
     @Override
     public void tickServer(IModule<ModuleSolarRechargingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeeded() > 0L) {
+        if (energyContainer != null && energyContainer.getNeeded() > 0) {
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
@@ -50,7 +50,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
 
                 try (Transaction transaction = Transaction.openRoot()) {
                     //Multiply actual production based on how many modules are installed
-                    energyContainer.insert(MathUtils.clampToLong(production * module.getInstalledCount()), transaction, AutomationType.MANUAL);
+                    energyContainer.insert(MathUtils.clampToInt(production * module.getInstalledCount()), transaction, AutomationType.MANUAL);
                     transaction.commit();
                 }
             }

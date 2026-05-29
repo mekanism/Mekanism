@@ -3,30 +3,30 @@ package mekanism.common.tier;
 import java.util.Locale;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.tier.BaseTier;
-import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public enum EnergyCubeTier implements ITier, StringRepresentable {
-    BASIC(BaseTier.BASIC, 4_000_000L, 4_000L),
-    ADVANCED(BaseTier.ADVANCED, 16_000_000L, 16_000L),
-    ELITE(BaseTier.ELITE, 64_000_000L, 64_000L),
-    ULTIMATE(BaseTier.ULTIMATE, 256_000_000L, 256_000L),
-    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Long.MAX_VALUE);
+public enum EnergyCubeTier implements IStorageTier, StringRepresentable {
+    BASIC(BaseTier.BASIC, 4_000_000L, 4_000),
+    ADVANCED(BaseTier.ADVANCED, 16_000_000L, 16_000),
+    ELITE(BaseTier.ELITE, 64_000_000L, 64_000),
+    ULTIMATE(BaseTier.ULTIMATE, 256_000_000L, 256_000),
+    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
-    private final long baseMaxEnergy;
-    private final long baseOutput;
+    private final long baseCapacity;
+    private final int baseTransferRate;
     private final BaseTier baseTier;
     @Nullable
-    private CachedLongValue storageReference;
+    private CachedLongValue capacityReference;
     @Nullable
-    private CachedLongValue outputReference;
+    private CachedIntValue transferRateReference;
 
-    EnergyCubeTier(BaseTier tier, long max, long out) {
-        baseMaxEnergy = max;
-        baseOutput = out;
+    EnergyCubeTier(BaseTier tier, long capacity, int transferRate) {
+        baseCapacity = capacity;
+        baseTransferRate = transferRate;
         baseTier = tier;
     }
 
@@ -40,27 +40,29 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public long getMaxEnergy() {
-        return storageReference == null ? getBaseMaxEnergy() : storageReference.getOrDefault();
+    @Override
+    public long getCapacity() {
+        return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
-    public long getOutput() {
-        return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
+    @Override
+    public int getTransferRate() {
+        return transferRateReference == null ? getBaseTransferRate() : transferRateReference.getOrDefault();
     }
 
-    public long getBaseMaxEnergy() {
-        return baseMaxEnergy;
+    public long getBaseCapacity() {
+        return baseCapacity;
     }
 
-    public long getBaseOutput() {
-        return baseOutput;
+    public int getBaseTransferRate() {
+        return baseTransferRate;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue storageReference, CachedLongValue outputReference) {
-        this.storageReference = storageReference;
-        this.outputReference = outputReference;
+    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue transferRateReference) {
+        this.capacityReference = capacityReference;
+        this.transferRateReference = transferRateReference;
     }
 }

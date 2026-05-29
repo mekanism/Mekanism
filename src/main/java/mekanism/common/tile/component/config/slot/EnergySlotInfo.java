@@ -1,32 +1,26 @@
 package mekanism.common.tile.component.config.slot;
 
-import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
+import org.jspecify.annotations.Nullable;
 
 public class EnergySlotInfo extends BaseSlotInfo {
 
-    private final List<IEnergyContainer> containers;
+    @Nullable
+    private final IEnergyContainer container;
 
-    public EnergySlotInfo(boolean canInput, boolean canOutput, IEnergyContainer... containers) {
-        this(canInput, canOutput, List.of(containers));
-    }
-
-    public EnergySlotInfo(boolean canInput, boolean canOutput, List<IEnergyContainer> containers) {
+    public EnergySlotInfo(boolean canInput, boolean canOutput, @Nullable IEnergyContainer container) {
         super(canInput, canOutput);
-        this.containers = containers;
+        this.container = container;
     }
 
     @Override
     public boolean isEmpty() {
-        for (IEnergyContainer container : getContainers()) {
-            if (!container.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        IEnergyContainer container = getContainer();
+        return container == null || container.isEmpty();
     }
 
-    public List<IEnergyContainer> getContainers() {
-        return containers;
+    @Nullable
+    public IEnergyContainer getContainer() {
+        return container;
     }
 }

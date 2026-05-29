@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
@@ -37,7 +37,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     public static final int BOOST_ENERGY_MULTIPLIER = 4;
 
     private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
-    private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
+    private static final ConfigBasedCachedIntSupplier BOOST_USAGE = new ConfigBasedCachedIntSupplier(
           () -> BOOST_ENERGY_MULTIPLIER * MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get(),
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
@@ -89,7 +89,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
         // Note: If they don't have enough energy to use the grav unit, don't try to process the player, and assume another mod is providing flight
         if (shouldProcess(player)) {
             try (Transaction transaction = Transaction.openRoot()) {
-                long energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
                 if (module.useEnergy(player, stack, energyUsage, transaction) == energyUsage) {
                     float boost = speedBoost.getBoost();
                     Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
@@ -97,7 +97,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
                         try (Transaction subTransaction = Transaction.openRoot()) {
                             //Note: Boost usage is a multiplicative amount of our energy usage, as we have already extracted our energy once,
                             // we need to subtract it from our attempted boost handling
-                            long energyToBoost = BOOST_USAGE.getAsLong() - energyUsage;
+                            int energyToBoost = BOOST_USAGE.getAsInt() - energyUsage;
                             if (module.useEnergy(player, stack, energyToBoost, subTransaction) == energyToBoost) {
                                 player.moveRelative(boost, BOOST_VEC);
                                 gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;

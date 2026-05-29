@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile;
 
+import java.util.Set;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.MathUtils;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
-    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT, RelativeSide.BOTTOM};
+    private static final Set<RelativeSide> ENERGY_SIDES = Set.of(RelativeSide.FRONT, RelativeSide.BOTTOM);
     private final SolarCheck[] solarChecks = new SolarCheck[8];
 
     public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
@@ -23,12 +24,12 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected RelativeSide[] getEnergySides() {
+    protected Set<RelativeSide> getEnergySides() {
         return ENERGY_SIDES;
     }
 
     @Override
-    protected long getConfiguredMax() {
+    protected int getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.advancedSolarGeneration.get();
     }
 
@@ -76,7 +77,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    public long getProduction() {
+    public int getProduction() {
         if (level == null || solarCheck == null) {
             //Note: We assume if solarCheck is null then solarChecks will be filled with null, and if it isn't
             // then it won't be as they get initialized at the same time
@@ -92,7 +93,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         }
         generationMultiplier /= solarChecks.length + 1;
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return MathUtils.clampToLong(getConfiguredMax() * (brightness * generationMultiplier));
+        return MathUtils.clampToInt(getConfiguredMax() * (brightness * generationMultiplier));
     }
 
     private static class AdvancedSolarCheck extends SolarCheck {

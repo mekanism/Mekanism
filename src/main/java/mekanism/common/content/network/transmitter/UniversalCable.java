@@ -1,21 +1,19 @@
 package mekanism.common.content.network.transmitter;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.EnergyAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
@@ -26,16 +24,16 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener,
+public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener,
       IUpgradeableTransmitter<UniversalCableUpgradeData> {
 
     public final CableTier tier;
 
-    private final List<IEnergyContainer> energyContainers;
     public final BasicEnergyContainer buffer;
     public long lastWrite = 0L;
 
@@ -43,17 +41,11 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         this.tier = Attribute.getTier(blockProvider, CableTier.class);
         super(tile, TransmissionType.ENERGY);
         buffer = BasicEnergyContainer.create(getCapacity(), BasicEnergyContainer.notExternal, ConstantPredicates.alwaysTrue(), this);
-        energyContainers = Collections.singletonList(buffer);
     }
 
     @Override
-    protected EnergyAcceptorCache createAcceptorCache() {
-        return new EnergyAcceptorCache(getTransmitterTile());
-    }
-
-    @Override
-    public EnergyAcceptorCache getAcceptorCache() {
-        return (EnergyAcceptorCache) super.getAcceptorCache();
+    protected AcceptorCache<EnergyHandler> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ENERGY.block());
     }
 
     @Override
@@ -66,18 +58,17 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
-        EnergyAcceptorCache acceptorCache = getAcceptorCache();
+        AcceptorCache<EnergyHandler> acceptorCache = getAcceptorCache();
         IEnergyContainer buffer = getContainer();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
                 continue;
             }
-            IStrictEnergyHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
+            EnergyHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    long extracted = connectedAcceptor.extract(getAvailablePull(), transaction);
-                    long inserted = buffer.insert(extracted, transaction, AutomationType.INTERNAL);
-                    if (inserted == extracted) {
+                    int extracted = connectedAcceptor.extract(getAvailablePull(), transaction);
+                    if (buffer.insert(extracted, transaction, AutomationType.INTERNAL) == extracted) {
                         //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
                         // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
                         // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
@@ -89,20 +80,13 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         }
     }
 
-    private long getAvailablePull() {
-        return Math.min(getCapacity(), getContainer().getNeeded());
+    private int getAvailablePull() {
+        IEnergyContainer container = getContainer();
+        return Math.min(container.capacityAsInt(), container.getNeededAsInt());
     }
 
-    protected IEnergyContainer getContainer() {
+    public IEnergyContainer getContainer() {
         return hasTransmitterNetwork() ? getTransmitterNetwork().energyContainer : buffer;
-    }
-
-    @NotNull
-    public List<IEnergyContainer> getEnergyContainers() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getEnergyContainers();
-        }
-        return energyContainers;
     }
 
     @Override
@@ -192,7 +176,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public void takeShare() {
         if (hasTransmitterNetwork()) {
             EnergyNetwork transmitterNetwork = getTransmitterNetwork();
-            if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite != 0L) {
+            if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite > 0) {
                 //Clamp the value so that we can't error if the network's energy is less than the amount we are saving
                 lastWrite = Math.min(transmitterNetwork.energyContainer.energy(), lastWrite);
                 transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.energy() - lastWrite, null);

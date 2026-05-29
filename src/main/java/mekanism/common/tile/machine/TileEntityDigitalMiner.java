@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
@@ -35,8 +35,10 @@ import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
@@ -48,7 +50,6 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.computercraft.ComputerConstants;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -172,12 +173,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         radius = DEFAULT_RADIUS;
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MinerEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MinerEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, EnumSet.of(RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM));
     }
 
     @NotNull
@@ -237,7 +236,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             initCalc = true;
         }
 
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
 
         if (recheckOverflow) {
             //Try adding any overflow stacks we have before we actually try to process as if we have some overflow we can't add
@@ -254,7 +253,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
         //Note: If we have any overflow don't function or use any energy until the overflow has been dealt with
         if (!hasOverflow && canFunction() && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
-            long energyPerTick = energyContainer.getEnergyPerTick();
+            int energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     isActive = true;
@@ -1054,7 +1053,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Nullable
     @Override
     public <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == Capabilities.ITEM.block()) {
+        if (Capabilities.ITEM.is(capability)) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return Objects.requireNonNull(itemHandlerManager, "Expected to have item handler").resolve(capability, side);
         }
@@ -1064,9 +1063,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     public boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == Capabilities.ITEM.block()) {
+        if (Capabilities.ITEM.is(capability)) {
             return notItemPort(side, offset);
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
+        } else if (Capabilities.ENERGY.is(capability)) {
             return notEnergyPort(side, offset);
         }
         //If we are not an item handler or energy capability, and it is a capability that we can support,
@@ -1151,7 +1150,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return filterManager;
     }
 
-    public MinerEnergyContainer getEnergyContainer() {
+    public MinerEnergyContainer energyContainer() {
         return energyContainer;
     }
 

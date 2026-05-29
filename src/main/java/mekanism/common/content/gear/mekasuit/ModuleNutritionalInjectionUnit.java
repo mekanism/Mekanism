@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekasuit;
 
-import com.google.common.primitives.Ints;
 import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
@@ -38,7 +37,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 FluidResource paste = MekanismFluids.NUTRITIONAL_PASTE.asResource();
                 int missingFood = FoodConstants.MAX_FOOD - player.getFoodData().getFoodLevel();
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
-                long energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
+                int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.openRoot()) {
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
@@ -46,13 +45,13 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                         return;
                     }
                     //Limit how much food we can handle by the amount of energy stored
-                    foodToFill = Ints.saturatedCast(module.useEnergy(player, stack, foodToFill * energyUsage, simulation) / energyUsage);
+                    foodToFill = module.useEnergy(player, stack, foodToFill * energyUsage, simulation) / energyUsage;
                     if (foodToFill == 0) {
                         return;
                     }
                 }
                 try (Transaction transaction = Transaction.openRoot()) {
-                    long energyToUse = foodToFill * energyUsage;
+                    int energyToUse = foodToFill * energyUsage;
                     int pasteToUse = foodToFill * pastePerFood;
                     //Note: This if statement should always be true given we already simulated that we could extract at least this much,
                     // but we validate it just in case before actually committing any changes

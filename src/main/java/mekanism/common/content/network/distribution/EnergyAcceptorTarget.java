@@ -1,13 +1,14 @@
 package mekanism.common.content.network.distribution;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
+public class EnergyAcceptorTarget extends Target<EnergyHandler, Void> {
 
-    public EnergyAcceptorTarget(Collection<IStrictEnergyHandler> allHandlers) {
+    public EnergyAcceptorTarget(Collection<EnergyHandler> allHandlers) {
         super(allHandlers);
     }
 
@@ -16,7 +17,7 @@ public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
     }
 
     @Override
-    protected long accept(IStrictEnergyHandler handler, Void unused, long amount, TransactionContext transaction) {
-        return handler.insert(amount, transaction);
+    protected long accept(EnergyHandler handler, Void unused, long amount, TransactionContext transaction) {
+        return handler.insert(Ints.saturatedCast(amount), transaction);
     }
 }

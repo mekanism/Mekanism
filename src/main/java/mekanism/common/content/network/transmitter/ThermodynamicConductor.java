@@ -17,7 +17,6 @@ import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -50,14 +49,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    protected AbstractAcceptorCache<IHeatHandler, ?> createAcceptorCache() {
+    protected AcceptorCache<IHeatHandler> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.HEAT);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public AcceptorCache<IHeatHandler> getAcceptorCache() {
-        return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
     @Override

@@ -154,7 +154,7 @@ public class CrTUtils {
     /**
      * Helper method for describing the outputs of a recipe that may have multiple outputs.
      */
-    public static String describeOutputs(long[] outputs) {
+    public static String describeOutputs(int[] outputs) {
         int size = outputs.length;
         if (size == 0) {
             return "";

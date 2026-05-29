@@ -4,12 +4,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.ISidedHeatHandler;
-import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ProxyHeatHandler extends ProxyHandler implements IHeatHandler {
+public class ProxyHeatHandler extends ProxyHandler<IContainerHolder<IHeatCapacitor>> implements IHeatHandler {
 
     private final ISidedHeatHandler heatHandler;
 

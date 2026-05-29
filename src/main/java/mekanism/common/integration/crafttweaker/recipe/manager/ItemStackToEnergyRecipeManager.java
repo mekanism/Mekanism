@@ -30,7 +30,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * @param output Energy output, must be greater than zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount input, long output) {
+    public void addRecipe(String name, IIngredientWithAmount input, int output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
@@ -40,14 +40,14 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Energy output. Will be validated as being greater than zero.
      */
-    public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, long output) {
-        if (output <= 0L) {
+    public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, int output) {
+        if (output <= 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         return makeRecipeInternal(input, output);
     }
 
-    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, long output);
+    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, int output);
 
     @Override
     protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
@@ -65,7 +65,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         }
 
         @Override
-        protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, long output) {
+        protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, int output) {
             return new BasicItemStackToEnergyRecipe(CrTUtils.fromCrT(input), output);
         }
     }

@@ -9,7 +9,6 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -22,6 +21,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -43,7 +43,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     public void tickServer(IModule<ModuleMagneticAttractionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
-            long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
+            int usage = Mth.ceil(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
             try (Transaction simulation = Transaction.openRoot()) {
                 if (module.useEnergy(player, stack, usage, simulation) < usage) {
                     //Not enough energy, just exit

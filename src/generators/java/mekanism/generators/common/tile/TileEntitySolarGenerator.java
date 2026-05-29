@@ -1,18 +1,19 @@
 package mekanism.generators.common.tile;
 
+import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -30,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
-    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.BOTTOM};
+    private static final Set<RelativeSide> ENERGY_SIDES = Set.of(RelativeSide.BOTTOM);
     private boolean seesSun;
-    private long lastProductionAmount = 0;
+    private int lastProductionAmount = 0;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
     @Nullable
@@ -50,7 +51,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35));
         return builder.build();
     }
 
@@ -65,18 +66,18 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (solarCheck == null) {
             recheckSettings();
         }
-        energySlot.drainContainerIntoSlot();
+        energySlot.drainContainerIntoSlot(null);
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
         seesSun = checkCanSeeSun();
         if (seesSun && canFunction()) {
             try (Transaction transaction = Transaction.openRoot()) {
-                lastProductionAmount = getEnergyContainer().insert(getProduction(), transaction, AutomationType.INTERNAL);
+                lastProductionAmount = energyContainer().insert(getProduction(), transaction, AutomationType.INTERNAL);
                 transaction.commit();
             }
         } else {
-            lastProductionAmount = 0L;
+            lastProductionAmount = 0;
         }
         setActive(lastProductionAmount > 0);
         return sendUpdatePacket;
@@ -97,13 +98,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return solarCheck.canSeeSun();
     }
 
-    public long getProduction() {
+    public int getProduction() {
         if (level == null || solarCheck == null) {
-            return 0L;
+            return 0;
         }
         float brightness = getBrightnessMultiplier(level);
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return MathUtils.clampToLong(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
+        return MathUtils.clampToInt(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
     }
 
     protected float getBrightnessMultiplier(@NotNull Level world) {
@@ -112,16 +113,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected RelativeSide[] getEnergySides() {
+    protected Set<RelativeSide> getEnergySides() {
         return ENERGY_SIDES;
     }
 
-    protected long getConfiguredMax() {
+    protected int getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override
-    public long getProductionRate() {
+    public int getProductionRate() {
         return lastProductionAmount;
     }
 
@@ -129,7 +130,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
-        container.track(SyncableLong.create(this::getProductionRate, value -> lastProductionAmount = value));
+        container.track(SyncableInt.create(this::getProductionRate, value -> lastProductionAmount = value));
     }
 
     protected static class SolarCheck {

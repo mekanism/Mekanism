@@ -2,13 +2,14 @@ package mekanism.common.capabilities.proxy;
 
 import mekanism.api.IConfigurable;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ProxyConfigurable extends ProxyHandler implements IConfigurable {
+public class ProxyConfigurable extends ProxyHandler<IHolder> implements IConfigurable {
 
     private final ISidedConfigurable configurable;
 

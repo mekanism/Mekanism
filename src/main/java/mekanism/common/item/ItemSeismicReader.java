@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,13 +58,13 @@ public class ItemSeismicReader extends ItemEnergized {
             player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
             return InteractionResult.SUCCESS_SERVER;
         } else if (!player.isCreative()) {
-            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
             if (energyHandler == null) {
                 player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
                 return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?
             }
             try (Transaction transaction = Transaction.openRoot()) {
-                long energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
+                int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (EnergyUtils.extractManual(energyHandler, energyUsage, transaction) < energyUsage) {
                     player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
                     return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?

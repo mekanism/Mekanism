@@ -1538,9 +1538,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TEMPERATURE_AMBIENT, "Ambient");
         add(MekanismLang.TEMPERATURE_AMBIENT_SHORT, "STP");
         //Energy
-        add(MekanismLang.ENERGY_JOULES, "Joule");
-        add(MekanismLang.ENERGY_JOULES_PLURAL, "Joules");
-        add(MekanismLang.ENERGY_JOULES_SHORT, "J");
         add(MekanismLang.ENERGY_FORGE, "Forge Energy");
         add(MekanismLang.ENERGY_FORGE_SHORT, "FE");
         //Network Reader

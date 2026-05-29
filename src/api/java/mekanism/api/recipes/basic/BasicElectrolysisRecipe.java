@@ -19,7 +19,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     protected final FluidStackIngredient input;
     protected final ChemicalStack leftChemicalOutput;
     protected final ChemicalStack rightChemicalOutput;
-    protected final long energyMultiplier;//todo double?
+    protected final int energyMultiplier;//todo double?
 
     /**
      * @param input               Input.
@@ -27,7 +27,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
      * @param leftChemicalOutput  Left output.
      * @param rightChemicalOutput Right output.
      */
-    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
+    public BasicElectrolysisRecipe(FluidStackIngredient input, int energyMultiplier, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
         if (energyMultiplier < 1) {
@@ -61,7 +61,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public long getEnergyMultiplier() {
+    public int getEnergyMultiplier() {
         return energyMultiplier;
     }
 
@@ -95,7 +95,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
         int result = input.hashCode();
         result = 31 * result + leftChemicalOutput.hashCode();
         result = 31 * result + rightChemicalOutput.hashCode();
-        result = 31 * result + Long.hashCode(energyMultiplier);
+        result = 31 * result + energyMultiplier;
         return result;
     }
 }

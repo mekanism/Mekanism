@@ -20,9 +20,11 @@ import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
-import mekanism.common.capabilities.holder.QuantumEntangloporterEnergyContainerHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.QEContainerHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.energy.QEEnergyHolder;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -30,7 +32,6 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableLong;
@@ -64,7 +65,6 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
-    private final Map<Direction, BlockEnergyCapabilityCache> adjacentEnergyCaps = new EnumMap<>(Direction.class);
     private final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     private double lastTransferLoss;
@@ -76,7 +76,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks() : Collections.emptyList());
         setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks() : Collections.emptyList());
-        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers() : Collections.emptyList());
+        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainer() : null);
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
@@ -96,7 +96,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         cacheCoord();
     }
 
-    private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<List<T>> supplier) {
+    private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<T> supplier) {
         ConfigInfo config = configComponent.getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, proxyCreator.create(true, false, supplier));
@@ -108,31 +108,30 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
-        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.CHEMICAL, InventoryFrequency::getChemicalTanks);
+        return new QEContainerHolder<>(this, TransmissionType.CHEMICAL, MekContainerHelper.CHEMICAL_SLOT_PARSER, InventoryFrequency::getChemicalTanks);
     }
 
     @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
-        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.FLUID, InventoryFrequency::getFluidTanks);
+        return new QEContainerHolder<>(this, TransmissionType.FLUID, MekContainerHelper.FLUID_SLOT_PARSER, InventoryFrequency::getFluidTanks);
     }
 
-    @NotNull
     @Override
-    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
-        return new QuantumEntangloporterEnergyContainerHolder(this);
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        return new QEEnergyHolder(this);
     }
 
     @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.HEAT, InventoryFrequency::getHeatCapacitors);
+        return new QEContainerHolder<>(this, TransmissionType.HEAT, MekContainerHelper.HEAT_SLOT_PARSER, InventoryFrequency::getHeatCapacitors);
     }
 
     @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
-        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.ITEM, InventoryFrequency::getInventorySlots);
+        return new QEContainerHolder<>(this, TransmissionType.ITEM, MekContainerHelper.ITEM_SLOT_PARSER, InventoryFrequency::getInventorySlots);
     }
 
     @Override
@@ -187,13 +186,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     public <HANDLER> HANDLER getCachedCapability(@NotNull Direction side, TransmissionType transmissionType) {
         if (transmissionType == TransmissionType.HEAT) {
             return (HANDLER) getAdjacentUnchecked(side);
-        } else if (transmissionType == TransmissionType.ENERGY) {
-            BlockEnergyCapabilityCache cache = adjacentEnergyCaps.get(side);
-            if (cache == null) {
-                cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
-                adjacentEnergyCaps.put(side, cache);
-            }
-            return (HANDLER) cache.getCapability();
         } else if (transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
@@ -204,6 +196,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             MultiTypeCapability<HANDLER> capability = (MultiTypeCapability<HANDLER>) switch (transmissionType) {
                 case FLUID -> Capabilities.FLUID;
                 case CHEMICAL -> Capabilities.CHEMICAL;
+                case ENERGY -> Capabilities.ENERGY;
                 default -> null;
             };
             if (capability != null) {
@@ -246,12 +239,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         //Note: We have to manually sync the energy container as we don't sync it in super and don't even always have one
         trackLastEnergy(container);
         container.track(SyncableLong.create(() -> {
-            List<IEnergyContainer> energyContainers = getEnergyContainers();
-            return energyContainers.isEmpty() ? 0L : energyContainers.getFirst().energy();
+            IEnergyContainer energyContainer = getEnergyContainer();
+            return energyContainer == null ? 0L : energyContainer.energy();
         }, energy -> {
-            List<IEnergyContainer> energyContainers = getEnergyContainers();
-            if (!energyContainers.isEmpty()) {
-                energyContainers.getFirst().setEnergy(energy, null);
+            IEnergyContainer energyContainer = getEnergyContainer();
+            if (energyContainer != null) {
+                energyContainer.setEnergy(energy, null);
             }
         }));
     }

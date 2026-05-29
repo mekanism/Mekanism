@@ -3,6 +3,7 @@ package mekanism.common.lib.multiblock;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
@@ -27,14 +28,16 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IFluidTank> fluidTanks = new ArrayList<>();
     private final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
+    @Nullable
+    private IEnergyContainer energyContainer;
 
     public void apply(T data) {
         for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
@@ -91,7 +94,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Chemical
             ContainerType.CHEMICAL.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
             // Energy
-            StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers(), transaction);
+            StorageUtils.mergeEnergyContainers(getEnergyContainer(), mergeCache.getEnergyContainer(), transaction);
             // Heat
             StorageUtils.mergeHeatCapacitors(getHeatCapacitors(), mergeCache.getHeatCapacitors());
             transaction.commit();
@@ -116,10 +119,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         return chemicalTanks;
     }
 
-    @NotNull
+    @Nullable
     @Override
-    public List<IEnergyContainer> getEnergyContainers() {
-        return energyContainers;
+    public IEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 
     @NotNull
@@ -176,12 +179,17 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, null));
+                cache.energyContainer = BasicEnergyContainer.create(Long.MAX_VALUE, null);
             }
 
             @Override
             protected List<IEnergyContainer> containerList(IMultiblockContents handler) {
-                return handler.getEnergyContainers();
+                //TODO - 26.1: Re-evaluate this
+                IEnergyContainer energyContainer = handler.getEnergyContainer();
+                if (energyContainer != null) {
+                    return Collections.singletonList(energyContainer);
+                }
+                return Collections.emptyList();
             }
         };
 

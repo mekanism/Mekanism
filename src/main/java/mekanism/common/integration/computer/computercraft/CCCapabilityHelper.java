@@ -5,7 +5,6 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import java.util.function.BooleanSupplier;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.integration.computer.ComputerEnergyHelper;
 import mekanism.common.integration.computer.ComputerFilterHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
@@ -39,7 +38,6 @@ public class CCCapabilityHelper {
     }
 
     public static void registerApis() {
-        ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerEnergyHelper.class, "mekanismEnergyHelper"));
         ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerFilterHelper.class, "mekanismFilterHelper"));
     }
 }

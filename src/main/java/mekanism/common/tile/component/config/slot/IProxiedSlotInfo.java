@@ -7,20 +7,22 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import org.jspecify.annotations.Nullable;
 
 public interface IProxiedSlotInfo extends ISlotInfo {
 
     class EnergyProxy extends EnergySlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IEnergyContainer>> containerSupplier;
+        private final Supplier<@Nullable IEnergyContainer> containerSupplier;
 
-        public EnergyProxy(boolean canInput, boolean canOutput, Supplier<List<IEnergyContainer>> containerSupplier) {
-            super(canInput, canOutput);
+        public EnergyProxy(boolean canInput, boolean canOutput, Supplier<@Nullable IEnergyContainer> containerSupplier) {
+            super(canInput, canOutput, null);
             this.containerSupplier = containerSupplier;
         }
 
+        @Nullable
         @Override
-        public List<IEnergyContainer> getContainers() {
+        public IEnergyContainer getContainer() {
             return containerSupplier.get();
         }
     }
@@ -88,6 +90,6 @@ public interface IProxiedSlotInfo extends ISlotInfo {
     @FunctionalInterface
     interface ProxySlotInfoCreator<T> {
 
-        IProxiedSlotInfo create(boolean canInput, boolean canOutput, Supplier<List<T>> supplier);
+        IProxiedSlotInfo create(boolean canInput, boolean canOutput, Supplier<T> supplier);
     }
 }

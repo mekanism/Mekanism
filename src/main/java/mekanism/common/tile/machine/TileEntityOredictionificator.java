@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 import mekanism.common.content.filter.FilterManager;
@@ -56,7 +55,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
-        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.RIGHT);
+        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);

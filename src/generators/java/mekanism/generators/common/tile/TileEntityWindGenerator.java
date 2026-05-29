@@ -1,13 +1,14 @@
 package mekanism.generators.common.tile;
 
+import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
     private static final float SPEED = 32F;
-    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT, RelativeSide.BOTTOM};
+    private static final Set<RelativeSide> ENERGY_SIDES = Set.of(RelativeSide.FRONT, RelativeSide.BOTTOM);
 
     private float angle;
     private double currentMultiplier = 0;
@@ -45,19 +46,19 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35));
         return builder.build();
     }
 
     @Override
-    protected RelativeSide[] getEnergySides() {
+    protected Set<RelativeSide> getEnergySides() {
         return ENERGY_SIDES;
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainerIntoSlot();
+        energySlot.drainContainerIntoSlot(null);
         // If we're in a blacklisted dimension, there's nothing more to do
         if (isBlacklistDimension) {
             return sendUpdatePacket;
@@ -65,19 +66,19 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (ticker % SharedConstants.TICKS_PER_SECOND == 0) {
             // Recalculate the current multiplier once a second
             currentMultiplier = getMultiplier();
-            setActive(canFunction() && currentMultiplier != 0L);
+            setActive(canFunction() && currentMultiplier != 0);
         }
-        if (currentMultiplier != 0L && canFunction()) {
+        if (currentMultiplier != 0 && canFunction()) {
             try (Transaction transaction = Transaction.openRoot()) {
-                getEnergyContainer().insert(getCurrentGeneration(), transaction, AutomationType.INTERNAL);
+                energyContainer().insert(getCurrentGeneration(), transaction, AutomationType.INTERNAL);
                 transaction.commit();
             }
         }
         return sendUpdatePacket;
     }
 
-    public long getCurrentGeneration() {
-        return MathUtils.clampToLong(MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier);
+    public int getCurrentGeneration() {
+        return MathUtils.clampToInt(MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier);
     }
 
     @Override
@@ -170,8 +171,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     //Methods relating to IComputerTile
     @Override
-    long getProductionRate() {
-        return getActive() ? getCurrentGeneration() : 0L;
+    int getProductionRate() {
+        return getActive() ? getCurrentGeneration() : 0;
     }
     //End methods IComputerTile
 }

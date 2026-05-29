@@ -107,7 +107,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     } else {
                         robit.setOwnerUUID(ownerUUID, null);
                     }
-                    ContainerType.ENERGY.copyToContainers(robit.getContainers(), itemType);
+                    ContainerType.ENERGY.copyToContainer(robit.getEnergyContainer(), itemType);
                     ContainerType.ITEM.copyToContainers(robit.getInventorySlots(), itemType);
                     Component name = itemType.get(MekanismDataComponents.ROBIT_NAME);
                     if (name != null) {

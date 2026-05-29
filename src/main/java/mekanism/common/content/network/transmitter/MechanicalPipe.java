@@ -12,7 +12,6 @@ import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleFluidTransmitterValidator;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -35,7 +34,7 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     }
 
     @Override
-    protected AbstractAcceptorCache<ResourceHandler<FluidResource>, ?> createAcceptorCache() {
+    protected AcceptorCache<ResourceHandler<FluidResource>> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID.block());
     }
 

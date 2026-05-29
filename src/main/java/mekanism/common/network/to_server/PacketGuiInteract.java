@@ -29,6 +29,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -441,6 +442,21 @@ public class PacketGuiInteract implements IMekanismPacket {
         SET_TIME((tile, player, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier amplifier) {
                 amplifier.setDelay(extra);
+            }
+        }),
+        MIN_THRESHOLD((tile, _, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMinThresholdFromPacket(extra);
+            }
+        }),
+        MAX_THRESHOLD((tile, _, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMaxThresholdFromPacket(extra);
+            }
+        }),
+        ENERGY_USAGE((tile, _, extra) -> {
+            if (tile instanceof TileEntityResistiveHeater heater) {
+                heater.setEnergyUsageFromPacket(extra);
             }
         }),
 

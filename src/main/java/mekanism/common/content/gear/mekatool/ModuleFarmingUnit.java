@@ -213,7 +213,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
     //TODO - 26.1: Should we make the interaction free for creative players?
     private static InteractionResult useAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter,
-          TransactionContext transaction, ItemAbility action, @Nullable SoundEvent sound, int particle, long energyUsage, IToolAOEData toolAOEData) {
+          TransactionContext transaction, ItemAbility action, @Nullable SoundEvent sound, int particle, int energyUsage, IToolAOEData toolAOEData) {
         try (Transaction simulation = Transaction.open(transaction)) {
             if (energyContainer.extract(energyUsage, simulation, AutomationType.MANUAL) < energyUsage) {
                 //Fail if we don't have enough energy

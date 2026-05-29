@@ -16,20 +16,21 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
-import mekanism.common.capabilities.holder.IContainerHolder;
-import mekanism.common.capabilities.holder.MekContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public FuelTank fuelTank;
     @Nullable
     private ChemicalFuel cachedFuel = null;
-    private long gasUsedLastTick;
+    private int gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
     ChemicalInventorySlot fuelSlot;
@@ -72,7 +73,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         builder.addContainer(fuelSlot = ChemicalInventorySlot.fill(fuelTank, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
-        builder.addContainer(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         fuelSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }
@@ -80,7 +81,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainerIntoSlot();
+        energySlot.drainContainerIntoSlot(null);
         fuelSlot.fillTankFromSlot();
         gasUsedLastTick = 0;
 
@@ -90,12 +91,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             //how full the tank is, poor-man's "pressure" measurement
             double fullness = fuelTank.amountAsLong() / (double) fuelTank.capacityAsLong(fuel);
 
-            long energyDensity = cachedFuel.energyDensity();
+            int energyDensity = cachedFuel.energyDensity();
             //maximum amount that can be produced AND stored
-            long maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsLong());
+            //TODO - 26.1: Evaluate if this can overflow, it probably can
+            int maxJoulesThisTick = energyDensity * Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsInt());
             if (maxJoulesThisTick > 0) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    long inserted = getEnergyContainer().insert(maxJoulesThisTick, transaction, AutomationType.INTERNAL);
+                    int inserted = energyContainer().insert(maxJoulesThisTick, transaction, AutomationType.INTERNAL);
                     if (inserted > 0) {
                         //calculate the mB for this amount of energy, rounded up
                         long mbThisTick = Math.ceilDiv(inserted, energyDensity);
@@ -113,7 +115,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     @ComputerMethod(nameOverride = "getBurnRate")
-    public long getUsed() {
+    public int getUsed() {
         return gasUsedLastTick;
     }
 
@@ -130,7 +132,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableLong.create(this::getUsed, value -> gasUsedLastTick = value));
+        container.track(SyncableInt.create(this::getUsed, value -> gasUsedLastTick = value));
     }
 
     @Nullable
@@ -140,11 +142,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    long getProductionRate() {
+    int getProductionRate() {
         if (cachedFuel == null) {
             return 0;
         }
-        return MathUtils.clampToLong(cachedFuel.energyDensity() * getUsed());
+        return MathUtils.multiplyClamped(cachedFuel.energyDensity(), getUsed());
     }
     //End methods IComputerTile
 

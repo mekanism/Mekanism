@@ -54,19 +54,6 @@ public class MathUtils {
     }
 
     /**
-     * Combination of {@link #clampToLong(double)} and {@link Math#ceil(double)} to ceil and then clamp to a long.
-     *
-     * @param d double to ceil and then clamp
-     *
-     * @return a long clamped to {@link Long#MAX_VALUE}
-     *
-     * @since 10.6.6
-     */
-    public static long ceilToLong(double d) {
-        return clampToLong(Math.ceil(d));
-    }
-
-    /**
      * Gets an element in an array by index, taking the mod (or floored mod if negative).
      *
      * @param elements Elements.
@@ -155,5 +142,43 @@ public class MathUtils {
             }
         }
         return r;
+    }
+
+    /**
+     * Like {@link Math#addExact(int, int)} but clamps to max int instead of throwing
+     *
+     * @param x the first value
+     * @param y the second value
+     *
+     * @return the result or max int if it overflows
+     *
+     * @since 10.8.0
+     */
+    public static int addClamped(int x, int y) {
+        int r = x + y;
+        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
+        if (((x ^ r) & (y ^ r)) < 0) {
+            return Integer.MAX_VALUE;
+        }
+        return r;
+    }
+
+    /**
+     * Like {@link Math#multiplyExact(int, int)} but clamps to max int instead of throwing
+     *
+     * @param x the first value. should be positive
+     * @param y the second value. should be positive
+     *
+     * @return the result or max int if it overflows
+     *
+     * @since 10.8.0
+     */
+    public static int multiplyClamped(int x, int y) {
+        //TODO: Re-evaluate usages of this and addClamped, and try to make it so that we don't have it possible for things to overflow instead
+        long r = x * (long) y;
+        if ((int) r != r) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) r;
     }
 }

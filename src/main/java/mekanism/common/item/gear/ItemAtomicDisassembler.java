@@ -18,7 +18,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
@@ -56,6 +55,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -79,6 +79,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -121,7 +122,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
         if (ALWAYS_SUPPORTED_ACTIONS.contains(action) && instance instanceof ItemStack stack) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
             if (energyContainer != null) {
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
                 // as that is the best guess we can currently give whether the corresponding dig action is supported
@@ -137,7 +138,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         super.postHurtEnemy(stack, target, attacker);
-        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandler != null) {
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
@@ -153,7 +154,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandler == null) {
             return 0;
         }
@@ -161,11 +162,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         // and wraps the entire hitting the entity within their transaction?
         try (Transaction simulation = Transaction.openRoot()) {
             //Use raw hardness to get the best guess of if it is zero or not
-            long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
-            long energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
+            int energyRequired = getDestroyEnergy(stack, state.destroySpeed);
+            int energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
             if (energyAvailable < energyRequired) {
                 //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-                return (float) (DisassemblerMode.NORMAL.getEfficiency() * (energyAvailable / (double) energyRequired));
+                return DisassemblerMode.NORMAL.getEfficiency() * ((float) energyAvailable / energyRequired);
             }
         }
         return getMode(stack).getEfficiency();
@@ -173,10 +174,10 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
         if (energyContainer != null) {
-            long baseDestroyEnergy = getDestroyEnergy(stack);
-            long energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+            int baseDestroyEnergy = getDestroyEnergy(stack);
+            int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
             // and wraps the entire hitting the entity within their transaction?
             try (Transaction transaction = Transaction.openRoot()) {
@@ -191,9 +192,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                         Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
                               Reference2BooleanMaps.singleton(state.getBlock(), true));
-                        MekanismUtils.veinMineArea(energyContainer, 0L, baseDestroyEnergy, world, pos, player, stack, this, found, transaction,
-                              (_, _) -> 0L,
-                              (base, hardness, distance, _) -> MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+                        MekanismUtils.veinMineArea(energyContainer, 0, baseDestroyEnergy, world, pos, player, stack, this, found, transaction,
+                              (_, _) -> 0,
+                              (base, hardness, distance, _) -> Mth.ceil(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
                     }
                 }
                 transaction.commit();
@@ -202,15 +203,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return true;
     }
 
-    private long getDestroyEnergy(ItemInstance itemStack, float hardness) {
+    private int getDestroyEnergy(ItemInstance itemStack, float hardness) {
         return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
     }
 
-    private static long getDestroyEnergy(long baseDestroyEnergy, float hardness) {
+    private static int getDestroyEnergy(int baseDestroyEnergy, float hardness) {
         return hardness == 0 ? Math.max(baseDestroyEnergy / 2, 1) : baseDestroyEnergy;
     }
 
-    private long getDestroyEnergy(ItemInstance itemStack) {
+    private int getDestroyEnergy(ItemInstance itemStack) {
         return MathUtils.multiplyClamped(MekanismConfig.gear.disassemblerEnergyUsage.get(), getMode(itemStack).getEfficiency());
     }
 
@@ -233,7 +234,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void adjustAttributes(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
         long energy = energyContainer == null ? 0L : energyContainer.energy();
         long energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
         double damage = MekanismConfig.gear.disassemblerMaxDamage.get();

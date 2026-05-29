@@ -44,7 +44,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         // if there is only a single output, which means we can safely skip the other
         return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(),
               itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, chemicalOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : chemicalOutput,
-              recipe.getEnergyRequired() == 0L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
+              recipe.getEnergyRequired() == 0 ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
     }
 
@@ -88,7 +88,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
                   outputItem,
                   outputChemical,
-                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(0L)
+                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(0)
             ));
         }
         return Optional.empty();

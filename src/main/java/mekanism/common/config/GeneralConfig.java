@@ -55,8 +55,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledChemicalTanks;
     //Energy Conversion
-    public final CachedBooleanValue blacklistForge;
-    public final CachedDoubleValue forgeConversionRate;
     public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
@@ -75,8 +73,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Laser
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedIntValue laserRange;
-    public final CachedLongValue laserEnergyPerHardness;
-    public final CachedLongValue laserEnergyPerDamage;
+    public final CachedIntValue laserEnergyPerHardness;
+    public final CachedIntValue laserEnergyPerDamage;
     //Oredictionificator
     public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
@@ -109,7 +107,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
     public final CachedLongValue spsOutputTankCapacity;
-    public final CachedLongValue spsEnergyPerInput;
+    public final CachedIntValue spsEnergyPerInput;
 
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -184,11 +182,6 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION.applyToBuilder(builder).push("energy_conversion");
-        blacklistForge = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_FE.applyToBuilder(builder)
-              .worldRestart()
-              .define("blacklistForge", false));
-        forgeConversionRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_FE.applyToBuilder(builder)
-              .defineInRange("feConversionRate", 1, 0.0001, 10_000 /* Inverse of min positive value */));
         maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_STEAM, "maxEnergyPerSteam", 10);
         builder.pop();
 
@@ -225,8 +218,10 @@ public class GeneralConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GENERAL_LASER.applyToBuilder(builder).push("laser");
         laserRange = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_LASER_RANGE.applyToBuilder(builder)
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyPerHardness = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_HARDNESS, "energyPerHardness", 100_000);
-        laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_DAMAGE, "energyPerDamage", 2_500, 1);
+        laserEnergyPerHardness = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_LASER_ENERGY_HARDNESS.applyToBuilder(builder)
+              .defineInRange("energyPerHardness", 100_000, 0, Integer.MAX_VALUE));
+        laserEnergyPerDamage = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_LASER_ENERGY_DAMAGE.applyToBuilder(builder)
+              .defineInRange("energyPerDamage", 2_500, 1, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR.applyToBuilder(builder).push("oredictionificator");
@@ -249,7 +244,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GENERAL_QE.applyToBuilder(builder).push("quantum_entangloporter");
         entangloporterEnergyBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_ENERGY.applyToBuilder(builder)
               .worldRestart()
-              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
+              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseCapacity(), 1, Long.MAX_VALUE));
         entangloporterFluidBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_FLUID.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseCapacity(), 1, Long.MAX_VALUE));
@@ -309,7 +304,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_CAPACITY_OUTPUT.applyToBuilder(builder)
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_SPS_ENERGY_PER, "energyPerInput", 1_000_000);
+        spsEnergyPerInput = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_ENERGY_PER.applyToBuilder(builder)
+              .defineInRange("energyPerInput", 1_000_000, 0, Integer.MAX_VALUE));
         builder.pop();
 
         configSpec = builder.build();

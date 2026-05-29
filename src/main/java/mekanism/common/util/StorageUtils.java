@@ -6,8 +6,7 @@ import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.energy.IMekanismEnergyHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
@@ -29,6 +28,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -45,13 +45,9 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
-        if (energyHandlerItem != null) {
-            int energyContainerCount = energyHandlerItem.size();
-            for (int container = 0; container < energyContainerCount; container++) {
-                tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
-                      EnergyDisplay.of(energyHandlerItem.getAmountAsLong(container), energyHandlerItem.getCapacityAsLong(container))));
-            }
+        EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        if (energyHandler != null) {
+            tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(energyHandler)));
         } else if (showMissingCap) {
             tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
         }
@@ -152,43 +148,39 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess) {
-        IStrictEnergyHandler capability = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (capability instanceof IMekanismStrictEnergyHandler handler) {
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+        if (energyHandler instanceof IMekanismEnergyHandler handler) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
-            for (IEnergyContainer energyContainer : handler.getContainers()) {
-                energyContainer.setEnergy(energyContainer.capacity(), null);
-            }
+            IEnergyContainer energyContainer = handler.getEnergyContainer();
+            energyContainer.setEnergy(energyContainer.capacity(), null);
         }
         //The item is now filled return it for convenience
         return itemAccess.getResource().toStack(itemAccess.getAmount());
     }
 
     @Nullable//TODO - 26.1: Evaluate usages and probably try to remove this method
-    public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
+    public static IEnergyContainer getEnergyContainer(ItemStack stack) {
         //TODO - 26.1: See which ones of these can be moved to the item access method with more specific item access values
         if (stack.isEmpty()) {
             //While getCapability will return null for an empty stack, we just short circuit here
             return null;
         }
-        return getEnergyContainer(ItemAccess.forStack(stack), container);
+        return getEnergyContainer(ItemAccess.forStack(stack));
     }
 
     @Nullable
-    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess, int container) {
+    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess) {
         //TODO - 26.1: Re-evaluate callers
         //TODO - 26.1: Should we just remove this method all together? If the passed item access is stacked, then this will return a container that doesn't care about scaling
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
-            List<IEnergyContainer> containers = energyHandler.getContainers();
-            if (container >= 0 && container < containers.size()) {
-                return containers.get(container);
-            }
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+        if (energyHandler instanceof IMekanismEnergyHandler handler) {
+            return handler.getEnergyContainer();
         }
         return null;
     }
 
     public static double getEnergyRatio(ItemStack stack) {
-        IEnergyContainer container = getEnergyContainer(stack, 0);
+        IEnergyContainer container = getEnergyContainer(stack);
         return container == null ? 0 : MathUtils.divideToLevel(container.energy(), container.capacity());
     }
 
@@ -265,37 +257,29 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         //If we are currently stacked, don't display the bar as it will overlap the stack count
         if (stack.count() == 1) {
             //We also don't display the bar if there is nothing stored in any of the containers
-            IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-            if (energyHandlerItem != null) {
-                for (int container = 0, containers = energyHandlerItem.size(); container < containers; container++) {
-                    if (energyHandlerItem.getAmountAsLong(container) > 0) {
-                        return true;
-                    }
-                }
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+            if (energyHandler != null) {
+                return energyHandler.getAmountAsLong() > 0;
             }
         }
         return false;
     }
 
     public static int getEnergyBarWidth(ItemStack stack) {
-        double bestRatio = 0;
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
-        if (energyHandlerItem != null) {
-            int containers = energyHandlerItem.size();
-            for (int container = 0; container < containers; container++) {
-                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getAmountAsLong(container), energyHandlerItem.getCapacityAsLong(container)));
-            }
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        if (energyHandler == null) {
+            return 0;
         }
-        return getBarWidth(bestRatio);
+        return getBarWidth(MathUtils.divideToLevel(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong()));
     }
 
-    public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd, TransactionContext transaction) {
-        validateSizeMatches(containers, toAdd, "energy container");
-        for (int i = 0; i < toAdd.size(); i++) {
-            IEnergyContainer container = containers.get(i);
-            IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), transaction);
+    public static void mergeEnergyContainers(@Nullable IEnergyContainer container, @Nullable IEnergyContainer mergeContainer, TransactionContext transaction) {
+        if (container == null || mergeContainer == null) {
+            //Nothing to do here
+            //TODO: Do we want to error if the
+            return;
         }
+        container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), transaction);
     }
 
     public static void mergeHeatCapacitors(List<IHeatCapacitor> capacitors, List<IHeatCapacitor> toAdd) {

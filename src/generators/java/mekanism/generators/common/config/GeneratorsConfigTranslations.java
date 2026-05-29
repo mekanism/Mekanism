@@ -14,24 +14,25 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_GENERATOR_SOLAR("server.generator.solar", "Solar Generator", "Settings for configuring Solar Generators", true),
     SERVER_SOLAR_GENERATION("server.generator.solar.gen", "Energy Generation",
-          "Peak energy generation in Joules/t for the Solar Generator. Note: It can go higher than this value in some extreme environments."),
+          "Peak energy generation in FE/t for the Solar Generator. Note: It can go higher than this value in some extreme environments."),
     SERVER_SOLAR_GENERATION_ADVANCED("server.generator.solar.gen.advanced", "Advanced Solar Energy Generation",
-          "Peak energy generation in Joules/t for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments."),
+          "Peak energy generation in FE/t for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments."),
 
     SERVER_GENERATOR_BIO("server.generator.bio", "Bio Generator", "Settings for configuring Bio Generators", true),
-    SERVER_GENERATOR_BIO_GENERATION("server.generator.bio.gen", "Energy Generation", "Energy produced by the Bio Generator in Joules/t."),
+    SERVER_GENERATOR_BIO_GENERATION("server.generator.bio.gen", "Energy Generation", "Energy produced by the Bio Generator in FE/t."),
     SERVER_GENERATOR_BIO_FUEL_PER_ITEM("server.generator.bio.fuel_per_item", "Fluid Per Biofuel Item", "How many mB one item of Biofuel adds to the generator's tank. Effectively defines how many ticks an item burns for and the total energy output of the Biofuel item."),
     SERVER_GENERATOR_BIO_TANK_CAPACITY("server.generator.bio.tank_capacity", "Tank Capacity", "The capacity in mB of the fluid tank in the Bio Generator."),
 
     SERVER_GENERATOR_HEAT("server.generator.heat", "Heat Generator", "Settings for configuring Heat Generators", true),
     SERVER_GENERATOR_HEAT_GENERATION("server.generator.heat.gen", "Energy Generation",
-          "Amount of energy in Joules the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. "
+          "Amount of energy the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. "
           + "Note: lavaSides is how many sides are adjacent to lava, this includes the block itself if it is lava logged allowing for a max of 7 \"sides\"."),
     SERVER_GENERATOR_HEAT_GEN_LAVA("server.generator.heat.gen.lava", "Submerged Energy Generation",
           "Multiplier of effectiveness of Lava that is adjacent to the Heat Generator."),
     SERVER_GENERATOR_HEAT_GEN_NETHER("server.generator.heat.gen.nether", "Nether Energy Generation",
-          "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether."),
+          "Add this amount to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether."),
     SERVER_GENERATOR_HEAT_TANK_CAPACITY("server.generator.heat.tank_capacity", "Tank Capacity", "The capacity in mB of the fluid tank in the Heat Generator."),
+    //TODO - 26.1: Should this reference to joules go away? It is heat not energy
     SERVER_GENERATOR_HEAT_FLUID_RATE("server.generator.heat.fluid_rate", "Fluid Rate",
           "The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator."),
 
@@ -39,8 +40,8 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_GENERATOR_GAS_TANK_CAPACITY("server.generator.gas.tank_capacity", "Tank Capacity", "The capacity in mB of the chemical tank in the Gas-Burning Generator."),
 
     SERVER_GENERATOR_WIND("server.generator.wind", "Wind Generator", "Settings for configuring Wind Generators", true),
-    SERVER_GENERATOR_WIND_GEN_MIN("server.generator.wind.gen.min", "Min Energy Generation", "Minimum energy generation in Joules/t that the Wind Generator can produce."),
-    SERVER_GENERATOR_WIND_GEN_MAX("server.generator.wind.gen.max", "Max Energy Generation", "Maximum energy generation in Joules/t that the Wind Generator can produce."),
+    SERVER_GENERATOR_WIND_GEN_MIN("server.generator.wind.gen.min", "Min Energy Generation", "Minimum energy generation in FE/t that the Wind Generator can produce."),
+    SERVER_GENERATOR_WIND_GEN_MAX("server.generator.wind.gen.max", "Max Energy Generation", "Maximum energy generation in FE/t that the Wind Generator can produce."),
     SERVER_GENERATOR_WIND_GEN_MIN_Y("server.generator.wind.gen.min.height", "Min Y Value",
           "The minimum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's minimum height."),
     SERVER_GENERATOR_WIND_GEN_MAX_Y("server.generator.wind.gen.max.height", "Max Y Value",
@@ -53,9 +54,10 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_TURBINE_RATE_DISPERSER("server.turbine.rate.disperser", "Dispersion Rate", "The rate in mB/t at which steam is dispersed into the turbine."),
     SERVER_TURBINE_RATE_CONDENSER("server.turbine.rate.condenser", "Condensation Rate", "The rate in mB/t at which steam is condensed into water in the turbine."),
     SERVER_TURBINE_ENERGY_CAPACITY("server.turbine.capacity.energy", "Energy Capacity Per Volume",
-          "Amount of energy in Joules that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
+          "Amount of energy in FE that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
     SERVER_TURBINE_CHEMICAL_CAPACITY("server.turbine.capacity.chemical", "Chemical Per Tank",
           "Amount of chemical (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * chemicalPerTank"),
+    //TODO - 26.1: Should these two reference to joules go away? It is heat not energy
     SERVER_TURBINE_JOULES_PER_STEAM("server.turbine.energy_conversion.steam", "Joules Per Steam", "Maximum Joules per tick generated per Steam unit in the Industrial Turbine."),
     SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then multiplied by the Joules Per Steam amount to calculate the generation rate."),
 
@@ -92,6 +94,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_FUSION("server.fusion", "Fusion Reactor", "Settings for configuring Fusion Reactors", "Edit Reactor Settings"),
     SERVER_FUSION_FUEL_ENERGY("server.fusion.fuel_energy", "Energy Per D-T Fuel", "Affects the Injection Rate, Max Temp, and Ignition Temp."),
+    //TODO - 26.1: Should these two reference to joules go away? It is heat not energy
     SERVER_FUSION_THERMOCOUPLE_EFFICIENCY("server.fusion.thermocouple_efficiency", "Thermocouple Efficiency",
           "The fraction of the heat dissipated from the case that is converted to Joules."),
     SERVER_FUSION_THERMAL_CONDUCTIVITY("server.fusion.casing_thermal_conductivity", "Casing Thermal Conductivity",
@@ -100,7 +103,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_FUSION_HEATING_RATE("server.fusion.water_heating_ratio", "Water Heating Ratio",
           "The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation."),
     SERVER_FUSION_FUEL_CAPACITY("server.fusion.capacity.fuel", "Fuel Capacity", "Amount of fuel (mB) that the fusion reactor can store."),
-    SERVER_FUSION_ENERGY_CAPACITY("server.fusion.capacity.energy", "Energy Capacity", "Amount of energy (Joules) the fusion reactor can store."),
+    SERVER_FUSION_ENERGY_CAPACITY("server.fusion.capacity.energy", "Energy Capacity", "Amount of energy the fusion reactor can store."),
     SERVER_FUSION_WATER_INJECTION("server.fusion.injection.water", "Water Per Injection",
           "Amount of water (mB) per injection rate that the fusion reactor can store. Max = injectionRate * waterPerInjection"),
     SERVER_FUSION_STEAM_INJECTION("server.fusion.injection.steam", "Steam Per Injection",
@@ -117,7 +120,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     //GEAR CONFIG FILE
 
     GEAR_MEKA_SUIT_GEOTHERMAL("gear.meka_suit.charge_rate.geothermal", "Geothermal Charging Rate",
-          "Geothermal charging rate in Joules per tick, per degree above ambient, per upgrade installed. This value scales down based on how much of "
+          "Geothermal charging rate in FE per tick, per degree above ambient, per upgrade installed. This value scales down based on how much of "
           + "the MekaSuit Pants is submerged. Fire is treated as having a temperature of ~200K above ambient, lava has a temperature of 1,000K above ambient."),
 
     GEAR_MEKA_SUIT_HEAT_DAMAGE("gear.meka_suit.damage_absorption.heat", "Heat Damage Reduction",

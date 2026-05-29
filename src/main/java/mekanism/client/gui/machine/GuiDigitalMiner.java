@@ -60,7 +60,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<Component> list = new ArrayList<>();
             ILangEntry runningType;
-            if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().capacity()) {
+            if (tile.energyContainer().getEnergyPerTick() > tile.energyContainer().capacity()) {
                 runningType = MekanismLang.MINER_LOW_POWER;
             } else if (tile.isRunning()) {
                 runningType = MekanismLang.MINER_RUNNING;
@@ -89,9 +89,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiDigitalSwitch(this, 57, 56, SILK, tile::getSilkTouch, (element, event, isDoubleClick) ->
               PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON))
               .setTooltip(MekanismLang.MINER_SILK);
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 157, 39, 47))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MinerEnergyContainer energyContainer = tile.getEnergyContainer();
+                  MinerEnergyContainer energyContainer = tile.energyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
@@ -99,7 +99,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? List.of(MekanismLang.MINER_WELL.translate()) : List.of(MekanismLang.MINER_MISSING_BLOCK.translate())));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
-            MinerEnergyContainer energyContainer = tile.getEnergyContainer();
+            MinerEnergyContainer energyContainer = tile.energyContainer();
             return List.of(
                   MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.capacity())),
                   MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),

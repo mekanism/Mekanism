@@ -1,9 +1,8 @@
 package mekanism.api.gear;
 
-import java.util.function.LongSupplier;
+import java.util.function.IntSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.Holder;
@@ -12,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -158,7 +158,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
 
     //TODO - 26.1: Docs and re-evaluate this method
     @Nullable
-    IStrictEnergyHandler getEnergyHandler(ItemStack stack);
+    EnergyHandler getEnergyHandler(ItemStack stack);
 
     /**
      * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
@@ -170,8 +170,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.4.0
      */
-    default boolean hasEnoughEnergy(ItemStack stack, LongSupplier energySupplier) {
-        return hasEnoughEnergy(stack, energySupplier.getAsLong());
+    default boolean hasEnoughEnergy(ItemStack stack, IntSupplier energySupplier) {
+        return hasEnoughEnergy(stack, energySupplier.getAsInt());
     }
 
     /**
@@ -184,7 +184,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.4.0
      */
-    boolean hasEnoughEnergy(ItemStack stack, long energy);
+    boolean hasEnoughEnergy(ItemStack stack, int energy);
 
     /**
      * Helper to use energy from the item this module is installed on.
@@ -197,7 +197,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @implNote By default, this method does not use any energy from players that are in creative.
      */
-    long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
+    int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
 
     /**
      * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for players in creative or
@@ -210,7 +210,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Actual amount of energy used.
      */
-    long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 
     /**
      * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return 0. If {@code checkCreative} is {@code false} this
@@ -225,8 +225,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
      */
-    long useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    int useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 
     //TODO - 26.1: Docs
-    long useEnergy(@Nullable LivingEntity wearer, @Nullable IStrictEnergyHandler energyHandler, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 }

@@ -1,5 +1,7 @@
 package mekanism.common.attachments.containers.energy;
 
+import com.google.common.primitives.Ints;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -23,10 +25,10 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     private final Predicate<@NotNull AutomationType> canExtract;
     private final Predicate<@NotNull AutomationType> canInsert;
     private final LongSupplier maxEnergy;
-    private final LongSupplier rate;
+    private final IntSupplier rate;
 
     public ComponentBackedEnergyContainer(ItemAccess attachedAccess, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
+          Predicate<@NotNull AutomationType> canInsert, IntSupplier rate, LongSupplier maxEnergy) {
         super(attachedAccess, containerIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -68,20 +70,20 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertionRate(AutomationType automationType) {
+    protected int getInsertionRate(AutomationType automationType) {
         //Allow manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Long.MAX_VALUE : rate.getAsLong();
+        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractionRate(AutomationType automationType) {
+    protected int getExtractionRate(AutomationType automationType) {
         //Allow manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Long.MAX_VALUE : rate.getAsLong();
+        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0 || !isValidForInsertion(automationType)) {
             //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
@@ -90,14 +92,14 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         AttachedEnergy attachedEnergy = getAttached();
         long currentStored = getContents(attachedEnergy);
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = capacity() - currentStored;
+        int needed = Ints.saturatedCast(capacity() - currentStored);
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
         }
-        long toAdd = Math.min(amount, needed);
+        int toAdd = Math.min(amount, needed);
         // Note: We just set it as unchecked as we have already validated it
         if (setContents(attachedEnergy, currentStored + toAdd, transaction, false)) {
             return toAdd;
@@ -107,8 +109,8 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0 || !isValidForExtraction(automationType)) {
             //"Fail quick" nothing is being extracted, or if we can never extract from this slot
@@ -121,7 +123,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
             return 0;
         }
         //If we are trying to extract more than we have, just change it so that we are extracting it all
-        long toRemove = Math.min(amount, currentStored);
+        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         //Shrink the stack by the amount removed

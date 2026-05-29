@@ -1,6 +1,4 @@
 Class,Method Name,Params,Returns,Restriction,Requires Public Security,Description
-API Global: computerEnergyHelper,feToJoules,fe: Number (long),Number (long),,false,Convert Forge Energy to Mekanism Joules
-API Global: computerEnergyHelper,joulesToFE,joules: Number (long),Number (long),,false,Convert Mekanism Joules to Forge Energy
 API Global: computerFilterHelper,createMinerItemFilter,item: String (Item),Table (MinerItemStackFilter),,false,Create a Digital Miner Item Filter from an Item name
 API Global: computerFilterHelper,createMinerModIdFilter,modId: String,Table (MinerModIDFilter),,false,Create a Digital Miner Mod Id Filter from a mod id
 API Global: computerFilterHelper,createMinerTagFilter,tag: String,Table (MinerTagFilter),,false,Create a Digital Miner Tag Filter from a Tag name
@@ -408,14 +406,14 @@ Fusion Reactor Multiblock (formed),isIgnited,,boolean,,false,Checks if a reactio
 Fusion Reactor Multiblock (formed),setInjectionRate,rate: Number (int),,,false,
 Fusion Reactor Port,getMode,,boolean,,false,"true -> output, false -> input"
 Fusion Reactor Port,setMode,output: boolean,,,false,"true -> output, false -> input"
-Gas Generator,getBurnRate,,Number (long),,false,
+Gas Generator,getBurnRate,,Number (int),,false,
 Gas Generator,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy item slot.
 Gas Generator,getFuel,,Table (LargeResourceStack),,false,Get the contents of the fuel tank.
 Gas Generator,getFuelCapacity,,Number (long),,false,Get the capacity of the fuel tank.
 Gas Generator,getFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the fuel tank.
 Gas Generator,getFuelItem,,Table (LargeResourceStack),,false,Get the contents of the fuel item slot.
 Gas Generator,getFuelNeeded,,Number (long),,false,Get the amount needed to fill the fuel tank.
-Generator,getProductionRate,,Number (long),,false,Get the amount of energy produced by this generator in the last tick.
+Generator,getProductionRate,,Number (int),,false,Get the amount of energy produced by this generator in the last tick.
 Generic Mekanism Machine,getComparatorLevel,,Number (int),COMPARATOR,false,
 Generic Mekanism Machine,getDirection,,String (Direction),DIRECTIONAL,false,
 Generic Mekanism Machine,getEnergy,,Number (long),ENERGY,false,
@@ -475,12 +473,12 @@ Isotopic Centrifuge,getOutputItem,,Table (LargeResourceStack),,false,Get the con
 Isotopic Centrifuge,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
 Laser,getDiggingPos,,Table (BlockPos),,false,
 Laser Amplifier,getDelay,,Number (int),,false,
-Laser Amplifier,getMaxThreshold,,Number (long),,false,
-Laser Amplifier,getMinThreshold,,Number (long),,false,
+Laser Amplifier,getMaxThreshold,,Number (int),,false,
+Laser Amplifier,getMinThreshold,,Number (int),,false,
 Laser Amplifier,getRedstoneOutputMode,,String (RedstoneOutput),,false,
 Laser Amplifier,setDelay,delay: Number (int),,,true,
-Laser Amplifier,setMaxThreshold,threshold: Number (long),,,true,
-Laser Amplifier,setMinThreshold,threshold: Number (long),,,true,
+Laser Amplifier,setMaxThreshold,threshold: Number (int),,,true,
+Laser Amplifier,setMinThreshold,threshold: Number (int),,,true,
 Laser Amplifier,setRedstoneOutputMode,mode: String (RedstoneOutput),,,true,
 Laser Tractor Beam,getItemInSlot,slot: Number (int),Table (LargeResourceStack),,false,Get the contents of the amplifier slot.
 Laser Tractor Beam,getSlotCount,,Number (int),,false,
@@ -678,11 +676,11 @@ Radioactive Waste Barrel,getNeeded,,Number (long),,false,Get the amount needed t
 Radioactive Waste Barrel,getStored,,Table (LargeResourceStack),,false,Get the contents of the barrel.
 Resistive Heater,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
 Resistive Heater,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
-Resistive Heater,getEnergyUsed,,Number (long),,false,
+Resistive Heater,getEnergyUsed,,Number (int),,false,
 Resistive Heater,getEnvironmentalLoss,,Number (double),,false,
 Resistive Heater,getTemperature,,Number (double),,false,Get the temperature of the heater in Kelvin.
 Resistive Heater,getTransferLoss,,Number (double),,false,
-Resistive Heater,setEnergyUsage,usage: Number (long),,,true,
+Resistive Heater,setEnergyUsage,usage: Number (int),,,true,
 Resource Transmitter,getBuffer,,Table (LargeResourceStack),,false,
 Resource Transmitter,getCapacity,,Number (long),,false,
 Resource Transmitter,getFilledPercentage,,Number (double),,false,

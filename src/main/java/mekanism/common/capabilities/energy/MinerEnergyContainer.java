@@ -7,6 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,24 +16,24 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
 
     public static MinerEnergyContainer input(TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MinerEnergyContainer(electricBlock.getUsage() * 4, electricBlock.getUsage(), tile, listener);
+        return new MinerEnergyContainer(4L * electricBlock.getUsage(), electricBlock.getUsage(), tile, listener);
     }
 
-    private long minerEnergyPerTick;
+    private int minerEnergyPerTick;
 
-    private MinerEnergyContainer(long maxEnergy, long energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
+    private MinerEnergyContainer(long maxEnergy, int energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
         this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 
     @Override
-    public void setEnergyPerTick(long energyPerTick) {
+    public void setEnergyPerTick(int energyPerTick) {
         super.setEnergyPerTick(energyPerTick);
         this.minerEnergyPerTick = energyPerTick;
     }
 
     @Override
-    public long getEnergyPerTick() {
+    public int getEnergyPerTick() {
         return minerEnergyPerTick;
     }
 
@@ -72,6 +73,6 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = MathUtils.ceilToLong(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
+        minerEnergyPerTick = Mth.ceil(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
     }
 }

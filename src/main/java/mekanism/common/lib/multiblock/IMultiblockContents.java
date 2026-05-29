@@ -8,6 +8,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public interface IMultiblockContents extends IMekanismHeatHandler {
 
@@ -20,8 +21,8 @@ public interface IMultiblockContents extends IMekanismHeatHandler {
     @NotNull
     List<IChemicalTank> getChemicalTanks();
 
-    @NotNull
-    List<IEnergyContainer> getEnergyContainers();
+    @Nullable
+    IEnergyContainer getEnergyContainer();
 
     @NotNull
     default List<IHeatCapacitor> getHeatCapacitors() {
