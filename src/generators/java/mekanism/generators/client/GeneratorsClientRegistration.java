@@ -57,18 +57,6 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //TODO - 26.1 fluid models
-        /*event.enqueueWork(() -> {
-            //Set fluids to a translucent render layer
-            for (Holder<Fluid> fluid : GeneratorsFluids.FLUIDS.getFluidEntries()) {
-                ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
-            }
-        });*/
-
-        //TODO - 26.1 Models
-        // adv solar gen requires to be translated up 1 block, so handle the model separately
-        /*ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
-              QuadTransformation.translate(0, 1, 0)));*/
         //TODO: Eventually make use of these custom model wrappers
         //ClientRegistration.addCustomModel(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.75));
         //ClientRegistration.addCustomModel(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.375));
@@ -100,7 +88,7 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-        //TOD 26.1 models
+        //TODO 26.1 models
         //event.addListener(RenderWindGeneratorItem.RENDERER);
     }
 

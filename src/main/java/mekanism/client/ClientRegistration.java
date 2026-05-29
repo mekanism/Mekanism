@@ -420,7 +420,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModels(RegisterBlockStateModels event) {
-        //TODO - 26.1 models
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
         event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
         event.registerModel(TransmitterBlockStateModel.Unbaked.ID, TransmitterBlockStateModel.Unbaked.MAP_CODEC);
@@ -430,7 +429,6 @@ public class ClientRegistration {
     public static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
         event.register(EnergyCubeBaseLoader.ID, EnergyCubeBaseLoader.INSTANCE);
         //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
-        //event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
         //event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
 
