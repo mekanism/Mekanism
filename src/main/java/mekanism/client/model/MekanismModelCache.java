@@ -1,9 +1,7 @@
 package mekanism.client.model;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
@@ -35,9 +33,6 @@ public class MekanismModelCache extends BaseModelCache {
     public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
     public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[EnumUtils.DRIVE_STATUSES.length];
-    private final Map<Identifier, BlockStateModelPartHelper> CUSTOM_ROBIT_MODELS = new HashMap<>();
-    private final Map<Identifier, BlockStateModelPartHelper> ROBIT_SKINS = new HashMap<>();
-    //private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
         super(Mekanism.MODID);
@@ -52,36 +47,11 @@ public class MekanismModelCache extends BaseModelCache {
     public void onBake(BakingCompleted evt) {
         super.onBake(evt);
         callbacks.forEach(Runnable::run);
-        //BASE_ROBIT = getBakedModel(evt, ModelResourceLocation.inventory(Mekanism.rl("robit")));
-        //Clear old robit skin caches
-        //Note: We don't clear the cached models as the old JSONModelDatas should be able to properly handle reloading,
-        // and we only clear the skin cache in case the skin no longer has a custom model (even though this is highly unlikely)
-        ROBIT_SKINS.clear();
     }
 
     public void reloadCallback(Runnable callback) {
         callbacks.add(callback);
     }
-
-    //TODO - 26.1 robit models
-    /*@Nullable
-    public BakedModel getRobitSkin(@NotNull SkinLookup skinLookup) {
-        Identifier skinName = skinLookup.identifier();
-        JSONModelData data;
-        if (ROBIT_SKINS.containsKey(skinName)) {
-            data = ROBIT_SKINS.get(skinName);
-        } else {
-            Identifier customModel = skinLookup.customModel();
-            if (customModel != null) {
-                //If multiple skins make use of the same custom model, have them all point at the same model data object
-                data = CUSTOM_ROBIT_MODELS.computeIfAbsent(customModel, this::registerJSONAndBake);
-            } else {
-                data = null;
-            }
-            ROBIT_SKINS.put(skinName, data);
-        }
-        return data == null ? BASE_ROBIT : data.getBakedModel();
-    }*/
 
     /**
      * Call via {@link IModuleHelper#addMekaSuitModuleModels(Identifier)}.
