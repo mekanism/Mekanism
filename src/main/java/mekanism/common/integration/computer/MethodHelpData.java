@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.MekCodecs;
@@ -65,7 +66,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             return "String (" + clazz.getSimpleName() + ")";
         }
         if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class ||
-            clazz == ItemStack.class || clazz == BlockState.class || clazz == ChemicalStack.class || Resource.class.isAssignableFrom(clazz) ||
+            clazz == ItemStack.class || clazz == BlockState.class || clazz == ChemicalStack.class || clazz == LargeResourceStack.class || Resource.class.isAssignableFrom(clazz) ||
             IFilter.class.isAssignableFrom(clazz)) {
             return "Table (" + clazz.getSimpleName() + ")";
         }

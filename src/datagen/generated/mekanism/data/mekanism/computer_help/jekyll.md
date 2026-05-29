@@ -35,7 +35,7 @@ built_in_tables:
         description: The registry name of the backing resource
         java_type: net.minecraft.resources.Identifier
         type: String (Identifier)
-    human_name: LargeResourceStack
+    human_name: Table (LargeResourceStack)
   mekanism.common.content.filter.IFilter:
     description: |-
       Common Filter properties. Use the API Global to make constructing these a little easier.
@@ -590,8 +590,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -600,8 +600,8 @@ methods:
   - description: Get the contents of the input gas tank.
     methodName: getInputChemical
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input gas tank.
     methodName: getInputChemicalCapacity
     returns:
@@ -615,8 +615,8 @@ methods:
   - description: Get the contents of the input gas item slot.
     methodName: getInputChemicalItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input gas tank.
     methodName: getInputChemicalNeeded
     returns:
@@ -625,13 +625,13 @@ methods:
   - description: Get the contents of the input item slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Bin:
   - description: Get the maximum number of items the bin can contain.
     methodName: getCapacity
@@ -646,8 +646,8 @@ methods:
   - description: Get the contents of the bin.
     methodName: getStored
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: If true, the Bin is locked to a particular item type.
     methodName: isLocked
     returns:
@@ -663,8 +663,8 @@ methods:
   - description: Get the contents of the biofuel tank.
     methodName: getBioFuel
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the biofuel tank.
     methodName: getBioFuelCapacity
     returns:
@@ -683,13 +683,13 @@ methods:
   - description: Get the contents of the energy item.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the fuel slot.
     methodName: getFuelItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Boiler Multiblock (formed):
   - description: Get the maximum possible boil rate for this Boiler, based on the
       number of Superheating Elements
@@ -705,8 +705,8 @@ methods:
   - description: Get the contents of the cooled coolant tank.
     methodName: getCooledCoolant
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the cooled coolant tank.
     methodName: getCooledCoolantCapacity
     returns:
@@ -730,8 +730,8 @@ methods:
   - description: Get the contents of the heated coolant tank.
     methodName: getHeatedCoolant
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the heated coolant tank.
     methodName: getHeatedCoolantCapacity
     returns:
@@ -755,8 +755,8 @@ methods:
   - description: Get the contents of the steam tank.
     methodName: getSteam
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the steam tank.
     methodName: getSteamCapacity
     returns:
@@ -785,8 +785,8 @@ methods:
   - description: Get the contents of the water tank.
     methodName: getWater
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the water tank.
     methodName: getWaterCapacity
     returns:
@@ -824,8 +824,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -834,8 +834,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -849,8 +849,8 @@ methods:
   - description: Get the contents of the input item slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
@@ -859,14 +859,14 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Chemical Dissolution Chamber:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -875,8 +875,8 @@ methods:
   - description: Get the contents of the gas input tank.
     methodName: getGasInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the gas input tank.
     methodName: getGasInputCapacity
     returns:
@@ -895,18 +895,18 @@ methods:
   - description: Get the contents of the gas input item slot.
     methodName: getInputGasItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -920,8 +920,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -931,8 +931,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -941,8 +941,8 @@ methods:
   - description: Get the contents of the left input tank.
     methodName: getLeftInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the left input tank.
     methodName: getLeftInputCapacity
     returns:
@@ -956,8 +956,8 @@ methods:
   - description: Get the contents of the left input item slot.
     methodName: getLeftInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the left input tank.
     methodName: getLeftInputNeeded
     returns:
@@ -966,8 +966,8 @@ methods:
   - description: Get the contents of the output (center) tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output (center) tank.
     methodName: getOutputCapacity
     returns:
@@ -981,8 +981,8 @@ methods:
   - description: Get the contents of the output item slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output (center) tank.
     methodName: getOutputNeeded
     returns:
@@ -991,8 +991,8 @@ methods:
   - description: Get the contents of the right input tank.
     methodName: getRightInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the right input tank.
     methodName: getRightInputCapacity
     returns:
@@ -1006,8 +1006,8 @@ methods:
   - description: Get the contents of the right input item slot.
     methodName: getRightInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the right input tank.
     methodName: getRightInputNeeded
     returns:
@@ -1017,8 +1017,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1027,13 +1027,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -1047,8 +1047,8 @@ methods:
   - description: Get the contents of the output item slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -1066,8 +1066,8 @@ methods:
   - description: Get the contents of the drain slot.
     methodName: getDrainItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the current Dumping configuration
     methodName: getDumpingMode
     returns:
@@ -1076,8 +1076,8 @@ methods:
   - description: Get the contents of the fill slot.
     methodName: getFillItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the filled percentage of the tank.
     methodName: getFilledPercentage
     returns:
@@ -1091,8 +1091,8 @@ methods:
   - description: Get the contents of the tank.
     methodName: getStored
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Advance the Dumping mode to the next configuration in the list
     methodName: incrementDumpingMode
     requires_public_security: true
@@ -1107,8 +1107,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1117,8 +1117,8 @@ methods:
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fluid tank.
     methodName: getFluidCapacity
     returns:
@@ -1132,13 +1132,13 @@ methods:
   - description: Get the contents of the fluid item input slot.
     methodName: getFluidItemInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the fluid item output slot.
     methodName: getFluidItemOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the fluid tank.
     methodName: getFluidNeeded
     returns:
@@ -1147,13 +1147,13 @@ methods:
   - description: Get the contents of the slurry item output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the input slurry tank.
     methodName: getSlurryInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input slurry tank.
     methodName: getSlurryInputCapacity
     returns:
@@ -1172,8 +1172,8 @@ methods:
   - description: Get the contents of the output slurry tank.
     methodName: getSlurryOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output slurry tank.
     methodName: getSlurryOutputCapacity
     returns:
@@ -1193,8 +1193,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1203,24 +1203,24 @@ methods:
   - description: Get the contents of the main input slot.
     methodName: getMainInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the secondary input slot.
     methodName: getSecondaryInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Combining Factory:
   - description: Get the contents of the secondary input slot.
     methodName: getSecondaryInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Compressing/Infusing/Injecting/Purifying Factory:
   - description: Empty the contents of the chemical tank into the environment
     methodName: dumpChemical
@@ -1228,8 +1228,8 @@ methods:
   - description: Get the contents of the chemical tank.
     methodName: getChemical
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the chemical tank.
     methodName: getChemicalCapacity
     returns:
@@ -1243,8 +1243,8 @@ methods:
   - description: Get the contents of the chemical item (extra) slot.
     methodName: getChemicalItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the chemical tank.
     methodName: getChemicalNeeded
     returns:
@@ -1257,8 +1257,8 @@ methods:
   - description: Get the contents of the chemical tank.
     methodName: getChemical
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the chemical tank.
     methodName: getChemicalCapacity
     returns:
@@ -1272,8 +1272,8 @@ methods:
   - description: Get the contents of the secondary input slot.
     methodName: getChemicalItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the chemical tank.
     methodName: getChemicalNeeded
     returns:
@@ -1282,8 +1282,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1292,13 +1292,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Digital Miner:
   - description: Add a new filter to the miner. Requires miner to be stopped/reset
       first
@@ -1328,8 +1328,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1364,8 +1364,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the maximum allowable Radius value, determined from the mod's
       config
     methodName: getMaxRadius
@@ -1527,8 +1527,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: 'Check if the Dimensional Stabilizer is configured to load a the
       specified relative chunk position at x,y (Stabilizer is at 0,0). Range: [-2,
       2]'
@@ -1610,17 +1610,17 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getStored
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
-      type: LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getTankCapacity
     returns:
       java_type: long
@@ -1635,8 +1635,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1645,24 +1645,24 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Electric Pump:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the buffer tank.
     methodName: getFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the buffer tank.
     methodName: getFluidCapacity
     returns:
@@ -1681,13 +1681,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: reset
     requires_public_security: true
   Electrolytic Separator:
@@ -1698,8 +1698,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1708,8 +1708,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -1723,8 +1723,8 @@ methods:
   - description: Get the contents of the input item slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
@@ -1733,8 +1733,8 @@ methods:
   - description: Get the contents of the left output tank.
     methodName: getLeftOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the left output tank.
     methodName: getLeftOutputCapacity
     returns:
@@ -1752,8 +1752,8 @@ methods:
   - description: Get the contents of the left output item slot.
     methodName: getLeftOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the left output tank.
     methodName: getLeftOutputNeeded
     returns:
@@ -1762,8 +1762,8 @@ methods:
   - description: Get the contents of the right output tank.
     methodName: getRightOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the right output tank.
     methodName: getRightOutputCapacity
     returns:
@@ -1781,8 +1781,8 @@ methods:
   - description: Get the contents of the right output item slot.
     methodName: getRightOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the right output tank.
     methodName: getRightOutputNeeded
     returns:
@@ -1808,19 +1808,19 @@ methods:
   - description: Get the contents of the charge slot.
     methodName: getChargeItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the discharge slot.
     methodName: getDischargeItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Factory Machine:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -1833,8 +1833,8 @@ methods:
       name: process
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     params:
@@ -1842,8 +1842,8 @@ methods:
       name: process
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getRecipeProgress
     params:
     - java_type: int
@@ -2055,7 +2055,7 @@ methods:
   - methodName: getCoolant
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
-      type: LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getCoolantCapacity
     returns:
       java_type: long
@@ -2079,8 +2079,8 @@ methods:
   - description: Get the contents of the fuel tank.
     methodName: getFuel
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getFuelAssemblies
     returns:
       java_type: int
@@ -2111,8 +2111,8 @@ methods:
   - description: Get the contents of the heated coolant.
     methodName: getHeatedCoolant
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the heated coolant.
     methodName: getHeatedCoolantCapacity
     returns:
@@ -2149,8 +2149,8 @@ methods:
   - description: Get the contents of the waste tank.
     methodName: getWaste
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the waste tank.
     methodName: getWasteCapacity
     returns:
@@ -2209,8 +2209,8 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the tank.
     methodName: getNeeded
     returns:
@@ -2219,13 +2219,13 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the tank.
     methodName: getStored
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: incrementContainerEditMode
     requires_public_security: true
   - methodName: setContainerEditMode
@@ -2238,13 +2238,13 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the buffer tank.
     methodName: getFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the buffer tank.
     methodName: getFluidCapacity
     returns:
@@ -2263,13 +2263,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: reset
     requires_public_security: true
   Formulaic Assemblicator:
@@ -2301,8 +2301,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the crafting output slot.
     methodName: getCraftingOutputSlot
     params:
@@ -2310,8 +2310,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getCraftingOutputSlots
     returns:
       java_type: int
@@ -2319,8 +2319,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getExcessRemainingItems
     returns:
       java_extra:
@@ -2330,8 +2330,8 @@ methods:
   - description: Get the contents of the formula slot.
     methodName: getFormulaItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the input slot.
     methodName: getItemInSlot
     params:
@@ -2339,8 +2339,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getRecipeProgress
     returns:
       java_type: int
@@ -2389,8 +2389,8 @@ methods:
   - description: Get the contents of the fuel slot.
     methodName: getFuelItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the temperature of the heater in Kelvin.
     methodName: getTemperature
     returns:
@@ -2427,8 +2427,8 @@ methods:
   - description: Get the contents of the fuel tank.
     methodName: getDTFuel
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fuel tank.
     methodName: getDTFuelCapacity
     returns:
@@ -2447,8 +2447,8 @@ methods:
   - description: Get the contents of the deuterium tank.
     methodName: getDeuterium
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the deuterium tank.
     methodName: getDeuteriumCapacity
     returns:
@@ -2471,8 +2471,8 @@ methods:
   - description: Get the contents of the Hohlraum slot.
     methodName: getHohlraum
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: true -> water cooled, false -> air cooled
     methodName: getIgnitionTemperature
     params:
@@ -2532,8 +2532,8 @@ methods:
   - description: Get the contents of the steam tank.
     methodName: getSteam
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the steam tank.
     methodName: getSteamCapacity
     returns:
@@ -2556,8 +2556,8 @@ methods:
   - description: Get the contents of the tritium tank.
     methodName: getTritium
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the tritium tank.
     methodName: getTritiumCapacity
     returns:
@@ -2576,8 +2576,8 @@ methods:
   - description: Get the contents of the water tank.
     methodName: getWater
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the water tank.
     methodName: getWaterCapacity
     returns:
@@ -2623,13 +2623,13 @@ methods:
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the fuel tank.
     methodName: getFuel
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fuel tank.
     methodName: getFuelCapacity
     returns:
@@ -2643,8 +2643,8 @@ methods:
   - description: Get the contents of the fuel item slot.
     methodName: getFuelItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the fuel tank.
     methodName: getFuelNeeded
     returns:
@@ -2703,8 +2703,8 @@ methods:
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getEnvironmentalLoss
     returns:
       java_type: double
@@ -2712,13 +2712,13 @@ methods:
   - description: Get the contents of the fuel item slot.
     methodName: getFuelItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the lava tank.
     methodName: getLava
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the lava tank.
     methodName: getLavaCapacity
     returns:
@@ -2747,8 +2747,8 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getInstalledCells
     returns:
       java_type: int
@@ -2768,8 +2768,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getTransferCap
     returns:
       java_type: long
@@ -2835,8 +2835,8 @@ methods:
   - description: Get the contents of the steam tank.
     methodName: getSteam
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the steam tank.
     methodName: getSteamCapacity
     returns:
@@ -2866,8 +2866,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -2876,8 +2876,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -2891,8 +2891,8 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
@@ -2901,8 +2901,8 @@ methods:
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -2916,8 +2916,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -2977,8 +2977,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getSlotCount
     returns:
       java_type: int
@@ -3243,8 +3243,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3253,8 +3253,8 @@ methods:
   - description: Get the contents of the infusion buffer.
     methodName: getInfuseType
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the infusion buffer.
     methodName: getInfuseTypeCapacity
     returns:
@@ -3268,8 +3268,8 @@ methods:
   - description: Get the contents of the infusion (extra) input slot.
     methodName: getInfuseTypeItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the infusion buffer.
     methodName: getInfuseTypeNeeded
     returns:
@@ -3278,29 +3278,29 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Modification Station:
   - description: Get the contents of the module holder slot (suit, tool, etc).
     methodName: getContainerItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the module slot.
     methodName: getModuleItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Multiblock:
   - methodName: isFormed
     restriction: MULTIBLOCK
@@ -3332,18 +3332,18 @@ methods:
   - description: Get the contents of the fillable container slot.
     methodName: getContainerFillItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the filled container output slot.
     methodName: getContainerOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3352,13 +3352,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -3372,8 +3372,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -3398,13 +3398,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: removeFilter
     params:
     - java_type: mekanism.common.content.oredictionificator.OredictionificatorItemFilter
@@ -3418,8 +3418,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3428,23 +3428,23 @@ methods:
   - description: Get the contents of the paintable item slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the pigment slot.
     methodName: getInputPigmentItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the painted item slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the pigment tank.
     methodName: getPigmentInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the pigment tank.
     methodName: getPigmentInputCapacity
     returns:
@@ -3464,8 +3464,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3474,13 +3474,13 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the pigment tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the pigment tank.
     methodName: getOutputCapacity
     returns:
@@ -3494,8 +3494,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the pigment tank.
     methodName: getOutputNeeded
     returns:
@@ -3505,8 +3505,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3515,8 +3515,8 @@ methods:
   - description: Get the contents of the left pigment tank.
     methodName: getLeftInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the left pigment tank.
     methodName: getLeftInputCapacity
     returns:
@@ -3530,8 +3530,8 @@ methods:
   - description: Get the contents of the left input slot.
     methodName: getLeftInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the left pigment tank.
     methodName: getLeftInputNeeded
     returns:
@@ -3540,8 +3540,8 @@ methods:
   - description: Get the contents of the output pigment tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output pigment tank.
     methodName: getOutputCapacity
     returns:
@@ -3555,8 +3555,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output pigment tank.
     methodName: getOutputNeeded
     returns:
@@ -3565,8 +3565,8 @@ methods:
   - description: Get the contents of the right pigment tank.
     methodName: getRightInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the right pigment tank.
     methodName: getRightInputCapacity
     returns:
@@ -3580,8 +3580,8 @@ methods:
   - description: Get the contents of the right input slot.
     methodName: getRightInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the right pigment tank.
     methodName: getRightInputNeeded
     returns:
@@ -3591,8 +3591,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3601,24 +3601,24 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output slot.
     methodName: getOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the secondary output slot.
     methodName: getSecondaryOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Pressurized Reaction Chamber:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -3627,8 +3627,8 @@ methods:
   - description: Get the contents of the fluid input.
     methodName: getInputFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fluid input.
     methodName: getInputFluidCapacity
     returns:
@@ -3647,8 +3647,8 @@ methods:
   - description: Get the contents of the gas input.
     methodName: getInputGas
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the gas input.
     methodName: getInputGasCapacity
     returns:
@@ -3667,13 +3667,13 @@ methods:
   - description: Get the contents of the item input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the gas output.
     methodName: getOutputGas
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the gas output.
     methodName: getOutputGasCapacity
     returns:
@@ -3692,8 +3692,8 @@ methods:
   - description: Get the contents of the item output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   QIO Dashboard:
   - description: Get the contents of the crafting input slot.
     methodName: getCraftingInput
@@ -3705,8 +3705,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the crafting output slot.
     methodName: getCraftingOutput
     params:
@@ -3714,8 +3714,8 @@ methods:
       name: window
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   QIO Drive Array:
   - description: Get the contents of the drive slot.
     methodName: getDrive
@@ -3724,8 +3724,8 @@ methods:
       name: slot
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getDriveStatus
     params:
     - java_type: int
@@ -3936,8 +3936,8 @@ methods:
   - description: Get the contents of the chemical buffer.
     methodName: getBufferChemical
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the chemical buffer.
     methodName: getBufferChemicalCapacity
     returns:
@@ -3956,8 +3956,8 @@ methods:
   - description: Get the contents of the fluid buffer.
     methodName: getBufferFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fluid buffer.
     methodName: getBufferFluidCapacity
     returns:
@@ -3976,8 +3976,8 @@ methods:
   - description: Get the contents of the buffer slot.
     methodName: getBufferItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: May not be accurate if there is no frequency
     methodName: getEnvironmentalLoss
     returns:
@@ -4035,14 +4035,14 @@ methods:
   - description: Get the contents of the barrel.
     methodName: getStored
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Resistive Heater:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -4075,7 +4075,7 @@ methods:
   - methodName: getBuffer
     returns:
       java_type: mekanism.api.resource.LargeResourceStack
-      type: LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: getCapacity
     returns:
       java_type: long
@@ -4092,8 +4092,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
@@ -4102,8 +4102,8 @@ methods:
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the fluid tank.
     methodName: getFluidCapacity
     returns:
@@ -4117,13 +4117,13 @@ methods:
   - description: Get the contents of the fluid item input slot.
     methodName: getFluidItemInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the fluid item output slot.
     methodName: getFluidItemOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the fluid tank.
     methodName: getFluidNeeded
     returns:
@@ -4132,8 +4132,8 @@ methods:
   - description: Get the contents of the gas tank.
     methodName: getGas
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the gas tank.
     methodName: getGasCapacity
     returns:
@@ -4147,13 +4147,13 @@ methods:
   - description: Get the contents of the gas item input slot.
     methodName: getGasItemInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the gas item output slot.
     methodName: getGasItemOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the gas tank.
     methodName: getGasNeeded
     returns:
@@ -4177,8 +4177,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -4197,8 +4197,8 @@ methods:
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -4238,8 +4238,8 @@ methods:
       name: process
       type: Number (int)
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Seismic Vibrator:
   - methodName: getBlockAt
     params:
@@ -4273,8 +4273,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: isVibrating
     returns:
       java_type: boolean
@@ -4287,8 +4287,8 @@ methods:
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   Solar Neutron Activator:
   - methodName: canSeeSun
     returns:
@@ -4297,8 +4297,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -4312,8 +4312,8 @@ methods:
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
@@ -4322,8 +4322,8 @@ methods:
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -4337,8 +4337,8 @@ methods:
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -4375,8 +4375,8 @@ methods:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Lists public frequencies
     methodName: getFrequencies
     returns:
@@ -4431,8 +4431,8 @@ methods:
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
@@ -4446,13 +4446,13 @@ methods:
   - description: Get the contents of the input side's input slot.
     methodName: getInputItemInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the input side's output slot.
     methodName: getInputItemOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
@@ -4461,8 +4461,8 @@ methods:
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
@@ -4476,13 +4476,13 @@ methods:
   - description: Get the contents of the output side's input slot.
     methodName: getOutputItemInput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the contents of the output side's output slot.
     methodName: getOutputItemOutput
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
@@ -4517,8 +4517,8 @@ methods:
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: Table (LargeResourceStack)
   - methodName: isBlacklistedDimension
     returns:
       java_type: boolean
