@@ -5,7 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

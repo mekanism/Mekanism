@@ -92,7 +92,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            output.putLong(SerializationConstants.ENERGY, network.energyContainer.energy());
+            output.putLong(SerializationConstants.ENERGY, network.energyContainer.getAmountAsLong());
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
     }

@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Collection;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismEnergyHandler;
+import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
@@ -22,24 +22,34 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     private EnergyUtils() {
     }
 
+    @Nullable
+    public static IEnergyContainer getEnergyContainer(@Nullable EnergyHandler handler) {
+        if (handler instanceof IEnergyContainer container) {
+            return container;
+        } else if (handler instanceof ComponentBackedEnergyHandler energyHandler) {
+            return energyHandler.getEnergyContainer();
+        }
+        return null;
+    }
+
     public static int extractManual(EnergyHandler handler, int amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismEnergyHandler mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.extract(amount, transaction, AutomationType.MANUAL);
+        IEnergyContainer energyContainer = getEnergyContainer(handler);
+        if (energyContainer != null) {
+            return energyContainer.extract(amount, transaction, AutomationType.MANUAL);
         }
         return handler.extract(amount, transaction);
     }
 
     public static int insertManual(EnergyHandler handler, int amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismEnergyHandler mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.insert(amount, transaction, AutomationType.MANUAL);
+        IEnergyContainer energyContainer = getEnergyContainer(handler);
+        if (energyContainer != null) {
+            return energyContainer.insert(amount, transaction, AutomationType.MANUAL);
         }
         return handler.insert(amount, transaction);
     }
 
     public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
-        return emit(targets, energyContainer, energyContainer.energyAsInt(), transaction);
+        return emit(targets, energyContainer, energyContainer.getAmountAsInt(), transaction);
     }
 
     public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, int maxOutput, @Nullable TransactionContext transaction) {

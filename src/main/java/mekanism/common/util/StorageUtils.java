@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismEnergyHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
@@ -149,10 +148,10 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess) {
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
-        if (energyHandler instanceof IMekanismEnergyHandler handler) {
+        IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(energyHandler);
+        if (energyContainer != null) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
-            IEnergyContainer energyContainer = handler.getEnergyContainer();
-            energyContainer.setEnergy(energyContainer.capacity(), null);
+            energyContainer.setEnergy(energyContainer.getCapacityAsLong(), null);
         }
         //The item is now filled return it for convenience
         return itemAccess.getResource().toStack(itemAccess.getAmount());
@@ -173,15 +172,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         //TODO - 26.1: Re-evaluate callers
         //TODO - 26.1: Should we just remove this method all together? If the passed item access is stacked, then this will return a container that doesn't care about scaling
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
-        if (energyHandler instanceof IMekanismEnergyHandler handler) {
-            return handler.getEnergyContainer();
-        }
-        return null;
+        return EnergyUtils.getEnergyContainer(energyHandler);
     }
 
     public static double getEnergyRatio(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack);
-        return container == null ? 0 : MathUtils.divideToLevel(container.energy(), container.capacity());
+        return container == null ? 0 : MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
@@ -276,10 +272,10 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     public static void mergeEnergyContainers(@Nullable IEnergyContainer container, @Nullable IEnergyContainer mergeContainer, TransactionContext transaction) {
         if (container == null || mergeContainer == null) {
             //Nothing to do here
-            //TODO: Do we want to error if the
+            //TODO: Do we want to error if they are different nullabilities?
             return;
         }
-        container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()), transaction);
+        container.setEnergy(MathUtils.addClamped(container.getAmountAsLong(), mergeContainer.getAmountAsLong()), transaction);
     }
 
     public static void mergeHeatCapacitors(List<IHeatCapacitor> capacitors, List<IHeatCapacitor> toAdd) {

@@ -150,7 +150,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
             // as that is the best guess we can currently give whether the corresponding dig action is supported
             int energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-            long energyAvailable = energyContainer.energy();
+            int energyAvailable = energyContainer.getAmountAsInt();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
             return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
         }
@@ -382,9 +382,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (attackAmplificationUnit != null) {
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
-                long energyCost = MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
+                int energyCost = MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
-                long energy = energyContainer == null ? 0L : energyContainer.energy();
+                int energy = energyContainer == null ? 0 : energyContainer.getAmountAsInt();
                 if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
                     damage += unitDamage * MathUtils.divideToLevel(energy, energyCost);

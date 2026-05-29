@@ -13,17 +13,17 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess, int containerIndex) {
+    public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess) {
         if (!(attachedAccess.getResource().getItem() instanceof ItemBlockEnergyCube item)) {
             throw new IllegalStateException("Attached to should always be an energy cube item");
         }
-        return new ComponentBackedEnergyCubeContainer(attachedAccess, containerIndex, item.getTier());
+        return new ComponentBackedEnergyCubeContainer(attachedAccess, item.getTier());
     }
 
     private final boolean isCreative;
 
-    private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, int containerIndex, EnergyCubeTier tier) {
-        super(attachedAccess, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
+    private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, EnergyCubeTier tier) {
+        super(attachedAccess, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 

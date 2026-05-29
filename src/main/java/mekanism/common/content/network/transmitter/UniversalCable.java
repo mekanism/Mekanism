@@ -81,8 +81,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     }
 
     private int getAvailablePull() {
-        IEnergyContainer container = getContainer();
-        return Math.min(container.capacityAsInt(), container.getNeededAsInt());
+        return getContainer().getNeededAsInt();
     }
 
     public IEnergyContainer getContainer() {
@@ -145,7 +144,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     @NotNull
     @Override
     public Long releaseShare() {
-        long energy = buffer.energy();
+        Long energy = getShare();
         buffer.setEnergy(0, null);
         return energy;
     }
@@ -153,7 +152,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     @NotNull
     @Override
     public Long getShare() {
-        return buffer.energy();
+        return buffer.getAmountAsLong();
     }
 
     @Override
@@ -178,8 +177,8 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
             EnergyNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite > 0) {
                 //Clamp the value so that we can't error if the network's energy is less than the amount we are saving
-                lastWrite = Math.min(transmitterNetwork.energyContainer.energy(), lastWrite);
-                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.energy() - lastWrite, null);
+                lastWrite = Math.min(transmitterNetwork.energyContainer.getAmountAsLong(), lastWrite);
+                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.getAmountAsLong() - lastWrite, null);
                 buffer.setEnergy(lastWrite, null);
             }
         }

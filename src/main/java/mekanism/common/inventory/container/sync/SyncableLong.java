@@ -45,7 +45,7 @@ public abstract class SyncableLong implements ISyncableData {
     }
 
     public static SyncableLong create(IEnergyContainer energyContainer) {
-        return create(energyContainer::energy, energy -> energyContainer.setEnergy(energy, null));
+        return create(energyContainer::getAmountAsLong, energy -> energyContainer.setEnergy(energy, null));
     }
 
     public static SyncableLong create(LongSupplier getter, LongConsumer setter) {

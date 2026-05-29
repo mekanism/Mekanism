@@ -17,7 +17,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -127,7 +126,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
@@ -191,7 +190,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
     private final EnergyInventorySlot energySlot;
     private final InputInventorySlot smeltingInputSlot;
     private final OutputInventorySlot smeltingOutputSlot;
-    private final List<IEnergyContainer> energyContainers;
     private final BasicEnergyContainer energyContainer;
 
     public EntityRobit(EntityType<EntityRobit> type, Level world) {
@@ -208,7 +206,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
             onContentsChanged();
             recipeCacheLookupMonitor.unpause();
         };
-        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, recipeCacheUnpauseListener));
+        energyContainer = BasicEnergyContainer.input(MAX_ENERGY, recipeCacheUnpauseListener);
 
         inventorySlots = new ArrayList<>();
         inventoryContainerSlots = new ArrayList<>();
@@ -429,7 +427,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.asStack();
-        ContainerType.ENERGY.attachCopyToStack(energyContainers, stack);
+        ContainerType.ENERGY.attachCopyToStack(energyContainer, stack);
         ContainerType.ITEM.attachCopyToStack(inventorySlots, stack);
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
@@ -473,7 +471,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
         ContainerType.ITEM.saveTo(output, inventorySlots);
-        ContainerType.ENERGY.saveTo(output, energyContainers);
+        ContainerType.ENERGY.saveTo(output, energyContainer);
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
     }
@@ -487,7 +485,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
         ContainerType.ITEM.readFrom(input, inventorySlots);
-        ContainerType.ENERGY.readFrom(input, energyContainers);
+        ContainerType.ENERGY.readFrom(input, energyContainer);
         progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
     }
@@ -625,7 +623,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismEnerg
         return findFirstRecipe(inputHandler);
     }
 
-    @Override
     public IEnergyContainer getEnergyContainer() {
         return energyContainer;
     }

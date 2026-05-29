@@ -115,11 +115,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainerIntoSlot(null);
         fuelSlot.fillOrBurn();
-        long prev = energyContainer().energy();
+        long prev = energyContainer().getAmountAsLong();
         heatCapacitor.handleHeat(getBoost());
         FluidResource lavaResource = lavaTank.resource();
         boolean isActive = false;
-        if (canFunction() && !lavaResource.isEmpty() && energyContainer().getNeeded() > 0) {
+        if (canFunction() && !lavaResource.isEmpty() && energyContainer().getNeededAsLong() > 0) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
@@ -133,7 +133,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.adjacentTransfer();
         lastEnvironmentLoss = loss.environmentTransfer();
-        producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().energy() - prev));
+        producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().getAmountAsLong() - prev));
         return sendUpdatePacket;
     }
 

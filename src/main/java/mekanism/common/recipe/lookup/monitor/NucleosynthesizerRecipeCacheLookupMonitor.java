@@ -17,7 +17,7 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookup
             //Unknown energy container type just don't handle it
             return 0L;
         }
-        long prev = energyContainer.energy();
+        long prev = energyContainer.getAmountAsLong();
         if (updateAndProcess()) {
             //TODO: Re-evaluate this at some point
             int toProcess = (int) Math.sqrt(prev / (double) machineEnergyContainer.getEnergyPerTick());
@@ -25,7 +25,7 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookup
                 cachedRecipe.process();
             }
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            return prev - energyContainer.energy();
+            return prev - energyContainer.getAmountAsLong();
         }
         //If we don't have a cached recipe so didn't process anything at all just return zero
         return 0L;

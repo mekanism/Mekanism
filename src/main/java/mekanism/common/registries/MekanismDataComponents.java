@@ -21,8 +21,7 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.energy.AttachedEnergy;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
@@ -71,11 +70,7 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergy>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy",
-          builder -> builder.persistent(AttachedEnergy.CODEC)
-                .networkSynchronized(AttachedEnergy.STREAM_CODEC)
-                .cacheEncoding()
-    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ATTACHED_ENERGY = DATA_COMPONENTS.registerNonNegativeLong("energy");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS
           .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER, SerializationConstants.ITEMS);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS

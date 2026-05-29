@@ -27,14 +27,14 @@ public class ProxyEnergyHandler extends ProxyHandler<@NonNull IEnergyContainerHo
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getAmountAsLong() {
         IEnergyContainer container = getContainer();
-        return container == null ? 0 : container.energy();
+        return container == null ? 0 : container.getAmountAsLong();
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong() {
         IEnergyContainer container = getContainer();
-        return container == null ? 0 : container.capacity();
+        return container == null ? 0 : container.getCapacityAsLong();
     }
 
     @Override

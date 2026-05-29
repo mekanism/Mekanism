@@ -63,12 +63,13 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     @Override
-    public long energy() {
+    public final long getAmountAsLong() {
         return stored;
     }
 
     protected long clampEnergy(long energy) {
-        return Math.min(energy, capacity());
+        //TODO - 26.1: Re-evaluate clamping
+        return Math.min(energy, getCapacityAsLong());
     }
 
     @Override
@@ -126,9 +127,8 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
             //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
             return 0;
         }
-        long currentStored = energy();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        int needed = Ints.saturatedCast(capacity() - currentStored);
+        int needed = Ints.saturatedCast(getCapacityAsLong() - stored);
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
@@ -137,7 +137,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         int toAdd = Math.min(amount, needed);
         //Note: We know toAdd is greater than zero, so we can just always call setEnergy
-        setEnergy(currentStored + toAdd, transaction);
+        setEnergy(stored + toAdd, transaction);
         return toAdd;
     }
 
@@ -149,20 +149,19 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
             //"Fail quick" if we are empty, nothing is being extracted, or if we can never extract from this slot
             return 0;
         }
-        long currentStored = energy();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
-        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
+        int toRemove = Math.min(amount, Ints.saturatedCast(stored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {
-            setEnergy(currentStored - toRemove, transaction);
+            setEnergy(stored - toRemove, transaction);
         }
         return toRemove;
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long capacity() {
+    public long getCapacityAsLong() {
         return maxEnergy;
     }
 
@@ -178,7 +177,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
 
     @Override
     protected Long createSnapshot() {
-        return energy();
+        return stored;
     }
 
     @Override
@@ -190,7 +189,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     @Override
     protected void onRootCommit(Long originalState) {
         super.onRootCommit(originalState);
-        if (energy() != originalState) {
+        if (stored != originalState) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged(originalState);
         }

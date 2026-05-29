@@ -948,7 +948,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             if (energyContainer != null) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableLong.create(machineEnergy::capacity, machineEnergy::setMaxEnergy));
+                        container.track(SyncableLong.create(machineEnergy::getCapacityAsLong, machineEnergy::setMaxEnergy));
                         container.track(SyncableInt.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
@@ -1489,19 +1489,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @ComputerMethod(restriction = MethodRestriction.ENERGY)
     long getEnergy() {
         IEnergyContainer energyContainer = getEnergyContainer();
-        return energyContainer == null ? 0 : energyContainer.energy();
+        return energyContainer == null ? 0 : energyContainer.getAmountAsLong();
     }
 
     @ComputerMethod(restriction = MethodRestriction.ENERGY)
     long getMaxEnergy() {
         IEnergyContainer energyContainer = getEnergyContainer();
-        return energyContainer == null ? 0 : energyContainer.capacity();
+        return energyContainer == null ? 0 : energyContainer.getCapacityAsLong();
     }
 
     @ComputerMethod(restriction = MethodRestriction.ENERGY)
     long getEnergyNeeded() {
         IEnergyContainer energyContainer = getEnergyContainer();
-        return energyContainer == null ? 0 : energyContainer.getNeeded();
+        return energyContainer == null ? 0 : energyContainer.getNeededAsLong();
     }
 
     @ComputerMethod(restriction = MethodRestriction.ENERGY)
@@ -1510,7 +1510,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (energyContainer == null) {
             return 1;
         }
-        return MathUtils.divideToLevel(energyContainer.energy(), energyContainer.capacity());
+        return MathUtils.divideToLevel(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

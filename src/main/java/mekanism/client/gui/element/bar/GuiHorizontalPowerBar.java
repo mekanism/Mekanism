@@ -33,7 +33,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(container.energy(), container.capacity());
+                return MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
             }
         }, x, y, desiredWidth);
     }

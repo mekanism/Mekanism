@@ -8,7 +8,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.LockData;
-import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;

@@ -11,9 +11,9 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.containers.ContainsRecipe;
-import mekanism.common.attachments.containers.ResourceContainersBuilder.BaseContainerBuilder;
+import mekanism.common.attachments.containers.resource.ResourceContainersBuilder.BaseContainerBuilder;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.type.ContainerType;
@@ -231,7 +231,8 @@ public class ItemSlotsBuilder {
             if (energyHandler == null) {
                 return true;
             }
-            return !EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), energyHandler);
+            EnergyHandler energyContainer = ContainerType.ENERGY.getCapOrUnexposed(attachedAccess);
+            return energyContainer != null && !EnergyInventorySlot.drainInsertCheck(energyContainer, energyHandler);
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
@@ -240,7 +241,8 @@ public class ItemSlotsBuilder {
             if (energyHandler == null) {
                 return false;
             }
-            return EnergyInventorySlot.drainInsertCheck(ContainerType.ENERGY.createContainer(attachedAccess, energyIndex), energyHandler);
+            EnergyHandler energyContainer = ContainerType.ENERGY.getCapOrUnexposed(attachedAccess);
+            return energyContainer != null && EnergyInventorySlot.drainInsertCheck(energyContainer, energyHandler);
         }, EnergyInventorySlot.HAS_ENERGY_HANDLER));
     }
 

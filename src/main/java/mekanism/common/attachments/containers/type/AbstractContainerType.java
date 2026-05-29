@@ -1,18 +1,11 @@
 package mekanism.common.attachments.containers.type;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.containers.IAttachedContainers;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
-import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -27,26 +20,18 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>>
-      implements IContainerType<CONTAINER, ATTACHED> {
+public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED> implements IContainerType<CONTAINER, ATTACHED> {
 
     private final Map<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
-    private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component;
-    private final Predicate<TileEntityMekanism> canHandle;
     private final ATTACHED emptyAttachment;
     private final String containerTag;
-    private final String containerKey;
 
-    protected AbstractContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
-          ATTACHED emptyAttachment, Function<TileEntityMekanism, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
+    protected AbstractContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, ATTACHED emptyAttachment) {
         ContainerType.TYPES_INTERNAL.add(this);
         this.component = component;
         this.containerTag = containerTag;
-        this.containerKey = containerKey;
         this.emptyAttachment = emptyAttachment;
-        this.containersFromTile = containersFromTile;
-        this.canHandle = canHandle;
     }
 
     @Override
@@ -59,11 +44,6 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         return containerTag;
     }
 
-    @Override
-    public String getKey() {
-        return containerKey;
-    }
-
     /**
      * Adds some containers as default and exposes it as a capability that requires the given configs if the specified bus is present.
      */
@@ -71,22 +51,6 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     public void addDefaultCreators(@Nullable IEventBus eventBus, Item item, Supplier<? extends IContainerCreator<CONTAINER, ATTACHED>> defaultCreator,
           IMekanismConfig... requiredConfigs) {
         knownDefaultCreators.put(item, Lazy.of(defaultCreator));
-    }
-
-    @Override
-    public List<CONTAINER> getAttachmentContainersIfPresent(ItemAccess itemAccess) {
-        ATTACHED attached = getOrEmpty(itemAccess);
-        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        if (attached.isEmpty()) {
-            return Collections.emptyList();
-        }
-        //Note: Bypass creating an intermediary handler object as it is not necessary
-        int totalContainers = attached.size();
-        List<CONTAINER> containers = new ArrayList<>(totalContainers);
-        for (int index = 0; index < totalContainers; index++) {
-            containers.add(createContainer(itemAccess, index));
-        }
-        return containers;
     }
 
     @Nullable
@@ -135,35 +99,13 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         if (containerCreator != null) {
             //Supports the type
             ATTACHED attached = containerCreator.initStorage();
-            if (!attached.isEmpty()) {
+            if (shouldAddAttachment(attached)) {
                 components.set(getComponentType(), attached);
             }
         }
     }
 
-    @Override
-    public void copyFromTile(TileEntityMekanism tile, DataComponentMap.Builder builder) {
-        List<CONTAINER> containers = getContainers(tile);
-        if (!containers.isEmpty()) {
-            ATTACHED attachedData = copyFromTile(tile, containers);
-            if (attachedData != null) {
-                builder.set(getComponentType(), attachedData);
-            }
-        }
-    }
-
-    @Nullable
-    protected ATTACHED copyFromTile(TileEntityMekanism tile, List<CONTAINER> containers) {
-        return attachedCopyOf(containers);
-    }
-
-    @Override
-    public boolean canHandle(TileEntityMekanism tile) {
-        return canHandle.test(tile);
-    }
-
-    @Override
-    public List<CONTAINER> getContainers(TileEntityMekanism tile) {
-        return containersFromTile.apply(tile);
+    protected boolean shouldAddAttachment(ATTACHED attached) {
+        return true;
     }
 }

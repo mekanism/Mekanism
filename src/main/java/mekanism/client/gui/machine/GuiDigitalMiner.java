@@ -60,7 +60,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<Component> list = new ArrayList<>();
             ILangEntry runningType;
-            if (tile.energyContainer().getEnergyPerTick() > tile.energyContainer().capacity()) {
+            MinerEnergyContainer energyContainer = tile.energyContainer();
+            if (energyContainer.getEnergyPerTick() > energyContainer.getCapacityAsLong()) {
                 runningType = MekanismLang.MINER_LOW_POWER;
             } else if (tile.isRunning()) {
                 runningType = MekanismLang.MINER_RUNNING;
@@ -92,7 +93,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 157, 39, 47))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MinerEnergyContainer energyContainer = tile.energyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
@@ -101,9 +102,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.energyContainer();
             return List.of(
-                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.capacity())),
+                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getCapacityAsLong())),
                   MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
-                  MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded()))
+                  MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeededAsLong()))
             );
         }));
 

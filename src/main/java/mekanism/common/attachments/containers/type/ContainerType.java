@@ -28,14 +28,12 @@ public final class ContainerType {
 
     public static final EnergyContainerType ENERGY = new EnergyContainerType();
     public static final ResourceContainerType<ItemResource, IInventorySlot> ITEM = new ResourceContainerType<>(
-          MekanismDataComponents.ATTACHED_ITEMS, SerializationConstants.ITEMS, SerializationConstants.SLOT, Capabilities.ITEM,
-          TileEntityMekanism::getInventorySlots, TileEntityMekanism::hasInventory,
-          LargeResourceStack.ITEM_HELPER, ItemResource.EMPTY
+          MekanismDataComponents.ATTACHED_ITEMS, SerializationConstants.ITEMS, Capabilities.ITEM,
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::hasInventory, LargeResourceStack.ITEM_HELPER
     );
     public static final ResourceContainerType<FluidResource, IFluidTank> FLUID = new ResourceContainerType<>(
-          MekanismDataComponents.ATTACHED_FLUIDS, SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, Capabilities.FLUID,
-          TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid,
-          LargeResourceStack.FLUID_HELPER, FluidResource.EMPTY
+          MekanismDataComponents.ATTACHED_FLUIDS, SerializationConstants.FLUID_TANKS, Capabilities.FLUID,
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid, LargeResourceStack.FLUID_HELPER
     );
     public static final ResourceContainerType<ChemicalResource, IChemicalTank> CHEMICAL = new ChemicalContainerType();
     public static final HeatContainerType HEAT = new HeatContainerType();

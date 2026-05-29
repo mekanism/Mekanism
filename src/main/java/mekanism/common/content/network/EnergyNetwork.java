@@ -49,8 +49,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && energyContainer.capacity() > 0) {
-            currentScale = (float) Math.min(1, ((double) energyContainer.energy() / energyContainer.capacity()));
+        if (!energyContainer.isEmpty() && energyContainer.getCapacityAsLong() > 0) {
+            currentScale = (float) Math.min(1, ((double) energyContainer.getAmountAsLong() / energyContainer.getCapacityAsLong()));
         } else {
             currentScale = 0;
         }
@@ -66,7 +66,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
         long capacity = getCapacity();
         currentScale = (float) Math.min(1, capacity == 0L ? 0D : (ourScale + theirScale) / (double) capacity);
         if (!isRemote() && !net.energyContainer.isEmpty()) {
-            energyContainer.setEnergy(MathUtils.addClamped(energyContainer.energy(), net.getBuffer()), null);
+            energyContainer.setEnergy(MathUtils.addClamped(energyContainer.getAmountAsLong(), net.getBuffer()), null);
             net.energyContainer.setEnergy(0, null);
         }
         return transmittersToUpdate;
@@ -75,14 +75,14 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     @NotNull
     @Override
     public Long getBuffer() {
-        return energyContainer.energy();
+        return energyContainer.getAmountAsLong();
     }
 
     @Override
     public void absorbBuffer(UniversalCable transmitter) {
         long energy = transmitter.releaseShare();
         if (energy > 0) {
-            energyContainer.setEnergy(energyContainer.energy() + energy, null);
+            energyContainer.setEnergy(energyContainer.getAmountAsLong() + energy, null);
         }
     }
 
@@ -90,7 +90,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     public void clampBuffer() {
         if (!energyContainer.isEmpty()) {
             long capacity = getCapacity();
-            if (energyContainer.energy() > capacity) {
+            if (energyContainer.getAmountAsLong() > capacity) {
                 energyContainer.setEnergy(capacity, null);
             }
         }
@@ -101,7 +101,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
-            EmitUtils.sendToAcceptors(saveTarget, energyContainer.energy(), ENERGY, transaction);
+            EmitUtils.sendToAcceptors(saveTarget, energyContainer.getAmountAsLong(), ENERGY, transaction);
             saveTarget.save(transaction);
         }
     }
@@ -111,7 +111,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
             prevTransferAmount = 0;
         } else {
             try (Transaction transaction = Transaction.openRoot()) {
-                long current = energyContainer.energy();
+                long current = energyContainer.getAmountAsLong();
                 prevTransferAmount = tickEmit(current, transaction);
                 energyContainer.setEnergy(current - prevTransferAmount, transaction);
                 transaction.commit();
@@ -156,7 +156,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     protected float computeContentScale() {
-        float scale = (float) MathUtils.divideToLevel(energyContainer.energy(), energyContainer.capacity());
+        float scale = (float) MathUtils.divideToLevel(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount != 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
@@ -168,12 +168,12 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     public Component getNeededInfo() {
-        return EnergyDisplay.of(energyContainer.getNeeded()).getTextComponent();
+        return EnergyDisplay.of(energyContainer.getNeededAsLong()).getTextComponent();
     }
 
     @Override
     public Component getStoredInfo() {
-        return EnergyDisplay.of(energyContainer.energy()).getTextComponent();
+        return EnergyDisplay.of(energyContainer.getAmountAsLong()).getTextComponent();
     }
 
     @Override

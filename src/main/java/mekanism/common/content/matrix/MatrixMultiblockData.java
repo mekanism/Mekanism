@@ -10,6 +10,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
@@ -76,7 +77,7 @@ public class MatrixMultiblockData extends MultiblockData {
 
     @Override
     protected boolean shouldCache(CacheSubstance<?> type) {
-        return type != CacheSubstance.ENERGY;
+        return type != MultiblockCache.ENERGY;
     }
 
     public void addCell(TileEntityInductionCell cell) {
@@ -94,7 +95,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getEnergy() {
-        return isRemote() ? clientEnergy : energyContainer.energy();
+        return isRemote() ? clientEnergy : energyContainer.getAmountAsLong();
     }
 
     @Override
@@ -125,7 +126,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getStorageCap() {
-        return isRemote() ? clientMaxEnergy : energyContainer.capacity();
+        return isRemote() ? clientMaxEnergy : energyContainer.getCapacityAsLong();
     }
 
     @ComputerMethod

@@ -6,14 +6,13 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class ComponentBackedNoClampEnergyContainer extends ComponentBackedEnergyContainer {
 
-    public ComponentBackedNoClampEnergyContainer(ItemAccess attachedAccess, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, IntSupplier rate, LongSupplier maxEnergy) {
-        super(attachedAccess, containerIndex, canExtract, canInsert, rate, maxEnergy);
+    public ComponentBackedNoClampEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
+          LongSupplier maxEnergy) {
+        super(attachedAccess, canExtract, canInsert, rate, maxEnergy);
     }
 
     @Override

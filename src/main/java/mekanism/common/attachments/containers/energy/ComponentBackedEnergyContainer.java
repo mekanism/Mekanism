@@ -8,28 +8,27 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.ComponentBackedContainer;
+import mekanism.common.attachments.containers.SimpleComponentBackedContainer;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.EnergyContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
 /// on the backing item access' size.
 @NothingNullByDefault
-public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Long, AttachedEnergy> implements IEnergyContainer {
+public class ComponentBackedEnergyContainer extends SimpleComponentBackedContainer<Long> implements IEnergyContainer {
 
-    private final Predicate<@NotNull AutomationType> canExtract;
-    private final Predicate<@NotNull AutomationType> canInsert;
+    private final Predicate<AutomationType> canExtract;
+    private final Predicate<AutomationType> canInsert;
     private final LongSupplier maxEnergy;
     private final IntSupplier rate;
 
-    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, IntSupplier rate, LongSupplier maxEnergy) {
-        super(attachedAccess, containerIndex);
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
+          LongSupplier maxEnergy) {
+        super(attachedAccess);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.maxEnergy = maxEnergy;
@@ -50,23 +49,25 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override
-    public long energy() {
-        return getContents(getAttached());
+    public long getAmountAsLong() {
+        return getAttached();
     }
 
     @Override
     public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
-        setContents(getAttached(), energy, transaction, true);
+        if (getAmountAsLong() != energy) {
+            setContents(energy, transaction);
+        }
     }
 
     protected long clampEnergy(long energy) {
         //TODO - 26.1: Re-evaluate clamping
-        return Math.min(energy, capacity());
+        return Math.min(energy, getCapacityAsLong());
     }
 
     @Override
-    protected boolean setContents(AttachedEnergy attachedEnergy, Long energy, @Nullable TransactionContext transaction, boolean checkChanged) {
-        return super.setContents(attachedEnergy, clampEnergy(energy), transaction, checkChanged);
+    protected boolean setContents(Long energy, @Nullable TransactionContext transaction) {
+        return super.setContents(clampEnergy(energy), transaction);
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -89,10 +90,9 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
             //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
             return 0;
         }
-        AttachedEnergy attachedEnergy = getAttached();
-        long currentStored = getContents(attachedEnergy);
+        long currentStored = getAmountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        int needed = Ints.saturatedCast(capacity() - currentStored);
+        int needed = Ints.saturatedCast(getCapacityAsLong() - currentStored);
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
@@ -101,7 +101,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         }
         int toAdd = Math.min(amount, needed);
         // Note: We just set it as unchecked as we have already validated it
-        if (setContents(attachedEnergy, currentStored + toAdd, transaction, false)) {
+        if (setContents(currentStored + toAdd, transaction)) {
             return toAdd;
         }
         //If we couldn't update the backing item access, return that we didn't actually insert anything
@@ -116,8 +116,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
             //"Fail quick" nothing is being extracted, or if we can never extract from this slot
             return 0;
         }
-        AttachedEnergy attachedEnergy = getAttached();
-        long currentStored = getContents(attachedEnergy);
+        long currentStored = getAmountAsLong();
         if (currentStored == 0) {
             //"Fail quick" if we are empty
             return 0;
@@ -127,7 +126,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         //Shrink the stack by the amount removed
-        if (toRemove > 0 && setContents(attachedEnergy, currentStored - toRemove, transaction, false)) {
+        if (toRemove > 0 && setContents(currentStored - toRemove, transaction)) {
             return toRemove;
         }
         //If we couldn't update the backing item access, return that we didn't actually extract anything
@@ -136,7 +135,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long capacity() {
+    public long getCapacityAsLong() {
         return maxEnergy.getAsLong();
     }
 

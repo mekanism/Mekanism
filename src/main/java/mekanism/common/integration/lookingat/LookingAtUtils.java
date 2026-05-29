@@ -79,7 +79,7 @@ public class LookingAtUtils {
 
     public static void addInfo(LookingAtHelper info, @NotNull Entity entity) {
         if (entity instanceof EntityRobit robit) {
-            displayEnergy(info, robit);
+            displayEnergy(info, robit.getEnergyContainer());
         }
     }
 
@@ -124,7 +124,7 @@ public class LookingAtUtils {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
             IEnergyContainer container = structure.getEnergyContainer();
             if (container != null) {
-                info.addEnergyElement(new EnergyElement(container.energy(), container.capacity()));
+                info.addEnergyElement(new EnergyElement(container.getAmountAsLong(), container.getCapacityAsLong()));
             }
         }
         if (displayTanks) {

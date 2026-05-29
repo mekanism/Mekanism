@@ -240,7 +240,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         trackLastEnergy(container);
         container.track(SyncableLong.create(() -> {
             IEnergyContainer energyContainer = getEnergyContainer();
-            return energyContainer == null ? 0L : energyContainer.energy();
+            return energyContainer == null ? 0L : energyContainer.getAmountAsLong();
         }, energy -> {
             IEnergyContainer energyContainer = getEnergyContainer();
             if (energyContainer != null) {

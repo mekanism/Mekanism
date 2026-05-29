@@ -14,6 +14,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.attachments.containers.type.IListContainerType;
+import mekanism.common.attachments.containers.type.ISingleContainerType;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
@@ -196,10 +198,17 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     itemLootPool.apply(CopyNameFunction.copyName(BlockEntityTarget.BLOCK_ENTITY));
                 }
                 for (IContainerType<?, ?> type : ContainerType.TYPES) {
-                    List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
+                    int containers = 0;
+                    if (tileEntity.persists(type)) {
+                        if (type instanceof IListContainerType<?, ?> listType) {
+                            containers = listType.getContainers(tileEntity).size();
+                        } else if (type instanceof ISingleContainerType<?,?> singleType && singleType.getContainer(tileEntity) != null) {
+                            containers = 1;
+                        }
+                    }
                     int attachmentContainers = type.getContainerCount(blockItem);
-                    if (containers.size() == attachmentContainers) {
-                        if (!containers.isEmpty()) {
+                    if (containers == attachmentContainers) {
+                        if (containers > 0) {
                             componentsBuilder.include(type.getComponentType().get());
                             hasComponents = true;
                             if (type != ContainerType.ENERGY && type != ContainerType.HEAT) {
@@ -214,11 +223,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                         } else if (type != ContainerType.CHEMICAL || !MekanismBlocks.RADIOACTIVE_WASTE_BARREL.keyMatches(blockProvider)) {
                             Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), blockProvider.getId());
                         }
-                    } else if (containers.isEmpty()) {
+                    } else if (containers == 0) {
                         Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getComponentName(), blockProvider.getId());
                     } else {
                         Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getComponentName(), attachmentContainers,
-                              containers.size(), blockProvider.getId());
+                              containers, blockProvider.getId());
                     }
                 }
             }

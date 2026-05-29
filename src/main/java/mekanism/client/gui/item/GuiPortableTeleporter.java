@@ -52,7 +52,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                   @Override
                   public double getLevel() {
                       IEnergyContainer container = menu.getEnergyContainer();
-                      return container == null ? 0 : MathUtils.divideToLevel(container.energy(), container.capacity());
+                      return container == null ? 0 : MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
                   }
               }, 158, 26)
         ).warning(WarningType.NOT_ENOUGH_ENERGY, () -> menu.getStatus() == TeleporterStatus.NOT_ENOUGH_ENERGY);

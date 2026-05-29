@@ -21,22 +21,22 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedResistiveEnergyContainer create(ItemAccess attachedAccess, int containerIndex) {
-        return new ComponentBackedResistiveEnergyContainer(attachedAccess, containerIndex);
+    public static ComponentBackedResistiveEnergyContainer create(ItemAccess attachedAccess) {
+        return new ComponentBackedResistiveEnergyContainer(attachedAccess);
     }
 
-    private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess, int containerIndex) {
-        super(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO, ConstantPredicates.ZERO_LONG);
+    private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess) {
+        super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO, ConstantPredicates.ZERO_LONG);
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long capacity() {
+    public long getCapacityAsLong() {
         return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
     }
 
     private int getRate() {
-        return MekanismUtils.calculateUsage(this.capacity());
+        return MekanismUtils.calculateUsage(getCapacityAsLong());
     }
 
     @Override

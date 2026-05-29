@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
-import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends Iterable<TYPE> {
@@ -29,15 +28,6 @@ public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<
     default TYPE getOrDefault(int index) {
         List<TYPE> containers = containers();
         Objects.checkIndex(index, containers.size());
-        return containers.get(index);
-    }
-
-    @Nullable
-    default TYPE getOrNull(int index) {
-        List<TYPE> containers = containers();
-        if (index < 0 || index >= containers.size()) {
-            return null;
-        }
         return containers.get(index);
     }
 

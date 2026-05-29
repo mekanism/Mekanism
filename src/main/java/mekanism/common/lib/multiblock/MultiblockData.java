@@ -207,20 +207,20 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
             }
         }
 
-        if (shouldCache(CacheSubstance.FLUID)) {
+        if (shouldCache(MultiblockCache.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
                 ContainerType.FLUID.clampContents(tank);
             }
         }
-        if (shouldCache(CacheSubstance.CHEMICAL)) {
+        if (shouldCache(MultiblockCache.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks()) {
                 ContainerType.CHEMICAL.clampContents(tank);
             }
         }
-        if (shouldCache(CacheSubstance.ENERGY)) {
+        if (shouldCache(MultiblockCache.ENERGY)) {
             IEnergyContainer container = getEnergyContainer();
             if (container != null) {
-                container.setEnergy(Math.min(container.energy(), container.capacity()), null);
+                container.setEnergy(Math.min(container.getAmountAsLong(), container.getCapacityAsLong()), null);
             }
         }
         updateEjectors(world);

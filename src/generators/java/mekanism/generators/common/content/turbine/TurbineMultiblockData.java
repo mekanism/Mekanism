@@ -147,7 +147,7 @@ public class TurbineMultiblockData extends MultiblockData {
         long stored = chemicalTank.amountAsLong();
         double flowRate = 0;
 
-        long energyNeeded = energyContainer.getNeeded();
+        long energyNeeded = energyContainer.getNeededAsLong();
         long flow = 0;
         if (stored > 0 && energyNeeded > 0) {
             double energyMultiplier = (MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / (double) TurbineValidator.MAX_BLADES)

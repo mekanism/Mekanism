@@ -47,7 +47,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeeded() > 0) {
+        if (energyContainer != null && energyContainer.getNeededAsLong() > 0) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
             Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,

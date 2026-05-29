@@ -84,7 +84,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
               (itemType, automationType) -> automationType.isInternal() || drainInsertCheck(energyContainer, itemType), HAS_ENERGY_HANDLER, listener, x, y);
     }
 
-    private static boolean drainInsertCheck(IEnergyContainer energyContainer, ItemResource itemType) {
+    private static boolean drainInsertCheck(EnergyHandler energyContainer, ItemResource itemType) {
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (energyHandler == null) {
             return false;
@@ -92,8 +92,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return drainInsertCheck(energyContainer, energyHandler);
     }
 
-    public static boolean drainInsertCheck(IEnergyContainer energyContainer, EnergyHandler energyHandler) {
-        int storedEnergy = energyContainer.energyAsInt();
+    public static boolean drainInsertCheck(EnergyHandler energyContainer, EnergyHandler energyHandler) {
+        int storedEnergy = energyContainer.getAmountAsInt();
         if (storedEnergy == 0) {
             //If the energy container is empty, accept the energy item as long as it is not full
             return energyHandler.getAmountAsLong() < energyHandler.getCapacityAsLong();
@@ -167,7 +167,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Fills energy container from slot, does not try converting the item via any conversions conversion
      */
     public boolean fillContainerFromSlot(@Nullable TransactionContext transaction) {
-        if (isEmpty() || energyContainer.getNeeded() == 0) {
+        if (isEmpty() || energyContainer.getNeededAsLong() == 0) {
             return false;
         }
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
@@ -213,7 +213,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             int availableEnergy;
             try (Transaction simulation = Transaction.open(subTransaction)) {
                 //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
-                availableEnergy = energyContainer.extract(energyContainer.energyAsInt(), simulation, AutomationType.INTERNAL);
+                availableEnergy = energyContainer.extract(energyContainer.getAmountAsInt(), simulation, AutomationType.INTERNAL);
                 if (availableEnergy == 0) {
                     //Short circuit, theoretically the item energy handler will do so as well, but we might as well ensure that it happens
                     return;

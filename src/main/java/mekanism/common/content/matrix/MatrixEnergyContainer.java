@@ -58,8 +58,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.energyContainer();
         cells.put(pos, energyContainer);
-        storageCap = MathUtils.addClamped(storageCap, energyContainer.capacity());
-        cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.energy());
+        storageCap = MathUtils.addClamped(storageCap, energyContainer.getCapacityAsLong());
+        cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.getAmountAsLong());
     }
 
     public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
@@ -81,8 +81,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                 //TODO: Handle this better, as I believe we *technically* could have this cause the cached total to become negative
                 // It may work better if we just flush the buffer writing immediately, and then recalculate the cached totals/caps
                 IEnergyContainer cellContainer = cells.get(pos);
-                storageCap += cellContainer.capacity();
-                cachedTotal -= cellContainer.energy();
+                storageCap += cellContainer.getCapacityAsLong();
+                cachedTotal -= cellContainer.getAmountAsLong();
             }
         }
     }
@@ -180,8 +180,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         cachedTotal += energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: inserting into the cell's energy container handles marking the cell for saving if it changes
-            long stored = container.energy();
-            long needed = container.capacity() - stored;
+            long stored = container.getAmountAsLong();
+            long needed = container.getCapacityAsLong() - stored;
             if (needed > 0) {
                 if (energy <= needed) {
                     container.setEnergy(stored + energy, transaction);
@@ -198,7 +198,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         cachedTotal -= energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
-            long stored = container.energy();
+            long stored = container.getAmountAsLong();
             if (stored > 0) {
                 if (energy <= stored) {
                     container.setEnergy(stored - energy, transaction);
@@ -219,7 +219,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
      * @return The energy post queue when this container next actually updates/saves to disk
      */
     @Override
-    public long energy() {
+    public long getAmountAsLong() {
         return cachedTotal + getQueuedChange();
     }
 
@@ -237,7 +237,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (amount == 0 || !multiblock.isFormed() || !isValidForInsertion(automationType)) {
             return 0;
         }
-        int toAdd = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingInput()), getNeeded()));
+        int toAdd = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingInput()), getNeededAsLong()));
         if (toAdd > 0) {
             queuedInput.updateSnapshots(transaction);
             //Increase how much we are inputting
@@ -258,7 +258,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // as we want to be as accurate as possible with the values we return
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
-        int toRemove = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingOutput()), energy()));
+        int toRemove = Ints.saturatedCast(Math.min(Math.min(amount, getRemainingOutput()), getAmountAsLong()));
         if (toRemove > 0) {
             //Increase how much we are outputting by the amount we sent
             queuedOutput.updateSnapshots(transaction);
@@ -276,7 +276,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long capacity() {
+    public long getCapacityAsLong() {
         return storageCap;
     }
 
@@ -287,6 +287,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public void deserialize(ValueInput input) {
+    }
+
+    @Override
+    public void copyContents(IEnergyContainer other) {
     }
 
     private long getRemainingInput() {

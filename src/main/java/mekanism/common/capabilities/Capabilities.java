@@ -82,7 +82,7 @@ public class Capabilities {
         EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
         event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, ctx) -> robit);
         event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, ctx) -> robit);
-        event.registerEntity(ENERGY.entity(), robitEntityType, (robit, ctx) -> robit);
+        event.registerEntity(ENERGY.entity(), robitEntityType, (robit, ctx) -> robit.getEnergyContainer());
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //Note: The jvm will reuse the lambda between types

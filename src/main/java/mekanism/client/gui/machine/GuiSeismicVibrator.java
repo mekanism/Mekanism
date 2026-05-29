@@ -33,7 +33,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer = tile.energyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
     }

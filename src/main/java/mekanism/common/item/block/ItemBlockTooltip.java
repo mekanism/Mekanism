@@ -6,6 +6,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
@@ -15,6 +16,7 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.type.ContainerType;
@@ -164,7 +166,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 
-    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
+    protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
         BLOCK block = getBlock();
         AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
         if (attributeEnergy == null) {
@@ -172,15 +174,15 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-            return builder.addContainer((attachedAccess, containerIndex) -> {
+            return EnergyContainersBuilder.creator(attachedAccess -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
-                return new ComponentBackedNoClampEnergyContainer(attachedAccess, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
+                return new ComponentBackedNoClampEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
                       () -> MekanismUtils.calculateUsage(capacity.getAsLong()), capacity);
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
+        return EnergyContainersBuilder.basicCreator(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
     @Override
@@ -196,7 +198,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
-            ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(),
+            ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, this::getDefaultEnergyContainer,
                   MekanismConfig.storage, MekanismConfig.usage);
         }
     }

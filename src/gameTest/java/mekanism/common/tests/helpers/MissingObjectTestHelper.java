@@ -18,7 +18,7 @@ import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;

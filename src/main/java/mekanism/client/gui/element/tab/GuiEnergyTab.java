@@ -33,9 +33,10 @@ public class GuiEnergyTab extends GuiTexturedElement {
         infoHandler = handler;
     }
 
+    //TODO - 26.1 int supplier?
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, LongSupplier lastEnergyUsed) {
         this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.getAsLong())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeededAsLong()))));
     }
 
     //TODO: Re-evaluate uses of this constructor at some point
@@ -46,7 +47,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
             // which would lead to higher memory usage
             int using = isActive.getAsBoolean() ? energyContainer.getEnergyPerTick() : 0;
             return List.of(MekanismLang.USING.translate(EnergyDisplay.of(using)),
-                  MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded())));
+                  MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeededAsLong())));
         });
     }
 

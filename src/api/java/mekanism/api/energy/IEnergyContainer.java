@@ -8,27 +8,17 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
 @NothingNullByDefault
-public interface IEnergyContainer extends ValueIOSerializable {
-
-    /// Returns the amount of energy in this container, as a `long`.
-    ///
-    /// The returned amount must be **non-negative**.
-    ///
-    /// @return the amount of energy in this container, as a long
-    @Range(from = 0, to = Long.MAX_VALUE)
-    long energy();
-
-    default int energyAsInt() {
-        return Ints.saturatedCast(energy());
-    }
+public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//TODO - 26.1: Add docs for methods that are missing them
 
     /// Overrides the amount of energy in this [IEnergyContainer].
     ///
@@ -52,6 +42,13 @@ public interface IEnergyContainer extends ValueIOSerializable {
     @Range(from = 0, to = Integer.MAX_VALUE)
     int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
+    @Override
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
+        return insert(amount, transaction, defaultAutomationType());
+    }
+
     /// Tries to extract up to the given amount of energy from this container.
     ///
     /// Changes to this container are made in the context of a [transaction][Transaction].
@@ -68,36 +65,30 @@ public interface IEnergyContainer extends ValueIOSerializable {
     @Range(from = 0, to = Integer.MAX_VALUE)
     int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
-    /// Returns the capacity (maximum amount of energy) of this container, as a `long`.
-    ///
-    /// The container can be considered full if `amount >= capacity`. Note that the returned capacity may overestimate the actual allowed amount, and it might be smaller
-    /// than the current amount. The only way to know if a container will accept a resource, is to try to [`insert`][#insert] it.
-    ///
-    /// @return the capacity in this container, as a long
-    @Range(from = 0, to = Long.MAX_VALUE)
-    long capacity();
-
-    default int capacityAsInt() {
-        return Ints.saturatedCast(capacity());
+    @Override
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
+        return extract(amount, transaction, defaultAutomationType());
     }
 
-    /// {@return whether it is generally allowed to be extracted from this container using the given automation type}
+    /// {@return whether it is generally allowed for energy to be extracted from this container using the given automation type}
     ///
     /// This function serves as a hint on whether energy can be extracted from this container or not. The only way to know if a container will allow the energy to be
     /// extracted, is to try to [`extract`][#extract] it.
     ///
     /// @param automationType The automation type to check.
-    default boolean isValidForExtraction(AutomationType automationType) {//TODO - 26.1: Update docs
+    default boolean isValidForExtraction(AutomationType automationType) {
         return true;
     }
 
-    /// {@return whether it is generally allowed to be inserted into this container using the given automation type}
+    /// {@return whether it is generally allowed for energy to be inserted into this container using the given automation type}
     ///
     /// This function serves as a hint on whether energy can be inserted into this container or not. The only way to know if a container will accept energy, is to try to
     /// [`insert`][#insert] it.
     ///
     /// @param automationType The automation type to check.
-    default boolean isValidForInsertion(AutomationType automationType) {//TODO - 26.1: Update docs
+    default boolean isValidForInsertion(AutomationType automationType) {
         return true;
     }
 
@@ -105,22 +96,25 @@ public interface IEnergyContainer extends ValueIOSerializable {
     ///
     /// @return `true` if the container is empty, `false` otherwise.
     default boolean isEmpty() {
-        return energy() == 0L;
+        return getAmountAsLong() == 0L;
     }
 
     /// {@return the amount of energy needed by this energy container to reach a filled state}
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeeded() {
-        return Math.max(0L, capacity() - energy());
+    default long getNeededAsLong() {
+        return Math.max(0, getCapacityAsLong() - getAmountAsLong());
     }
 
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeededAsInt() {
-        return Ints.saturatedCast(getNeeded());
+        return Ints.saturatedCast(getNeededAsLong());
     }
 
     @Override
     default void serialize(ValueOutput output) {
-        long energy = energy();
+        long energy = getAmountAsLong();
         if (energy > 0) {
             output.putLong(SerializationConstants.STORED, energy);
         }
@@ -139,6 +133,11 @@ public interface IEnergyContainer extends ValueIOSerializable {
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     /// @since 10.8.0
     default void copyContents(IEnergyContainer other) {
-        setEnergy(other.energy(), null);
+        setEnergy(other.getAmountAsLong(), null);
+    }
+
+    /// Determines which automation type methods defined via [EnergyHandler] methods will use.
+    private AutomationType defaultAutomationType() {
+        return AutomationType.EXTERNAL;
     }
 }

@@ -245,7 +245,7 @@ Electrolytic Separator,setRightOutputDumpingMode,mode: String (GasMode),,,true,
 Energy Cube,getChargeItem,,Table (LargeResourceStack),,false,Get the contents of the charge slot.
 Energy Cube,getDischargeItem,,Table (LargeResourceStack),,false,Get the contents of the discharge slot.
 Factory Machine,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
-Factory Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
+Factory Machine,getEnergyUsage,,Number (int),,false,Get the energy used in the last tick by the machine
 Factory Machine,getInput,process: Number (int),Table (LargeResourceStack),,false,Get the contents of the input slot.
 Factory Machine,getOutput,process: Number (int),Table (LargeResourceStack),,false,Get the contents of the output slot.
 Factory Machine,getRecipeProgress,process: Number (int),Number (int),,false,

@@ -2163,8 +2163,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {

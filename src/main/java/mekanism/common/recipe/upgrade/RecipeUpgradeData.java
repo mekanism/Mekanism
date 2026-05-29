@@ -106,8 +106,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess) {
         return switch (type) {
             case ENERGY -> {
-                List<IEnergyContainer> containers = ContainerType.ENERGY.getAttachmentContainersIfPresent(itemAccess);
-                yield containers.isEmpty() ? null : new EnergyRecipeData(containers);
+                IEnergyContainer container = ContainerType.ENERGY.getAttachmentContainerIfPresent(itemAccess);
+                yield container == null ? null : new EnergyRecipeData(container.getAmountAsLong());
             }
             case FLUID -> getContainerUpgradeData(itemAccess, ContainerType.FLUID);
             case CHEMICAL -> getContainerUpgradeData(itemAccess, ContainerType.CHEMICAL);

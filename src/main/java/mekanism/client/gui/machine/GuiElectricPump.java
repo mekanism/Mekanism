@@ -53,7 +53,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.energyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 6, 13))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeededAsInt(tile.fluidTank.resource()) < tile.estimateIncrementAmount());

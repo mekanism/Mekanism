@@ -12,11 +12,15 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 
 @NothingNullByDefault
-public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> {
+public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<IHeatCapacitor, AttachedHeat> {
 
     HeatContainerType() {
-        super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, AttachedHeat.EMPTY,
-              TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::canHandleHeat);
+        super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, AttachedHeat.EMPTY);
+    }
+
+    @Override
+    public List<IHeatCapacitor> getContainers(TileEntityMekanism tile) {
+        return tile.getHeatCapacitors();
     }
 
     @Override
@@ -48,6 +52,16 @@ public final class HeatContainerType extends AbstractContainerType<IHeatCapacito
             }
         }
         return new AttachedHeat(stored);
+    }
+
+    @Override
+    public boolean canHandle(TileEntityMekanism tile) {
+        return tile.canHandleHeat();
+    }
+
+    @Override
+    protected boolean shouldAddAttachment(AttachedHeat attached) {
+        return !attached.isEmpty();
     }
 
     @Override

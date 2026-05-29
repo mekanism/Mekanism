@@ -1,4 +1,4 @@
-package mekanism.common.attachments.containers;
+package mekanism.common.attachments.containers.resource;
 
 import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
@@ -9,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

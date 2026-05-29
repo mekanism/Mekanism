@@ -58,7 +58,7 @@ public class SyncMapper extends BaseAnnotationScanner {
               SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, (container, contents) -> container.setContents(contents, null), LargeResourceStack.CHEMICAL_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
-              SpecialPropertyData.create(Long.TYPE, IEnergyContainer::energy, (energyContainer, energy) -> energyContainer.setEnergy(energy, null), 0L)
+              SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getAmountAsLong, (energyContainer, energy) -> energyContainer.setEnergy(energy, null), 0L)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(BasicHeatCapacitor.class,
               SpecialPropertyData.create(Double.TYPE, BasicHeatCapacitor::getHeatCapacity, BasicHeatCapacitor::setHeatCapacityFromPacket, 0D),

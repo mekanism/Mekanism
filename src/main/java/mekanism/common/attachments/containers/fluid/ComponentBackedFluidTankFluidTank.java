@@ -3,7 +3,7 @@ package mekanism.common.attachments.containers.fluid;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.AttachedResources;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

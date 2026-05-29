@@ -1,4 +1,4 @@
-package mekanism.common.attachments.containers;
+package mekanism.common.attachments.containers.resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;

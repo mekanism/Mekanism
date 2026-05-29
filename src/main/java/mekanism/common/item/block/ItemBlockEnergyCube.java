@@ -4,12 +4,13 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.attachments.containers.energy.ComponentBackedEnergyCubeContainer;
+import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
@@ -123,7 +124,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        return builder.addContainer(ComponentBackedEnergyCubeContainer::create);
+    protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
+        return EnergyContainersBuilder.ENERGY_CUBE;
     }
 }

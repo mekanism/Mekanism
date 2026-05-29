@@ -1,8 +1,9 @@
-package mekanism.common.attachments.containers;
+package mekanism.common.attachments.containers.resource;
 
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.NonNull;

@@ -179,7 +179,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
         // processing. If we move the energy requirement checks to after checking about inputs it may become worthwhile
         this.perTickEnergy = Objects.requireNonNull(perTickEnergy, "The per tick energy cannot be null.");
         Objects.requireNonNull(energyContainer, "Energy container cannot be null.");
-        this.storedEnergy = energyContainer::energyAsInt;
+        this.storedEnergy = energyContainer::getAmountAsInt;
         this.energyUsage = (energy, transaction) -> energyContainer.extract(energy, transaction, AutomationType.INTERNAL);
         return this;
     }

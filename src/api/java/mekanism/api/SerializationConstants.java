@@ -307,7 +307,6 @@ public final class SerializationConstants {
     public static final String STOCK_CONTROL = "stock_control";
     public static final String STORED = "stored";
     public static final String STRICT_INPUT = "strict_input";
-    public static final String TANK = "tank";
     public static final String TARGET = "target";
     public static final String TARGET_STACK = "target_stack";
     public static final String TARGETS = "targets";

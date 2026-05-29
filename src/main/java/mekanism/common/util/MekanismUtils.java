@@ -212,8 +212,8 @@ public final class MekanismUtils {
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        long stored = container.energy();
-        long capacity = container.capacity();
+        long stored = container.getAmountAsLong();
+        long capacity = container.getCapacityAsLong();
         if (capacity == 0L) {
             targetScale = 0;
         } else {

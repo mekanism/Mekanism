@@ -54,7 +54,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
             if (tile.getAutoMode() && tile.hasRecipe()) {
                 MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.energyContainer();
-                return energyContainer.getEnergyPerTick() > energyContainer.energy();
+                return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
             }
             return false;
         });

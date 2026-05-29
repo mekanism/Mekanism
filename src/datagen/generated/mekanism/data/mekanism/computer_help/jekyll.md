@@ -1805,8 +1805,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the input slot.
     methodName: getInput
     params:

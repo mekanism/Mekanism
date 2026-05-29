@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
+import mekanism.common.attachments.containers.resource.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

@@ -14,8 +14,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
+import mekanism.common.attachments.containers.resource.AttachedResources;
+import mekanism.common.attachments.containers.resource.ComponentBackedResourceHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -33,6 +33,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.NonNull;
@@ -40,21 +41,23 @@ import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER extends IResourceContainer<RESOURCE>>
-      extends CapableContainerType<CONTAINER, AttachedResources<RESOURCE>, ResourceHandler<RESOURCE>> {
+      extends CapableContainerType<CONTAINER, AttachedResources<RESOURCE>, ResourceHandler<RESOURCE>> implements IListContainerType<CONTAINER, AttachedResources<RESOURCE>> {
 
+    private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
-    private final RESOURCE emptyInstance;
+    private final Predicate<TileEntityMekanism> canHandle;
 
-    protected ResourceContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> component, String containerTag, String containerKey,
+    protected ResourceContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> component, String containerTag,
           MultiTypeCapability<ResourceHandler<RESOURCE>> capability, Function<TileEntityMekanism, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle,
-          LargeResourceStack.StackHelper<RESOURCE> stackHelper, RESOURCE emptyInstance) {
-        super(component, containerTag, containerKey, capability, AttachedResources.empty(), containersFromTile, canHandle);
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
+        super(component, containerTag, capability, AttachedResources.empty());
+        this.containersFromTile = containersFromTile;
         this.stackHelper = stackHelper;
-        this.emptyInstance = emptyInstance;
+        this.canHandle = canHandle;
     }
 
     public RESOURCE emptyResource() {
-        return emptyInstance;
+        return stackHelper.empty().resource();
     }
 
     public LargeResourceStack.StackHelper<RESOURCE> stackHelper() {
@@ -62,8 +65,39 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     }
 
     @Override
-    protected ResourceHandler<RESOURCE> createHandler(ItemAccess attachedAccess, int totalContainers) {
-        return new ComponentBackedResourceHandler<>(this, attachedAccess, totalContainers);
+    public List<CONTAINER> getContainers(TileEntityMekanism tile) {
+        return containersFromTile.apply(tile);
+    }
+
+    @Override
+    public boolean canHandle(TileEntityMekanism tile) {
+        return canHandle.test(tile);
+    }
+
+    @Override
+    protected boolean shouldAddAttachment(AttachedResources<RESOURCE> attached) {
+        return !attached.isEmpty();
+    }
+
+    @Nullable
+    @Override
+    protected ResourceHandler<RESOURCE> createHandler(ItemAccess itemAccess) {
+        ItemResource resource = itemAccess.getResource();
+        int count;
+        AttachedResources<RESOURCE> attached = getOrEmpty(resource);
+        if (attached.isEmpty()) {
+            //TODO: Are there any cases where the attached is empty, but we have containers?
+            //TODO - 26.1: Re-evaluate this branch not just being zero and then returning null is the only difference for what getCapOrUnexposed
+            // (which would use createHandlerIfData) previously did
+            count = getContainerCount(resource.typeHolder().value());
+        } else {
+            //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
+            count = attached.size();
+        }
+        if (count == 0) {
+            return null;
+        }
+        return new ComponentBackedResourceHandler<>(this, itemAccess, count);
     }
 
     @Override
@@ -318,13 +352,13 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     static class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {
 
         ChemicalContainerType() {
-            super(MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, Capabilities.CHEMICAL,
-                  TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER, ChemicalResource.EMPTY);
+            super(MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, Capabilities.CHEMICAL,
+                  TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER);
         }
 
         @Nullable
         @Override
-        protected AttachedResources<ChemicalResource> copyFromTile(TileEntityMekanism tile, List<IChemicalTank> containers) {
+        public AttachedResources<ChemicalResource> copyFromTile(TileEntityMekanism tile, List<IChemicalTank> containers) {
             boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && tile.shouldDumpRadiation();
             boolean hasNonEmpty = false;
             List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(containers.size());

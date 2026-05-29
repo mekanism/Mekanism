@@ -38,7 +38,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 156, 40))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MachineEnergyContainer<TileEntityModificationStation> energyContainer = tile.energyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));

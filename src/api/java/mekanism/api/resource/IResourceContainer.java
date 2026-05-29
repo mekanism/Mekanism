@@ -185,7 +185,8 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @param resource       The resource to check. **Must be non-empty.**
     /// @param automationType The automation type to check.
-    default boolean isValidForInsertion(RESOURCE resource, AutomationType automationType) {//TODO - 26.1: Update docs and state that the empty type can not be passed for resource
+    default boolean isValidForInsertion(RESOURCE resource, AutomationType automationType) {
+        //TODO - 26.1: Update docs and state that the empty type can not be passed for resource
         return true;
     }
 
