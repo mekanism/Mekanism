@@ -202,6 +202,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("fuelCapacity", FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
         fusionEnergyCapacity = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_FUSION_ENERGY_CAPACITY,
               "energyCapacity", 1_000_000_000, 1, Long.MAX_VALUE);
+        //TODO - 26.1: Should we merge these two configs?
         long baseMaxWater = 1_000L * FluidType.BUCKET_VOLUME;
         fusionWaterPerInjection = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FUSION_WATER_INJECTION.applyToBuilder(builder)
               .defineInRange("waterPerInjection", baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));

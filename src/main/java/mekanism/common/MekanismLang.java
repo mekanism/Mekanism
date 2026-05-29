@@ -632,9 +632,6 @@ public enum MekanismLang implements ILangEntry {
     TEMPERATURE_AMBIENT("temperature", "ambient"),
     TEMPERATURE_AMBIENT_SHORT("temperature", "ambient.short"),
     //Energy
-    ENERGY_JOULES("energy", "joules"),
-    ENERGY_JOULES_PLURAL("energy", "joules.plural"),
-    ENERGY_JOULES_SHORT("energy", "joules.short"),
     ENERGY_FORGE("energy", "forge"),
     ENERGY_FORGE_SHORT("energy", "forge.short"),
     //Network Reader

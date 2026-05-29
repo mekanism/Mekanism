@@ -39,8 +39,8 @@ public class TooltipHelper implements ITooltipHelper {
     }
 
     @Override
-    public Component getEnergyDisplay(long joules, boolean perTick) {
-        Component energyDisplay = UnitDisplayUtils.getEnergyDisplayShort(joules);
+    public Component getEnergyDisplay(long energy, boolean perTick) {
+        Component energyDisplay = UnitDisplayUtils.getEnergyDisplayShort(energy);
         return perTick ? MekanismLang.GENERIC_PER_TICK.translate(energyDisplay) : energyDisplay;
     }
 

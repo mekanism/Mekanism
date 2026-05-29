@@ -31,7 +31,7 @@ public class ConstantPredicates {
      */
     public static final LongSupplier ZERO_LONG = () -> 0;
     /**
-     * A supplier that returns {@code 0L}.
+     * A supplier that returns {@code 0}.
      *
      * @since 10.8.0
      */

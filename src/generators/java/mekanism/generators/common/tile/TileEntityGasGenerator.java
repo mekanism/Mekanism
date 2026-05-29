@@ -94,10 +94,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             int energyDensity = cachedFuel.energyDensity();
             //maximum amount that can be produced AND stored
             //TODO - 26.1: Evaluate if this can overflow, it probably can
-            int maxJoulesThisTick = energyDensity * Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsInt());
-            if (maxJoulesThisTick > 0) {
+            int maxEnergyThisTick = energyDensity * Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsInt());
+            if (maxEnergyThisTick > 0) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = energyContainer().insert(maxJoulesThisTick, transaction, AutomationType.INTERNAL);
+                    int inserted = energyContainer().insert(maxEnergyThisTick, transaction, AutomationType.INTERNAL);
                     if (inserted > 0) {
                         //calculate the mB for this amount of energy, rounded up
                         long mbThisTick = Math.ceilDiv(inserted, energyDensity);
