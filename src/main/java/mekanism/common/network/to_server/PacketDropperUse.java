@@ -123,24 +123,17 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                       dropperHandler, ResourceUtils::insertManual
                 );
             } else if (action == DropperAction.DRAIN_DROPPER) {
-                //Extract fluid from dropper
-                int tankNeeded = tank.getNeededAsInt(tank.resource());
-                if (tankNeeded > 0) {
-                    RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
-                    if (currentType.isEmpty()) {
-                        //Failed to find a resource that could be extracted that is valid for the fluid tank, exit
-                        return;
-                    }
-                    //Update how much the tank needs based on the type we are going to try to insert in case it has a lower limit than its maximum capacity
-                    tankNeeded = tank.capacityAsInt(currentType);
-                    if (tankNeeded == 0) {
-                        return;
-                    }
-                    transferBetween(currentType, tankNeeded, player, UseDropperAction.DRAIN,
-                          dropperHandler, ResourceUtils::extractManual,
-                          tank, (target, type, amount, transaction) -> target.insert(type, amount, transaction, AutomationType.MANUAL)
-                    );
+                //Get the type of resource stored in our tank, or one from the dropper that can be inserted into the tank
+                RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
+                if (currentType.isEmpty()) {
+                    //Failed to find a resource that could be extracted that is valid for the tank, exit
+                    return;
                 }
+                //Calculate how much of the type our tank has room for based on the type we are going to try to insert
+                transferBetween(currentType, tank.getNeededAsInt(currentType), player, UseDropperAction.DRAIN,
+                      dropperHandler, ResourceUtils::extractManual,
+                      tank, (target, type, amount, transaction) -> target.insert(type, amount, transaction, AutomationType.MANUAL)
+                );
             }
         }
     }
@@ -150,7 +143,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         if (type.isEmpty() || needed <= 0) {
             return;
         }
-        //TODO - 26.1: Evaluate if we want to be using ResourceHandlerUtil#move, I suspect it doesn't quite fit our uses, but we might want to evaluate it
         int drainAmount;
         try (Transaction simulation = Transaction.openRoot()) {
             drainAmount = extractor.process(extractFrom, type, needed, simulation);

@@ -4,9 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
@@ -44,12 +46,12 @@ public abstract class BasicChemicalChemicalToChemicalRecipe extends ChemicalChem
 
     @Override
     public boolean test(ChemicalStack input1, ChemicalStack input2) {
-        return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
+        return super.test(input1, input2) || super.test(input2, input1);
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ChemicalStack getOutput(ChemicalStack input1, ChemicalStack input2) {
+    public ChemicalStack getOutput(TypedInstance<Chemical> input1, TypedInstance<Chemical> input2) {
         return output.copy();
     }
 

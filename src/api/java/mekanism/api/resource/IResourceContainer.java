@@ -49,7 +49,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int amountAsInt() {
-        //TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
     }
 
@@ -155,6 +154,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)//TODO - 26.1: Docs
     default long getNeededAsLong(RESOURCE resource) {
+        //TODO - 26.1: Do wew want this to return zero if the type doesn't match?
         return Math.max(0, capacityAsLong(resource) - amountAsLong());
     }
 

@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,9 +65,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
 
     @Override
     protected int getRenderColor() {
-        FluidResource type = getTypeOrDummy();
-        IFluidTank container = getContainer();
-        return MekanismRenderer.color(type.toStack(container == null || container.isEmpty() ? FluidType.BUCKET_VOLUME : container.amountAsInt()));
+        return MekanismRenderer.color(getTypeOrDummy());
     }
 
     @Override

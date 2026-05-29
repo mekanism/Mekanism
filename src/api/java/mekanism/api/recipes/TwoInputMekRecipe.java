@@ -21,7 +21,7 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
     public abstract INPUT_B getInputB();
 
     @Override
-    public final boolean test(STACK_A stackA, STACK_B stackB) {
+    public boolean test(STACK_A stackA, STACK_B stackB) {
         return getInputA().test(stackA) && getInputB().test(stackB);
     }
 
@@ -51,5 +51,9 @@ public abstract class TwoInputMekRecipe<HOLDER_A, STACK_A extends TypedInstance<
     public void logMissingTags() {
         getInputA().logMissingTags();
         getInputB().logMissingTags();
+    }
+
+    public abstract static class SimpleTwoInputRecipe<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>, INPUT extends InputIngredient<HOLDER_TYPE, STACK>,
+          VANILLA_INPUT extends RecipeInput, OUTPUT> extends TwoInputMekRecipe<HOLDER_TYPE, STACK, INPUT, HOLDER_TYPE, STACK, INPUT, VANILLA_INPUT, OUTPUT> {
     }
 }

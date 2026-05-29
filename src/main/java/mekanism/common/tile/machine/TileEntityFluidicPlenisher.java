@@ -127,7 +127,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         energySlot.fillContainerOrConvert();
         inputSlot.fillTankFromSlot(outputSlot);
         long clientEnergyUsed = 0L;
-        if (canFunction() && fluidTank.amountAsInt() >= FluidType.BUCKET_VOLUME) {
+        if (canFunction() && fluidTank.amountAsLong() >= FluidType.BUCKET_VOLUME) {
             try (Transaction transaction = Transaction.openRoot()) {
                 long energyPerTick = energyContainer.getEnergyPerTick();
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {

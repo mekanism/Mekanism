@@ -2,8 +2,10 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.TwoInputMekRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -21,11 +23,14 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
       HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
       OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT>> extends CachedRecipe<RECIPE> {
 
-    private final IInputHandler<HOLDER_A, INPUT_A> inputHandler;
-    private final IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler;
-    private final IOutputHandler<OUTPUT> outputHandler;
-    private final BiConsumer<INPUT_A, INPUT_B> inputsSetter;
-    private final Consumer<OUTPUT> outputSetter;
+    protected final IInputHandler<HOLDER_A, INPUT_A> inputHandler;
+    protected final IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler;
+    protected final IOutputHandler<OUTPUT> outputHandler;
+    protected final BiConsumer<INPUT_A, INPUT_B> inputsSetter;
+    protected final Consumer<OUTPUT> outputSetter;
+    protected final Supplier<INGREDIENT_A> inputASupplier;
+    protected final Supplier<INGREDIENT_B> inputBSupplier;
+    protected final BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter;
 
     //Note: Our inputs and outputs shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
     @Nullable
@@ -49,6 +54,9 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
         this.secondaryInputHandler = Objects.requireNonNull(secondaryInputHandler, "Secondary input handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
+        this.inputASupplier = recipe::getInputA;
+        this.inputBSupplier = recipe::getInputB;
+        this.outputGetter = recipe::getOutput;
         this.inputsSetter = (input, secondary) -> {
             this.input = input;
             this.secondaryInput = secondary;
@@ -57,10 +65,14 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
     }
 
     @Override
-    protected void calculateOperationsThisTick(OperationTracker tracker) {
+    protected final void calculateOperationsThisTick(OperationTracker tracker) {
         super.calculateOperationsThisTick(tracker);
-        CachedRecipeHelper.twoInputCalculateOperationsThisTick(tracker, inputHandler, recipe::getInputA, secondaryInputHandler, recipe::getInputB, inputsSetter,
-              outputHandler, recipe::getOutput, outputSetter);
+        calculateOperations(tracker);
+    }
+
+    protected void calculateOperations(OperationTracker tracker) {
+        CachedRecipeHelper.twoInputCalculateOperationsThisTick(tracker, inputHandler, inputASupplier, secondaryInputHandler, inputBSupplier, inputsSetter,
+              outputHandler, this.outputGetter, outputSetter);
     }
 
     @Override

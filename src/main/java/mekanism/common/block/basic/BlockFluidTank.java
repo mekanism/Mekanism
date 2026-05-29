@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
@@ -35,8 +34,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         }
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null && !tile.fluidTank.isEmpty()) {
-            FluidResource fluid = tile.fluidTank.resource();
-            ambientLight = Math.max(ambientLight, fluid.getFluidType().getLightLevel(fluid.toStack(tile.fluidTank.amountAsInt())));
+            ambientLight = Math.max(ambientLight, tile.fluidTank.resource().getFluidType().getLightLevel());
         }
         return ambientLight;
     }

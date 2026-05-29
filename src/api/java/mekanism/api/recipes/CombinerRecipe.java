@@ -2,6 +2,7 @@ package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.TwoInputMekRecipe.SimpleTwoInputRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Combiners and Combining Factories can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class CombinerRecipe extends TwoInputMekRecipe<Item, ItemStack, ItemStackIngredient, Item, ItemStack, ItemStackIngredient, RecipeInput, ItemStackTemplate> {
+public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStack, ItemStackIngredient, RecipeInput, ItemStackTemplate> {
 
     private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "combiner"));
 

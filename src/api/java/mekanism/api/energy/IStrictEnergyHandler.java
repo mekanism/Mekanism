@@ -38,7 +38,6 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(amount);
-
         long inserted = 0;
         for (int index = 0, size = size(); index < size; index++) {
             inserted += insert(index, amount - inserted, transaction);

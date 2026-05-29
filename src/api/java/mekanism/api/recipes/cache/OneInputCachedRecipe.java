@@ -3,6 +3,8 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SingleInputRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -21,6 +23,8 @@ public class OneInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, I
 
     private final IInputHandler<HOLDER, INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;
+    private final Supplier<INGREDIENT> inputSupplier;
+    private final Function<INPUT, OUTPUT> outputGetter;
     private final Consumer<INPUT> inputSetter;
     private final Consumer<OUTPUT> outputSetter;
 
@@ -41,6 +45,8 @@ public class OneInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, I
         super(recipe, recheckAllErrors);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
+        this.inputSupplier = recipe::getInput;
+        this.outputGetter = recipe::getOutput;
         this.inputSetter = input -> this.input = input;
         this.outputSetter = output -> this.output = output;
     }
@@ -48,7 +54,7 @@ public class OneInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, I
     @Override
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         super.calculateOperationsThisTick(tracker);
-        CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, inputHandler, recipe::getInput, inputSetter, outputHandler, recipe::getOutput, outputSetter);
+        CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, inputHandler, inputSupplier, inputSetter, outputHandler, outputGetter, outputSetter);
     }
 
     @Override

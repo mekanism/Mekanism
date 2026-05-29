@@ -39,12 +39,11 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(IResourceContainer<RESOURCE> container, ResourceHandler<RESOURCE> handler,
           AutomationType automationType, @Nullable TransactionContext transaction) {
-        return getTypeToExtract(container, handler, type -> container.isValidForInsertion(type, automationType), transaction);
-    }
-
-    public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(IResourceContainer<RESOURCE> container, ResourceHandler<RESOURCE> handler,
-          Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
-        return getTypeToExtract(container.resource(), handler, filter, transaction);
+        RESOURCE resource = container.resource();
+        if (resource.isEmpty()) {
+            return getTypeToExtract(resource, handler, type -> container.isValidForInsertion(type, automationType), transaction);
+        }
+        return resource;
     }
 
     public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(RESOURCE type, ResourceHandler<RESOURCE> handler, Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
@@ -59,7 +58,7 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, @Nullable TransactionContext transaction) {
-        return emit(targets, tank, tank.capacityAsInt(tank.resource()), transaction);
+        return emit(targets, tank, tank.amountAsInt(), transaction);
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,

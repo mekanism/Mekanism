@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.ArrayList;
@@ -541,7 +542,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 ItemResource inputType = inputSlot.resource();
                 RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputType, i -> new RecipeProcessInfo<>());
                 recipeProcessInfo.processes.add(processInfo);
-                recipeProcessInfo.totalCount += inputSlot.amountAsInt();
+                recipeProcessInfo.totalCount += inputSlot.amountAsLong();
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload
@@ -575,7 +576,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                     ItemResource itemType = (ItemResource) info.item;
                     //TODO - 26.1: Re-evaluate this??? Has this always been wrong? getRecipeForInput only cares about type and not about count
                     // Somehow the splitting based on needed input works, but maybe this entire chunk is unnecessary
-                    ItemStack largerInput = itemType.toStack(Math.min(itemType.getMaxStackSize(), info.totalCount));
+                    ItemStack largerInput = itemType.toStack(Ints.saturatedCast(Math.min(itemType.getMaxStackSize(), info.totalCount)));
                     ProcessInfo processInfo = info.processes.getFirst();
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
                     info.recipe = factory.getRecipeForInput(processInfo.process(), itemType, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
@@ -600,8 +601,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     private void addEmptySlotsAsTargets(Map<ItemResource, RecipeProcessInfo<RECIPE>> processes, List<ProcessInfo> emptyProcesses) {
         for (Entry<ItemResource, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
             RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
-            int minPerSlot = recipeProcessInfo.getMinPerSlot(this);
-            int maxSlots = recipeProcessInfo.totalCount / minPerSlot;
+            long minPerSlot = recipeProcessInfo.getMinPerSlot(this);
+            long maxSlots = recipeProcessInfo.totalCount / minPerSlot;
             if (maxSlots <= 1) {
                 //If we don't have enough to even fill the input for a slot for a single recipe; skip
                 continue;
@@ -614,7 +615,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             }
             //Note: This is some arbitrary input stack one of the stacks contained
             ItemResource sourceStack = entry.getKey();
-            int emptyToAdd = maxSlots - processCount;
+            long emptyToAdd = maxSlots - processCount;
             int added = 0;
             List<ProcessInfo> toRemove = new ArrayList<>();
             for (ProcessInfo emptyProcess : emptyProcesses) {
@@ -651,15 +652,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             ItemResource item = entry.getKey();
             //Note: This isn't based on any limits the slot may have (but we currently don't have any reduced ones here, so it doesn't matter)
             int maxStackSize = item.getMaxStackSize();
-            int numberPerSlot = recipeProcessInfo.totalCount / processCount;
+            long numberPerSlot = recipeProcessInfo.totalCount / processCount;
             if (numberPerSlot == maxStackSize) {
                 //If all the slots are already maxed out; short-circuit, no balancing is needed
                 continue;
             }
-            int remainder = recipeProcessInfo.totalCount % processCount;
-            int minPerSlot = recipeProcessInfo.getMinPerSlot(this);
+            long remainder = recipeProcessInfo.totalCount % processCount;
+            long minPerSlot = recipeProcessInfo.getMinPerSlot(this);
             if (minPerSlot > 1) {
-                int perSlotRemainder = numberPerSlot % minPerSlot;
+                long perSlotRemainder = numberPerSlot % minPerSlot;
                 if (perSlotRemainder > 0) {
                     //Reduce the number we distribute per slot by what our excess
                     // is if we are trying to balance it by the size of the input
@@ -691,7 +692,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             for (int i = 0; i < processCount; i++) {
                 ProcessInfo processInfo = recipeProcessInfo.processes.get(i);
                 FactoryInputInventorySlot inputSlot = processInfo.inputSlot();
-                int sizeForSlot = numberPerSlot;
+                long sizeForSlot = numberPerSlot;
                 if (remainder > 0) {
                     //If we have a remainder, factor it into our slots
                     if (remainder > minPerSlot) {
@@ -725,7 +726,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         //If the amount of the item we want to set it to is zero (all got used by earlier stacks, which might
                         // happen if the recipe requires a stacked input (minPerSlot > 1)), then we need to set the slot to empty
                         inputSlot.setEmpty();
-                    } else if (inputSlot.amountAsInt() != sizeForSlot) {
+                    } else if (inputSlot.amountAsLong() != sizeForSlot) {
                         //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
                         //TODO - 26.1: Is resource the same as item?
                         inputSlot.setContents(inputSlot.resource(), sizeForSlot, null);
@@ -746,10 +747,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         private ToIntBiFunction<RecipeProcessInfo<RECIPE>, TileEntityFactory<RECIPE>> lazyMinPerSlot;
         private Object item;
         private RECIPE recipe;
-        private int minPerSlot = 1;
-        private int totalCount;
+        private long minPerSlot = 1;
+        private long totalCount;
 
-        public int getMinPerSlot(TileEntityFactory<RECIPE> factory) {
+        public long getMinPerSlot(TileEntityFactory<RECIPE> factory) {
             if (lazyMinPerSlot != null) {
                 //Get the value lazily
                 minPerSlot = Math.max(1, lazyMinPerSlot.applyAsInt(this, factory));

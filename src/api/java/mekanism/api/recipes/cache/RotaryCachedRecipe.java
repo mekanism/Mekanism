@@ -3,10 +3,14 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.level.material.Fluid;
@@ -31,6 +35,10 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     private final Consumer<ChemicalStack> chemicalInputSetter;
     private final Consumer<FluidStackTemplate> fluidOutputSetter;
     private final Consumer<ChemicalStack> chemicalOutputSetter;
+    private final Supplier<FluidStackIngredient> fluidInputGetter;
+    private final Supplier<ChemicalStackIngredient> chemicalInputGetter;
+    private final Function<ChemicalStack, FluidStackTemplate> fluidOutputGetter;
+    private final Function<FluidStack, ChemicalStack> chemicalOutputGetter;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
     private ChemicalStack recipeChemical = ChemicalStack.EMPTY;
@@ -61,6 +69,10 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
         this.chemicalInputSetter = input -> this.recipeChemical = input;
         this.fluidOutputSetter = output -> this.fluidOutput = output;
         this.chemicalOutputSetter = output -> this.chemicalOutput = output;
+        this.fluidInputGetter = this.recipe::getFluidInput;
+        this.chemicalInputGetter = this.recipe::getChemicalInput;
+        this.fluidOutputGetter = this.recipe::getFluidOutput;
+        this.chemicalOutputGetter = this.recipe::getChemicalOutput;
     }
 
     @Override
@@ -74,16 +86,16 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
                     tracker.mismatchedRecipe();
                 } else {
                     //Handle fluid to chemical conversion
-                    CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, fluidInputHandler, recipe::getFluidInput, fluidInputSetter,
-                          chemicalOutputHandler, recipe::getChemicalOutput, chemicalOutputSetter);
+                    CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, fluidInputHandler, fluidInputGetter, fluidInputSetter,
+                          chemicalOutputHandler, chemicalOutputGetter, chemicalOutputSetter);
                 }
             } else if (!recipe.hasChemicalToFluid()) {
                 //If our recipe doesn't have a chemical to fluid version, return that we cannot operate
                 tracker.mismatchedRecipe();
             } else {
                 //Handle chemical to fluid conversion
-                CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, chemicalInputHandler, recipe::getChemicalInput, chemicalInputSetter,
-                      fluidOutputHandler, recipe::getFluidOutput, fluidOutputSetter);
+                CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, chemicalInputHandler, chemicalInputGetter, chemicalInputSetter,
+                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter);
             }
         }
     }
