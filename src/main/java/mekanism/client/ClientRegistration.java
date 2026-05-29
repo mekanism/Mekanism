@@ -162,7 +162,7 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tile.qio.QIOBlockTintSource;
 import mekanism.common.tile.transmitter.LogisticalTransporterBlockTintSource;
-import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -420,7 +420,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModels(RegisterBlockStateModels event) {
-        //TODO - 26.1 models
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
         event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
         event.registerModel(TransmitterBlockStateModel.Unbaked.ID, TransmitterBlockStateModel.Unbaked.MAP_CODEC);
@@ -430,7 +429,6 @@ public class ClientRegistration {
     public static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
         event.register(EnergyCubeBaseLoader.ID, EnergyCubeBaseLoader.INSTANCE);
         //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
-        //event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
         //event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
 
@@ -468,7 +466,7 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockTintSources.constant(-1), QIOBlockTintSource.INSTANCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, List.of(BlockColors.BLANK_LAYER, QIOBlockTintSource.INSTANCE), MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
         ClientRegistrationUtil.registerBlockColorHandler(event, LogisticalTransporterBlockTintSource.INSTANCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
@@ -511,10 +509,6 @@ public class ClientRegistration {
         event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS);
         event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS);
 
-        //TODO - 26.1 renderers
-        /*ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
-              MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
-*/
         event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK);
         ClientRegistrationUtil.registerBlockExtensions(event, MekanismBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, MekanismFluids.FLUIDS);

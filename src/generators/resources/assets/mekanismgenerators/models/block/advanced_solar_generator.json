@@ -6,7 +6,10 @@
 		"2": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/advanced_solar_generator"
 	},
-	"render_type": "minecraft:cutout",
+	"__comment": "this exists because the model is at Y-1 to fit inside vanilla size restrictions",
+	"transform": {
+		"translation": [0, 1, 0]
+	},
 	"elements": [
 		{
 			"name": "pole",

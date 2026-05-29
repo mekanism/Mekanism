@@ -54,46 +54,11 @@ public class BaseModelCache {
         return register(rl, BlockStateModelPartHelper::new);
     }
 
-    /*protected JSONModelData registerJSONAndBake(Identifier rl) {
-        ModelManager modelManager = Minecraft.getInstance().getModelManager();
-        ModelBakery modelBakery = modelManager.getModelBakery();
-        StandaloneModelKey<?> mrl = ModelResourceLocation.standalone(rl);
-        ModelBaker baker = modelBakery.new ModelBakerImpl(
-              (modelLoc, material) -> material.sprite(),
-              mrl
-        );
-        //Register the model
-        JSONModelData data = registerJSON(rl);
-        //Manually run the JsonModelData#reload logic
-        data.bakedModel = baker.bake(rl, BlockModelRotation.X0_Y0, Material::sprite);
-        if (getUnbakedModel(modelBakery, baker, mrl) instanceof BlockModel blockModel) {
-            data.model = blockModel.customData.getCustomGeometry();
-        }
-        return data;
-    }*/
-
     protected <DATA extends MekanismModelData> DATA register(Identifier rl, Function<Identifier, DATA> creator) {
         DATA data = creator.apply(rl);
         modelMap.put(rl, data);
         return data;
     }
-
-    /*private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelBaker baker, ModelResourceLocation rl) {
-        UnbakedModel unbakedModel = baker.getTopLevelModel(rl);
-        if (unbakedModel == null) {
-            return modelBakery.getModel(rl.id());
-        }
-        return unbakedModel;
-    }*/
-
-    /*public static <MODEL> MODEL getBakedModel(ModelEvent.BakingCompleted evt, StandaloneModelKey<MODEL> rl) {
-        MODEL model = evt.getBakingResult().standaloneModels().get(rl);
-        if (model == null) {
-            Mekanism.logger.error("Baked model doesn't exist: {}", rl);
-            return evt.getModelManager().getMissingBlockStateModel();
-        }
-        return model;
-    }*/
 
     public static class MekanismModelData implements ModelDebugName {
 
@@ -176,14 +141,6 @@ public class BaseModelCache {
             super.reload(evt);
             BlockStateModelPart modelPart = evt.getBakingResult().standaloneModels().get(key);
             bakedModel = modelPart == null ? Collections.emptyList() : List.of(modelPart);
-            /*bakedModel = BaseModelCache.getBakedModel(evt, mrl);
-            ModelBaker baker = evt.getModelBakery().new ModelBakerImpl(
-                  (modelLoc, material) -> material.sprite(),
-                  mrl
-            );
-            if (getUnbakedModel(evt.getModelBakery(), baker, mrl) instanceof BlockModel blockModel) {
-                model = blockModel.customData.getCustomGeometry();
-            }*/
         }
 
         @Override
