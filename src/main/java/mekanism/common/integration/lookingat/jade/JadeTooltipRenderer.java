@@ -52,7 +52,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
             } else {
                 Identifier name = element.getID();
                 if (config.get(name)) {
-                    tooltip.add(new MekElement(lastText, (LookingAtElement) element).tag(name));
+                    tooltip.add(MekElement.create(lastText, (LookingAtElement) element).tag(name));
                 }
                 lastText = null;
             }
@@ -64,7 +64,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
 
     private static class MekElement extends Element {
 
-        public Element create(@Nullable Component text, LookingAtElement element) {
+        public static Element create(@Nullable Component text, LookingAtElement element) {
             MekElement mekElement = new MekElement(text, element);
             int width = element.getWidth();
             int height = element.getHeight() + 2;
