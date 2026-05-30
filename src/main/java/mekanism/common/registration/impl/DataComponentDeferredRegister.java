@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.FrequencyAware;
@@ -48,11 +49,10 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     }
 
     public <RESOURCE extends Resource> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> registerAttachedContents(String name,
-          LargeResourceStack.StackHelper<RESOURCE> stackHelper, String containerListKey) {
-        //TODO - 26.1: Can this just be a "generic" key instead of something we have to pass in
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
         return simple(name, builder -> builder.persistent(
               RecordCodecBuilder.create(instance -> instance.group(
-                    stackHelper.orEmptyCodec().listOf().fieldOf(containerListKey).forGetter(AttachedResources::containers)
+                    stackHelper.orEmptyCodec().listOf().fieldOf(SerializationConstants.CONTAINERS).forGetter(AttachedResources::containers)
               ).apply(instance, AttachedResources::new))
         ).networkSynchronized(stackHelper.streamCodec()
               .apply(ByteBufCodecs.<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>, List<LargeResourceStack<RESOURCE>>>collection(NonNullList::createWithCapacity))

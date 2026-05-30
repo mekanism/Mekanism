@@ -3,7 +3,6 @@ package mekanism.common.block.attribute;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually we may want to make these suppliers be used more like suppliers in that:
@@ -14,7 +13,7 @@ public class AttributeEnergy implements Attribute {
     // 2 operations (20 secs) worth of ticks * usage
     //TODO - 26.1: Validate this is the proper change, Sara believes in the energy rework thiakil changed things to call 4 * getUsage instead of modifying the default energy storage
     // We also should update the comment above
-    private LongSupplier energyStorage = () -> MathUtils.multiplyClamped(energyUsage.getAsInt(), 4L);
+    private LongSupplier energyStorage = () -> 4L * energyUsage.getAsInt();
 
     public AttributeEnergy(@Nullable IntSupplier energyUsage, @Nullable LongSupplier energyStorage) {
         if (energyUsage != null) {

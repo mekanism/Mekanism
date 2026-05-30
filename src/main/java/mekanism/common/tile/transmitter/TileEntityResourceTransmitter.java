@@ -110,7 +110,6 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
         if (getTransmitter().hasTransmitterNetwork()) {
             NETWORK network = getTransmitter().getTransmitterNetwork();
             if (!network.getLastType().isEmpty()) {
-                //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
                 output.store(SerializationConstants.STORED, resourceCodec(), network.getLastType());
             }
             output.putFloat(SerializationConstants.SCALE, network.currentScale);

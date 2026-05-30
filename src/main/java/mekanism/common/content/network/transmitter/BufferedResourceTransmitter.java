@@ -92,7 +92,6 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(getTransmitter());
         }
-        //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
         stackHelper.storeNonEmpty(output, SerializationConstants.STORED, saveShare);
     }
 
@@ -100,7 +99,6 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
-        //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
         network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(stackHelper.empty().resource()));
     }
 

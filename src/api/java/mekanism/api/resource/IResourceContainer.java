@@ -207,8 +207,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
 
     @Override
     default void serialize(ValueOutput output) {
-        //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
-        // Items used to store to the key "item", but fluids and chemicals used "stored"
         stackHelper().storeNonEmpty(output, SerializationConstants.STORED, asStack());
     }
 

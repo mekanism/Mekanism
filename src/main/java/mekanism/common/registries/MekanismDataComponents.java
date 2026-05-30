@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
@@ -21,8 +20,8 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.attachments.qio.PortableDashboardContents;
@@ -72,11 +71,11 @@ public class MekanismDataComponents {
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ATTACHED_ENERGY = DATA_COMPONENTS.registerNonNegativeLong("energy");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS
-          .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER, SerializationConstants.ITEMS);
+          .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS
-          .registerAttachedContents("fluids", LargeResourceStack.FLUID_HELPER, SerializationConstants.FLUID_TANKS);
+          .registerAttachedContents("fluids", LargeResourceStack.FLUID_HELPER);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS
-          .registerAttachedContents("chemicals", LargeResourceStack.CHEMICAL_HELPER, SerializationConstants.CHEMICAL_TANKS);
+          .registerAttachedContents("chemicals", LargeResourceStack.CHEMICAL_HELPER);
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)

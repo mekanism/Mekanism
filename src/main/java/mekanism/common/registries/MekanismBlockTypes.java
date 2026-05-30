@@ -447,7 +447,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
           //The storage is the same as the default, but in case we change the heater usage multiplier then we want this to update
-          .withEnergyConfig(() -> TileEntityResistiveHeater.BASE_USAGE, () -> MathUtils.multiplyClamped(TileEntityResistiveHeater.BASE_USAGE, ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER))
+          .withEnergyConfig(() -> TileEntityResistiveHeater.BASE_USAGE, () -> (long) TileEntityResistiveHeater.BASE_USAGE *  ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER)
           .without(AttributeComparator.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
