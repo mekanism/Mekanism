@@ -32,6 +32,7 @@ import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockShapes;
 import mekanism.common.content.blocktype.BlockType;
@@ -445,7 +446,8 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> TileEntityResistiveHeater.BASE_USAGE, null)
+          //The storage is the same as the default, but in case we change the heater usage multiplier then we want this to update
+          .withEnergyConfig(() -> TileEntityResistiveHeater.BASE_USAGE, () -> MathUtils.multiplyClamped(TileEntityResistiveHeater.BASE_USAGE, ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER))
           .without(AttributeComparator.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)

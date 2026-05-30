@@ -16,7 +16,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
 
     public static MinerEnergyContainer input(TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MinerEnergyContainer(4L * electricBlock.getUsage(), electricBlock.getUsage(), tile, listener);
+        return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile, listener);
     }
 
     private int minerEnergyPerTick;

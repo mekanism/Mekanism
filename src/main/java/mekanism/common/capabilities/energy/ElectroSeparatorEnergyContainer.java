@@ -17,7 +17,7 @@ public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<Tile
     public static ElectroSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile, IntObjectToIntFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator,
           @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ElectroSeparatorEnergyContainer(4L * electricBlock.getUsage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
+        return new ElectroSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
     }
 
     private final IntObjectToIntFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator;

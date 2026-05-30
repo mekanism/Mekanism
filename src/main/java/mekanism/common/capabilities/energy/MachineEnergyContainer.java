@@ -23,12 +23,12 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(4L * electricBlock.getUsage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
     }
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(4L * electricBlock.getUsage(), electricBlock.getUsage(), internalOnly, internalOnly, tile, listener);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile, listener);
     }
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
