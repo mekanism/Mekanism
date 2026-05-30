@@ -1,8 +1,5 @@
 package mekanism.common.integration.lookingat;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.SerializationConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -14,16 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidElement extends LookingAtElement {
+public non-sealed class FluidElement extends LookingAtElement {
 
-    public static final MapCodec<FluidElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidElement::getStored),
-          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.MAX).forGetter(FluidElement::getCapacity)
-    ).apply(instance, FluidElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidElement> STREAM_CODEC = StreamCodec.composite(
           FluidStack.OPTIONAL_STREAM_CODEC, FluidElement::getStored,
           ByteBufCodecs.VAR_INT, FluidElement::getCapacity,
