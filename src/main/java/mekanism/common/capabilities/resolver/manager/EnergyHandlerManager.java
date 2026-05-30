@@ -9,6 +9,7 @@ import mekanism.common.capabilities.proxy.ProxyEnergyHandler;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.lib.LastEnergyTracker;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,16 @@ public class EnergyHandlerManager extends BasicSidedCapabilityResolver<IEnergyCo
     @Nullable
     public IEnergyContainer getContainer(@Nullable Direction side) {
         return holder.getContainer(side);
+    }
+
+    @Nullable
+    @Override
+    public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
+        if (getContainer(side) == null) {
+            //If we don't have a container accessible from that side, don't return a handler
+            return null;
+        }
+        return super.resolve(capability, side);
     }
 
     public LastEnergyTracker getLastEnergyTracker() {
