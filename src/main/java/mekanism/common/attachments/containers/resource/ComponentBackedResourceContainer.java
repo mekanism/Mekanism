@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers.resource;
 
 import com.google.common.primitives.Ints;
+import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
@@ -41,6 +42,15 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         //TODO - 1.21: Serialization for this is copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
+    }
+
+    @Override
+    protected LargeResourceStack<RESOURCE> getContents(AttachedResources<RESOURCE> attached) {
+        List<LargeResourceStack<RESOURCE>> containers = attached.containers();
+        if (containerIndex < 0 || containerIndex >= containers.size()) {
+            return containerType().stackHelper().empty();
+        }
+        return containers.get(containerIndex);
     }
 
     @Override

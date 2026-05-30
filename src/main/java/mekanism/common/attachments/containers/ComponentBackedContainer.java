@@ -27,9 +27,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
         return containerType().getOrEmpty(attachedAccess);
     }
 
-    protected TYPE getContents(ATTACHED attached) {
-        return attached.getOrDefault(containerIndex);
-    }
+    protected abstract TYPE getContents(ATTACHED attached);
 
     protected boolean setContents(ATTACHED attached, TYPE value, @Nullable TransactionContext transaction, boolean checkChanged) {
         ItemResource attachedTo = attachedAccess.getResource();

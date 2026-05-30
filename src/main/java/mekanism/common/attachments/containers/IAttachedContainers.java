@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -23,12 +22,6 @@ public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<
 
     default TYPE get(int index) {
         return containers().get(index);
-    }
-
-    default TYPE getOrDefault(int index) {
-        List<TYPE> containers = containers();
-        Objects.checkIndex(index, containers.size());
-        return containers.get(index);
     }
 
     ATTACHED create(List<TYPE> containers);
