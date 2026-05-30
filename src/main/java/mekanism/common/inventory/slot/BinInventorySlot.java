@@ -174,7 +174,6 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 26.1: Does this properly handle the behavior of when things are empty
         this.lockType = input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY);
         super.deserialize(input);
     }

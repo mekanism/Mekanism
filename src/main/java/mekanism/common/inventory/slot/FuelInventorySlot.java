@@ -9,9 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -59,14 +57,13 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (fuelSlot.extract(currentType, 1, transaction, AutomationType.INTERNAL) == 0) {
             return false;
         }
-        UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
-        if (remainder == null) {
+        ItemStackTemplate container = currentType.toStack().getCraftingRemainder();
+        if (container == null) {
             //No remainder, we can just return that consuming was successful
             return true;
         }
         //If the item has a container, then try to insert the container, if there was more than one of the current type stored
         // this will fail unless for some reason the item is being converted into itself and is effectively an infinite source
-        ItemStackTemplate container = remainder.convertInto();
         int containerSize = container.count();
         //If we couldn't insert the entire use remainder, return that the transaction should bail
         return fuelSlot.insert(ItemResource.of(container), containerSize, transaction, AutomationType.INTERNAL) == containerSize;
