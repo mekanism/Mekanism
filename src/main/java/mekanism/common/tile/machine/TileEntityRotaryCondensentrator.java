@@ -39,7 +39,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -102,7 +102,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
-    private long clientEnergyUsed = 0;
+    private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
@@ -220,7 +220,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public long getEnergyUsed() {
+    public int getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -302,7 +302,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::getMode, value -> mode = value));
-        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     //Methods relating to IComputerTile

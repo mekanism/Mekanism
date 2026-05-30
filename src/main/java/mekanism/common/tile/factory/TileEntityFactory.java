@@ -38,6 +38,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -64,7 +65,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -103,7 +103,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     private int operationsPerTick = 1;//will increase for modified upgrade multipliers
     private boolean sorting;
     private boolean sortingNeeded = true;
-    private int lastUsage = 0;
+    //Note: We store this in a long as if the per tick is high for multiple recipes it could be over an int
+    private long lastUsage = 0;
 
     /**
      * This machine's factory type.
@@ -261,7 +262,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
         setActive(isActive);
         //If none of the recipes are actively processing don't bother with any subtraction
-        lastUsage = isActive ? Ints.saturatedCast(prev - energyContainer.getAmountAsLong()) : 0;
+        lastUsage = isActive ? prev - energyContainer.getAmountAsLong() : 0;
         return sendUpdatePacket;
     }
 
@@ -370,7 +371,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public int getLastUsage() {
+    public long getLastUsage() {
         return lastUsage;
     }
 
@@ -462,7 +463,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         super.addContainerTrackers(container);
         container.trackArray(progress);
         errorTracker.track(container);
-        container.track(SyncableInt.create(this::getLastUsage, value -> lastUsage = value));
+        container.track(SyncableLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }
@@ -474,7 +475,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             setControlType(data.controlType);
             energyContainer.copyContents(data.energyContainer);
             sorting = data.sorting;
-            PathElement problemPath = problemPath();
             energySlot.copyContents(data.energySlot);
             System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
             for (int i = 0; i < data.inputSlots.size(); i++) {

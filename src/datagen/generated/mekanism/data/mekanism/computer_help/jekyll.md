@@ -576,8 +576,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the input gas tank.
     methodName: getInputChemical
     returns:
@@ -917,8 +917,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the left input tank.
     methodName: getLeftInput
     returns:
@@ -1093,8 +1093,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:
@@ -1684,8 +1684,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
@@ -1805,8 +1805,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the input slot.
     methodName: getInput
     params:
@@ -2852,8 +2852,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the input tank.
     methodName: getInput
     returns:
@@ -3491,8 +3491,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the left pigment tank.
     methodName: getLeftInput
     returns:
@@ -4078,8 +4078,8 @@ methods:
   - description: Get the energy used in the last tick by the machine
     methodName: getEnergyUsage
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the fluid tank.
     methodName: getFluid
     returns:

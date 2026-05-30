@@ -37,7 +37,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -73,7 +73,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IChemicalTank outputTank;
 
-    private long clientEnergyUsed = 0L;
+    private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
@@ -144,7 +144,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public long getEnergyUsed() {
+    public int getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -202,6 +202,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableInt.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

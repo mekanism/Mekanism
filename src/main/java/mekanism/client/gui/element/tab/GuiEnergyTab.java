@@ -33,7 +33,6 @@ public class GuiEnergyTab extends GuiTexturedElement {
         infoHandler = handler;
     }
 
-    //TODO - 26.1 int supplier?
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, LongSupplier lastEnergyUsed) {
         this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.getAsLong())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeededAsLong()))));
