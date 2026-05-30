@@ -136,7 +136,7 @@ public abstract class Target<HANDLER, RESOURCE> {
     /// @param splitInfo   The new split to (re)check.
     /// @param transaction The transaction that this operation is part of.
     private void shiftNeeded(RESOURCE resource, SplitInfo splitInfo, TransactionContext transaction) {
-        if (splitInfo.getShareAmount() == 0) {
+        if (needed.isEmpty() || splitInfo.getShareAmount() == 0) {
             return;
         }
         ObjectIterator<Reference2LongMap.Entry<HANDLER>> iterator = Reference2LongMaps.fastIterator(needed);
@@ -164,8 +164,16 @@ public abstract class Target<HANDLER, RESOURCE> {
     /// @param splitInfo Keeps track of the current amount sent and the default each one can get.
     private void sendRemainingSplit(RESOURCE resource, SplitInfo splitInfo, TransactionContext transaction) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
-        if (!needed.isEmpty() && splitInfo.getRemainderAmount() != 0) {
+        if (!needed.isEmpty() && splitInfo.getUnsent() > 0) {
             ObjectIterator<Reference2LongMap.Entry<HANDLER>> iterator = Reference2LongMaps.fastIterator(needed);
+            if (needed.size() == 1) {
+                //We only have one remaining handler to try and send things to, skip trying to split a single amount between the destinations
+                // and just send everything that was unsent to the one handler.
+                long accepted = accept(iterator.next().getKey(), resource, splitInfo.getUnsent(), transaction);
+                //Note: We don't bother decrementing targets as we are just doing a final pass where we aren't going to query split amounts anymore
+                splitInfo.send(accepted, false);
+                return;
+            }
             while (iterator.hasNext()) {
                 long remainderAmount = splitInfo.getRemainderAmount();
                 if (remainderAmount == 0) {
@@ -186,15 +194,17 @@ public abstract class Target<HANDLER, RESOURCE> {
             }
             //TODO: If we remove buffers maybe we should evaluate not caring if we don't actually send the full excess remainder?
             // Given ideally we wouldn't attempting to insert the excess remainder to handlers as a second call to the handler on the same tick
-            if (splitInfo.getUnsent() > 0) {
+            long unsent = splitInfo.getUnsent();
+            if (unsent > 0) {
                 //If we still have some of a remainder after trying to evenly distribute the remainder just send it to the first target willing to accept it
                 // This might happen if one of the destinations was only able to accept part of the remaining amount, though in general that case will be
                 // covered by shifting the needed values
                 for (HANDLER recipient : needed.keySet()) {
-                    long remaining = splitInfo.getUnsent();
-                    long accepted = accept(recipient, resource, remaining, transaction);
-                    splitInfo.send(accepted, true);
-                    if (accepted == remaining) {
+                    long accepted = accept(recipient, resource, unsent, transaction);
+                    //Note: We don't bother decrementing targets as we are just doing a final pass where we aren't going to query split amounts anymore
+                    splitInfo.send(accepted, false);
+                    unsent -= accepted;
+                    if (unsent == 0) {
                         //We finished, exit
                         return;
                     }

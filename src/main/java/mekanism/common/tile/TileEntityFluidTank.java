@@ -179,7 +179,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
                 toEmit = Math.min(below.getNeededAsInt(below.resource()), toEmit);
             }
-            ResourceUtils.emit(belowTankCache.getHandlers(), fluidTank, toEmit, null);
+            ResourceUtils.emit(belowTankCache.getHandler(), fluidTank, toEmit, null);
         }
         if (needsPacket) {
             sendUpdatePacket = true;
@@ -191,6 +191,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void setLevel(@NotNull Level world) {
         super.setLevel(world);
+        //Invalidate the cache as if the level changed then it might no longer be valid
         belowTankCache = null;
     }
 

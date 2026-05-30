@@ -67,6 +67,6 @@ public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Di
     }
 
     public BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid) {
-        return BlockCapabilityCache.create(block(), level, pos, context, isValid, () -> {});
+        return createCache(level, pos, context, isValid, () -> {});
     }
 }

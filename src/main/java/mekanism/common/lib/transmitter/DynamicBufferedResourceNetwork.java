@@ -1,7 +1,6 @@
 package mekanism.common.lib.transmitter;
 
-import com.google.common.primitives.Ints;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,10 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
-import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -232,23 +231,19 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     }
 
     private long tickEmit(RESOURCE typeToSend, long amountToSend, TransactionContext transaction) {
-        Collection<Map<Direction, ResourceHandler<RESOURCE>>> acceptorValues = acceptorCache.getAcceptorValues();
-        ResourceHandlerTarget<RESOURCE> target = null;
-        int toSendAsInt = Ints.saturatedCast(amountToSend);
-        for (Map<Direction, ResourceHandler<RESOURCE>> acceptors : acceptorValues) {
+        List<ResourceHandler<RESOURCE>> targets = null;
+        for (Map<Direction, ResourceHandler<RESOURCE>> acceptors : acceptorCache.getAcceptorValues()) {
             for (ResourceHandler<RESOURCE> acceptor : acceptors.values()) {
-                try (Transaction simulation = Transaction.open(transaction)) {
-                    if (acceptor.insert(typeToSend, toSendAsInt, simulation) > 0) {
-                        if (target == null) {
-                            //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                            target = new ResourceHandlerTarget<>(acceptorValues.size() * 2);
-                        }
-                        target.addHandler(acceptor);
-                    }
+                if (targets == null) {
+                    //Lazily initialize the list of targets, which allows us to also skip attempting to start emitting
+                    targets = new ArrayList<>();
                 }
+                //Note: We add the target regardless of if we can insert into it, as it skips the extra check,
+                // and sendToAcceptors needs to calculate if the target can accept anyway
+                targets.add(acceptor);
             }
         }
-        return EmitUtils.sendToAcceptors(target, amountToSend, typeToSend, transaction);
+        return targets == null ? 0 : ResourceUtils.emit(targets, typeToSend, amountToSend, transaction);
     }
 
     @FunctionalInterface

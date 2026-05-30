@@ -13,10 +13,7 @@ public class ResourceTransmitterSaveTarget<RESOURCE extends Resource, TRANSMITTE
       Target<ResourceTransmitterSaveTarget.SaveHandler<RESOURCE, TRANSMITTER>, RESOURCE> {
 
     public ResourceTransmitterSaveTarget(Collection<TRANSMITTER> transmitters) {
-        super(transmitters.size());
-        for (TRANSMITTER transmitter : transmitters) {
-            addHandler(new SaveHandler<>(transmitter));
-        }
+        super(transmitters.stream().map(SaveHandler::new).toList());
     }
 
     @Override

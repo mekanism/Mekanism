@@ -89,7 +89,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                     // This prevents it then trying to go up the chain back to this barrel and any ones above it
                     toEmit = Math.min(below.getNeededAsInt(below.resource()), toEmit);
                 }
-                ResourceUtils.emit(belowTankCache.getHandlers(), chemicalTank, toEmit, null);
+                ResourceUtils.emit(belowTankCache.getHandler(), chemicalTank, toEmit, null);
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
             // in TileentityMekanism after this method is called. And given radioactive waste barrels can only contain

@@ -53,6 +53,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -104,7 +105,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * The nodes that have full sources near them or in them
      */
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
-    private List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidHandlerAbove = Collections.emptyList();
+    @Nullable
+    private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluidHandlerAbove;
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -175,12 +177,19 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         }
         usedEnergy = clientEnergyUsed > 0;
         if (!fluidTank.isEmpty()) {
-            if (fluidHandlerAbove.isEmpty()) {
-                fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
+            if (fluidHandlerAbove == null) {
+                fluidHandlerAbove = Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN);
             }
-            ResourceUtils.emit(fluidHandlerAbove, fluidTank, outputRate, null);
+            ResourceUtils.emit(fluidHandlerAbove.getCapability(), fluidTank, outputRate, null);
         }
         return sendUpdatePacket;
+    }
+
+    @Override
+    public void setLevel(@NotNull Level world) {
+        super.setLevel(world);
+        //Invalidate the cache as if the level changed then it might no longer be valid
+        fluidHandlerAbove = null;
     }
 
     public int estimateIncrementAmount() {

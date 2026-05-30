@@ -13,14 +13,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.content.network.EnergyNetwork;
-import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
-import mekanism.common.util.EmitUtils;
+import mekanism.common.util.EnergyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
@@ -125,7 +123,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                 }
                 if (!targets.isEmpty()) {
                     //Next we emit any power we
-                    emit(targets, subTransaction);
+                    long sent = EnergyUtils.emit(targets, getRemainingOutput(), subTransaction);
+                    if (sent > 0) {
+                        //Increase how much we are outputting by the amount we accepted
+                        queuedOutput.updateSnapshots(subTransaction);
+                        //Increase how much we are inputting
+                        queuedOutput.value += sent;
+                    }
                 }
 
                 if (queuedInput.value < queuedOutput.value) {
@@ -143,37 +147,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         queuedInput.value = 0L;
         queuedOutput.value = 0L;
 
-
-
         return getLastInput() > 0 || getLastOutput() > 0;
-    }
-
-    private void emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, TransactionContext transaction) {
-        //TODO - 26.1: Re-evaluate this, it is based on how the EnergyNetwork does things
-        EnergyAcceptorTarget acceptorTarget = null;
-        long toSend = getRemainingOutput();
-        int toSendAsInt = Ints.saturatedCast(toSend);
-        for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> target : targets) {
-            EnergyHandler acceptor = target.getCapability();
-            if (acceptor != null) {
-                try (Transaction simulation = Transaction.open(transaction)) {
-                    if (acceptor.insert(toSendAsInt, simulation) > 0) {
-                        if (acceptorTarget == null) {
-                            //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                            acceptorTarget = new EnergyAcceptorTarget(targets.size() * 2);
-                        }
-                        acceptorTarget.addHandler(acceptor);
-                    }
-                }
-            }
-        }
-        long sent = EmitUtils.sendToAcceptors(acceptorTarget, toSend, EnergyNetwork.ENERGY, transaction);
-        if (sent > 0) {
-            //Increase how much we are outputting by the amount we accepted
-            queuedOutput.updateSnapshots(transaction);
-            //Increase how much we are inputting
-            queuedOutput.value += sent;
-        }
     }
 
     private void addEnergy(long energy, TransactionContext transaction) {
@@ -242,7 +216,6 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             queuedInput.updateSnapshots(transaction);
             //Increase how much we are inputting
             queuedInput.value += toAdd;
-
         }
         return toAdd;
     }

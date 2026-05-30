@@ -1,9 +1,13 @@
 package mekanism.common.util;
 
 import com.google.common.primitives.Ints;
-import mekanism.common.lib.distribution.IntegerSplitInfo;
-import mekanism.common.lib.distribution.LongSplitInfo;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,17 +28,7 @@ public class EmitUtils {
     /// @return The amount that actually got sent.
     public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, RESOURCE resource,
           @Nullable TransactionContext transaction) {
-        if (availableTargets == null) {
-            return 0;
-        }
-        int handlerCount = availableTargets.getHandlerCount();
-        if (handlerCount == 0) {
-            return 0;
-        } else if (handlerCount == 1) {
-            //Skip creating the split info for the trivial case
-            return Ints.saturatedCast(availableTargets.sendToSingularAcceptor(resource, amountToSplit, transaction));
-        }
-        return Ints.saturatedCast(availableTargets.sendToAcceptors(new IntegerSplitInfo(amountToSplit, handlerCount), resource, transaction));
+        return Ints.saturatedCast(sendToAcceptors(availableTargets, (long) amountToSplit, resource, transaction));
     }
 
     /// @param <HANDLER>        The handler of our target.
@@ -59,6 +53,17 @@ public class EmitUtils {
             //Skip creating the split info for the trivial case
             return availableTargets.sendToSingularAcceptor(resource, amountToSplit, transaction);
         }
-        return availableTargets.sendToAcceptors(new LongSplitInfo(amountToSplit, handlerCount), resource, transaction);
+        return availableTargets.sendToAcceptors(new SplitInfo(amountToSplit, handlerCount), resource, transaction);
+    }
+
+    /// Converts a given collection of capability caches to a list of handlers.
+    public static <HANDLER> List<HANDLER> getHandlersFromCaches(Collection<? extends BlockCapabilityCache<? extends HANDLER, ?>> caches) {
+        if (caches.isEmpty()) {
+            return Collections.emptyList();
+        }
+        //Note: We add the target regardless of if we can insert into it, as it skips the extra check,
+        // and sendToAcceptors needs to calculate if the target can accept anyway
+        //TODO: If this ends up being a performance impact, lazy init the list and
+        return caches.stream().<HANDLER>map(BlockCapabilityCache::getCapability).filter(Objects::nonNull).toList();
     }
 }

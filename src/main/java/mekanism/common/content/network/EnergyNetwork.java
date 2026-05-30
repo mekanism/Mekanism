@@ -1,6 +1,6 @@
 package mekanism.common.content.network;
 
-import com.google.common.primitives.Ints;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +12,11 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
-import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -120,23 +120,19 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     }
 
     private long tickEmit(long amountToSend, TransactionContext transaction) {
-        Collection<Map<Direction, EnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
-        EnergyAcceptorTarget target = null;
-        int toSendAsInt = Ints.saturatedCast(amountToSend);
-        for (Map<Direction, EnergyHandler> acceptors : acceptorValues) {
+        List<EnergyHandler> targets = null;
+        for (Map<Direction, EnergyHandler> acceptors : acceptorCache.getAcceptorValues()) {
             for (EnergyHandler acceptor : acceptors.values()) {
-                try (Transaction simulation = Transaction.open(transaction)) {
-                    if (acceptor.insert(toSendAsInt, simulation) > 0) {
-                        if (target == null) {
-                            //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                            target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
-                        }
-                        target.addHandler(acceptor);
-                    }
+                if (targets == null) {
+                    //Lazily initialize the list of targets, which allows us to also skip attempting to start emitting
+                    targets = new ArrayList<>();
                 }
+                //Note: We add the target regardless of if we can insert into it, as it skips the extra check,
+                // and sendToAcceptors needs to calculate if the target can accept anyway
+                targets.add(acceptor);
             }
         }
-        return EmitUtils.sendToAcceptors(target, amountToSend, ENERGY, transaction);
+        return targets == null ? 0 : EnergyUtils.emit(targets, amountToSend, transaction);
     }
 
     @Override

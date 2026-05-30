@@ -1,12 +1,14 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
+import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.EnergyNetwork;
-import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
+import mekanism.common.content.network.distribution.EnergyHandlerTarget;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -32,6 +34,15 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return null;
     }
 
+    /// Extracts up to the given amount of energy from the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
+    ///
+    /// @param handler     to extract from.
+    /// @param amount      The maximum amount of energy to extract. **Must be non-negative.**
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
+    ///
+    /// @throws IllegalArgumentException If the amount is negative.
     public static int extractManual(EnergyHandler handler, int amount, TransactionContext transaction) {
         IEnergyContainer energyContainer = getEnergyContainer(handler);
         if (energyContainer != null) {
@@ -40,6 +51,15 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return handler.extract(amount, transaction);
     }
 
+    /// Inserts up to the given amount of energy into the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
+    ///
+    /// @param handler     to insert into.
+    /// @param amount      The maximum amount of energy to insert. **Must be non-negative.**
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
+    ///
+    /// @throws IllegalArgumentException If the amount is negative.
     public static int insertManual(EnergyHandler handler, int amount, TransactionContext transaction) {
         IEnergyContainer energyContainer = getEnergyContainer(handler);
         if (energyContainer != null) {
@@ -48,24 +68,40 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return handler.insert(amount, transaction);
     }
 
-    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
-        return emit(targets, energyContainer, energyContainer.getAmountAsInt(), transaction);
+    /// Emits energy from the given container split among the given collection of targets.
+    ///
+    /// @param targets     Capability caches to output to.
+    /// @param container   Container to transfer energy out of.
+    /// @param transaction The transaction that this operation is part of. This method will always use a nested transaction that will be committed. `null` can be passed
+    /// to conveniently have this method open its own root transaction and perform the sending.
+    ///
+    /// @return the amount of energy transferred out of the container and emitted among the given targets.
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer container, @Nullable TransactionContext transaction) {
+        return emit(targets, container, container.getAmountAsInt(), transaction);
     }
 
-    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer energyContainer, int maxOutput, @Nullable TransactionContext transaction) {
-        if (!energyContainer.isEmpty() && maxOutput > 0) {
+    /// Emits energy from the given container at the specified maximum transfer rate split among the given collection of targets.
+    ///
+    /// @param targets     Capability caches to output to.
+    /// @param container   Container to transfer energy out of.
+    /// @param maxOutput   Maximum transfer rate to transfer out of the container.
+    /// @param transaction The transaction that this operation is part of. This method will always use a nested transaction that will be committed. `null` can be passed
+    /// to conveniently have this method open its own root transaction and perform the sending.
+    ///
+    /// @return the amount of energy transferred out of the container and emitted among the given targets.
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer container, int maxOutput, @Nullable TransactionContext transaction) {
+        if (!container.isEmpty() && maxOutput > 0) {
             int energyToSend;
             try (Transaction simulation = Transaction.open(transaction)) {
-                energyToSend = energyContainer.extract(maxOutput, simulation, AutomationType.INTERNAL);
+                energyToSend = container.extract(maxOutput, simulation, AutomationType.INTERNAL);
                 if (energyToSend == 0) {
                     //If we failed to extract from it, just exit early
                     return 0;
                 }
             }
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                //We won't be able to extract the resource, just fail early
-                int sent = emit(targets, energyToSend, subTransaction);
-                if (energyContainer.extract(sent, subTransaction, AutomationType.INTERNAL) == sent) {
+                int sent = Ints.saturatedCast(emit(targets, energyToSend, subTransaction));
+                if (sent > 0 && container.extract(sent, subTransaction, AutomationType.INTERNAL) == sent) {
                     //Validate that we were able to extract the amount we sent. In theory this should always be true
                     subTransaction.commit();
                     return sent;
@@ -75,29 +111,42 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return 0;
     }
 
-    /**
-     * Emits energy from a central block by splitting the received stack among the sides given.
-     *
-     * @param targets      - the list of capabilities to output to
-     * @param energyToSend - the energy to output
-     *
-     * @return the amount of energy emitted
-     */
-    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, int energyToSend, @Nullable TransactionContext transaction) {
+
+    /// Emits and splits energy to a given collection of targets.
+    ///
+    /// @param targets      Targets to output to.
+    /// @param energyToSend Amount of energy to split between the various targets.
+    /// @param transaction  The transaction that this operation is part of. This method will always use a nested transaction that will be committed. `null` can be passed
+    /// to conveniently have this method open its own root transaction and perform the sending.
+    ///
+    /// @return the amount of energy emitted
+    public static long emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, long energyToSend, @Nullable TransactionContext transaction) {
         if (energyToSend <= 0 || targets.isEmpty()) {
             return 0;
         }
-        EnergyAcceptorTarget target = null;
-        for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> capability : targets) {
-            EnergyHandler handler = capability.getCapability();
-            if (handler != null) {
-                if (target == null) {
-                    target = new EnergyAcceptorTarget(targets.size());
-                }
-                target.addHandler(handler);
+        return emit(EmitUtils.getHandlersFromCaches(targets), energyToSend, transaction);
+    }
+
+    /// Emits and splits energy to a given collection of targets.
+    ///
+    /// @param targets      Targets to output to.
+    /// @param energyToSend Amount of energy to split between the various targets.
+    /// @param transaction  The transaction that this operation is part of. This method will always use a nested transaction that will be committed. `null` can be passed
+    /// to conveniently have this method open its own root transaction and perform the sending.
+    ///
+    /// @return the amount of energy emitted
+    public static long emit(List<EnergyHandler> targets, long energyToSend, @Nullable TransactionContext transaction) {
+        if (targets.isEmpty() || energyToSend <= 0) {
+            return 0;
+        } else if (targets.size() == 1) {
+            //If we only have a single target, optimize out wrapping it in a resource handler target
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                int sent = targets.getFirst().insert(Ints.saturatedCast(energyToSend), subTransaction);
+                subTransaction.commit();
+                return sent;
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, transaction);
+        return EmitUtils.sendToAcceptors(new EnergyHandlerTarget(targets), energyToSend, EnergyNetwork.ENERGY, transaction);
     }
 
     /// @return amount transferred

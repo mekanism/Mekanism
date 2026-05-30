@@ -154,13 +154,15 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
-    private void addData(Map<Object, Set<Direction>> outputData, Object container, Set<Direction> outputSides) {
-        Set<Direction> directions = outputData.get(container);
-        if (directions == null) {
-            outputSides = EnumSet.copyOf(outputSides);
-            outputData.put(container, outputSides);
-        } else {
-            directions.addAll(outputSides);
+    private void addData(Map<Object, Set<Direction>> outputData, @Nullable Object container, Set<Direction> outputSides) {
+        if (container != null) {
+            Set<Direction> directions = outputData.get(container);
+            if (directions == null) {
+                outputSides = EnumSet.copyOf(outputSides);
+                outputData.put(container, outputSides);
+            } else {
+                directions.addAll(outputSides);
+            }
         }
     }
 
@@ -195,12 +197,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                                     }
                                 }
                             }
-                            case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
-                                IEnergyContainer energyContainer = energySlotInfo.getContainer();
-                                if (energyContainer != null) {
-                                    addData(outputData, energyContainer, outputSides);
-                                }
-                            }
+                            case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> addData(outputData, energySlotInfo.getContainer(), outputSides);
                             default -> {
                             }
                         }
@@ -218,16 +215,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     case CHEMICAL -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.CHEMICAL, chemicalEjectRate);
                     case FLUID -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.FLUID, fluidEjectRate);
                     case ENERGY -> {
+                        List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches = initializeCaches(level, pos, sides, typeCapabilityCaches, Capabilities.ENERGY);
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                        List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches = new ArrayList<>(sides.size());
-                        for (Direction side : sides) {
-                            BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache = (BlockCapabilityCache<EnergyHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
-                            if (cache == null) {
-                                cache = Capabilities.ENERGY.createCache(level, pos.relative(side), side.getOpposite());
-                                typeCapabilityCaches.put(side, cache);
-                            }
-                            caches.add(cache);
-                        }
                         EnergyUtils.emit(caches, container, energyEjectRate == null ? container.getAmountAsInt() : energyEjectRate.getAsInt(), null);
                     }
                 }
@@ -238,16 +227,23 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @SuppressWarnings("unchecked")
     private <RESOURCE extends Resource> void emitResource(ServerLevel level, BlockPos pos, Set<Direction> sides, Object container,
           Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<ResourceHandler<RESOURCE>> capability, IntSupplier ejectRate) {
-        List<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> caches = new ArrayList<>(sides.size());
+        List<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> caches = initializeCaches(level, pos, sides, typeCapabilityCaches, capability);
+        ResourceUtils.emit(caches, (IResourceContainer<RESOURCE>) container, ejectRate.getAsInt(), null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TYPE> List<BlockCapabilityCache<TYPE, @Nullable Direction>> initializeCaches(ServerLevel level, BlockPos pos, Set<Direction> sides,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<TYPE> capability) {
+        List<BlockCapabilityCache<TYPE, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction> cache = (BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>) typeCapabilityCaches.get(side);
+            BlockCapabilityCache<TYPE, @Nullable Direction> cache = (BlockCapabilityCache<TYPE, @Nullable Direction>) typeCapabilityCaches.get(side);
             if (cache == null) {
                 cache = capability.createCache(level, pos.relative(side), side.getOpposite());
                 typeCapabilityCaches.put(side, cache);
             }
             caches.add(cache);
         }
-        ResourceUtils.emit(caches, (IResourceContainer<RESOURCE>) container, ejectRate.getAsInt(), null);
+        return caches;
     }
 
     /**

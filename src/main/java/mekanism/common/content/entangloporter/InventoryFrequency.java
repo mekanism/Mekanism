@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -35,10 +34,11 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
-import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
+import mekanism.common.content.network.distribution.EnergyHandlerTarget;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
+import mekanism.common.lib.distribution.Target;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -59,8 +59,6 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -200,7 +198,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     public void handleEject(long gameTime) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
-            Map<TransmissionType, Consumer<?>> typesToEject = new EnumMap<>(TransmissionType.class);
+            Map<TransmissionType, Target<?, ?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
             List<TargetExecution> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
@@ -223,7 +221,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                         continue;
                     }
                     Direction facing = qe.getDirection();
-                    for (Map.Entry<TransmissionType, Consumer<?>> entry : typesToEject.entrySet()) {
+                    for (Map.Entry<TransmissionType, Target<?, ?>> entry : typesToEject.entrySet()) {
                         TransmissionType transmissionType = entry.getKey();
                         ConfigInfo config = qe.getConfig().getConfig(transmissionType);
                         //Validate the ejector for the config allows ejecting this transmission type. In theory, we already check all
@@ -242,7 +240,13 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                 try (Transaction transaction = Transaction.openRoot()) {
                     for (TargetExecution transferHandler : transferHandlers) {
                         if (transferHandler.getHandlerCount() > 0) {
-                            transferHandler.extract(transaction);
+                            try (Transaction subTransaction = Transaction.open(transaction)) {
+                                if (transferHandler.extract(transaction)) {
+                                    //If we were able to extract everything we thought we would be able to and had tried to send
+                                    // then commit all the changes
+                                    subTransaction.commit();
+                                }
+                            }
                         }
                     }
                     transaction.commit();
@@ -251,29 +255,29 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         }
     }
 
-    private static <TYPE> void accept(Consumer<TYPE> consumer, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
+    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
         TYPE cachedCapability = qe.getCachedCapability(side, transmissionType);
         if (cachedCapability != null) {
-            consumer.accept(cachedCapability);
+            target.addHandler(cachedCapability);
         }
     }
 
-    private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
+    private void addEnergyTransferHandler(Map<TransmissionType, Target<?, ?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
         int toSend = storedEnergy.extract(storedEnergy.getAmountAsInt(), simulation, AutomationType.INTERNAL);
         if (toSend > 0) {
-            SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
+            SendingEnergyHandlerTarget target = new SendingEnergyHandlerTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);
         }
     }
 
-    private <RESOURCE extends Resource> void addResourceTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers,
+    private <RESOURCE extends Resource> void addResourceTransferHandler(Map<TransmissionType, Target<?, ?>> typesToEject, List<TargetExecution> transferHandlers,
           int expected, TransmissionType transmissionType, IResourceContainer<RESOURCE> container, TransactionContext simulation) {
         RESOURCE type = container.resource();
         if (!type.isEmpty()) {
-            int fluidToSend = container.extract(type, storedFluid.amountAsInt(), simulation, AutomationType.INTERNAL);
-            if (fluidToSend > 0) {
-                SendingResourceHandlerTarget<RESOURCE> target = new SendingResourceHandlerTarget<>(type, fluidToSend, expected, container);
+            int amountToSend = container.extract(type, container.amountAsInt(), simulation, AutomationType.INTERNAL);
+            if (amountToSend > 0) {
+                SendingResourceHandlerTarget<RESOURCE> target = new SendingResourceHandlerTarget<>(type, amountToSend, expected, container);
                 typesToEject.put(transmissionType, target);
                 transferHandlers.add(target);
             }
@@ -284,39 +288,28 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
 
         int getHandlerCount();
 
-        void extract(TransactionContext transaction);
+        boolean extract(TransactionContext subTransaction);
     }
 
-    private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements TargetExecution, Consumer<EnergyHandler> {
+    private static class SendingEnergyHandlerTarget extends EnergyHandlerTarget implements TargetExecution {
 
-        private final IEnergyContainer storedEnergy;
+        private final IEnergyContainer container;
         private final int toSend;
 
-        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, int toSend) {
+        public SendingEnergyHandlerTarget(int expectedSize, IEnergyContainer container, int toSend) {
             super(expectedSize);
-            this.storedEnergy = storedEnergy;
+            this.container = container;
             this.toSend = toSend;
         }
 
         @Override
-        public void extract(TransactionContext transaction) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                int sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
-                if (storedEnergy.extract(sent, transaction, AutomationType.INTERNAL) == sent) {
-                    //If we were able to extract everything we thought we would be able to and had tried to send
-                    // then commit all the changes
-                    subTransaction.commit();
-                }
-            }
-        }
-
-        @Override
-        public void accept(EnergyHandler handler) {
-            addHandler(handler);
+        public boolean extract(TransactionContext subTransaction) {
+            int sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
+            return sent > 0 && container.extract(sent, subTransaction, AutomationType.INTERNAL) == sent;
         }
     }
 
-    private static class SendingResourceHandlerTarget<RESOURCE extends Resource> extends ResourceHandlerTarget<RESOURCE> implements TargetExecution, Consumer<ResourceHandler<RESOURCE>> {
+    private static class SendingResourceHandlerTarget<RESOURCE extends Resource> extends ResourceHandlerTarget<RESOURCE> implements TargetExecution {
 
         private final RESOURCE type;
         private final int toSend;
@@ -330,25 +323,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         }
 
         @Override
-        public void extract(TransactionContext transaction) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                int sent = EmitUtils.sendToAcceptors(this, toSend, type, subTransaction);
-                if (container.extract(type, sent, transaction, AutomationType.INTERNAL) == sent) {
-                    //If we were able to extract everything we thought we would be able to and had tried to send
-                    // then commit all the changes
-                    subTransaction.commit();
-                }
-            }
-        }
-
-        @Override
-        public void accept(ResourceHandler<RESOURCE> handler) {
-            //TODO - 26.1: Is this called from a transactional context?
-            try (Transaction simulation = Transaction.openRoot()) {
-                if (handler.insert(type, toSend, simulation) > 0) {
-                    addHandler(handler);
-                }
-            }
+        public boolean extract(TransactionContext subTransaction) {
+            int sent = EmitUtils.sendToAcceptors(this, toSend, type, subTransaction);
+            return sent > 0 && container.extract(type, sent, subTransaction, AutomationType.INTERNAL) == sent;
         }
     }
 }
