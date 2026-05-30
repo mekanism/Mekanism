@@ -2,6 +2,7 @@ package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPITags;
 import mekanism.client.render.MekanismRenderer;
@@ -13,17 +14,17 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGeneratorRotationRenderState> {
 
-    //todo - 26.1: unbaked instead
-    // public static final RenderWindGeneratorItem RENDERER = new RenderWindGeneratorItem();
     private static final int SPEED = 16;
     private static int lastTicksUpdated = 0;
     private static int angle = 0;
-    private ModelWindGenerator windGenerator;
-    private static WindGeneratorRotationRenderState ZERO_ANGLE = new WindGeneratorRotationRenderState(0);
+    private final ModelWindGenerator windGenerator;
+    private static final WindGeneratorRotationRenderState ZERO_ANGLE = new WindGeneratorRotationRenderState(0);
 
     public RenderWindGeneratorItem(EntityModelSet entityModelSet) {
         windGenerator = new ModelWindGenerator(entityModelSet);
@@ -71,5 +72,22 @@ public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGenerat
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
         windGenerator.collect(argument, matrix, submitNodeCollector, lightCoords, overlayCoords, hasFoil);
         matrix.popPose();
+    }
+
+    public static class Unbaked implements SpecialModelRenderer.Unbaked<WindGeneratorRotationRenderState> {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        @Nullable
+        public SpecialModelRenderer<WindGeneratorRotationRenderState> bake(BakingContext context) {
+            return new RenderWindGeneratorItem(context.entityModelSet());
+        }
+
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-08T20:12:08.1287669	Model Definitions - mekanismgenerators
+// 26.1.2	2026-05-30T12:30:44.3133977	Model Definitions - mekanismgenerators
 a353033fbcd010ebe124fc1aac50039776a3048f assets/mekanismgenerators/blockstates/bioethanol.json
 b202b7a3936790c3a258e7cbd6283e27a2b4aa99 assets/mekanismgenerators/blockstates/deuterium.json
 ba24be891e64a552dae6d362e5c058bb557b01a1 assets/mekanismgenerators/blockstates/fusion_fuel.json
@@ -35,7 +35,7 @@ a94e17c368f3f46b8c356e3b6629499dbc90d0d1 assets/mekanismgenerators/items/turbine
 caa6112a2c81b29c615af7edb04e7e8f97a07578 assets/mekanismgenerators/items/turbine_rotor.json
 b9a95dfc46530a61daf3df307cab32c68f56be1f assets/mekanismgenerators/items/turbine_valve.json
 1d710cecdcbbe0c513fa9e159462e008352ea8af assets/mekanismgenerators/items/turbine_vent.json
-8a0354a4768e888ddb5c5e0ccad0243d0bd91c74 assets/mekanismgenerators/items/wind_generator.json
+ef02390b8a2c3846cc1217e7483c718e68d778c1 assets/mekanismgenerators/items/wind_generator.json
 b9c6b14a78c8626c9fe758b4a8a24038b0f3b1f8 assets/mekanismgenerators/models/block/bioethanol.json
 b9c6b14a78c8626c9fe758b4a8a24038b0f3b1f8 assets/mekanismgenerators/models/block/deuterium.json
 b9c6b14a78c8626c9fe758b4a8a24038b0f3b1f8 assets/mekanismgenerators/models/block/fusion_fuel.json
