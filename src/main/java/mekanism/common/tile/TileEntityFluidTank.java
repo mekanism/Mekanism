@@ -1,24 +1,22 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.proxy.BelowContainerCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -42,7 +40,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
@@ -60,8 +57,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -76,15 +71,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public FluidTankFluidTank fluidTank;
 
     @Nullable
-    private IFluidTank belowTank;
-    private boolean resolvedBelowTank;
+    private BelowContainerCache<FluidResource, IFluidTank> belowTankCache;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     public FluidTankTier tier;
 
-    private final ValveJournal valveJournal = new ValveJournal();
-    private List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
+    private ValveJournal valveJournal;
 
     public float prevScale;
 
@@ -107,6 +100,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected void presetVariables() {
         super.presetVariables();
         tier = Attribute.getTier(getBlockHolder(), FluidTankTier.class);
+        valveJournal = new ValveJournal();
     }
 
     @NotNull
@@ -175,22 +169,17 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            if (fluidHandlerBelow.isEmpty()) {
-                //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
-                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
-                    //Reset the tank that we know is below this
-                    resolvedBelowTank = false;
-                    belowTank = null;
-                }));
+            if (belowTankCache == null) {
+                belowTankCache = new BelowContainerCache<>(Capabilities.FLUID, (ServerLevel) level, worldPosition);
             }
-            IFluidTank below = getBelowTank();
-            if (below == null) {
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, tier.getTransferRate(), null);
-            } else {
+            int toEmit = tier.getTransferRate();
+            IFluidTank below = belowTankCache.getContainer(FluidTankFluidTank.class);
+            if (below != null) {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(below.resource()), tier.getTransferRate()), null);
+                toEmit = Math.min(below.getNeededAsInt(below.resource()), toEmit);
             }
+            ResourceUtils.emit(belowTankCache.getHandlers(), fluidTank, toEmit, null);
         }
         if (needsPacket) {
             sendUpdatePacket = true;
@@ -199,19 +188,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return sendUpdatePacket;
     }
 
-    @Nullable
-    private IFluidTank getBelowTank() {
-        if (!resolvedBelowTank) {
-            resolvedBelowTank = true;
-            ResourceHandler<FluidResource> belowHandler = fluidHandlerBelow.getFirst().getCapability();
-            //TODO - 26.1: Re-evaluate how we want to be implementing this as the fluid handler's internal handler no longer is an instead of this class
-            // due to it being an anonymous class
-            /*if (belowHandler instanceof ProxyResourceHandler<FluidResource> fluidHandler && fluidHandler.getInternalHandler() instanceof TileEntityFluidTank tank) {
-                //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
-                belowTank = tank.fluidTank;
-            }*/
-        }
-        return belowTank;
+    @Override
+    public void setLevel(@NotNull Level world) {
+        super.setLevel(world);
+        belowTankCache = null;
     }
 
     @Override
@@ -408,7 +388,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
         private boolean tick() {
             if (valve > 0 && --valve == 0) {
-                valveJournal.fluid = FluidResource.EMPTY;
+                fluid = FluidResource.EMPTY;
                 return true;
             }
             return false;
