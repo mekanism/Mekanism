@@ -10,7 +10,6 @@ import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -25,8 +24,8 @@ public record PacketLightningRender(LightningPreset preset, int renderer, Vec3 s
     public static final StreamCodec<ByteBuf, PacketLightningRender> STREAM_CODEC = StreamCodec.composite(
           LightningPreset.STREAM_CODEC, PacketLightningRender::preset,
           ByteBufCodecs.VAR_INT, PacketLightningRender::renderer,
-          PacketUtils.VEC3_STREAM_CODEC, PacketLightningRender::start,
-          PacketUtils.VEC3_STREAM_CODEC, PacketLightningRender::end,
+          Vec3.STREAM_CODEC, PacketLightningRender::start,
+          Vec3.STREAM_CODEC, PacketLightningRender::end,
           ByteBufCodecs.VAR_INT, PacketLightningRender::segments,
           PacketLightningRender::new
     );

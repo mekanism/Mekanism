@@ -37,7 +37,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
 
     public static final CustomPacketPayload.Type<PacketPortableTeleporterTeleport> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("portable_teleport"));
     public static final StreamCodec<ByteBuf, PacketPortableTeleporterTeleport> STREAM_CODEC = StreamCodec.composite(
-          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketPortableTeleporterTeleport::currentHand,
+          InteractionHand.STREAM_CODEC, PacketPortableTeleporterTeleport::currentHand,
           FrequencyTypes.TELEPORTER.getIdentitySerializer().streamCodec(), PacketPortableTeleporterTeleport::identity,
           PacketPortableTeleporterTeleport::new
     );

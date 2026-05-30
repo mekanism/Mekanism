@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,7 +30,7 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
     public static final CustomPacketPayload.Type<PacketItemButtonPress> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("item_button"));
     public static final StreamCodec<ByteBuf, PacketItemButtonPress> STREAM_CODEC = StreamCodec.composite(
           ClickedItemButton.STREAM_CODEC, PacketItemButtonPress::buttonClicked,
-          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketItemButtonPress::hand,
+          InteractionHand.STREAM_CODEC, PacketItemButtonPress::hand,
           PacketItemButtonPress::new
     );
 

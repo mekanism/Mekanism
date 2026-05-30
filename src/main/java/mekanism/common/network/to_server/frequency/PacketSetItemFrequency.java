@@ -10,7 +10,6 @@ import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -28,7 +27,7 @@ public record PacketSetItemFrequency(boolean set, TypedIdentity data, Interactio
     public static final StreamCodec<ByteBuf, PacketSetItemFrequency> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.BOOL, PacketSetItemFrequency::set,
           TypedIdentity.STREAM_CODEC, PacketSetItemFrequency::data,
-          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketSetItemFrequency::currentHand,
+          InteractionHand.STREAM_CODEC, PacketSetItemFrequency::currentHand,
           PacketSetItemFrequency::new
     );
 
