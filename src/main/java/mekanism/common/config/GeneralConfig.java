@@ -107,7 +107,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
     public final CachedLongValue spsOutputTankCapacity;
-    public final CachedIntValue spsEnergyPerInput;
+    public final CachedLongValue spsEnergyPerInput;
 
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -304,8 +304,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_CAPACITY_OUTPUT.applyToBuilder(builder)
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_ENERGY_PER.applyToBuilder(builder)
-              .defineInRange("energyPerInput", 1_000_000, 0, Integer.MAX_VALUE));
+        spsEnergyPerInput = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_ENERGY_PER.applyToBuilder(builder)
+              .defineInRange("energyPerInput", 1_000_000, 0, Long.MAX_VALUE));
         builder.pop();
 
         configSpec = builder.build();

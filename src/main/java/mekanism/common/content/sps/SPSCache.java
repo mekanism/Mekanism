@@ -12,7 +12,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     private double progress;
     private int inputProcessed;
     private boolean couldOperate;
-    private int receivedEnergy = 0;
+    private long receivedEnergy;
     private double lastProcessed;
 
     @Override
@@ -52,7 +52,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         progress = input.getDoubleOr(SerializationConstants.PROGRESS, progress);
         inputProcessed = input.getIntOr(SerializationConstants.PROCESSED, inputProcessed);
         couldOperate = input.getBooleanOr(SerializationConstants.COULD_OPERATE, couldOperate);
-        receivedEnergy = input.getIntOr(SerializationConstants.ENERGY_USAGE, receivedEnergy);
+        receivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, receivedEnergy);
         lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
@@ -62,7 +62,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         output.putDouble(SerializationConstants.PROGRESS, progress);
         output.putInt(SerializationConstants.PROCESSED, inputProcessed);
         output.putBoolean(SerializationConstants.COULD_OPERATE, couldOperate);
-        output.putInt(SerializationConstants.ENERGY_USAGE, receivedEnergy);
+        output.putLong(SerializationConstants.ENERGY_USAGE, receivedEnergy);
         output.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 }

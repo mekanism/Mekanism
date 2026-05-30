@@ -68,9 +68,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public int inputProcessed = 0;
 
-    public int receivedEnergy = 0;
+    public long receivedEnergy = 0;
     @ContainerSync
-    public int lastReceivedEnergy = 0;
+    public long lastReceivedEnergy = 0;
     @ContainerSync
     public double lastProcessed;
 
@@ -158,7 +158,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
         coilData.read(input);
-        lastReceivedEnergy = input.getIntOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
         lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
@@ -166,7 +166,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void writeUpdateTag(@NotNull ValueOutput output) {
         super.writeUpdateTag(output);
         coilData.write(output);
-        output.putInt(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        output.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
         output.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
@@ -262,13 +262,6 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return !inputTank.isEmpty() && outputTank.getNeededAsLong(outputTank.resource()) > 0;
     }
 
-    private static int getCoilLevel(int energy) {
-        if (energy == 0) {
-            return 0;
-        }
-        return 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
-    }
-
     @ComputerMethod
     public double getProcessRate() {
         return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1_000) / 1_000D;
@@ -348,7 +341,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         }
 
         private void receiveEnergy(int energy) {
-            laserLevel += getCoilLevel(energy);
+            if (energy > 0) {
+                laserLevel += 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
+            }
         }
 
         @Override
