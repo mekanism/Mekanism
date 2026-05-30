@@ -41,8 +41,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonXOffset = width - 2 - buttonSizeX;
-        drawScaledScrollingString(guiGraphics, MekanismLang.ON.translate(), buttonXOffset, 2, TextAlignment.CENTER, 0x101010, buttonSizeX, 1, false, 0.5F);
-        drawScaledScrollingString(guiGraphics, MekanismLang.OFF.translate(), buttonXOffset, 11, TextAlignment.CENTER, 0x101010, buttonSizeX, 1, false, 0.5F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.ON.translate(), buttonXOffset, 2, TextAlignment.CENTER, 0xFF101010, buttonSizeX, 1, false, 0.6F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.OFF.translate(), buttonXOffset, 11, TextAlignment.CENTER, 0xFF101010, buttonSizeX, 1, false, 0.6F);
     }
 
     @Override
