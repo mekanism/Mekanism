@@ -35,7 +35,7 @@ public class FluidElement extends LookingAtElement {
     protected final int capacity;
 
     public FluidElement(@NotNull FluidStack stored, int capacity) {
-        super(0xFF000000, 0xFFFFFF);
+        super(0xFF000000, 0xFFFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
     }

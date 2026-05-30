@@ -106,7 +106,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
         IModule<?> instance = getModule(module);
         if (instance != null) {
             boolean enabled = instance.isEnabled();
-            int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
+            int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0xFF635BD4 : 0xFF2E2A69) : (enabled ? titleTextColor() : 0xFF5E1D1D);
             drawNameText(guiGraphics, y, TextComponentUtil.build(module), color, 0.7F);
         }
     }

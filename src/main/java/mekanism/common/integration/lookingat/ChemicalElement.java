@@ -34,7 +34,7 @@ public class ChemicalElement extends LookingAtElement {
     protected final long capacity;
 
     public ChemicalElement(@NotNull ChemicalStack stored, long capacity) {
-        super(0xFF000000, 0xFFFFFF);
+        super(0xFF000000, 0xFFFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
     }

@@ -30,7 +30,7 @@ public class EnergyElement extends LookingAtElement {
     protected final long maxEnergy;
 
     public EnergyElement(long energy, long maxEnergy) {
-        super(0xFF000000, 0xFFFFFF);
+        super(0xFF000000, 0xFFFFFFFF);
         this.energy = energy;
         this.maxEnergy = maxEnergy;
     }

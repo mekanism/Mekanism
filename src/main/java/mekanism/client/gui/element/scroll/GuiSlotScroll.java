@@ -183,7 +183,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 200);
-        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, 0xFFFFFF, 16, 0, true, scale);
+        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, 0xFFFFFFFF, 16, 0, true, scale);
         //pose.popPose();
     }
 
