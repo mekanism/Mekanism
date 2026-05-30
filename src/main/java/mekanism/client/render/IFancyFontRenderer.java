@@ -6,9 +6,9 @@ import mekanism.client.SpecialColors;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.ActiveTextCollector.Parameters;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -101,14 +101,18 @@ public interface IFancyFontRenderer {
         boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
         // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
-        int targetY = (minY + maxY - font.lineHeight) / 2;
-        int targetX;
+        float targetY = (minY + maxY - font.lineHeight) / 2F;
+        float targetX;
         if (isScrolling) {
             targetX = prepScrollingString(graphics, font, textWidth, areaWidth, minX, minY, maxX, maxY, Util.getMillis() - msVisible);
         } else {
             targetX = alignment.getTarget(font, minX, maxX, textWidth);
         }
-        graphics.text(font, text.getVisualOrderText(), targetX, targetY, color, shadow);
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
+        pose.translate(targetX, targetY);
+        graphics.text(font, text.getVisualOrderText(), 0, 0, color, shadow);
+        pose.popMatrix();
         if (isScrolling) {
             graphics.disableScissor();
         }
@@ -146,7 +150,7 @@ public interface IFancyFontRenderer {
             return;
         }
         Font font = font();
-        int textWidth = (int) (font.width(text) * scale);
+        float textWidth = font.width(text) * scale;
         int areaWidth = maxX - minX;
         boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
@@ -168,31 +172,25 @@ public interface IFancyFontRenderer {
 
     /**
      * Based off the logic for calculating the scissor area and draw target that vanilla does in
-     * {@link AbstractWidget#renderScrollingString(GuiGraphicsExtractor, Font, Component, int, int, int, int, int, int)}
+     * {@link ActiveTextCollector#defaultScrollingHelper(Component, int, int, int, int, int, int, int, Parameters)}
      *
      * @param visibleDuration Time in ms that this string has been visible for.
      *
      * @apiNote Call {@link GuiGraphicsExtractor#disableScissor()} after using this method
      */
-    private static int prepScrollingString(GuiGraphicsExtractor graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
-        //Note: We are drawing in relative coordinates, but GuiGraphicsExtractor#enableScissor, is expecting absolute coordinates,
-        // so we need to get the translations from our pose stack
-        //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without all the extra allocations.
-        Matrix3x2fStack matrix4f = graphics.pose();
-        int left = 0;// TODO - 26.1 (int) matrix4f.m30();
-        int top = 0;// TODO - 26.1 (int) matrix4f.m31();
-        graphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
+    private static float prepScrollingString(GuiGraphicsExtractor graphics, Font font, float textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
+        graphics.enableScissor(minX, minY, maxX, maxY);
         //TODO: Re-evaluate this, as for text (especially scaled text) when moving very slowly near the edges, it makes the text a bit blurry
         // Though maybe it is better to just make it not move so insanely slowly near the edges
         //Note: Vanilla casts overflowedBy to an int, as it only bothers drawing based on int pixels.
         // As we already handle and calculates with floats, casting to a float here provides a much smoother looking scroll
-        return minX - (int) getOverflowedBy(font, textWidth - areaWidth, visibleDuration);
+        return minX - (float) getOverflowedBy(font, textWidth - areaWidth, visibleDuration);
     }
 
-    private static double getOverflowedBy(Font font, double overflowWidth, long visibleDuration) {
+    private static double getOverflowedBy(Font font, double maxPosition, long visibleDuration) {
         //Seconds since the gui was opened
         double seconds = visibleDuration / 1_000D;
-        double scrollPeriod = Math.max(overflowWidth * ActiveTextCollector.PERIOD_PER_SCROLLED_PIXEL, ActiveTextCollector.MIN_SCROLL_PERIOD);
+        double scrollPeriod = Math.max(maxPosition * ActiveTextCollector.PERIOD_PER_SCROLLED_PIXEL, ActiveTextCollector.MIN_SCROLL_PERIOD);
         //Controls the speed at which we go between the start of the scroll and the end
         double scrollSpeedModifier = Math.cos((2 * Math.PI) * seconds / scrollPeriod);
         if (!font.isBidirectional()) {
@@ -208,7 +206,7 @@ public interface IFancyFontRenderer {
         //Shift it so that the range is from [0, 1]
         double scrolledSoFar = Math.sin((Math.PI / 2) * scrollSpeedModifier) / 2.0 + 0.5;
         //Vanilla uses: Mth.lerp(scrolledSoFar, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just performing the following multiplication
-        return scrolledSoFar * overflowWidth;
+        return scrolledSoFar * maxPosition;
     }
 
     //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
@@ -231,7 +229,7 @@ public interface IFancyFontRenderer {
          */
         RELATIVE;//TODO: Make use of this in various spots that make sense
 
-        public int getTarget(Font font, int minX, int maxX, int textWidth) {
+        public float getTarget(Font font, int minX, int maxX, float textWidth) {
             return switch (this) {
                 case LEFT -> minX;
                 case CENTER -> minX + ((maxX - minX) - textWidth) / 2;
@@ -275,8 +273,12 @@ public interface IFancyFontRenderer {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(font, scale == 1 ? maxLength : Mth.floor(maxLength / scale));
             int maxX = x + maxLength;
+            Matrix3x2fStack pose = graphics.pose();
             for (FormattedCharSequence line : linesToDraw) {
-                graphics.text(font, line, alignment.getTarget(font, x, maxX, Math.round(scale * font.width(line))), startY, color, false);
+                pose.pushMatrix();
+                pose.translate(alignment.getTarget(font, x, maxX, Math.round(scale * font.width(line))), startY);
+                graphics.text(font, line, 0, 0, color, false);
+                pose.popMatrix();
                 startY += font.lineHeight;
             }
         }
