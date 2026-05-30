@@ -1,7 +1,6 @@
 {
   "parent": "block/block",
   "loader": "mekanism:energy_cube",
-  "render_type": "minecraft:cutout",
   "textures": {
     "1": "mekanism:block/models/energy_cube",
     "2": "mekanism:block/models/ports",
@@ -700,6 +699,7 @@
     }
   ],
   "leds": {
+    "lit_uv_shift": [-2, 0],
     "bottom": [
       {
         "name": "ledBottom1",

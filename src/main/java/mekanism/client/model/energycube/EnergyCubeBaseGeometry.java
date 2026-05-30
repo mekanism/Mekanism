@@ -1,5 +1,6 @@
 package mekanism.client.model.energycube;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,11 +10,13 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import mekanism.api.RelativeSide;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.cuboid.CuboidFace;
 import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
 import net.minecraft.client.resources.model.cuboid.UnbakedCuboidGeometry;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
@@ -74,16 +77,57 @@ public class EnergyCubeBaseGeometry implements ExtendedUnbakedGeometry {
     public static EnergyCubeBaseGeometry parse(JsonObject object, JsonDeserializationContext context) {
         UnbakedCuboidGeometry frame = getElements(context, object, "frame");
         Map<RelativeSide, UnbakedCuboidGeometry> leds = getSidedMap(context, object, "leds");
+        JsonArray ledUVShiftArr = GsonHelper.getAsJsonArray(GsonHelper.getAsJsonObject(object, "leds"), "lit_uv_shift");
+        float ledUShift = ledUVShiftArr.get(0).getAsFloat();
+        float ledVShift = ledUVShiftArr.get(1).getAsFloat();
         Map<RelativeSide, UnbakedCuboidGeometry> ledsLit = new EnumMap<>(RelativeSide.class);
         for (Map.Entry<RelativeSide, UnbakedCuboidGeometry> entry : leds.entrySet()) {
             List<CuboidModelElement> litElements = entry.getValue().elements().stream()
-                  //todo - 26.1: bake the uv shift too - QuadTransformation.uvShift(-0.125F, 0); OR make it a tint?
-                  .map(unlit -> new CuboidModelElement(unlit.from(), unlit.to(), unlit.faces(), unlit.rotation(), false, 15, unlit.faceData()))
+                  .map(unlit -> new CuboidModelElement(
+                        unlit.from(),
+                        unlit.to(),
+                        remapLedUVs(unlit, ledUShift, ledVShift),
+                        unlit.rotation(),
+                        false,
+                        15,
+                        unlit.faceData()
+                  ))
                   .toList();
             ledsLit.put(entry.getKey(), new UnbakedCuboidGeometry(litElements));
         }
         Map<RelativeSide, UnbakedCuboidGeometry> ports = getSidedMap(context, object, "ports");
         return new EnergyCubeBaseGeometry(frame, leds, ledsLit, ports);
+    }
+
+    private static Map<Direction, CuboidFace> remapLedUVs(CuboidModelElement unlit, float ledUShift, float ledVShift) {
+        return unlit.faces().entrySet().stream()
+              .map(faceEntry -> {
+                  CuboidFace origFace = faceEntry.getValue();
+                  CuboidFace.UVs origUvs = origFace.uvs();
+                  if (origUvs == null) {
+                      return faceEntry;//no remap needed
+                  }
+                  //create new uvs
+                  CuboidFace.UVs newUVs = new CuboidFace.UVs(
+                        origUvs.minU() + ledUShift,
+                        origUvs.minV() + ledVShift,
+                        origUvs.maxU() + ledUShift,
+                        origUvs.maxV() + ledVShift
+                  );
+                  //attach them to a new face instance
+                  CuboidFace newFace = new CuboidFace(
+                        origFace.cullForDirection(),
+                        origFace.tintIndex(),
+                        origFace.texture(),
+                        newUVs,
+                        origFace.rotation(),
+                        origFace.faceData(),
+                        origFace.parent()
+                  );
+                  //zip it back up
+                  return Map.entry(faceEntry.getKey(), newFace);
+              })
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private static Map<RelativeSide, UnbakedCuboidGeometry> getSidedMap(JsonDeserializationContext context, JsonObject object, String key) {
