@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanismgenerators:item/wind_generator"
+    "type": "minecraft:special",
+    "base": "mekanismgenerators:item/wind_generator",
+    "model": {
+      "type": "mekanismgenerators:wind_generator_model"
+    }
   }
 }

@@ -79,7 +79,7 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         @Override
         public void render(GuiGraphicsExtractor guiGraphics, int x, int y, DeltaTracker delta) {
             if (text != null) {
-                element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, 0xFFFFFF, 4, false);
+                element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, 0xFFFFFFFF, 4, false);
                 y += 13;
             }
             element.render(guiGraphics, x, y + 1);

@@ -17,9 +17,9 @@ public class JadeDataProvider implements IServerDataProvider<BlockAccessor> {
 
     @Override
     public void appendServerData(CompoundTag data, BlockAccessor blockAccessor) {
-        JadeLookingAtHelper helper = new JadeLookingAtHelper(blockAccessor.getLevel().registryAccess());
+        JadeLookingAtHelper helper = new JadeLookingAtHelper();
         LookingAtUtils.addInfoOrRedirect(helper, blockAccessor.getLevel(), blockAccessor.getPosition(), blockAccessor.getBlockState(), blockAccessor.getBlockEntity(), true, true);
         //Add our data if we have any
-        helper.finalizeData(data);
+        helper.finalizeData(data, blockAccessor);
     }
 }

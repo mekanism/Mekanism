@@ -87,18 +87,18 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
             if (msDisplayCost == 0) {
                 msDisplayCost = Util.getMillis();
             }
-            int textColor = 0x80FF20;
+            int textColor = 0xFF80FF20;
             Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
             if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
-                textColor = 0xFF6060;
+                textColor = 0xFFFF6060;
             } else {
                 Slot slot = menu.getSlot(2);
                 if (!slot.hasItem()) {
                     component = null;
                     msDisplayCost = 0;
                 } else if (!slot.mayPickup(player)) {
-                    textColor = 0xFF6060;
+                    textColor = 0xFFFF6060;
                 }
             }
 

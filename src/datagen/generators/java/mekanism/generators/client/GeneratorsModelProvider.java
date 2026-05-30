@@ -1,6 +1,7 @@
 package mekanism.generators.client;
 
 import mekanism.client.model.BaseModelProvider;
+import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -45,7 +46,8 @@ public class GeneratorsModelProvider extends BaseModelProvider {
         plainBlockItemModel(blockModels, GeneratorsBlocks.TURBINE_VENT, "block/turbine/vent");
 
         plainBlockItemModel(blockModels, GeneratorsBlocks.SOLAR_GENERATOR, "item/solar_generator");
-        plainBlockItemModel(blockModels, GeneratorsBlocks.WIND_GENERATOR, "item/wind_generator");//todo ister?
+
+        simpleISTER(itemModels, GeneratorsBlocks.WIND_GENERATOR.getItemHolder(), RenderWindGeneratorItem.Unbaked.INSTANCE);
     }
 
     private void registerManualStates() {

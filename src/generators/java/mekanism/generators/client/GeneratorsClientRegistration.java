@@ -26,6 +26,7 @@ import mekanism.generators.client.render.RenderFusionReactor;
 import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
+import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
@@ -42,10 +43,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -86,12 +87,6 @@ public class GeneratorsClientRegistration {
         event.registerLayerDefinition(ModelTurbine.TURBINE_LAYER, ModelTurbine::createLayerDefinition);
     }
 
-    @SubscribeEvent
-    public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-        //TODO 26.1 models
-        //event.addListener(RenderWindGeneratorItem.RENDERER);
-    }
-
     @SuppressWarnings("Convert2MethodRef")
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
@@ -129,9 +124,12 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        //TODO - 26.1 models
-        //event.registerItem(new MekRenderProperties(RenderWindGeneratorItem.RENDERER), GeneratorsBlocks.WIND_GENERATOR.getItemHolder());
         ClientRegistrationUtil.registerBlockExtensions(event, GeneratorsBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, GeneratorsFluids.FLUIDS);
+    }
+
+    @SubscribeEvent
+    public static void specialItemRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(MekanismGenerators.rl("wind_generator_model"), RenderWindGeneratorItem.Unbaked.MAP_CODEC);
     }
 }

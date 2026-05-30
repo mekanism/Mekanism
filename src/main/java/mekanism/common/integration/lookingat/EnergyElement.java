@@ -1,9 +1,6 @@
 package mekanism.common.integration.lookingat;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import mekanism.api.SerializationConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
@@ -12,14 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ExtraCodecs;
 
-public class EnergyElement extends LookingAtElement {
+public non-sealed class EnergyElement extends LookingAtElement {
 
-    public static final MapCodec<EnergyElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(EnergyElement::getEnergy),
-          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
-    ).apply(instance, EnergyElement::new));
     public static final StreamCodec<ByteBuf, EnergyElement> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.VAR_LONG, EnergyElement::getEnergy,
           ByteBufCodecs.VAR_LONG, EnergyElement::getMaxEnergy,
@@ -30,7 +22,7 @@ public class EnergyElement extends LookingAtElement {
     protected final long maxEnergy;
 
     public EnergyElement(long energy, long maxEnergy) {
-        super(0xFF000000, 0xFFFFFF);
+        super(0xFF000000, 0xFFFFFFFF);
         this.energy = energy;
         this.maxEnergy = maxEnergy;
     }

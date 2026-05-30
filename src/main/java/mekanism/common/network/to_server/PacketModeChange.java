@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -19,7 +18,7 @@ public record PacketModeChange(EquipmentSlot slot, int shift, boolean displayCha
 
     public static final CustomPacketPayload.Type<PacketModeChange> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("mode"));
     public static final StreamCodec<ByteBuf, PacketModeChange> STREAM_CODEC = StreamCodec.composite(
-          PacketUtils.EQUIPMENT_SLOT_STREAM_CODEC, PacketModeChange::slot,
+          EquipmentSlot.STREAM_CODEC, PacketModeChange::slot,
           ByteBufCodecs.VAR_INT, PacketModeChange::shift,
           ByteBufCodecs.BOOL, PacketModeChange::displayChangeMessage,
           PacketModeChange::new

@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LookingAtElement implements ILookingAtElement, IFancyFontRenderer {
+public abstract sealed class LookingAtElement implements ILookingAtElement, IFancyFontRenderer permits ChemicalElement, EnergyElement, FluidElement {
 
     private final int borderColor;
     private final int textColor;

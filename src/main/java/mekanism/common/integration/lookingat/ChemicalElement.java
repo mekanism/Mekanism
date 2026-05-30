@@ -1,8 +1,5 @@
 package mekanism.common.integration.lookingat;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
@@ -15,15 +12,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalElement extends LookingAtElement {
+public non-sealed class ChemicalElement extends LookingAtElement {
 
-    public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          LargeResourceStack.CHEMICAL_HELPER.optionalCodec().fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
-          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.MAX).forGetter(ChemicalElement::getCapacity)
-    ).apply(instance, ChemicalElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(
           LargeResourceStack.CHEMICAL_HELPER.streamCodec(), ChemicalElement::getStored,
           ByteBufCodecs.VAR_LONG, ChemicalElement::getCapacity,
@@ -39,7 +31,7 @@ public class ChemicalElement extends LookingAtElement {
     }
 
     public ChemicalElement(@NotNull LargeResourceStack<ChemicalResource> stored, long capacity) {
-        super(0xFF000000, 0xFFFFFF);
+        super(0xFF000000, 0xFFFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
     }

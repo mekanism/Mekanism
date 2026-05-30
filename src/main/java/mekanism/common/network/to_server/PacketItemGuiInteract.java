@@ -6,7 +6,6 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -25,7 +24,7 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     public static final CustomPacketPayload.Type<PacketItemGuiInteract> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("item_gui_interact"));
     public static final StreamCodec<ByteBuf, PacketItemGuiInteract> STREAM_CODEC = StreamCodec.composite(
           ItemGuiInteraction.STREAM_CODEC, PacketItemGuiInteract::interaction,
-          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketItemGuiInteract::hand,
+          InteractionHand.STREAM_CODEC, PacketItemGuiInteract::hand,
           ByteBufCodecs.VAR_INT, PacketItemGuiInteract::extra,
           PacketItemGuiInteract::new
     );
