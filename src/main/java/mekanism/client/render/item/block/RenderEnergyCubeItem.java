@@ -10,7 +10,6 @@ import mekanism.client.ModelUtil;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -40,7 +39,7 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.CubeState> {
+public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCubeItem.CubeState> {
     
     private final ModelEnergyCore core;
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_ENERGY_CUBE));

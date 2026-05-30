@@ -5,17 +5,17 @@ import com.mojang.math.Axis;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPITags;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.item.MekanismISTER;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-public class RenderWindGeneratorItem extends MekanismISTER<WindGeneratorRotationRenderState> {
+public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGeneratorRotationRenderState> {
 
     //todo - 26.1: unbaked instead
     // public static final RenderWindGeneratorItem RENDERER = new RenderWindGeneratorItem();

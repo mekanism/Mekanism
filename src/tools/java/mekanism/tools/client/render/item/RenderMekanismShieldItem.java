@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import java.util.Objects;
 import java.util.function.Consumer;
-import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.Mekanism;
 import mekanism.tools.client.ShieldTextures;
 import mekanism.tools.common.MekanismTools;
@@ -14,6 +13,7 @@ import net.minecraft.client.model.object.equipment.ShieldModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.component.DataComponents;
@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-public class RenderMekanismShieldItem extends MekanismISTER<RenderMekanismShieldItem.MekShieldState> {
+public class RenderMekanismShieldItem implements SpecialModelRenderer<RenderMekanismShieldItem.MekShieldState> {
 
     private final ShieldModel model;
     private final SpriteGetter sprites;
