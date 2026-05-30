@@ -96,12 +96,14 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         try (Transaction transaction = Transaction.openRoot()) {
-                            int toInsert = stack.count();
-                            int inserted = binSlot.insert(ItemResource.of(stack), toInsert, transaction, AutomationType.MANUAL);
-                            bin.addTicks = 5;
-                            if (inserted > 0) {
-                                transaction.commit();
-                                return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack.copyWithCount(toInsert - inserted));
+                            ItemResource resource = ItemResource.of(stack);
+                            int inserted = binSlot.insert(resource, stack.count(), transaction, AutomationType.MANUAL);
+                            if (PlayerInventoryWrapper.of(player).getHandSlot(hand).extract(resource, inserted, transaction) == inserted) {
+                                bin.addTicks = 5;
+                                if (inserted > 0) {
+                                    transaction.commit();
+                                    return InteractionResult.SUCCESS_SERVER;
+                                }
                             }
                         }
                     } else if (!binItemType.isEmpty()) {
