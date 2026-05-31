@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "active=false,facing=east": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array_offline",
+      "y": 90
+    },
+    "active=false,facing=north": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array_offline"
+    },
+    "active=false,facing=south": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array_offline",
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array_offline",
+      "y": 270
+    },
+    "active=true,facing=east": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array",
+      "y": 90
+    },
+    "active=true,facing=north": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array"
+    },
+    "active=true,facing=south": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array",
+      "y": 180
+    },
+    "active=true,facing=west": {
+      "type": "mekanism:qio_drive",
+      "model": "mekanism:block/qio_drive_array",
+      "y": 270
+    }
+  }
+}

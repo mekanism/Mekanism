@@ -82,6 +82,8 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
+import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
+import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
@@ -423,6 +425,7 @@ public class ClientRegistration {
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
         event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
         event.registerModel(TransmitterBlockStateModel.Unbaked.ID, TransmitterBlockStateModel.Unbaked.MAP_CODEC);
+        event.registerModel(Mekanism.rl("qio_drive"), Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
