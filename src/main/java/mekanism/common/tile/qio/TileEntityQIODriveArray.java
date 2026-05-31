@@ -111,8 +111,13 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @VisibleForTesting
     static DriveStatus getStatus(int slot, long status) {
+        int statusOrdinal = getStatusOrdinal(slot, status);
+        return DriveStatus.BY_ID.apply(statusOrdinal);
+    }
+
+    public static int getStatusOrdinal(int slot, long status) {
         int shiftAmount = slot * BITS_PER_DRIVE_STATUS;
-        return DriveStatus.BY_ID.apply((int) ((status >> shiftAmount) & DRIVE_STATUS_MASK));
+        return (int) ((status >> shiftAmount) & DRIVE_STATUS_MASK);
     }
 
     @Override
@@ -222,7 +227,9 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         NEAR_FULL(Mekanism.rl("block/qio_drive/qio_drive_partial")),
         FULL(Mekanism.rl("block/qio_drive/qio_drive_full"));
 
-        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+
+        public static final DriveStatus[] VALUES = values();
+        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, VALUES, ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
 
         private final Identifier model;
