@@ -82,7 +82,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, scaledChemicals);
-        initItems(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }
 }
