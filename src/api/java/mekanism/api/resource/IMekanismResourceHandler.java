@@ -215,7 +215,6 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        //TODO - 26.1: Evaluate calls to this for all our interactions with resource handlers and see what can be moved over to indexless interactions
         return extract(index, resource, amount, transaction, defaultAutomationType());
     }
 
@@ -239,8 +238,6 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
 
     /// Determines which automation type methods defined via [ResourceHandler] methods will use.
     private AutomationType defaultAutomationType() {
-        //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
-        // I think it used to fall back to internal due to technically being the null side, but I think external makes more sense
         return AutomationType.EXTERNAL;
     }
 }

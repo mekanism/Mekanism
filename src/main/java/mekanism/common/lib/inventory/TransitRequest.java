@@ -54,6 +54,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
                     continue;
                 }
                 //TODO - 26.1: Do we want to try and rework the handler transit requests to be able to ignore index?
+                //TODO - 26.1: Should we be limiting the passed max based on the max stack size? extract used to be limited to a stack at a time
                 int extractableAmount = inventory.extract(i, itemType, max, simulation);
                 if (extractableAmount > 0) {
                     int toUse = Math.min(extractableAmount, max - ret.getCount(itemType));

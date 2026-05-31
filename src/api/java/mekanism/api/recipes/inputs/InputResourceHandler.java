@@ -15,22 +15,34 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 26.1: Do we want to make this public and add docs?
-abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredResource<HOLDER_TYPE>, CONTAINER extends IResourceContainer<RESOURCE>,
+/// Base helper implementation for [IInputHandler] that simplifies creating input handlers for resource containers.
+///
+/// @since 10.8.0
+@NothingNullByDefault
+public abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredResource<HOLDER_TYPE>, CONTAINER extends IResourceContainer<RESOURCE>,
       STACK extends TypedInstance<HOLDER_TYPE>> implements IInputHandler<HOLDER_TYPE, STACK> {
 
     private final RecipeError notEnoughError;
     protected final CONTAINER container;
 
+    /// @param container      The input container.
+    /// @param notEnoughError The recipe error for when there isn't enough of an input.
     protected InputResourceHandler(CONTAINER container, RecipeError notEnoughError) {
         this.container = Objects.requireNonNull(container, "Container cannot be null.");
         this.notEnoughError = Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
     }
 
+    /// {@return an instance of the empty stack}
     protected abstract STACK getEmptyStack();
 
+    /// {@return the size of the given stack}
+    ///
+    /// @param stack Stack to represent as a resource.
     protected abstract int getAmount(STACK stack);
 
+    /// {@return the resource type of the given stack}
+    ///
+    /// @param stack Stack to get the size of.
     protected abstract RESOURCE asResource(STACK stack);
 
     @Override
@@ -83,6 +95,7 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
         }
     }
 
+    /// Helper method to make it easier to override and create input handlers that just pause instead of fully resetting their progress.
     protected void resetProgress(OperationTracker tracker) {
         tracker.resetProgress(notEnoughError);
     }

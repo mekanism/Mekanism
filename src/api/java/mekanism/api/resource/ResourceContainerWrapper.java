@@ -9,16 +9,21 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 26.1: Docs
+/// Helper class to simplify wrapping a resource container while allowing providing overrides for specific methods.
+///
+/// @since 10.8.0
+@NothingNullByDefault
 public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     protected final CONTAINER internal;
 
+    /// @param internal The container to wrap.
     protected ResourceContainerWrapper(CONTAINER internal) {
         this.internal = internal;
     }
 
-    //TODO  - 26.1: Docs stating that it is mainly just for usage of if a container is wrapped
+    /// This method gets the innermost resource container for use in [copyContents][IResourceContainer#copyContents(IResourceContainer)] when instance checks are
+    /// required.
     public IResourceContainer<RESOURCE> getInternal() {
         IResourceContainer<RESOURCE> internal = this.internal;
         if (internal instanceof ResourceContainerWrapper<RESOURCE, ?> wrapper) {

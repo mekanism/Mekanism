@@ -222,6 +222,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @param other Container to copy data from. Might be [`wrapped`][ResourceContainerWrapper].
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @see ResourceContainerWrapper#getInternal() Getting the internal container when wrapped if instance checks are necessary.
     default void copyContents(IResourceContainer<RESOURCE> other) {
         setContents(other.asStack(), null);
     }

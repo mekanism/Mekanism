@@ -60,7 +60,6 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
           LargeResourceStack<RESOURCE> empty,
           Codec<LargeResourceStack<RESOURCE>> codec,
           Codec<LargeResourceStack<RESOURCE>> optionalCodec,
-          //TODO - 26.1: Evaluate this vs Codec#lenientOptionalFieldOf
           Codec<LargeResourceStack<RESOURCE>> orEmptyCodec,
           StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>> streamCodec
     ) {
