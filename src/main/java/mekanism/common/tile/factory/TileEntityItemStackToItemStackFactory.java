@@ -28,8 +28,8 @@ import org.jetbrains.annotations.Nullable;
 //Smelting, enriching, crushing
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
-    private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemResource> OUTPUT_CHECK =
-          (recipe, input, output) -> output.matches(recipe.getOutput(input));
+    private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemResource> CAN_OUTPUT_STACK =
+          (recipe, input, outputContents) -> outputContents.isEmpty() || outputContents.matches(recipe.getOutput(input));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -64,9 +64,8 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
-          @Nullable IInventorySlot secondaryOutputSlot) {
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), OUTPUT_CHECK);
+    protected ItemStackToItemStackRecipe findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
     @NotNull

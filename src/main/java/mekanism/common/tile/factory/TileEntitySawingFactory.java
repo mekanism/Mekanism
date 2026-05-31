@@ -49,16 +49,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
-    private static final CheckRecipeType<Item, ItemResource, SawmillRecipe, ItemResource, ItemResource> OUTPUT_CHECK = (recipe, input, output, extra) -> {
+    private static final CheckRecipeType<Item, ItemResource, SawmillRecipe, ItemResource, ItemResource> CAN_OUTPUTS_STACK = (recipe, input, outputContents, secondaryOutputContents) -> {
         ChanceOutput chanceOutput = recipe.getOutput(input);
-        if (output.matches(chanceOutput.getMainOutput())) {
+        if (outputContents.isEmpty() || outputContents.matches(chanceOutput.getMainOutput())) {
             //If the input is good and the primary output matches, make sure that the secondary
             // output of this recipe will stack with what is currently in the secondary slot
-            if (extra.isEmpty()) {
+            if (secondaryOutputContents.isEmpty()) {
                 return true;
             }
             ItemStackTemplate secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-            return secondaryOutput == null || extra.matches(secondaryOutput);
+            return secondaryOutput == null || secondaryOutputContents.matches(secondaryOutput);
         }
         return false;
     };
@@ -130,9 +130,9 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    protected SawmillRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected SawmillRecipe findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemResource extra = secondaryOutputSlot == null ? ItemResource.EMPTY : secondaryOutputSlot.resource();
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), extra, OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), extra, CAN_OUTPUTS_STACK);
     }
 
     @NotNull

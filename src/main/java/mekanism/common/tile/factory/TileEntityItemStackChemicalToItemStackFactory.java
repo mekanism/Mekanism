@@ -68,8 +68,8 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityItemToItemFactory<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
-    protected static final CheckRecipeType<Item, ItemResource, Chemical, ChemicalResource, ItemStackChemicalToItemStackRecipe, ItemResource> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> output.matches(recipe.getOutput(input, extra));
+    private static final CheckRecipeType<Item, ItemResource, Chemical, ChemicalResource, ItemStackChemicalToItemStackRecipe, ItemResource> CAN_OUTPUT_STACK =
+          (recipe, input, extra, outputContents) -> outputContents.isEmpty() || outputContents.matches(recipe.getOutput(input, extra));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -171,10 +171,9 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
-          @Nullable IInventorySlot secondaryOutputSlot) {
+    protected ItemStackChemicalToItemStackRecipe findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.resource(), outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
     @Override

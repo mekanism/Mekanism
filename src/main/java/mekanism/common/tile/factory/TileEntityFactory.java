@@ -1,14 +1,14 @@
 package mekanism.common.tile.factory;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -65,7 +65,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -279,16 +278,16 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
      */
     public boolean inputProducesOutput(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
-        return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, updateCache) != null;
+        return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, false, updateCache) != null;
     }
 
     @Contract("null, _ -> false")
     protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @NotNull ItemResource itemType);
 
     @Nullable
-    protected RECIPE getRecipeForInput(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
-          boolean updateCache) {
-        if (!CommonWorldTickHandler.flushTagAndRecipeCaches) {
+    private RECIPE getRecipeForInput(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+          boolean skipCacheLookup, boolean updateCache) {
+        if (!skipCacheLookup && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //If our recipe caches are valid, grab our cached recipe and see if it is still valid
             CachedRecipe<RECIPE> cached = getCachedRecipe(process);
             if (isCachedRecipeValid(cached, fallbackInput)) {
@@ -297,7 +296,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             }
         }
         //If there is no cached item input, or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
-        RECIPE foundRecipe = findRecipe(process, fallbackInput, outputSlot, secondaryOutputSlot);
+        RECIPE foundRecipe = findRecipe(fallbackInput, outputSlot, secondaryOutputSlot);
         if (foundRecipe == null) {
             //We could not find any valid recipe for the given item that matches the items in the current output slots
             return null;
@@ -310,8 +309,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Nullable
-    protected abstract RECIPE findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
-          @Nullable IInventorySlot secondaryOutputSlot);
+    protected abstract RECIPE findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot);
 
     protected abstract int getNeededInput(RECIPE recipe, ItemResource inputType);
 
@@ -530,7 +528,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     //End methods IComputerTile
 
     private void sortInventory() {
-        Map<ItemResource, RecipeProcessInfo<RECIPE>> processes = new HashMap<>();
+        Map<ItemResource, RecipeProcessInfo<ItemResource, RECIPE>> processes = new HashMap<>();
         List<ProcessInfo> emptyProcesses = new ArrayList<>();
         for (ProcessInfo processInfo : processInfoSlots) {
             IInventorySlot inputSlot = processInfo.inputSlot();
@@ -538,7 +536,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 emptyProcesses.add(processInfo);
             } else {
                 ItemResource inputType = inputSlot.resource();
-                RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputType, i -> new RecipeProcessInfo<>());
+                RecipeProcessInfo<ItemResource, RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputType, RecipeProcessInfo::new);
                 recipeProcessInfo.processes.add(processInfo);
                 recipeProcessInfo.totalCount += inputSlot.amountAsLong();
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
@@ -546,12 +544,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                     // and our cache is not invalid/out of date due to a reload
                     CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.process());
                     if (isCachedRecipeValid(cachedRecipe, inputType)) {
-                        recipeProcessInfo.item = inputType;
                         recipeProcessInfo.recipe = cachedRecipe.getRecipe();
                         // And our current process has a cached recipe then set the lazily initialized per slot value
                         // Note: If something goes wrong, and we end up with zero as how much we need as an input
                         // we just bump the value up to one to make sure we properly handle it
-                        recipeProcessInfo.lazyMinPerSlot = (info, factory) -> factory.getNeededInput(info.recipe, (ItemResource) info.item);
+                        recipeProcessInfo.lazyMinPerSlot = (info, factory) -> factory.getNeededInput(info.recipe, info.item);
                     }
                 }
             }
@@ -560,45 +557,37 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             //If all input slots are empty, just exit
             return;
         }
-        for (Entry<ItemResource, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
-            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
+        Collection<RecipeProcessInfo<ItemResource, RECIPE>> processInfos = processes.values();
+        for (RecipeProcessInfo<ItemResource, RECIPE> recipeProcessInfo : processInfos) {
             if (recipeProcessInfo.lazyMinPerSlot == null) {
-                recipeProcessInfo.item = entry.getKey();
                 //If we don't have a lazy initializer for our minPerSlot setup, that means that there is
-                // no valid cached recipe for any of the slots of this type currently, so we want to try and
-                // get the recipe we will have for the first slot, once we end up with more items in the stack
+                // no valid cached recipe for any of the slots of this type currently; so we want to try and
+                // get the recipe we will have for the first slot that has the given item type, once we end up with more items in the stack.
                 recipeProcessInfo.lazyMinPerSlot = (info, factory) -> {
                     //Note: We put all of this logic in the lazy init, so that we don't actually call any of this
                     // until it is needed. That way if we have no empty slots and all our input slots are filled
                     // we don't do any extra processing here, and can properly short circuit
-                    ItemResource itemType = (ItemResource) info.item;
-                    //TODO - 26.1: Re-evaluate this??? Has this always been wrong? getRecipeForInput only cares about type and not about count
-                    // Somehow the splitting based on needed input works, but maybe this entire chunk is unnecessary
-                    ItemStack largerInput = itemType.toStack(Ints.saturatedCast(Math.min(itemType.getMaxStackSize(), info.totalCount)));
                     ProcessInfo processInfo = info.processes.getFirst();
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
-                    info.recipe = factory.getRecipeForInput(processInfo.process(), itemType, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
-                    //info.recipe = factory.getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
-                    if (info.recipe != null) {
-                        return factory.getNeededInput(info.recipe, itemType);
-                    }
-                    return 1;
+                    // Note: We skip looking at the cache, as we know we already tried to see if the cache was valid
+                    // before we ended up in this if branch
+                    info.recipe = factory.getRecipeForInput(processInfo.process(), info.item, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true, true);
+                    return info.recipe == null ? 1 : factory.getNeededInput(info.recipe, info.item);
                 };
             }
         }
         if (!emptyProcesses.isEmpty()) {
             //If we have any empty slots, we need to factor them in as valid slots for items to transferred to
-            addEmptySlotsAsTargets(processes, emptyProcesses);
+            addEmptySlotsAsTargets(processInfos, emptyProcesses);
             //Note: Any remaining empty slots are "ignored" as we don't have any
             // spare items to distribute to them
         }
         //Distribute items among the slots
-        distributeItems(processes);
+        distributeItems(processInfos);
     }
 
-    private void addEmptySlotsAsTargets(Map<ItemResource, RecipeProcessInfo<RECIPE>> processes, List<ProcessInfo> emptyProcesses) {
-        for (Entry<ItemResource, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
-            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
+    private void addEmptySlotsAsTargets(Collection<RecipeProcessInfo<ItemResource, RECIPE>> processes, List<ProcessInfo> emptyProcesses) {
+        for (RecipeProcessInfo<ItemResource, RECIPE> recipeProcessInfo : processes) {
             long minPerSlot = recipeProcessInfo.getMinPerSlot(this);
             long maxSlots = recipeProcessInfo.totalCount / minPerSlot;
             if (maxSlots <= 1) {
@@ -611,26 +600,22 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 //If we don't have enough extra to fill another slot skip
                 continue;
             }
-            //Note: This is some arbitrary input stack one of the stacks contained
-            ItemResource sourceStack = entry.getKey();
             long emptyToAdd = maxSlots - processCount;
             int added = 0;
-            List<ProcessInfo> toRemove = new ArrayList<>();
-            for (ProcessInfo emptyProcess : emptyProcesses) {
-                if (inputProducesOutput(emptyProcess.process(), sourceStack, emptyProcess.outputSlot(), emptyProcess.secondaryOutputSlot(), true)) {
+            for (Iterator<ProcessInfo> iter = emptyProcesses.iterator(); iter.hasNext(); ) {
+                ProcessInfo emptyProcess = iter.next();
+                if (inputProducesOutput(emptyProcess.process(), recipeProcessInfo.item, emptyProcess.outputSlot(), emptyProcess.secondaryOutputSlot(), true)) {
                     //If the input is valid for the stuff in the empty process' output slot
                     // then add our empty process to our recipeProcessInfo, and mark
                     // the empty process as accounted for
                     recipeProcessInfo.processes.add(emptyProcess);
-                    toRemove.add(emptyProcess);
-                    added++;
-                    if (added >= emptyToAdd) {
+                    iter.remove();
+                    if (++added >= emptyToAdd) {
                         //If we added as many as we could based on how much input we have; exit
                         break;
                     }
                 }
             }
-            emptyProcesses.removeAll(toRemove);
             if (emptyProcesses.isEmpty()) {
                 //We accounted for all our empty processes, stop looking at inputs
                 // for purposes of distributing empty slots among them
@@ -639,17 +624,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
     }
 
-    private void distributeItems(Map<ItemResource, RecipeProcessInfo<RECIPE>> processes) {
-        for (Entry<ItemResource, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
-            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
+    private void distributeItems(Collection<RecipeProcessInfo<ItemResource, RECIPE>> processes) {
+        for (RecipeProcessInfo<ItemResource, RECIPE> recipeProcessInfo : processes) {
             int processCount = recipeProcessInfo.processes.size();
             if (processCount == 1) {
                 //If there is only one process with the item in it; short-circuit, no balancing is needed
                 continue;
             }
-            ItemResource item = entry.getKey();
             //Note: This isn't based on any limits the slot may have (but we currently don't have any reduced ones here, so it doesn't matter)
-            int maxStackSize = item.getMaxStackSize();
+            int maxStackSize = recipeProcessInfo.item.getMaxStackSize();
             long numberPerSlot = recipeProcessInfo.totalCount / processCount;
             if (numberPerSlot == maxStackSize) {
                 //If all the slots are already maxed out; short-circuit, no balancing is needed
@@ -674,22 +657,17 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                     // slot while we still have a remainder, will make sure
                 }
                 if (numberPerSlot + minPerSlot > maxStackSize) {
-                    //If adding how much we want per slot would cause the slot to overflow
-                    // we reduce how much we set per slot to how much there is room for
-                    // Note: we can do this safely because while our remainder may be
-                    // processCount * minPerSlot - 1 (as shown above), if we are in
-                    // this if statement, that means that we really have at most:
-                    // processCount * maxStackSize - 1 items being distributed and
+                    //If adding how much we want per slot would cause the slot to overflow we reduce how much we set per slot to how much there is room for
+                    // Note: we can do this safely because while our remainder may be processCount * minPerSlot - 1 (as shown above), if we are in
+                    // this if statement, that means that we really have at most: processCount * maxStackSize - 1 items being distributed and
                     // have: processCount * numberPerSlot + remainder
-                    // which means that our remainder is actually at most:
-                    // processCount * (maxStackSize - numberPerSlot) - 1
+                    // which means that our remainder is actually at most: processCount * (maxStackSize - numberPerSlot) - 1
                     // so we can safely set our per slot distribution to maxStackSize - numberPerSlot
                     minPerSlot = maxStackSize - numberPerSlot;
                 }
             }
-            for (int i = 0; i < processCount; i++) {
-                ProcessInfo processInfo = recipeProcessInfo.processes.get(i);
-                FactoryInputInventorySlot inputSlot = processInfo.inputSlot();
+            for (ProcessInfo processInfo : recipeProcessInfo.processes) {
+                IInventorySlot inputSlot = processInfo.inputSlot();
                 long sizeForSlot = numberPerSlot;
                 if (remainder > 0) {
                     //If we have a remainder, factor it into our slots
@@ -705,31 +683,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         remainder = 0;
                     }
                 }
-                if (inputSlot.isEmpty()) {
-                    //Note: sizeForSlot should never be zero here as we would not have added
-                    // the empty slot to this item's distribution grouping if it would not
-                    // end up getting any items; check it just in case though before creating
-                    // a stack for the slot and setting it
-                    if (sizeForSlot > 0) {
-                        //Note: We use setStackUnchecked here, as there is a very small chance that
-                        // the stack is not actually valid for the slot because of a reload causing
-                        // recipes to change. If this is the case, then we want to properly not crash,
-                        // but we would rather not add any extra overhead about revalidating the item
-                        // each time as it can get somewhat expensive.
-                        inputSlot.setContents(item, sizeForSlot, null);
-                    }
-                } else {
-                    //Slot is not currently empty
-                    if (sizeForSlot == 0) {
-                        //If the amount of the item we want to set it to is zero (all got used by earlier stacks, which might
-                        // happen if the recipe requires a stacked input (minPerSlot > 1)), then we need to set the slot to empty
-                        inputSlot.setEmpty();
-                    } else if (inputSlot.amountAsLong() != sizeForSlot) {
-                        //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
-                        //TODO - 26.1: Is resource the same as item?
-                        inputSlot.setContents(inputSlot.resource(), sizeForSlot, null);
-                    }
-                }
+                //Set the slot to the desired amount of the input item. This handles all the cases that previously were individually covered:
+                // - input slot is empty (empty process info), and we have some number we need to insert into it
+                // - input slot is not empty, but should be as we moved all the items out of it
+                // - input slot is not empty, but should have a different number of items than we have stored for it
+                inputSlot.setContents(recipeProcessInfo.item, sizeForSlot, null);
             }
         }
     }
@@ -738,15 +696,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                               @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
-    private static class RecipeProcessInfo<RECIPE extends MekanismRecipe<?>> {
+    private static class RecipeProcessInfo<ITEM, RECIPE extends MekanismRecipe<?>> {
 
         private final List<ProcessInfo> processes = new ArrayList<>();
+        private final ITEM item;
         @Nullable
-        private ToIntBiFunction<RecipeProcessInfo<RECIPE>, TileEntityFactory<RECIPE>> lazyMinPerSlot;
-        private Object item;
+        private ToIntBiFunction<RecipeProcessInfo<ITEM, RECIPE>, TileEntityFactory<RECIPE>> lazyMinPerSlot;
         private RECIPE recipe;
         private long minPerSlot = 1;
         private long totalCount;
+
+        public RecipeProcessInfo(ITEM item) {
+            this.item = item;
+        }
 
         public long getMinPerSlot(TileEntityFactory<RECIPE> factory) {
             if (lazyMinPerSlot != null) {
