@@ -109,7 +109,6 @@ public record QIODriveArrayItemModel(
         if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.getItemHolder())) {
             List<IInventorySlot> inventorySlots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
             boolean hasFrequency = hasFrequency(stack);
-            boolean allEmpty = true;
             for (int i = 0; i < TileEntityQIODriveArray.DRIVE_SLOTS; i++) {
                 DriveStatus status;
                 ItemStack driveStack;
