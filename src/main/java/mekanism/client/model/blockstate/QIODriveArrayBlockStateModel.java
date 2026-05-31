@@ -62,10 +62,25 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
         public static final MapCodec<Unbaked> MAP_CODEC = Variant.MAP_CODEC
               .xmap(Unbaked::new, Unbaked::baseModel);
         /// slot -> x,y transforms
-        private static final float[][] DRIVE_PLACEMENTS = {
-              {0, 6F / 16}, {-2F / 16, 6F / 16}, {-4F / 16, 6F / 16}, {-7F / 16, 6F / 16}, {-9F / 16, 6F / 16}, {-11F / 16, 6F / 16},
-              {0, 0}, {-2F / 16, 0}, {-4F / 16, 0}, {-7F / 16, 0}, {-9F / 16, 0}, {-11F / 16, 0}
+        private static final Transformation[] DRIVE_PLACEMENTS = {
+              driveTransform(0, 6F),
+              driveTransform(-2F, 6F),
+              driveTransform(-4F, 6F),
+              driveTransform(-7F, 6F),
+              driveTransform(-9F, 6F),
+              driveTransform(-11F, 6F),
+              driveTransform(0, 0),
+              driveTransform(-2F, 0),
+              driveTransform(-4F, 0),
+              driveTransform(-7F, 0),
+              driveTransform(-9F, 0),
+              driveTransform(-11F, 0)
+
         };
+
+        private static Transformation driveTransform(float x, float y) {
+            return new Transformation(new Vector3f(x / 16F, y / 16F, 0), null, null, null);
+        }
 
         @Override
         public MapCodec<Unbaked> codec() {
@@ -87,8 +102,8 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
                     if (statusModel == null) {
                         continue;
                     }
-                    float[] drivePlacement = DRIVE_PLACEMENTS[slot];
-                    ModelState driveModelState = UnbakedElementsHelper.composeRootTransformIntoModelState(baseTransforms, new Transformation(new Vector3f(drivePlacement[0], drivePlacement[1], 0), null, null, null));
+                    Transformation drivePlacement = DRIVE_PLACEMENTS[slot];
+                    ModelState driveModelState = UnbakedElementsHelper.composeRootTransformIntoModelState(baseTransforms, drivePlacement);
                     slotBakedParts[statusOrdinal] = SimpleModelWrapper.bake(baker, statusModel, driveModelState);
                 }
             }
