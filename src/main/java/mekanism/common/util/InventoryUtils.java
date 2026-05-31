@@ -19,7 +19,6 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.type.ContainerType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.registries.MekanismDataComponents;
@@ -145,11 +144,6 @@ public final class InventoryUtils {
             return true;
         }
         return inSlot.matches(toInsert);
-    }
-
-    //TODO - 26.1: Re-evaluate this
-    public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
-        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
     public static HandlerTransitRequest getEjectItemMap(ResourceHandler<ItemResource> handler, List<IInventorySlot> slots) {

@@ -34,7 +34,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -291,7 +290,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         if (!hasConnectedInventory()) {
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 Direction opposite = dir.getOpposite();
-                if (InventoryUtils.isItemHandler(level, worldPosition.relative(dir), opposite)) {
+                if (Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(dir), opposite) != null) {
                     change = opposite;
                     break;
                 }
