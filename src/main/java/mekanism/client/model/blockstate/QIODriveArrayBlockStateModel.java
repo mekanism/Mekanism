@@ -9,7 +9,6 @@ import java.util.Objects;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.block.dispatch.Variant;
@@ -38,6 +37,10 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
             return;
         }
         long driveStatus = Objects.requireNonNullElse(data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY), Long.valueOf(0));
+        collectDriveParts(parts, driveStatus);
+    }
+
+    public void collectDriveParts(List<BlockStateModelPart> parts, long driveStatus) {
         for (int slot = 0; slot < DRIVE_SLOTS; slot++) {
             int statusOrdinal = TileEntityQIODriveArray.getStatusOrdinal(slot, driveStatus);
             BlockStateModelPart modelPart = slotToBakedDrive[slot][statusOrdinal];
@@ -88,7 +91,7 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
         }
 
         @Override
-        public BlockStateModel bake(ModelBaker baker) {
+        public QIODriveArrayBlockStateModel bake(ModelBaker baker) {
             ModelState baseTransforms = baseModel.modelState().asModelState();
             ResolvedModel model = baker.getModel(baseModel.modelLocation());
             BlockStateModelPart bakedBase = SimpleModelWrapper.bake(baker, model, baseTransforms);

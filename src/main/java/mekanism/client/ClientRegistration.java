@@ -82,11 +82,11 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
-import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
+import mekanism.client.model.item.QIODriveArrayItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -194,6 +194,7 @@ import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyE
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -336,6 +337,11 @@ public class ClientRegistration {
         event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(Mekanism.rl("qio_drive_item"), QIODriveArrayItemModel.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

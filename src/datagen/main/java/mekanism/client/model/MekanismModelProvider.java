@@ -12,6 +12,7 @@ import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
+import mekanism.client.model.item.QIODriveArrayItemModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -60,6 +61,7 @@ import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.block.dispatch.WeightedVariants;
+import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.renderer.item.properties.select.DisplayContext;
@@ -242,7 +244,11 @@ public class MekanismModelProvider extends BaseModelProvider {
                 case ItemRegistryObject<?> item -> existingModel(item);
                 default -> throw new IllegalArgumentException("unknown type");
             };
-            itemModels.itemModelOutput.accept(holder.asItem(), ItemModelUtils.tintedModel(modelLocation, IGNORE_LAYER, ColorComponent.INSTANCE));
+            ItemModel.Unbaked unbaked = ItemModelUtils.tintedModel(modelLocation, IGNORE_LAYER, ColorComponent.INSTANCE);
+            if (holder == MekanismBlocks.QIO_DRIVE_ARRAY) {
+                unbaked = new QIODriveArrayItemModel.Unbaked((CuboidItemModelWrapper.Unbaked) unbaked);
+            }
+            itemModels.itemModelOutput.accept(holder.asItem(), unbaked);
         }
 
         for (ItemRegistryObject<?> registryObject : List.of(MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS)) {

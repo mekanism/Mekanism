@@ -1,6 +1,6 @@
 {
   "model": {
-    "type": "minecraft:model",
+    "type": "mekanism:qio_drive_item",
     "model": "mekanism:block/qio_drive_array",
     "tints": [
       {
