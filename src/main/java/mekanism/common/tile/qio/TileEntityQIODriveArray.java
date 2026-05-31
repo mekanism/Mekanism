@@ -100,9 +100,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     private void setDriveStatus(int slot, DriveStatus status) {
         driveStatus = updateStatus(slot, status, driveStatus);
     }
-
-    @VisibleForTesting
-    static long updateStatus(int slot, DriveStatus status, long currentStatus) {
+    
+    public static long updateStatus(int slot, DriveStatus status, long currentStatus) {
         int slotShift = slot * BITS_PER_DRIVE_STATUS;
         //remove existing value
         long newStatus = currentStatus & (currentStatus ^ (((long) DRIVE_STATUS_MASK) << slotShift));
