@@ -7,7 +7,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.energy.ComponentBackedResistiveEnergyContainer;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
@@ -18,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
-
-    public static final int USAGE_MULTIPLIER = 4;
 
     public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
@@ -38,7 +35,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
 
     public void updateEnergyUsage(int energyUsage) {
         currentEnergyPerTick = energyUsage;
-        setMaxEnergy(MathUtils.multiplyClamped(energyUsage, USAGE_MULTIPLIER));
+        setMaxEnergy(AttributeEnergy.STORAGE_MULTIPLIER * energyUsage);
     }
 
     @Override

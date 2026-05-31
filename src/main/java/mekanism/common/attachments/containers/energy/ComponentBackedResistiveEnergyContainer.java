@@ -5,7 +5,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
@@ -32,7 +32,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong() {
-        return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
+        return AttributeEnergy.STORAGE_MULTIPLIER * getEnergyPerTick();
     }
 
     private int getRate() {

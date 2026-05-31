@@ -8,117 +8,23 @@ public class StorageConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedLongValue enrichmentChamber;
-    public final CachedLongValue osmiumCompressor;
-    public final CachedLongValue combiner;
-    public final CachedLongValue crusher;
-    public final CachedLongValue metallurgicInfuser;
-    public final CachedLongValue purificationChamber;
-    public final CachedLongValue energizedSmelter;
-    public final CachedLongValue digitalMiner;
-    public final CachedLongValue electricPump;
-    public final CachedLongValue chargepad;
-    public final CachedLongValue rotaryCondensentrator;
-    public final CachedLongValue chemicalOxidizer;
-    public final CachedLongValue chemicalInfuser;
-    public final CachedLongValue chemicalInjectionChamber;
-    public final CachedLongValue electrolyticSeparator;
-    public final CachedLongValue precisionSawmill;
-    public final CachedLongValue chemicalDissolutionChamber;
-    public final CachedLongValue chemicalWasher;
-    public final CachedLongValue chemicalCrystallizer;
-    public final CachedLongValue seismicVibrator;
-    public final CachedLongValue pressurizedReactionBase;
-    public final CachedLongValue fluidicPlenisher;
-    public final CachedLongValue laser;
     public final CachedLongValue laserAmplifier;
     public final CachedLongValue laserTractorBeam;
-    public final CachedLongValue formulaicAssemblicator;
     public final CachedLongValue teleporter;
-    public final CachedLongValue modificationStation;
-    public final CachedLongValue isotopicCentrifuge;
-    public final CachedLongValue nutritionalLiquifier;
-    public final CachedLongValue antiprotonicNucleosynthesizer;
-    public final CachedLongValue pigmentExtractor;
-    public final CachedLongValue pigmentMixer;
-    public final CachedLongValue paintingMachine;
     public final CachedLongValue spsPort;
-    public final CachedLongValue dimensionalStabilizer;
 
     StorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        enrichmentChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_ENRICHMENT_CHAMBER, "enrichmentChamber",
-              1_000, 1);
-        osmiumCompressor = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_COMPRESSOR, "osmiumCompressor",
-              3_000L, 1);
-        combiner = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_COMBINER, "combiner",
-              1_000L, 1);
-        crusher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CRUSHER, "crusher",
-              1_600L, 1);
-        metallurgicInfuser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_METALLURGIC_INFUSER, "metallurgicInfuser",
-              1_000L, 1);
-        purificationChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PURIFICATION_CHAMBER, "purificationChamber",
-              2_000L, 1);
-        energizedSmelter = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_SMELTER, "energizedSmelter",
-              1_000L, 1);
-        digitalMiner = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_MINER, "digitalMiner",
-              3_200L, 1);
-        electricPump = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PUMP, "electricPump",
-              38L, 1);
-        chargepad = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CHARGEPAD, "chargepad", 1_024L, 1);
-        rotaryCondensentrator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CONDENSENTRATOR, "rotaryCondensentrator",
-              8, 1);
-        chemicalOxidizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_OXIDIZER, "chemicalOxidizer",
-              1_500L, 1);
-        chemicalInfuser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CHEMICAL_INFUSER, "chemicalInfuser",
-              60, 1);
-        chemicalInjectionChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_INJECTION_CHAMBER, "chemicalInjectionChamber",
-              3_000L, 1);
-        electrolyticSeparator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_SEPARATOR, "electrolyticSeparator",
-              160_000L, 1);
-        precisionSawmill = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_SAWMILL, "precisionSawmill",
-              1_000L, 1);
-        chemicalDissolutionChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CDC, "chemicalDissolutionChamber",
-              1_600L, 1);
-        chemicalWasher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_WASHER, "chemicalWasher",
-              20L, 1);
-        chemicalCrystallizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CRYSTALLIZER, "chemicalCrystallizer",
-              20L, 1);
-        seismicVibrator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_VIBRATOR, "seismicVibrator",
-              20_000L, 1);
-        pressurizedReactionBase = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PRC, "pressurizedReactionBase",
-              2_000L, 1);
-        fluidicPlenisher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PLENISHER, "fluidicPlenisher",
-              40L, 1);
-        laser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_LASER, "laser",
-              2_000L, 1);
+        //TODO - 26.1: Update these config values
         laserAmplifier = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_LASER_AMPLIFIER, "laserAmplifier",
               5_000_000L, 1);
         laserTractorBeam = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_TRACTOR_BEAM, "laserTractorBeam",
               5_000_000L, 1);
-        formulaicAssemblicator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_ASSEMBLICATOR, "formulaicAssemblicator",
-              200L, 1);
         teleporter = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_TELEPORTER, "teleporter",
-              1_000L, 1);
-        modificationStation = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_MODIFICATION_STATION, "modificationStation",
-              100L, 1);
-        isotopicCentrifuge = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_CENTRIFUGE, "isotopicCentrifuge",
-              32L, 1);
-        nutritionalLiquifier = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_LIQUIFIER, "nutritionalLiquifier",
-              800L, 1);
-        antiprotonicNucleosynthesizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_NUCLEOSYNTHESIZER, "antiprotonicNucleosynthesizer",
-              6_000L, 1);
-        pigmentExtractor = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PIGMENT_EXTRACTOR, "pigmentExtractor",
-              500L, 1);
-        pigmentMixer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PIGMENT_MIXER, "pigmentMixer",
-              20L, 1);
-        paintingMachine = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_PAINTING, "paintingMachine",
               1_000L, 1);
         spsPort = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_SPS_PORT, "spsPort",
               1_000_000_000L, 1);
-        dimensionalStabilizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_DIMENSIONAL_STABILIZER, "dimensionalStabilizer",
-              600L, 1);
 
         configSpec = builder.build();
     }
