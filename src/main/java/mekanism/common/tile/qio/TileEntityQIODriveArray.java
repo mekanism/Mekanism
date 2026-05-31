@@ -1,12 +1,8 @@
 package mekanism.common.tile.qio;
 
-import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -34,15 +30,19 @@ import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class TileEntityQIODriveArray extends TileEntityQIOComponent implements IQIODriveHolder {
 
-    public static final ModelProperty<byte[]> DRIVE_STATUS_PROPERTY = new ModelProperty<>();
+    public static final ModelProperty<Long> DRIVE_STATUS_PROPERTY = new ModelProperty<>();
     public static final int DRIVE_SLOTS = 12;
+    private static final int BITS_PER_DRIVE_STATUS = 4;//max 15 ordinals
+    private static final int DRIVE_STATUS_MASK = 0xF;
+    private static final int MAX_DRIVE_STATUS = DriveStatus.values().length - 1;
 
     private List<QIODriveSlot> driveSlots;
-    private byte[] driveStatus = new byte[DRIVE_SLOTS];
-    private int prevDriveHash = -1;
+    private long driveStatus = 0;
+    private long prevDriveStatus = Long.MAX_VALUE;
 
     public TileEntityQIODriveArray(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_DRIVE_ARRAY, pos, state);
@@ -87,17 +87,32 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
                 }
             }
 
-            int newHash = Arrays.hashCode(driveStatus);
-            if (newHash != prevDriveHash) {
+            if (driveStatus != prevDriveStatus) {
                 needsUpdate = true;
-                prevDriveHash = newHash;
+                prevDriveStatus = driveStatus;
             }
         }
         return needsUpdate;
     }
 
     private void setDriveStatus(int slot, DriveStatus status) {
-        driveStatus[slot] = status.status();
+        driveStatus = updateStatus(slot, status, driveStatus);
+    }
+
+    @VisibleForTesting
+    static long updateStatus(int slot, DriveStatus status, long currentStatus) {
+        int slotShift = slot * BITS_PER_DRIVE_STATUS;
+        //remove existing value
+        long newStatus = currentStatus & (currentStatus ^ (((long) DRIVE_STATUS_MASK) << slotShift));
+        //add the new one
+        newStatus |= ((long) status.status()) << slotShift;
+        return newStatus;
+    }
+
+    @VisibleForTesting
+    static DriveStatus getStatus(int slot, long status) {
+        int shiftAmount = slot * BITS_PER_DRIVE_STATUS;
+        return DriveStatus.BY_ID.apply((int) ((status >> shiftAmount) & DRIVE_STATUS_MASK));
     }
 
     @Override
@@ -119,21 +134,16 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        output.store(SerializationConstants.DRIVES, Codec.BYTE_BUFFER, ByteBuffer.wrap(driveStatus));
+        output.putLong(SerializationConstants.DRIVES, driveStatus);
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        Optional<byte[]> decodedStatus = input.read(SerializationConstants.DRIVES, Codec.BYTE_BUFFER)
-              .map(ByteBuffer::array)
-              .filter(array -> array.length == DRIVE_SLOTS);
-        if (decodedStatus.isPresent()) {
-            byte[] status = decodedStatus.get();
-            if (!Arrays.equals(status, driveStatus)) {
-                driveStatus = status;
-                updateModelData();
-            }
+        long status = input.getLongOr(SerializationConstants.DRIVES, driveStatus);
+        if (status != driveStatus) {
+            driveStatus = status;
+            updateModelData();
         }
     }
 
@@ -169,7 +179,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @ComputerMethod
     DriveStatus getDriveStatus(int slot) throws ComputerException {
         validateSlot(slot);
-        return DriveStatus.BY_ID.apply(driveStatus[slot]);
+        return getStatus(slot, driveStatus);
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
