@@ -2,15 +2,15 @@ package mekanism.api.gear;
 
 import java.util.function.IntSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -138,95 +138,86 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      */
     void displayModeChange(Player player, Component modeName, IHasTextComponent mode);
 
-    /**
-     * Helper to toggle the enabled state of this module and send a message saying the given module was enabled or disabled.
-     *
-     * @param player   Player to send the message to.
-     * @param modeName Text to display that was either enabled or disabled.
-     */
-    void toggleEnabled(IModuleContainer moduleContainer, ItemStack stack, Player player, Component modeName);
+    /// Helper to toggle the enabled state of this module and send a message saying the given module was enabled or disabled.
+    ///
+    /// @param itemAccess  The item access representing the item the module is installed on.
+    /// @param player      Player to send the message to.
+    /// @param modeName    Text to display that was either enabled or disabled.
+    /// @param transaction The transaction that this operation is part of. May be `null`
+    void toggleEnabled(ItemAccess itemAccess, Player player, Component modeName, @Nullable TransactionContext transaction);
 
-    /**
-     * Helper to get the energy container of the item this module is installed on.
-     *
-     * @param stack The stack this module is installed on.
-     *
-     * @return Energy container or {@code null} if something failed.
-     */
+    /// Helper to replace the given config for this module.
+    ///
+    /// @param provider    Holder lookup provider so that we can look up enchantments if applicable.
+    /// @param itemAccess  The item access representing the item the module is installed on.
+    /// @param transaction The transaction that this operation is part of. May be `null`
+    /// @param config      Config to replace.
+    ///
+    /// @throws IllegalStateException If this module isn't actually installed on the item access, or there is no config with the same name found installed on this module.
+    /// @since 10.8.0
+    void replaceModuleConfig(HolderLookup.Provider provider, ItemAccess itemAccess, @Nullable TransactionContext transaction, ModuleConfig<?> config);
+
+    /// Helper to get the energy handler of the item this module is installed on.
+    ///
+    /// @param itemAccess The item access representing the item this module is installed on.
+    ///
+    /// @return Energy handler or `null` if something failed.
     @Nullable
-    IEnergyContainer getEnergyContainer(ItemStack stack);//TODO - 26.1: Evaluate usages and probably try to remove this method
+    EnergyHandler getEnergyHandler(ItemAccess itemAccess);
 
-    //TODO - 26.1: Docs and re-evaluate this method
-    @Nullable
-    EnergyHandler getEnergyHandler(ItemStack stack);
-
-    /**
-     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
-     *
-     * @param stack          The stack this module is installed on.
-     * @param energySupplier Supplier that provides the minimum amount of required energy to check.
-     *
-     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer(ItemStack)}.
-     *
-     * @since 10.4.0
-     */
-    default boolean hasEnoughEnergy(ItemStack stack, IntSupplier energySupplier) {
-        return hasEnoughEnergy(stack, energySupplier.getAsInt());
+    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess)].
+    ///
+    /// @param itemAccess     The item access representing the item this module is installed on.
+    /// @param energySupplier Supplier that provides the minimum amount of required energy to check.
+    ///
+    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess)].
+    ///
+    /// @since 10.4.0
+    default boolean hasEnoughEnergy(ItemAccess itemAccess, IntSupplier energySupplier) {
+        return hasEnoughEnergy(itemAccess, energySupplier.getAsInt());
     }
 
-    /**
-     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
-     *
-     * @param stack  The stack this module is installed on.
-     * @param energy Minimum amount of required energy to check.
-     *
-     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer(ItemStack)}.
-     *
-     * @since 10.4.0
-     */
-    boolean hasEnoughEnergy(ItemStack stack, int energy);
+    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess)].
+    ///
+    /// @param itemAccess The item access representing the item this module is installed on.
+    /// @param energy     Minimum amount of required energy to check.
+    ///
+    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess)].
+    ///
+    /// @since 10.4.0
+    boolean hasEnoughEnergy(ItemAccess itemAccess, int energy);
 
-    /**
-     * Helper to use energy from the item this module is installed on.
-     *
-     * @param wearer Wearer/User of the item the module is installed on.
-     * @param stack  The stack this module is installed on.
-     * @param energy Energy to use.
-     *
-     * @return Actual amount of energy used.
-     *
-     * @implNote By default, this method does not use any energy from players that are in creative.
-     */
-    int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
+    /// Helper to use energy from the item this module is installed on.
+    ///
+    /// @param wearer     Wearer/User of the item the module is installed on.
+    /// @param itemAccess The item access representing the item this module is installed on.
+    /// @param energy     Energy to use.
+    ///
+    /// @return Actual amount of energy used.
+    ///
+    /// @implNote By default, this method does not use any energy from players that are in creative.
+    int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
 
-    /**
-     * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for players in creative or
-     * spectator.
-     *
-     * @param wearer       Wearer/User of the item the module is installed on.
-     * @param stack        The stack this module is installed on.
-     * @param energy       Energy to use.
-     * @param freeCreative {@code true} to not use any energy from the item if the wearer is in creative.
-     *
-     * @return Actual amount of energy used.
-     */
-    int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    /// Helper to use energy from the item this module is installed on. If `checkCreative` is `false` this method will return 0 for players in creative or spectator.
+    ///
+    /// @param wearer             Wearer/User of the item the module is installed on.
+    /// @param itemAccess         The item access representing the item this module is installed on.
+    /// @param energy             Energy to use.
+    /// @param freeCreative`true` to not use any energy from the item if the wearer is in creative.
+    ///
+    /// @return Actual amount of energy used.
+    int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 
-    /**
-     * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return 0. If {@code checkCreative} is {@code false} this
-     * method will return 0 for players in creative or spectator.
-     *
-     * @param wearer          Wearer/User of the item the module is installed on.
-     * @param energyContainer Energy container, most likely retrieved from {@link #getEnergyContainer(ItemStack)}.
-     * @param energy          Energy to use.
-     * @param freeCreative    {@code true} to not use any energy from the item if the wearer is in creative.
-     *
-     * @return Actual amount of energy used.
-     *
-     * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
-     */
-    int useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
-
-    //TODO - 26.1: Docs
-    int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    /// Helper to use energy from the given energy handler. If the `energyHandler` is `null` this will return `0`. If `checkCreative` is `false` this method will return `0``
+    /// for players in creative or spectator.
+    ///
+    /// @param wearer             Wearer/User of the item the module is installed on.
+    /// @param energyHandler      Energy handler to use energy from. Most likely retrieved from [#getEnergyHandler(ItemAccess)].
+    /// @param energy             Energy to use.
+    /// @param freeCreative`true` to not use any energy from the item if the wearer is in creative.
+    ///
+    /// @return Actual amount of energy used.
+    ///
+    /// @apiNote This method is mostly for use in not having to look up the energy container multiple times.
+    int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative);//TODO - 26.1: Update docs
 }

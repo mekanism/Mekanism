@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -21,11 +19,15 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -39,7 +41,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,11 +54,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 @ParametersAreNotNullByDefault
 public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomModule<ModuleFarmingUnit> {
@@ -80,7 +83,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
     @NotNull
     @Override
-    public InteractionResult onItemUse(IModule<ModuleFarmingUnit> module, UseOnContext context) {
+    public InteractionResult onItemUse(IModule<ModuleFarmingUnit> module, UseOnContext context, TransactionContext transaction) {
         //Start with doing common logic to the module before we get onto specific logic for the different ways the module can be used
         Player player = context.getPlayer();
         if (player == null || player.isShiftKeyDown()) {
@@ -92,9 +95,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             //If we don't have any blocks we are going to want to do, then skip it
             return InteractionResult.PASS;
         }
-        ItemStack stack = context.getItemInHand();
-        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer == null) {
+        EnergyHandler energyHandler = module.getEnergyHandler(ItemAccess.forStack(context.getItemInHand()));
+        if (energyHandler == null) {
             return InteractionResult.FAIL;
         }
         //Lazily lookup the state so we only have to query it once
@@ -102,16 +104,16 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         InteractionResult result;
         //Pretend that it has failed, so that when it combines with future actions, it is able to reduce to requiring all failed correctly
         boolean hasFailed = true;
-        try (Transaction transaction = Transaction.openRoot()) {
-            for (ToolFunction action : TOOL_FUNCTIONS) {
-                result = action.use(context, lazyClickedState, energyContainer, diameter, transaction);
+        for (ToolFunction action : TOOL_FUNCTIONS) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                result = action.use(context, lazyClickedState, energyHandler, diameter, subTransaction);
                 if (result.consumesAction()) {
                     //If we were successful
-                    transaction.commit();
+                    subTransaction.commit();
                     return result;
                 }
-                hasFailed &= result == InteractionResult.FAIL;
             }
+            hasFailed &= result == InteractionResult.FAIL;
         }
         if (hasFailed) {
             //If all the attempted actions failed, consider ourselves unsuccessful
@@ -122,13 +124,14 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     @Override
-    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, @UnknownNullability ItemStack stack, ItemAbility action) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer,
+          ITEM instance, ItemAbility action) {
         if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
-            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageAxe);
+            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ItemAbilities.SHOVEL_FLATTEN) {
-            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageShovel);
+            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShovel);
         } else if (action == ItemAbilities.HOE_TILL) {
-            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageHoe);
+            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageHoe);
         }
         //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
         // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before
@@ -173,49 +176,49 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         }
     }
 
-    private static InteractionResult douseBlock(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
-        return useAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.SHOVEL_DOUSE, null, LevelEvent.SOUND_EXTINGUISH_FIRE,
+    private static InteractionResult douseBlock(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+        return useAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.SHOVEL_DOUSE, null, LevelEvent.SOUND_EXTINGUISH_FIRE,
               MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new SimpleToolAOEData());
     }
 
-    private static InteractionResult tillAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
-        return useAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.HOE_TILL, SoundEvents.HOE_TILL, -1,
+    private static InteractionResult tillAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+        return useAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.HOE_TILL, SoundEvents.HOE_TILL, -1,
               MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new SimpleToolAOEData());
     }
 
-    private static InteractionResult flattenAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
+    private static InteractionResult flattenAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
         Direction sideHit = context.getClickedFace();
         if (sideHit == Direction.DOWN) {
             //Don't allow flattening a block from underneath
             return InteractionResult.PASS;
         }
-        return useAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
+        return useAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
               MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new ShovelToolAOEData());
     }
 
-    private static InteractionResult useAxeStripAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
-        return useAxeAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.AXE_STRIP, SoundEvents.AXE_STRIP, -1);
+    private static InteractionResult useAxeStripAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+        return useAxeAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.AXE_STRIP, SoundEvents.AXE_STRIP, -1);
     }
 
-    private static InteractionResult useAxeScrapeAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
-        return useAxeAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE);
+    private static InteractionResult useAxeScrapeAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+        return useAxeAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE);
     }
 
-    private static InteractionResult useAxeWaxOffAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter, TransactionContext transaction) {
-        return useAxeAOE(context, stateSupplier, energyContainer, diameter, transaction, ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
+    private static InteractionResult useAxeWaxOffAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter, TransactionContext transaction) {
+        return useAxeAOE(context, stateSupplier, energyHandler, diameter, transaction, ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF);
     }
 
-    private static InteractionResult useAxeAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter,
+    private static InteractionResult useAxeAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter,
           TransactionContext transaction, ItemAbility action, SoundEvent sound, int particle) {
-        return useAOE(context, stateSupplier, energyContainer, diameter, transaction, action, sound, particle, MekanismConfig.gear.mekaToolEnergyUsageAxe.get(),
+        return useAOE(context, stateSupplier, energyHandler, diameter, transaction, action, sound, particle, MekanismConfig.gear.mekaToolEnergyUsageAxe.get(),
               new AxeToolAOEData());
     }
 
     //TODO - 26.1: Should we make the interaction free for creative players?
-    private static InteractionResult useAOE(UseOnContext context, Supplier<BlockState> stateSupplier, IEnergyContainer energyContainer, int diameter,
+    private static InteractionResult useAOE(UseOnContext context, Supplier<BlockState> stateSupplier, EnergyHandler energyHandler, int diameter,
           TransactionContext transaction, ItemAbility action, @Nullable SoundEvent sound, int particle, int energyUsage, IToolAOEData toolAOEData) {
         try (Transaction simulation = Transaction.open(transaction)) {
-            if (energyContainer.extract(energyUsage, simulation, AutomationType.MANUAL) < energyUsage) {
+            if (EnergyUtils.extractManual(energyHandler, energyUsage, simulation) < energyUsage) {
                 //Fail if we don't have enough energy
                 return InteractionResult.FAIL;
             }
@@ -255,7 +258,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 continue;
             }
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (energyContainer.extract(energyUsage, subTransaction, AutomationType.MANUAL) < energyUsage) {
+                if (EnergyUtils.extractManual(energyHandler, energyUsage, subTransaction) < energyUsage) {
                     //We don't have enough energy to continue extracting from our container, break
                     break;
                 }
@@ -296,7 +299,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     @FunctionalInterface
     private interface ToolFunction {
 
-        InteractionResult use(UseOnContext context, Supplier<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, TransactionContext transaction);
+        InteractionResult use(UseOnContext context, Supplier<BlockState> lazyClickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction);
     }
 
     private interface IToolAOEData {

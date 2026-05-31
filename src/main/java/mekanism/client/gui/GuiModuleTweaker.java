@@ -41,6 +41,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
@@ -70,7 +71,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        Supplier<ItemStack> itemSupplier = () -> getStack(selected);
+        Supplier<ItemResource> itemSupplier = () -> getItemType(selected);
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
         scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
@@ -154,25 +155,25 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     private boolean select(int index) {
         if (isValidItem(index)) {
             selected = index;
-            ItemStack stack = getStack(index);
-            armorPreview.tryUpdateFull(stack);
-            scrollList.updateItemAndList(stack);
+            ItemResource itemType = getItemType(index);
+            armorPreview.tryUpdateFull(menu.slots.get(index).getItem());
+            scrollList.updateItemAndList(itemType);
             scrollList.clearSelection();
-            optionsButton.active = stack.is(MekanismItems.MEKASUIT_HELMET);
+            optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
             return true;
         }
         return false;
     }
 
     private boolean isValidItem(int index) {
-        return ModuleTweakerContainer.isTweakableItem(getStack(index));
+        return ModuleTweakerContainer.isTweakableItem(getItemType(index));
     }
 
-    private ItemStack getStack(int index) {
+    private ItemResource getItemType(int index) {
         if (index == -1) {
-            return ItemStack.EMPTY;
+            return ItemResource.EMPTY;
         }
-        return menu.slots.get(index).getItem();
+        return ItemResource.of(menu.slots.get(index).getItem());
     }
 
     public static class ArmorPreview implements Supplier<LivingEntity> {

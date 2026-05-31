@@ -11,8 +11,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -42,10 +40,11 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -89,6 +88,7 @@ import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,17 +123,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
-        if (!(instance instanceof ItemStack stack) || stack.isEmpty()) {
-            return false;
-        }
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
-        IModuleContainer container = moduleContainer(itemAccess.getResource());
+        IModuleContainer container = moduleContainer(instance);
         if (container != null) {
             if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-                return hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(itemAccess));
+                return hasEnergyForDigAction(container, Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(instance)));
             }
             for (IModule<?> module : container.modules()) {
-                if (module.isEnabled() && canPerformAction(module, container, stack, action)) {
+                if (module.isEnabled() && canPerformAction(module, container, instance, action)) {
                     return true;
                 }
             }
@@ -141,16 +137,17 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
-        return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
+    private <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module,
+          IModuleContainer moduleContainer, ITEM instance, ItemAbility action) {
+        return module.getCustomInstance().canPerformAction(module, moduleContainer, instance, action);
     }
 
-    public static boolean hasEnergyForDigAction(IModuleContainer container, @Nullable IEnergyContainer energyContainer) {
-        if (energyContainer != null) {
+    public static boolean hasEnergyForDigAction(IModuleContainer container, @Nullable EnergyHandler energyHandler) {
+        if (energyHandler != null) {
             //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
             // as that is the best guess we can currently give whether the corresponding dig action is supported
             int energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-            int energyAvailable = energyContainer.getAmountAsInt();
+            int energyAvailable = energyHandler.getAmountAsInt();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
             return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
         }
@@ -208,17 +205,24 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     public InteractionResult useOn(UseOnContext context) {
         for (IModule<?> module : getModules(context.getItemInHand())) {
             if (module.isEnabled()) {
-                InteractionResult result = onModuleUse(module, context);
-                if (result != InteractionResult.PASS) {
-                    return result;
+                //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+                // and wraps the entire item use within their transaction?
+                try (Transaction transaction = Transaction.openRoot()) {
+                    InteractionResult result = onModuleUse(module, context, transaction);
+                    if (result != InteractionResult.PASS) {
+                        if (result.consumesAction()) {
+                            transaction.commit();
+                        }
+                        return result;
+                    }
                 }
             }
         }
         return super.useOn(context);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleUse(IModule<MODULE> module, UseOnContext context) {
-        return module.getCustomInstance().onItemUse(module, context);
+    private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleUse(IModule<MODULE> module, UseOnContext context, TransactionContext transaction) {
+        return module.getCustomInstance().onItemUse(module, context, transaction);
     }
 
     @NotNull
@@ -226,11 +230,19 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         IModuleContainer moduleContainer = moduleContainer(stack);
         if (moduleContainer != null) {
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.isEnabled()) {
-                    InteractionResult result = onModuleInteract(module, player, entity, hand, moduleContainer, stack);
-                    if (result != InteractionResult.PASS) {
-                        return result;
+                    //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+                    // and wraps the entire hitting the entity within their transaction?
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        InteractionResult result = onModuleInteract(module, player, entity, hand, itemAccess, transaction);
+                        if (result != InteractionResult.PASS) {
+                            if (result.consumesAction()) {
+                                transaction.commit();
+                            }
+                            return result;
+                        }
                     }
                 }
             }
@@ -239,8 +251,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleInteract(IModule<MODULE> module, @NotNull Player player, @NotNull LivingEntity entity,
-          @NotNull InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
-        return module.getCustomInstance().onInteract(module, player, entity, hand, moduleContainer, stack);
+          @NotNull InteractionHand hand, ItemAccess itemAccess, TransactionContext transaction) {
+        return module.getCustomInstance().onInteract(module, player, entity, hand, itemAccess, transaction);
     }
 
     @Override
@@ -266,20 +278,20 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
-        if (energyContainer != null) {
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        if (energyHandler != null) {
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
             int modDestroyEnergy = getDestroyEnergy(stack, silk);
             int energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
             // and wraps the entire hitting the entity within their transaction?
             try (Transaction transaction = Transaction.openRoot()) {
-                energyContainer.extract(energyRequired, transaction, AutomationType.MANUAL);
+                EnergyUtils.extractManual(energyHandler, energyRequired, transaction);
                 //AOE/vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative()) {
                     boolean hasEnergyToVeinMine;
                     try (Transaction simulation = Transaction.open(transaction)) {
-                        hasEnergyToVeinMine = energyContainer.extract(energyRequired, simulation, AutomationType.MANUAL) == energyRequired;
+                        hasEnergyToVeinMine = EnergyUtils.extractManual(energyHandler, energyRequired, simulation) == energyRequired;
                     }
                     if (hasEnergyToVeinMine) {
                         Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
@@ -292,7 +304,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         if (!veinedBlocks.isEmpty()) {
                             //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                             int baseDestroyEnergy = getDestroyEnergy(silk);
-                            MekanismUtils.veinMineArea(energyContainer, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
+                            MekanismUtils.veinMineArea(energyHandler, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
                                   transaction, ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
                                       double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
                                       return Mth.ceil(getDestroyEnergy(base, hardness) * multiplier);
@@ -383,8 +395,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
                 int energyCost = MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack);
-                int energy = energyContainer == null ? 0 : energyContainer.getAmountAsInt();
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
+                int energy = energyHandler == null ? 0 : energyHandler.getAmountAsInt();
                 if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
                     damage += unitDamage * MathUtils.divideToLevel(energy, energyCost);

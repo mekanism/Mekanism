@@ -33,8 +33,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return at(ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y,
-          @Range(from = 1, to = Long.MAX_VALUE) long capacity) {
+    public static BasicInventorySlot at(@Range(from = 1, to = Long.MAX_VALUE) long capacity, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
         if (capacity < 1) {
             throw new IllegalArgumentException("Slots with a custom capacity must allow at least one item");

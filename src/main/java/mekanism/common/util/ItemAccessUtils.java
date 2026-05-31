@@ -1,12 +1,18 @@
 package mekanism.common.util;
 
 import mekanism.common.inventory.access.SideEffectFreeItemAccess;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +30,19 @@ public class ItemAccessUtils {
         });
     }
 
+    public static ItemAccess forEntitySlot(LivingEntity entity, EquipmentSlot slot) {
+        ResourceHandler<ItemResource> handler = LivingEntityEquipmentWrapper.of(entity, slot);
+        //TODO - 26.1: Does this need to be a strict handler?
+        return ItemAccess.forHandlerIndexStrict(handler, 0);
+    }
+
     //TODO - 26.1: Re-evaluate usages and add docs stating assumptions around using this
-    public static ItemAccess queryOnlyAccess(ItemResource itemType) {
-        return new SideEffectFreeItemAccess(itemType);
+    // Also document that it is sometimes preferred to use this over ItemAccess#forStack when no side effects should happen just to make sure that the stack doesn't get mutated
+    public static ItemAccess queryOnlyAccess(TypedInstance<Item> itemType) {
+        if (itemType instanceof ItemResource resource) {
+            return new SideEffectFreeItemAccess(resource);
+        }
+        return new SideEffectFreeItemAccess(ItemResource.of(itemType.typeHolder()));
     }
 
     /// Helper method to exchange all the current resource in the given item access with the same amount of another.

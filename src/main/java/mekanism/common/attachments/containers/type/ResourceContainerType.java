@@ -199,7 +199,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return emptyResource();
     }
 
-    public void clampContents(CONTAINER container) {
+    public void clampContents(IResourceContainer<RESOURCE> container) {
         RESOURCE resource = container.resource();
         if (!resource.isEmpty()) {
             long capacity = container.capacityAsLong(resource);

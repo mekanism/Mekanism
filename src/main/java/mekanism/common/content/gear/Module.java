@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -21,12 +19,15 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -35,7 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -115,66 +116,47 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return customModule;
     }
 
-    public void tick(IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tick(ItemAccess itemAccess, Player player, TransactionContext transaction) {
         if (isEnabled()) {
             if (player.level().isClientSide()) {
-                customModule.tickClient(this, moduleContainer, stack, player);
+                customModule.tickClient(this, itemAccess, player, transaction);
             } else {
-                customModule.tickServer(this, moduleContainer, stack, player);
+                customModule.tickServer(this, itemAccess, player, transaction);
             }
         }
     }
 
     @Nullable
     @Override
-    public IEnergyContainer getEnergyContainer(ItemStack stack) {
-        return StorageUtils.getEnergyContainer(stack);
-    }
-
-    @Nullable
-    @Override
-    public EnergyHandler getEnergyHandler(ItemStack stack) {
-        //TODO - 26.1: Re-evaluate item access
-        return Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+    public EnergyHandler getEnergyHandler(ItemAccess itemAccess) {
+        //TODO - 26.1: Wrap mekanism energy handlers to have manual interaction happen??
+        //TODO - 26.1: We might want to change how we expose item caps in general so that they go via manual by default. Is there any reason we wouldn't want to?
+        // It should be trivial to make the interface method for default type not private, and then override it on our items
+        return Capabilities.ENERGY.getCapability(itemAccess);
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, int energy) {
+    public boolean hasEnoughEnergy(ItemAccess itemAccess, int energy) {
         if (energy == 0) {
             return true;
         }
-        IEnergyContainer energyContainer = getEnergyContainer(stack);
-        return energyContainer != null && energyContainer.getAmountAsLong() >= energy;
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        return energyHandler != null && energyHandler.getAmountAsLong() >= energy;
     }
 
     @Override
-    public int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction) {
+    public int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction) {
         //TODO - 26.1: Re-evaluate usages of this method, and see if any of them would be worth extracting the looking up the energy handler?
-        return useEnergy(wearer, stack, energy, transaction, true);
+        return useEnergy(wearer, itemAccess, energy, transaction, true);
     }
 
     @Override
-    public int useEnergy(@Nullable LivingEntity wearer, ItemStack stack, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+    public int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
         if (energy == 0) {
             //If there is no energy requirement skip looking up the energy container
             return 0;
         }
-        return useEnergy(wearer, getEnergyHandler(stack), energy, transaction, freeCreative);
-    }
-
-    @Override
-    public int useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
-        if (energyContainer == null) {
-            return 0;
-        } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
-            //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
-            return energy;
-        }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            int extracted = energyContainer.extract(energy, subTransaction, AutomationType.MANUAL);
-            subTransaction.commit();
-            return extracted;
-        }
+        return useEnergy(wearer, Capabilities.ENERGY.getCapability(itemAccess), energy, transaction, freeCreative);
     }
 
     @Override
@@ -187,7 +169,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             return energy;
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            int extracted = EnergyUtils.extractManual(energyHandler,  energy, subTransaction);
+            int extracted = EnergyUtils.extractManual(energyHandler, energy, subTransaction);
             subTransaction.commit();
             return extracted;
         }
@@ -283,15 +265,15 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         throw new IllegalStateException("Could not find an existing config with name: " + config.name());
     }
 
-    public void addHUDStrings(Player player, IModuleContainer moduleContainer, ItemStack stack, List<Component> list) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(Player player, IModuleContainer moduleContainer, ITEM instance, List<Component> list) {
         if (renderHUD) {
-            customModule.addHUDStrings(this, moduleContainer, stack, player, list::add);
+            customModule.addHUDStrings(this, moduleContainer, instance, player, list::add);
         }
     }
 
-    public void addHUDElements(Player player, IModuleContainer moduleContainer, ItemStack stack, List<IHUDElement> list) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDElements(Player player, IModuleContainer moduleContainer, ITEM instance, List<IHUDElement> list) {
         if (renderHUD) {
-            customModule.addHUDElements(this, moduleContainer, stack, player, list::add);
+            customModule.addHUDElements(this, moduleContainer, instance, player, list::add);
         }
     }
 
@@ -331,7 +313,17 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public void toggleEnabled(IModuleContainer moduleContainer, ItemStack stack, Player player, Component modeName) {
+    public void replaceModuleConfig(HolderLookup.Provider provider, ItemAccess itemAccess, @Nullable TransactionContext transaction, ModuleConfig<?> config) {
+        ModuleContainer moduleContainer = ModuleHelper.get().getModuleContainer(itemAccess.getResource());
+        if (moduleContainer != null) {
+            moduleContainer.replaceModuleConfig(provider, itemAccess, transaction, holder, config, false);
+        } else {
+            Mekanism.logger.warn("Tried to change mode for module: {}, but {} was not a module container.", holder.getRegisteredName(), itemAccess.getResource());
+        }
+    }
+
+    @Override
+    public void toggleEnabled(ItemAccess itemAccess, Player player, Component modeName, @Nullable TransactionContext transaction) {
         Component message;
         if (enabled) {//Going from enabled to disabled
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.DARK_RED, MekanismLang.MODULE_DISABLED_LOWER);
@@ -339,7 +331,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
         }
         player.sendOverlayMessage(message);
-        ((ModuleContainer) moduleContainer).toggleEnabled(player.registryAccess(), stack, holder);
+        ModuleContainer moduleContainer = ModuleHelper.get().getModuleContainer(itemAccess.getResource());
+        if (moduleContainer != null) {
+            moduleContainer.toggleEnabled(player.registryAccess(), itemAccess, holder, transaction);
+        } else {
+            Mekanism.logger.warn("Tried to toggle module: {}, but {} was not a module container.", holder.getRegisteredName(), itemAccess.getResource());
+        }
     }
 
     @Override

@@ -30,10 +30,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -74,7 +74,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         builder.addContainer(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
-        builder.addContainer(containerSlot = InputInventorySlot.at(IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
+        builder.addContainer(containerSlot = InputInventorySlot.at(1, IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
@@ -94,32 +94,26 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 try (Transaction transaction = Transaction.openRoot()) {
                     if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                         ItemResource moduleResource = moduleSlot.resource();
-                        ItemResource containerType = containerSlot.resource();
-                        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerType);
+                        ItemAccess containerAccess = containerSlot.asItemAccess();
+                        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerAccess.getResource());
                         if (container != null) {
                             // make sure the container supports this module and that we can still install more of this module
                             Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
-                            if (container.canInstall(containerType, data)) {
-                                operated = true;
+                            if (container.canInstall(containerAccess, data)) {
                                 operatingTicks++;
-                                clientEnergyUsed = energyPerTick;
                                 if (operatingTicks == ticksRequired) {
                                     operatingTicks = 0;
-                                    ItemStack stack = containerType.toStack(containerSlot.amountAsInt());
-                                    //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                                    //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
-                                    int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amountAsInt());
-                                    if (added > 0) {
-                                        try (Transaction subTransaction = Transaction.open(transaction)) {
-                                            //Validate that the module is actually able to be extracted from the module slot (this should always be true)
-                                            if (moduleSlot.extract(moduleResource, added, subTransaction, AutomationType.INTERNAL) == added) {
-                                                //Update the item type of the module container to the version that has the moduled added
-                                                containerSlot.setContents(ItemResource.of(stack), containerSlot.amountAsLong(), subTransaction);
-                                                subTransaction.commit();
-                                            }
+                                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                                        int added = container.addModule(level.registryAccess(), containerAccess, data, moduleSlot.amountAsInt(), subTransaction);
+                                        //If the module could be added to the container, and we were able to extract it from the module slot (which we should always be able to do)
+                                        if (added > 0 && moduleSlot.extract(moduleResource, added, subTransaction, AutomationType.INTERNAL) == added) {
+                                            //Commit to update the stored item type, and the removal of the module from the module slot
+                                            subTransaction.commit();
                                         }
                                     }
                                 }
+                                operated = true;
+                                clientEnergyUsed = energyPerTick;
                                 transaction.commit();
                             }
                         }
@@ -139,21 +133,18 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
-        ItemResource resource = containerSlot.resource();
-        ModuleContainer container = ModuleHelper.get().getModuleContainer(resource);
+        ItemAccess containerAccess = containerSlot.asItemAccess();
+        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerAccess.getResource());
         if (container != null) {
             int installed = container.installedCount(type);
             if (installed > 0) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
-                    int toRemove = removeAll ? installed : 1;
-                    if (playerInv.insert(ItemResource.of(type.value().getItemHolder()), toRemove, transaction) == toRemove) {
-                        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                        ItemStack stack = resource.toStack(containerSlot.amountAsInt());
-                        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
-                        container.removeModule(player.registryAccess(), stack, type, toRemove);
-                        //Update the item type of the module container to the version that has the moduled added
-                        containerSlot.setContents(ItemResource.of(stack), containerSlot.amountAsLong(), transaction);
+                    int toRemove = playerInv.insert(ItemResource.of(type.value().getItemHolder()), removeAll ? installed : 1, transaction);
+                    //If we were able to add at least some of the modules to the player's inventory,
+                    // and we are able to remove the corresponding number of modules from the item
+                    if (toRemove > 0 && container.removeModule(player.registryAccess(), containerAccess, type, toRemove, transaction)) {
+                        //Commit to update the stored item type, and the addition of the module item to the player's inventory
                         transaction.commit();
                     }
                 }

@@ -43,6 +43,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -66,6 +68,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,9 +129,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         if (!world.isClientSide() && player != null) {
             BlockPos pos = context.getClickedPos();
             Direction side = context.getClickedFace();
-            ItemStack stack = context.getItemInHand();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            ConfiguratorMode mode = getMode(stack);
+            ConfiguratorMode mode = getMode(context.getItemInHand());
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
@@ -210,29 +213,28 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(instance)));
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        ConfiguratorMode mode = getMode(stack);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        ConfiguratorMode mode = getMode(itemAccess);
         ConfiguratorMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, player, newMode);
+        if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
             displayChange.sendMessage(player, newMode, MekanismLang.CONFIGURE_STATE::translate);
         }
     }
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getMode(stack).getTextComponent();
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        return getMode(instance).getTextComponent();
     }
 
     @NotNull
     @Override
-    public RadialData<ConfiguratorMode> getRadialData(ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> RadialData<ConfiguratorMode> getRadialData(ITEM instance) {
         return LAZY_RADIAL_DATA.get();
     }
 

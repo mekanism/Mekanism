@@ -37,6 +37,7 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -62,6 +63,8 @@ import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -116,9 +119,10 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-        if (!player.getCooldowns().isOnCooldown(head)) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(head);
+        ItemAccess head = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.HEAD);
+        ItemResource headResource = head.getResource();
+        if (!player.getCooldowns().isOnCooldown(headResource.toStack())) {
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(headResource);
             if (container != null) {
                 IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
                 return module != null && module.hasEnoughEnergy(head, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);

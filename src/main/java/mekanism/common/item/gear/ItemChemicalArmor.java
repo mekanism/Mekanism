@@ -27,8 +27,8 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     protected abstract Holder<Chemical> getChemicalType();
 
     @Override
-    public boolean hasChemical(ItemStack stack) {
-        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
+    public boolean hasChemical(ItemAccess itemAccess) {
+        return ChemicalUtils.hasChemicalOfType(itemAccess, getChemicalType());
     }
 
     @Override

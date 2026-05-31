@@ -175,15 +175,15 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (energyHandler == null) {
             return false;
         }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            int energyInItem;
-            try (Transaction simulation = Transaction.open(subTransaction)) {
-                //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
-                energyInItem = energyHandler.extract(energyContainer.getNeededAsInt(), simulation);
-                if (energyInItem == 0) {
-                    return false;
-                }
+        int energyInItem;
+        try (Transaction simulation = Transaction.open(transaction)) {
+            //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
+            energyInItem = energyHandler.extract(energyContainer.getNeededAsInt(), simulation);
+            if (energyInItem == 0) {
+                return false;
             }
+        }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //Simulate inserting energy from each container in the item into our container
             int inserted = energyContainer.insert(energyInItem, subTransaction, AutomationType.INTERNAL);
             if (inserted > 0 && energyHandler.extract(inserted, subTransaction) == inserted) {
@@ -209,16 +209,16 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (energyHandler == null) {
             return;
         }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            int availableEnergy;
-            try (Transaction simulation = Transaction.open(subTransaction)) {
-                //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
-                availableEnergy = energyContainer.extract(energyContainer.getAmountAsInt(), simulation, AutomationType.INTERNAL);
-                if (availableEnergy == 0) {
-                    //Short circuit, theoretically the item energy handler will do so as well, but we might as well ensure that it happens
-                    return;
-                }
+        int availableEnergy;
+        try (Transaction simulation = Transaction.open(transaction)) {
+            //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
+            availableEnergy = energyContainer.extract(energyContainer.getAmountAsInt(), simulation, AutomationType.INTERNAL);
+            if (availableEnergy == 0) {
+                //Short circuit, theoretically the item energy handler will do so as well, but we might as well ensure that it happens
+                return;
             }
+        }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //We are able to fit at least some energy from our container into the item
             int inserted = energyHandler.insert(availableEnergy, subTransaction);
             if (inserted > 0) {

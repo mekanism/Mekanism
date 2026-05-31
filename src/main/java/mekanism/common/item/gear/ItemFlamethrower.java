@@ -24,10 +24,13 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -52,6 +55,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
@@ -164,8 +168,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public boolean hasChemical(ItemStack stack) {
-        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
+    public boolean hasChemical(ItemAccess itemAccess) {
+        return ChemicalUtils.hasChemicalOfType(itemAccess, getChemicalType());
     }
 
     @Override
@@ -179,9 +183,9 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         long stored = 0;
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
         if (handler != null && handler.size() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             stored = handler.getAmountAsLong(0);
@@ -192,23 +196,22 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         if (stored == 0) {
             list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_CHEMICAL));
         }
-        list.add(MekanismLang.MODE.translate(getMode(stack)));
+        list.add(MekanismLang.MODE.translate(getMode(instance)));
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        FlamethrowerMode mode = getMode(stack);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        FlamethrowerMode mode = getMode(itemAccess);
         FlamethrowerMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, player, newMode);
+        if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
             displayChange.sendMessage(player, newMode, MekanismLang.FLAMETHROWER_MODE_CHANGE::translate);
         }
     }
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getMode(stack).getTextComponent();
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        return getMode(instance).getTextComponent();
     }
 
     @Override

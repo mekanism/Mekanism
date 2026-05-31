@@ -11,9 +11,14 @@ import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.lib.radial.data.NestingRadialData;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public interface IRadialModuleContainerItem extends IModuleContainerItem, IGenericRadialModeItem {
@@ -22,12 +27,12 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
 
     @Nullable
     @Override
-    default RadialData<?> getRadialData(ItemStack stack) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> RadialData<?> getRadialData(ITEM instance) {
         List<NestedRadialMode> nestedModes = new ArrayList<>();
         Consumer<NestedRadialMode> adder = nestedModes::add;
-        for (IModule<?> module : getModules(stack)) {
+        for (IModule<?> module : getModules(instance)) {
             if (module.handlesRadialModeChange()) {
-                addRadialModes(module, stack, adder);
+                addRadialModes(module, instance, adder);
             }
         }
         if (nestedModes.isEmpty()) {
@@ -42,10 +47,10 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
 
     @Nullable
     @Override
-    default <M extends IRadialMode> M getMode(ItemStack stack, RadialData<M> radialData) {
-        for (IModule<?> module : getModules(stack)) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, M extends IRadialMode> M getMode(ITEM instance, RadialData<M> radialData) {
+        for (IModule<?> module : getModules(instance)) {
             if (module.handlesRadialModeChange()) {
-                M mode = getMode(module, stack, radialData);
+                M mode = getMode(module, instance, radialData);
                 if (mode != null) {
                     return mode;
                 }
@@ -55,28 +60,35 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
     }
 
     @Override
-    default <M extends IRadialMode> void setMode(ItemStack stack, Player player, RadialData<M> radialData, M mode) {
-        IModuleContainer moduleContainer = moduleContainer(stack);
+    default <M extends IRadialMode> void setMode(ItemAccess itemAccess, Player player, RadialData<M> radialData, M mode, @Nullable TransactionContext transaction) {
+        IModuleContainer moduleContainer = moduleContainer(itemAccess);
         if (moduleContainer != null) {
             for (IModule<?> module : moduleContainer.modules()) {
-                if (module.handlesRadialModeChange() && setMode(module, player, moduleContainer, stack, radialData, mode)) {
-                    return;
+                if (module.handlesRadialModeChange()) {
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        if (setMode(module, player, moduleContainer, itemAccess, radialData, mode, subTransaction)) {
+                            subTransaction.commit();
+                            return;
+                        }
+                    }
                 }
             }
         }
     }
 
-    private static <MODULE extends ICustomModule<MODULE>> void addRadialModes(IModule<MODULE> module, ItemStack stack, Consumer<NestedRadialMode> adder) {
-        module.getCustomInstance().addRadialModes(module, stack, adder);
+    private static <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> void addRadialModes(IModule<MODULE> module,
+          ITEM instance, Consumer<NestedRadialMode> adder) {
+        module.getCustomInstance().addRadialModes(module, instance, adder);
     }
 
     @Nullable
-    private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> M getMode(IModule<MODULE> module, ItemStack stack, RadialData<M> radialData) {
-        return module.getCustomInstance().getMode(module, stack, radialData);
+    private static <ITEM extends TypedInstance<Item> & DataComponentGetter, M extends IRadialMode, MODULE extends ICustomModule<MODULE>> M getMode(IModule<MODULE> module,
+          ITEM instance, RadialData<M> radialData) {
+        return module.getCustomInstance().getMode(module, instance, radialData);
     }
 
     private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> boolean setMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer,
-          ItemStack stack, RadialData<M> radialData, M mode) {
-        return module.getCustomInstance().setMode(module, player, moduleContainer, stack, radialData, mode);
+          ItemAccess itemAccess, RadialData<M> radialData, M mode, @Nullable TransactionContext transaction) {
+        return module.getCustomInstance().setMode(module, player, itemAccess, radialData, mode, transaction);
     }
 }

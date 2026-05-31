@@ -48,6 +48,8 @@ import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
@@ -242,8 +244,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (slot != null && slot.getType() == Type.HUMANOID_ARMOR && entity instanceof Player player) {
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
-                for (Module<?> module : container.modules()) {
-                    module.tick(container, stack, player);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Re-evaluate this item access
+                    ItemAccess itemAccess = ItemAccess.forStack(stack);
+                    for (Module<?> module : container.modules()) {
+                        module.tick(itemAccess, player, transaction);
+                    }
+                    transaction.commit();
                 }
             }
         }
@@ -296,9 +303,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
-        return slotType == armorType.getSlot() && getModules(stack).stream().anyMatch(IModule::handlesModeChange);
+        return slotType == armorType.getSlot() && getModules(instance).stream().anyMatch(IModule::handlesModeChange);
     }
 
     //TODO - 26.1 Elytra unit

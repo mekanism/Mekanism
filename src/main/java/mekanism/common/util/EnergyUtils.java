@@ -31,6 +31,7 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         } else if (handler instanceof ComponentBackedEnergyHandler energyHandler) {
             return energyHandler.getEnergyContainer();
         }
+        //TODO - 26.1: Do we want a way to wrap energy handlers into an energy container for purposes of things like extractManual?
         return null;
     }
 

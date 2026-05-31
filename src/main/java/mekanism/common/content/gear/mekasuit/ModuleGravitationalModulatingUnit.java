@@ -16,20 +16,27 @@ import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
@@ -50,7 +57,8 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDElements(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer,
+          ITEM instance, Player player, Consumer<IHUDElement> hudElementAdder) {
         hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementEnabled(icon, module.isEnabled()));
     }
 
@@ -60,22 +68,23 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     }
 
     @Override
-    public void changeMode(IModule<ModuleGravitationalModulatingUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
-        module.toggleEnabled(moduleContainer, stack, player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
+    public void changeMode(IModule<ModuleGravitationalModulatingUnit> module, Player player, ItemAccess itemAccess,
+          int shift, boolean displayChangeMessage, @Nullable TransactionContext transaction) {
+        module.toggleEnabled(itemAccess, player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate(), transaction);
     }
 
     @Override
     public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
-        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
+        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(stack), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
             event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
         }
     }
 
     @Override
-    public void tickClient(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tickClient(IModule<ModuleGravitationalModulatingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         //Client side handling of boost as movement needs to be applied on both the server and the client
-        if (shouldProcess(player) && MekanismKeyHandler.boostKey.isDown() && module.hasEnoughEnergy(stack, BOOST_USAGE)) {
+        if (shouldProcess(player) && MekanismKeyHandler.boostKey.isDown() && module.hasEnoughEnergy(itemAccess, BOOST_USAGE)) {
             float boost = speedBoost.getBoost();
             if (boost > 0) {
                 player.moveRelative(boost, BOOST_VEC);
@@ -84,29 +93,29 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     }
 
     @Override
-    public void tickServer(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tickServer(IModule<ModuleGravitationalModulatingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         //If the player is actively flying (not just allowed to), they are using the grav unit, apply movement boost if active, and use energy
         // Note: If they don't have enough energy to use the grav unit, don't try to process the player, and assume another mod is providing flight
         if (shouldProcess(player)) {
-            try (Transaction transaction = Transaction.openRoot()) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                if (module.useEnergy(player, stack, energyUsage, transaction) == energyUsage) {
+                if (module.useEnergy(player, itemAccess, energyUsage, subTransaction) == energyUsage) {
                     float boost = speedBoost.getBoost();
                     Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
                     if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
-                        try (Transaction subTransaction = Transaction.openRoot()) {
+                        try (Transaction boostTransaction = Transaction.open(subTransaction)) {
                             //Note: Boost usage is a multiplicative amount of our energy usage, as we have already extracted our energy once,
                             // we need to subtract it from our attempted boost handling
                             int energyToBoost = BOOST_USAGE.getAsInt() - energyUsage;
-                            if (module.useEnergy(player, stack, energyToBoost, subTransaction) == energyToBoost) {
+                            if (module.useEnergy(player, itemAccess, energyToBoost, boostTransaction) == energyToBoost) {
                                 player.moveRelative(boost, BOOST_VEC);
                                 gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
-                                subTransaction.commit();
+                                boostTransaction.commit();
                             }
                         }
                     }
                     gravUnitGameEvent(player, gameEvent);
-                    transaction.commit();
+                    subTransaction.commit();
                 }
             }
         }

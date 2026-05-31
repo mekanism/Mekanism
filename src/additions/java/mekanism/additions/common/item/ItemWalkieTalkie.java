@@ -12,7 +12,9 @@ import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -27,6 +29,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
@@ -65,12 +70,12 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        ItemResource resource = itemAccess.getResource();
+        WalkieData data = resource.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         if (data.running()) {
             int newChannel = Math.floorMod(data.channel() + shift - 1, (MAX_CHANNEL - 1)) + 1;
-            if (data.channel() != newChannel) {
-                stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(newChannel, true));
+            if (data.channel() != newChannel && ItemAccessUtils.exchange(itemAccess, resource.with(AdditionsDataComponents.WALKIE_DATA, new WalkieData(newChannel, true)), transaction)) {
                 displayChange.sendMessage(player, newChannel, AdditionsLang.CHANNEL_CHANGE::translate);
             }
         }
@@ -78,8 +83,8 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        WalkieData data = instance.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, EnumColor.WHITE, data.channel());
     }
 

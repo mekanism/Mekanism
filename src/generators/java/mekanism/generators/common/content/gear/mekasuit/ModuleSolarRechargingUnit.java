@@ -1,28 +1,28 @@
 package mekanism.generators.common.content.gear.mekasuit;
 
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
 public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRechargingUnit> {
 
     @Override
-    public void tickServer(IModule<ModuleSolarRechargingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeededAsLong() > 0) {
+    public void tickServer(IModule<ModuleSolarRechargingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
+        if (energyHandler != null && !EnergyHandlerUtil.isFull(energyHandler)) {
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
@@ -48,11 +48,8 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 //Production is a function of the peak possible output in this biome and sun's current brightness
                 double production = peakOutput * brightness;
 
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //Multiply actual production based on how many modules are installed
-                    energyContainer.insert(MathUtils.clampToInt(production * module.getInstalledCount()), transaction, AutomationType.MANUAL);
-                    transaction.commit();
-                }
+                //Multiply actual production based on how many modules are installed
+                EnergyUtils.insertManual(energyHandler, MathUtils.clampToInt(production * module.getInstalledCount()), transaction);
             }
         }
     }

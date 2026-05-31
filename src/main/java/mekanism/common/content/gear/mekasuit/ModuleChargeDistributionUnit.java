@@ -4,8 +4,8 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
@@ -13,12 +13,10 @@ import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSav
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnergyUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -39,30 +37,27 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     @Override
-    public void tickServer(IModule<ModuleChargeDistributionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tickServer(IModule<ModuleChargeDistributionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         // charge inventory first
         if (chargeInventory) {
-            EnergyHandler energyHandler = module.getEnergyHandler(stack);
+            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
             if (energyHandler != null) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    chargeInventory(energyHandler, player, transaction);
-                    transaction.commit();
-                }
+                chargeInventory(energyHandler, player, transaction);
             }
         }
         // distribute suit charge next, so that if we used power from the suit to charge an item, then we can balance across the suit properly
         if (chargeSuit) {
-            chargeSuit(player);
+            chargeSuit(player, transaction);
         }
     }
 
-    private void chargeSuit(Player player) {
+    private void chargeSuit(Player player, TransactionContext transaction) {
         EnergySaveTarget<DelegateSaveHandler> saveTarget = new EnergySaveTarget<>(4);
         ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
         long availableEnergy = 0;
         for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
             //TODO - 26.1: Instead of just directly going off of energy containers, should we support charging other armor that exposes energy capabilities?
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
+            IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
             if (energyContainer != null) {
                 saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
                 //TODO - 26.1: Do we need to worry about overflow?
@@ -71,11 +66,11 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
         //If we only have one handler we can skip charging as it will all just go back into the chest piece
         if (saveTarget.getHandlerCount() > 1 && availableEnergy > 0) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, transaction);
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, subTransaction);
                 if (distributed == availableEnergy) {
-                    saveTarget.save(transaction);
-                    transaction.commit();
+                    saveTarget.save(subTransaction);
+                    subTransaction.commit();
                 } else {
                     Mekanism.logger.warn("Failed to distribute {} energy across {} pieces of armor. {} energy remaining afterward.", availableEnergy,
                           saveTarget.getHandlerCount(), availableEnergy - distributed);

@@ -5,6 +5,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.factory.TileEntityFactory;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -24,7 +25,7 @@ public class FactoryInputInventorySlot extends InputInventorySlot {
 
     private FactoryInputInventorySlot(TileEntityFactory<?> factory, int process, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           @Nullable IContentsListener listener, int x, int y) {
-        super((itemType, _) -> factory.isItemValidForSlot(itemType) && factory.inputProducesOutput(process, itemType, outputSlot, secondaryOutputSlot, false),
+        super(Item.ABSOLUTE_MAX_STACK_SIZE, (itemType, _) -> factory.isItemValidForSlot(itemType) && factory.inputProducesOutput(process, itemType, outputSlot, secondaryOutputSlot, false),
               factory::isValidInputItem, listener, x, y);
     }
 }

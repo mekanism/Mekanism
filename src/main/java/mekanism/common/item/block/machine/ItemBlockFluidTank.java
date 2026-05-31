@@ -26,7 +26,9 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -68,6 +70,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -288,19 +291,20 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
-            boolean newState = !getMode(stack);
-            setMode(stack, player, newState);
-            displayChange.sendMessage(player, newState, s -> MekanismLang.BUCKET_MODE.translate(OnOff.of(s, true)));
+            boolean newState = !getMode(itemAccess);
+            if (setMode(itemAccess, player, newState, transaction)) {
+                displayChange.sendMessage(player, newState, s -> MekanismLang.BUCKET_MODE.translate(OnOff.of(s, true)));
+            }
         }
     }
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getMode(stack), true));
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getMode(instance), true));
     }
 
     public static class FluidTankItemDispenseBehavior extends DefaultDispenseItemBehavior {

@@ -1,13 +1,12 @@
 package mekanism.client.render.hud;
 
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.bar.GuiBar;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -17,6 +16,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +41,10 @@ public class MekaSuitEnergyLevel implements GuiLayer {
         for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
             ItemResource itemType = armorSlots.getResource(slot);
             if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor) {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
-                if (container != null) {
-                    capacity = MathUtils.addClamped(capacity, container.getCapacityAsLong());
-                    stored = MathUtils.addClamped(stored, container.getAmountAsLong());
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot));
+                if (energyHandler != null) {
+                    capacity = MathUtils.addClamped(capacity, energyHandler.getCapacityAsLong());
+                    stored = MathUtils.addClamped(stored, energyHandler.getAmountAsLong());
                 }
             }
         }

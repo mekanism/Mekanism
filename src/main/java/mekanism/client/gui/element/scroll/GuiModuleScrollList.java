@@ -25,6 +25,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>> {
@@ -33,8 +34,8 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
 
     private final Consumer<Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
-    private final Supplier<ItemStack> itemSupplier;
-    private ItemStack currentItem;
+    private final Supplier<ItemResource> itemSupplier;
+    private ItemResource currentItem;
     @Nullable
     private ModuleContainer currentContainer;
 
@@ -43,16 +44,16 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
+    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemResource> itemSupplier, Consumer<Module<?>> callback) {
         super(gui, x, y, height, GuiElementHolder.HOLDER, MODULE_SELECTION, 112, 36);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateItemAndList(itemSupplier.get());
     }
 
-    public void updateItemAndList(ItemStack stack) {
-        currentItem = stack;
-        currentContainer = ModuleHelper.get().getModuleContainer(stack);
+    public void updateItemAndList(ItemResource itemType) {
+        currentItem = itemType;
+        currentContainer = ModuleHelper.get().getModuleContainer(currentItem);
         currentList.clear();
         if (currentContainer != null) {
             currentList.addAll(currentContainer.moduleTypes());
@@ -60,9 +61,9 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     }
 
     private void recheckItem() {
-        ItemStack stack = itemSupplier.get();
-        if (!ItemStack.matches(currentItem, stack)) {
-            updateItemAndList(stack);
+        ItemResource type = itemSupplier.get();
+        if (!currentItem.equals(type)) {
+            updateItemAndList(type);
             ModuleData<?> prevSelect = getSelection();
             if (prevSelect != null) {
                 if (currentList.contains(prevSelect)) {
@@ -155,7 +156,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         GuiModuleScrollList old = (GuiModuleScrollList) element;
-        if (ItemStack.matches(currentItem, old.currentItem)) {
+        if (currentItem.equals(old.currentItem)) {
             //If the item is the same just change what module data we have as our selected
             // and don't notify the callback with a fresh read of the module data as it
             // should have the data it expects already

@@ -12,6 +12,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -62,9 +63,13 @@ public class ChemicalUtils {
         return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
     }
 
-    public static boolean hasChemicalOfType(ItemStack stack, Holder<Chemical> type) {
+    public static boolean hasChemicalOfType(TypedInstance<Item> stack, Holder<Chemical> type) {
+        return hasChemicalOfType(ItemAccessUtils.queryOnlyAccess(stack), type);
+    }
+
+    public static boolean hasChemicalOfType(ItemAccess itemAccess, Holder<Chemical> type) {
         ChemicalResource typeToCheck = ChemicalResource.of(type);
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null) {
             for (int tank = 0, size = handler.size(); tank < size; tank++) {
                 ChemicalResource chemicalType = handler.getResource(tank);

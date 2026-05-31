@@ -19,6 +19,7 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -157,30 +158,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         return itemAccess.getResource().toStack(itemAccess.getAmount());
     }
 
-    @Nullable//TODO - 26.1: Evaluate usages and probably try to remove this method
-    public static IEnergyContainer getEnergyContainer(ItemStack stack) {
-        //TODO - 26.1: See which ones of these can be moved to the item access method with more specific item access values
-        if (stack.isEmpty()) {
-            //While getCapability will return null for an empty stack, we just short circuit here
-            return null;
-        }
-        return getEnergyContainer(ItemAccess.forStack(stack));
+    public static double getEnergyRatio(TypedInstance<Item> stack) {
+        EnergyHandler handler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
+        return handler == null ? 0 : MathUtils.divideToLevel(handler.getAmountAsLong(), handler.getCapacityAsLong());
     }
 
-    @Nullable
-    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess) {
-        //TODO - 26.1: Re-evaluate callers
-        //TODO - 26.1: Should we just remove this method all together? If the passed item access is stacked, then this will return a container that doesn't care about scaling
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
-        return EnergyUtils.getEnergyContainer(energyHandler);
-    }
-
-    public static double getEnergyRatio(ItemStack stack) {
-        IEnergyContainer container = getEnergyContainer(stack);
-        return container == null ? 0 : MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
-    }
-
-    public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
+    public static Component getEnergyPercent(TypedInstance<Item> stack, boolean colorText) {
         return getStoragePercent(getEnergyRatio(stack), colorText);
     }
 

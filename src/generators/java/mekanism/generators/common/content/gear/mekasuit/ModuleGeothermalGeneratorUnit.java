@@ -3,16 +3,14 @@ package mekanism.generators.common.content.gear.mekasuit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -21,11 +19,13 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
@@ -45,9 +45,9 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     });
 
     @Override
-    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeededAsLong() > 0) {
+    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
+        if (energyHandler != null && !EnergyHandlerUtil.isFull(energyHandler)) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
             Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
@@ -87,10 +87,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                 }
                 //Insert energy
                 int rate = MathUtils.clampToInt(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
-                try (Transaction transaction = Transaction.openRoot()) {
-                    energyContainer.insert(rate, transaction, AutomationType.MANUAL);
-                    transaction.commit();
-                }
+                EnergyUtils.insertManual(energyHandler, rate, transaction);
             }
         }
     }

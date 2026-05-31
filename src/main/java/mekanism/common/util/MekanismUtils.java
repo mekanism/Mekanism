@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
@@ -87,6 +86,7 @@ import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -689,7 +689,7 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, int baseBlastEnergy, int baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
+    public static void veinMineArea(EnergyHandler energyHandler, int baseBlastEnergy, int baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
           ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
@@ -709,7 +709,7 @@ public final class MekanismUtils {
             int distance = foundEntry.getIntValue();
             int destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (energyContainer.extract(destroyEnergy, subTransaction, AutomationType.MANUAL) < destroyEnergy) {
+                if (EnergyUtils.extractManual(energyHandler, destroyEnergy, subTransaction) < destroyEnergy) {
                     //If we don't have energy to break the block continue
                     //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
                     // Given we validate the blocks are the same but their block states may be different thus making them have different

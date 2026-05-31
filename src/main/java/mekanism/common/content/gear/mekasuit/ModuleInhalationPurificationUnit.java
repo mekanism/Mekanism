@@ -5,7 +5,6 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -13,7 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -34,25 +33,22 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     }
 
     @Override
-    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        try (Transaction simulation = Transaction.openRoot()) {
+    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             //Version of tickServer that doesn't commit so that the timer actually properly updates
-            tick(module, stack, player, simulation);
+            tick(module, itemAccess, player, simulation);
         }
     }
 
     @Override
-    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            tick(module, stack, player, transaction);
-            transaction.commit();
-        }
+    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        tick(module, itemAccess, player, transaction);
     }
 
-    private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemStack stack, Player player, TransactionContext transaction) {
+    private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         int usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
         try (Transaction simulation = Transaction.openRoot()) {
-            if (module.useEnergy(player, stack, usage, simulation) < usage) {
+            if (module.useEnergy(player, itemAccess, usage, simulation) < usage) {
                 //Not enough energy, just exit
                 return;
             }
@@ -62,7 +58,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
         List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
         for (MobEffectInstance effect : effects) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (module.useEnergy(player, stack, usage, transaction) < usage) {
+                if (module.useEnergy(player, itemAccess, usage, subTransaction) < usage) {
                     //If we can't able to actually extract energy, exit
                     break;
                 }

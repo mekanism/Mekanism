@@ -16,7 +16,10 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,6 +33,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
@@ -93,12 +97,12 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.CHEST) {
-            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, getMode(stack)));
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, getMode(instance)));
             long stored = 0;
             long capacity = 1;
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
                 capacity = handler.getCapacityAsLong(0, ChemicalResource.of(getChemicalType()));
@@ -108,17 +112,16 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        JetpackMode mode = getMode(stack);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        JetpackMode mode = getMode(itemAccess);
         JetpackMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, player, newMode);
+        if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
             displayChange.sendMessage(player, newMode, MekanismLang.JETPACK_MODE_CHANGE::translate);
         }
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
         return slotType == EquipmentSlot.CHEST;
     }
 }

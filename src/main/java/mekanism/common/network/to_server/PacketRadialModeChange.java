@@ -8,14 +8,16 @@ import mekanism.api.radial.mode.IRadialMode;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, int networkRepresentation) implements IMekanismPacket {
@@ -38,9 +40,9 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, 
     @SuppressWarnings("ConstantConditions")//not null, validated by hasNestedData
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemBySlot(slot);
-        if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
-            RadialData<?> radialData = radialModeItem.getRadialData(stack);
+        ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
+        if (itemAccess.getResource().getItem() instanceof IGenericRadialModeItem radialModeItem) {
+            RadialData<?> radialData = radialModeItem.getRadialData(itemAccess.getResource());
             if (radialData != null) {
                 for (Identifier path : path) {
                     INestedRadialMode nestedData = radialData.fromIdentifier(path);
@@ -50,15 +52,18 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, 
                     }
                     radialData = nestedData.nestedData();
                 }
-                setMode(player, stack, radialModeItem, radialData);
+                setMode(player, itemAccess, radialModeItem, radialData);
             }
         }
     }
 
-    private <MODE extends IRadialMode> void setMode(Player player, ItemStack stack, IGenericRadialModeItem item, RadialData<MODE> radialData) {
+    private <MODE extends IRadialMode> void setMode(Player player, ItemAccess itemAccess, IGenericRadialModeItem item, RadialData<MODE> radialData) {
         MODE newMode = radialData.fromNetworkRepresentation(networkRepresentation);
         if (newMode != null) {
-            item.setMode(stack, player, radialData, newMode);
+            try (Transaction transaction = Transaction.openRoot()) {
+                item.setMode(itemAccess, player, radialData, newMode, transaction);
+                transaction.commit();
+            }
         }
     }
 }

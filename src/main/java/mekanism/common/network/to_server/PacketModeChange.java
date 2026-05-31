@@ -5,13 +5,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketModeChange(EquipmentSlot slot, int shift, boolean displayChangeMessage) implements IMekanismPacket {
@@ -41,15 +43,19 @@ public record PacketModeChange(EquipmentSlot slot, int shift, boolean displayCha
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemBySlot(slot);
-        if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
-            DisplayChange displayChange;
-            if (displayChangeMessage) {
-                displayChange = slot == EquipmentSlot.MAINHAND ? DisplayChange.MAIN_HAND : DisplayChange.OTHER;
-            } else {
-                displayChange = DisplayChange.NONE;
+        ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, slot);
+        if (itemAccess.getResource().getItem() instanceof IModeItem modeItem) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                modeItem.changeMode(player, itemAccess, shift, displayChange(), transaction);
+                transaction.commit();
             }
-            modeItem.changeMode(player, stack, shift, displayChange);
         }
+    }
+
+    private DisplayChange displayChange() {
+        if (displayChangeMessage) {
+            return slot == EquipmentSlot.MAINHAND ? DisplayChange.MAIN_HAND : DisplayChange.OTHER;
+        }
+        return DisplayChange.NONE;
     }
 }

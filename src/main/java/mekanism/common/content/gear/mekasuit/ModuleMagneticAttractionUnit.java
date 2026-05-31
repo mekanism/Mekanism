@@ -8,7 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -25,10 +24,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
 public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule<ModuleMagneticAttractionUnit> {
@@ -40,12 +41,12 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     }
 
     @Override
-    public void tickServer(IModule<ModuleMagneticAttractionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tickServer(IModule<ModuleMagneticAttractionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
             int usage = Mth.ceil(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
             try (Transaction simulation = Transaction.openRoot()) {
-                if (module.useEnergy(player, stack, usage, simulation) < usage) {
+                if (module.useEnergy(player, itemAccess, usage, simulation) < usage) {
                     //Not enough energy, just exit
                     return;
                 }
@@ -55,13 +56,13 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
             // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
             for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay())) {
                 if (item.distanceTo(player) > 0.001) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        if (module.useEnergy(player, stack, usage, transaction) < usage) {
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        if (module.useEnergy(player, itemAccess, usage, subTransaction) < usage) {
                             //If we aren't able to extract enough energy, stop trying to pull any further items
                             break;
                         }
                         pullItem(player, item);
-                        transaction.commit();
+                        subTransaction.commit();
                     }
                 }
             }
@@ -83,8 +84,9 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     }
 
     @Override
-    public void changeMode(IModule<ModuleMagneticAttractionUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
-        module.toggleEnabled(moduleContainer, stack, player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate());
+    public void changeMode(IModule<ModuleMagneticAttractionUnit> module, Player player, ItemAccess itemAccess, int shift,
+          boolean displayChangeMessage, @Nullable TransactionContext transaction) {
+        module.toggleEnabled(itemAccess, player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate(), transaction);
     }
 
     @NothingNullByDefault

@@ -88,12 +88,12 @@ public abstract class Target<HANDLER, RESOURCE> {
                 splitInfo.amountPerChanged = false;
                 //splitInfo gets adjusted to account for how much is actually sent,
                 // and if amountPer got changed again, and we need to rerun this
-                shiftNeeded(resource, splitInfo, transaction);
+                shiftNeeded(resource, splitInfo, subTransaction);
             }
 
             //Evenly distribute the remaining amount we have to give between all targets and handlers
             // splitInfo gets adjusted to account for how much is actually sent
-            sendRemainingSplit(resource, splitInfo, transaction);
+            sendRemainingSplit(resource, splitInfo, subTransaction);
             subTransaction.commit();
             return splitInfo.getTotalSent();
         }

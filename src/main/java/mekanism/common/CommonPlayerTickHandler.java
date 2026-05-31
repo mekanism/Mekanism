@@ -28,8 +28,11 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,6 +41,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,10 +68,10 @@ public class CommonPlayerTickHandler {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
     }
 
-    public static boolean isScubaMaskOn(Player player, ItemStack tank) {
+    public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isScubaMaskOn(Player player, ITEM tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
-        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank scubaTank &&
-               mask.getItem() instanceof ItemScubaMask && scubaTank.hasChemical(tank) && scubaTank.getMode(tank);
+        return !mask.isEmpty() && tank.typeHolder().value() instanceof ItemScubaTank scubaTank && mask.getItem() instanceof ItemScubaMask &&
+               scubaTank.hasChemical(tank) && scubaTank.getMode(tank);
     }
 
     public static float getStepBoost(Player player) {
@@ -126,10 +130,10 @@ public class CommonPlayerTickHandler {
             }
         }
 
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (isScubaMaskOn(player, chest)) {
+        ItemAccess chest = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST);
+        if (isScubaMaskOn(player, chest.getResource())) {
             final int max = player.getMaxAirSupply();
-            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(chest));//TODO - 26.1 check this Access works
+            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(chest);
             if (chemicalHandler != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     //TODO - 26.1: Re-evaluate this single usage on its own
@@ -155,9 +159,9 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationOn(Player player) {
         if (ModuleGravitationalModulatingUnit.shouldProcess(player)) {
-            ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-            return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
+            ItemAccess itemAccess = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST);
+            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(itemAccess.getResource(), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+            return module != null && module.hasEnoughEnergy(itemAccess, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
         }
         return false;
     }
@@ -200,8 +204,8 @@ public class CommonPlayerTickHandler {
         if (source.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
-                ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && tank.hasChemical(chestStack)) {
+                ItemAccess chestAccess = ItemAccessUtils.forEntitySlot(entity, EquipmentSlot.CHEST);
+                if (chestAccess.getResource().getItem() instanceof ItemScubaTank tank && tank.getMode(chestAccess) && tank.hasChemical(chestAccess)) {
                     event.setCanceled(true);
                     return;
                 }
@@ -284,8 +288,8 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntity() instanceof Player player) {
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-            IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
+            ItemAccess boots = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.FEET);
+            IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots.getResource(), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
                 int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
@@ -294,8 +298,8 @@ public class CommonPlayerTickHandler {
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
                     if (propulsionModule.useEnergy(player, boots, usage, transaction) == usage) {
                         // if we're sprinting with the boost module, limit the height
-                        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-                        IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+                        ItemAccess legs = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.LEGS);
+                        IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs.getResource(), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
                         try (Transaction simulation = Transaction.open(transaction)) {
                             if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, legs, player, simulation)) {
                                 boost = Mth.sqrt(boost);
@@ -314,10 +318,9 @@ public class CommonPlayerTickHandler {
      */
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
-        ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemMekaSuitArmor) {
-            return new FallEnergyInfo(Capabilities.ENERGY.getCapability(ItemAccess.forStack(feetStack)), MekanismConfig.gear.mekaSuitFallDamageRatio,
-                  MekanismConfig.gear.mekaSuitEnergyUsageFall);
+        ItemAccess feetAccess = ItemAccessUtils.forEntitySlot(base, EquipmentSlot.FEET);
+        if (feetAccess.getResource().getItem() instanceof ItemMekaSuitArmor) {
+            return new FallEnergyInfo(Capabilities.ENERGY.getCapability(feetAccess), MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
         ItemStack freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
         if (!freeRunners.isEmpty()) {

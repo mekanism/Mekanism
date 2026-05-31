@@ -1,7 +1,6 @@
 package mekanism.common.util.text;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.UnitDisplayUtils;
@@ -19,10 +18,6 @@ public class EnergyDisplay implements IHasTextComponent {
     private EnergyDisplay(long energy, long max) {
         this.energy = Math.max(0, energy);
         this.max = Math.max(0, max);
-    }
-
-    public static EnergyDisplay of(IEnergyContainer container) {
-        return of(container.getAmountAsLong(), container.getCapacityAsLong());
     }
 
     public static EnergyDisplay of(EnergyHandler energyHandler) {
