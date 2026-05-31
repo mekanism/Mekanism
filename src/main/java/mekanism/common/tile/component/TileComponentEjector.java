@@ -231,19 +231,24 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         ResourceUtils.emit(caches, (IResourceContainer<RESOURCE>) container, ejectRate.getAsInt(), null);
     }
 
-    @SuppressWarnings("unchecked")
     private <TYPE> List<BlockCapabilityCache<TYPE, @Nullable Direction>> initializeCaches(ServerLevel level, BlockPos pos, Set<Direction> sides,
           Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<TYPE> capability) {
         List<BlockCapabilityCache<TYPE, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            BlockCapabilityCache<TYPE, @Nullable Direction> cache = (BlockCapabilityCache<TYPE, @Nullable Direction>) typeCapabilityCaches.get(side);
-            if (cache == null) {
-                cache = capability.createCache(level, pos.relative(side), side.getOpposite());
-                typeCapabilityCaches.put(side, cache);
-            }
-            caches.add(cache);
+            caches.add(initializeCache(level, pos, side, typeCapabilityCaches, capability));
         }
         return caches;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TYPE> BlockCapabilityCache<TYPE, @Nullable Direction> initializeCache(ServerLevel level, BlockPos pos, Direction side,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<TYPE> capability) {
+        BlockCapabilityCache<TYPE, @Nullable Direction> cache = (BlockCapabilityCache<TYPE, @Nullable Direction>) typeCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = capability.createCache(level, pos.relative(side), side.getOpposite());
+            typeCapabilityCaches.put(side, cache);
+        }
+        return cache;
     }
 
     /**
@@ -269,12 +274,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         typeCapabilityCaches = capabilityCaches.computeIfAbsent(TransmissionType.ITEM, t -> new EnumMap<>(Direction.class));
                     }
                     for (Direction side : outputs) {
-                        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = (BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>) typeCapabilityCaches.get(side);
-                        if (cache == null) {
-                            cache = Capabilities.ITEM.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
-                            typeCapabilityCaches.put(side, cache);
-                        }
-                        ResourceHandler<ItemResource> capability = cache.getCapability();
+                        ResourceHandler<ItemResource> capability = initializeCache(level, tile.getBlockPos(), side, typeCapabilityCaches, Capabilities.ITEM).getCapability();
                         if (capability == null) {
                             //Skip sides where there isn't a target
                             continue;
@@ -285,7 +285,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
                             // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
                             // instead of only having to do it once per DataType
-                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
+                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots(), null);
                             //No items to eject, exit
                             if (ejectMap.isEmpty()) {
                                 break;

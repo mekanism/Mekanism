@@ -33,7 +33,9 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 public final class InventoryUtils {
 
@@ -146,21 +148,19 @@ public final class InventoryUtils {
         return inSlot.matches(toInsert);
     }
 
-    public static HandlerTransitRequest getEjectItemMap(ResourceHandler<ItemResource> handler, List<IInventorySlot> slots) {
-        return getEjectItemMap(new HandlerTransitRequest(handler), slots);
+    public static HandlerTransitRequest getEjectItemMap(ResourceHandler<ItemResource> handler, List<IInventorySlot> slots, @Nullable TransactionContext transaction) {
+        return getEjectItemMap(new HandlerTransitRequest(handler), slots, transaction);
     }
 
-    @Contract("_, _ -> param1")
-    public static <REQUEST extends HandlerTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
+    @Contract("_, _, _ -> param1")
+    public static <REQUEST extends HandlerTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots, @Nullable TransactionContext transaction) {
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);
-        //TODO - 26.1: Validate if any callers are in a transactional context, also should we be doing this here or around each extract call?
-        // I believe it is fine to just do this once, but maybe some slot extractions depend on what is already extracted
-        try (Transaction simulation = Transaction.openRoot()) {
-            for (IInventorySlot slot : shuffled) {
-                ItemResource resource = slot.resource();
-                if (!resource.isEmpty()) {
+        for (IInventorySlot slot : shuffled) {
+            ItemResource resource = slot.resource();
+            if (!resource.isEmpty()) {
+                try (Transaction simulation = Transaction.open(transaction)) {
                     //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
                     int extracted = slot.extract(resource, slot.amountAsInt(), simulation, AutomationType.EXTERNAL);
                     if (extracted > 0) {

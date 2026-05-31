@@ -284,9 +284,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
             ResourceHandler<ItemResource> targetHandler = ejectInventory.getCapability();
             if (ejectHandler != null && targetHandler != null) {
-                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
-                if (!ejectMap.isEmpty()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots, transaction);
+                    if (!ejectMap.isEmpty()) {
                         TransitResponse response = ejectMap.eject(this, ejectPos, targetHandler, 1, null, transaction);
                         if (response.useAll(transaction)) {
                             transaction.commit();
