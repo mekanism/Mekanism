@@ -425,7 +425,7 @@ public class ClientRegistration {
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
         event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
         event.registerModel(TransmitterBlockStateModel.Unbaked.ID, TransmitterBlockStateModel.Unbaked.MAP_CODEC);
-        event.registerModel(Mekanism.rl("qio_drive_array_filled"), Unbaked.MAP_CODEC);
+        event.registerModel(Mekanism.rl("qio_drive"), Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

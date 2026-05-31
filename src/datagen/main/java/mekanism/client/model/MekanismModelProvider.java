@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
+import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
@@ -397,6 +398,21 @@ public class MekanismModelProvider extends BaseModelProvider {
             //item model handled above
         }
 
+        {
+            Block block = MekanismBlocks.QIO_DRIVE_ARRAY.value();
+            MultiVariant offlineVariant = customVariant(new QIODriveArrayBlockStateModel.Unbaked(BlockModelGenerators.plainModel(existingModel("block/qio_drive_array_offline"))));
+            MultiVariant onlineVariant = customVariant(new QIODriveArrayBlockStateModel.Unbaked(BlockModelGenerators.plainModel(existingModel("block/qio_drive_array"))));
+            blockModels.blockStateOutput.accept(
+                  MultiVariantGenerator.dispatch(block)
+                        .with(
+                              PropertyDispatch.initial(AttributeStateActive.activeProperty)
+                                    .select(false, offlineVariant)
+                                    .select(true, onlineVariant)
+                        )
+                        .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+            );
+        }
+
         transmitter(blockModels, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/advanced", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/basic", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/elite", "block/transmitter/large/logistical_transporter/transporter_glass");
@@ -690,7 +706,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         markManualBlockState(MekanismBlocks.PURIFICATION_CHAMBER);
         markManualBlockState(MekanismBlocks.QIO_DASHBOARD);
-        markManualBlockState(MekanismBlocks.QIO_DRIVE_ARRAY);
         markManualBlockState(MekanismBlocks.QIO_EXPORTER);
         markManualBlockState(MekanismBlocks.QIO_IMPORTER);
         markManualBlockState(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
@@ -759,6 +774,9 @@ public class MekanismModelProvider extends BaseModelProvider {
                 }
                 case EnergyCubeModel.Unbaked energyCube -> {
                     return new EnergyCubeModel.Unbaked(variantMutator.apply(energyCube.tierModel()));
+                }
+                case QIODriveArrayBlockStateModel.Unbaked qio -> {
+                    return new QIODriveArrayBlockStateModel.Unbaked(variantMutator.apply(qio.baseModel()));
                 }
                 default -> throw new IllegalStateException("Don't know how to handle " + toMutate);
             }
