@@ -17,6 +17,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
@@ -141,37 +142,52 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             return true;
         }
         EnergyHandler energyHandler = getEnergyHandler(itemAccess);
-        return energyHandler != null && energyHandler.getAmountAsLong() >= energy;
+        return energyHandler != null && energyHandler.getAmountAsInt() >= energy;
     }
 
     @Override
-    public int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction) {
-        //TODO - 26.1: Re-evaluate usages of this method, and see if any of them would be worth extracting the looking up the energy handler?
-        return useEnergy(wearer, itemAccess, energy, transaction, true);
-    }
-
-    @Override
-    public int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
-        if (energy == 0) {
-            //If there is no energy requirement skip looking up the energy container
-            return 0;
+    public boolean hasEnoughEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+        try (Transaction simulation = Transaction.open(transaction)) {
+            return useAllEnergy(wearer, itemAccess, energy, simulation, freeCreative);
         }
-        return useEnergy(wearer, Capabilities.ENERGY.getCapability(itemAccess), energy, transaction, freeCreative);
     }
 
     @Override
-    public int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
-        if (energyHandler == null) {
+    public int getEnergyRateLimit(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energyUsage, int rate, @Nullable TransactionContext transaction, boolean freeCreative) {
+        if (rate == 0) {
             return 0;
         } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
-            //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
-            //TODO - 26.1: Update comment
-            return energy;
+            //Energy usage doesn't lower the usage rate
+            return rate;
+        }
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        if (energyHandler == null) {
+            return 0;
+        }
+        try (Transaction simulation = Transaction.open(transaction)) {
+            //Calculate the max rate based on how much energy is available and can be extracted
+            return EnergyUtils.extractManual(energyHandler, MathUtils.multiplyClamped(rate, energyUsage), simulation) / energyUsage;
+        }
+    }
+
+    @Override
+    public boolean useAllEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+        if (energy == 0) {
+            //If there is no energy requirement skip looking up the energy handler
+            return true;
+        } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
+            return true;
+        }
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        if (energyHandler == null) {
+            return false;
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            int extracted = EnergyUtils.extractManual(energyHandler, energy, subTransaction);
-            subTransaction.commit();
-            return extracted;
+            if (EnergyUtils.extractManual(energyHandler, energy, subTransaction) == energy) {
+                subTransaction.commit();
+                return true;
+            }
+            return false;
         }
     }
 

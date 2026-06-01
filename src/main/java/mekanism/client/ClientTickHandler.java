@@ -125,7 +125,7 @@ public class ClientTickHandler {
             IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(headResource);
             if (container != null) {
                 IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
-                return module != null && module.hasEnoughEnergy(head, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
+                return module != null && module.hasEnoughEnergy(player, head, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get(), null);
             }
         }
         return false;

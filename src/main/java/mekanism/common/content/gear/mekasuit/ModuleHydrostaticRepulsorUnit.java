@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
@@ -45,13 +44,8 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
         if (isSwimBoost(module) && player.isEyeInFluid(FluidTags.WATER)) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                int usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
-                //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
-                if (module.useEnergy(null, itemAccess, usage, transaction, false) == usage) {
-                    subTransaction.commit();
-                }
-            }
+            //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
+            module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get(), transaction, false);
         }
     }
 

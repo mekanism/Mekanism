@@ -85,7 +85,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
         if (!player.isFallFlying() && player.isSprinting()) {
             int energyRequired = MathUtils.clampToInt(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1D);
-            return module.useEnergy(player, itemAccess, energyRequired, transaction) == energyRequired;
+            return module.useAllEnergy(player, itemAccess, energyRequired, transaction);
         }
         return false;
     }

@@ -79,7 +79,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             try (Transaction subTransaction = Transaction.open(transaction)) {
                 Level level = entity.level();
                 int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-                if (module.useEnergy(player, itemAccess, cost, subTransaction) == cost && shearEntity(entity, player, itemAccess, level, entity.blockPosition())) {
+                if (module.useAllEnergy(player, itemAccess, cost, subTransaction) && shearEntity(entity, player, itemAccess, level, entity.blockPosition())) {
                     if (!level.isClientSide()) {
                         subTransaction.commit();
                     }
@@ -97,7 +97,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            if (module.useEnergy(player, ItemAccess.forStack(stack), cost, subTransaction) == cost) {
+            if (module.useAllEnergy(player, ItemAccess.forStack(stack), cost, subTransaction)) {
                 //Copy of ShearsItem#useOn
                 Level level = context.getLevel();
                 BlockPos blockpos = context.getClickedPos();
@@ -130,10 +130,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         //TODO - 26.1: Vanilla dispensers try shearing a beehive at the location before trying to shear any entities
         // Should we be doing so here? I think at one point we did, so figure out what happened to it
         //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
-        try (Transaction subTransaction = Transaction.openRoot()) {
-            int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //If we are able to use the energy we need to (or there is no cost) then try to see if any of the entities can be sheared
-            if (module.useEnergy(null, itemAccess, cost, subTransaction) == cost) {
+            if (module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get(), subTransaction)) {
                 for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
                     if (shearEntity(entity, null, itemAccess, world, pos)) {
                         if (!world.isClientSide()) {

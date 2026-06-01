@@ -296,7 +296,7 @@ public class CommonPlayerTickHandler {
                 try (Transaction transaction = Transaction.openRoot()) {
                     //TODO - 26.1: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
-                    if (propulsionModule.useEnergy(player, boots, usage, transaction) == usage) {
+                    if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {
                         // if we're sprinting with the boost module, limit the height
                         ItemAccess legs = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.LEGS);
                         IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs.getResource(), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);

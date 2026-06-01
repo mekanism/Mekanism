@@ -172,6 +172,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     ///
     /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess)].
     ///
+    /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext) For validating it has enough and can be extracted, while just returning true for players in creative.
     /// @since 10.4.0
     default boolean hasEnoughEnergy(ItemAccess itemAccess, IntSupplier energySupplier) {
         return hasEnoughEnergy(itemAccess, energySupplier.getAsInt());
@@ -187,37 +188,93 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     /// @since 10.4.0
     boolean hasEnoughEnergy(ItemAccess itemAccess, int energy);
 
-    /// Helper to use energy from the item this module is installed on.
+    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess)].
     ///
-    /// @param wearer     Wearer/User of the item the module is installed on.
-    /// @param itemAccess The item access representing the item this module is installed on.
-    /// @param energy     Energy to use.
+    /// @param wearer      Wearer/User of the item the module is installed on.
+    /// @param itemAccess  The item access representing the item this module is installed on.
+    /// @param energy      Amount of energy to try and extract.
+    /// @param transaction The transaction that this operation is part of. May be `null`
     ///
-    /// @return Actual amount of energy used.
+    /// @return `true` if there is no energy cost, the player is in creative, or the given amount of energy could be extracted from the [#getEnergyHandler(ItemAccess)].
     ///
-    /// @implNote By default, this method does not use any energy from players that are in creative.
-    int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
+    /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext, boolean)
+    /// @since 10.8.0
+    default boolean hasEnoughEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction) {
+        return hasEnoughEnergy(wearer, itemAccess, energy, transaction, true);
+    }
 
-    /// Helper to use energy from the item this module is installed on. If `checkCreative` is `false` this method will return 0 for players in creative or spectator.
+    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess)].
     ///
-    /// @param wearer             Wearer/User of the item the module is installed on.
-    /// @param itemAccess         The item access representing the item this module is installed on.
-    /// @param energy             Energy to use.
-    /// @param freeCreative`true` to not use any energy from the item if the wearer is in creative.
+    /// @param wearer       Wearer/User of the item the module is installed on.
+    /// @param itemAccess   The item access representing the item this module is installed on.
+    /// @param energy       Amount of energy to try and extract.
+    /// @param transaction  The transaction that this operation is part of. May be `null`
+    /// @param freeCreative `true` to not use any energy from the item if the wearer is in creative.
     ///
-    /// @return Actual amount of energy used.
-    int useEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
+    /// @return `true` if there is no energy cost, the player is in creative (and `freeCreative` is `true`), or the given amount of energy could be extracted from the
+    /// [#getEnergyHandler(ItemAccess)].
+    ///
+    /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext)
+    /// @since 10.8.0
+    boolean hasEnoughEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 
-    /// Helper to use energy from the given energy handler. If the `energyHandler` is `null` this will return `0`. If `checkCreative` is `false` this method will return `0``
-    /// for players in creative or spectator.
+    /// Helper to calculate what a rate should be limited to based on the module's energy usage.
     ///
-    /// @param wearer             Wearer/User of the item the module is installed on.
-    /// @param energyHandler      Energy handler to use energy from. Most likely retrieved from [#getEnergyHandler(ItemAccess)].
-    /// @param energy             Energy to use.
-    /// @param freeCreative`true` to not use any energy from the item if the wearer is in creative.
+    /// @param wearer      Wearer/User of the item the module is installed on.
+    /// @param itemAccess  The item access representing the item this module is installed on.
+    /// @param energyUsage Energy usage.
+    /// @param rate        Current rate without factoring energy into account.
+    /// @param transaction The transaction that this operation is part of. May be `null`
     ///
-    /// @return Actual amount of energy used.
+    /// @return The rate after factoring energy into account, or `rate` if the wearer is in creative.
     ///
-    /// @apiNote This method is mostly for use in not having to look up the energy container multiple times.
-    int useEnergy(@Nullable LivingEntity wearer, @Nullable EnergyHandler energyHandler, int energy, @Nullable TransactionContext transaction, boolean freeCreative);//TODO - 26.1: Update docs
+    /// @see #getEnergyRateLimit(LivingEntity, ItemAccess, int, int, TransactionContext, boolean)
+    /// @since 10.8.0
+    default int getEnergyRateLimit(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energyUsage, int rate, @Nullable TransactionContext transaction) {
+        return getEnergyRateLimit(wearer, itemAccess, energyUsage, rate, transaction, true);
+    }
+
+    /// Helper to calculate what a rate should be limited to based on the module's energy usage.
+    ///
+    /// @param wearer       Wearer/User of the item the module is installed on.
+    /// @param itemAccess   The item access representing the item this module is installed on.
+    /// @param energyUsage  Energy usage.
+    /// @param rate         Current rate without factoring energy into account.
+    /// @param transaction  The transaction that this operation is part of. May be `null`
+    /// @param freeCreative `true` to not use any energy from the item if the wearer is in creative.
+    ///
+    /// @return The rate after factoring energy into account, or `rate` if the wearer is in creative and `freeCreative` is `true`.
+    ///
+    /// @see #getEnergyRateLimit(LivingEntity, ItemAccess, int, int, TransactionContext)
+    /// @since 10.8.0
+    int getEnergyRateLimit(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energyUsage, int rate, @Nullable TransactionContext transaction, boolean freeCreative);
+
+    /// Helper to use an exact amount of energy from the item this module is installed on.
+    ///
+    /// @param wearer      Wearer/User of the item the module is installed on.
+    /// @param itemAccess  The item access representing the item this module is installed on.
+    /// @param energy      Energy to use.
+    /// @param transaction The transaction that this operation is part of. May be `null`
+    ///
+    /// @return `true` if the specified amount of energy could be used, or if the wearer is in creative.
+    ///
+    /// @see #useAllEnergy(LivingEntity, ItemAccess, int, TransactionContext, boolean)
+    /// @since 10.8.0
+    default boolean useAllEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction) {
+        return useAllEnergy(wearer, itemAccess, energy, transaction, true);
+    }
+
+    /// Helper to use an exact amount of energy from the item this module is installed on.
+    ///
+    /// @param wearer       Wearer/User of the item the module is installed on.
+    /// @param itemAccess   The item access representing the item this module is installed on.
+    /// @param energy       Energy to use.
+    /// @param transaction  The transaction that this operation is part of. May be `null`
+    /// @param freeCreative `true` to not use any energy from the item if the wearer is in creative.
+    ///
+    /// @return `true` if the specified amount of energy could be used, or if the wearer is in creative and `freeCreative` is `true`.
+    ///
+    /// @see #useAllEnergy(LivingEntity, ItemAccess, int, TransactionContext)
+    /// @since 10.8.0
+    boolean useAllEnergy(@Nullable LivingEntity wearer, ItemAccess itemAccess, int energy, @Nullable TransactionContext transaction, boolean freeCreative);
 }

@@ -45,8 +45,8 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
             int usage = Mth.ceil(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
-            try (Transaction simulation = Transaction.openRoot()) {
-                if (module.useEnergy(player, itemAccess, usage, simulation) < usage) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                if (!module.useAllEnergy(player, itemAccess, usage, simulation)) {
                     //Not enough energy, just exit
                     return;
                 }
@@ -56,13 +56,11 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
             // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
             for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay())) {
                 if (item.distanceTo(player) > 0.001) {
-                    try (Transaction subTransaction = Transaction.open(transaction)) {
-                        if (module.useEnergy(player, itemAccess, usage, subTransaction) < usage) {
-                            //If we aren't able to extract enough energy, stop trying to pull any further items
-                            break;
-                        }
+                    if (module.useAllEnergy(player, itemAccess, usage, transaction)) {
                         pullItem(player, item);
-                        subTransaction.commit();
+                    } else {
+                        //If we aren't able to extract enough energy, stop trying to pull any further items
+                        break;
                     }
                 }
             }

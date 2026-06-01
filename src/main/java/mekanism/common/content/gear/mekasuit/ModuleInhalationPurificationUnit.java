@@ -48,7 +48,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         int usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
         try (Transaction simulation = Transaction.openRoot()) {
-            if (module.useEnergy(player, itemAccess, usage, simulation) < usage) {
+            if (!module.useAllEnergy(player, itemAccess, usage, simulation)) {
                 //Not enough energy, just exit
                 return;
             }
@@ -57,13 +57,11 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
         // don't run into any issues related to CMEs
         List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
         for (MobEffectInstance effect : effects) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (module.useEnergy(player, itemAccess, usage, subTransaction) < usage) {
-                    //If we can't able to actually extract energy, exit
-                    break;
-                }
+            if (module.useAllEnergy(player, itemAccess, usage, transaction)) {
                 speedupEffect(player, effect);
-                subTransaction.commit();
+            } else {
+                //If we can't able to actually extract energy, exit
+                break;
             }
         }
     }

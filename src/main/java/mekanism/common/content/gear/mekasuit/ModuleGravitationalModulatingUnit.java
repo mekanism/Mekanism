@@ -34,7 +34,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -84,7 +83,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     @Override
     public void tickClient(IModule<ModuleGravitationalModulatingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         //Client side handling of boost as movement needs to be applied on both the server and the client
-        if (shouldProcess(player) && MekanismKeyHandler.boostKey.isDown() && module.hasEnoughEnergy(itemAccess, BOOST_USAGE)) {
+        if (shouldProcess(player) && MekanismKeyHandler.boostKey.isDown() && module.hasEnoughEnergy(player, itemAccess, BOOST_USAGE.getAsInt(), transaction)) {
             float boost = speedBoost.getBoost();
             if (boost > 0) {
                 player.moveRelative(boost, BOOST_VEC);
@@ -97,26 +96,20 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
         //If the player is actively flying (not just allowed to), they are using the grav unit, apply movement boost if active, and use energy
         // Note: If they don't have enough energy to use the grav unit, don't try to process the player, and assume another mod is providing flight
         if (shouldProcess(player)) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                if (module.useEnergy(player, itemAccess, energyUsage, subTransaction) == energyUsage) {
-                    float boost = speedBoost.getBoost();
-                    Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
-                    if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
-                        try (Transaction boostTransaction = Transaction.open(subTransaction)) {
-                            //Note: Boost usage is a multiplicative amount of our energy usage, as we have already extracted our energy once,
-                            // we need to subtract it from our attempted boost handling
-                            int energyToBoost = BOOST_USAGE.getAsInt() - energyUsage;
-                            if (module.useEnergy(player, itemAccess, energyToBoost, boostTransaction) == energyToBoost) {
-                                player.moveRelative(boost, BOOST_VEC);
-                                gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
-                                boostTransaction.commit();
-                            }
-                        }
+            int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+            if (module.useAllEnergy(player, itemAccess, energyUsage, transaction)) {
+                float boost = speedBoost.getBoost();
+                Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
+                if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+                    //Note: Boost usage is a multiplicative amount of our energy usage, as we have already extracted our energy once,
+                    // we need to subtract it from our attempted boost handling
+                    int energyToBoost = BOOST_USAGE.getAsInt() - energyUsage;
+                    if (module.useAllEnergy(player, itemAccess, energyToBoost, transaction)) {
+                        player.moveRelative(boost, BOOST_VEC);
+                        gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
                     }
-                    gravUnitGameEvent(player, gameEvent);
-                    subTransaction.commit();
                 }
+                gravUnitGameEvent(player, gameEvent);
             }
         }
     }
