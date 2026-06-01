@@ -8,6 +8,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnergyUtils;
@@ -39,10 +40,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         if (energyContainer != null) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about
             // splitting between multiple items if for some reason the player has an oversized stack of the MekaSuit
-            long capacity = energyContainer.getCapacityAsLong();
-            if (energyContainer.getAmountAsLong() > capacity) {
-                energyContainer.setEnergy(capacity, transaction);
-            }
+            ContainerType.ENERGY.clampContents(energyContainer);
         }
     }
 }

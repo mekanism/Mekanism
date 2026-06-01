@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -53,5 +54,21 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     @Override
     public void copy(IEnergyContainer from, IEnergyContainer to) {
         to.copyContents(from);
+    }
+
+    //TODO: Evaluate what other spots should be clamped
+    public void clampContents(IEnergyContainer container) {
+        if (!container.isEmpty()) {
+            long capacity = container.getCapacityAsLong();
+            if (capacity == 0 && container instanceof VariableCapacityEnergyContainer) {
+                //Our capacity should never actually be zero, and given we fake it being zero
+                // until we finish building the network, we need to override this method to bypass the upper limit check
+                // when our upper limit is zero
+                return;
+            }
+            if (container.getAmountAsLong() > capacity) {
+                container.setEnergy(capacity, null);
+            }
+        }
     }
 }

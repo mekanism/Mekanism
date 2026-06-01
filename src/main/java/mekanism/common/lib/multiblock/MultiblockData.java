@@ -220,7 +220,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         if (shouldCache(MultiblockCache.ENERGY)) {
             IEnergyContainer container = getEnergyContainer();
             if (container != null) {
-                container.setEnergy(Math.min(container.getAmountAsLong(), container.getCapacityAsLong()), null);
+                ContainerType.ENERGY.clampContents(container);
             }
         }
         updateEjectors(world);

@@ -192,7 +192,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     @Override
     protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
-        input.getLong(SerializationConstants.ENERGY).ifPresent(energy -> network.energyContainer.setEnergy(energy, null));
+        network.energyContainer.setEnergy(input.getLongOr(SerializationConstants.ENERGY, 0L), null);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

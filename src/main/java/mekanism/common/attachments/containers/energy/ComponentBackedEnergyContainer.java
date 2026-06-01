@@ -60,16 +60,6 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         }
     }
 
-    protected long clampEnergy(long energy) {
-        //TODO - 26.1: Re-evaluate clamping
-        return Math.min(energy, getCapacityAsLong());
-    }
-
-    @Override
-    protected boolean setContents(Long energy, @Nullable TransactionContext transaction) {
-        return super.setContents(clampEnergy(energy), transaction);
-    }
-
     @Range(from = 0, to = Long.MAX_VALUE)
     protected int getInsertionRate(AutomationType automationType) {
         //Allow manual interaction to bypass rate limit for the item

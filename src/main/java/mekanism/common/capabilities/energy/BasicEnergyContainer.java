@@ -67,16 +67,9 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         return stored;
     }
 
-    protected long clampEnergy(long energy) {
-        //TODO - 26.1: Re-evaluate clamping
-        return Math.min(energy, getCapacityAsLong());
-    }
-
     @Override
     public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(energy);
-        //TODO - 26.1: Re-evaluate this clamping and maybe get rid of it or move it?
-        energy = clampEnergy(energy);
         if (stored != energy) {
             if (transaction == null) {
                 long originalState = stored;

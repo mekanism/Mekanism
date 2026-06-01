@@ -7,6 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -54,11 +55,6 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         currentEnergyPerTick = baseEnergyPerTick;
     }
 
-    @Override
-    protected long clampEnergy(long energy) {
-        return energy;//machines shouldn't clamp as buffer is dynamic
-    }
-
     public boolean adjustableRates() {
         return false;
     }
@@ -75,8 +71,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
-        //Clamp the energy
-        setEnergy(getAmountAsLong(), null);
+        ContainerType.ENERGY.clampContents(this);
     }
 
     public int getEnergyPerTick() {

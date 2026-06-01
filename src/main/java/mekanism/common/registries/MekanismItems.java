@@ -11,7 +11,7 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
+import mekanism.common.attachments.containers.energy.ComponentBackedEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
@@ -276,7 +276,7 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
-          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.creator(attachedAccess -> new ComponentBackedNoClampEnergyContainer(
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.creator(attachedAccess -> new ComponentBackedEnergyContainer(
                 attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
                       () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate),
                       () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity))), MekanismConfig.gear

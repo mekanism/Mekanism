@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainersBuilder {
 
-    public static final IContainerCreator<IEnergyContainer, Long> MEKASUIT = creator(attachedAccess -> new ComponentBackedNoClampEnergyContainer(
+    public static final IContainerCreator<IEnergyContainer, Long> MEKASUIT = creator(attachedAccess -> new ComponentBackedEnergyContainer(
           attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
           () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaSuitBaseChargeRate),
           () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaSuitBaseEnergyCapacity)

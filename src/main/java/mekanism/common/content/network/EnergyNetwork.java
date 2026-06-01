@@ -11,6 +11,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.UniversalCable;
@@ -88,12 +89,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     public void clampBuffer() {
-        if (!energyContainer.isEmpty()) {
-            long capacity = getCapacity();
-            if (energyContainer.getAmountAsLong() > capacity) {
-                energyContainer.setEnergy(capacity, null);
-            }
-        }
+        ContainerType.ENERGY.clampContents(energyContainer);
     }
 
     @Override

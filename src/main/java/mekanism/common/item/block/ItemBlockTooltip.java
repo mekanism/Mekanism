@@ -17,7 +17,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
-import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
+import mekanism.common.attachments.containers.energy.ComponentBackedEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -177,7 +177,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             return EnergyContainersBuilder.creator(attachedAccess -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
-                return new ComponentBackedNoClampEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
+                return new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
                       () -> MekanismUtils.calculateUsage(capacity.getAsLong()), capacity);
             });
         }
