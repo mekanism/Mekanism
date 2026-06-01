@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/digital_miner_active",
+  "textures": {
+    "screen_hello": "mekanism:block/models/digital_miner_screen_may4th"
+  }
+}

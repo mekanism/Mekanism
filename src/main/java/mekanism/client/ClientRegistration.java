@@ -82,6 +82,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
+import mekanism.client.model.blockstate.HolidayBasedModelSelector;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel.Unbaked;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
@@ -222,10 +223,7 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        //TODO - 26.1 models
-        //addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
-        //addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
-
+        //todo - 26.1: this shouldn't need extra - just a fix on the item model itself
         addLitModel(MekanismItems.MEKA_TOOL);
     }
 
@@ -432,6 +430,7 @@ public class ClientRegistration {
         event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
         event.registerModel(TransmitterBlockStateModel.Unbaked.ID, TransmitterBlockStateModel.Unbaked.MAP_CODEC);
         event.registerModel(Mekanism.rl("qio_drive"), Unbaked.MAP_CODEC);
+        event.registerModel(Mekanism.rl("holiday_selector"), HolidayBasedModelSelector.MAP_CODEC);
     }
 
     @SubscribeEvent

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
+import mekanism.client.model.blockstate.HolidayBasedModelSelector;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
@@ -28,6 +29,7 @@ import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.Mekanism;
+import mekanism.common.base.holiday.Holiday;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.FactoryType;
@@ -419,6 +421,26 @@ public class MekanismModelProvider extends BaseModelProvider {
             );
         }
 
+        {
+            Block block = MekanismBlocks.DIGITAL_MINER.value();
+            MultiVariant base = BlockModelGenerators.plainVariant(existingModel(MekanismBlocks.DIGITAL_MINER.value()));
+            Variant defaultActive = BlockModelGenerators.plainModel(existingModel("block/digital_miner_active"));
+            Map<Holiday, Identifier> holidayVariants = Map.of(
+                  Holiday.AprilFools, existingModel("block/digital_miner_active_april_fools"),
+                  Holiday.May4, existingModel("block/digital_miner_active_may_4th")
+            );
+            MultiVariant active = customVariant(new HolidayBasedModelSelector(defaultActive, holidayVariants));
+            blockModels.blockStateOutput.accept(
+                  MultiVariantGenerator.dispatch(block)
+                        .with(
+                              PropertyDispatch.initial(AttributeStateActive.activeProperty)
+                                    .select(false, base)
+                                    .select(true, active)
+                        )
+                        .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+            );
+        }
+
         transmitter(blockModels, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/advanced", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/basic", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/elite", "block/transmitter/large/logistical_transporter/transporter_glass");
@@ -666,7 +688,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.CREATIVE_CHEMICAL_TANK);
         markManualBlockState(MekanismBlocks.CREATIVE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.CRUSHER);
-        markManualBlockState(MekanismBlocks.DIGITAL_MINER);
         markManualBlockState(MekanismBlocks.DYNAMIC_TANK);
         markManualBlockState(MekanismBlocks.DYNAMIC_VALVE);
         markManualBlockState(MekanismBlocks.ELECTRIC_PUMP);
@@ -783,6 +804,9 @@ public class MekanismModelProvider extends BaseModelProvider {
                 }
                 case QIODriveArrayBlockStateModel.Unbaked qio -> {
                     return new QIODriveArrayBlockStateModel.Unbaked(variantMutator.apply(qio.baseModel()));
+                }
+                case HolidayBasedModelSelector holidaySelector -> {
+                    return new HolidayBasedModelSelector(variantMutator.apply(holidaySelector.defaultModel()), holidaySelector.holidayVariants());
                 }
                 default -> throw new IllegalStateException("Don't know how to handle " + toMutate);
             }

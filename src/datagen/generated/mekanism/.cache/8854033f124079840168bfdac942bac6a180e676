@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-31T23:34:16.4327274	Model Definitions - mekanism
+// 26.1.2	2026-06-01T15:16:19.2038863	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -27,6 +27,7 @@ c0ef34cbef8d1226c7cdf5ab8cc0fa2f420935af assets/mekanism/blockstates/creative_en
 1c6b2b806c2bd2d2957004ebb3c06b3045e95bdc assets/mekanism/blockstates/deepslate_osmium_ore.json
 1a7feb2226b14c99bd215982cffbb7c2b0653f10 assets/mekanism/blockstates/deepslate_tin_ore.json
 c057c49dac2113190a4a9d25f593903f0c20d69a assets/mekanism/blockstates/deepslate_uranium_ore.json
+0edea4dde89f0683558061f16d20dbb73d9d3cc0 assets/mekanism/blockstates/digital_miner.json
 3c6a94b29a09733edb9f19c8a8a94d093e74e547 assets/mekanism/blockstates/dimensional_stabilizer.json
 a07a76b9c3b7abdc2b950299c2df3ecf66abac19 assets/mekanism/blockstates/diversion_transporter.json
 69e571ce787103c67966f8bd4daee09ee9b5148c assets/mekanism/blockstates/elite_energy_cube.json
