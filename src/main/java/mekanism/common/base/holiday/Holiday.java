@@ -1,5 +1,6 @@
 package mekanism.common.base.holiday;
 
+import com.mojang.serialization.Codec;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
@@ -18,11 +19,12 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-public enum Holiday {
+public enum Holiday implements StringRepresentable {
     AprilFools(new YearlyDate(Month.APRIL, 1)),
     Christmas(new YearlyDate(Month.DECEMBER, 25)) {
         @Override
@@ -78,6 +80,7 @@ public enum Holiday {
     };
 
     public static final Holiday[] VALUES = values();
+    public static final Codec<Holiday> CODEC = StringRepresentable.fromEnum(Holiday::values);
 
     private final KnownDate date;
     private boolean hasNotified;
@@ -135,6 +138,7 @@ public enum Holiday {
         return MekanismRobitSkins.BASE;
     }
 
+
     protected static Component getThemedLines(int amount, EnumColor... colors) {
         MutableComponent component = Component.empty();
         for (int i = 0; i < amount; i++) {
@@ -158,4 +162,9 @@ public enum Holiday {
           MekanismSounds.ENERGIZED_SMELTER, MekanismSounds.CHRISTMAS4,
           MekanismSounds.CRUSHER, MekanismSounds.CHRISTMAS5
     );
+
+    @Override
+    public String getSerializedName() {
+        return name();
+    }
 }

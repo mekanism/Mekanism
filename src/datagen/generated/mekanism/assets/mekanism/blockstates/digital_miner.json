@@ -16,17 +16,37 @@
       "y": 270
     },
     "active=true,facing=east": {
+      "type": "mekanism:holiday_selector",
+      "holidays": {
+        "AprilFools": "mekanism:block/digital_miner_active_april_fools",
+        "May4": "mekanism:block/digital_miner_active_may_4th"
+      },
       "model": "mekanism:block/digital_miner_active",
       "y": 90
     },
     "active=true,facing=north": {
+      "type": "mekanism:holiday_selector",
+      "holidays": {
+        "AprilFools": "mekanism:block/digital_miner_active_april_fools",
+        "May4": "mekanism:block/digital_miner_active_may_4th"
+      },
       "model": "mekanism:block/digital_miner_active"
     },
     "active=true,facing=south": {
+      "type": "mekanism:holiday_selector",
+      "holidays": {
+        "AprilFools": "mekanism:block/digital_miner_active_april_fools",
+        "May4": "mekanism:block/digital_miner_active_may_4th"
+      },
       "model": "mekanism:block/digital_miner_active",
       "y": 180
     },
     "active=true,facing=west": {
+      "type": "mekanism:holiday_selector",
+      "holidays": {
+        "AprilFools": "mekanism:block/digital_miner_active_april_fools",
+        "May4": "mekanism:block/digital_miner_active_may_4th"
+      },
       "model": "mekanism:block/digital_miner_active",
       "y": 270
     }
