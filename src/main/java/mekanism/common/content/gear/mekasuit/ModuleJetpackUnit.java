@@ -86,7 +86,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about
             // splitting between multiple items if for some reason the player has an oversized stack of the MekaSuit
             for (IResourceContainer<ChemicalResource> container : handler.getContainers()) {
-                ContainerType.CHEMICAL.clampContents(container);
+                ContainerType.CHEMICAL.clampContents(container, transaction);
             }
         }
     }

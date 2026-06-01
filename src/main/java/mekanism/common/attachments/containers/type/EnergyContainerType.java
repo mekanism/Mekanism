@@ -11,6 +11,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
@@ -57,7 +58,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     }
 
     //TODO: Evaluate what other spots should be clamped
-    public void clampContents(IEnergyContainer container) {
+    public void clampContents(IEnergyContainer container, @Nullable TransactionContext transaction) {
         if (!container.isEmpty()) {
             long capacity = container.getCapacityAsLong();
             if (capacity == 0 && container instanceof VariableCapacityEnergyContainer) {
@@ -67,7 +68,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
                 return;
             }
             if (container.getAmountAsLong() > capacity) {
-                container.setEnergy(capacity, null);
+                container.setEnergy(capacity, transaction);
             }
         }
     }

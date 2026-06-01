@@ -89,7 +89,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     public void clampBuffer() {
-        ContainerType.ENERGY.clampContents(energyContainer);
+        ContainerType.ENERGY.clampContents(energyContainer, null);
     }
 
     @Override

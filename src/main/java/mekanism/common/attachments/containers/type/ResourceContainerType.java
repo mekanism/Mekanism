@@ -193,7 +193,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return emptyResource();
     }
 
-    public void clampContents(IResourceContainer<RESOURCE> container) {
+    public void clampContents(IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
         RESOURCE resource = container.resource();
         if (!resource.isEmpty()) {
             long capacity = container.capacityAsLong(resource);
@@ -205,7 +205,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
                 return;
             }
             if (container.amountAsLong() > capacity) {
-                container.setContents(resource, capacity, null);
+                container.setContents(resource, capacity, transaction);
             }
         }
     }

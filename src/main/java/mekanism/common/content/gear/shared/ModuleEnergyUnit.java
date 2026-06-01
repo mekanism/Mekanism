@@ -40,7 +40,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         if (energyContainer != null) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about
             // splitting between multiple items if for some reason the player has an oversized stack of the MekaSuit
-            ContainerType.ENERGY.clampContents(energyContainer);
+            ContainerType.ENERGY.clampContents(energyContainer, transaction);
         }
     }
 }

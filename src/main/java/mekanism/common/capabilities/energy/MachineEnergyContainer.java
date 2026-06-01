@@ -71,7 +71,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
-        ContainerType.ENERGY.clampContents(this);
+        ContainerType.ENERGY.clampContents(this, null);
     }
 
     public int getEnergyPerTick() {

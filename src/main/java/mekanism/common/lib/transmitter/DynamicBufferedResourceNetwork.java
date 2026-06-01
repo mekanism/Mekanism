@@ -125,7 +125,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     @Override
     public void clampBuffer() {
-        containerType().clampContents(container);
+        containerType().clampContents(container, null);
     }
 
     @Override
