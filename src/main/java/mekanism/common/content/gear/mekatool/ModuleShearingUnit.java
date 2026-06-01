@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekatool;
 
-import java.util.function.Predicate;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -16,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -41,12 +41,10 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.21: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
+//TODO - 26.1: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
 // Also double check the stuff we override as it looks like some of it might have changed in vanilla
 @ParametersAreNotNullByDefault
 public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
-
-    private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ITEM instance,
@@ -75,11 +73,14 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand,
           ItemAccess itemAccess, TransactionContext transaction) {
-        if (entity instanceof IShearable) {
+        if (entity instanceof IShearable shearable) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
                 Level level = entity.level();
                 int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-                if (module.useAllEnergy(player, itemAccess, cost, subTransaction) && shearEntity(entity, player, itemAccess, level, entity.blockPosition())) {
+                if (module.useAllEnergy(player, itemAccess, cost, subTransaction) &&
+                    shearEntity(shearable, player, itemAccess.getResource().toStack(itemAccess.getAmount()), level, entity.blockPosition())) {
+                    //Fire the game event on both sides
+                    entity.gameEvent(GameEvent.SHEAR, player);
                     if (!level.isClientSide()) {
                         subTransaction.commit();
                     }
@@ -109,8 +110,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                     }
                     level.setBlockAndUpdate(blockpos, trimmedState);
                     level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, trimmedState));
-                    //TODO - 26.1: Should we only commit on the server?
-                    subTransaction.commit();
+                    if (!level.isClientSide()) {
+                        subTransaction.commit();
+                    }
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -124,37 +126,38 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         ServerLevel world = source.level();
         Direction facing = source.state().getValue(DispenserBlock.FACING);
         BlockPos pos = source.pos().relative(facing);
-        if (CommonHooks.tryDispenseShearsHarvestBlock(source, itemAccess.getResource().toStack(itemAccess.getAmount()), world, pos)) {
+        ItemStack accessAsStack = itemAccess.getResource().toStack(itemAccess.getAmount());
+        if (CommonHooks.tryDispenseShearsHarvestBlock(source, accessAsStack, world, pos) || ShearsDispenseItemBehavior.tryShearBeehive(world, accessAsStack, pos)) {
+            //Handle shearing via tool modified state or on a beehive as tool modified state doesn't get it
             return ModuleDispenseResult.HANDLED;
         }
-        //TODO - 26.1: Vanilla dispensers try shearing a beehive at the location before trying to shear any entities
-        // Should we be doing so here? I think at one point we did, so figure out what happened to it
-        //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
+        //Modified copy of ShearsDispenseItemBehavior#tryShearEntity to handle energy usage when shearing
         try (Transaction subTransaction = Transaction.open(transaction)) {
             //If we are able to use the energy we need to (or there is no cost) then try to see if any of the entities can be sheared
-            if (module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get(), subTransaction)) {
-                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
-                    if (shearEntity(entity, null, itemAccess, world, pos)) {
-                        if (!world.isClientSide()) {
-                            subTransaction.commit();
-                        }
-                        return ModuleDispenseResult.HANDLED;
+            boolean usedEnergy = module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get(), subTransaction);
+            for (Entity entity : world.getEntities(null, new AABB(pos))) {
+                if (entity.shearOffAllLeashConnections(null)) {
+                    //Note: We don't commit energy usage here (or even check for it), as shearing leashes is normally handled by
+                    // the entity and the SHEARS_HARVEST item ability. We just need to implement it here for dispenser usage
+                    return ModuleDispenseResult.HANDLED;
+                } else if (usedEnergy && entity instanceof IShearable target && shearEntity(target, null, accessAsStack, world, pos)) {
+                    if (!world.isClientSide()) {
+                        subTransaction.commit();
                     }
+                    entity.gameEvent(GameEvent.SHEAR, entity);
+                    return ModuleDispenseResult.HANDLED;
                 }
             }
         }
         return ModuleDispenseResult.FAIL_PREVENT_DROP;
     }
 
-    private boolean shearEntity(LivingEntity entity, @Nullable Player player, ItemAccess itemAccess, Level world, BlockPos pos) {
-        ItemStack stack = itemAccess.getResource().toStack(itemAccess.getAmount());
-        IShearable target = (IShearable) entity;
+    private boolean shearEntity(IShearable target, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
         if (target.isShearable(player, stack, world, pos)) {
             if (!world.isClientSide() && world instanceof ServerLevel level) {
                 for (ItemStack drop : target.onSheared(player, stack, level, pos)) {
                     target.spawnShearedDrop(level, pos, drop);
                 }
-                entity.gameEvent(GameEvent.SHEAR, player);
             }
             return true;
         }
