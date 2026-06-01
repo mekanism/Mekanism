@@ -36,11 +36,11 @@ public final class ClientHolidayInfo {
             return;
         }
         HOLIDAY_MINER_TRANSFORMS = Map.of(
-              AprilFools.INSTANCE, QuadTransformation.list(
+              Holiday.AprilFools, QuadTransformation.list(
                     TextureFilteredTransformation.of(minerTexture(atlas, "afd_sad"), IS_HELLO_SCREEN.or(IS_CMD_SCREEN)),
                     TextureFilteredTransformation.of(minerTexture(atlas, "afd_text"), IS_BLANK_SCREEN)
               ),
-              May4.INSTANCE, TextureFilteredTransformation.of(minerTexture(atlas, "may4th"), IS_HELLO_SCREEN)
+              Holiday.May4, TextureFilteredTransformation.of(minerTexture(atlas, "may4th"), IS_HELLO_SCREEN)
         );
     }
 

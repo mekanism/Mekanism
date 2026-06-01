@@ -4,7 +4,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,20 +31,14 @@ public final class HolidayManager {
         return t;
     });
 
-    private static final Set<Holiday> holidays = Set.of(
-          Christmas.INSTANCE,
-          NewYear.INSTANCE,
-          May4.INSTANCE,
-          AprilFools.INSTANCE,
-          Pride.INSTANCE
-    );
+    //todo - 26.1: shouldn't the key be the id/resourcekey?
     private static final Map<Holder<SoundEvent>, Supplier<SoundEvent>> filterableSounds = new HashMap<>();
 
     private static boolean holidaysNotified = false;
     @Nullable
-    private static IRobitSkinRandomizerHoliday robitSkinHoliday;
+    private static Holiday robitSkinHoliday;
     @Nullable
-    private static IFilterableSoundHoliday soundHoliday;
+    private static Holiday soundHoliday;
 
     public static boolean areHolidaysEnabled() {
         return MekanismConfig.common.holidays.get();
@@ -58,11 +51,13 @@ public final class HolidayManager {
               TimeUnit.MILLISECONDS);
         updateToday();
         //Figure out what sounds we need to wrap because they might be filterable
-        for (Holiday holiday : holidays) {
-            if (holiday instanceof IFilterableSoundHoliday filterableSoundHoliday) {
-                for (Holder<SoundEvent> soundEvent : filterableSoundHoliday.getFilterableSounds().keySet()) {
+        for (Holiday holiday : Holiday.VALUES) {
+            Map<Holder<SoundEvent>, Holder<SoundEvent>> holidaySoundMap = holiday.getFilterableSounds();
+            if (!holidaySoundMap.isEmpty()) {
+                for (Holder<SoundEvent> soundEvent : holidaySoundMap.keySet()) {
                     filterableSounds.computeIfAbsent(soundEvent, sound -> () -> {
                         if (areHolidaysEnabled() && soundHoliday != null) {
+                            //todo - 26.1: why does this use the static?
                             return soundHoliday.getFilterableSounds().getOrDefault(sound, sound).value();
                         }
                         return sound.value();
@@ -79,13 +74,13 @@ public final class HolidayManager {
         robitSkinHoliday = null;
         soundHoliday = null;
         YearlyDate date = YearlyDate.now();
-        for (Holiday holiday : holidays) {
+        for (Holiday holiday : Holiday.VALUES) {
             if (holiday.updateIsToday(date)) {
-                if (robitSkinHoliday == null && holiday instanceof IRobitSkinRandomizerHoliday randomizerHoliday) {
-                    robitSkinHoliday = randomizerHoliday;
+                if (robitSkinHoliday == null && holiday.isRobitSkinRandomizer()) {
+                    robitSkinHoliday = holiday;
                 }
-                if (soundHoliday == null && holiday instanceof IFilterableSoundHoliday filterableSoundHoliday) {
-                    soundHoliday = filterableSoundHoliday;
+                if (soundHoliday == null && !holiday.getFilterableSounds().isEmpty()) {
+                    soundHoliday = holiday;
                 }
             }
         }
@@ -99,7 +94,7 @@ public final class HolidayManager {
             //Mark as notified even if messages are configured to off, so that we don't have to try notifying for the rest of the day
             holidaysNotified = true;
             if (areHolidaysEnabled()) {
-                for (Holiday holiday : holidays) {
+                for (Holiday holiday : Holiday.VALUES) {
                     if (holiday.isToday() && !holiday.hasNotified()) {
                         holiday.notify(player);
                     }
@@ -123,13 +118,4 @@ public final class HolidayManager {
         return areHolidaysEnabled() && robitSkinHoliday != null;
     }
 
-    interface IFilterableSoundHoliday {
-
-        Map<Holder<SoundEvent>, Holder<SoundEvent>> getFilterableSounds();
-    }
-
-    interface IRobitSkinRandomizerHoliday {
-
-        ResourceKey<RobitSkin> randomBaseSkin(RandomSource random);
-    }
 }
