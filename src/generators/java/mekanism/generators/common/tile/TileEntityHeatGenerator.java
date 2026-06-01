@@ -41,6 +41,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -119,7 +120,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         heatCapacitor.handleHeat(getBoost());
         FluidResource lavaResource = lavaTank.resource();
         boolean isActive = false;
-        if (canFunction() && !lavaResource.isEmpty() && energyContainer().getNeededAsLong() > 0) {
+        if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
