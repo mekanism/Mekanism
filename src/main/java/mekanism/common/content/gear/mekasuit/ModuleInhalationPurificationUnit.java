@@ -47,7 +47,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
 
     private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         int usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             if (!module.useAllEnergy(player, itemAccess, usage, simulation)) {
                 //Not enough energy, just exit
                 return;

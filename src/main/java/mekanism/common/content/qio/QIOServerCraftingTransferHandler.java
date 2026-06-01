@@ -84,7 +84,7 @@ public class QIOServerCraftingTransferHandler {
             ItemResource storedType = inputSlot.resource();
             if (!storedType.isEmpty()) {
                 int stored = inputSlot.amountAsInt();
-                try (Transaction simulation = Transaction.openRoot()) {
+                try (Transaction simulation = Transaction.open(transaction)) {
                     int available = inputSlot.extract(storedType, stored, simulation, AutomationType.INTERNAL);
                     if (available < stored) {
                         //TODO: Eventually it would be nice if we added in some support so that if an item is staying put in its crafting slot

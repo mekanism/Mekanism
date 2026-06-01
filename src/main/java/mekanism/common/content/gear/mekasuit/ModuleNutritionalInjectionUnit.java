@@ -42,7 +42,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                 int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
                 int foodToFill;
-                try (Transaction simulation = Transaction.openRoot()) {
+                try (Transaction simulation = Transaction.open(transaction)) {
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                     //Limit how much food we can handle by the amount of energy stored
                     foodToFill = module.getEnergyRateLimit(player, itemAccess, energyUsage, foodToFill, simulation);
