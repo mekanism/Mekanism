@@ -1,11 +1,9 @@
 package mekanism.client.render.item;
 
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.math.MathUtils;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
@@ -17,6 +15,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
@@ -55,17 +54,16 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     private static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, ResourceContainerType<RESOURCE, ?> containerType,
           ItemAccess itemAccess, ToIntFunction<RESOURCE> color) {
         //Note: We just directly query the stored contents of the containers and don't care about the size of the item access
-        List<? extends IResourceContainer<RESOURCE>> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
-        return renderBars(guiGraphics, xOffset, yOffset, containers, getDisplayTank(containers.size()), color);
+        ResourceHandler<RESOURCE> handler = containerType.getCapOrUnexposed(itemAccess);
+        return handler != null && renderBars(guiGraphics, xOffset, yOffset, handler, getDisplayTank(handler.size()), color);
     }
 
     protected static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset,
-          List<? extends IResourceContainer<RESOURCE>> containers, int index, ToIntFunction<RESOURCE> color) {
+          ResourceHandler<RESOURCE> handler, int index, ToIntFunction<RESOURCE> color) {
         if (index != -1) {
-            IResourceContainer<RESOURCE> container = containers.get(index);
-            RESOURCE resource = container.resource();
-            renderBar(guiGraphics, xOffset, yOffset, container.amountAsLong(), container.capacityAsLong(resource), color.applyAsInt(resource));
-        } else if (containers.isEmpty()) {
+            RESOURCE resource = handler.getResource(index);
+            renderBar(guiGraphics, xOffset, yOffset, handler.getAmountAsLong(index), handler.getCapacityAsLong(index, resource), color.applyAsInt(resource));
+        } else if (handler.size() == 0) {
             renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
         } else {
             return false;

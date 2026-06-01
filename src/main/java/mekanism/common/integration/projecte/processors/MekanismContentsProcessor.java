@@ -12,7 +12,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -61,14 +61,14 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(info.getItem(), info.getComponentsPatch()));
         ItemResource resource = itemAccess.getResource();
         //Stored items
-        currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess));
+        currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachedContents(resource));
         if (currentEMC == 0) {
             //Something that is stored cannot be converted into EMC
             return 0;
         }
         AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(itemAccess);
         if (personalStorage != null) {//Items stored in a personal chest or barrel
-            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getContainers());
+            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getNonEmptyContents());
             if (currentEMC == 0) {
                 //Something that is stored cannot be converted into EMC
                 return 0;
@@ -84,7 +84,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
                 }
                 currentEMC = addEmc(currentEMC, upgradeEmc, entry.getValue());
             }
-            currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.asInventorySlots());
+            currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.slotContents());
             if (currentEMC == 0) {
                 //Something that is stored cannot be converted into EMC
                 return 0;
@@ -126,14 +126,14 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    private static long addEmc(IEMCProxy emcProxy, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC, List<IInventorySlot> slots) throws ArithmeticException {
-        for (IInventorySlot slot : slots) {
+    private static long addEmc(IEMCProxy emcProxy, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC, List<LargeResourceStack<ItemResource>> slots) throws ArithmeticException {
+        for (LargeResourceStack<ItemResource> slot : slots) {
             if (!slot.isEmpty()) {
                 long itemEmc = emcProxy.getValue(slot.resource().typeHolder());
                 if (itemEmc == 0) {
                     return 0;
                 }
-                currentEMC = addEmc(currentEMC, itemEmc, slot.amountAsLong());
+                currentEMC = addEmc(currentEMC, itemEmc, slot.amount());
             }
         }
         return currentEMC;

@@ -7,25 +7,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jspecify.annotations.Nullable;
 
 public interface ISingleContainerType<CONTAINER extends ValueIOSerializable, ATTACHED> extends IContainerType<CONTAINER, ATTACHED> {
 
     @Nullable
     CONTAINER getContainer(TileEntityMekanism tile);
-
-    @Nullable
-    default CONTAINER getAttachmentContainerIfPresent(ItemAccess itemAccess) {
-        //TODO - 1.21: Do we want to have create in the name instead of get
-        //TODO: Add some sort of note about how the returned containers entirely ignore the size of the item access
-        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        if (supports(itemAccess.getResource())) {
-            //Note: Bypass creating an intermediary handler object as it is not necessary
-            return createContainer(itemAccess, 0);
-        }
-        return null;
-    }
 
     @Override
     default void copyToTile(TileEntityMekanism tile, DataComponentGetter componentGetter) {

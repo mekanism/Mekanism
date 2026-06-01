@@ -200,7 +200,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 for (IContainerType<?, ?> type : ContainerType.TYPES) {
                     int containers = 0;
                     if (tileEntity.persists(type)) {
-                        if (type instanceof IListContainerType<?, ?> listType) {
+                        if (type instanceof IListContainerType<?, ?, ?> listType) {
                             containers = listType.getContainers(tileEntity).size();
                         } else if (type instanceof ISingleContainerType<?,?> singleType && singleType.getContainer(tileEntity) != null) {
                             containers = 1;

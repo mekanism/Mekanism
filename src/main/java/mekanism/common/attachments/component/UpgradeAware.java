@@ -4,16 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -24,7 +20,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<ItemResource> inputSlot, LargeResourceStack<ItemResource> outputSlot) {
 
     public static final UpgradeAware EMPTY = new UpgradeAware(Collections.emptyMap(), LargeResourceStack.ITEM_HELPER.empty(), LargeResourceStack.ITEM_HELPER.empty());
-    private static final Set<Upgrade> SUPPORTS_ALL = EnumSet.allOf(Upgrade.class);
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
@@ -47,15 +42,7 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<It
         return upgrades.getOrDefault(upgrade, 0);
     }
 
-    public List<IInventorySlot> asInventorySlots() {
-        return asInventorySlots(SUPPORTS_ALL);
-    }
-
-    public List<IInventorySlot> asInventorySlots(Set<Upgrade> supportedUpgrades) {
-        UpgradeInventorySlot input = UpgradeInventorySlot.input(null, supportedUpgrades);
-        UpgradeInventorySlot output = UpgradeInventorySlot.output(null);
-        input.setContents(inputSlot, null);
-        output.setContents(outputSlot, null);
-        return List.of(input, output);
+    public List<LargeResourceStack<ItemResource>> slotContents() {
+        return List.of(inputSlot, outputSlot);
     }
 }

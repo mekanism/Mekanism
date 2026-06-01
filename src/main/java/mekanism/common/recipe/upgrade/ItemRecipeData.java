@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
@@ -13,20 +14,20 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @NothingNullByDefault
-public class ItemRecipeData extends ResourceRecipeData<ItemResource, IInventorySlot> {
+public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
 
-    ItemRecipeData(List<IInventorySlot> slots) {
+    ItemRecipeData(List<LargeResourceStack<ItemResource>> slots) {
         super(ContainerType.ITEM, slots);
     }
 
     @Override
-    protected ItemRecipeData createFromMerge(List<IInventorySlot> containers) {
+    protected ItemRecipeData createFromMerge(List<LargeResourceStack<ItemResource>> containers) {
         return new ItemRecipeData(containers);
     }
 
     @Override
     public boolean applyToStack(ItemAccess itemAccess) {
-        if (containers.isEmpty()) {
+        if (contents.isEmpty()) {
             return true;
         }
         if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage<?>) {
@@ -35,13 +36,10 @@ public class ItemRecipeData extends ResourceRecipeData<ItemResource, IInventoryS
             List<IInventorySlot> stackSlots = new ArrayList<>();
             PersonalStorageManager.createSlots(stackSlots::add, ConstantPredicates.alwaysTrueBi(), null);
             try (Transaction transaction = Transaction.openRoot()) {
-                for (IInventorySlot slot : containers) {
-                    if (!slot.isEmpty()) {
-                        long amount = slot.amountAsLong();
-                        if (insertInto(stackSlots, slot.resource(), amount, transaction) < amount) {
-                            //If we have a remainder something failed so bail
-                            return false;
-                        }
+                for (LargeResourceStack<ItemResource> content : contents) {
+                    if (!content.isEmpty() && insertInto(stackSlots, content.resource(), content.amount(), transaction) < content.amount()) {
+                        //If we have a remainder something failed so bail
+                        return false;
                     }
                 }
                 transaction.commit();

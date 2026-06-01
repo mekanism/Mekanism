@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IDroppableContents;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
@@ -94,12 +95,12 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     }
 
     @Override
-    public List<IInventorySlot> getDroppedSlots(ItemAccess itemAccess) {
+    public List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess) {
         AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(itemAccess);
         if (itemInventory == null) {
             return Collections.emptyList();
         }
-        return itemInventory.getContainers();
+        return itemInventory.getNonEmptyContents();
     }
 
     @Override

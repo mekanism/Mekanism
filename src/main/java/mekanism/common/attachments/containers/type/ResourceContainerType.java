@@ -41,7 +41,7 @@ import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER extends IResourceContainer<RESOURCE>>
-      extends CapableContainerType<CONTAINER, AttachedResources<RESOURCE>, ResourceHandler<RESOURCE>> implements IListContainerType<CONTAINER, AttachedResources<RESOURCE>> {
+      extends CapableContainerType<CONTAINER, AttachedResources<RESOURCE>, ResourceHandler<RESOURCE>> implements IListContainerType<LargeResourceStack<RESOURCE>, CONTAINER, AttachedResources<RESOURCE>> {
 
     private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
@@ -155,33 +155,27 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     ///
     /// @implNote The returned stack is not scaled by the size of the passed item access.
     public LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemAccess itemAccess) {
-        List<CONTAINER> containers = getAttachmentContainersIfPresent(itemAccess);
+        List<LargeResourceStack<RESOURCE>> containers = getAttachedContents(itemAccess.getResource());
         return switch (containers.size()) {
             case 0 -> stackHelper().empty();
-            case 1 -> containers.getFirst().asStack();
+            case 1 -> containers.getFirst();
             default -> {
-                RESOURCE type = stackHelper().empty().resource();
-                long storedAmount = 0;
-                for (CONTAINER container : containers) {
+                LargeResourceStack<RESOURCE> stored = stackHelper().empty();
+                for (LargeResourceStack<RESOURCE> container : containers) {
                     if (container.isEmpty()) {
                         continue;
                     }
-                    RESOURCE tankType = container.resource();
-                    long tankAmount = container.amountAsLong();
-                    if (type.isEmpty()) {
-                        type = tankType;
-                        storedAmount = tankAmount;
-                    } else if (tankType.equals(type)) {
-                        if (storedAmount < Long.MAX_VALUE - tankAmount) {
-                            storedAmount += tankAmount;
-                        } else {
-                            storedAmount = Long.MAX_VALUE;
+                    if (stored.isEmpty()) {
+                        stored = container;
+                    } else if (stored.matches(container.resource())) {
+                        stored = stored.grow(container.amount(), true);
+                        if (stored.amount() == Long.MAX_VALUE) {
                             break;
                         }
                     }
                     //Note: If we have multiple tanks that have different types stored we only return the first type
                 }
-                yield stackHelper().createStack(type, storedAmount);
+                yield stored;
             }
         };
     }
@@ -191,7 +185,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     ///
     /// @return the first found resource FOR DISPLAY
     public RESOURCE getFirstResourceFromAttachment(ItemAccess itemAccess) {
-        for (CONTAINER container : getAttachmentContainersIfPresent(itemAccess)) {
+        for (LargeResourceStack<RESOURCE> container : getAttachedContents(itemAccess.getResource())) {
             if (!container.isEmpty()) {
                 return container.resource();
             }

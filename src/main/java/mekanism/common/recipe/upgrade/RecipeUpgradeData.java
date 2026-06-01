@@ -8,14 +8,12 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.attachments.qio.DriveContents;
@@ -23,7 +21,6 @@ import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.machine.ItemBlockFactory;
@@ -93,9 +90,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> ResourceRecipeData<RESOURCE, CONTAINER> getContainerUpgradeData(
-          ItemAccess itemAccess, ResourceContainerType<RESOURCE, CONTAINER> containerType) {
-        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(itemAccess);
+    private static <RESOURCE extends Resource> ResourceRecipeData<RESOURCE> getContainerUpgradeData(ItemResource itemType, ResourceContainerType<RESOURCE, ?> containerType) {
+        List<LargeResourceStack<RESOURCE>> containers = containerType.getAttachedContents(itemType);
         return containers.isEmpty() ? null : new ResourceRecipeData<>(containerType, containers);
     }
 
@@ -104,33 +100,29 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      */
     @Nullable
     static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess) {
+        ItemResource itemType = itemAccess.getResource();
         return switch (type) {
             case ENERGY -> {
-                IEnergyContainer container = ContainerType.ENERGY.getAttachmentContainerIfPresent(itemAccess);
-                yield container == null ? null : new EnergyRecipeData(container.getAmountAsLong());
+                long energy = ContainerType.ENERGY.getOrEmpty(itemType);
+                yield energy == 0 ? null : new EnergyRecipeData(energy);
             }
-            case FLUID -> getContainerUpgradeData(itemAccess, ContainerType.FLUID);
-            case CHEMICAL -> getContainerUpgradeData(itemAccess, ContainerType.CHEMICAL);
+            case FLUID -> getContainerUpgradeData(itemType, ContainerType.FLUID);
+            case CHEMICAL -> getContainerUpgradeData(itemType, ContainerType.CHEMICAL);
             case ITEM -> {
-                List<IInventorySlot> slots;
-                if (itemAccess.getResource().getItem() instanceof ItemBlockPersonalStorage) {
+                List<LargeResourceStack<ItemResource>> slots;
+                if (itemType.getItem() instanceof ItemBlockPersonalStorage) {
                     AbstractPersonalStorageItemInventory inv = PersonalStorageManager.getInventoryIfPresent(itemAccess);
                     if (inv == null) {
                         yield null;
                     }
-                    slots = inv.getContainers();
+                    slots = inv.getNonEmptyContents();
                 } else {
-                    slots = ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess);
+                    slots = ContainerType.ITEM.getAttachedContents(itemType);
                 }
                 yield slots.isEmpty() ? null : new ItemRecipeData(slots);
             }
             case LOCK -> {
-                ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(itemAccess);
-                //If there is no inventory, or it isn't locked just skip
-                if (slot == null) {
-                    yield null;
-                }
-                ItemResource lockType = slot.getLockType();
+                ItemResource lockType = itemType.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
                 yield lockType.isEmpty() ? null : new LockRecipeData(lockType);
             }
             case SECURITY -> {
@@ -144,12 +136,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
-            case SORTING -> itemAccess.getResource().getOrDefault(MekanismDataComponents.SORTING, false) ? SortingRecipeData.SORTING : null;
+            case SORTING -> itemType.getOrDefault(MekanismDataComponents.SORTING, false) ? SortingRecipeData.SORTING : null;
             case UPGRADE -> {
-                UpgradeAware upgradeAware = itemAccess.getResource().get(MekanismDataComponents.UPGRADES);
+                UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
                 if (upgradeAware != null) {
                     Map<Upgrade, Integer> upgrades = upgradeAware.upgrades();
-                    List<IInventorySlot> slots = upgradeAware.asInventorySlots();
+                    List<LargeResourceStack<ItemResource>> slots = upgradeAware.slotContents();
                     if (!upgrades.isEmpty() || slots.stream().anyMatch(slot -> !slot.isEmpty())) {
                         yield new UpgradesRecipeData(upgrades, slots);
                     }
@@ -157,10 +149,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield null;
             }
             case QIO_DRIVE -> {
-                DriveMetadata data = itemAccess.getResource().getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
+                DriveMetadata data = itemType.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
                 if (data.count() > 0 && data.types() > 0) {
                     //If we don't have any stored items don't actually grab any recipe data
-                    DriveContents contents = itemAccess.getResource().get(MekanismDataComponents.DRIVE_CONTENTS);
+                    DriveContents contents = itemType.get(MekanismDataComponents.DRIVE_CONTENTS);
                     if (contents != null) {
                         yield new QIORecipeData(data, contents);
                     }

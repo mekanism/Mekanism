@@ -44,10 +44,6 @@ public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED>
 
     boolean supports(Holder<Item> item);
 
-    default ATTACHED getOrEmpty(ItemAccess itemAccess) {
-        return getOrEmpty(itemAccess.getResource());
-    }
-
     ATTACHED getOrEmpty(DataComponentGetter stack);
 
     //TODO: Add some sort of note about how the returned containers entirely ignore the size of the item access

@@ -1,7 +1,7 @@
 package mekanism.common.item.interfaces;
 
 import java.util.List;
-import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -22,7 +22,7 @@ public interface IDroppableContents {
      *
      * @apiNote Server side only.
      */
-    List<IInventorySlot> getDroppedSlots(ItemAccess itemAccess);
+    List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess);
 
     @FunctionalInterface
     interface IDroppableAttachmentContents extends IDroppableContents {
@@ -31,9 +31,9 @@ public interface IDroppableContents {
         boolean canContentsDrop(ItemResource itemType);
 
         @Override
-        default List<IInventorySlot> getDroppedSlots(ItemAccess itemAccess) {
-            //Note: Just directly interact with the containers as #getScalar will handle scaling the amounts
-            return ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess);
+        default List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess) {
+            //Note: Just directly interact with the attached contents as #getScalar will handle scaling the amounts
+            return ContainerType.ITEM.getAttachedContents(itemAccess.getResource());
         }
     }
 }

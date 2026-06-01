@@ -1,7 +1,5 @@
 package mekanism.common.attachments.containers.type;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -14,28 +12,14 @@ import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jspecify.annotations.Nullable;
 
-public interface IListContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>> extends IContainerType<CONTAINER, ATTACHED> {
+public interface IListContainerType<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends IContainerType<CONTAINER, ATTACHED> {
 
     List<CONTAINER> getContainers(TileEntityMekanism tile);
 
-    default List<CONTAINER> getAttachmentContainersIfPresent(ItemAccess itemAccess) {
-        //TODO - 1.21: Do we want to have create in the name instead of get
-        //TODO: Add some sort of note about how the returned containers entirely ignore the size of the item access
-        ATTACHED attached = getOrEmpty(itemAccess);
-        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        if (attached.isEmpty()) {
-            return Collections.emptyList();
-        }
-        //Note: Bypass creating an intermediary handler object as it is not necessary
-        int totalContainers = attached.size();
-        List<CONTAINER> containers = new ArrayList<>(totalContainers);
-        for (int index = 0; index < totalContainers; index++) {
-            containers.add(createContainer(itemAccess, index));
-        }
-        return containers;
+    default List<TYPE> getAttachedContents(DataComponentGetter componentGetter) {
+        return getOrEmpty(componentGetter).containers();
     }
 
     @Override

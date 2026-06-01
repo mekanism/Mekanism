@@ -14,7 +14,6 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
@@ -73,7 +72,7 @@ public final class InventoryUtils {
                     return;
                 }
             } else if (ContainerType.ITEM.supports(itemType)) {
-                dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(itemAccess), scalar, dropper);
+                dropItemContents(level, blockPos, ContainerType.ITEM.getAttachedContents(itemType), scalar, dropper);
             }
             UpgradeAware upgradeAware = itemType.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
@@ -89,8 +88,8 @@ public final class InventoryUtils {
         }
     }
 
-    private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper<BlockPos> dropper) {
-        dropItemContents(level, pos, slots, scalar, dropper, IResourceContainer::resource, IResourceContainer::amountAsLong);
+    private static void dropItemContents(Level level, BlockPos pos, List<LargeResourceStack<ItemResource>> slots, int scalar, ItemDropper<BlockPos> dropper) {
+        dropItemContents(level, pos, slots, scalar, dropper, LargeResourceStack::resource, LargeResourceStack::amount);
     }
 
     private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper<BlockPos> dropper,

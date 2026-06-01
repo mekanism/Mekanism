@@ -21,7 +21,7 @@ public abstract class ComponentBackedHandler<CONTAINER extends ValueIOSerializab
     }
 
     protected ATTACHED getAttached() {
-        return containerType.getOrEmpty(attachedAccess);
+        return containerType.getOrEmpty(attachedAccess.getResource());
     }
 
     protected boolean isAccessInvalid() {

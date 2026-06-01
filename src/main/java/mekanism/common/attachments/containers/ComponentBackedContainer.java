@@ -24,7 +24,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
     protected abstract IContainerType<?, ATTACHED> containerType();
 
     protected ATTACHED getAttached() {
-        return containerType().getOrEmpty(attachedAccess);
+        return containerType().getOrEmpty(attachedAccess.getResource());
     }
 
     protected abstract TYPE getContents(ATTACHED attached);

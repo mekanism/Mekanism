@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
@@ -16,48 +17,43 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ResourceRecipeData<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> implements RecipeUpgradeData<ResourceRecipeData<RESOURCE, CONTAINER>> {
+public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgradeData<ResourceRecipeData<RESOURCE>> {
 
-    protected final ResourceContainerType<RESOURCE, CONTAINER> containerType;
-    protected final List<CONTAINER> containers;
+    protected final ResourceContainerType<RESOURCE, ?> containerType;
+    protected final List<LargeResourceStack<RESOURCE>> contents;
 
-    ResourceRecipeData(ResourceContainerType<RESOURCE, CONTAINER> containerType, List<CONTAINER> containers) {
+    ResourceRecipeData(ResourceContainerType<RESOURCE, ?> containerType, List<LargeResourceStack<RESOURCE>> contents) {
         this.containerType = containerType;
-        this.containers = containers;
+        this.contents = contents;
     }
 
     @Nullable
     @Override
-    public ResourceRecipeData<RESOURCE, CONTAINER> merge(ResourceRecipeData<RESOURCE, CONTAINER> other) {
-        List<CONTAINER> allContainers = new ArrayList<>(this.containers);
-        allContainers.addAll(other.containers);
+    public ResourceRecipeData<RESOURCE> merge(ResourceRecipeData<RESOURCE> other) {
+        List<LargeResourceStack<RESOURCE>> allContainers = new ArrayList<>(this.contents);
+        allContainers.addAll(other.contents);
         return createFromMerge(allContainers);
     }
 
-    protected ResourceRecipeData<RESOURCE, CONTAINER> createFromMerge(List<CONTAINER> containers) {
+    protected ResourceRecipeData<RESOURCE> createFromMerge(List<LargeResourceStack<RESOURCE>> containers) {
         return new ResourceRecipeData<>(this.containerType, containers);
     }
 
     @Override
     public boolean applyToStack(ItemAccess itemAccess) {
-        if (this.containers.isEmpty()) {
+        if (this.contents.isEmpty()) {
             return true;
         }
-        //TODO - 26.1: How should we handle
         ResourceHandler<RESOURCE> outputHandler = containerType.getCapOrUnexposed(itemAccess);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         try (Transaction transaction = Transaction.openRoot()) {
-            for (CONTAINER container : this.containers) {
-                if (!container.isEmpty()) {
-                    long toInsert = container.amountAsLong();
-                    //Insert into the output using manual as the automation type
-                    if (insertInto(outputHandler, container.resource(), toInsert, transaction) < toInsert) {
-                        //If we have a remainder something failed so bail
-                        return false;
-                    }
+            for (LargeResourceStack<RESOURCE> content : this.contents) {
+                if (!content.isEmpty() && insertInto(outputHandler, content.resource(), content.amount(), transaction) < content.amount()) {
+                    //If we have a remainder something failed so bail
+                    return false;
                 }
             }
             transaction.commit();

@@ -22,7 +22,7 @@ public abstract class SimpleComponentBackedContainer<ATTACHED> {
     protected abstract IContainerType<?, ATTACHED> containerType();
 
     protected ATTACHED getAttached() {
-        return containerType().getOrEmpty(attachedAccess);
+        return containerType().getOrEmpty(attachedAccess.getResource());
     }
 
     protected boolean setContents(ATTACHED value, @Nullable TransactionContext transaction) {

@@ -12,7 +12,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 
 @NothingNullByDefault
-public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<IHeatCapacitor, AttachedHeat> {
+public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<HeatCapacitorData, IHeatCapacitor, AttachedHeat> {
 
     HeatContainerType() {
         super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, AttachedHeat.EMPTY);

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public abstract class ComponentBackedListHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>,
-      CONTAINER_TYPE extends IListContainerType<CONTAINER, ATTACHED>> extends ComponentBackedHandler<CONTAINER, ATTACHED, CONTAINER_TYPE> {
+      CONTAINER_TYPE extends IListContainerType<TYPE, CONTAINER, ATTACHED>> extends ComponentBackedHandler<CONTAINER, ATTACHED, CONTAINER_TYPE> {
 
     private final int totalContainers;
 

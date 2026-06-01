@@ -229,13 +229,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     public abstract static class CacheListSubstance<ELEMENT extends ValueIOSerializable> extends CacheSubstance<ELEMENT> {
 
-        public CacheListSubstance(IListContainerType<ELEMENT, ?> containerType) {
+        public CacheListSubstance(IListContainerType<?, ELEMENT, ?> containerType) {
             super(containerType);
         }
 
         @SuppressWarnings("unchecked")
-        private IListContainerType<ELEMENT, ?> containerType() {
-            return (IListContainerType<ELEMENT, ?>) containerType;
+        private IListContainerType<?, ELEMENT, ?> containerType() {
+            return (IListContainerType<?, ELEMENT, ?>) containerType;
         }
 
         protected abstract List<ELEMENT> containerList(IMultiblockContents handler);

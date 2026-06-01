@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.containers.type.ContainerType;
@@ -21,7 +21,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -109,7 +108,7 @@ public record QIODriveArrayItemModel(
     private static long getDriveStatus(ItemStack stack) {
         long driveStatus = 0;
         if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.getItemHolder())) {
-            List<IInventorySlot> inventorySlots = ContainerType.ITEM.getAttachmentContainersIfPresent(ItemAccessUtils.queryOnlyAccess(stack));
+            List<LargeResourceStack<ItemResource>> inventorySlots = ContainerType.ITEM.getAttachedContents(stack);
             boolean hasFrequency = hasFrequency(stack);
             for (int i = 0; i < TileEntityQIODriveArray.DRIVE_SLOTS; i++) {
                 DriveStatus status;

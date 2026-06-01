@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
@@ -25,9 +24,9 @@ import org.jetbrains.annotations.Nullable;
 public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData> {
 
     private final Map<Upgrade, Integer> upgrades;
-    private final List<IInventorySlot> slots;
+    private final List<LargeResourceStack<ItemResource>> slots;
 
-    UpgradesRecipeData(Map<Upgrade, Integer> upgrades, List<IInventorySlot> slots) {
+    UpgradesRecipeData(Map<Upgrade, Integer> upgrades, List<LargeResourceStack<ItemResource>> slots) {
         this.upgrades = upgrades;
         this.slots = slots;
     }
@@ -55,14 +54,14 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                 }
             }
         }
-        List<IInventorySlot> allSlots = new ArrayList<>(slots);
+        List<LargeResourceStack<ItemResource>> allSlots = new ArrayList<>(slots);
         allSlots.addAll(other.slots);
         return new UpgradesRecipeData(upgrades, allSlots);
     }
 
     @Override
     public boolean applyToStack(ItemAccess itemAccess) {
-        if (upgrades.isEmpty() && slots.stream().allMatch(IInventorySlot::isEmpty)) {
+        if (upgrades.isEmpty() && slots.stream().allMatch(LargeResourceStack::isEmpty)) {
             return true;
         }
         ItemResource itemType = itemAccess.getResource();
@@ -81,10 +80,10 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         long inputAmount = 0;
         ItemResource outputType = ItemResource.EMPTY;
         long outputAmount = 0;
-        for (IInventorySlot slot : slots) {
+        for (LargeResourceStack<ItemResource> slot : slots) {
             if (!slot.isEmpty()) {
                 ItemResource resource = slot.resource();
-                long amount = slot.amountAsLong();
+                long amount = slot.amount();
                 Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
                 if (upgrade == null) {
                     //Not an upgrade

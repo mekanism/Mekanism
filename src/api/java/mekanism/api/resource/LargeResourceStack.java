@@ -50,6 +50,21 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
         return Ints.saturatedCast(amount);
     }
 
+    public LargeResourceStack<RESOURCE> grow(long amountToGrow, boolean clamp) {
+        MekanismPreconditions.checkNonNegative(amountToGrow);
+        if (amountToGrow == 0) {
+            return this;
+        } else if (isEmpty()) {
+            throw new IllegalStateException("Cannot grow empty stack");
+        } else if (clamp) {
+            if (amount < Long.MAX_VALUE - amountToGrow) {
+                return new LargeResourceStack<>(resource, amount + amountToGrow);
+            }
+            return new LargeResourceStack<>(resource, Long.MAX_VALUE);
+        }
+        return new LargeResourceStack<>(resource, Math.addExact(amount, amountToGrow));
+    }
+
     @NonNull
     @Override
     public String toString() {

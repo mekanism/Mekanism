@@ -7,6 +7,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import net.minecraft.util.Util;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -18,5 +20,9 @@ public abstract class AbstractPersonalStorageItemInventory implements IMekanismR
     @Override
     public List<IInventorySlot> getContainers() {
         return slots;
+    }
+
+    public List<LargeResourceStack<ItemResource>> getNonEmptyContents() {
+        return slots.stream().filter(slot -> !slot.isEmpty()).map(IResourceContainer::asStack).toList();
     }
 }
