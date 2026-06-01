@@ -36,30 +36,26 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
         //Note: Value copied from default for depth strider
         AttributeModifier modifier = new AttributeModifier(WATER_MOVEMENT, Math.min(1, 0.33333334F * module.getInstalledCount()), AttributeModifier.Operation.ADD_VALUE);
         event.addModifier(Attributes.WATER_MOVEMENT_EFFICIENCY, modifier, EquipmentSlotGroup.LEGS);
-        //TODO - 26.1: Can this event ever be called from a transactional context?
-        try (Transaction simulation = Transaction.openRoot()) {
-            if (isSwimBoost(module, ItemAccessUtils.queryOnlyAccess(event.getItemStack()), simulation)) {
-                event.addModifier(NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER, EquipmentSlotGroup.LEGS);
-            }
+        if (isSwimBoost(module) && module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(event.getItemStack()), MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion)) {
+            event.addModifier(NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER, EquipmentSlotGroup.LEGS);
         }
     }
 
     @Override
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
-            if (isSwimBoost(module, itemAccess, subTransaction) && player.isEyeInFluid(FluidTags.WATER)) {
-                subTransaction.commit();
+        //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
+        if (isSwimBoost(module) && player.isEyeInFluid(FluidTags.WATER)) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                int usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
+                //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
+                if (module.useEnergy(null, itemAccess, usage, transaction, false) == usage) {
+                    subTransaction.commit();
+                }
             }
         }
     }
 
-    private boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module, ItemAccess itemAccess, TransactionContext transaction) {
-        if (swimBoost && module.getInstalledCount() >= BOOST_STACKS) {
-            int usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
-            //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
-            return module.useEnergy(null, itemAccess, usage, transaction, false) == usage;
-        }
-        return false;
+    private boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module) {
+        return swimBoost && module.getInstalledCount() >= BOOST_STACKS;
     }
 }
