@@ -8,6 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -39,10 +41,12 @@ public class ItemAccessUtils {
     //TODO - 26.1: Re-evaluate usages and add docs stating assumptions around using this
     // Also document that it is sometimes preferred to use this over ItemAccess#forStack when no side effects should happen just to make sure that the stack doesn't get mutated
     public static ItemAccess queryOnlyAccess(TypedInstance<Item> itemType) {
-        if (itemType instanceof ItemResource resource) {
-            return new SideEffectFreeItemAccess(resource);
-        }
-        return new SideEffectFreeItemAccess(ItemResource.of(itemType.typeHolder()));
+        return new SideEffectFreeItemAccess(switch (itemType) {
+            case ItemResource resource -> resource;
+            case ItemStack stack -> ItemResource.of(stack);
+            case ItemStackTemplate template -> ItemResource.of(template);
+            default -> ItemResource.of(itemType.typeHolder());
+        });
     }
 
     /// Helper method to exchange all the current resource in the given item access with the same amount of another.
