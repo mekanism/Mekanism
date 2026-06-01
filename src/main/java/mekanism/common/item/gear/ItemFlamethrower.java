@@ -26,6 +26,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
@@ -119,7 +120,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
             ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
             if (chemicalHandler != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int extracted = chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction);
+                    int extracted = ResourceUtils.extractManual(chemicalHandler, ChemicalResource.of(getChemicalType()), 1, transaction);
                     if (extracted == 1) {
                         if (!level.isClientSide()) {
                             EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));

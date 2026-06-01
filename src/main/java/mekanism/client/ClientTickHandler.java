@@ -65,6 +65,7 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -197,9 +198,11 @@ public class ClientTickHandler {
                 JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
                 MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
-                double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
-                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
-                    minecraft.player.resetFallDistance();
+                try (Transaction simulation = Transaction.openRoot()) {
+                    double jetpackThrust = ((IJetpackItem) jetpack.getItem()).useJetpackFuel(ItemAccess.forStack(jetpack), primaryJetpack, simulation);
+                    if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
+                        minecraft.player.resetFallDistance();
+                    }
                 }
             }
         }

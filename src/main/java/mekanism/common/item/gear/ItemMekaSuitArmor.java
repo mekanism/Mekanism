@@ -45,6 +45,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -368,41 +369,19 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public double getJetpackThrust(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+        //Use the primary jetpack for calculating the thrust
+        IModule<ModuleJetpackUnit> module = getEnabledModule(primaryInstance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
-            int neededGas = Mth.ceil(thrustMultiplier);
-            //Note: We verified we have at least one mB of gas before we get to the point of getting the thrust,
-            // so we only need to do extra validation if we need more than a single mB of hydrogen
-            if (neededGas > 1) {
-                long containedGas = StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN);
-                if (neededGas > containedGas) {
-                    //If we don't have enough gas stored to go at the set thrust, scale down the thrust
-                    // to be whatever gas we have remaining
-                    thrustMultiplier = containedGas;
-                }
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            if (handler != null) {
+                float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
+                //If we don't have enough gas stored to go at the set thrust, scale down the thrust
+                // to be whatever gas we have remaining (this might be zero)
+                return 0.15 * ResourceUtils.extractManual(handler, MekanismChemicals.HYDROGEN.asResource(), Mth.ceil(thrustMultiplier), transaction);
             }
-            return 0.15 * thrustMultiplier;
         }
         return 0;
-    }
-
-    @Override
-    public void useJetpackFuel(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
-        if (module != null) {
-            //TODO - 26.1: Change params passed to this method to get a better item access?
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-            if (handler != null) {
-                int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.1: Validate we have enough fuel?
-                    handler.extract(MekanismChemicals.HYDROGEN.asResource(), amount, transaction);
-                    transaction.commit();
-                }
-            }
-        }
     }
 
     /*TODO - 26.1: check that thse are handled by the item props

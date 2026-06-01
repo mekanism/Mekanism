@@ -30,6 +30,7 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -115,16 +116,20 @@ public class CommonPlayerTickHandler {
                 JetpackMode primaryMode = jetpackItem.getJetpackMode(primaryJetpack);
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
-                    double jetpackThrust = jetpackItem.getJetpackThrust(primaryJetpack);
-                    if (IJetpackItem.handleJetpackMotion(player, mode, jetpackThrust, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND))) {
-                        player.resetFallDistance();
-                        if (player instanceof ServerPlayer serverPlayer) {
-                            serverPlayer.connection.aboveGroundTickCount = 0;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        double jetpackThrust = ((IJetpackItem) jetpack.getItem()).useJetpackFuel(ItemAccess.forStack(jetpack), primaryJetpack, transaction);
+                        if (jetpackThrust > 0) {
+                            if (IJetpackItem.handleJetpackMotion(player, mode, jetpackThrust, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND))) {
+                                player.resetFallDistance();
+                                if (player instanceof ServerPlayer serverPlayer) {
+                                    serverPlayer.connection.aboveGroundTickCount = 0;
+                                }
+                            }
+                            if (player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
+                                player.gameEvent(MekanismGameEvents.JETPACK_BURN);
+                            }
+                            transaction.commit();
                         }
-                    }
-                    ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
-                    if (player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-                        player.gameEvent(MekanismGameEvents.JETPACK_BURN);
                     }
                 }
             }
@@ -137,8 +142,8 @@ public class CommonPlayerTickHandler {
             if (chemicalHandler != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     //TODO - 26.1: Re-evaluate this single usage on its own
-                    chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), 1, transaction);
-                    int extracted = chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
+                    ResourceUtils.extractManual(chemicalHandler, MekanismChemicals.OXYGEN.asResource(), 1, transaction);
+                    int extracted = ResourceUtils.extractManual(chemicalHandler, MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
                     if (extracted > 0) {
                         player.setAirSupply(player.getAirSupply() + extracted);
                         transaction.commit();

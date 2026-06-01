@@ -17,6 +17,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,8 +28,11 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public interface IJetpackItem {
@@ -36,9 +41,8 @@ public interface IJetpackItem {
 
     JetpackMode getJetpackMode(ItemStack stack);
 
-    double getJetpackThrust(ItemStack stack);
-
-    void useJetpackFuel(ItemStack stack);
+    ///@return thrust that fuel was consumed for
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction);
 
     @NothingNullByDefault
     enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable, IHasEnumNameTextComponent {

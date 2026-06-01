@@ -123,10 +123,6 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         }
     }
 
-    public static long getContainedChemical(ItemStack stack, Holder<Chemical> type) {
-        return getContainedChemical(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)), type);
-    }
-
     public static long getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, Holder<Chemical> type) {
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {

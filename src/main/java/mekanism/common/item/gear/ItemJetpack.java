@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -32,7 +33,6 @@ import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,21 +79,12 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public double getJetpackThrust(ItemStack stack) {
-        return 0.15;
-    }
-
-    @Override
-    public void useJetpackFuel(ItemStack stack) {
-        ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
-        if (chemicalHandler != null) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                int extracted = chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction);
-                if (extracted == 1) {
-                    transaction.commit();
-                }
-            }
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+        ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(itemAccess);
+        if (chemicalHandler == null) {
+            return 0;
         }
+        return 0.15 * ResourceUtils.extractManual(chemicalHandler, ChemicalResource.of(getChemicalType()), 1, transaction);
     }
 
     @Override
