@@ -1,34 +1,34 @@
 {
   "variants": {
-    "facing=north,active=false": {
+    "active=false,facing=east": {
+      "model": "mekanism:block/digital_miner",
+      "y": 90
+    },
+    "active=false,facing=north": {
       "model": "mekanism:block/digital_miner"
     },
-    "facing=south,active=false": {
+    "active=false,facing=south": {
       "model": "mekanism:block/digital_miner",
       "y": 180
     },
-    "facing=east,active=false": {
+    "active=false,facing=west": {
       "model": "mekanism:block/digital_miner",
+      "y": 270
+    },
+    "active=true,facing=east": {
+      "model": "mekanism:block/digital_miner_active",
       "y": 90
     },
-    "facing=west,active=false": {
-      "model": "mekanism:block/digital_miner",
-      "y": -90
-    },
-    "facing=north,active=true": {
+    "active=true,facing=north": {
       "model": "mekanism:block/digital_miner_active"
     },
-    "facing=south,active=true": {
+    "active=true,facing=south": {
       "model": "mekanism:block/digital_miner_active",
       "y": 180
     },
-    "facing=east,active=true": {
+    "active=true,facing=west": {
       "model": "mekanism:block/digital_miner_active",
-      "y": 90
-    },
-    "facing=west,active=true": {
-      "model": "mekanism:block/digital_miner_active",
-      "y": -90
+      "y": 270
     }
   }
 }

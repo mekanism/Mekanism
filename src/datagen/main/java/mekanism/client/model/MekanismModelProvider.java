@@ -419,6 +419,21 @@ public class MekanismModelProvider extends BaseModelProvider {
             );
         }
 
+        {
+            Block block = MekanismBlocks.DIGITAL_MINER.value();
+            MultiVariant base = BlockModelGenerators.plainVariant(existingModel(MekanismBlocks.DIGITAL_MINER.value()));
+            MultiVariant active = BlockModelGenerators.plainVariant(existingModel("block/digital_miner_active"));
+            blockModels.blockStateOutput.accept(
+                  MultiVariantGenerator.dispatch(block)
+                        .with(
+                              PropertyDispatch.initial(AttributeStateActive.activeProperty)
+                                    .select(false, base)
+                                    .select(true, active)
+                        )
+                        .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+            );
+        }
+
         transmitter(blockModels, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/advanced", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/basic", "block/transmitter/large/logistical_transporter/transporter_glass");
         transmitter(blockModels, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/elite", "block/transmitter/large/logistical_transporter/transporter_glass");
@@ -666,7 +681,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.CREATIVE_CHEMICAL_TANK);
         markManualBlockState(MekanismBlocks.CREATIVE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.CRUSHER);
-        markManualBlockState(MekanismBlocks.DIGITAL_MINER);
         markManualBlockState(MekanismBlocks.DYNAMIC_TANK);
         markManualBlockState(MekanismBlocks.DYNAMIC_VALVE);
         markManualBlockState(MekanismBlocks.ELECTRIC_PUMP);
