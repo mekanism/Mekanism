@@ -1,34 +1,17 @@
 package mekanism.common.content.network.distribution;
 
-import java.util.Collection;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget.CableSaveHandler;
 import mekanism.common.content.network.transmitter.UniversalCable;
+import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 
-public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandler> {
+public class EnergyTransmitterSaveTarget extends Target<UniversalCable.SaveShareJournal, Void> {
 
-    public EnergyTransmitterSaveTarget(Collection<UniversalCable> transmitters) {
-        super(transmitters.stream().map(CableSaveHandler::new).toList());
+    public EnergyTransmitterSaveTarget(int expectedSize) {
+        super(expectedSize);
     }
 
-    @NothingNullByDefault
-    public static class CableSaveHandler extends EnergySaveTarget.SaveHandler {
-
-        private final UniversalCable transmitter;
-
-        public CableSaveHandler(UniversalCable transmitter) {
-            super(transmitter.getCapacity());
-            this.transmitter = transmitter;
-        }
-
-        @Override
-        protected void save(@Nullable TransactionContext transaction) {
-            if (value != transmitter.lastWrite) {
-                transmitter.lastWrite = value;
-                transmitter.getTransmitterTile().markForSave();
-            }
-        }
+    @Override
+    protected long accept(UniversalCable.SaveShareJournal handler, Void unused, long amount, TransactionContext transaction) {
+        return handler.accept(amount, transaction);
     }
 }

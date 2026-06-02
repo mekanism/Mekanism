@@ -16,6 +16,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -175,7 +176,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         //If the tile is a creative bin only allow clearing it if the player is in creative
                         // and don't bother popping the stack out
                         if (creative) {
-                            bin.getBinSlot().setEmpty();
+                            bin.getBinSlot().setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
                             return InteractionResult.SUCCESS;
                         }
                         return InteractionResult.FAIL;
@@ -184,7 +185,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
                             InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), Block::popResourceFromFace);
-                            inventorySlot.setEmpty();
+                            inventorySlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
                         }
                     }
                     return InteractionResult.SUCCESS;

@@ -30,7 +30,7 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
-        super(tile, LargeResourceStack.FLUID_HELPER, BasicFluidTank::create, TransmissionType.FLUID);
+        super(tile, BasicFluidTank::create, TransmissionType.FLUID);
     }
 
     @Override

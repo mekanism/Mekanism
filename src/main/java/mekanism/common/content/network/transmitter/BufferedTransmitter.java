@@ -9,7 +9,9 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
@@ -199,11 +201,11 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     public abstract BUFFER getShare();
 
     @Override
-    public void validateAndTakeShare() {
+    public void validateAndTakeShare(@Nullable TransactionContext transaction) {
         if (hasTransmitterNetwork()) {
             //Ensure we save the shares to the tiles so that they can properly take them
-            getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitterNetwork().validateSaveShares(getTransmitter(), transaction);
         }
-        super.validateAndTakeShare();
+        super.validateAndTakeShare(transaction);
     }
 }

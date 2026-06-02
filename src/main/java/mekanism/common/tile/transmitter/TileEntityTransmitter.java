@@ -152,7 +152,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void onChunkUnloaded() {
         if (!isRemote()) {
             //Only take the transmitter's share if it was unloaded and not if we are being removed
-            getTransmitter().validateAndTakeShare();
+            getTransmitter().validateAndTakeShare(null);
         }
         super.onChunkUnloaded();
     }
@@ -208,7 +208,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             onWorldJoin(true);
         } else {
             //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
-            getTransmitter().validateAndTakeShare();
+            getTransmitter().validateAndTakeShare(null);
             onWorldSeparate(true);
         }
     }
@@ -347,7 +347,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     if (!sharesSet) {
                         if (transmitterNetwork instanceof DynamicBufferedNetwork dynamicNetwork) {
                             //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
-                            dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
+                            dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter, null);
                         }
                         sharesSet = true;
                     }

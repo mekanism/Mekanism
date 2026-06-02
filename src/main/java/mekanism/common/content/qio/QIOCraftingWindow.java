@@ -12,6 +12,7 @@ import java.util.function.IntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
@@ -135,7 +136,7 @@ public class QIOCraftingWindow implements IContentsListener {
     public void invalidateRecipe() {
         //Clear the cached recipe and output slot
         lastRecipe = null;
-        outputSlot.setEmpty();
+        outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
         Level world = holder.getLevel();
         if (world != null && !world.isClientSide()) {
             //And recheck the recipe
@@ -151,7 +152,7 @@ public class QIOCraftingWindow implements IContentsListener {
             CraftingInput craftingInput = asCraftingInput().input();
             if (craftingInput.isEmpty()) {
                 //If there is no input, then set the output to empty as there can't be a matching recipe
-                outputSlot.setEmpty();
+                outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
             } else if (lastRecipe != null && lastRecipe.value().matches(craftingInput, world)) {
                 //If the recipe matches make sure we update the output anyway, as the output may have changed based on NBT
                 // If the output slot was empty, then setting the slot to the recipe result fixes it not properly updating
@@ -168,7 +169,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     if (recipe == null) {
                         //If there is no found recipe, clear the output, but don't update our last recipe
                         // as we can start by checking if they are doing the same recipe as we last found
-                        outputSlot.setEmpty();
+                        outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
                     } else {
                         //If the recipe is different, update the output
                         lastRecipe = recipe;

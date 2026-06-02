@@ -2,12 +2,9 @@ package mekanism.common.content.network;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.IContentsListener;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
@@ -28,19 +25,17 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener {
+public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyNetwork, Long, UniversalCable> {
 
     //for emit utils
     public static final Void ENERGY = null;
 
-    private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
     private long prevTransferAmount = 0L;
 
     public EnergyNetwork(UUID networkID) {
         super(networkID);
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacity, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), this);
-        energyContainers = Collections.singletonList(energyContainer);
     }
 
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
@@ -50,8 +45,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && energyContainer.getCapacityAsLong() > 0) {
-            currentScale = (float) Math.min(1, ((double) energyContainer.getAmountAsLong() / energyContainer.getCapacityAsLong()));
+        if (!energyContainer.isEmpty() && getCapacity() > 0) {
+            currentScale = (float) Math.min(1, energyContainer.getAmountAsLong() / (double) getCapacity());
         } else {
             currentScale = 0;
         }
@@ -96,9 +91,12 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter, TransactionContext transaction) {
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
-            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
+            Collection<UniversalCable> transmitters = getTransmitters();
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters.size());
+            for (UniversalCable transmitter : transmitters) {
+                saveTarget.addHandler(transmitter.startNewSaveShare(transaction));
+            }
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getAmountAsLong(), ENERGY, transaction);
-            saveTarget.save(transaction);
         }
     }
 
@@ -177,16 +175,6 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmittersSize(), getAcceptorCount());
-    }
-
-    @NotNull
-    public List<IEnergyContainer> getEnergyContainers() {
-        return energyContainers;
-    }
-
-    @Override
-    public void onContentsChanged() {
-        markDirty();
     }
 
     public static class EnergyTransferEvent extends TransferEvent<EnergyNetwork> {

@@ -89,7 +89,7 @@ public class ItemGaugeDropper extends Item {
         if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> handlerItem) {//TODO - 26.1: Test if this works
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
             for (IResourceContainer<RESOURCE> container : handlerItem.getContainers()) {
-                container.setEmpty();
+                container.setContents(container.stackHelper().empty(), null);
             }
         }
     }

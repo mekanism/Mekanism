@@ -412,7 +412,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Override
-    public void takeShare() {
+    public void takeShare(@Nullable TransactionContext transaction) {
     }
 
     public double getCost() {

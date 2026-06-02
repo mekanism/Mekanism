@@ -1,6 +1,7 @@
 package mekanism.common.lib.transmitter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -30,11 +32,10 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 26.1: Change the buffer to a LargeResourceStack<RESOURCE>??
 public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
       TRANSMITTER extends BufferedResourceTransmitter<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>>
-      extends DynamicBufferedNetwork<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> implements IContentsListener {
+      extends DynamicBufferedNetwork<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> {
 
     protected final CONTAINER container;
     private final List<CONTAINER> containers;
@@ -74,13 +75,13 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         if (isRemote()) {
             if (this.container.isEmpty()) {
                 this.container.copyContents(net.container);
-                net.container.setEmpty();
+                net.container.setContents(net.container.stackHelper().empty(), null);
             }
         } else {
             if (!net.container.isEmpty()) {
                 if (this.container.isEmpty()) {
                     this.container.copyContents(net.container);
-                    net.container.setEmpty();
+                    net.container.setContents(net.container.stackHelper().empty(), null);
                 } else {
                     // compare the chemicals themselves
                     if (this.container.resource().equals(net.container.resource())) {
@@ -89,10 +90,10 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     } else {
                         Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.resource(), net.container.resource());
                     }
-                    net.container.setEmpty();
+                    net.container.setContents(net.container.stackHelper().empty(), null);
                 }
             }
-            if (oldScale != currentScale) {
+            if (!Mth.equal(oldScale, currentScale)) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
@@ -138,7 +139,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        super.onContentsChanged();
         if (!container.resource().equals(lastType)) {
             //If the type does not match update it, and mark that we need an update
             if (!container.isEmpty()) {
@@ -155,7 +156,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     public void setLastType(@NotNull RESOURCE type) {
         if (type.isEmpty()) {
             if (!container.isEmpty()) {
-                container.setEmpty();
+                container.setContents(container.stackHelper().empty(), null);
             }
         } else {
             lastType = type;
@@ -203,14 +204,17 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter, TransactionContext transaction) {
         super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
-            ResourceTransmitterSaveTarget<RESOURCE, TRANSMITTER> saveTarget = new ResourceTransmitterSaveTarget<>(getTransmitters());
+            Collection<TRANSMITTER> transmitters = getTransmitters();
+            ResourceTransmitterSaveTarget<RESOURCE> saveTarget = new ResourceTransmitterSaveTarget<>(transmitters.size());
+            for (TRANSMITTER transmitter : transmitters) {
+                saveTarget.addHandler(transmitter.startNewSaveShare(transaction));
+            }
             RESOURCE resource = container.resource();
             long toSend = container.amountAsLong();
             long sent = EmitUtils.sendToAcceptors(saveTarget, toSend, resource, transaction);
             if (triggerTransmitter != null && sent < toSend) {
                 disperse(triggerTransmitter, resource, toSend - sent);
             }
-            saveTarget.saveShare();
         }
     }
 

@@ -26,7 +26,6 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
     public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted = super.insert(resource, amount, transaction, automationType);
         if (multiblock.isFormed()) {
-            //TODO - 26.1: Test this
             multiblock.steamInputJournal.addSteam(inserted, transaction);
         }
         return inserted;

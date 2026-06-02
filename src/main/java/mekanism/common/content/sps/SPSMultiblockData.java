@@ -259,7 +259,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private boolean canOperate() {
-        return !inputTank.isEmpty() && outputTank.getNeededAsLong(outputTank.resource()) > 0;
+        return !inputTank.isEmpty() && !outputTank.isFull();
     }
 
     @ComputerMethod

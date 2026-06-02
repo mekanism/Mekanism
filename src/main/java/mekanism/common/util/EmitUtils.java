@@ -43,7 +43,7 @@ public class EmitUtils {
     /// @return The amount that actually got sent.
     public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE resource,
           @Nullable TransactionContext transaction) {
-        if (availableTargets == null) {
+        if (availableTargets == null || amountToSplit == 0) {
             return 0;
         }
         int handlerCount = availableTargets.getHandlerCount();

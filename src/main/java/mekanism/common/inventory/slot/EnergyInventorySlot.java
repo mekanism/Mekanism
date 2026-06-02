@@ -18,7 +18,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -168,7 +167,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Fills energy container from slot, does not try converting the item via any conversions conversion
      */
     public boolean fillContainerFromSlot(@Nullable TransactionContext transaction) {
-        if (isEmpty() || EnergyHandlerUtil.isFull(energyContainer)) {
+        if (isEmpty() || energyContainer.isFull()) {
             return false;
         }
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids

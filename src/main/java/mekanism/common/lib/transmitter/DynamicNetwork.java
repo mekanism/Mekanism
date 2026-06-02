@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,12 +123,15 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         removeInvalid(triggerTransmitter);
         //Now invalidate the transmitters
         if (!isRemote()) {
-            for (TRANSMITTER transmitter : getTransmitters()) {
-                if (transmitter.isValid()) {
-                    transmitter.takeShare();
-                    transmitter.setTransmitterNetwork(null);
-                    TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (TRANSMITTER transmitter : getTransmitters()) {
+                    if (transmitter.isValid()) {
+                        transmitter.takeShare(transaction);
+                        transmitter.setTransmitterNetwork(null);
+                        TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
+                    }
                 }
+                transaction.commit();
             }
         }
         deregister();

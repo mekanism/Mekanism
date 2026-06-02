@@ -10,6 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -212,7 +213,7 @@ public final class RadiationManager implements IRadiationManager {
     public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
         for (IChemicalTank chemicalTank : chemicalTanks) {
             if (dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong()) && clearRadioactive) {
-                chemicalTank.setEmpty();
+                chemicalTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
             }
         }
     }

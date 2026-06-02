@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -723,15 +724,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getBlockPos());
     }
 
-    public abstract void takeShare();
+    public abstract void takeShare(@Nullable TransactionContext transaction);
 
-    public void validateAndTakeShare() {
-        takeShare();
+    public void validateAndTakeShare(@Nullable TransactionContext transaction) {
+        takeShare(transaction);
     }
 
     public void startUpgrading() {
         isUpgrading = true;
-        takeShare();
+        takeShare(null);
         setTransmitterNetwork(null);
     }
 }

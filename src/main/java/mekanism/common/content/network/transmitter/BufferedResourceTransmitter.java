@@ -25,9 +25,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 //TODO - 26.1: Change the buffer to a LargeResourceStack<RESOURCE>??
 public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
@@ -37,23 +40,17 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
       IUpgradeableTransmitter<ResourceTransmitterUpgradeData<RESOURCE>>{
 
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
+    private final SaveShareJournal saveShareJournal;
     private final CONTAINER bufferContainer;
     private final List<CONTAINER> containers;
 
-    private LargeResourceStack<RESOURCE> saveShare;
-
-    protected BufferedResourceTransmitter(TileEntityTransmitter tile, LargeResourceStack.StackHelper<RESOURCE> stackHelper, BufferCreator<RESOURCE, CONTAINER> bufferCreator,
-          TransmissionType... transmissionTypes) {
+    protected BufferedResourceTransmitter(TileEntityTransmitter tile, BufferCreator<RESOURCE, CONTAINER> bufferCreator, TransmissionType... transmissionTypes) {
         super(tile, transmissionTypes);
-        this.stackHelper = stackHelper;
         //Note: We don't allow external interactions to force pull out of our transmitters
         this.bufferContainer = bufferCreator.create(getCapacity(), ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), this);
         this.containers = Collections.singletonList(this.bufferContainer);
-        saveShare = this.stackHelper.empty();
-    }
-
-    public LargeResourceStack.StackHelper<RESOURCE> getStackHelper() {
-        return this.stackHelper;
+        this.stackHelper = this.bufferContainer.stackHelper();
+        this.saveShareJournal = new SaveShareJournal();
     }
 
     protected abstract Codec<RESOURCE> resourceCodec();;
@@ -66,33 +63,20 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         return getTier().getCapacity();
     }
 
-    public RESOURCE getCurrentSaveType() {
-        return saveShare.resource();
-    }
-
-    public long getCurrentSaveAmount() {
-        return saveShare.amount();
-    }
-
-    public void setSaveShare(LargeResourceStack<RESOURCE> saveShare) {
-        this.saveShare = saveShare;
-        getTransmitterTile().markForSave();
-    }
-
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
-        bufferContainer.setContents(saveShare, null);
+        saveShareJournal.saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
+        bufferContainer.setContents(saveShareJournal.saveShare, null);
     }
 
     @Override
     public void write(@NotNull ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitterNetwork().validateSaveShares(getTransmitter(), null);
         }
-        stackHelper.storeNonEmpty(output, SerializationConstants.STORED, saveShare);
+        stackHelper.storeNonEmpty(output, SerializationConstants.STORED, saveShareJournal.saveShare);
     }
 
     @Override
@@ -137,6 +121,11 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         getTransmitterTile().setChanged();
     }
 
+    public SaveShareJournal startNewSaveShare(TransactionContext transaction) {
+        saveShareJournal.markForNewSave(transaction);
+        return saveShareJournal;
+    }
+
     @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getShare() {
@@ -147,21 +136,17 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     public LargeResourceStack<RESOURCE> releaseShare() {
         LargeResourceStack<RESOURCE> share = getShare();
-        bufferContainer.setEmpty();
+        bufferContainer.setContents(stackHelper.empty(), null);
         return share;
     }
 
     @Override
-    public void takeShare() {
+    public void takeShare(@Nullable TransactionContext transaction) {
         if (hasTransmitterNetwork()) {
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
-            if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
-                //TODO - 26.1: Re-evaluate this:
-                // I got a crash when force closing the game or leaving the world: Expected value to be non-negative: -8000
-                // Why is there a case that this can be negative? We could clamp it but it might be indicitive of a bug
-                networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount(), null);
-                //TODO - 26.1: Should we have a transaction context for taking shares?
-                bufferContainer.setContents(saveShare, null);
+            if (!networkContainer.isEmpty() && !saveShareJournal.saveShare.isEmpty()) {
+                networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - saveShareJournal.saveShare.amount(), transaction);
+                bufferContainer.setContents(saveShareJournal.saveShare, transaction);
             }
         }
     }
@@ -209,6 +194,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
+        CONTAINER container = getContainer();
         AcceptorCache<ResourceHandler<RESOURCE>> acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
@@ -216,20 +202,19 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             }
             ResourceHandler<RESOURCE> connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
-                //Note: We recheck the buffer each time in case we ended up accepting the resource somewhere
-                // and our buffer changed and is no longer empty
-                RESOURCE receivedType = ResourceUtils.getTypeToExtract(getBufferWithFallback().resource(), connectedAcceptor, ConstantPredicates.alwaysTrue(), null);
-                if (receivedType.isEmpty()) {
-                    return;
-                }
-                try (Transaction transaction = Transaction.openRoot()) {
-                    int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
-                    int inserted = getContainer().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
-                    if (inserted == extracted) {
-                        //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
-                        // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
-                        // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-                        transaction.commit();
+                RESOURCE receivedType = ResourceUtils.getTypeToExtract(container.resource(), connectedAcceptor, ConstantPredicates.alwaysTrue(), null);
+                if (!receivedType.isEmpty()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
+                        if (extracted > 0 && container.insert(receivedType, extracted, transaction, AutomationType.INTERNAL) == extracted) {
+                            //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
+                            // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+                            // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+                            transaction.commit();
+                            if (container.isFull()) {
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -241,5 +226,47 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
 
         CONTAINER create(long capacity, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator,
               IContentsListener listener);
+    }
+
+    public class SaveShareJournal extends SnapshotJournal<LargeResourceStack<RESOURCE>> {
+
+        private LargeResourceStack<RESOURCE> saveShare = stackHelper.empty();
+
+        private void markForNewSave(TransactionContext transaction) {
+            updateSnapshots(transaction);
+            saveShare = stackHelper.empty();
+        }
+
+        public Long accept(RESOURCE type, long amount, TransactionContext transaction) {
+            if (amount == 0 || !saveShare.isEmpty() && !saveShare.matches(type)) {
+                //If there is nothing being accepted (I don't think this ever happens, but validate it)
+                // or if the type doesn't match, fail
+                return 0L;
+            }
+            long toAccept = Math.min(amount, getCapacity() - saveShare.amount());
+            if (toAccept > 0) {
+                updateSnapshots(transaction);
+                saveShare = stackHelper.createStack(type, saveShare.amount() + toAccept);
+            }
+            return toAccept;
+        }
+
+        @Override
+        protected LargeResourceStack<RESOURCE> createSnapshot() {
+            return saveShare;
+        }
+
+        @Override
+        protected void revertToSnapshot(@NonNull LargeResourceStack<RESOURCE> snapshot) {
+            this.saveShare = snapshot;
+        }
+
+        @Override
+        protected final void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
+            super.onRootCommit(originalState);
+            if (!this.saveShare.equals(originalState)) {
+                getTransmitterTile().markForSave();
+            }
+        }
     }
 }

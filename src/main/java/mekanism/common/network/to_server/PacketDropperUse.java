@@ -106,7 +106,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             return;
         } else if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
-            tank.setEmpty();
+            tank.setContents(tank.stackHelper().empty(), null);
             if (tank instanceof IChemicalTank chemicalTank) {
                 //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
                 IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong());

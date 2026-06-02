@@ -20,6 +20,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -247,7 +248,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the gas tank into the environment")
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
-        chemicalTank.setEmpty();
+        chemicalTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
     }
     //End methods IComputerTile
 }

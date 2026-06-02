@@ -9,7 +9,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
-import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
+import mekanism.common.content.network.distribution.EnergySaveTarget.SaveHandler;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnergyUtils;
@@ -52,24 +52,23 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     private void chargeSuit(Player player, TransactionContext transaction) {
-        EnergySaveTarget<DelegateSaveHandler> saveTarget = new EnergySaveTarget<>(4);
-        ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
-        long availableEnergy = 0;
-        for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
-            //TODO - 26.1: Instead of just directly going off of energy containers, should we support charging other armor that exposes energy capabilities?
-            IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
-            if (energyContainer != null) {
-                saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
-                //TODO - 26.1: Do we need to worry about overflow?
-                availableEnergy += energyContainer.getAmountAsLong();
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            EnergySaveTarget saveTarget = new EnergySaveTarget(4);
+            ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
+            long availableEnergy = 0;
+            for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
+                //TODO - 26.1: Instead of just directly going off of energy containers, should we support charging other armor that exposes energy capabilities?
+                IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
+                if (energyContainer != null) {
+                    saveTarget.addHandler(SaveHandler.startSaveHandling(energyContainer, subTransaction));
+                    //TODO - 26.1: Do we need to worry about overflow?
+                    availableEnergy += energyContainer.getAmountAsLong();
+                }
             }
-        }
-        //If we only have one handler we can skip charging as it will all just go back into the chest piece
-        if (saveTarget.getHandlerCount() > 1 && availableEnergy > 0) {
-            try (Transaction subTransaction = Transaction.open(transaction)) {
+            //If we only have one handler we can skip charging as it will all just go back into the chest piece
+            if (saveTarget.getHandlerCount() > 1 && availableEnergy > 0) {
                 long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, subTransaction);
                 if (distributed == availableEnergy) {
-                    saveTarget.save(subTransaction);
                     subTransaction.commit();
                 } else {
                     Mekanism.logger.warn("Failed to distribute {} energy across {} pieces of armor. {} energy remaining afterward.", availableEnergy,

@@ -30,7 +30,7 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
 
     public PressurizedTube(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
-        super(tile, LargeResourceStack.CHEMICAL_HELPER, BasicChemicalTank::createAllValid, TransmissionType.CHEMICAL);
+        super(tile, BasicChemicalTank::createAllValid, TransmissionType.CHEMICAL);
     }
 
     @Override

@@ -198,11 +198,12 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         return amountAsLong() == 0;
     }
 
-    /// Convenience method for emptying this [IResourceContainer].
+    /// Convenience method for checking if this container is full.
+    ///
+    /// @return `true` if the container is , `false` otherwise.
     @NonExtendable
-    default void setEmpty() {
-        //TODO - 26.1: Re-evaluate usages and the existence of this method, I think we may want to remove it so people are less tempted to bypass insertions/extractions
-        setContents(stackHelper().empty(), null);
+    default boolean isFull() {
+        return amountAsLong() >= capacityAsLong(resource());
     }
 
     @Override

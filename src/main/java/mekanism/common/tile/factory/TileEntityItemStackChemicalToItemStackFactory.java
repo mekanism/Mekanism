@@ -22,6 +22,7 @@ import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
@@ -309,7 +310,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Override
     public void dump() {
-        chemicalTank.setEmpty();
+        chemicalTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
     }
 
     //Methods relating to IComputerTile

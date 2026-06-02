@@ -92,7 +92,6 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
             if (!stack.isEmpty()) {
                 output.store(key, codec, stack);
             }
-            //TODO - 26.1: Buffered transmitters used to discard the key from output if it was empty... Is that something we want to be doing?
         }
 
         public LargeResourceStack<RESOURCE> readOrEmpty(ValueInput input, String key) {
