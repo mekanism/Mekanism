@@ -221,7 +221,7 @@ public class ItemSlotsBuilder {
         return addSlot(FILL_CONVERT_ENERGY_SLOT_CREATOR);
     }
 
-    public ItemSlotsBuilder addDrainEnergy(int energyIndex) {
+    public ItemSlotsBuilder addDrainEnergy() {
         return addSlot((attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
             if (!automationType.isExternal()) {
                 return true;

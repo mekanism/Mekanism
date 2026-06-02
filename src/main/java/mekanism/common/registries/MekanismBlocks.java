@@ -969,7 +969,7 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_energy_cube", properties -> new BlockEnergyCube(type, properties), ItemBlockEnergyCube::new)
               .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                     .addEnergy()
-                    .addDrainEnergy(0)
+                    .addDrainEnergy()
                     .build()
               ));
     }

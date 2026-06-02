@@ -64,7 +64,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         chunks.add(ChunkPos.pack(transmitter.getBlockPos()));
         //Update the capacity here, to make sure that we can actually absorb the buffer properly
         capacity = MathUtils.addClamped(capacity, transmitter.getCapacity());
-        absorbBuffer(transmitter);
+        try (Transaction transaction = Transaction.openRoot()) {
+            absorbBuffer(transmitter, transaction);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -118,7 +121,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     @NotNull
     public abstract BUFFER getBuffer();
 
-    public abstract void absorbBuffer(TRANSMITTER transmitter);
+    public abstract void absorbBuffer(TRANSMITTER transmitter, TransactionContext transaction);
 
     public abstract void clampBuffer();
 

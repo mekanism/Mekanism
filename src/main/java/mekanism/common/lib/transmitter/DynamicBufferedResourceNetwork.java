@@ -111,15 +111,11 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     }
 
     @Override
-    public void absorbBuffer(TRANSMITTER transmitter) {
+    public void absorbBuffer(TRANSMITTER transmitter, TransactionContext transaction) {
         LargeResourceStack<RESOURCE> transmitterReleased = transmitter.releaseShare();
         if (!transmitterReleased.isEmpty()) {
-            if (container.isEmpty()) {
-                //TODO - 26.1: Should this be transactional?
-                container.setContents(transmitterReleased, null);
-            } else if (container.resource().equals(transmitterReleased.resource())) {
-                //TODO - 26.1: evaluate if we actually do want helpers for growing and shrinking for use cases like this
-                container.setContents(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount(), null);
+            if (container.isEmpty() || transmitterReleased.matches(container.resource())) {
+                container.setContents(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount(), transaction);
             }
         }
     }

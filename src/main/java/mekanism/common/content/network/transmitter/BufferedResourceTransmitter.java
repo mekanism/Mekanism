@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
-//TODO - 26.1: Change the buffer to a LargeResourceStack<RESOURCE>??
 public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
       TRANSMITTER extends BufferedResourceTransmitter<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>>

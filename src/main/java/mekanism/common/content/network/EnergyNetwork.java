@@ -75,10 +75,10 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
     }
 
     @Override
-    public void absorbBuffer(UniversalCable transmitter) {
+    public void absorbBuffer(UniversalCable transmitter, TransactionContext transaction) {
         long energy = transmitter.releaseShare();
         if (energy > 0) {
-            energyContainer.setEnergy(energyContainer.getAmountAsLong() + energy, null);
+            energyContainer.setEnergy(energyContainer.getAmountAsLong() + energy, transaction);
         }
     }
 
