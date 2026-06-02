@@ -39,12 +39,11 @@ public abstract sealed class ResourceElement<RESOURCE extends Resource> extends 
 
     @Override
     public Component getText() {
-        long amount = stored.amount();
         if (stored.isEmpty()) {
             return MekanismLang.EMPTY.translate();
-        } else if (amount == Long.MAX_VALUE) {
-            return MekanismLang.GENERIC_STORED.translate(stored, MekanismLang.INFINITE);
+        } else if (stored.amount() == Long.MAX_VALUE) {
+            return MekanismLang.GENERIC_STORED.translate(stored.resource(), MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(stored, TextUtils.format(amount));
+        return MekanismLang.GENERIC_STORED_MB.translate(stored.resource(), TextUtils.format(stored.amount()));
     }
 }
