@@ -29,11 +29,13 @@ public final class ContainerType {
     public static final EnergyContainerType ENERGY = new EnergyContainerType();
     public static final ResourceContainerType<ItemResource, IInventorySlot> ITEM = new ResourceContainerType<>(
           MekanismDataComponents.ATTACHED_ITEMS, SerializationConstants.ITEMS, Capabilities.ITEM,
-          TileEntityMekanism::getInventorySlots, TileEntityMekanism::hasInventory, LargeResourceStack.ITEM_HELPER
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::hasInventory, LargeResourceStack.ITEM_HELPER,
+          resource -> resource instanceof ItemResource
     );
     public static final ResourceContainerType<FluidResource, IFluidTank> FLUID = new ResourceContainerType<>(
           MekanismDataComponents.ATTACHED_FLUIDS, SerializationConstants.FLUID_TANKS, Capabilities.FLUID,
-          TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid, LargeResourceStack.FLUID_HELPER
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid, LargeResourceStack.FLUID_HELPER,
+          resource -> resource instanceof FluidResource
     );
     public static final ResourceContainerType<ChemicalResource, IChemicalTank> CHEMICAL = new ChemicalContainerType();
     public static final HeatContainerType HEAT = new HeatContainerType();

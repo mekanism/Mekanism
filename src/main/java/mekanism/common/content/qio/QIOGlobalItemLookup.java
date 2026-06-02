@@ -52,7 +52,6 @@ public class QIOGlobalItemLookup {
     );
 
     private static Codec<QIOGlobalItemLookupDataHandler> makeCodec() {
-        //TODO - 26.1: Does this need to be ItemResource.OPTIONAL_CODEC?
         Codec<Map<UUID, ItemResource>> itemData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemResource.CODEC).promotePartial(err -> LOGGER.error("Some QIO item data failed to load, items may be missing: {}", err));
         Codec<Map<UUID, UUID>> aliasData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.STRING_CODEC).promotePartial(err -> LOGGER.warn("Some QIO alias data failed to load, unmigrated items may be missing: {}", err));
         return RecordCodecBuilder.create(instance -> instance.group(

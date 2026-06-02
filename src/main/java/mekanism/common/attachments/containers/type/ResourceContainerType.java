@@ -46,12 +46,14 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
     private final Predicate<TileEntityMekanism> canHandle;
+    private final Predicate<Resource> isResourceType;
 
     protected ResourceContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> component, String containerTag,
           MultiTypeCapability<ResourceHandler<RESOURCE>> capability, Function<TileEntityMekanism, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle,
-          LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper, Predicate<Resource> isResourceType) {
         super(component, containerTag, capability, AttachedResources.empty());
         this.containersFromTile = containersFromTile;
+        this.isResourceType = isResourceType;
         this.stackHelper = stackHelper;
         this.canHandle = canHandle;
     }
@@ -77,6 +79,14 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     @Override
     protected boolean shouldAddAttachment(AttachedResources<RESOURCE> attached) {
         return !attached.isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public RESOURCE asResourceOrEmpty(Resource resource) {
+        if (isResourceType.test(resource)) {
+            return (RESOURCE) resource;
+        }
+        return emptyResource();
     }
 
     @Nullable
@@ -347,7 +357,8 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
 
         ChemicalContainerType() {
             super(MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, Capabilities.CHEMICAL,
-                  TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER);
+                  TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER,
+                  resource -> resource instanceof ChemicalResource);
         }
 
         @Nullable
