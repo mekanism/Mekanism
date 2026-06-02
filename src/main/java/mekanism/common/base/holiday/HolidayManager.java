@@ -3,7 +3,9 @@ package mekanism.common.base.holiday;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +21,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public final class HolidayManager {
 
@@ -31,7 +34,7 @@ public final class HolidayManager {
         return t;
     });
 
-    //todo - 26.1: shouldn't the key be the id/resourcekey?
+    /// Map of sounds which _might_ return a different value than the original holder
     private static final Map<Holder<SoundEvent>, Supplier<SoundEvent>> filterableSounds = new HashMap<>();
 
     private static boolean holidaysNotified = false;
@@ -45,27 +48,34 @@ public final class HolidayManager {
     }
 
     public static void init() {
+        //Figure out what sounds we need to wrap because they might be filterable
+        Set<Holder<SoundEvent>> allFilterableSounds = new HashSet<>();
+        for (Holiday holiday : Holiday.VALUES) {
+            allFilterableSounds.addAll(holiday.getFilterableSounds().keySet());
+        }
+        //now we've gathered possible items, generate the suppliers which make them dynamic and config-responsive
+        for (Holder<SoundEvent> filterable : allFilterableSounds) {
+            filterableSounds.put(filterable, getSoundEventSupplier(filterable));
+        }
+
+        //schedule the holiday updater, and run it the first time
         timer.scheduleAtFixedRate(HolidayManager::updateToday,
               LocalTime.now().until(LocalTime.MIDNIGHT, ChronoUnit.MILLIS),
               TimeUnit.DAYS.toMillis(1),
               TimeUnit.MILLISECONDS);
         updateToday();
-        //Figure out what sounds we need to wrap because they might be filterable
-        for (Holiday holiday : Holiday.VALUES) {
-            Map<Holder<SoundEvent>, Holder<SoundEvent>> holidaySoundMap = holiday.getFilterableSounds();
-            if (!holidaySoundMap.isEmpty()) {
-                for (Holder<SoundEvent> soundEvent : holidaySoundMap.keySet()) {
-                    filterableSounds.computeIfAbsent(soundEvent, sound -> () -> {
-                        if (areHolidaysEnabled() && soundHoliday != null) {
-                            //todo - 26.1: why does this use the static?
-                            return soundHoliday.getFilterableSounds().getOrDefault(sound, sound).value();
-                        }
-                        return sound.value();
-                    });
-                }
-            }
-        }
+
         Mekanism.logger.info("Initialized HolidayManager.");
+    }
+
+    @NonNull
+    private static Supplier<SoundEvent> getSoundEventSupplier(Holder<SoundEvent> filterable) {
+        return () -> {
+            if (areHolidaysEnabled() && soundHoliday != null) {
+                return soundHoliday.getFilterableSounds().getOrDefault(filterable, filterable).value();
+            }
+            return filterable.value();
+        };
     }
 
     private static void updateToday() {
