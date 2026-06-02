@@ -157,7 +157,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
             if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
                 //TODO - 26.1: Re-evaluate this:
-                // I got a crash when force closing the game: Expected value to be non-negative: -8000
+                // I got a crash when force closing the game or leaving the world: Expected value to be non-negative: -8000
                 // Why is there a case that this can be negative? We could clamp it but it might be indicitive of a bug
                 networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - getCurrentSaveAmount(), null);
                 //TODO - 26.1: Should we have a transaction context for taking shares?

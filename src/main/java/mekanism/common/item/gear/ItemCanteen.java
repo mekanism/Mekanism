@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -75,12 +76,12 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.openRoot()) {
-                    foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
+                    foodToFill = ResourceUtils.extractManual(fluidHandler, paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
                 if (foodToFill > 0) {
                     int pasteToUse = foodToFill * pastePerFood;
                     try (Transaction transaction = Transaction.openRoot()) {
-                        int extracted = fluidHandler.extract(paste, pasteToUse, transaction);
+                        int extracted = ResourceUtils.extractManual(fluidHandler, paste, pasteToUse, transaction);
                         if (extracted == pasteToUse) {
                             //Note: This if statement should always be true given we already simulated that we could extract at least this much,
                             // but we validate it just in case before actually committing any changes

@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
@@ -43,7 +44,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
+                    foodToFill = ResourceUtils.extractManual(fluidHandler, paste, missingFood * pastePerFood, simulation) / pastePerFood;
                     //Limit how much food we can handle by the amount of energy stored
                     foodToFill = module.getEnergyRateLimit(player, itemAccess, energyUsage, foodToFill, simulation);
                     if (foodToFill == 0) {
@@ -55,7 +56,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                     int pasteToUse = foodToFill * pastePerFood;
                     //Note: This if statement should always be true given we already simulated that we could extract at least this much,
                     // but we validate it just in case before actually committing any changes
-                    if (fluidHandler.extract(paste, pasteToUse, subTransaction) == pasteToUse && module.useAllEnergy(player, itemAccess, energyToUse, subTransaction)) {
+                    if (ResourceUtils.extractManual(fluidHandler, paste, pasteToUse, subTransaction) == pasteToUse && module.useAllEnergy(player, itemAccess, energyToUse, subTransaction)) {
                         player.getFoodData().eat(foodToFill, MekanismConfig.general.nutritionalPasteSaturation.get());
                         subTransaction.commit();
                     }
