@@ -88,11 +88,15 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @Override
     protected void updateEjectors(Level world) {
-        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
-            TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, entry.getKey());
-            if (tile != null) {
-                ValveData valve = entry.getValue();
-                valve.addTank(mergedTank.getFluidTank(), true);
+        if (!world.isClientSide()) {
+            //Note: We don't need to wrap valve tanks on the client side
+            for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+                TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, entry.getKey());
+                if (tile != null) {
+                    ValveData valve = entry.getValue();
+                    valve.resetTanks();
+                    valve.addTank(mergedTank.getFluidTank(), true);
+                }
             }
         }
     }

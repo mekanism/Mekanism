@@ -236,7 +236,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             if (tile != null) {
                 ValveData valve = entry.getValue();
                 tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
-                valve.addTank(coolantTank.getFluidTank(), true);
+                if (!world.isClientSide()) {
+                    //Note: We don't need to wrap valve tanks on the client side
+                    valve.resetTanks();
+                    valve.addTank(coolantTank.getFluidTank(), true);
+                }
             }
         }
     }

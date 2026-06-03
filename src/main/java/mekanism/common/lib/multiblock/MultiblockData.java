@@ -376,10 +376,10 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     }
 
     public List<IFluidTank> getValveFluidTanks(BlockPos pos) {
-        if (!hasFluidValveHandling()) {
+        if (!hasFluidValveHandling() || isRemote()) {
+            //Note: The client doesn't need to do any handling relating to valves, so just bypass valve handling for it
             return getFluidTanks();
-        } else if (isFormed() || isRemote()) {
-            //TODO - 26.1: Does the client know about valves? Or do they get synced in some other way
+        } else if (isFormed()) {
             ValveData valve = valves.get(pos);
             if (valve == null) {
                 //Just return all as we don't have any specific valve wrapping

@@ -71,7 +71,11 @@ public interface IValveHandler {
             this.side = side;
         }
 
-        //TODO - 26.1: Validate that this only gets called once per valve per multiblock
+        public void resetTanks() {
+            //TODO: Can multiblocks be re-initialized? If not then this isn't necessary
+            valveTanks = null;
+        }
+
         public void addTank(IFluidTank tank, boolean wrap) {
             if (this.valveTanks == null) {
                 this.valveTanks = new ArrayList<>();

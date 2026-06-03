@@ -232,7 +232,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             if (tile != null) {
                 ValveData valve = entry.getValue();
                 tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
-                valve.addTank(waterTank, true);
+                if (!world.isClientSide()) {
+                    //Note: We don't need to wrap valve tanks on the client side
+                    valve.resetTanks();
+                    valve.addTank(waterTank, true);
+                }
             }
         }
     }
