@@ -50,6 +50,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
     
@@ -167,6 +168,28 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             }
         });
         super.extractRenderState(graphics, mouseX, mouseY, a);
+        //After we render everything (and moved to the furthest stratum that vanilla will use,
+        // shift the matrix to relative coordinates again, and add a new stratum for each window
+        //TODO - 26.1: Make sure this works fine and there isn't some unforseen side effects
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
+        pose.translate(leftPos, topPos);
+        // now render overlays in reverse-order (i.e. back to front)
+        for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
+            graphics.nextStratum();
+            GuiWindow overlay = iter.next();
+            //Max z offset is incremented based on what is the deepest level offset we go to
+            // if our gui isn't flagged as visible we won't increment it as nothing is drawn
+            // we need to do this based on what the max is after having rendered the previous
+            // window as while the windows don't necessarily overlap, if they do we want to
+            // ensure that there is no clipping
+            overlay.onRenderForeground(graphics, mouseX, mouseY);
+            if (iter.hasNext()) {
+                // if this isn't the focused window, render a 'blur' effect over it
+                overlay.renderBlur(graphics);
+            }
+        }
+        pose.popMatrix();
     }
 
     protected <T extends GuiElement> T addRenderableWidget(T element) {
@@ -392,21 +415,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
                 element.onRenderForeground(guiGraphics, mouseX, mouseY);
-            }
-        }
-
-        // now render overlays in reverse-order (i.e. back to front)
-        for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
-            GuiWindow overlay = iter.next();
-            //Max z offset is incremented based on what is the deepest level offset we go to
-            // if our gui isn't flagged as visible we won't increment it as nothing is drawn
-            // we need to do this based on what the max is after having rendered the previous
-            // window as while the windows don't necessarily overlap, if they do we want to
-            // ensure that there is no clipping
-            overlay.onRenderForeground(guiGraphics, mouseX, mouseY);
-            if (iter.hasNext()) {
-                // if this isn't the focused window, render a 'blur' effect over it
-                overlay.renderBlur(guiGraphics);
             }
         }
     }
