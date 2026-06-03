@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.SerializationConstants;
-import mekanism.common.content.qio.QIODriveData;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -22,10 +21,6 @@ public record DriveMetadata(long count, int types) {
           ByteBufCodecs.VAR_INT, DriveMetadata::types,
           DriveMetadata::new
     );
-
-    public DriveMetadata(QIODriveData data) {
-        this(data.getTotalCount(), data.getTotalTypes());
-    }
 
     public boolean isEmpty() {
         return count == 0 && types == 0;

@@ -3,7 +3,6 @@ package mekanism.common.content.qio;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.Mekanism;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -31,8 +30,9 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
         // load item map from drive stack
         driveData.getOrDefault(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY).loadItemMap(this::addTypeFromSaved);
         //TODO - 26.1: Re-evaluate this, theoretically as we just loaded this the metadata should be correct?
-        // or is this to account for when a type is no longer valid?
-        key.updateMetadata(this);
+        // or was this to account for when a type is no longer valid?
+        //QIODriveSlot slot = key.holder().getDriveSlots().get(key.driveSlot());
+        //slot.updateSaveData(slot.resource().with(MekanismDataComponents.DRIVE_METADATA, asDriveMetadata()));
     }
 
     private void addTypeFromSaved(ItemResource itemType, long amount) {
@@ -107,16 +107,15 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
     protected void onRootCommit(QIODriveData.Snapshot originalState) {
         super.onRootCommit(originalState);
         if (originalState.itemCount() != itemCount || originalState.itemTypes() != itemTypes) {
-            //If the state changed, update the metadata and stored data
-            key.updateMetadata(this);
-            key.dataUpdate();
+            //If the state changed, update the metadata and stored data on the physical drive so that if it is removed it will have valid data
+            //TODO: Is there a way we can just have the diff of what happened get applied?
+            key.save(this);
         }
     }
 
-    //TODO - 26.1: Re-evaluate callers
-    public long getStored(ItemResource type) {
+    public boolean isStoring(ItemResource type) {
         StoredAmountJournal storedAmount = itemMap.get(type);
-        return storedAmount == null ? 0 : storedAmount.stored;
+        return storedAmount != null && storedAmount.stored > 0;
     }
 
     public <DATA> void forDriveContents(DATA data, DriveContentConsumer<DATA> consumer) {
@@ -128,9 +127,8 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
         }
     }
 
-    //TODO - 26.1: Do we want to remove this method, it no longer is used
-    public QIODriveKey getKey() {
-        return key;
+    private DriveMetadata asDriveMetadata() {
+        return new DriveMetadata(itemCount, itemTypes);
     }
 
     public long getCountCapacity() {
@@ -195,35 +193,12 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
     public record QIODriveKey(IQIODriveHolder holder, int driveSlot) {
 
         public void save(QIODriveData data) {
-            //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
-            // Also do we need to make sure the slot calls onContentsChanged?
             QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
-            ItemResource itemType = slot.resource();
-            if (itemType.value() instanceof IQIODriveItem) {
-                //Update stored items and metadata
-                ItemResource updatedItem = itemType.with(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.create(data))
-                      .with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
-                //TODO - 26.1: Would it be useful to have a method to transform the stored type rather than having to set and query what the stored amount is?
-                slot.setContents(updatedItem, slot.amountAsLong(), null);
-            } else {
-                Mekanism.logger.error("Tried to save data map to an invalid item ({}). Something has gone very wrong!", itemType.getItem());
-            }
-        }
-
-        public void dataUpdate() {
-            holder.onDataUpdate();
-        }
-
-        public void updateMetadata(QIODriveData data) {
-            //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
-            // Also do we need to make sure the slot calls onContentsChanged?
-            QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
-            ItemResource itemType = slot.resource();
-            if (itemType.value() instanceof IQIODriveItem) {
-                slot.setContents(itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data)), slot.amountAsLong(), null);
-            } else {
-                Mekanism.logger.error("Tried to update QIO meta values on an invalid Item ({}). Something has gone very wrong!", itemType);
-            }
+            //Update stored items and metadata
+            slot.updateSaveData(slot.resource()
+                  .with(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.create(data))
+                  .with(MekanismDataComponents.DRIVE_METADATA, data.asDriveMetadata())
+            );
         }
     }
 }

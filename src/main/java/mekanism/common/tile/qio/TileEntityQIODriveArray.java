@@ -40,7 +40,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     public static final int DRIVE_SLOTS = 12;
     private static final int BITS_PER_DRIVE_STATUS = 4;//max 15 ordinals
     private static final int DRIVE_STATUS_MASK = 0xF;
-    private static final int MAX_DRIVE_STATUS = DriveStatus.values().length - 1;
 
     private List<QIODriveSlot> driveSlots;
     private long driveStatus = 0;
@@ -151,11 +150,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
             driveStatus = status;
             updateModelData();
         }
-    }
-
-    @Override
-    public void onDataUpdate() {
-        markForSave();
     }
 
     @Override

@@ -61,6 +61,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
 
@@ -108,10 +109,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     private final Set<UUID> updatedItems = new HashSet<>();
     private final Set<ServerPlayer> playersViewingItems = new HashSet<>();
 
-    /** If we need to send a packet to viewing clients with changed item data. */
+    /// If we need to send a packet to viewing clients with changed item data.
     private boolean needsUpdate;
-    /** If we have new item changes that haven't been saved. */
-    private boolean isDirty;//todo rename this so it's clearer what the difference is from Frequency.dirty
+    /// If we have new item changes that haven't been saved.
+    private boolean saveItemsToDrives;
 
     private final SimpleLongJournal totalCount = new SimpleLongJournal();
     private long totalCountCapacity;
@@ -463,11 +464,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // the random factor helps us avoid bogging down the CPU by saving all QIO frequencies at once
         // this isn't a fully necessary operation, but it'll help avoid all item data getting lost if the server
         // is forcibly shut down.
-        if (isDirty && rand.nextInt(5 * SharedConstants.TICKS_PER_SECOND) == 0) {
+        if (saveItemsToDrives && rand.nextInt(5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             //Note: We don't have this affect our super dirty value as this is for if the drives are dirty,
             // not for if the frequency is dirty
             saveAll();
-            isDirty = false;
+            saveItemsToDrives = false;
         }
 
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
@@ -487,7 +488,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (tile instanceof IQIODriveHolder holder) {
             for (int i = 0, size = holder.getDriveSlots().size(); i < size; i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
-                removeDrive(key, true);
+                removeDrive(key, true, true);
             }
             //Uncache the holder when it stops being part of the frequency
             driveHolders.remove(holder);
@@ -514,7 +515,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // copy keys to avoid CME
         Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
         for (QIODriveKey key : keys) {
-            removeDrive(key, false);
+            removeDrive(key, false, true);
         }
         driveMap.clear();
         for (ServerPlayer player : playersViewingItems) {
@@ -533,11 +534,13 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return code;
     }
 
+    //TODO: Do we need to make drive adding and removal transactional?
     public void addDrive(QIODriveKey key, ItemResource driveData) {
         if (driveData.getItem() instanceof IQIODriveItem) {
             // if a drive in this position is already in the system, we remove it before adding this one
             if (driveMap.containsKey(key)) {
-                removeDrive(key, true);
+                //Note: Don't save it as it should already be saved, and it would override this drive
+                removeDrive(key, true, false);
             }
             // add drive and capacity info to core tracking
             QIODriveData data = new QIODriveData(key, driveData);
@@ -556,12 +559,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         markForUpdate(storedType);
     }
 
-    @Deprecated(forRemoval = true)//TODO - 26.1: Re-evaluate usages and fix things so that the proper stack gets updated
-    public void removeDrive(QIODriveKey key, boolean updateItemMap) {
-        removeDrive(key, updateItemMap, key.holder().getDriveSlots().get(key.driveSlot()).resource());
-    }
-
-    public void removeDrive(QIODriveKey key, boolean updateItemMap, ItemResource driveData) {
+    public void removeDrive(QIODriveKey key, boolean updateItemMap, boolean saveDataToKey) {
         if (!driveMap.containsKey(key)) {
             return;
         }
@@ -574,9 +572,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         totalCountCapacity -= data.getCountCapacity();
         totalTypeCapacity -= data.getTypeCapacity();
         driveMap.remove(key);
-        // save the item list onto the physical drive
-        //TODO - 26.1: When doing it from the drive slot, we need to do this before extraction (and maybe even getting of the resource type??)
-        key.save(data);
+        if (saveDataToKey) {
+            // save the item list onto the physical drive
+            key.save(data);
+        }
     }
 
     private void removeDriveContent(QIODriveKey key, ItemResource storedType, long amountStored) {
@@ -595,14 +594,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     public void saveAll() {
         for (Entry<QIODriveKey, QIODriveData> entry : driveMap.entrySet()) {
-            QIODriveKey key = entry.getKey();
-            QIODriveData value = entry.getValue();
-            key.save(value);
+            entry.getKey().save(entry.getValue());
         }
     }
 
     private void setNeedsUpdate(@Nullable ItemResource changedItem) {
-        isDirty = true;
+        saveItemsToDrives = true;
         if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
             needsUpdate = true;
             if (changedItem != null) {
@@ -696,7 +693,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 QIODriveData data = driveMap.get(iter.next());
                 removed += data.remove(itemType, amount - removed, transaction);
                 // remove this drive from containingDrives if it doesn't have this item anymore
-                if (data.getStored(itemType) == 0) {
+                if (!data.isStoring(itemType)) {
                     if (!hasUpdated) {
                         //If we haven't updated the snapshot for this item type yet, do so
                         updateSnapshots(transaction);
@@ -741,7 +738,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
-        protected void revertToSnapshot(QIOItemTypeData.Snapshot snapshot) {
+        protected void revertToSnapshot(QIOItemTypeData.@NonNull Snapshot snapshot) {
             //TODO - 26.1: Re-evaluate this impl
             count = snapshot.count();
             containingDrives.clear();
