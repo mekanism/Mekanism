@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -360,19 +361,28 @@ public class WorldUtils {
     }
 
     /**
-     * Dismantles a block, dropping it and removing it from the world.
+     * Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, Level world, BlockPos pos) {
-        dismantleBlock(state, world, pos, getTileEntity(world, pos));
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable Entity entity) {
+        dismantleBlock(state, world, pos, getTileEntity(world, pos), entity);
     }
 
     /**
-     * Dismantles a block, dropping it and removing it from the world.
+     * Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile) {
-        if (world instanceof ServerLevel level) {//Copy of Block#dropResources but skipping the xp dropping
-            Block.getDrops(state, level, pos, tile).forEach(stack -> Block.popResource(world, pos, stack));
-            state.spawnAfterBreak(level, pos, ItemStack.EMPTY, false);
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity) {
+        if (entity instanceof Player player) {
+            if (world instanceof ServerLevel) {
+                Block.getDrops(state, (ServerLevel) world, pos, tile, entity, ItemStack.EMPTY).forEach(dropStack -> {
+                    if (player.getInventory().add(dropStack)) {
+                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.random.nextFloat() - world.random.nextFloat()) * 1.4F + 2.0F);
+                    } else {
+                        player.drop(dropStack, false);
+                    }
+                });
+            }
+        } else {
+            Block.dropResources(state, world, pos, tile, entity, ItemStack.EMPTY, false);
         }
         world.removeBlock(pos, false);
     }
