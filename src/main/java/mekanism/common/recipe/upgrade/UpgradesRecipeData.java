@@ -76,55 +76,52 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             //Not all upgrades are supported, fail
             return false;
         }
-        ItemResource inputType = ItemResource.EMPTY;
-        long inputAmount = 0;
-        ItemResource outputType = ItemResource.EMPTY;
-        long outputAmount = 0;
+        LargeResourceStack<ItemResource> input = LargeResourceStack.ITEM_HELPER.empty();
+        LargeResourceStack<ItemResource> output = LargeResourceStack.ITEM_HELPER.empty();
         for (LargeResourceStack<ItemResource> slot : slots) {
-            if (!slot.isEmpty()) {
-                ItemResource resource = slot.resource();
-                long amount = slot.amount();
-                Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
-                if (upgrade == null) {
-                    //Not an upgrade
-                    return false;
-                }
-                if (supportedUpgrades.contains(upgrade)) {
-                    if (inputType.isEmpty()) {
-                        inputType = resource;
-                        inputAmount = amount;
+            if (slot.isEmpty()) {
+                continue;
+            }
+            ItemResource resource = slot.resource();
+            long amount = slot.amount();
+            Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
+            if (upgrade == null) {
+                //Not an upgrade
+                return false;
+            }
+            int maxStackSize = resource.getMaxStackSize();
+            if (supportedUpgrades.contains(upgrade)) {
+                if (input.isEmpty()) {
+                    input = slot;
+                    continue;
+                } else if (input.matches(resource)) {
+                    long needed = maxStackSize - input.amount();
+                    if (amount <= needed) {
+                        //All fits, increment and continue
+                        input = input.grow(amount, false);
                         continue;
-                    } else if (inputAmount < inputType.getMaxStackSize() && resource.equals(inputType)) {
-                        long needed = inputType.getMaxStackSize() - inputAmount;
-                        if (amount <= needed) {
-                            //All fits, increment and continue
-                            inputAmount += amount;
-                            continue;
-                        }
-                        //Add what we can from it, and then see if we can add it to the output slot
-                        inputAmount += needed;
-                        amount -= needed;
                     }
+                    //Add what we can from it, and then see if we can add it to the output slot
+                    input = input.grow(needed, false);
+                    amount -= needed;
                 }
-                if (outputType.isEmpty()) {
-                    outputType = resource;
-                    outputAmount = amount;
-                } else if (outputAmount < outputType.getMaxStackSize() && resource.equals(outputType)) {
-                    long needed = outputType.getMaxStackSize() - outputAmount;
-                    if (amount > needed) {
-                        //Doesn't all fit
-                        return false;
-                    }
-                    outputAmount += amount;
-                } else {
-                    //Can't fit all the items
+            }
+            if (output.isEmpty()) {
+                //Note: We can't just re-use slot as the stack as amount might have changed
+                output = LargeResourceStack.ITEM_HELPER.createStack(resource, amount);
+            } else if (output.matches(resource)) {
+                long needed = maxStackSize - output.amount();
+                if (amount > needed) {
+                    //Doesn't all fit
                     return false;
                 }
+                output = output.grow(amount, false);
+            } else {
+                //Can't fit all the items
+                return false;
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        itemType = itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, LargeResourceStack.ITEM_HELPER.createStack(inputType, inputAmount),
-              LargeResourceStack.ITEM_HELPER.createStack(outputType, outputAmount)));
-        return ItemAccessUtils.exchange(itemAccess, itemType, null);
+        return ItemAccessUtils.exchange(itemAccess, itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, input, output)), null);
     }
 }
