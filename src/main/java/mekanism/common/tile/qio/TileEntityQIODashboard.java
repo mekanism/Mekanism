@@ -59,7 +59,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         // that is for read only slots instead of actually exposing slots to various sides
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.readOnly();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
-            for (int slot = 0; slot < 9; slot++) {
+            for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
                 builder.addContainer(craftingWindow.getInputSlot(slot));
             }
             builder.addContainer(craftingWindow.getOutputSlot());

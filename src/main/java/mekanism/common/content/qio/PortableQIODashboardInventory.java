@@ -44,10 +44,10 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
                 }
             });
             craftingWindows[tableIndex] = craftingWindow;
-            for (int slot = 0; slot < 9; slot++) {
+            for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
                 IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 slots.add(inputSlot);
-                inputSlot.setContents(contents.get(tableIndex * 9 + slot), null);
+                inputSlot.setContents(contents.get(tableIndex * QIOCraftingWindow.SLOTS_PER_WINDOW + slot), null);
             }
             slots.add(craftingWindow.getOutputSlot());
         }

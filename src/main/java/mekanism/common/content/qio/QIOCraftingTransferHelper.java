@@ -51,11 +51,11 @@ public class QIOCraftingTransferHelper {
         for (IScrollableSlot source : cachedInventory) {
             //Skip any items that are only still in the cache due to sorting being paused, as we don't have any of it available for crafting
             if (source.count() > 0) {
-                reverseLookup.computeIfAbsent(source.itemType(), item -> new ItemTypeSource()).addQIOSlot(source.itemUUID(), source.count());
+                reverseLookup.computeIfAbsent(source.itemType(), _ -> new ItemTypeSource()).addQIOSlot(source.itemUUID(), source.count());
             }
         }
         byte inventorySlotIndex = 0;
-        for (; inventorySlotIndex < 9; inventorySlotIndex++) {
+        for (; inventorySlotIndex < QIOCraftingWindow.SLOTS_PER_WINDOW; inventorySlotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(inventorySlotIndex);
             ItemResource storedType = slot.resource();
             if (!storedType.isEmpty()) {
@@ -70,7 +70,7 @@ public class QIOCraftingTransferHelper {
                         return;
                     }
                 }
-                reverseLookup.computeIfAbsent(storedType, item -> new ItemTypeSource()).addSlot(inventorySlotIndex, slot.amountAsInt());
+                reverseLookup.computeIfAbsent(storedType, _ -> new ItemTypeSource()).addSlot(inventorySlotIndex, slot.amountAsInt());
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);

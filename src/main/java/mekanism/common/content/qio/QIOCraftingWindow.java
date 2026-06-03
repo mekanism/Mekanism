@@ -52,6 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class QIOCraftingWindow implements IContentsListener {
 
+    public static final int SLOTS_PER_WINDOW = 9;
     private static final SelectedWindowData[] WINDOWS = new SelectedWindowData[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
 
     static {
@@ -60,7 +61,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    private final IInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
+    private final IInventorySlot[] inputSlots = new CraftingWindowInventorySlot[SLOTS_PER_WINDOW];
     private final ReplacementHelper replacementHelper = new ReplacementHelper();
     private final RemainderHelper remainderHelper = new RemainderHelper();
     private final IInventorySlot outputSlot;
@@ -76,7 +77,7 @@ public class QIOCraftingWindow implements IContentsListener {
         this.windowIndex = windowIndex;
         this.holder = holder;
         this.windowData = WINDOWS[windowIndex];
-        for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
+        for (int slotIndex = 0; slotIndex < SLOTS_PER_WINDOW; slotIndex++) {
             inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this, this.holder);
         }
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
@@ -86,7 +87,7 @@ public class QIOCraftingWindow implements IContentsListener {
         this.windowIndex = windowIndex;
         this.holder = holder;
         this.windowData = WINDOWS[windowIndex];
-        for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
+        for (int slotIndex = 0; slotIndex < SLOTS_PER_WINDOW; slotIndex++) {
             inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this, inputSaveListener.apply(slotIndex));
         }
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
@@ -101,7 +102,7 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     public IInventorySlot getInputSlot(int slot) {
-        if (slot < 0 || slot >= 9) {
+        if (slot < 0 || slot >= SLOTS_PER_WINDOW) {
             throw new IllegalArgumentException("Input slot out of range");
         }
         return inputSlots[slot];
@@ -688,8 +689,8 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    private CraftingInput.Positioned asCraftingInput() {
-        List<ItemStack> items = new ArrayList<>(9);
+    public CraftingInput.Positioned asCraftingInput() {
+        List<ItemStack> items = new ArrayList<>(SLOTS_PER_WINDOW);
         for (IInventorySlot inputSlot : inputSlots) {
             //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
             // to change the size of it. We also add it regardless of it is empty as that is what the method expects
@@ -701,7 +702,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     private class RemainderHelper {
 
-        private final NonNullList<ItemStack> dummy = NonNullList.withSize(9, ItemStack.EMPTY);
+        private final NonNullList<ItemStack> dummy = NonNullList.withSize(SLOTS_PER_WINDOW, ItemStack.EMPTY);
 
         private boolean updated;
 

@@ -105,8 +105,8 @@ public class QIOCraftingTransferHandler {
         //Note: This variable is only used for when doTransfer is false
         byte nonEmptyCraftingSlots = 0;
         if (!execute) {
-            List<ItemStack> dummy = new ArrayList<>(9);
-            for (int slot = 0; slot < 9; slot++) {
+            List<ItemStack> dummy = new ArrayList<>(QIOCraftingWindow.SLOTS_PER_WINDOW);
+            for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
                 ItemResource inputStack = craftingWindow.getInputSlot(slot).resource();
                 //Copy it in case any recipe does weird things and tries to mutate the stack
                 dummy.add(inputStack.toStack());
@@ -131,11 +131,11 @@ public class QIOCraftingTransferHandler {
         // logic, unless we can also somehow cache the recipe layout and how it interacts with the other information
         List<SLOT> slotViews = recipeHelper.inputs();
         int maxInputCount = slotViews.size();
-        if (maxInputCount > 9) {
+        if (maxInputCount > QIOCraftingWindow.SLOTS_PER_WINDOW) {
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
             // if we have more than nine inputs, as there should never be
             // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipeHelper.id(), maxInputCount);
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than {} inputs: {}", recipeHelper.id(), QIOCraftingWindow.SLOTS_PER_WINDOW, maxInputCount);
             return recipeHelper.createInternalError();
         }
         int inputCount = 0;
@@ -370,8 +370,8 @@ public class QIOCraftingTransferHandler {
           List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, Map<ItemTypeSource, List<List<SingularItemTypeSource>>> shuffleLookup) {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down
         // on how many times we have to check if things can stack
-        Object2IntMap<ItemResource> leftOverInput = new Object2IntArrayMap<>(9);
-        for (byte slotIndex = 0; slotIndex < 9; slotIndex++) {
+        Object2IntMap<ItemResource> leftOverInput = new Object2IntArrayMap<>(QIOCraftingWindow.SLOTS_PER_WINDOW);
+        for (byte slotIndex = 0; slotIndex < QIOCraftingWindow.SLOTS_PER_WINDOW; slotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(slotIndex);
             if (!slot.isEmpty()) {
                 //Note: We can use raw as we are not modifying the stack or persisting the reference
@@ -398,7 +398,7 @@ public class QIOCraftingTransferHandler {
                     if (source == null) {
                         return currentStored.count();
                     }
-                    return source.getSlotRemaining((byte) (slot + 9));
+                    return source.getSlotRemaining((byte) (slot + QIOCraftingWindow.SLOTS_PER_WINDOW));
                 }
             };
             Object2IntMap<ItemResource> stillLeftOver = simulatedInventory.shuffleInputs(leftOverInput, frequency != null);

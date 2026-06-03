@@ -192,7 +192,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         super.addSlots();
         for (QIOCraftingWindow craftingWindow : craftingWindowHolder.getCraftingWindows()) {
             byte tableIndex = craftingWindow.getWindowIndex();
-            for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
+            for (int slotIndex = 0; slotIndex < QIOCraftingWindow.SLOTS_PER_WINDOW; slotIndex++) {
                 addCraftingSlot(craftingWindow.getInputSlot(slotIndex), tableIndex, slotIndex);
             }
             addCraftingSlot(craftingWindow.getOutputSlot(), tableIndex, 9);
@@ -287,7 +287,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (craftingGridSlots == null) {
             //If we haven't precalculated which slots go with this crafting grid yet, do so
             craftingGridSlots = new ArrayList<>();
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < QIOCraftingWindow.SLOTS_PER_WINDOW; i++) {
                 craftingGridSlots.add(getCraftingWindowSlot(selectedCraftingGrid, i));
             }
             craftingGridInputSlots[selectedCraftingGrid] = craftingGridSlots;
