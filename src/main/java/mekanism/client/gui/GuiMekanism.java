@@ -168,7 +168,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             }
         });
         super.extractRenderState(graphics, mouseX, mouseY, a);
-        //After we render everything (and moved to the furthest stratum that vanilla will use,
+    }
+
+    @Override
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractContents(graphics, mouseX, mouseY, a);
+        //After we render all the contents and moved to the furthest stratum that vanilla will use
+        // excluding things like tooltips or the currently carried item which should both render above windows:
         // shift the matrix to relative coordinates again, and add a new stratum for each window
         //TODO - 26.1: Make sure this works fine and there isn't some unforseen side effects
         Matrix3x2fStack pose = graphics.pose();
