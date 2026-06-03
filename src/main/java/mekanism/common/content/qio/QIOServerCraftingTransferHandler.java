@@ -16,12 +16,9 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSou
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
-import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,14 +35,13 @@ public class QIOServerCraftingTransferHandler {
 
     private static final int MAX_NEEDED = QIOCraftingWindow.SLOTS_PER_WINDOW * Item.ABSOLUTE_MAX_STACK_SIZE;
 
+    private final QIOItemViewerContainer container;
     private final QIOCraftingWindow craftingWindow;
     private final Identifier recipeID;
     private final Player player;
     @Nullable
     private final QIOFrequency frequency;
     private final boolean rejectToInventory;
-    private final List<HotBarSlot> hotBarSlots;
-    private final List<MainInventorySlot> mainInventorySlots;
 
     public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
           CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources) {
@@ -58,13 +54,12 @@ public class QIOServerCraftingTransferHandler {
     }
 
     private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID) {
+        this.container = container;
         this.player = player;
         this.recipeID = recipeID;
         this.frequency = container.getFrequency();
         this.rejectToInventory = rejectToInventory;
         this.craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
-        this.hotBarSlots = container.getHotBarSlots();
-        this.mainInventorySlots = container.getMainInventorySlots();
     }
 
     private boolean transferItems(CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources, TransactionContext transaction) {
@@ -118,16 +113,9 @@ public class QIOServerCraftingTransferHandler {
                             itemType = inputSlot.resource();
                             amountExtracted = itemType.isEmpty() ? 0 : inputSlot.extract(itemType, toUse, subTransaction, AutomationType.MANUAL);
                         } else {
-                            TransactionalSlot transactionalSlot;
-                            if (slot < QIOCraftingWindow.SLOTS_PER_WINDOW + Inventory.getSelectionSize()) {//Hotbar
-                                actualSlot = slot - QIOCraftingWindow.SLOTS_PER_WINDOW;
-                                slotType = "hotbar";
-                                transactionalSlot = hotBarSlots.get(actualSlot);
-                            } else {//Main inventory
-                                actualSlot = slot - QIOCraftingWindow.SLOTS_PER_WINDOW - Inventory.getSelectionSize();
-                                slotType = "main inventory";
-                                transactionalSlot = mainInventorySlots.get(actualSlot);
-                            }
+                            actualSlot = slot - QIOCraftingWindow.SLOTS_PER_WINDOW;
+                            slotType = "player inventory";
+                            TransactionalSlot transactionalSlot = container.getPlayerSlot(actualSlot);
                             itemType = ItemResource.of(transactionalSlot.getItem());
                             amountExtracted = itemType.isEmpty() ? 0 : transactionalSlot.extract(player, itemType, toUse, subTransaction);
                         }
@@ -197,13 +185,14 @@ public class QIOServerCraftingTransferHandler {
             }
         }
         //Put the items that were in the crafting window in the player's inventory
+        Iterable<TransactionalSlot> playerInv = container.getPlayerSlots();
         for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(currentlyShuffling); iterator.hasNext(); ) {
             Object2IntMap.Entry<ItemResource> entry = iterator.next();
             ItemResource itemType = entry.getKey();
             int amountToInsert = entry.getIntValue();
             if (rejectToInventory) {
                 //If we prioritize inserting back into the player's inventory, start by doing so
-                amountToInsert = returnItemToInventory(itemType, amountToInsert, transaction, windowData);
+                amountToInsert -= MekanismContainer.insertItem(playerInv, itemType, amountToInsert, transaction, windowData);
                 if (amountToInsert == 0) {
                     continue;//If we inserted everything skip to the next item
                 }
@@ -229,7 +218,7 @@ public class QIOServerCraftingTransferHandler {
             }
             if (!rejectToInventory) {
                 //If we didn't already try to insert it into the player's inventory, then try to do so
-                amountToInsert = returnItemToInventory(itemType, amountToInsert, transaction, windowData);
+                amountToInsert -= MekanismContainer.insertItem(playerInv, itemType, amountToInsert, transaction, windowData);
             }
             if (amountToInsert > 0) {
                 //If we couldn't insert it all, either because there was no frequency or it didn't have room for it all,
@@ -245,19 +234,5 @@ public class QIOServerCraftingTransferHandler {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Tries to reinsert the stack into the player's inventory in the order of hotbar, then main inventory; checks for stacks it can combine with before filling empty
-     * ones.
-     *
-     * @return Remaining amount to insert that couldn't be inserted.
-     */
-    private int returnItemToInventory(ItemResource itemType, int amountToInsert, TransactionContext transaction, @Nullable SelectedWindowData windowData) {
-        amountToInsert -= MekanismContainer.insertItem(hotBarSlots, itemType, amountToInsert, transaction, true, windowData);
-        amountToInsert -= MekanismContainer.insertItem(mainInventorySlots, itemType, amountToInsert, transaction, true, windowData);
-        amountToInsert -= MekanismContainer.insertItem(hotBarSlots, itemType, amountToInsert, transaction, false, windowData);
-        amountToInsert -= MekanismContainer.insertItem(mainInventorySlots, itemType, amountToInsert, transaction, false, windowData);
-        return amountToInsert;
     }
 }

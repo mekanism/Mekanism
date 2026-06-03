@@ -1,5 +1,6 @@
 package mekanism.common.content.qio;
 
+import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -19,6 +20,7 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.ITransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -298,50 +300,28 @@ public class QIOCraftingWindow implements IContentsListener {
     /**
      * @apiNote Only call from the server
      */
-    public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
-        if (toPlayerInv) {
-            for (IInventorySlot inputSlot : inputSlots) {
-                ItemResource slotResource = inputSlot.resource();
-                if (!slotResource.isEmpty()) {
-                    int extracted;
-                    try (Transaction simulation = Transaction.openRoot()) {
-                        extracted = inputSlot.extract(slotResource, inputSlot.amountAsInt(), simulation, AutomationType.INTERNAL);
-                        if (extracted == 0) {
-                            continue;
-                        }
-                    }
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        int amountToTransfer = extracted;
-                        amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, slotResource, amountToTransfer, transaction, true, windowData);
-                        amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, slotResource, amountToTransfer, transaction, true, windowData);
-                        amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, slotResource, amountToTransfer, transaction, false, windowData);
-                        amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, slotResource, amountToTransfer, transaction, false, windowData);
-                        inputSlot.extract(slotResource, amountToTransfer, transaction, AutomationType.INTERNAL);
-                        //Commit all the changes
-                        transaction.commit();
+    public void emptyTo(boolean toPlayerInv, Iterable<TransactionalSlot> playerInventory, @Nullable TransactionContext transaction) {
+        QIOFrequency frequency = holder.getFrequency();
+        for (IInventorySlot inputSlot : inputSlots) {
+            ItemResource slotResource = inputSlot.resource();
+            if (!slotResource.isEmpty()) {
+                int extracted;
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    extracted = inputSlot.extract(slotResource, inputSlot.amountAsInt(), simulation, AutomationType.INTERNAL);
+                    if (extracted == 0) {
+                        continue;
                     }
                 }
-            }
-        } else {
-            QIOFrequency frequency = holder.getFrequency();
-            //NO-OP if the frequency is null and that is the target
-            if (frequency != null) {
-                for (IInventorySlot inputSlot : inputSlots) {
-                    ItemResource slotResource = inputSlot.resource();
-                    if (!slotResource.isEmpty()) {
-                        int extracted;
-                        try (Transaction simulation = Transaction.openRoot()) {
-                            extracted = inputSlot.extract(slotResource, inputSlot.amountAsInt(), simulation, AutomationType.INTERNAL);
-                            if (extracted == 0) {
-                                continue;
-                            }
-                        }
-                        try (Transaction transaction = Transaction.openRoot()) {
-                            int inserted = frequency.addItem(slotResource, extracted, transaction);
-                            //TODO - 26.1: Validate that we extracted the same amount as we inserted?
-                            inputSlot.extract(slotResource, inserted, transaction, AutomationType.INTERNAL);
-                            transaction.commit();
-                        }
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    int inserted;
+                    if (toPlayerInv || frequency == null) {
+                        inserted = MekanismContainer.insertItem(playerInventory, slotResource, extracted, subTransaction, windowData);
+                    } else {
+                        inserted = frequency.addItem(slotResource, extracted, subTransaction);
+                    }
+                    if (inserted > 0 && inputSlot.extract(slotResource, inserted, subTransaction, AutomationType.INTERNAL) == inserted) {
+                        //Assuming nothing went wrong, commit all the changes
+                        subTransaction.commit();
                     }
                 }
             }
@@ -352,6 +332,13 @@ public class QIOCraftingWindow implements IContentsListener {
      * @apiNote For use with shift clicking
      */
     public void performCraft(@NotNull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            performCraft(player, hotBarSlots, mainInventorySlots, transaction);
+            transaction.commit();
+        }
+    }
+
+    private void performCraft(@NotNull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, TransactionContext transaction) {
         if (lastRecipe == null || outputSlot.isEmpty()) {
             //No recipe, return no result
             // Note: lastRecipe will always null on the client, so we can assume we are server side below
@@ -367,12 +354,13 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
-        ItemStack result = outputSlot.resource().toStack(outputSlot.amountAsInt());
-        Item resultItem = result.getItem();
+        final ItemResource resultType = outputSlot.resource();
+        final int amountPerCraft = outputSlot.amountAsInt();
+        final ItemStack result = resultType.toStack(amountPerCraft);
+        Item resultItem = resultType.value();
         resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
         int maxToCraft = calculateMaxCraftAmount(result, frequency);
-        int amountPerCraft = result.count();
         //Note: We initialized crafted here instead of in the for loop so that we can query how much was actually crafted
         int crafted = 0;
         remainderHelper.reset();
@@ -380,6 +368,7 @@ public class QIOCraftingWindow implements IContentsListener {
         boolean recheckOutput = false;
         LastInsertTarget lastInsertTarget = new LastInsertTarget();
         NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(craftingInput.input());
+        Iterable<TransactionalSlot> playerInv = Iterables.concat(hotBarSlots, mainInventorySlots);
         for (; crafted < maxToCraft; crafted += amountPerCraft) {
             if (recheckOutput && changedWhileCrafting) {
                 //If our inputs changed while crafting, and we are supposed to recheck the output,
@@ -422,12 +411,19 @@ public class QIOCraftingWindow implements IContentsListener {
             // the secondary checks afterwards while working on actually inserting into it
             // The reason this is needed is that if we only have space for two more items, but our crafting recipe will
             // produce three more, then we won't have room for that singular extra item and need to exit
-            try (Transaction simulation = Transaction.openRoot()) {
-                ItemResource itemType = ItemResource.of(result);
-                int toInsert = result.count();
-                toInsert -= MekanismContainer.insertItemCheckAll(hotBarSlots, itemType, toInsert, simulation, windowData);
-                toInsert -= MekanismContainer.insertItemCheckAll(mainInventorySlots, itemType, toInsert, simulation, windowData);
-                if (toInsert > 0) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                int inserted = 0;
+                for (TransactionalSlot slot : playerInv) {
+                    //Validate the slot "exists" for the current window configuration
+                    if (slot.exists(windowData)) {
+                        //Decrease amount to insert by how much we were able to insert
+                        inserted += slot.insert(resultType, amountPerCraft - inserted, simulation);
+                        if (inserted == amountPerCraft) {
+                            break;
+                        }
+                    }
+                }
+                if (inserted < amountPerCraft) {
                     //Note: If we aren't able to fit all the items we are crafting into the player's inventory we exit
                     // instead of attempting to insert the overflow into the QIO as it is easy enough if the player is trying
                     // to fill the QIO with something to then just transfer the contents into the QIO, and otherwise they are
@@ -437,15 +433,16 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
             }
             //Actually transfer the output to the player's inventory now that we know it will fit
-            ItemStack toInsert = lastInsertTarget.tryInserting(hotBarSlots, mainInventorySlots, windowData, result);
-            if (!toInsert.isEmpty()) {
+            int inserted = lastInsertTarget.tryInserting(hotBarSlots, mainInventorySlots, windowData, resultType, amountPerCraft, null);
+            if (inserted < amountPerCraft) {
                 //If something went horribly wrong adding it to the player's inventory given we calculated there was room
                 // and suddenly a few lines down there is no longer room, then just drop the items as the player
-                player.drop(toInsert, false);
+                //TODO - 26.1: roll it back via transactions?
+                player.drop(resultType.toStack(amountPerCraft - inserted), false);
             }
             boolean stopCrafting = false;
             //Update slots with remaining contents
-            try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: See if we should have the root context higher up
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 for (int subIndex = 0, size = remaining.size(); subIndex < size; subIndex++) {
                     ItemStack remainder = remaining.get(subIndex);
                     int index = getIndexFromRemaining(craftingInput, subIndex);
@@ -453,24 +450,24 @@ public class QIOCraftingWindow implements IContentsListener {
                     if (inputSlot.amountAsLong() > 1) {
                         //If the input slot contains an item that is stacked, reduce the size of it by one
                         //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
-                        useInput(inputSlot, transaction);
+                        useInput(inputSlot, subTransaction);
                     } else if (inputSlot.amountAsLong() == 1) {
                         //Else if the input slot only has a single item in it, try removing from the frequency
                         if (frequency == null || remainderHelper.isStackStillValid(world, remainder, index)) {
                             //If the remaining item is still valid for the recipe in that slot, or we don't have a frequency, and it is the
                             // last stack in the slot, remove the stack from the slot
-                            useInput(inputSlot, transaction);
+                            useInput(inputSlot, subTransaction);
                             // and mark that we should recheck our output as the recipe output may have changed, or we may
                             // no longer have enough inputs to craft an output
                             recheckOutput = true;
                         } else {
                             //Otherwise, try and remove the stack from the QIO frequency
                             ItemResource current = inputSlot.resource();
-                            if (frequency.massExtract(current, 1, transaction) == 0) {
+                            if (frequency.massExtract(current, 1, subTransaction) == 0) {
                                 //If we were not able to remove any from the frequency, remove it from the crafting grid
-                                useInput(inputSlot, transaction);
+                                useInput(inputSlot, subTransaction);
                                 // see if we have another valid input stored in the frequency and replace it with it if we do
-                                replacementHelper.findEquivalentItem(world, frequency, inputSlot, index, current, transaction);
+                                replacementHelper.findEquivalentItem(world, frequency, inputSlot, index, current, subTransaction);
                                 // and stop crafting even if we have another valid item for that spot, as we want to give the player a chance
                                 // to notice the item it will be using changed in case it got replaced with some very expensive alternative
                                 stopCrafting = true;
@@ -483,9 +480,9 @@ public class QIOCraftingWindow implements IContentsListener {
                         // recheck anyway
                         recheckOutput = true;
                     }
-                    addRemainingItem(player, frequency, inputSlot, remainder, transaction);
+                    addRemainingItem(player, frequency, inputSlot, remainder, subTransaction);
                 }
-                transaction.commit();
+                subTransaction.commit();
             }
             if (stopCrafting) {
                 //Note: We need to increment the amount crafted here, as breaking will skip the increment
@@ -633,27 +630,27 @@ public class QIOCraftingWindow implements IContentsListener {
         private boolean wasHotBar = true;
         private int lastIndex;
 
-        public ItemStack tryInserting(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, SelectedWindowData windowData, ItemStack toInsert) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                ItemResource typeToInsert = ItemResource.of(toInsert);
-                int amountToInsert = toInsert.count();
+        ///@return amount inserted
+        public int tryInserting(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, SelectedWindowData windowData, ItemResource typeToInsert,
+              int amountToInsert, @Nullable TransactionContext transaction) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 //Insert into stacks that already contain an item in the order hot bar -> main inventory
                 // Note: The target helps us skip checking some slot types that we know may not be valid
-                amountToInsert -= insertItem(hotBarSlots, typeToInsert, amountToInsert, true, true, windowData, transaction);
-                amountToInsert -= insertItem(mainInventorySlots, typeToInsert, amountToInsert, true, false, windowData, transaction);
+                int inserted = insertItem(hotBarSlots, typeToInsert, amountToInsert, true, true, windowData, subTransaction);
+                inserted += insertItem(mainInventorySlots, typeToInsert, amountToInsert - inserted, true, false, windowData, subTransaction);
                 //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
                 // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
                 // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
-                amountToInsert -= insertItem(hotBarSlots, typeToInsert, amountToInsert, false, true, windowData, transaction);
-                amountToInsert -= insertItem(mainInventorySlots, typeToInsert, amountToInsert, false, false, windowData, transaction);
-                transaction.commit();
-                return typeToInsert.toStack(amountToInsert);
+                inserted += insertItem(hotBarSlots, typeToInsert, amountToInsert - inserted, false, true, windowData, subTransaction);
+                inserted += insertItem(mainInventorySlots, typeToInsert, amountToInsert - inserted, false, false, windowData, subTransaction);
+                subTransaction.commit();
+                return inserted;
             }
         }
 
         /**
-         * Based on {@link MekanismContainer#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, SelectedWindowData)} except with extra handling to
-         * keep track of where we last were.
+         * Based on {@link MekanismContainer#insertItem(Iterable, ItemResource, int, TransactionContext, boolean, SelectedWindowData)} except with extra handling to keep
+         * track of where we last were.
          *
          * @return Amount inserted
          */

@@ -600,18 +600,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return craftingWindowHolder.getCraftingWindows()[selectedCraftingGrid];
     }
 
-    /**
-     * @apiNote Only call on server
-     */
-    public int insertIntoPlayerInventory(UUID player, ItemResource itemType, int toInsert, Transaction transaction) {
-        SelectedWindowData selectedWindow = getSelectedWindow(player);
-        toInsert -= insertItem(hotBarSlots, itemType, toInsert, transaction, true, selectedWindow);
-        toInsert -= insertItem(mainInventorySlots, itemType, toInsert, transaction, true, selectedWindow);
-        toInsert -= insertItem(hotBarSlots, itemType, toInsert, transaction, false, selectedWindow);
-        toInsert -= insertItem(mainInventorySlots, itemType, toInsert, transaction, false, selectedWindow);
-        return toInsert;
-    }
-
     private void updateSort() {
         if (sortingNeeded.sortItemList()) {
             sortType.sort(itemList, sortDirection);

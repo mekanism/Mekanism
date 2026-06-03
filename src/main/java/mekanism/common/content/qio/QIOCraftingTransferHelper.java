@@ -280,19 +280,12 @@ public class QIOCraftingTransferHelper {
         private final int[] stackSizes;
         private final int[] slotLimits;
 
-        protected BaseSimulatedInventory(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
-            int hotBarSize = hotBarSlots.size();
-            int slots = hotBarSize + mainInventorySlots.size();
+        protected BaseSimulatedInventory(Iterable<TransactionalSlot> playerSlots, int slots) {
             inventory = new ItemResource[slots];
             stackSizes = new int[slots];
             slotLimits = new int[slots];
-            TransactionalSlot inventorySlot;
-            for (int slot = 0; slot < slots; slot++) {
-                if (slot < hotBarSize) {
-                    inventorySlot = hotBarSlots.get(slot);
-                } else {
-                    inventorySlot = mainInventorySlots.get(slot - hotBarSize);
-                }
+            int slot = 0;
+            for (TransactionalSlot inventorySlot : playerSlots) {
                 ItemStack stack = inventorySlot.getItem();
                 int remaining = stack.isEmpty() ? 0 : getRemaining(slot, stack);
                 if (remaining == 0) {
@@ -307,6 +300,7 @@ public class QIOCraftingTransferHelper {
                 } else {
                     slotLimits[slot] = Math.min(inventorySlot.getMaxStackSize(stack), stack.getMaxStackSize());
                 }
+                slot++;
             }
         }
 

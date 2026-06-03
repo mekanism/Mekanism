@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -12,8 +13,9 @@ public class RVTransferUtils {
 
     public static List<Slot> getFormulaicInputSlots(FormulaicAssemblicatorContainer container) {
         List<Slot> slots = new ArrayList<>();
-        slots.addAll(container.getMainInventorySlots());
-        slots.addAll(container.getHotBarSlots());
+        for (TransactionalSlot playerSlot : container.getPlayerSlots()) {
+            slots.add(playerSlot);
+        }
         for (InventoryContainerSlot slot : container.getInventoryContainerSlots()) {
             if (slot.getInventorySlot() instanceof InputInventorySlot) {
                 slots.add(slot);

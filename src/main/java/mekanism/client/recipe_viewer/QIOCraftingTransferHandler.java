@@ -33,8 +33,7 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSou
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import net.minecraft.resources.ResourceKey;
@@ -341,7 +340,7 @@ public class QIOCraftingTransferHandler {
                     }
                 }
             }
-            if (!hasRoomToShuffle(qioTransferHelper, frequency, craftingWindow, container.getHotBarSlots(), container.getMainInventorySlots(), shuffleLookup)) {
+            if (!hasRoomToShuffle(qioTransferHelper, frequency, craftingWindow, container.getPlayerSlots(), container.getNumPlayerSlots(), shuffleLookup)) {
                 return recipeHelper.createNoRoomError();
             }
             if (execute) {
@@ -367,7 +366,7 @@ public class QIOCraftingTransferHandler {
      * frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
      */
     private static boolean hasRoomToShuffle(QIOCraftingTransferHelper qioTransferHelper, @Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow,
-          List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, Map<ItemTypeSource, List<List<SingularItemTypeSource>>> shuffleLookup) {
+          Iterable<TransactionalSlot> playerSlots, int numPlayerSlots, Map<ItemTypeSource, List<List<SingularItemTypeSource>>> shuffleLookup) {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down
         // on how many times we have to check if things can stack
         Object2IntMap<ItemResource> leftOverInput = new Object2IntArrayMap<>(QIOCraftingWindow.SLOTS_PER_WINDOW);
@@ -391,7 +390,7 @@ public class QIOCraftingTransferHandler {
         if (!leftOverInput.isEmpty()) {
             //If we have any leftover inputs in the crafting inventory, then get a simulated view of what the player's inventory
             // will look like after things are changed
-            BaseSimulatedInventory simulatedInventory = new BaseSimulatedInventory(hotBarSlots, mainInventorySlots) {
+            BaseSimulatedInventory simulatedInventory = new BaseSimulatedInventory(playerSlots, numPlayerSlots) {
                 @Override
                 protected int getRemaining(int slot, ItemStack currentStored) {
                     ItemTypeSource source = qioTransferHelper.getSource(ItemResource.of(currentStored));

@@ -5,7 +5,10 @@ import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,16 +40,18 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
             if (freq != null) {
                 ItemResource itemType = QIOGlobalItemLookup.instance().getTypeByUUID(typeUUID);
                 if (!itemType.isEmpty()) {
+                    Iterable<TransactionalSlot> playerInventory = container.getPlayerSlots();
+                    SelectedWindowData selectedWindow = container.getSelectedWindow(player.getUUID());
                     int amountInserted;
                     try (Transaction simulation = Transaction.openRoot()) {
                         //Simulate how much room we have in the player's inventory before trying to extract anything from the frequency
-                        amountInserted = container.insertIntoPlayerInventory(player.getUUID(), itemType, itemType.getMaxStackSize(), simulation);
+                        amountInserted = MekanismContainer.insertItem(playerInventory, itemType, itemType.getMaxStackSize(), simulation, selectedWindow);
                     }
                     if (amountInserted > 0) {
                         try (Transaction transaction = Transaction.openRoot()) {
                             //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
                             int extracted = freq.removeByType(itemType, amountInserted, transaction);
-                            if (extracted > 0 && container.insertIntoPlayerInventory(player.getUUID(), itemType, extracted, transaction) == extracted) {
+                            if (extracted > 0 && MekanismContainer.insertItem(playerInventory, itemType, extracted, transaction, selectedWindow) == extracted) {
                                 //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
                                 // but validate it just in case and roll back if we failed
                                 transaction.commit();

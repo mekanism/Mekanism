@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortUnaryOperator;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import mekanism.api.AutomationType;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
@@ -18,6 +20,7 @@ import mekanism.common.inventory.container.slot.ITransactionalSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 import mekanism.common.inventory.container.sync.SyncableBlockPos;
@@ -78,6 +81,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     protected final List<OffhandSlot> offhandSlots = new ArrayList<>();
+    private final Iterable<TransactionalSlot> playerSlots = Iterables.concat(hotBarSlots, mainInventorySlots);
     private final List<ISyncableData> trackedData = new ArrayList<>();
     private final Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
     /**
@@ -240,12 +244,19 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return Collections.unmodifiableList(inventoryContainerSlots);
     }
 
-    public List<MainInventorySlot> getMainInventorySlots() {
-        return Collections.unmodifiableList(mainInventorySlots);
+    public TransactionalSlot getPlayerSlot(int slot) {
+        if (slot < Inventory.getSelectionSize()) {//Hotbar
+            return hotBarSlots.get(slot);
+        }//Main inventory
+        return mainInventorySlots.get(slot - Inventory.getSelectionSize());
     }
 
-    public List<HotBarSlot> getHotBarSlots() {
-        return Collections.unmodifiableList(hotBarSlots);
+    public int getNumPlayerSlots() {
+        return hotBarSlots.size() + mainInventorySlots.size();
+    }
+
+    public Iterable<TransactionalSlot> getPlayerSlots() {
+        return Iterables.unmodifiableIterable(playerSlots);
     }
 
     /**
@@ -262,56 +273,48 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (currentSlot instanceof ITransactionalSlot insertableSlot && !insertableSlot.exists(selectedWindow)) {
             return ItemStack.EMPTY;
         }
-        ItemStack slotStack = currentSlot.getItem();
-        ItemResource itemToInsert = ItemResource.of(slotStack);
-        //TODO: Do we want to add support for limiting how much can be extracted at any one time to slots?
-        // If so it would probably be easiest to just change this line
-        int amountToInsert = slotStack.count();
+        int inserted;
         try (Transaction transaction = Transaction.openRoot()) {
+            ItemStack slotStack = currentSlot.getItem();
+            ItemResource itemToInsert = ItemResource.of(slotStack);
+            //TODO: Do we want to add support for limiting how much can be extracted at any one time to slots?
+            // If so it would probably be easiest to just change this line
+            int amountToInsert = slotStack.count();
             if (currentSlot instanceof InventoryContainerSlot) {
                 //Insert into stacks that already contain an item in the order armor, hot bar -> main inventory
-                amountToInsert -= insertItem(armorSlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                amountToInsert -= insertItem(hotBarSlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                amountToInsert -= insertItem(mainInventorySlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
-                // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
-                // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
-                amountToInsert -= insertItem(armorSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                amountToInsert -= insertItem(hotBarSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                amountToInsert -= insertItem(mainInventorySlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
+                // followed by trying to insert into empty slots
+                inserted = insertItem(Iterables.concat(armorSlots, hotBarSlots, mainInventorySlots), itemToInsert, amountToInsert, transaction, selectedWindow);
             } else {
                 //We are in the main inventory or the hot bar
                 //Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
-                amountToInsert -= insertItem(inventoryContainerSlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                if (amountToInsert == slotStack.count()) {
+                inserted = insertItem(inventoryContainerSlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
+                if (inserted == 0) {
                     //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
-                    amountToInsert -= insertItem(inventoryContainerSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                    if (amountToInsert == slotStack.count()) {
+                    inserted = insertItem(inventoryContainerSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
+                    if (inserted == 0) {
                         //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending on which one we currently are in
                         if (currentSlot instanceof ArmorSlot || currentSlot instanceof OffhandSlot) {
-                            amountToInsert -= insertItem(hotBarSlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                            amountToInsert -= insertItem(mainInventorySlots, itemToInsert, amountToInsert, transaction, true, selectedWindow);
-                            amountToInsert -= insertItem(hotBarSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                            amountToInsert -= insertItem(mainInventorySlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                        } else if (currentSlot instanceof MainInventorySlot) {
-                            amountToInsert -= insertItem(armorSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                            amountToInsert -= insertItem(hotBarSlots, itemToInsert, amountToInsert, transaction, selectedWindow);
-                        } else if (currentSlot instanceof HotBarSlot) {
-                            amountToInsert -= insertItem(armorSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
-                            amountToInsert -= insertItem(mainInventorySlots, itemToInsert, amountToInsert, transaction, selectedWindow);
+                            inserted = insertItem(playerSlots, itemToInsert, amountToInsert, transaction, selectedWindow);
+                        } else if (currentSlot instanceof MainInventorySlot || currentSlot instanceof HotBarSlot) {
+                            inserted = insertItem(armorSlots, itemToInsert, amountToInsert, transaction, false, selectedWindow);
+                            if (currentSlot instanceof MainInventorySlot) {
+                                inserted += insertItem(hotBarSlots, itemToInsert, amountToInsert - inserted, transaction, selectedWindow);
+                            } else {//HotBarSlot
+                                inserted += insertItem(mainInventorySlots, itemToInsert, amountToInsert - inserted, transaction, selectedWindow);
+                            }
                         } else {
                             //TODO: Should we add a warning message so we can find out if we ever end up here. (Given we should never end up here anyways)
                         }
                     }
                 }
             }
-            if (amountToInsert == slotStack.count()) {
+            if (inserted == 0) {
                 //If nothing changed then return that fact
                 return ItemStack.EMPTY;
             }
             //Otherwise, decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
             transaction.commit();
-            return transferSuccess(currentSlot, player, slotStack.count() - amountToInsert);
+            return transferSuccess(currentSlot, player, inserted);
         }
     }
 
@@ -326,13 +329,13 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Amount inserted
      */
-    public static <SLOT extends Slot & ITransactionalSlot> int insertItem(List<SLOT> slots, ItemResource itemType, int amount, TransactionContext transaction,
+    public static <SLOT extends Slot & ITransactionalSlot> int insertItem(Iterable<SLOT> slots, ItemResource itemType, int amount, TransactionContext transaction,
           @Nullable SelectedWindowData selectedWindow) {
-        int amountToInsert = amount;
-        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, true, selectedWindow);
-        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, false, selectedWindow);
+        int inserted = 0;
+        inserted += insertItem(slots, itemType, amount, transaction, true, selectedWindow);
+        inserted += insertItem(slots, itemType, amount - inserted, transaction, false, selectedWindow);
         //Return how much was actually inserted
-        return amount - amountToInsert;
+        return inserted;
     }
 
     /**
@@ -344,65 +347,31 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
      *
      * @return Amount inserted
+     *
+     * @see mekanism.common.attachments.containers.type.ResourceContainerType#insertInto(List, Resource, int, TransactionContext, AutomationType)
      */
-    public static <SLOT extends Slot & ITransactionalSlot> int insertItem(List<SLOT> slots, ItemResource itemType, int amount, TransactionContext transaction,
+    public static <SLOT extends Slot & ITransactionalSlot> int insertItem(Iterable<SLOT> slots, ItemResource itemType, final int amount, TransactionContext transaction,
           boolean ignoreEmpty, @Nullable SelectedWindowData selectedWindow) {
-        return insertItem(slots, itemType, amount, transaction, ignoreEmpty, false, selectedWindow);
-    }
-
-    /**
-     * Helper to try inserting into any slots that exist empty or otherwise not bothering to try and stack first.
-     *
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
-     *
-     * @return Amount inserted
-     */
-    public static <SLOT extends Slot & ITransactionalSlot> int insertItemCheckAll(List<SLOT> slots, ItemResource itemType, int amount, TransactionContext transaction,
-          @Nullable SelectedWindowData selectedWindow) {
-        //Ignore empty is ignored when check all is true
-        return insertItem(slots, itemType, amount, transaction, false, true, selectedWindow);
-    }
-
-    /**
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
-     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
-     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
-     *
-     * @return Amount inserted
-     *
-     * @see mekanism.common.util.InventoryUtils#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, mekanism.api.AutomationType)
-     */
-    public static <SLOT extends Slot & ITransactionalSlot> int insertItem(List<SLOT> slots, ItemResource itemType, final int amount, TransactionContext transaction,
-          boolean ignoreEmpty, boolean checkAll, @Nullable SelectedWindowData selectedWindow) {
-        if (itemType.isEmpty() || amount == 0) {
-            //Skip doing anything if the stack is already empty.
-            // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
-            return 0;
-        }
-        int toInsert = amount;
-        for (SLOT slot : slots) {
-            if (!checkAll && ignoreEmpty != slot.hasItem()) {
-                //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
-                continue;
-            } else if (!slot.exists(selectedWindow)) {
-                // or if the slot doesn't "exist" for the current window configuration
-                continue;
-            }
-            //Decrease amount to insert by how much we were able to insert
-            toInsert -= slot.insert(itemType, toInsert, transaction);
-            if (toInsert == 0) {
-                break;
+        int inserted = 0;
+        //Skip doing anything if the stack is already empty.
+        // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
+        if (!itemType.isEmpty() && amount > 0) {
+            for (SLOT slot : slots) {
+                if (ignoreEmpty != slot.hasItem()) {
+                    //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
+                    continue;
+                } else if (!slot.exists(selectedWindow)) {
+                    // or if the slot doesn't "exist" for the current window configuration
+                    continue;
+                }
+                //Decrease amount to insert by how much we were able to insert
+                inserted += slot.insert(itemType, amount - inserted, transaction);
+                if (inserted == amount) {
+                    break;
+                }
             }
         }
-        return amount - toInsert;
+        return inserted;
     }
 
     @NotNull
