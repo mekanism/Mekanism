@@ -122,7 +122,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         recheckAllRecipeErrors = TileEntityRecipeMachine.shouldRecheckAllErrors(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, this::getMaxFluid, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
+        fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, () -> inputTankCapacity, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
         fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, ConstantPredicates.alwaysTrue(), this));
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
@@ -244,10 +244,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
             //Note: We only count the inner volume for the tank capacity for the evap tower
             inputTankCapacity = (volume / 4) * MekanismConfig.general.evaporationFluidPerTank.get();
         }
-    }
-
-    public long getMaxFluid() {
-        return inputTankCapacity;
     }
 
     @NotNull

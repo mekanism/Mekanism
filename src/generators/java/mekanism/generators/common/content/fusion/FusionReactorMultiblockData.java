@@ -95,7 +95,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync
     private final IEnergyContainer energyContainer;
-    public IHeatCapacitor heatCapacitor;
+    private final IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded",
@@ -135,7 +135,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
 
-    public double plasmaTemperature;
+    private double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
     final BasicInventorySlot reactorSlot;
@@ -179,12 +179,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void onCreated(Level world) {
         super.onCreated(world);
-        for (BlockPos valvePos : valves.keySet()) {
-            TileEntityFusionReactorPort port = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valvePos);
-            if (port != null) {
-                heatHandlers.add(port);
-            }
-        }
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }
@@ -197,7 +191,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        setLastPlasmaTemp(input.getDoubleOr(SerializationConstants.PLASMA_TEMP, getPlasmaTemp()));
+        lastPlasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, getPlasmaTemp());
         setBurning(input.getBooleanOr(SerializationConstants.BURNING, isBurning()));
     }
 
@@ -270,11 +264,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @Override
     protected void updateEjectors(Level world) {
+        heatHandlers.clear();
         energyOutputTargets.clear();
         chemicalOutputTargets.clear();
         for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
             TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, entry.getKey());
             if (tile != null) {
+                heatHandlers.add(tile);
                 Direction side = entry.getValue().side;
                 tile.addEnergyTargetCapability(energyOutputTargets, side);
                 tile.addChemicalTargetCapability(chemicalOutputTargets, side);
@@ -288,13 +284,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void kill(ServerLevel world) {
-        if (world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND != 0) {
-            return;
-        }
-        List<Entity> entitiesToDie = world.getEntitiesOfClass(Entity.class, deathZone);
-        if (!entitiesToDie.isEmpty()) {
+        if (world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             DamageSource damageSource = GeneratorsDamageTypes.FUSION.source(world, deathZone.getCenter());
-            for (Entity entity : entitiesToDie) {
+            for (Entity entity : world.getEntitiesOfClass(Entity.class, deathZone)) {
                 entity.hurtServer(world, damageSource, 50_000F);
             }
         }
@@ -305,16 +297,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess());
             if (handler != null) {
                 //Validate that the handler has some fusion fuel in it
-                ChemicalResource fuelType = ResourceUtils.getTypeToExtract(fuelTank, handler, AutomationType.INTERNAL, null);
-                if (!fuelType.isEmpty()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(fuelTank.resource()), transaction);
-                        if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
-                            lastPlasmaTemperature = getPlasmaTemp();
-                            reactorSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
-                            setBurning(true);
-                            transaction.commit();
-                        }
+                try (Transaction transaction = Transaction.openRoot()) {
+                    ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
+                    int availableFuel = ResourceUtils.extractManual(handler, fuelType, fuelTank.getNeededAsInt(fuelTank.resource()), transaction);
+                    if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
+                        lastPlasmaTemperature = getPlasmaTemp();
+                        reactorSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), transaction);
+                        setBurning(true);
+                        transaction.commit();
                     }
                 }
             }
@@ -332,7 +322,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 //Note: We don't have to validate if the deuterium or tritium resources are empty, as if either is, then the injecting amount will be zero
                 if (deuteriumTank.extract(deuteriumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
                     tritiumTank.extract(tritiumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
-                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount) {
+                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), amountToInject, transaction, AutomationType.MANUAL) == amountToInject) {
                     //Only inject if we actually are able to transfer the proper amounts
                     transaction.commit();
                 }
@@ -375,7 +365,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 try (Transaction transaction = Transaction.openRoot()) {
                     int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steamTank.resource())), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
-                        //TODO - 26.1: Should we be checking if this matched? I think not, as we intentionally allow excess steam to be vented
+                        //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
                         steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);
                         caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                         heatCapacitor.handleHeat(-caseWaterHeat);
@@ -413,10 +403,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return new HeatTransfer(adjacentTransfer, environmentTransfer);
     }
 
-    public void setLastPlasmaTemp(double temp) {
-        lastPlasmaTemperature = temp;
-    }
-
     @ComputerMethod(nameOverride = "getPlasmaTemperature")
     public double getLastPlasmaTemp() {
         return lastPlasmaTemperature;
@@ -432,7 +418,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public void setPlasmaTemp(double temp) {
-        if (plasmaTemperature != temp) {
+        if (!Mth.equal(plasmaTemperature, temp)) {
             plasmaTemperature = temp;
             markDirty();
         }

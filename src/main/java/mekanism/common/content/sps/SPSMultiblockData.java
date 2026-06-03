@@ -34,6 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -122,12 +123,12 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 }
                 progress %= 1;
             }
-            if (lastProgress != progress) {
+            if (!Mth.equal(lastProgress, progress)) {
                 markDirty();
             }
         }
 
-        if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
+        if (receivedEnergy != lastReceivedEnergy || !Mth.equal(processed, lastProcessed)) {
             needsPacket = true;
         }
         if (!chemicalOutputTargets.isEmpty() && !outputTank.isEmpty()) {
@@ -187,7 +188,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             if (totalProcessed >= inputPerAntimatter) {
                 int toAdd = totalProcessed / inputPerAntimatter;
-                if (outputTank.insert(MekanismChemicals.ANTIMATTER.asResource(), toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
+                if (toAdd == 0 || outputTank.insert(MekanismChemicals.ANTIMATTER.asResource(), toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
                     return 0;
                 }
                 totalProcessed %= inputPerAntimatter;
@@ -203,38 +204,35 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     private void kill(ServerLevel world) {
         if (lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
-            List<Entity> entitiesToDie = world.getEntitiesOfClass(Entity.class, deathZone);
-            if (!entitiesToDie.isEmpty()) {
-                DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
-                LightningBolt lightningBolt = null;
-                List<ServerPlayer> nearbyPlayers = null;
-                for (Entity entity : entitiesToDie) {
-                    if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
-                        //If the entity is still alive, see if there is any special handling we want to do
-                        if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
-                            if (lightningBolt == null) {
-                                lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
-                                //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
-                                lightningBolt.setDamage(0);
-                                lightningBolt.setVisualOnly(true);
-                            }
-                            if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt)) {
-                                //Keep track of the remaining fire ticks so that we can skip lighting it on fire as we are not actual lightning
-                                int remainingFireTicks = entity.getRemainingFireTicks();
-                                entity.thunderHit(world, lightningBolt);
-                                entity.setRemainingFireTicks(remainingFireTicks);
-                                //Trigger advancements for nearby players
-                                if (nearbyPlayers == null) {
-                                    nearbyPlayers = new ArrayList<>();
-                                    for (ServerPlayer player : world.players()) {
-                                        if (advancementArea.contains(player.position())) {
-                                            nearbyPlayers.add(player);
-                                        }
+            DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
+            LightningBolt lightningBolt = null;
+            List<ServerPlayer> nearbyPlayers = null;
+            for (Entity entity : world.getEntitiesOfClass(Entity.class, deathZone)) {
+                if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
+                    //If the entity is still alive, see if there is any special handling we want to do
+                    if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
+                        if (lightningBolt == null) {
+                            lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
+                            //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
+                            lightningBolt.setDamage(0);
+                            lightningBolt.setVisualOnly(true);
+                        }
+                        if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt)) {
+                            //Keep track of the remaining fire ticks so that we can skip lighting it on fire as we are not actual lightning
+                            int remainingFireTicks = entity.getRemainingFireTicks();
+                            entity.thunderHit(world, lightningBolt);
+                            entity.setRemainingFireTicks(remainingFireTicks);
+                            //Trigger advancements for nearby players
+                            if (nearbyPlayers == null) {
+                                nearbyPlayers = new ArrayList<>();
+                                for (ServerPlayer player : world.players()) {
+                                    if (advancementArea.contains(player.position())) {
+                                        nearbyPlayers.add(player);
                                     }
                                 }
-                                for (ServerPlayer player : nearbyPlayers) {
-                                    MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, entity.typeHolder());
-                                }
+                            }
+                            for (ServerPlayer player : nearbyPlayers) {
+                                MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, entity.typeHolder());
                             }
                         }
                     }

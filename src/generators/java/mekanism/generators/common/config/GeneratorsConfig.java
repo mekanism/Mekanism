@@ -57,7 +57,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
     public final CachedDoubleValue fissionPostMeltdownDamage;
     public final CachedDoubleValue defaultBurnRate;
-    public final CachedLongValue burnPerAssembly;
+    public final CachedIntValue burnPerAssembly;
     public final CachedLongValue maxFuelPerAssembly;
     public final CachedLongValue fissionCooledCoolantPerTank;
     public final CachedLongValue fissionHeatedCoolantPerTank;
@@ -162,8 +162,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
         defaultBurnRate = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_DEFAULT_BURN_RATE.applyToBuilder(builder)
               .defineInRange("defaultBurnRate", 0.1D, 0.001D, 1D));
-        burnPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_BURN_PER_ASSEMBLY.applyToBuilder(builder)
-              .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
+        burnPerAssembly = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_BURN_PER_ASSEMBLY.applyToBuilder(builder)
+              .defineInRange("burnPerAssembly", 1, 1, 1_000_000));
         maxFuelPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_CAPACITY.applyToBuilder(builder)
               .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
         int maxVolume = 18 * 18 * 18;

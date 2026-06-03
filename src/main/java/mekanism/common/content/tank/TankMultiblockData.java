@@ -149,11 +149,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     private long getStoredAmount() {
-        return switch (mergedTank.getCurrentType()) {
-            case FLUID -> getFluidTank().amountAsLong();
-            case CHEMICAL -> getChemicalTank().amountAsLong();
-            default -> 0;
-        };
+        return mergedTank.getCurrentContainer().amountAsLong();
     }
 
     public IFluidTank getFluidTank() {
@@ -191,11 +187,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @ComputerMethod
     LargeResourceStack<?> getStored() {
-        return switch (mergedTank.getCurrentType()) {
-            case FLUID -> getFluidTank().asStack();
-            case CHEMICAL -> getChemicalTank().asStack();
-            default -> LargeResourceStack.FLUID_HELPER.empty();
-        };
+        return mergedTank.getCurrentContainer().asStack();
     }
 
     @ComputerMethod

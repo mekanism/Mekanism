@@ -1,20 +1,15 @@
 package mekanism.common.tile;
 
-import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -25,7 +20,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.chemical.ChemicalTankChemicalTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -46,6 +40,7 @@ import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -64,7 +59,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements IHasGasMode {
@@ -123,29 +117,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         boolean sendUpdatePacket = super.onUpdateServer();
         drainSlot.drainTankIntoSlot();
         fillSlot.fillTankFromSlot();
-        if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
-            ChemicalResource chemicalType = chemicalTank.resource();
-            if (!chemicalType.isEmpty()) {
-                long toDump = 0;
-                if (dumping == GasMode.DUMPING) {
-                    toDump = tier.getCapacity() / 400;
-                } else {//dumping == GasMode.DUMPING_EXCESS
-                    long target = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
-                    long stored = chemicalTank.amountAsLong();
-                    if (target < stored) {
-                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                        toDump = Math.min(stored - target, tier.getTransferRate());
-                    }
-                }
-                if (toDump > 0) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
-                        // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
-                        chemicalTank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
-                        transaction.commit();
-                    }
-                }
-            }
+        if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE && !chemicalTank.isEmpty()) {
+            ChemicalUtils.dump(chemicalTank, dumping, tier.getCapacity() / 400, tier.getTransferRate());
         }
         return sendUpdatePacket;
     }

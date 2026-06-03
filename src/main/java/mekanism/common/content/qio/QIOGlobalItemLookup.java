@@ -44,21 +44,22 @@ public class QIOGlobalItemLookup {
         INSTANCE = new QIOGlobalItemLookupDataHandler();
     }
 
-    static final Codec<QIOGlobalItemLookupDataHandler> CODEC = makeCodec();
+    private static final Logger LOGGER = LoggerFactory.getLogger(QIOGlobalItemLookup.class);
+    static final Codec<QIOGlobalItemLookupDataHandler> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemResource.CODEC)
+                .promotePartial(err -> LOGGER.error("Some QIO item data failed to load, items may be missing: {}", err))
+                .fieldOf(SerializationConstants.ITEMS)
+                .forGetter(it -> it.itemCache),
+          Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.CODEC)
+                .promotePartial(err -> LOGGER.warn("Some QIO alias data failed to load, unmigrated items may be missing: {}", err))
+                .fieldOf(SerializationConstants.ALIASES)
+                .forGetter(it -> it.mergedIds)
+    ).apply(instance, QIOGlobalItemLookupDataHandler::new));
     static final SavedDataType<QIOGlobalItemLookupDataHandler> TYPE = new SavedDataType<>(
           Mekanism.rl("qio_type_cache"),
           QIOGlobalItemLookupDataHandler::new,
           CODEC
     );
-
-    private static Codec<QIOGlobalItemLookupDataHandler> makeCodec() {
-        Codec<Map<UUID, ItemResource>> itemData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemResource.CODEC).promotePartial(err -> LOGGER.error("Some QIO item data failed to load, items may be missing: {}", err));
-        Codec<Map<UUID, UUID>> aliasData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.STRING_CODEC).promotePartial(err -> LOGGER.warn("Some QIO alias data failed to load, unmigrated items may be missing: {}", err));
-        return RecordCodecBuilder.create(instance -> instance.group(
-              itemData.fieldOf(SerializationConstants.ITEMS).forGetter(it -> it.itemCache),
-              aliasData.fieldOf(SerializationConstants.ALIASES).forGetter(it -> it.mergedIds)
-        ).apply(instance, QIOGlobalItemLookupDataHandler::new));
-    }
 
     public static class QIOGlobalItemLookupDataHandler extends SavedData {
 
@@ -134,6 +135,4 @@ public class QIOGlobalItemLookup {
         }
 
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(QIOGlobalItemLookup.class);
 }

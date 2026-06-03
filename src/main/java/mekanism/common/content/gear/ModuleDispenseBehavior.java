@@ -32,7 +32,7 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.isEnabled()) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        result = onModuleDispense(module, moduleContainer, itemAccess, source, transaction);
+                        result = onModuleDispense(module, itemAccess, source, transaction);
                         if (result == ModuleDispenseResult.HANDLED) {
                             transaction.commit();
                             return stack;
@@ -50,8 +50,8 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
         return super.execute(source, stack);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleDispenseResult onModuleDispense(IModule<MODULE> module, IModuleContainer moduleContainer, ItemAccess itemAccess,
-          BlockSource source, TransactionContext transaction) {
+    private <MODULE extends ICustomModule<MODULE>> ModuleDispenseResult onModuleDispense(IModule<MODULE> module, ItemAccess itemAccess, BlockSource source,
+          TransactionContext transaction) {
         return module.getCustomInstance().onDispense(module, itemAccess, source, transaction);
     }
 

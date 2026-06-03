@@ -4,13 +4,17 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
@@ -102,5 +106,30 @@ public class ChemicalUtils {
                 return color;
             }
         };
+    }
+
+    public static void dump(IChemicalTank chemicalTank, GasMode dumpMode, long dumpingAmount) {
+        dump(chemicalTank, dumpMode, dumpingAmount, dumpingAmount);
+    }
+
+    public static void dump(IChemicalTank chemicalTank, GasMode dumpMode, long dumpingAmount, long dumpExcessRate) {
+        if (dumpMode == GasMode.IDLE || chemicalTank.isEmpty()) {
+            return;
+        }
+        ChemicalResource chemicalType = chemicalTank.resource();
+        long amount = chemicalTank.amountAsLong();
+        long toDump = 0;
+        if (dumpMode == GasMode.DUMPING) {
+            toDump = dumpingAmount;
+        } else {//DUMPING_EXCESS
+            //Don't allow dumping more than the configured amount
+            long targetLevel = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
+            if (targetLevel < amount) {
+                toDump = Math.min(amount - targetLevel, dumpExcessRate);
+            }
+        }
+        if (toDump > 0) {
+            chemicalTank.setContents(chemicalType, amount - toDump, null);
+        }
     }
 }

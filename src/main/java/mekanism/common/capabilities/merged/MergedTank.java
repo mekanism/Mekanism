@@ -5,6 +5,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.world.level.storage.ValueInput;
@@ -28,10 +29,20 @@ public class MergedTank {
     }
 
     public CurrentType getCurrentType() {
-        if (!getFluidTank().isEmpty()) {
-            return CurrentType.FLUID;
+        if (fluidTank.isEmpty()) {
+            if (chemicalTank.isEmpty()) {
+                return CurrentType.EMPTY;
+            }
+            return CurrentType.CHEMICAL;
         }
-        return chemicalTank.isEmpty() ? CurrentType.EMPTY : CurrentType.CHEMICAL;
+        return CurrentType.FLUID;
+    }
+
+    public IResourceContainer<?> getCurrentContainer() {
+        if (chemicalTank.isEmpty()) {
+            return fluidTank;
+        }
+        return chemicalTank;
     }
 
     public final IFluidTank getFluidTank() {

@@ -66,7 +66,7 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.handlesRadialModeChange()) {
                     try (Transaction subTransaction = Transaction.open(transaction)) {
-                        if (setMode(module, player, moduleContainer, itemAccess, radialData, mode, subTransaction)) {
+                        if (setMode(module, player, itemAccess, radialData, mode, subTransaction)) {
                             subTransaction.commit();
                             return;
                         }
@@ -87,8 +87,8 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
         return module.getCustomInstance().getMode(module, instance, radialData);
     }
 
-    private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> boolean setMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer,
-          ItemAccess itemAccess, RadialData<M> radialData, M mode, @Nullable TransactionContext transaction) {
+    private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> boolean setMode(IModule<MODULE> module, Player player, ItemAccess itemAccess,
+          RadialData<M> radialData, M mode, @Nullable TransactionContext transaction) {
         return module.getCustomInstance().setMode(module, player, itemAccess, radialData, mode, transaction);
     }
 }

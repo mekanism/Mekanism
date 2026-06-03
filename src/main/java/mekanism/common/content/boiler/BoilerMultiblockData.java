@@ -170,7 +170,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 try (Transaction transaction = Transaction.openRoot()) {
                     ChemicalResource heatedTankType = superheatedCoolantTank.resource();
                     double portionToCool = coolantType.conductivity() * superheatedCoolantTank.amountAsLong();
-                    //TODO - 26.1: Re-evaluate this cast
                     int toCool = Ints.saturatedCast(Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature())));
                     ChemicalResource cooledCoolant = coolantType.cool();
                     int amountCooled = cooledCoolantTank.insert(cooledCoolant, toCool, transaction, AutomationType.INTERNAL);
@@ -269,8 +268,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super.writeUpdateTag(output);
         output.putFloat(SerializationConstants.SCALE, prevWaterScale);
         output.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
-        output.putInt(SerializationConstants.VOLUME, getWaterVolume());
-        output.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
+        output.putInt(SerializationConstants.VOLUME, waterVolume);
+        output.putInt(SerializationConstants.LOWER_VOLUME, steamVolume);
         NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, waterTank);
         NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, steamTank);
         output.store(SerializationConstants.RENDER_Y, BlockPos.CODEC, upperRenderLocation);
@@ -305,10 +304,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             waterTankCapacity = volume * MekanismConfig.general.boilerWaterPerTank.get();
             superheatedCoolantCapacity = volume * MekanismConfig.general.boilerHeatedCoolantPerTank.get();
         }
-    }
-
-    public int getSteamVolume() {
-        return steamVolume;
     }
 
     public void setSteamVolume(int volume) {

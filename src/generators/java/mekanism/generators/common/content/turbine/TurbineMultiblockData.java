@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.turbine;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -18,7 +16,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -28,6 +25,7 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -102,7 +100,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ContainerSync
     @SyntheticComputerMethod(getter = "getFlowRate")
-    public long clientFlow;
+    public int clientFlow;
 
     public float clientRotation;
     public float prevSteamScale;
@@ -148,26 +146,27 @@ public class TurbineMultiblockData extends MultiblockData {
         double flowRate = 0;
 
         long energyNeeded = energyContainer.getNeededAsLong();
-        long flow = 0;
+        int flow = 0;
         if (stored > 0 && energyNeeded > 0) {
-            double energyMultiplier = (MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
-                                      * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            double energyMultiplier = getEnergyMultiplier();
             if (energyMultiplier >= Mth.EPSILON) {
-                double rate = getMaxFlowRateDouble();
+                int steamDivisor = MekanismGeneratorsConfig.generators.turbineSteamDivisor.get();
                 double proportion = stored / (double) getSteamCapacity();
-                double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier) * MekanismGeneratorsConfig.generators.turbineSteamDivisor.get()) * proportion;
-                int amountGenerated = MathUtils.clampToInt(energyMultiplier * (rate / MekanismGeneratorsConfig.generators.turbineSteamDivisor.get()));
+                double origRate = getMaxFlowRateDouble();
+                double rate = Math.min(Math.min(stored, origRate), (energyNeeded / energyMultiplier) * steamDivisor) * proportion;
+                int amountGenerated = MathUtils.clampToInt(energyMultiplier * (rate / steamDivisor));
                 if (rate > Mth.EPSILON && amountGenerated > 0) {
-                    flow = MathUtils.clampToLong(rate);
+                    flow = MathUtils.clampToInt(rate);
                     flowRate = rate / origRate;
                     try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Is there any validation we want to perform for any of the following operations?
-                        energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL);
-                        //TODO - 26.1: Should we just make flow be an int?
-                        chemicalTank.extract(chemicalTank.resource(), Ints.saturatedCast(flow), transaction, AutomationType.INTERNAL);
-                        ventTank.insert(FluidResource.of(Fluids.WATER), Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), transaction, AutomationType.INTERNAL);
-                        transaction.commit();
+                        //TODO - 26.1: Re-evaluate these checks and the above math
+                        if (energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL) == amountGenerated &&
+                            chemicalTank.extract(chemicalTank.resource(), flow, transaction, AutomationType.INTERNAL) == flow) {
+                            int waterProduced = Math.min(flow, condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
+                            if (ventTank.insert(FluidResource.of(Fluids.WATER), waterProduced, transaction, AutomationType.INTERNAL) == waterProduced) {
+                                transaction.commit();
+                            }
+                        }
                     }
                 }
             }
@@ -180,26 +179,7 @@ public class TurbineMultiblockData extends MultiblockData {
         EnergyUtils.emit(energyOutputTargets, energyContainer, null);
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
-            ChemicalResource chemicalType = chemicalTank.resource();
-            long amount = chemicalTank.amountAsLong();
-            long toDump = 0;
-                if (dumpMode == GasMode.DUMPING) {
-                    toDump = getDumpingAmount(amount);
-                } else {//DUMPING_EXCESS
-                    //Don't allow dumping more than the configured amount
-                    long targetLevel = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
-                    if (targetLevel < amount) {
-                        toDump = Math.min(amount - targetLevel, getDumpingAmount(amount));
-                    }
-                }
-                if (toDump > 0) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
-                        // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
-                        chemicalTank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
-                        transaction.commit();
-                    }
-                }
+            ChemicalUtils.dump(chemicalTank, dumpMode, getDumpingAmount(chemicalTank.amountAsLong()));
         }
 
         float newRotation = (float) flowRate;
@@ -227,8 +207,12 @@ public class TurbineMultiblockData extends MultiblockData {
 
     private double getMaxFlowRateDouble() {
         double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get());
-        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
-        return rate;
+        return Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
+    }
+
+    private double getEnergyMultiplier() {
+        return ((double) MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / TurbineValidator.MAX_BLADES)
+               * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
     }
 
     @Override
@@ -265,7 +249,7 @@ public class TurbineMultiblockData extends MultiblockData {
         return lowerVolume * MekanismGeneratorsConfig.generators.turbineChemicalPerTank.get();
     }
 
-    public long getEnergyCapacity() {
+    private long getEnergyCapacity() {
         return energyCapacity;
     }
 
@@ -283,29 +267,23 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    public long getProductionRate() {
-        double energyMultiplier = ((double) MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / TurbineValidator.MAX_BLADES)
-                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        return MathUtils.clampToLong(energyMultiplier * clientFlow / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt());
+    public int getProductionRate() {
+        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt());
     }
 
     @ComputerMethod
-    public long getMaxProduction() {
-        double energyMultiplier = ((double) MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / TurbineValidator.MAX_BLADES)
-                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        double rate = getMaxFlowRateDouble();
-        return MathUtils.clampToLong(energyMultiplier * rate);
+    public int getMaxProduction() {
+        return MathUtils.clampToInt(getEnergyMultiplier() * getMaxFlowRateDouble());
     }
 
     @ComputerMethod
-    public long getMaxFlowRate() {
-        double rate = getMaxFlowRateDouble();
-        return MathUtils.clampToLong(rate);
+    public int getMaxFlowRate() {
+        return MathUtils.clampToInt(getMaxFlowRateDouble());
     }
 
     @ComputerMethod
-    public long getMaxWaterOutput() {
-        return (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get();
+    public int getMaxWaterOutput() {
+        return condensers * MekanismGeneratorsConfig.generators.condenserRate.get();
     }
 
     @ComputerMethod(nameOverride = "setDumpingMode")

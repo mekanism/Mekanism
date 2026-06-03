@@ -1,13 +1,10 @@
 package mekanism.common.tile.machine;
 
-import com.google.common.primitives.Ints;
 import java.util.List;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.IntObjectToIntFunction;
@@ -66,6 +63,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
@@ -76,7 +74,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -252,27 +249,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private void handleTank(IChemicalTank tank, GasMode mode) {
-        ChemicalResource chemicalType = tank.resource();
-        if (!chemicalType.isEmpty()) {
-            long toDump = 0;
-            if (mode == GasMode.DUMPING) {
-                toDump = dumpRate;
-            } else if (mode == GasMode.DUMPING_EXCESS) {
-                long target = getDumpingExcessTarget(tank);
-                long stored = tank.amountAsLong();
-                if (target < stored) {
-                    //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                    toDump = Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get());
-                }
-            }
-            if (toDump > 0) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
-                    // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
-                    tank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
-                    transaction.commit();
-                }
-            }
+        if (!tank.isEmpty() && mode != GasMode.IDLE) {
+            //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+            ChemicalUtils.dump(tank, mode, dumpRate, MekanismConfig.general.chemicalAutoEjectRate.get());
         }
     }
 

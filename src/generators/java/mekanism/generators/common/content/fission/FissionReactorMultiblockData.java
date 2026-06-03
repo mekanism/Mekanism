@@ -14,7 +14,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
-import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
@@ -215,12 +214,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         radiateEntities(world);
 
         // update scales
-        float coolantScale;
-        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getChemicalTank());
-        } else {
-            coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getFluidTank());
-        }
+        float coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getCurrentContainer());
         float fuelScale = MekanismUtils.getScale(prevFuelScale, fuelTank);
         float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, wasteTank);
         if (MekanismUtils.scaleChanged(coolantScale, prevCoolantScale) || MekanismUtils.scaleChanged(fuelScale, prevFuelScale) ||
@@ -337,7 +331,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //If we are at a safe temperature and damage level, allow enabling the reactor again
             setForceDisable(false);
         }
-        if (reactorDamage != lastDamage) {
+        if (!Mth.equal(reactorDamage, lastDamage)) {
             markDirty();
         }
     }
@@ -457,7 +451,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (lastBoilRate > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
                 //Note: The fluid resource should not be empty here
-                if (!tryExtractCoolant(coolantTank, lastBoilRate, transaction)) {// extra steam is dumped
+                if (tryExtractCoolant(coolantTank, lastBoilRate, transaction)) {// extra steam is dumped
+                    //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
                     heatedCoolantTank.insert(heatedCoolant, lastBoilRate, transaction, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * coolantEnthalpy;
                     heatCapacitor.handleHeat(-caseCoolantHeat);
@@ -471,7 +466,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private <RESOURCE extends Resource> boolean tryExtractCoolant(IResourceContainer<RESOURCE> tank, int toBoil, TransactionContext transaction) {
-        return tank.extract(tank.resource(), toBoil, transaction, AutomationType.INTERNAL) != toBoil;
+        return tank.extract(tank.resource(), toBoil, transaction, AutomationType.INTERNAL) == toBoil;
     }
 
     private int clampCoolantHeated(double heated, int stored) {
@@ -482,7 +477,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.amountAsLong() + burnRemaining;
-        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
+        double toBurn = Math.min(Math.min(rateLimit, storedFuel), getMaxBurnRate());
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.resource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
@@ -491,7 +486,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste
         partialWaste += toBurn;
-        //TODO - 26.1: Check what the old max for partialWaste was, and if it is safe for us to switch from lfloor to floor or if we need to adjust other things as well
         int newWaste = Mth.floor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
@@ -511,7 +505,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // update previous burn
         lastBurnRate = toBurn;
-        if (lastPartialWaste != partialWaste || lastBurnRemaining != burnRemaining) {
+        if (!Mth.equal(lastPartialWaste, partialWaste) || !Mth.equal(lastBurnRemaining, burnRemaining)) {
             markDirty();
         }
     }
@@ -582,7 +576,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    public long getMaxBurnRate() {
+    public int getMaxBurnRate() {
         return fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
     }
 
@@ -614,7 +608,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     public void setRateLimit(double rate) {
         rate = Mth.clamp(rate, 0, getMaxBurnRate());
-        if (rateLimit != rate) {
+        if (!Mth.equal(rateLimit, rate)) {
             rateLimit = rate;
             markDirty();
         }
@@ -653,42 +647,22 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     LargeResourceStack<?> getCoolant() {
-        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            return coolantTank.getChemicalTank().asStack();
-        }
-        return coolantTank.getFluidTank().asStack();
+        return coolantTank.getCurrentContainer().asStack();
     }
 
     @ComputerMethod
     long getCoolantCapacity() {
-        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            //TODO - 26.1: Should this be current limit or absolute limit
-            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.capacityAsLong(chemicalTank.resource());
-        }
-        //TODO - 26.1: Should this be current limit or absolute limit
-        IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.capacityAsLong(fluidTank.resource());
+        return cooledCoolantCapacity;
     }
 
     @ComputerMethod
     long getCoolantNeeded() {
-        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.getNeededAsLong(chemicalTank.resource());
-        }
-        IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.getNeededAsLong(fluidTank.resource());
+        return cooledCoolantCapacity - coolantTank.getCurrentContainer().amountAsLong();
     }
 
     @ComputerMethod
     double getCoolantFilledPercentage() {
-        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
-            return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
-        }
-        IFluidTank fluidTank = coolantTank.getFluidTank();
-        return fluidTank.amountAsLong() / (double) fluidTank.capacityAsLong(fluidTank.resource());
+        return coolantTank.getCurrentContainer().amountAsLong() / (double) cooledCoolantCapacity;
     }
 
     @ComputerMethod
