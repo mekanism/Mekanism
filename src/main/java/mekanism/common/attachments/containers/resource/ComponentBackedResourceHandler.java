@@ -19,8 +19,8 @@ public class ComponentBackedResourceHandler<RESOURCE extends Resource, CONTAINER
       extends ComponentBackedListHandler<LargeResourceStack<RESOURCE>, CONTAINER, AttachedResources<RESOURCE>, ResourceContainerType<RESOURCE, CONTAINER>>
       implements IMekanismResourceHandler<RESOURCE, CONTAINER> {
 
-    public ComponentBackedResourceHandler(ResourceContainerType<RESOURCE, CONTAINER> containerType, ItemAccess attachedAccess, int totalSlots) {
-        super(containerType, attachedAccess, totalSlots);
+    public ComponentBackedResourceHandler(ResourceContainerType<RESOURCE, CONTAINER> containerType, ItemAccess attachedAccess, int totalContainers, boolean validateItemType) {
+        super(containerType, attachedAccess, totalContainers, validateItemType);
     }
 
     private int getPerItem(int amount) {

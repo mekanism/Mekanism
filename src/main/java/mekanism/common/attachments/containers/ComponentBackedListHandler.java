@@ -21,8 +21,8 @@ public abstract class ComponentBackedListHandler<TYPE, CONTAINER extends ValueIO
     private int numNotInitialized;
 
     //TODO - 1.21: Do we want to validate slot indices are within range?
-    protected ComponentBackedListHandler(CONTAINER_TYPE containerType, ItemAccess attachedAccess, int totalContainers) {
-        super(containerType, attachedAccess);
+    protected ComponentBackedListHandler(CONTAINER_TYPE containerType, ItemAccess attachedAccess, int totalContainers, boolean validateItemType) {
+        super(containerType, attachedAccess, validateItemType);
         this.totalContainers = totalContainers;
     }
 

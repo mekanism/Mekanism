@@ -19,8 +19,8 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<IEnergy
     @Nullable
     private IEnergyContainer container;
 
-    public ComponentBackedEnergyHandler(EnergyContainerType containerType, ItemAccess attachedAccess) {
-        super(containerType, attachedAccess);
+    public ComponentBackedEnergyHandler(EnergyContainerType containerType, ItemAccess attachedAccess, boolean validateItemType) {
+        super(containerType, attachedAccess, validateItemType);
     }
 
     private int getPerItem(int amount) {

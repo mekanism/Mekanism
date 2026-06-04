@@ -38,11 +38,15 @@ public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED>
 
     void addDefault(Item item, DataComponentMap.Builder components);
 
-    default  <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supports(ITEM instance) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supports(ITEM instance) {
         return instance.has(getComponentType()) || supports(instance.typeHolder());
     }
 
-    boolean supports(Holder<Item> item);
+    default boolean supports(Holder<Item> item) {
+        return supports(item.value());
+    }
+
+    boolean supports(Item item);
 
     ATTACHED getOrEmpty(DataComponentGetter stack);
 

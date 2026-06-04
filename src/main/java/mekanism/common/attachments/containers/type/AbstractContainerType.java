@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -89,8 +88,8 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     }
 
     @Override
-    public boolean supports(Holder<Item> item) {
-        return knownDefaultCreators.containsKey(item.value());
+    public boolean supports(Item item) {
+        return knownDefaultCreators.containsKey(item);
     }
 
     @Override

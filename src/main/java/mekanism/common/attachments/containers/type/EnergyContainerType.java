@@ -26,7 +26,10 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     protected EnergyHandler createHandler(ItemAccess itemAccess) {
         ItemResource resource = itemAccess.getResource();
         if (supports(resource)) {
-            return new ComponentBackedEnergyHandler(this, itemAccess);
+            //Note: All our energy handlers that we expose on items, currently validate the backing item type just like Neo's ItemAccessEnergyHandler does.
+            // If it is desired to skip that check similar to ItemAccessResourceHandler, such as because we have a handler that changes between item instances
+            // similar to a bucket, then we just need to adjust this to pass false in those cases to the handler.
+            return new ComponentBackedEnergyHandler(this, itemAccess, true);
         }
         return null;
     }
@@ -43,7 +46,6 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
 
     @Override
     public Long attachedCopyOf(IEnergyContainer container) {
-        //TODO - 26.1: Evaluate how the resistive heater component is handled
         return container.getAmountAsLong();
     }
 
@@ -57,7 +59,7 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
         to.copyContents(from);
     }
 
-    //TODO: Evaluate what other spots should be clamped
+    //TODO - 26.1: Evaluate what other spots should be clamped
     public void clampContents(IEnergyContainer container, @Nullable TransactionContext transaction) {
         if (!container.isEmpty()) {
             long capacity = container.getCapacityAsLong();

@@ -111,7 +111,10 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         if (count == 0) {
             return null;
         }
-        return new ComponentBackedResourceHandler<>(this, itemAccess, count);
+        //Note: All our resource handlers that we expose on items, currently validate the backing item type just like Neo's ItemAccessEnergyHandler does.
+        // If it is desired to skip that check similar to ItemAccessResourceHandler, such as because we have a handler that changes between item instances
+        // similar to a bucket, then we just need to adjust this to pass false in those cases to the handler.
+        return new ComponentBackedResourceHandler<>(this, itemAccess, count, true);
     }
 
     @Override
