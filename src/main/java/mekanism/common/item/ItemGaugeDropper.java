@@ -2,19 +2,17 @@ package mekanism.common.item;
 
 import java.util.function.Consumer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.type.ContainerType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,12 +23,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemGaugeDropper extends Item {
 
@@ -71,27 +66,18 @@ public class ItemGaugeDropper extends Item {
 
     @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         if (player.isShiftKeyDown()) {
-            if (world.isClientSide()) {
+            if (level.isClientSide()) {
                 return InteractionResult.SUCCESS_SERVER;
             }
+            BlockPos pos = player.blockPosition();
             ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-            dumpHandler(Capabilities.FLUID.getCapability(itemAccess));
-            dumpHandler(Capabilities.CHEMICAL.getCapability(itemAccess));
-            //TODO - 26.1: Is this the correct way to transform the output?
+            ContainerType.FLUID.tryDumpContents(level, pos, itemAccess, null);
+            ContainerType.CHEMICAL.tryDumpContents(level, pos, itemAccess, null);
             return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(itemAccess.getResource().toStack(itemAccess.getAmount()));
         }
         return InteractionResult.PASS;
-    }
-
-    private <RESOURCE extends Resource> void dumpHandler(@Nullable ResourceHandler<RESOURCE> handler) {
-        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> handlerItem) {//TODO - 26.1: Test if this works
-            //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
-            for (IResourceContainer<RESOURCE> container : handlerItem.getContainers()) {
-                container.setContents(container.stackHelper().empty(), null);
-            }
-        }
     }
 
     @Override

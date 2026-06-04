@@ -12,7 +12,7 @@ import java.util.function.IntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
@@ -131,7 +131,7 @@ public class QIOCraftingWindow implements IContentsListener {
     public void invalidateRecipe() {
         //Clear the cached recipe and output slot
         lastRecipeJournal.updateRecipe(null, null);
-        outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
+        ContainerType.ITEM.clearContents(outputSlot, null);
         Level world = holder.getLevel();
         if (world != null && !world.isClientSide()) {
             //And recheck the recipe
@@ -147,7 +147,7 @@ public class QIOCraftingWindow implements IContentsListener {
             CraftingInput craftingInput = asCraftingInput().input();
             if (craftingInput.isEmpty()) {
                 //If there is no input, then set the output to empty as there can't be a matching recipe
-                outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), transaction);
+                ContainerType.ITEM.clearContents(outputSlot, transaction);
             } else if (lastRecipeJournal.recipe != null && lastRecipeJournal.recipe.value().matches(craftingInput, world)) {
                 //If the recipe matches make sure we update the output anyway, as the output may have changed based on NBT
                 // If the output slot was empty, then setting the slot to the recipe result fixes it not properly updating
@@ -164,7 +164,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     if (recipe == null) {
                         //If there is no found recipe, clear the output, but don't update our last recipe
                         // as we can start by checking if they are doing the same recipe as we last found
-                        outputSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), transaction);
+                        ContainerType.ITEM.clearContents(outputSlot, transaction);
                     } else {
                         //If the recipe is different, update the output
                         lastRecipeJournal.updateRecipe(recipe, transaction);

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.LargeResourceStack;
@@ -37,7 +35,7 @@ public final class ContainerType {
           TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid, LargeResourceStack.FLUID_HELPER,
           resource -> resource instanceof FluidResource
     );
-    public static final ResourceContainerType<ChemicalResource, IChemicalTank> CHEMICAL = new ChemicalContainerType();
+    public static final ChemicalContainerType CHEMICAL = new ChemicalContainerType();
     public static final HeatContainerType HEAT = new HeatContainerType();
 
     public static boolean anySupports(Holder<Item> item) {

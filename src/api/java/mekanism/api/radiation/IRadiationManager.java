@@ -15,7 +15,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -165,42 +167,52 @@ public interface IRadiationManager {
      */
     void radiate(LivingEntity entity, double magnitude);
 
-    /**
-     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
-     *
-     * @param level            The level on which to act
-     * @param pos              Location to dump radiation at.
-     * @param chemicalHandler  Chemical handler to process the tanks of.
-     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
-     *
-     * @since 10.7.15
-     */
-    void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, boolean clearRadioactive);
+    /// Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
+    ///
+    /// @param level              The level on which to act
+    /// @param pos                Location to dump radiation at.
+    /// @param chemicalHandler    Chemical handler to process the tanks of.
+    /// @param transaction        The transaction that this operation is part of. May be `null`. Note: Any radiation released into the environment will not be able to be
+    /// rolled back by the transaction, this parameter is just so that the context can be passed to the clearer.
+    /// @param radioactiveClearer Consumer that will be passed the handler and any indices that had radioactive substances dumped into the environment.
+    ///
+    /// @since 10.8.0
+    void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, @Nullable TransactionContext transaction, HandlerRadiationClearer radioactiveClearer);
 
-    /**
-     * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
-     *
-     * @param level            The level on which to act
-     * @param pos              Location to dump radiation at.
-     * @param chemicalTanks    Tanks to process.
-     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
-     *
-     * @since 10.7.15
-     */
-    void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
+    /// Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
+    ///
+    /// @param level            The level on which to act
+    /// @param pos              Location to dump radiation at.
+    /// @param chemicalTanks    Tanks to process.
+    /// @param clearRadioactive `true` to clear any chemical tanks that have radioactive substances.
+    /// @param transaction      The transaction that this operation is part of. May be `null`. Note: Any radiation released into the environment will not be able to be
+    /// rolled back by the transaction, this parameter is just so that the context can be passed to the tank while clearing.
+    ///
+    /// @since 10.7.15
+    void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive, @Nullable TransactionContext transaction);
 
-    /**
-     * Checks if the given {@link ChemicalResource chemical type} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
-     *
-     * @param level  The level on which to act.
-     * @param pos    Location to dump radiation at.
-     * @param type   Chemical type to check.
-     * @param amount Amount of the chemical to dump.
-     *
-     * @return {@code true} if the chemical was radioactive and radiation got dumped.
-     *
-     * @apiNote If radiation is disabled this may still return {@code true}.
-     * @since 10.8.0
-     */
+    /// Checks if the given [`chemical type`][ChemicalResource] is radioactive and if it is dumps a proportionate amount of radiation at the given location.
+    ///
+    /// @param level  The level on which to act.
+    /// @param pos    Location to dump radiation at.
+    /// @param type   Chemical type to check.
+    /// @param amount Amount of the chemical to dump.
+    ///
+    /// @return `true` if the chemical was radioactive and radiation got dumped.
+    ///
+    /// @apiNote If radiation is disabled this may still return `true`.
+    /// @since 10.8.0
     boolean dumpRadiation(Level level, BlockPos pos, ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount);
+
+    /// @since 10.8.0
+    @FunctionalInterface
+    interface HandlerRadiationClearer {
+
+        /// Clears the contents stored in the handler at the given index.
+        ///
+        /// @param handler     Chemical Handler to clear the index of.
+        /// @param index       Index that contained a radioactive substance that got dumped and should be cleared.
+        /// @param transaction The transaction that this operation is part of. May be `null`.
+        void clear(ResourceHandler<ChemicalResource> handler, int index, @Nullable TransactionContext transaction);
+    }
 }

@@ -10,7 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -33,6 +33,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -200,20 +201,19 @@ public final class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, boolean clearRadioactive) {
+    public void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, @Nullable TransactionContext transaction, HandlerRadiationClearer radioactiveClearer) {
         for (int tank = 0, gasTanks = chemicalHandler.size(); tank < gasTanks; tank++) {
-            if (dumpRadiation(level, pos, chemicalHandler.getResource(tank), chemicalHandler.getAmountAsLong(tank)) && clearRadioactive) {
-                //TODO - 26.1: Evaluate how to implement this part of the util method
-                //chemicalHandler.setChemicalInTank(tank, ChemicalStack.EMPTY);
+            if (dumpRadiation(level, pos, chemicalHandler.getResource(tank), chemicalHandler.getAmountAsLong(tank))) {
+                radioactiveClearer.clear(chemicalHandler, tank, transaction);
             }
         }
     }
 
     @Override
-    public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
+    public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive, @Nullable TransactionContext transaction) {
         for (IChemicalTank chemicalTank : chemicalTanks) {
             if (dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong()) && clearRadioactive) {
-                chemicalTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
+                ContainerType.CHEMICAL.clearContents(chemicalTank, transaction);
             }
         }
     }

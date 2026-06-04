@@ -613,7 +613,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 } else {
                     //If we don't have the item stored anymore (already filled all previous slots with it),
                     // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
-                    slot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
+                    ContainerType.ITEM.clearContents(slot, null);
                 }
             }
         }
@@ -623,7 +623,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             IInventorySlot slot = inputSlots.get(i);
             if (empty) {
                 //If we don't have any more items to sort, clear all the other slots that we haven't set something in
-                slot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
+                ContainerType.ITEM.clearContents(slot, null);
             } else {
                 empty = setSlotIfChanged(storedMap, slot);
             }

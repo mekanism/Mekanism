@@ -20,9 +20,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -224,7 +224,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
 
     @Override
     public void dump() {
-        infusionTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
+        ContainerType.CHEMICAL.dumpOrClearContents(level, worldPosition, infusionTank, null);
     }
 
     //Methods relating to IComputerTile

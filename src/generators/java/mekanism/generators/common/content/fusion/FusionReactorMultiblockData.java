@@ -16,7 +16,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -302,7 +301,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     int availableFuel = ResourceUtils.extractManual(handler, fuelType, fuelTank.getNeededAsInt(fuelTank.resource()), transaction);
                     if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
                         lastPlasmaTemperature = getPlasmaTemp();
-                        reactorSlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), transaction);
+                        ContainerType.ITEM.clearContents(reactorSlot, transaction);
                         setBurning(true);
                         transaction.commit();
                     }

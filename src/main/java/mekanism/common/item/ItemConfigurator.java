@@ -16,7 +16,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -24,6 +23,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -176,7 +176,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         //If the tile is a creative bin only allow clearing it if the player is in creative
                         // and don't bother popping the stack out
                         if (creative) {
-                            bin.getBinSlot().setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
+                            ContainerType.ITEM.clearContents(bin.getBinSlot(), null);
                             return InteractionResult.SUCCESS;
                         }
                         return InteractionResult.FAIL;
@@ -185,7 +185,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
                             InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), Block::popResourceFromFace);
-                            inventorySlot.setContents(LargeResourceStack.ITEM_HELPER.empty(), null);
+                            ContainerType.ITEM.clearContents(inventorySlot, null);
                         }
                     }
                     return InteractionResult.SUCCESS;

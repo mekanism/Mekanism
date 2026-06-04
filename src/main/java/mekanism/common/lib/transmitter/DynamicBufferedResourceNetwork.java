@@ -75,13 +75,13 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         if (isRemote()) {
             if (this.container.isEmpty()) {
                 this.container.copyContents(net.container);
-                net.container.setContents(net.container.stackHelper().empty(), null);
+                containerType().clearContents(net.container, null);
             }
         } else {
             if (!net.container.isEmpty()) {
                 if (this.container.isEmpty()) {
                     this.container.copyContents(net.container);
-                    net.container.setContents(net.container.stackHelper().empty(), null);
+                    containerType().clearContents(net.container, null);
                 } else {
                     // compare the chemicals themselves
                     if (this.container.resource().equals(net.container.resource())) {
@@ -90,7 +90,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
                     } else {
                         Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.resource(), net.container.resource());
                     }
-                    net.container.setContents(net.container.stackHelper().empty(), null);
+                    containerType().clearContents(net.container, null);
                 }
             }
             if (!Mth.equal(oldScale, currentScale)) {
@@ -152,7 +152,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     public void setLastType(@NotNull RESOURCE type) {
         if (type.isEmpty()) {
             if (!container.isEmpty()) {
-                container.setContents(container.stackHelper().empty(), null);
+                containerType().clearContents(container, null);
             }
         } else {
             lastType = type;

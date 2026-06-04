@@ -11,6 +11,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -25,9 +26,11 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -203,6 +206,22 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return emptyResource();
     }
 
+    public void tryDumpContents(Level level, BlockPos pos, ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+        if (capability.getCapability(itemAccess) instanceof IMekanismResourceHandler<RESOURCE, ?> handler) {
+            for (IResourceContainer<RESOURCE> container : handler.getContainers()) {
+                dumpContents(level, pos, container, transaction);
+            }
+        }
+    }
+
+    public void clearContents(IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
+        container.setContents(stackHelper.empty(), transaction);
+    }
+
+    public void dumpContents(Level level, BlockPos pos, IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
+        clearContents(container, transaction);
+    }
+
     public void clampContents(IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
         RESOURCE resource = container.resource();
         if (!resource.isEmpty()) {
@@ -353,12 +372,28 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return inserted;
     }
 
-    static class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {
+    public static class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {
 
         ChemicalContainerType() {
             super(MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, Capabilities.CHEMICAL,
                   TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER,
                   resource -> resource instanceof ChemicalResource);
+        }
+
+        public void dumpOrClearContents(@Nullable Level level, BlockPos pos, IResourceContainer<ChemicalResource> container, @Nullable TransactionContext transaction) {
+            if (level == null) {
+                clearContents(container, transaction);
+            } else {
+                dumpContents(level, pos, container, transaction);
+            }
+        }
+
+        @Override
+        public void dumpContents(Level level, BlockPos pos, IResourceContainer<ChemicalResource> container, @Nullable TransactionContext transaction) {
+            LargeResourceStack<ChemicalResource> current = container.asStack();
+            //Dump any radiation the current contents might contain
+            IRadiationManager.INSTANCE.dumpRadiation(level, pos, current.resource(), current.amount());
+            super.dumpContents(level, pos, container, transaction);
         }
 
         @Nullable

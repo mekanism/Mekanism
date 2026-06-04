@@ -358,7 +358,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 IRadiationManager.INSTANCE.radiate(world, getBounds().getCenter(), radiation);
             }
             //Dump the heated coolant as "loss" that didn't survive the meltdown
-            heatedCoolantTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
+            ContainerType.CHEMICAL.clearContents(heatedCoolantTank, null);
             //Disable the reactor so that if the person rebuilds it, it isn't on by default (QoL)
             active = false;
             //Update reactor damage to the specified level for post meltdown
@@ -396,7 +396,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         long stored = wasteTank.amountAsLong();
         if (dump) {
             //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
-            wasteTank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
+            ContainerType.CHEMICAL.clearContents(wasteTank, null);
         }
         return wasteRadioactivity * (stored + partialWaste);
     }
@@ -409,7 +409,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             double radioactivity = tank.resource().getRadioactivity() * tank.amountAsLong();
             if (radioactivity > 0) {
                 //If we have a radioactive substance, then we need to set the tank to empty
-                tank.setContents(LargeResourceStack.CHEMICAL_HELPER.empty(), null);
+                ContainerType.CHEMICAL.clearContents(tank, null);
                 return radioactivity;
             }
         }

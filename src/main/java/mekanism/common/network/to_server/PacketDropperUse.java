@@ -4,16 +4,14 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -56,10 +54,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
 
     @Override
     public void handle(IPayloadContext context) {
-        //todo - 26.1: validate that this successfully gets the tile
         if (tankId >= 0 && context.player() instanceof ServerPlayer player && player.containerMenu instanceof MekanismTileContainer<?> mekTileContainer) {
-            //TODO - 26.1: Validate if this automatically performs player.containerMenu.synchronizeCarriedToRemote();
-            // Either way we might want to remove our manual calls, and then PR it doing so on root commit for the player cursor access
             ItemAccess itemAccess = ItemAccess.forPlayerCursor(player, mekTileContainer);
             ItemResource itemResource = itemAccess.getResource();
             if (!itemResource.isEmpty() && itemResource.getItem() instanceof ItemGaugeDropper) {
@@ -69,9 +64,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
                             if (tankType == TankType.FLUID_TANK) {
-                                handleResourceTank(player, itemAccess, Capabilities.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                                handleResourceTank(player, itemAccess, ContainerType.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             } else if (tankType == TankType.CHEMICAL_TANK) {
-                                handleResourceTank(player, itemAccess, Capabilities.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                                handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             }
                         }
                     } else {
@@ -84,9 +79,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                             }
                         }
                         if (tankType == TankType.FLUID_TANK) {
-                            handleResourceTank(player, itemAccess, Capabilities.FLUID, tile.getFluidTanks(), tile.getLevel(), tile.getBlockPos());
+                            handleResourceTank(player, itemAccess, ContainerType.FLUID, tile);
                         } else if (tankType == TankType.CHEMICAL_TANK) {
-                            handleResourceTank(player, itemAccess, Capabilities.CHEMICAL, tile.getChemicalTanks(), tile.getLevel(), tile.getBlockPos());
+                            handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, tile);
                         }
                     }
                 }
@@ -100,21 +95,21 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
     }
 
     private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
-          MultiTypeCapability<ResourceHandler<RESOURCE>> capability, List<TANK> tanks, Level level, BlockPos pos) {
+          ResourceContainerType<RESOURCE, TANK> containerType, TileEntityMekanism tile) {
+        handleResourceTank(player, itemAccess, containerType, containerType.getContainers(tile), tile.getLevel(), tile.getBlockPos());
+    }
+
+    private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
+          ResourceContainerType<RESOURCE, TANK> containerType, List<TANK> tanks, Level level, BlockPos pos) {
         TANK tank = getTank(tanks);
         if (tank == null) {
             return;
         } else if (action == DropperAction.DUMP_TANK) {
-            //Dump the tank
-            tank.setContents(tank.stackHelper().empty(), null);
-            if (tank instanceof IChemicalTank chemicalTank) {
-                //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong());
-            }
+            containerType.dumpContents(level, pos, tank, null);
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
-        ResourceHandler<RESOURCE> dropperHandler = capability.getCapability(itemAccess);
+        ResourceHandler<RESOURCE> dropperHandler = containerType.capability().getCapability(itemAccess);
         if (dropperHandler != null) {
             if (action == DropperAction.FILL_DROPPER) {
                 //Insert fluid into dropper
@@ -156,7 +151,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                     //We were able to extract the same amount as we inserted, commit it, sync and trigger advancements
                     //Note: This should always be true given we simulated how much could be extracted at once, but we validate it just in case
                     transaction.commit();
-                    player.containerMenu.synchronizeCarriedToRemote();
                     MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, action);
                 }
             }
