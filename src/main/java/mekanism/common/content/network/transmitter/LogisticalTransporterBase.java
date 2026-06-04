@@ -472,21 +472,27 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             TransporterStack stack = createInsertStack(outputterPos.asLong(), color);
             if (stack.canInsertToTransporter(this, from, outputter)) {
                 if (outputter instanceof IAdvancedTransportEjector ejector && ejector.getRoundRobin()) {
-                    return insert((BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
+                    return insertUnchecked((BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
                 }
-                return insert(outputter, request, stack, min, transaction, TransporterStack::recalculatePath);
+                return insertUnchecked(outputter, request, stack, min, transaction, TransporterStack::recalculatePath);
             }
         }
         return TransitResponse.EMPTY;
     }
 
-    public <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, @Nullable EnumColor color, int min,
-          @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
-        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), color);
-        return insert(outputter, request, stack, min, transaction, pathCalculator);
+    public <BE extends BlockEntity> int insertUnchecked(BE outputter, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
+        TransitRequest request = TransitRequest.simple(type, amountToInsert);
+        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), getColor());
+        return insertUnchecked(outputter, request, stack, 1, transaction, pathCalculator).sendingAmount();
     }
 
-    public TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
+    public int insertUnchecked(long outputterPos, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
+        TransitRequest request = TransitRequest.simple(type, amountToInsert);
+        TransporterStack stack = createInsertStack(outputterPos, getColor());
+        return insertUnchecked(null, request, stack, 1, transaction, TransporterStack::recalculatePath).sendingAmount();
+    }
+
+    private TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;
@@ -494,8 +500,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return stack;
     }
 
-    public <BE extends BlockEntity> TransitResponse insert(BE outputter, TransitRequest request, TransporterStack stack, int min,
+    private <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, TransporterStack stack, int min,
           @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
+        //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
+        // destinations, which this doesn't do as it only checks once, rather than trying to check all destinations we can send to
+        // if the amount would be split between multiple destinations
         TransitResponse response = pathCalculator.calculate(stack, request, outputter, this, min, transaction);
         if (!response.isEmpty()) {
             stack.setStack(response.itemType(), response.sendingAmount());
@@ -504,7 +513,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                 emitStack(stack);
             } else {
                 //Otherwise, queue it to emit when the transaction chain finishes
-                //TODO - 26.1: Test this
                 RootCommitJournal onRootCommit = new RootCommitJournal(() -> emitStack(stack));
                 onRootCommit.updateSnapshots(transaction);
             }

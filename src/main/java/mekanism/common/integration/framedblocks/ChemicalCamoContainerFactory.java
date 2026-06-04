@@ -5,6 +5,8 @@ import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
 import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
 import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
 import io.github.xfacthd.framedblocks.api.util.ConfigView;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
@@ -60,15 +62,18 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             return null;
         }
 
-        for (int tank = 0, size = handler.size(); tank < size; tank++) {
+        int size = handler.size();
+        Set<ChemicalResource> seenTypes = new HashSet<>(size);
+        for (int tank = 0; tank < size; tank++) {
             ChemicalResource chemicalType = handler.getResource(tank);
-            if (!isValidChemical(chemicalType, player)) {
+            if (!seenTypes.add(chemicalType) || !isValidChemical(chemicalType, player)) {
+                //If we already tried this type, or if it is not a valid chemical, skip
                 continue;
             }
 
             if (!player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    if (handler.extract(tank, chemicalType, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, transaction) != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
+                    if (handler.extract(chemicalType, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, transaction) != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
                         continue;
                     }
                     if (!level.isClientSide()) {

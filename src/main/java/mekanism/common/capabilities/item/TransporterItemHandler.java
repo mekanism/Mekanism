@@ -3,9 +3,6 @@ package mekanism.common.capabilities.item;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
-import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.lib.inventory.TransitRequest;
-import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -17,9 +14,13 @@ public class TransporterItemHandler implements ResourceHandler<ItemResource> {
     private final LogisticalTransporterBase transporter;
     private final long fromPos;
 
-    public TransporterItemHandler(LogisticalTransporterBase transporter, long fromPos) {
+    TransporterItemHandler(LogisticalTransporterBase transporter, long fromPos) {
         this.transporter = transporter;
         this.fromPos = fromPos;
+    }
+
+    public LogisticalTransporterBase getTransporter() {
+        return transporter;
     }
 
     @Override
@@ -41,8 +42,10 @@ public class TransporterItemHandler implements ResourceHandler<ItemResource> {
         return 0;
     }
 
-    public LogisticalTransporterBase getTransporter() {
-        return transporter;
+    @Override
+    public long getCapacityAsLong(int index, ItemResource resource) {
+        Objects.checkIndex(index, size());
+        return transporter.tier.getPullAmount();
     }
 
     @Override
@@ -57,31 +60,22 @@ public class TransporterItemHandler implements ResourceHandler<ItemResource> {
         if (amount == 0 || !transporter.hasTransmitterNetwork()) {
             return 0;
         }
-        amount = Math.min(amount, getCapacityAsInt(0, resource));
-        TransitRequest request = TransitRequest.simple(resource, amount);
-        TransporterStack stack = transporter.createInsertStack(fromPos, transporter.getColor());
-        //TODO - 26.1: Is there any other validation that we need to do?
-        TransitResponse response = transporter.insert(null, request, stack, 1, transaction, TransporterStack::recalculatePath);
-        return response.sendingAmount();
+        //Note: We skip checking Transmitter#canConnectMutual, as transporters should never end up using this path,
+        // so then it would just fall back to having checked Transmitter#canConnect, which is already covered by
+        // the check to LogisticalTransporterBase#exposesInsertCap in TransporterCapabilityResolver
+        return transporter.insertUnchecked(fromPos, resource, Math.min(amount, transporter.tier.getPullAmount()), transaction);
     }
 
     @Override
     public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
         Objects.checkIndex(index, size());
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        return 0;
+        return extract(resource, amount, transaction);
     }
 
     @Override
     public int extract(ItemResource resource, int amount, TransactionContext transaction) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         return 0;
-    }
-
-    @Override
-    public long getCapacityAsLong(int index, ItemResource resource) {
-        Objects.checkIndex(index, size());
-        return transporter.tier.getPullAmount();
     }
 
     @Override
