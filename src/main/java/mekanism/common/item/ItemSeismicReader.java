@@ -64,7 +64,8 @@ public class ItemSeismicReader extends ItemEnergized {
             if (energyHandler == null) {
                 return needsEnergy(player);
             }
-            try (Transaction transaction = Transaction.openRoot()) {
+            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                 int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (EnergyUtils.extractManual(energyHandler, energyUsage, transaction) < energyUsage) {
                     return needsEnergy(player);

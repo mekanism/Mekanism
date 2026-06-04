@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -21,7 +22,7 @@ public class SortingRecipeData implements RecipeUpgradeData<SortingRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
-        return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(MekanismDataComponents.SORTING, true),  null);
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
+        return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(MekanismDataComponents.SORTING, true),  transaction);
     }
 }

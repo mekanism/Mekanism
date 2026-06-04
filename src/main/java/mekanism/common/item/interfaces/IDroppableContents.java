@@ -5,6 +5,7 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @FunctionalInterface
 public interface IDroppableContents {
@@ -22,7 +23,7 @@ public interface IDroppableContents {
      *
      * @apiNote Server side only.
      */
-    List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess);
+    List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess, TransactionContext transaction);
 
     @FunctionalInterface
     interface IDroppableAttachmentContents extends IDroppableContents {
@@ -31,7 +32,7 @@ public interface IDroppableContents {
         boolean canContentsDrop(ItemResource itemType);
 
         @Override
-        default List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess) {
+        default List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess, TransactionContext transaction) {
             //Note: Just directly interact with the attached contents as #getScalar will handle scaling the amounts
             return ContainerType.ITEM.getAttachedContents(itemAccess.getResource());
         }

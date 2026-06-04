@@ -16,6 +16,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -62,7 +63,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         if (itemMap.isEmpty()) {
             //If we have nothing present then it is a success, but if we have data that says we should
             // have items, but we don't then fail
@@ -78,6 +79,6 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
         itemType = itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()))
               //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
               .with(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
-        return ItemAccessUtils.exchange(itemAccess, itemType, null);
+        return ItemAccessUtils.exchange(itemAccess, itemType, transaction);
     }
 }

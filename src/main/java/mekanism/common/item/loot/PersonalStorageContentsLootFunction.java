@@ -12,6 +12,7 @@ import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItem
 import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
  * Loot function which copies the Personal Storage inventory to the saved data and adds an inv id to the stack
@@ -54,7 +56,10 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
                 if (EffectiveSide.get().isClient()) {
                     destInv = new ClientSidePersonalStorageInventory();
                 } else {
-                    destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack)), "Inventory not available?!");
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack), transaction), "Inventory not available?!");
+                        transaction.commit();
+                    }
                 }
                 int size = tileSlots.size();
                 List<IInventorySlot> containers = destInv.getContainers();

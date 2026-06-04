@@ -6,6 +6,7 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
@@ -60,9 +62,14 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (!player.isShiftKeyDown()) {
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
-            } else if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
-                player.getInventory().setChanged();
-                return InteractionResult.SUCCESS;
+            }
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank, transaction)) {
+                    transaction.commit();
+                    //TODO - 26.1: Is this call even necessary?
+                    player.getInventory().setChanged();
+                    return InteractionResult.SUCCESS;
+                }
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

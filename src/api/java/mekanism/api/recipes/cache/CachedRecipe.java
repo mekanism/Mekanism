@@ -310,10 +310,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
         }
     }
 
-    /**
-     * Called by the holder of this {@link CachedRecipe} to attempt to process/handle the internal recipe.
-     */
-    public void process() {
+    /// Called by the holder of this [CachedRecipe] to attempt to process/handle the internal recipe.
+    public final void process() {
         //TODO: Evaluate adding in some marker that gets set to true here that then denies the various callbacks/builders from being used
         // as once we start processing the cached recipe should basically be immutable
         if (pausedForErrors) {

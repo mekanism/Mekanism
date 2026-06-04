@@ -5,12 +5,14 @@ import mekanism.common.capabilities.item.TransporterCapabilityResolver;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter {
@@ -47,8 +49,12 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
             // Also evaluate if there are any other cases where we might want to override that method
             if (!transporter.isUpgrading()) {
                 //If the transporter is not currently being upgraded, drop the contents
-                for (TransporterStack stack : transporter.getTransit()) {
-                    transporter.drop(stack, null);
+                //Note: Protect against the block being broken by an auto clicker that might have already checked if it can extract energy
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    for (TransporterStack stack : transporter.getTransit()) {
+                        transporter.drop(stack, transaction);
+                    }
+                    transaction.commit();
                 }
             }
         }

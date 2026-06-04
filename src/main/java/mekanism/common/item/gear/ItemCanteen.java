@@ -75,12 +75,14 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
                 int missingFood = FoodConstants.MAX_FOOD - player.getFoodData().getFoodLevel();
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                 int foodToFill;
-                try (Transaction simulation = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
                     foodToFill = ResourceUtils.extractManual(fluidHandler, paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
                 if (foodToFill > 0) {
                     int pasteToUse = foodToFill * pastePerFood;
-                    try (Transaction transaction = Transaction.openRoot()) {
+                    //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         int extracted = ResourceUtils.extractManual(fluidHandler, paste, pasteToUse, transaction);
                         if (extracted == pasteToUse) {
                             //Note: This if statement should always be true given we already simulated that we could extract at least this much,
@@ -115,7 +117,8 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
         } else if (player.canEat(false)) {
             ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
             if (fluidHandler != null) {
-                try (Transaction simulation = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
                     int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                     int extracted = ResourceUtils.extractManual(fluidHandler, MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
                     if (extracted == pastePerFood) {

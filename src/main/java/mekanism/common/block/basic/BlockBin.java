@@ -44,7 +44,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     if (!binSlot.isEmpty() && bin.removeTicks == 0) {
                         bin.removeTicks = 3;
                         ItemResource binItemType = binSlot.getBinItemType();
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             int extracted = binSlot.extract(binItemType, player.isShiftKeyDown() ? binItemType.getMaxStackSize() : 1, transaction, AutomationType.MANUAL);
                             if (extracted > 0) {
                                 PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
@@ -95,7 +96,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             ItemResource resource = ItemResource.of(stack);
                             int inserted = binSlot.insert(resource, stack.count(), transaction, AutomationType.MANUAL);
                             if (PlayerInventoryWrapper.of(player).getHandSlot(hand).extract(resource, inserted, transaction) == inserted) {
@@ -112,7 +114,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                         bin.addTicks = 5;
                     }
                 } else if (bin.addTicks > 0 && !binItemType.isEmpty()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
+                    //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         boolean added = false;
                         PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
                         ResourceHandler<ItemResource> playerInvHandler = playerInv.getMainSlots();

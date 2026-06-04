@@ -53,7 +53,7 @@ public final class FluidUtils {
     }
 
     //TODO - 26.1: Do we want to just replace this with FluidUtil#interactWithFluidHandler?
-    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IFluidTank fluidTank) {
+    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IFluidTank fluidTank, TransactionContext tankInteraction) {
         //TODO - 26.1: Figure out whether there are cases where we would want it without the oneByOne access
         // And if we should get the item access from the player's interaction hand or from the passed stack.
         // I think the adding back to inventory part needs the player interaction item access?
@@ -67,7 +67,7 @@ public final class FluidUtils {
             return false;
         }
         int amountInItem;
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(tankInteraction)) {
             amountInItem = handler.extract(fluidType, Integer.MAX_VALUE, simulation);
         }
         if (amountInItem == 0) {
@@ -75,13 +75,13 @@ public final class FluidUtils {
                 return false;
             }
             int spaceInItem;
-            try (Transaction simulation = Transaction.openRoot()) {
+            try (Transaction simulation = Transaction.open(tankInteraction)) {
                 spaceInItem = handler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation);
                 if (spaceInItem == 0) {
                     return false;
                 }
             }
-            try (Transaction transaction = Transaction.openRoot()) {
+            try (Transaction transaction = Transaction.open(tankInteraction)) {
                 int extracted = fluidTank.extract(fluidType, spaceInItem, transaction, AutomationType.MANUAL);
                 if (extracted == 0) {
                     return false;
@@ -108,7 +108,7 @@ public final class FluidUtils {
                 return true;
             }
         }
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction transaction = Transaction.open(tankInteraction)) {
             int inserted = fluidTank.insert(fluidType, amountInItem, transaction, AutomationType.MANUAL);
             if (inserted == 0) {
                 return false;

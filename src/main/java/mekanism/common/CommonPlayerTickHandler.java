@@ -259,8 +259,8 @@ public class CommonPlayerTickHandler {
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                //TODO - 26.1: Is there a chance of mods firing this even from within a transaction context?
-                try (Transaction transaction = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic around an entity falling. Most likely this will never be necessary
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                     int extracted = EnergyUtils.extractManual(info.energyHandler, energyRequirement, transaction);
                     float absorbedPercent = extracted / (float) energyRequirement;
                     ratioAbsorbed = absorption * absorbedPercent;
@@ -296,7 +296,8 @@ public class CommonPlayerTickHandler {
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
                 int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
-                try (Transaction transaction = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic around an entity jumping. Most likely this will never be necessary
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                     //TODO - 26.1: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
                     if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {

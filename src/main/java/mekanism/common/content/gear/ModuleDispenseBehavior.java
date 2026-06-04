@@ -5,6 +5,7 @@ import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,8 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             ItemAccess itemAccess = ItemAccess.forStack(stack);
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.isEnabled()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
+                    //Protect against any mods that might be doing transactional logic, such as if a custom dispenser validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         result = onModuleDispense(module, itemAccess, source, transaction);
                         if (result == ModuleDispenseResult.HANDLED) {
                             transaction.commit();

@@ -7,6 +7,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.loot.PersonalStorageContentsLootFunction;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +36,10 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
         super.setPlacedBy(world, pos, state, placer, stack);
         if (!world.isClientSide() && stack.count() == 1 && (!(placer instanceof Player player) || !player.getAbilities().instabuild)) {
             //itemstack will be deleted, remove the stored inventory
-            PersonalStorageManager.deleteInventory(ItemAccess.forStack(stack));
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                PersonalStorageManager.deleteInventory(ItemAccess.forStack(stack), transaction);
+                transaction.commit();
+            }
         }
     }
 }

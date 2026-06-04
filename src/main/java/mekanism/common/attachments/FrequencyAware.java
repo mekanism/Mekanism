@@ -37,6 +37,7 @@ import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +93,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
     }
 
     /// @apiNote Only call this on the server
-    public void pruneInvalidTrusted(ItemAccess itemAccess, DataComponentType<? extends FrequencyAware<FREQ>> type) {
+    public void pruneInvalidTrusted(ItemAccess itemAccess, DataComponentType<? extends FrequencyAware<FREQ>> type, TransactionContext transaction) {
         ItemResource resource = itemAccess.getResource();
         if (resource.isEmpty()) {
             return;
@@ -108,8 +109,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
                     if (resource.getItem() instanceof IColoredItem) {
                         resource = resource.without(MekanismDataComponents.COLOR);
                     }
-                    //TODO - 26.1: Should we check we managed to exchange it all?
-                    ItemAccessUtils.exchange(itemAccess, resource, null);
+                    ItemAccessUtils.exchange(itemAccess, resource, transaction);
                 }
             }
         }

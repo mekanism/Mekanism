@@ -12,7 +12,6 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgr
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         if (this.contents.isEmpty()) {
             return true;
         }
@@ -49,16 +48,13 @@ public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgr
             //Something went wrong, fail
             return false;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            for (LargeResourceStack<RESOURCE> content : this.contents) {
-                if (!content.isEmpty() && insertInto(outputHandler, content.resource(), content.amount(), transaction) < content.amount()) {
-                    //If we have a remainder something failed so bail
-                    return false;
-                }
+        for (LargeResourceStack<RESOURCE> content : this.contents) {
+            if (!content.isEmpty() && insertInto(outputHandler, content.resource(), content.amount(), transaction) < content.amount()) {
+                //If we have a remainder something failed so bail
+                return false;
             }
-            transaction.commit();
-            return true;
         }
+        return true;
     }
 
     private long insertInto(ResourceHandler<RESOURCE> handler, RESOURCE resource, final long amount, TransactionContext transaction) {

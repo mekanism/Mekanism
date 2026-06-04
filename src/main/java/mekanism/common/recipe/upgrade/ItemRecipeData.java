@@ -11,7 +11,7 @@ import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @NothingNullByDefault
 public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
@@ -26,7 +26,7 @@ public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         if (contents.isEmpty()) {
             return true;
         }
@@ -35,18 +35,15 @@ public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
             // we will copy them over directly
             List<IInventorySlot> stackSlots = new ArrayList<>();
             PersonalStorageManager.createSlots(stackSlots::add, ConstantPredicates.alwaysTrueBi(), null);
-            try (Transaction transaction = Transaction.openRoot()) {
-                for (LargeResourceStack<ItemResource> content : contents) {
-                    if (!content.isEmpty() && insertInto(stackSlots, content.resource(), content.amount(), transaction) < content.amount()) {
-                        //If we have a remainder something failed so bail
-                        return false;
-                    }
+            for (LargeResourceStack<ItemResource> content : contents) {
+                if (!content.isEmpty() && insertInto(stackSlots, content.resource(), content.amount(), transaction) < content.amount()) {
+                    //If we have a remainder something failed so bail
+                    return false;
                 }
-                transaction.commit();
-                //We managed to transfer it all into valid slots, so save it as a new inventory
-                return PersonalStorageManager.createInventoryFor(itemAccess, stackSlots);
             }
+            //We managed to transfer it all into valid slots, so save it as a new inventory
+            return PersonalStorageManager.createInventoryFor(itemAccess, stackSlots, transaction);
         }
-        return super.applyToStack(itemAccess);
+        return super.applyToStack(itemAccess, transaction);
     }
 }

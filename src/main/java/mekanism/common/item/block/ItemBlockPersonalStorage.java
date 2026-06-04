@@ -12,6 +12,7 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
@@ -29,6 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
@@ -43,8 +46,8 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, itemAccess) -> {
-            if (PersonalStorageManager.getInventoryFor(itemAccess) == null) {
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, itemAccess, transaction) -> {
+            if (PersonalStorageManager.getInventoryFor(itemAccess, transaction) == null) {
                 //TODO - 26.1 make translated
                 p.sendOverlayMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."));
             }
@@ -83,18 +86,21 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();
             ItemAccess itemAccess = ItemAccess.forStack(stack);
-            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(itemAccess);
-            if (inventory != null && ResourceHandlerUtil.isEmpty(inventory)) {
-                //If the inventory was actually empty we can prune the data from the storage manager
-                // (if it isn't empty we want to persist it so that server admins can recover their items)
-                PersonalStorageManager.deleteInventory(itemAccess);
+            //If the inventory was actually empty we can prune the data from the storage manager
+            // (if it isn't empty we want to persist it so that server admins can recover their items)
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(itemAccess, transaction);
+                if (inventory != null && ResourceHandlerUtil.isEmpty(inventory)) {
+                    PersonalStorageManager.deleteInventory(itemAccess, transaction);
+                    transaction.commit();
+                }
             }
         }
     }
 
     @Override
-    public List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess) {
-        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(itemAccess);
+    public List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess, TransactionContext transaction) {
+        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(itemAccess, transaction);
         if (itemInventory == null) {
             return Collections.emptyList();
         }

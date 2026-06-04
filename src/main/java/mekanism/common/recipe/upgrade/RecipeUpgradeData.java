@@ -33,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +46,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     /**
      * @return {@code false} if it failed to apply to the stack due to being invalid
      */
-    boolean applyToStack(ItemAccess itemAccess);
+    boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction);
 
     @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemAccess itemAccess) {
@@ -99,7 +100,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      * Make sure to validate with getSupportedTypes before calling this
      */
     @Nullable
-    static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess) {
+    static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess, TransactionContext transaction) {
         ItemResource itemType = itemAccess.getResource();
         return switch (type) {
             case ENERGY -> {
@@ -111,7 +112,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM -> {
                 List<LargeResourceStack<ItemResource>> slots;
                 if (itemType.getItem() instanceof ItemBlockPersonalStorage) {
-                    AbstractPersonalStorageItemInventory inv = PersonalStorageManager.getInventoryIfPresent(itemAccess);
+                    AbstractPersonalStorageItemInventory inv = PersonalStorageManager.getInventoryIfPresent(itemAccess, transaction);
                     if (inv == null) {
                         yield null;
                     }
@@ -122,8 +123,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield slots.isEmpty() ? null : new ItemRecipeData(slots);
             }
             case LOCK -> {
-                ItemResource lockType = itemType.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
-                yield lockType.isEmpty() ? null : new LockRecipeData(lockType);
+                LockData lockData = itemType.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY);
+                yield lockData.lock().isEmpty() ? null : new LockRecipeData(lockData);
             }
             case SECURITY -> {
                 UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);

@@ -51,7 +51,6 @@ public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends Inve
             ResourceHandler<RESOURCE> insertedHandler = ItemAccess.forStack(resource.toStack(amount)).getCapability(capability);
             if (insertedHandler != null) {
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    //TODO - 26.1: Re-evaluate last transfer direction handling
                     LastTransferDirection lastTransferDirection = transferDirectionSupplier.get();
                     if (!currentStoredContents.isEmpty()) {
                         //TODO - 26.1: Re-evaluate this amount

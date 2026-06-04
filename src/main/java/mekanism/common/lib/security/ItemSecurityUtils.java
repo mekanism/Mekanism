@@ -3,7 +3,6 @@ package mekanism.common.lib.security;
 import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
@@ -23,9 +22,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IItemSecurityUtils#INSTANCE}
@@ -73,26 +72,29 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         }
     }
 
-    public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<Player, InteractionHand, ItemAccess> openGui) {
+    public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, GuiItemOpener openGui) {
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-        if (!tryClaimItem(level, player, itemAccess, null)) {
-            if (!INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
-                return InteractionResult.FAIL;
-            } else if (itemAccess.getAmount() > 1) {
-                //If the item is currently stacked, don't allow opening the GUI
-                return InteractionResult.PASS;
-            } else if (!level.isClientSide()) {
-                if (itemAccess.getResource().getItem() instanceof IFrequencyItem frequencyItem) {
-                    frequencyItem.pruneInvalidTrusted(itemAccess);
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            if (!tryClaimItem(level, player, itemAccess, transaction)) {
+                if (!INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
+                    return InteractionResult.FAIL;
+                } else if (itemAccess.getAmount() > 1) {
+                    //If the item is currently stacked, don't allow opening the GUI
+                    return InteractionResult.PASS;
+                } else if (!level.isClientSide()) {
+                    if (itemAccess.getResource().getItem() instanceof IFrequencyItem frequencyItem) {
+                        frequencyItem.pruneInvalidTrusted(itemAccess, transaction);
+                    }
+                    openGui.open(player, hand, itemAccess, transaction);
                 }
-                openGui.accept(player, hand, itemAccess);
             }
+            transaction.commit();
+            //Transform it in case it got modified (such as part of pruning invalid trusted frequencies)
+            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
         }
-        //Transform it in case it got modified (such as part of pruning invalid trusted frequencies)
-        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
     }
 
-    public boolean tryClaimItem(Level level, Player player, ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+    public boolean tryClaimItem(Level level, Player player, ItemAccess itemAccess, TransactionContext transaction) {
         IOwnerObject ownerObject = ownerCapability(itemAccess);
         if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
             if (!level.isClientSide()) {
@@ -103,5 +105,11 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
             return true;
         }
         return false;
+    }
+
+    @FunctionalInterface
+    public interface GuiItemOpener {
+
+        void open(Player player, InteractionHand hand, ItemAccess itemAccess, TransactionContext transaction);
     }
 }

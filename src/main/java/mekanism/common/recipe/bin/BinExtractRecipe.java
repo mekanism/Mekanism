@@ -8,6 +8,7 @@ import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySl
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -84,9 +85,8 @@ public class BinExtractRecipe extends BinRecipe {
                 LargeResourceStack<ItemResource> stack = slot.asStack();
                 if (!stack.isEmpty()) {
                     ItemResource stored = stack.resource();
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Validate this is not called from a transactional context
-                        // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+                    //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         int toExtract = Math.min(Ints.saturatedCast(stack.amount()), stored.getMaxStackSize());
                         //Only attempt to do anything if there are items to try and remove
                         if (slot.extract(stored, toExtract, transaction, AutomationType.MANUAL) == toExtract) {

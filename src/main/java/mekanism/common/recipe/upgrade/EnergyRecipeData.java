@@ -8,7 +8,6 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.util.EnergyUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +27,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         if (storedEnergy == 0) {
             //TODO: Do we care to support cases where the output item might have a different default component so then a value of zero for stored should be written?
             return true;
@@ -39,13 +38,10 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return false;
         }
         //TODO - 26.1: Do we want to just directly set the component onto the stack? Also what about resistive heater usage?
-        try (Transaction transaction = Transaction.openRoot()) {
-            //Insert into the output using manual as the automation type
-            //Note: We don't fail, as we allow voiding excess energy for upgrade recipes
-            insertInto(outputHandler, storedEnergy, transaction);
-            transaction.commit();
-            return true;
-        }
+        //Insert into the output using manual as the automation type
+        //Note: We don't fail, as we allow voiding excess energy for upgrade recipes
+        insertInto(outputHandler, storedEnergy, transaction);
+        return true;
     }
 
     private long insertInto(EnergyHandler handler, final long amount, TransactionContext transaction) {

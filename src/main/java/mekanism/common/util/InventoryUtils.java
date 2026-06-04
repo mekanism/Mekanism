@@ -66,7 +66,12 @@ public final class InventoryUtils {
             if (itemType.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(itemType)) {
                     scalar = inventory.getScalar(itemAccess);
-                    dropItemContents(level, blockPos, inventory.getDroppedSlots(itemAccess), scalar, dropper);
+                    List<LargeResourceStack<ItemResource>> droppedSlots;
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        droppedSlots = inventory.getDroppedSlots(itemAccess, transaction);
+                        transaction.commit();
+                    }
+                    dropItemContents(level, blockPos, droppedSlots, scalar, dropper);
                 } else {
                     //Explicitly denying dropping items
                     return;

@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @NothingNullByDefault
 public class MekanismShapedRecipe extends WrappedShapedRecipe {
@@ -52,33 +54,36 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             //If we have no supported types "fail" gracefully by just not transferring any data
             return toReturn;
         }
-        Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
-        //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
-        for (ItemStack stack : componentInputs) {
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
-            Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(itemAccess);
-            for (RecipeUpgradeType supportedType : stackSupportedTypes) {
-                if (supportedTypes.contains(supportedType)) {
-                    RecipeUpgradeData<?> data = RecipeUpgradeData.getUpgradeData(supportedType, itemAccess);
-                    if (data != null) {
-                        //If something went wrong, and we didn't actually get any data don't add it
-                        upgradeInfo.computeIfAbsent(supportedType, _ -> new ArrayList<>()).add(data);
+        //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
+            //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
+            for (ItemStack stack : componentInputs) {
+                ItemAccess itemAccess = ItemAccess.forStack(stack);
+                Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(itemAccess);
+                for (RecipeUpgradeType supportedType : stackSupportedTypes) {
+                    if (supportedTypes.contains(supportedType)) {
+                        RecipeUpgradeData<?> data = RecipeUpgradeData.getUpgradeData(supportedType, itemAccess, transaction);
+                        if (data != null) {
+                            //If something went wrong, and we didn't actually get any data don't add it
+                            upgradeInfo.computeIfAbsent(supportedType, _ -> new ArrayList<>()).add(data);
+                        }
                     }
                 }
             }
-        }
-        for (Entry<RecipeUpgradeType, List<RecipeUpgradeData<?>>> entry : upgradeInfo.entrySet()) {
-            List<RecipeUpgradeData<?>> upgradeData = entry.getValue();
-            if (!upgradeData.isEmpty()) {
-                //Skip any empty data, even though we should never have any
-                //TODO - 26.1: Test that this properly updates the stack in place (it should)
-                RecipeUpgradeData<?> data = RecipeUpgradeData.mergeUpgradeData(upgradeData);
-                if (data == null || !data.applyToStack(toReturnAccess)) {
-                    //Fail, incompatible data
-                    return ItemStack.EMPTY;
+            for (Entry<RecipeUpgradeType, List<RecipeUpgradeData<?>>> entry : upgradeInfo.entrySet()) {
+                List<RecipeUpgradeData<?>> upgradeData = entry.getValue();
+                if (!upgradeData.isEmpty()) {
+                    //Skip any empty data, even though we should never have any
+                    //TODO - 26.1: Test that this properly updates the stack in place (it should)
+                    RecipeUpgradeData<?> data = RecipeUpgradeData.mergeUpgradeData(upgradeData);
+                    if (data == null || !data.applyToStack(toReturnAccess, transaction)) {
+                        //Fail, incompatible data
+                        return ItemStack.EMPTY;
+                    }
                 }
             }
+            return toReturn;
         }
-        return toReturn;
     }
 }

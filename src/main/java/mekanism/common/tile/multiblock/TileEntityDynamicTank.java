@@ -7,6 +7,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
@@ -81,7 +83,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     private boolean manageInventory(TankMultiblockData multiblock, Player player, InteractionHand hand, ItemStack itemStack) {
         if (multiblock.isFormed()) {
-            return FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank());
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                boolean result = FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank(), transaction);
+                transaction.commit();
+                return result;
+            }
         }
         return false;
     }

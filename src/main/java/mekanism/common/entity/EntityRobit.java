@@ -326,7 +326,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
         if (!level().isClientSide()) {
             if (getDropPickup()) {
-                collectItems();
+                try (Transaction transaction = Transaction.openRoot()) {
+                    if (collectItems(transaction)) {
+                        transaction.commit();
+                    }
+                }
             }
 
             if (energyContainer.isEmpty() && !isOnChargepad()) {
@@ -347,28 +351,22 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return item.isAlive() && !item.hasPickUpDelay() && !(item.getItem().getItem() instanceof ItemRobit);
     }
 
-    private void collectItems() {
-        List<ItemEntity> items = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5), RobitAIPickup.ITEM_PREDICATE);
-        if (items.isEmpty()) {
-            return;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {
-            for (ItemEntity item : items) {
-                ItemStack stack = item.getItem();
-                int toPickUp = stack.count();
-                int inserted = ContainerType.ITEM.insertInto(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
-                if (inserted > 0) {
-                    transaction.commit();
-                    take(item, inserted);
-                    stack.shrink(inserted);
-                    if (stack.isEmpty()) {
-                        item.discard();
-                    }
-                    playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                    break;
+    private boolean collectItems(TransactionContext transaction) {
+        for (ItemEntity item : level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5), RobitAIPickup.ITEM_PREDICATE)) {
+            ItemStack stack = item.getItem();
+            int toPickUp = stack.count();
+            int inserted = ContainerType.ITEM.insertInto(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
+            if (inserted > 0) {
+                take(item, inserted);
+                stack.shrink(inserted);
+                if (stack.isEmpty()) {
+                    item.discard();
                 }
+                playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                return true;
             }
         }
+        return false;
     }
 
     public void goHome() {
@@ -492,9 +490,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     public void onDamageTaken(@NotNull DamageContainer damageContainer) {
-        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-        // and wraps the entire hitting the entity within their transaction?
-        try (Transaction transaction = Transaction.openRoot()) {
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before hitting a robit
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
             energyContainer.extract(MathUtils.clampToInt(1_000 * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
             transaction.commit();
         }

@@ -18,6 +18,7 @@ import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -60,7 +61,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         if (upgrades.isEmpty() && slots.stream().allMatch(LargeResourceStack::isEmpty)) {
             return true;
         }
@@ -122,6 +123,6 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        return ItemAccessUtils.exchange(itemAccess, itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, input, output)), null);
+        return ItemAccessUtils.exchange(itemAccess, itemType.with(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, input, output)), transaction);
     }
 }

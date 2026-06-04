@@ -64,7 +64,8 @@ public class ItemNetworkReader extends ItemEnergized {
                         if (energyHandler == null) {
                             return InteractionResult.FAIL;
                         }
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             if (EnergyUtils.extractManual(energyHandler, energyPerUse, transaction) < energyPerUse) {
                                 return InteractionResult.FAIL;
                             }

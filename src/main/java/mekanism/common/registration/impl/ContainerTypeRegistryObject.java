@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends MekanismDeferredHolder<MenuType<?>, MenuType<CONTAINER>> {
@@ -78,6 +79,10 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
 
     public void tryOpenGui(Player player, InteractionHand hand) {
         tryOpenGui(player, hand, ItemAccessUtils.playerHandAccess(player, hand));
+    }
+
+    public void tryOpenGui(Player player, InteractionHand hand, ItemAccess itemAccess, TransactionContext ignored) {
+        tryOpenGui(player, hand, itemAccess);
     }
 
     public void tryOpenGui(Player player, InteractionHand hand, ItemAccess itemAccess) {

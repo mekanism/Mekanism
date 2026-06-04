@@ -205,9 +205,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     public InteractionResult useOn(UseOnContext context) {
         for (IModule<?> module : getModules(context.getItemInHand())) {
             if (module.isEnabled()) {
-                //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-                // and wraps the entire item use within their transaction?
-                try (Transaction transaction = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                     InteractionResult result = onModuleUse(module, context, transaction);
                     if (result != InteractionResult.PASS) {
                         if (result.consumesAction()) {
@@ -233,9 +232,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             ItemAccess itemAccess = ItemAccess.forStack(stack);
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.isEnabled()) {
-                    //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-                    // and wraps the entire hitting the entity within their transaction?
-                    try (Transaction transaction = Transaction.openRoot()) {
+                    //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         InteractionResult result = onModuleInteract(module, player, entity, hand, itemAccess, transaction);
                         if (result != InteractionResult.PASS) {
                             if (result.consumesAction()) {
@@ -261,9 +259,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (energyHandler == null) {
             return 0;
         }
-        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-        // and wraps the entire hitting the entity within their transaction?
-        try (Transaction simulation = Transaction.openRoot()) {
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
             int energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
             int energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
@@ -283,9 +280,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
             int modDestroyEnergy = getDestroyEnergy(stack, silk);
             int energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
-            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-            // and wraps the entire hitting the entity within their transaction?
-            try (Transaction transaction = Transaction.openRoot()) {
+            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                 EnergyUtils.extractManual(energyHandler, energyRequired, transaction);
                 //AOE/vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative()) {
@@ -331,9 +327,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
                     // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
                     // to the amount of damage we will actually do
-                    //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-                    // and wraps the entire hitting the entity within their transaction?
-                    try (Transaction transaction = Transaction.openRoot()) {
+                    //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         EnergyUtils.extractManual(energyHandler, MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D)), transaction);
                         transaction.commit();
                     }
@@ -428,7 +423,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         if (distance < 5) {
                             return InteractionResult.PASS;
                         }
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             if (!player.isCreative()) {
                                 EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
                                 if (energyHandler == null) {

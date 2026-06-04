@@ -20,6 +20,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -117,26 +118,28 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
-            //TODO - 26.1: Should this use this or forPlayerInteraction
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
-            if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, null)) {
-                return InteractionResult.SUCCESS;
-            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
-                return InteractionResult.FAIL;
-            } else if (stack.count() > 1) {
-                //Skip if the item is stacked
-                return InteractionResult.PASS;
-            }
-            SoundEvent milkSound = getMilkSound(entity);
-            if (milkSound != null) {
-                ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
-                if (fluidHandler == null) {
-                    //If there isn't a fluid handler then there is something wrong with the stack, treat it as a normal stack and skip
+            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                //TODO - 26.1: Should this use this or forPlayerInteraction
+                ItemAccess itemAccess = ItemAccess.forStack(stack);
+                if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, transaction)) {
+                    transaction.commit();
+                    return InteractionResult.SUCCESS;
+                } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
+                    return InteractionResult.FAIL;
+                } else if (stack.count() > 1) {
+                    //Skip if the item is stacked
                     return InteractionResult.PASS;
                 }
-                FluidResource milk = FluidResource.of(NeoForgeMod.MILK);
-                //Try to insert the fluid
-                try (Transaction transaction = Transaction.openRoot()) {
+                SoundEvent milkSound = getMilkSound(entity);
+                if (milkSound != null) {
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+                    if (fluidHandler == null) {
+                        //If there isn't a fluid handler then there is something wrong with the stack, treat it as a normal stack and skip
+                        return InteractionResult.PASS;
+                    }
+                    FluidResource milk = FluidResource.of(NeoForgeMod.MILK);
+                    //Try to insert the fluid
                     if (ResourceUtils.insertManual(fluidHandler, milk, FluidType.BUCKET_VOLUME, transaction) < FluidType.BUCKET_VOLUME) {
                         //TODO - 26.1: Given it is milking the animal, should we allow getting less than a full bucket, and only fail if inserted was zero?
                         //Fail if we can't insert any
@@ -176,11 +179,22 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        //TODO - 26.1: Re-evaluate this item access (and more accurately the usages of stack)
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (!getMode(itemAccess.getResource())) {
             return InteractionResult.PASS;
-        } else if (ItemSecurityUtils.get().tryClaimItem(world, player, itemAccess, null)) {
+        }
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            InteractionResult result = use(world, player, itemAccess, transaction);
+            if (result.consumesAction()) {
+                transaction.commit();
+            }
+            return result;
+        }
+    }
+
+    private InteractionResult use(Level world, Player player, ItemAccess itemAccess, TransactionContext transaction) {
+        if (ItemSecurityUtils.get().tryClaimItem(world, player, itemAccess, transaction)) {
             //TODO - 26.1: Re-evaluate SUCCESS vs SUCCESS_SERVER for our use impls
             return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
         } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
@@ -219,8 +233,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             // only allow collecting from non-empty sources
             FluidResource fluidType = FluidResource.of(fluidState.getType());
             Optional<SoundEvent> sound = bucketPickup.getPickupSound(blockState);
-            try (Transaction transaction = Transaction.openRoot()) {
-                if (fluidType.isEmpty() || ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, transaction) < FluidType.BUCKET_VOLUME) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                if (fluidType.isEmpty() || ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, subTransaction) < FluidType.BUCKET_VOLUME) {
                     //There is nothing to insert, or we couldn't insert a full bucket worth, fail
                     return InteractionResult.FAIL;
                 }
@@ -235,7 +249,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     if (fluidType.is(bucket.content)) {
                         //If the fluid that got picked up is the type we were expecting it to be, apply the insertion
                         // and play the fill sound and fire relevant game events
-                        transaction.commit();
+                        subTransaction.commit();
                         WorldUtils.playFillSound(player, world, pos, fluidType, sound.orElse(null));
                         world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
                         return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
@@ -243,11 +257,11 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     fluidType = FluidResource.of(bucket.content);
                 }//TODO - 26.1: Else do we want to just assume we got the type, and commit the transaction?
             }
-            try (Transaction transaction = Transaction.openRoot()) {
-                if (!fluidType.isEmpty() && ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, transaction) >= FluidType.BUCKET_VOLUME) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                if (!fluidType.isEmpty() && ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, subTransaction) >= FluidType.BUCKET_VOLUME) {
                     //If the fluid that got picked up is the type we were expecting it to be, apply the insertion
                     // and play the fill sound and fire relevant game events
-                    transaction.commit();
+                    subTransaction.commit();
                     WorldUtils.playFillSound(player, world, pos, fluidType, sound.orElse(null));
                     world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
                     return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
@@ -259,14 +273,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
                 FluidResource resource = fluidHandler.getResource(tank);
                 if (!resource.isEmpty()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        int extracted = ResourceUtils.extractManual(fluidHandler, resource, FluidType.BUCKET_VOLUME, transaction);
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        int extracted = ResourceUtils.extractManual(fluidHandler, resource, FluidType.BUCKET_VOLUME, subTransaction);
                         if (extracted == FluidType.BUCKET_VOLUME && WorldUtils.tryPlaceContainedLiquid(player, world, pos, resource.toStack(extracted), result.getDirection())) {
                             //If we extracted it, and are able to place it into the world
                             if (!player.isCreative()) {//TODO - 26.1: How does item access interact with the player being creative
                                 //Manually shrink in case bucket volume is greater than tank input/output rate limit
                                 //TODO - 26.1: Re-evaluate this comment as it seems like it was wrong, as we validated that we can extract that amount
-                                transaction.commit();
+                                subTransaction.commit();
                             }
                             world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
                             return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
@@ -338,7 +352,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     if (blockState.getBlock() instanceof BucketPickup bucketPickup) {
                         FluidResource fluidType = FluidResource.of(fluidState.getType());
                         Optional<SoundEvent> sound = bucketPickup.getPickupSound(blockState);
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             if (fluidType.isEmpty() || ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, transaction) < FluidType.BUCKET_VOLUME) {
                                 //There is nothing to insert, or we couldn't insert a full bucket worth, fail
                                 return super.execute(source, stack);
@@ -363,7 +378,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                                 fluidType = FluidResource.of(bucket.content);
                             }//TODO - 26.1: Else do we want to just assume we got the type, and commit the transaction?
                         }
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                             if (!fluidType.isEmpty() && ResourceUtils.insertManual(fluidHandler, fluidType, FluidType.BUCKET_VOLUME, transaction) >= FluidType.BUCKET_VOLUME) {
                                 //If the fluid that got picked up is the type we were expecting it to be, apply the insertion
                                 // and play the fill sound and fire relevant game events
@@ -382,7 +398,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     for (int index = 0, size = fluidHandler.size(); index < size; index++) {
                         FluidResource resource = fluidHandler.getResource(index);
                         if (!resource.isEmpty()) {
-                            try (Transaction transaction = Transaction.openRoot()) {
+                            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                                 int extracted = ResourceUtils.extractManual(fluidHandler, resource, FluidType.BUCKET_VOLUME, transaction);
                                 if (extracted == FluidType.BUCKET_VOLUME && WorldUtils.tryPlaceContainedLiquid(null, world, pos, resource.toStack(extracted), null)) {
                                     //If we extracted it, and are able to place it into the world
@@ -408,45 +425,37 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             @NotNull
             @Override
             protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    FluidResource extractedFluid = FluidResource.EMPTY;
-                    for (FluidResource supportedFluid : List.of(FluidResource.of(Fluids.WATER), FluidResource.of(Fluids.LAVA))) {
-                        try (Transaction subTransaction = Transaction.open(transaction)) {
-                            int extracted = ResourceUtils.extractManual(fluidHandler, supportedFluid, FluidType.BUCKET_VOLUME, subTransaction);
-                            if (extracted == FluidType.BUCKET_VOLUME) {
-                                //Commit the fluid extraction to the sub transaction, and mark what type we have pending for overall commit with extraction
-                                subTransaction.commit();
-                                extractedFluid = supportedFluid;
-                                break;
-                            }
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler, TransactionContext transaction) {
+                FluidResource extractedFluid = FluidResource.EMPTY;
+                for (FluidResource supportedFluid : List.of(FluidResource.of(Fluids.WATER), FluidResource.of(Fluids.LAVA))) {
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        if (ResourceUtils.extractManual(fluidHandler, supportedFluid, FluidType.BUCKET_VOLUME, subTransaction) == FluidType.BUCKET_VOLUME) {
+                            //Commit the fluid extraction to the sub transaction, and mark what type we have pending for overall commit with extraction
+                            subTransaction.commit();
+                            extractedFluid = supportedFluid;
+                            break;
                         }
                     }
-                    BlockState endState;
-                    if (extractedFluid.is(Fluids.WATER)) {
-                        endState = Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL);
-                    } else if (extractedFluid.is(Fluids.LAVA)) {
-                        endState = Blocks.LAVA_CAULDRON.defaultBlockState();
-                    } else {
-                        return InteractionResult.TRY_WITH_EMPTY_HAND;
-                    }
-                    if (!level.isClientSide()) {
-                        if (!player.isCreative()) {
-                            //Manually shrink in case bucket volume is greater than tank input/output rate limit
-                            //TODO - 26.1: Re-evaluate this comment as it seems like it was wrong, as we validated that we can extract that amount
-                            transaction.commit();
-                        }
-                        player.awardStat(Stats.FILL_CAULDRON);
-                        player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-                        level.setBlockAndUpdate(pos, endState);
-                        SoundEvent emptySound = extractedFluid.getFluidType().getSound(player, level, pos, SoundActions.BUCKET_EMPTY);
-                        if (emptySound != null) {
-                            level.playSound(null, pos, emptySound, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                        level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
-                    }
-                    return InteractionResult.SUCCESS;
                 }
+                BlockState endState;
+                if (extractedFluid.is(Fluids.WATER)) {
+                    endState = Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL);
+                } else if (extractedFluid.is(Fluids.LAVA)) {
+                    endState = Blocks.LAVA_CAULDRON.defaultBlockState();
+                } else {
+                    return InteractionResult.TRY_WITH_EMPTY_HAND;
+                }
+                if (!level.isClientSide()) {
+                    player.awardStat(Stats.FILL_CAULDRON);
+                    player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                    level.setBlockAndUpdate(pos, endState);
+                    SoundEvent emptySound = extractedFluid.getFluidType().getSound(player, level, pos, SoundActions.BUCKET_EMPTY);
+                    if (emptySound != null) {
+                        level.playSound(null, pos, emptySound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
+                    level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
+                }
+                return InteractionResult.SUCCESS;
             }
         };
 
@@ -462,7 +471,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     //If there isn't a handler then there is something wrong with the stack, treat it as a normal stack and skip
                     return InteractionResult.TRY_WITH_EMPTY_HAND;
                 }
-                return interact(state, level, pos, player, hand, stack, fluidHandler);
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    InteractionResult result = interact(state, level, pos, player, hand, stack, fluidHandler, transaction);
+                    if (!level.isClientSide() && !player.isCreative()) {
+                        transaction.commit();
+                    }
+                    return result;
+                }
             }
             //Otherwise skip
             return InteractionResult.TRY_WITH_EMPTY_HAND;
@@ -470,7 +486,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
         @NotNull
         protected abstract InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler);
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler, TransactionContext transaction);
     }
 
     public static class BasicDrainCauldronInteraction extends BasicCauldronInteraction {
@@ -479,11 +495,11 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             @NotNull
             @Override
             protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler) {
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler, TransactionContext transaction) {
                 if (state.getValue(LayeredCauldronBlock.LEVEL) == LayeredCauldronBlock.MAX_FILL_LEVEL) {
                     //When emptying a water cauldron make sure it is full and just ignore handling of partial transfers
                     // as while we can handle them, they come with the added complication of deciding what value to give bottles
-                    return super.interact(state, level, pos, player, hand, stack, fluidHandler);
+                    return super.interact(state, level, pos, player, hand, stack, fluidHandler, transaction);
                 }
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
@@ -499,26 +515,21 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         @NotNull
         @Override
         protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                int inserted = ResourceUtils.insertManual(fluidHandler, FluidResource.of(type), FluidType.BUCKET_VOLUME, transaction);
-                if (inserted == FluidType.BUCKET_VOLUME) {
-                    //We can fit all the fluid we would be removing
-                    if (!level.isClientSide()) {
-                        if (!player.isCreative()) {
-                            transaction.commit();
-                        }
-                        player.awardStat(Stats.USE_CAULDRON);
-                        player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-                        level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
-                        SoundEvent fillSound = type.getFluidType().getSound(null, level, pos, SoundActions.BUCKET_FILL);
-                        if (fillSound != null) {
-                            level.playSound(null, pos, fillSound, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                        level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull ResourceHandler<FluidResource> fluidHandler, TransactionContext transaction) {
+            int inserted = ResourceUtils.insertManual(fluidHandler, FluidResource.of(type), FluidType.BUCKET_VOLUME, transaction);
+            if (inserted == FluidType.BUCKET_VOLUME) {
+                //We can fit all the fluid we would be removing
+                if (!level.isClientSide()) {
+                    player.awardStat(Stats.USE_CAULDRON);
+                    player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                    level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
+                    SoundEvent fillSound = type.getFluidType().getSound(null, level, pos, SoundActions.BUCKET_FILL);
+                    if (fillSound != null) {
+                        level.playSound(null, pos, fillSound, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
-                    return InteractionResult.SUCCESS;
+                    level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
+                return InteractionResult.SUCCESS;
             }
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }

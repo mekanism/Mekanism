@@ -118,8 +118,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
             //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
             ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (chemicalHandler != null) {
-                //TODO - 26.1: Is there a chance this is called from a transactional context
-                try (Transaction transaction = Transaction.openRoot()) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                     if (ResourceUtils.extractManual(chemicalHandler, ChemicalResource.of(getChemicalType()), 1, transaction) == 1) {
                         if (!level.isClientSide()) {
                             EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));

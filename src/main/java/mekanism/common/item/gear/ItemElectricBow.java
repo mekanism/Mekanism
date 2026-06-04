@@ -12,6 +12,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.Holder;
@@ -64,9 +65,8 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
         if (energyHandler == null) {
             return false;
         }
-        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-        // and wraps the entire hitting the entity within their transaction?
-        try (Transaction transaction = Transaction.openRoot()) {
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
             int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
             if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) == energyNeeded && super.releaseUsing(bow, world, entity, timeLeft)) {
                 //If we could use the energy, and we actually had a projectile to fire

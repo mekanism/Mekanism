@@ -237,19 +237,16 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                     }
                 }
                 //Run all our transfer handlers that we have
-                try (Transaction transaction = Transaction.openRoot()) {
-                    for (TargetExecution transferHandler : transferHandlers) {
-                        if (transferHandler.getHandlerCount() > 0) {
-                            try (Transaction subTransaction = Transaction.open(transaction)) {
-                                if (transferHandler.extract(subTransaction)) {
-                                    //If we were able to extract everything we thought we would be able to and had tried to send
-                                    // then commit all the changes
-                                    subTransaction.commit();
-                                }
+                for (TargetExecution transferHandler : transferHandlers) {
+                    if (transferHandler.getHandlerCount() > 0) {
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            if (transferHandler.extract(transaction)) {
+                                //If we were able to extract everything we thought we would be able to and had tried to send
+                                // then commit all the changes
+                                transaction.commit();
                             }
                         }
                     }
-                    transaction.commit();
                 }
             }
         }

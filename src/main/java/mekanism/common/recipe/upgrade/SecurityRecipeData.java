@@ -8,7 +8,7 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -34,16 +34,13 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
         IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
         if (ownerObject != null) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                ownerObject.setOwnerUUID(owner, transaction);
-                ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
-                if (security != null) {
-                    security.setSecurityMode(mode, transaction);
-                }
-                transaction.commit();
+            ownerObject.setOwnerUUID(owner, transaction);
+            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(itemAccess);
+            if (security != null) {
+                security.setSecurityMode(mode, transaction);
             }
         }
         return true;

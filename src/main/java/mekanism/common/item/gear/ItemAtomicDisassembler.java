@@ -146,9 +146,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
             // to the amount of damage we will actually do
-            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-            // and wraps the entire hitting the entity within their transaction?
-            try (Transaction transaction = Transaction.openRoot()) {
+            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                 EnergyUtils.extractManual(energyHandler, MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), transaction);
                 transaction.commit();
             }
@@ -161,9 +160,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (energyHandler == null) {
             return 0;
         }
-        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-        // and wraps the entire hitting the entity within their transaction?
-        try (Transaction simulation = Transaction.openRoot()) {
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
             int energyRequired = getDestroyEnergy(stack, state.destroySpeed);
             int energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
@@ -181,9 +179,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (energyHandler != null) {
             int baseDestroyEnergy = getDestroyEnergy(stack);
             int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
-            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-            // and wraps the entire hitting the entity within their transaction?
-            try (Transaction transaction = Transaction.openRoot()) {
+            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                 EnergyUtils.extractManual(energyHandler, energyRequired, transaction);
                 //Vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN) {

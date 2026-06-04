@@ -1,33 +1,30 @@
 package mekanism.common.recipe.upgrade;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
-import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.attachments.LockData;
+import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
-    private final ItemResource lockType;
+    private final LockData lockData;
 
-    LockRecipeData(ItemResource lockType) {
-        this.lockType = lockType;
+    LockRecipeData(LockData lockData) {
+        this.lockData = lockData;
     }
 
     @Nullable
     @Override
     public LockRecipeData merge(LockRecipeData other) {
-        return lockType.equals(other.lockType) ? this : null;
+        return lockData.equals(other.lockData) ? this : null;
     }
 
     @Override
-    public boolean applyToStack(ItemAccess itemAccess) {
-        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(itemAccess);
-        if (slot == null) {
-            return false;
-        }
-        return slot.setLockType(this.lockType);
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
+        return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(MekanismDataComponents.LOCK, lockData), transaction);
     }
 }

@@ -7,6 +7,7 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -52,9 +53,8 @@ public class BinInsertRecipe extends BinRecipe {
             return false;
         }
         ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.queryOnlyAccess(binType));
-        try (Transaction simulation = Transaction.openRoot()) {
-            //TODO - 26.1: Validate this is not called from a transactional context
-            // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+        //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
+        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Return that it doesn't match if our simulation claims we would not be able to accept any items into the bin
             return slot.insert(foundType, 1, simulation, AutomationType.MANUAL) > 0;
         }
@@ -95,9 +95,8 @@ public class BinInsertRecipe extends BinRecipe {
         }
         ItemAccess binAccess = ItemAccessUtils.queryOnlyAccess(binType);
         ComponentBackedBinInventorySlot slot = convertToSlot(binAccess);
-        try (Transaction transaction = Transaction.openRoot()) {
-            //TODO - 26.1: Validate this is not called from a transactional context
-            // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+        //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
             int inserted = slot.insert(foundType, toInsert, transaction, AutomationType.MANUAL);
             if (inserted == 0) {
                 //Return that it doesn't match if we aren't actually able to insert any items into the bin
@@ -147,9 +146,8 @@ public class BinInsertRecipe extends BinRecipe {
         }
         ItemAccess binAccess = ItemAccessUtils.queryOnlyAccess(binType);
         ComponentBackedBinInventorySlot slot = convertToSlot(binAccess);
-        try (Transaction transaction = Transaction.openRoot()) {
-            //TODO - 26.1: Validate this is not called from a transactional context
-            // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+        //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
+        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
             for (int i = 0; i < foundSlots.length; i++) {
                 if (foundSlots[i]) {
                     //Only try inserting a single item into the bin. We execute on a copy of the bin stack so that we can mutate it and chain insertions
@@ -182,9 +180,8 @@ public class BinInsertRecipe extends BinRecipe {
                 ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccess.forStack(result));
                 ItemResource storedResource = slot.resource();
                 if (!storedResource.isEmpty()) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Validate this is not called from a transactional context
-                        // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+                    //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before this event is fired
+                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                         Container craftingMatrix = event.getInventory();
                         for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
                             ItemStack stack = craftingMatrix.getItem(i);
