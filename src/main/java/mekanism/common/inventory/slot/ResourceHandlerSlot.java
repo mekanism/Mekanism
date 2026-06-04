@@ -252,23 +252,29 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     private <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler, RESOURCE resource,
           int amountNeeded) {
-        int available;
-        try (Transaction simulation = Transaction.openRoot()) {
-            available = handler.extract(resource, amountNeeded, simulation);
+        if (amountNeeded == 0) {
+            return false;
         }
-        if (available > 0) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                //Insert the amount we simulated that we could extract from the stack into our container
-                int accepted = resourceContainer.insert(resource, available, transaction, AutomationType.INTERNAL);
-                if (accepted > 0 && handler.extract(resource, accepted, transaction) == accepted) {
-                    //If we were able to accept  something, and extract the corresponding amount from the original handler
-                    //Commit the changes to the transaction
-                    transaction.commit();
-                    return true;
-                }
+        int roomFor;
+        try (Transaction simulation = Transaction.openRoot()) {
+            //Check how much we can actually insert into our container in case it has a rate limit and can't accept everything it needs at once
+            roomFor = resourceContainer.insert(resource, amountNeeded, simulation, AutomationType.INTERNAL);
+            if (roomFor == 0) {
+                return false;
             }
         }
-        return false;
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Extract the amount we simulated we can accept from the handler. It is important this happens before we then insert into our rate limit
+            // based container as if the handler a stacked item, then it might only be able to provide things in discrete increments
+            int extracted = handler.extract(resource, roomFor, transaction);
+            if (extracted > 0 && resourceContainer.insert(resource, extracted, transaction, AutomationType.INTERNAL) == extracted) {
+                //If we were able to accept  something, and extract the corresponding amount from the original handler
+                //Commit the changes to the transaction
+                transaction.commit();
+                return true;
+            }
+            return false;
+        }
     }
 
     /// Fills the container from the slot, and does not move it to an output slot afterward
@@ -309,19 +315,27 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
             return false;
         }
         RESOURCE resource = resourceContainer.resource();
-        int resourceAmount = resourceContainer.amountAsInt();
+        int availableResource;
+        try (Transaction simulation = Transaction.openRoot()) {
+            //Check how much we can extract from the container to ensure we follow any transfer rate limits
+            availableResource = resourceContainer.extract(resource, resourceContainer.amountAsInt(), simulation, AutomationType.INTERNAL);
+            if (availableResource == 0) {
+                //Short circuit if nothing can actually be extracted
+                return false;
+            }
+        }
         try (Transaction transaction = Transaction.openRoot()) {
             //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
             // and it does not actually matter that we are directly executing on the item
-            int inserted = handler.insert(resource, resourceAmount, transaction);
+            int inserted = handler.insert(resource, availableResource, transaction);
             if (inserted > 0 && resourceContainer.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                 //If we were able to insert something into the original handler and extract the same amount from our container
                 //Commit the changes to the transaction
                 transaction.commit();
                 return true;
             }
+            return false;
         }
-        return false;
     }
 
     protected static <RESOURCE extends Resource> boolean canInput(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
@@ -345,7 +359,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
             RESOURCE resource = resourceHandler.getResource(tank);
             if (resource.isEmpty()) {
                 hasEmpty = true;
-            } else if (simulateCanInsert(resourceContainer, resource, resourceHandler.getAmountAsInt(tank))) {
+            } else if (simulateCanInsert(resourceContainer, resource)) {
                 //True if the items contents are valid, and we can fill the tank with any of our contents
                 return true;
             }
@@ -382,7 +396,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     private static <RESOURCE extends Resource> boolean canFill(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
         for (int tank = 0, tanks = resourceHandler.size(); tank < tanks; tank++) {
             RESOURCE storedType = resourceHandler.getResource(tank);
-            if (!storedType.isEmpty() && simulateCanInsert(resourceContainer, storedType, resourceHandler.getAmountAsInt(tank))) {
+            if (!storedType.isEmpty() && simulateCanInsert(resourceContainer, storedType)) {
                 //True if we can fill the tank with any of our contents
                 // Note: We need to recheck the fact the fluid is not empty and that it is valid,
                 // in case the item has multiple tanks and only some of the fluids are valid
@@ -449,14 +463,12 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         return canDrain(resourceContainer, resourceHandler);
     }
 
-    protected static <RESOURCE extends Resource> boolean simulateCanInsert(IResourceContainer<RESOURCE> resourceContainer, RESOURCE resource, int amount) {
-        /*try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
-            return resourceContainer.insert(resource, amount, simulation, AutomationType.INTERNAL) > 0;
-        }*/
-        //TODO - 26.1: This used to do a full on simulation, do we need to check to make sure it isn't full or is not checking it actually more accurate for what we want
-        // If so we can easily check that it isn't full if the resource type matches, or we might want to go back to simulation,
-        // even though that means we might need to be careful about the transactional context
-        if (resourceContainer.isValidForInsertion(resource, AutomationType.INTERNAL)) {
+    protected static <RESOURCE extends Resource> boolean simulateCanInsert(IResourceContainer<RESOURCE> resourceContainer, RESOURCE resource) {
+        return simulateCanInsert(resourceContainer, resource, AutomationType.INTERNAL);
+    }
+
+    protected static <RESOURCE extends Resource> boolean simulateCanInsert(IResourceContainer<RESOURCE> resourceContainer, RESOURCE resource, AutomationType automationType) {
+        if (resourceContainer.isValidForInsertion(resource, automationType)) {
             //Calculate if the resource is ever valid for insertion into the resource container
             //If it is and our resource is currently empty or has the same type of resource
             // that means the items contents are valid, and we can fill the resource with any of our contents

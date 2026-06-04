@@ -261,8 +261,9 @@ public class CommonPlayerTickHandler {
             } else {
                 //TODO - 26.1: Is there a chance of mods firing this even from within a transaction context?
                 try (Transaction transaction = Transaction.openRoot()) {
-                    long extracted = EnergyUtils.extractManual(info.energyHandler, energyRequirement, transaction);
-                    ratioAbsorbed = (float) (absorption * ((double) extracted / energyRequirement));
+                    int extracted = EnergyUtils.extractManual(info.energyHandler, energyRequirement, transaction);
+                    float absorbedPercent = extracted / (float) energyRequirement;
+                    ratioAbsorbed = absorption * absorbedPercent;
                     transaction.commit();
                 }
             }

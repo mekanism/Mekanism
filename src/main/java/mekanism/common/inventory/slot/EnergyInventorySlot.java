@@ -2,17 +2,18 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
@@ -27,42 +28,14 @@ import org.jspecify.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> HAS_ENERGY_HANDLER = itemType -> Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType)) != null;
-
-    /**
-     * Gets the recipe for converting the given ItemResource into energy
-     */
-    @Nullable
-    public static ItemStackToEnergyRecipe getPotentialConversion(@Nullable Level world, ItemResource itemType) {
-        return MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemType);
-    }
-
     /**
      * Fills the container from this item OR converts the given item to energy
      */
     public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new EnergyInventorySlot(energyContainer, worldSupplier, (itemType, automationType) -> {
-            if (!automationType.isExternal()) {
-                //Always allow manual or internal extractions
-                return true;
-            }
-            //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
-            // or we are no longer a valid conversion, this might happen after a reload for example
-            return !fillInsertCheck(itemType) && getPotentialConversion(worldSupplier.get(), itemType) == null;
-        }, (itemType, automationType) -> {
-            if (automationType.isInternal() || fillInsertCheck(itemType)) {
-                return true;
-            }
-            //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            // Unlike with the chemical conversions, we don't check if the type is "valid" as we only have one "type" of energy.
-            return getPotentialConversion(worldSupplier.get(), itemType) != null;
-        }, itemType -> {
-            //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
-            // We also allow energy conversion of items that can be converted
-            return HAS_ENERGY_HANDLER.test(itemType) || getPotentialConversion(worldSupplier.get(), itemType) != null;
-        }, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, worldSupplier, (itemType, automationType) -> !automationType.isExternal() || !canFillOrConvert(energyContainer, worldSupplier, itemType),
+              (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(energyContainer, worldSupplier, itemType), listener, x, y);
     }
 
     /**
@@ -70,8 +43,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !fillInsertCheck(itemType),
-              (itemType, automationType) -> automationType.isInternal() || fillInsertCheck(itemType), HAS_ENERGY_HANDLER, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !canFill(energyContainer, itemType),
+              (itemType, automationType) -> automationType.isInternal() || canFill(energyContainer, itemType), listener, x, y);
     }
 
     /**
@@ -81,23 +54,27 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !drainInsertCheck(energyContainer, itemType),
-              (itemType, automationType) -> automationType.isInternal() || drainInsertCheck(energyContainer, itemType), HAS_ENERGY_HANDLER, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, (itemType, automationType) -> !automationType.isExternal() || !canDrain(energyContainer, itemType),
+              (itemType, automationType) -> automationType.isInternal() || canDrain(energyContainer, itemType), listener, x, y);
     }
 
-    private static boolean drainInsertCheck(EnergyHandler energyContainer, ItemResource itemType) {
+    private static boolean canDrain(EnergyHandler energyContainer, ItemResource itemType) {
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
         if (energyHandler == null) {
             return false;
         }
-        return drainInsertCheck(energyContainer, energyHandler);
+        return canDrain(energyContainer, energyHandler);
     }
 
-    public static boolean drainInsertCheck(EnergyHandler energyContainer, EnergyHandler energyHandler) {
-        int storedEnergy = energyContainer.getAmountAsInt();
+    public static boolean canDrain(EnergyHandler storage, EnergyHandler energyHandler) {
+        int storedEnergy = storage.getAmountAsInt();
         if (storedEnergy == 0) {
             //If the energy container is empty, accept the energy item as long as it is not full
             return energyHandler.getAmountAsLong() < energyHandler.getCapacityAsLong();
+        }
+        IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(storage);
+        if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {
+            return false;
         }
         //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
@@ -105,14 +82,30 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         }
     }
 
-    public static boolean fillInsertCheck(ItemResource itemType) {
+    public static boolean canFillOrConvert(@Nullable IEnergyContainer energyContainer, Supplier<@Nullable Level> levelSupplier, ItemResource itemType) {
+        if (canFill(energyContainer, itemType)) {
+            return true;
+        }
+        //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
+        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(levelSupplier.get(), itemType);
+        if (foundRecipe == null) {
+            //No recipe, return that we can't insert it
+            return false;
+        }
+        //If we don't know enough information about our energy handler, or we can insert into it manually
+        // consider it a conversion we can accept
+        return energyContainer == null || energyContainer.isValidForInsertion(AutomationType.MANUAL);
+    }
+
+    public static boolean canFill(@Nullable IEnergyContainer energyContainer, ItemResource itemType) {
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
-        //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
-        // that might be less than a single unit and thus can't be extracted
         if (energyHandler == null) {
+            return false;
+        } else if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {
             return false;
         }
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+            //If we can extract any energy we are valid
             return energyHandler.extract(Integer.MAX_VALUE, simulation) > 0;
         }
     }
@@ -121,13 +114,15 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private final IEnergyContainer energyContainer;
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
+          @Nullable IContentsListener listener, int x, int y) {
+        this(energyContainer, () -> null, canExtract, canInsert, listener, x, y);
     }
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, validator, listener, x, y);
+          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a resource handler on the filled item or when the item isn't stacked
+        // then we don't have it all of a sudden being invalid after it is emptied
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         this.energyContainer = energyContainer;
         this.worldSupplier = worldSupplier;
         setSlotType(ContainerSlotType.POWER);
@@ -171,27 +166,26 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (isEmpty() || EnergyHandlerUtil.isFull(energyContainer)) {
             return false;
         }
-        //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(asItemAccess());
         if (energyHandler == null) {
             return false;
         }
-        int energyInItem;
+        int roomFor;
         try (Transaction simulation = Transaction.open(transaction)) {
-            //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
-            energyInItem = energyHandler.extract(energyContainer.getNeededAsInt(), simulation);
-            if (energyInItem == 0) {
+            //Check how much we can actually insert into our container in case it has a rate limit and can't accept everything it needs at once
+            roomFor = energyContainer.insert(energyContainer.getNeededAsInt(), simulation, AutomationType.INTERNAL);
+            if (roomFor == 0) {
                 return false;
             }
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            //Simulate inserting energy from each container in the item into our container
-            int inserted = energyContainer.insert(energyInItem, subTransaction, AutomationType.INTERNAL);
-            if (inserted > 0 && energyHandler.extract(inserted, subTransaction) == inserted) {
-                //If we can actually insert any energy, then extract up to as much energy as we were able to accept from the item
-                //If we were able to actually extract it from the item, then commit the changes
+            //Extract the amount we simulated we can accept from the handler. It is important this happens before we then insert into our rate limit
+            // based container as if the handler a stacked item, then it might only be able to provide things in discrete increments
+            int extracted = energyHandler.extract(roomFor, subTransaction);
+            if (extracted > 0 && energyContainer.insert(extracted, subTransaction, AutomationType.INTERNAL) == extracted) {
+                //If we were able to accept  something, and extract the corresponding amount from the original handler
+                //Commit the changes to the transaction
                 subTransaction.commit();
-                //and mark that we were able to transfer at least some of it
                 return true;
             }
             return false;
@@ -202,7 +196,6 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Drains container into slot
      */
     public void drainContainerIntoSlot(@Nullable TransactionContext transaction) {
-        //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         if (isEmpty() || energyContainer.isEmpty()) {
             return;
         }
@@ -212,7 +205,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         }
         int availableEnergy;
         try (Transaction simulation = Transaction.open(transaction)) {
-            //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
+            //Check how much we can extract from the container to ensure we follow any transfer rate limits
             availableEnergy = energyContainer.extract(energyContainer.getAmountAsInt(), simulation, AutomationType.INTERNAL);
             if (availableEnergy == 0) {
                 //Short circuit, theoretically the item energy handler will do so as well, but we might as well ensure that it happens
@@ -222,12 +215,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         try (Transaction subTransaction = Transaction.open(transaction)) {
             //We are able to fit at least some energy from our container into the item
             int inserted = energyHandler.insert(availableEnergy, subTransaction);
-            if (inserted > 0) {
-                long extractedEnergy = energyContainer.extract(inserted, subTransaction, AutomationType.INTERNAL);
-                if (extractedEnergy == inserted) {
-                    //If we were able to actually extract it from our energy container, then commit all the changes
-                    subTransaction.commit();
-                }
+            if (inserted > 0 && energyContainer.extract(inserted, subTransaction, AutomationType.INTERNAL) == inserted) {
+                //If we were able to actually extract it from our energy container, then commit all the changes
+                subTransaction.commit();
             }
         }
     }

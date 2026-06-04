@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ChemicalInventorySlot extends ResourceHandlerSlot {
 
-    public static boolean canFillOrConvert(IChemicalTank chemicalTank, Supplier<Level> levelSupplier, ItemResource itemType) {
+    public static boolean canFillOrConvert(IChemicalTank chemicalTank, Supplier<@Nullable Level> levelSupplier, ItemResource itemType) {
         if (canFill(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.CHEMICAL.item())) {
             return true;
         }
@@ -35,9 +35,10 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
             //No recipe, return that we can't insert it
             return false;
         }
-        ChemicalStack conversion = foundRecipe.getOutput(itemType);
+        ChemicalResource conversion = ChemicalResource.of(foundRecipe.getOutput(itemType));
         //We allow insertion if the conversion isn't empty, and we can accept the resource type the conversion produces
-        return !conversion.isEmpty() && simulateCanInsert(chemicalTank, ChemicalResource.of(conversion), conversion.amount());
+        //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+        return !conversion.isEmpty() && simulateCanInsert(chemicalTank, conversion, AutomationType.MANUAL);
     }
 
     /**
