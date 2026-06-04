@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -76,7 +77,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
                         // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
                         // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
                         transaction.commit();
-                        if (buffer.isFull()) {
+                        if (EnergyHandlerUtil.isFull(buffer)) {
                             break;
                         }
                     }

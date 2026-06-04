@@ -9,7 +9,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -99,14 +98,6 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     @NonExtendable
     default boolean isEmpty() {
         return getAmountAsLong() == 0L;
-    }
-
-    /// Convenience method for checking if this container is full.
-    ///
-    /// @return `true` if the container is full, `false` otherwise.
-    @NonExtendable
-    default boolean isFull() {
-        return EnergyHandlerUtil.isFull(this);
     }
 
     /// {@return the amount of energy needed by this energy container to reach a filled state}
