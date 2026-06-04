@@ -117,11 +117,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         //TODO: Do we want to allow non players to use the flamethrower?
         if (remainingDuration >= 0 && entity instanceof Player player) {
             //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
-            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
+            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (chemicalHandler != null) {
+                //TODO - 26.1: Is there a chance this is called from a transactional context
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int extracted = ResourceUtils.extractManual(chemicalHandler, ChemicalResource.of(getChemicalType()), 1, transaction);
-                    if (extracted == 1) {
+                    if (ResourceUtils.extractManual(chemicalHandler, ChemicalResource.of(getChemicalType()), 1, transaction) == 1) {
                         if (!level.isClientSide()) {
                             EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
                             if (flame != null) {
@@ -130,6 +130,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
                                     level.addFreshEntity(flame);
                                 }
                                 if (MekanismUtils.isPlayingMode(player)) {
+                                    //Only consume fuel if the player is actually playing and isn't in creative
                                     transaction.commit();
                                 }
                             }

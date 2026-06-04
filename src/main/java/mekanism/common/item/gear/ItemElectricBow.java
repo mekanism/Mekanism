@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -22,8 +21,6 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -60,40 +57,24 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public boolean releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
-        if (entity instanceof Player player && !player.isCreative()) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
-            if (energyHandler == null) {
-                return false;
-            }
-            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-            // and wraps the entire hitting the entity within their transaction?
-            // Either way should we maybe just compare against the stored energy instead of having to open a transaction
-            try (Transaction simulation = Transaction.openRoot()) {
-                int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-                if (EnergyUtils.extractManual(energyHandler, energyNeeded, simulation) < energyNeeded) {
-                    return false;
-                }
-            }
+        if (!(entity instanceof Player player) || player.isCreative()) {
+            return super.releaseUsing(bow, world, entity, timeLeft);
         }
-        return super.releaseUsing(bow, world, entity, timeLeft);
-    }
-
-    @Override
-    protected void shoot(@NotNull ServerLevel world, @NotNull LivingEntity entity, @NotNull InteractionHand hand, @NotNull ItemStack bow,
-          @NotNull List<ItemStack> potentialAmmo, float velocity, float inaccuracy, boolean critical, @Nullable LivingEntity target) {
-        super.shoot(world, entity, hand, bow, potentialAmmo, velocity, inaccuracy, critical, target);
-        if (entity instanceof Player player && !player.isCreative() && !potentialAmmo.isEmpty()) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
-            if (energyHandler != null) {
-                //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
-                // and wraps the entire hitting the entity within their transaction?
-                try (Transaction transaction = Transaction.openRoot()) {
-                    //Use energy
-                    int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-                    EnergyUtils.extractManual(energyHandler, energyNeeded, transaction);
-                    transaction.commit();
-                }
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
+        if (energyHandler == null) {
+            return false;
+        }
+        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+        // and wraps the entire hitting the entity within their transaction?
+        try (Transaction transaction = Transaction.openRoot()) {
+            int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+            if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) == energyNeeded && super.releaseUsing(bow, world, entity, timeLeft)) {
+                //If we could use the energy, and we actually had a projectile to fire
+                // commit the transaction and return that we successfully released
+                transaction.commit();
+                return true;
             }
+            return false;
         }
     }
 
@@ -105,13 +86,11 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public int getEnchantmentLevel(@NotNull ItemInstance stack, @NotNull Holder<Enchantment> enchantment) {
-        if (stack instanceof ItemStack itemStack && itemStack.isEmpty()) {
-            return 0;
-        } else if (enchantment.is(Enchantments.FLAME) && getMode(stack)) {
-            return Math.max(1, super.getEnchantmentLevel(stack, enchantment));
+    public int getEnchantmentLevel(@NotNull ItemInstance instance, @NotNull Holder<Enchantment> enchantment) {
+        if (enchantment.is(Enchantments.FLAME) && getMode(instance)) {
+            return Math.max(1, super.getEnchantmentLevel(instance, enchantment));
         }
-        return super.getEnchantmentLevel(stack, enchantment);
+        return super.getEnchantmentLevel(instance, enchantment);
     }
 
     @NotNull

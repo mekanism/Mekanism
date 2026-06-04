@@ -99,27 +99,27 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemInstance stack, @NotNull ItemAbility action) {
+    public boolean canPerformAction(@NotNull ItemInstance instance, @NotNull ItemAbility action) {
         if (action == MekanismItemAbilities.WRENCH_CONFIGURE) {
-            return getMode(stack).isConfigurating();
+            return getMode(instance).isConfigurating();
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_CHEMICALS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ENERGY) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ENERGY;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_ENERGY;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_FLUIDS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_FLUIDS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_FLUIDS;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_HEAT) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_HEAT;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_HEAT;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ITEMS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ITEMS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_ITEMS;
         } else if (action == MekanismItemAbilities.WRENCH_DISMANTLE) {
-            return getMode(stack) == ConfiguratorMode.WRENCH;
+            return getMode(instance) == ConfiguratorMode.WRENCH;
         } else if (action == MekanismItemAbilities.WRENCH_EMPTY) {
-            return getMode(stack) == ConfiguratorMode.EMPTY;
+            return getMode(instance) == ConfiguratorMode.EMPTY;
         } else if (action == MekanismItemAbilities.WRENCH_ROTATE) {
-            return getMode(stack) == ConfiguratorMode.ROTATE;
+            return getMode(instance) == ConfiguratorMode.ROTATE;
         }
-        return super.canPerformAction(stack, action);
+        return super.canPerformAction(instance, action);
     }
 
     @NotNull
