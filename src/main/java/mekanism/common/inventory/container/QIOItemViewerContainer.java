@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -37,6 +36,7 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
+import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.UUIDItemResource;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.BulkQIOData;
@@ -199,8 +199,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    private void addCraftingSlot(IInventorySlot slot, byte tableIndex, int slotIndex) {
-        VirtualInventoryContainerSlot containerSlot = (VirtualInventoryContainerSlot) slot.createContainerSlot();
+    private void addCraftingSlot(CraftingWindowInventorySlot slot, byte tableIndex, int slotIndex) {
+        VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot();
         craftingSlots[tableIndex][slotIndex] = containerSlot;
         addSlot(containerSlot);
     }
@@ -363,14 +363,15 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (selectedCraftingGrid != -1) {
             //If the player has a crafting window open
             QIOCraftingWindow craftingWindow = getCraftingWindow(selectedCraftingGrid);
-            if (!craftingWindow.isOutput(slotStack)) {
+            ItemResource slotResource = ItemResource.of(slotStack);
+            if (!craftingWindow.isOutput(slotResource)) {
                 // and the stack we are trying to transfer was not the output from the crafting window
                 // as then shift clicking should be sending it into the QIO, then try transferring it
                 // into the crafting window before transferring into the frequency
                 List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
                 SelectedWindowData windowData = craftingWindow.getWindowData();
                 //Start by trying to stack it with other things and if that fails try to insert it into empty slots
-                int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), transaction, windowData);
+                int inserted = insertItem(craftingGridSlots, slotResource, slotStack.count(), transaction, windowData);
                 if (inserted > 0) {
                     //If something changed, decrease the stack by the amount we inserted,
                     // and return it as a new stack for what is now in the slot

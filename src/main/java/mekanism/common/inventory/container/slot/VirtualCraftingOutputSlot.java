@@ -84,8 +84,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        //TODO - 26.1: Do we want to just get it from the slot to skip setting the cached stack?
-        ItemStack extracted = getStackCopy().copy();
+        ItemStack extracted = getStackCopy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.count();
         //TODO - 26.1: Do we want to scale this up by how many times the full stack could be extracted while still being under amount
@@ -112,6 +111,11 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         //Note: This method is only called if mayPickup returns true
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
+        if (!result.isEmpty()) {
+            //As vanilla likely called getItem before calling onTake, we need to make sure to reset what StackCopySlot#cachedReturnedStack points at
+            // so that when we vanilla calls Slot#setChanged it doesn't then get reverted to the previous stack
+            getItem();
+        }
         amountCrafted = 0;
     }
 
@@ -131,13 +135,6 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return canCraft ? super.getStackCopy() : ItemStack.EMPTY;
     }
 
-    @Override
-    public boolean hasItem() {
-        //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
-        // we can just hackily update the canCraft variable while syncing it to the client
-        return canCraft && super.hasItem();
-    }
-
     @NotNull
     @Override
     public ItemStack getStackToRender() {
@@ -149,7 +146,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         // Note: This method is only called if mayPickup returns true
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
-        // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
+        // afterward we want to "stop" crafting as our window determines how much a shift click should produce
         // so even though we may still have an output in the slot, we return empty here so that vanilla's loop
         // it performs for shift clicking, doesn't cause us to craft as much as we are able to.
         return ItemStack.EMPTY;
