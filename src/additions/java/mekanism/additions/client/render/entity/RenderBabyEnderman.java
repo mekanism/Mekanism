@@ -5,7 +5,6 @@ import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
@@ -31,7 +30,7 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, Enderman
     private final BlockModelResolver blockModelResolver;
 
     public RenderBabyEnderman(EntityRendererProvider.Context context) {
-        super(context, new ModelBabyEnderman(context.bakeLayer(ModelLayers.ENDERMAN)), 0.5F);
+        super(context, new ModelBabyEnderman(context.bakeLayer(ModelBabyEnderman.BABY_ENDERMAN_LAYER)), 0.5F);
         this.blockModelResolver = context.getBlockModelResolver();
         this.addLayer(new BabyEndermanEyesLayer(this));
         this.addLayer(new BabyEndermanHeldBlockLayer(this));

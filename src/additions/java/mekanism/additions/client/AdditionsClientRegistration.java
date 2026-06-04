@@ -3,6 +3,7 @@ package mekanism.additions.client;
 import java.util.Map;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.client.model.ModelBabyCreeper;
+import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
@@ -13,6 +14,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.entity.BoggedRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.StrayRenderer;
@@ -56,6 +58,8 @@ public class AdditionsClientRegistration {
         event.registerLayerDefinition(ModelBabyCreeper.CREEPER_LAYER, () -> ModelBabyCreeper.createBodyLayer(CubeDeformation.NONE));
         //Note: Use 1 instead of 2 for size
         event.registerLayerDefinition(ModelBabyCreeper.ARMOR_LAYER, () -> ModelBabyCreeper.createBodyLayer(new CubeDeformation(1)));
+
+        event.registerLayerDefinition(ModelBabyEnderman.BABY_ENDERMAN_LAYER, () -> EndermanModel.createBodyLayer().apply(ModelBabyEnderman.BABY_MODEL_TRANSFORM));
     }
 
     @SubscribeEvent

@@ -1,5 +1,9 @@
 package mekanism.additions.client.model;
 
+import java.util.Set;
+import mekanism.additions.common.MekanismAdditions;
+import net.minecraft.client.model.BabyModelTransform;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
@@ -7,27 +11,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class ModelBabyEnderman extends EndermanModel<EndermanRenderState> {
 
+    public static final ModelLayerLocation BABY_ENDERMAN_LAYER = new ModelLayerLocation(MekanismAdditions.rl("baby_enderman"), "main");
+    public static final BabyModelTransform BABY_MODEL_TRANSFORM = new BabyModelTransform(false, 18.5F, 2.0F, 2.0F, 2.0F, 24.0F, Set.of("head"));
+
     public ModelBabyEnderman(ModelPart part) {
         super(part);
     }
 
-    /*@NotNull TODO - 26.1: is this relevant/possible?
-    @Override
-    protected Iterable<ModelPart> headParts() {
-        //Make the "hat" (the jaw) be part of the head for scaling purposes
-        return List.of(this.head, this.hat);
-    }
-*/
-
     @Override
     public void setupAnim(@NotNull EndermanRenderState state) {
         super.setupAnim(state);
-        //Shift the head and the "hat" (jaw) be in the proper place for baby endermen
-        head.y += 5.0F;
-        hat.y += 5.0F;
         if (state.isCreepy) {
             //Shift the head when angry to only the third the distance it goes up when it is an adult
-            head.y += 1.67F;
+            float amt = 5.0F / 3;
+            this.head.y -= amt;
+            this.hat.y += amt;
         }
     }
 }
