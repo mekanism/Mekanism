@@ -961,7 +961,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected void trackLastEnergy(MekanismContainer container) {
         LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
         if (lastEnergyTracker != null) {
-            //TODO - 26.1: Validate that this works and that we aren't for some reason just not exposing energy caps and creating the handler manager on the client
             container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
         }
     }
