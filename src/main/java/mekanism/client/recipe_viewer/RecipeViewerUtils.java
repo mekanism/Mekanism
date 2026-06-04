@@ -111,7 +111,7 @@ public class RecipeViewerUtils {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         for (Holder<Chemical> type : supportedTypes) {
-            stacks.add(ChemicalUtils.getFullChemicalTank(ChemicalTankTier.BASIC, type));
+            stacks.add(ChemicalUtils.getFullChemicalTank(ChemicalTankTier.BASIC, type, null));
         }
         ContextMap slotDisplayContext = getSlotDisplayContext();
         //See if there are any chemical to item mappings

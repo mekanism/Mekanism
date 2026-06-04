@@ -495,9 +495,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                         //If our hasFilter state matches our inversion state, that means we should try to mine
                         // the block, so we check if we can mine it
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
-                            //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
-                            List<ItemStack> drops = getDrops((ServerLevel) level, state, pos);
                             try (Transaction subTransaction = Transaction.open(transaction)) {
+                                //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
+                                List<ItemStack> drops = getDrops((ServerLevel) level, state, pos, subTransaction);
                                 if (tryInsert(drops, subTransaction)) {
                                     CommonWorldTickHandler.fallbackItemCollector = overflowCollector;
                                     //Validate if we can replace the block with the replace stack that we will extract
@@ -1218,11 +1218,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         input.getInt(SerializationConstants.MAX).ifPresent(this::setMaxY);
     }
 
-    private List<ItemStack> getDrops(ServerLevel level, BlockState state, BlockPos pos) {
+    private List<ItemStack> getDrops(ServerLevel level, BlockState state, BlockPos pos, TransactionContext transaction) {
         if (state.isAir()) {
             return Collections.emptyList();
         }
-        ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
+        ItemStack stack = ItemAtomicDisassembler.fullyChargedStack(transaction);
         if (getSilkTouch()) {
             Optional<Reference<Enchantment>> silkTouch = level.holder(Enchantments.SILK_TOUCH);
             //noinspection OptionalIsPresent - Capturing lambda

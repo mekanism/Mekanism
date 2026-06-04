@@ -82,13 +82,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         emittingRedstone = foundEntity;
     }
 
-    private boolean shouldFire() {
-        return ticks >= delay && energyContainer.getAmountAsInt() >= minThreshold && canFunction();
-    }
-
     @Override
     protected int toFire() {
-        return shouldFire() ? Math.min(super.toFire(), maxThreshold) : 0;
+        if (ticks >= delay && canFunction()) {
+            return Math.clamp(super.toFire(), minThreshold, maxThreshold);
+        }
+        return 0;
     }
 
     @Override

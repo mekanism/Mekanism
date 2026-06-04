@@ -107,9 +107,9 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT)));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT), null));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
         }
     }
 

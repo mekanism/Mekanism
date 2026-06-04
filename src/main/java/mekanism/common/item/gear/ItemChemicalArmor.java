@@ -55,6 +55,6 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType()));
+        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType(), null));
     }
 }

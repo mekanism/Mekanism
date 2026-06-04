@@ -120,7 +120,6 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return slotType;
     }
 
-    //TODO - 26.1: review this
     public ItemAccess asItemAccess() {
         return itemAccess;
     }

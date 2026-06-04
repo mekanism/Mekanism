@@ -84,6 +84,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
@@ -97,8 +98,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     /**
      * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
      */
-    public static ItemStack fullyChargedStack() {
-        return StorageUtils.getFilledEnergyVariant(MekanismItems.ATOMIC_DISASSEMBLER);
+    public static ItemStack fullyChargedStack(@Nullable TransactionContext transaction) {
+        return StorageUtils.getFilledEnergyVariant(MekanismItems.ATOMIC_DISASSEMBLER, transaction);
     }
 
     public ItemAtomicDisassembler(Properties properties) {

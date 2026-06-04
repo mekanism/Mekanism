@@ -161,7 +161,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType()));
+        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType(), null));
     }
 
     private Holder<Chemical> getChemicalType() {

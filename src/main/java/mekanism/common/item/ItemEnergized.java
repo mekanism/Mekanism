@@ -43,7 +43,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
     }
 
     @Override

@@ -18,15 +18,17 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 public final class FluidUtils {
 
     private FluidUtils() {
     }
 
-    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid) {
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid, @Nullable TransactionContext transaction) {
         ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
-        return ContainerType.FLUID.getFilledVariant(itemAccess, FluidResource.of(fluid));
+        return ContainerType.FLUID.getFilledVariant(itemAccess, FluidResource.of(fluid), transaction);
     }
 
     public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {

@@ -56,7 +56,7 @@ public class MekanismCreativeTabs {
                       .filterElements(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()))
                       .listElements()
                       .filter(holder -> !holder.is(Tags.Fluids.HIDDEN_FROM_RECIPE_VIEWERS))
-                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), holder)));
+                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), holder, null)));
             }
             if (chemical) {
                 //Chemical Tanks
@@ -64,7 +64,7 @@ public class MekanismCreativeTabs {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-                          .forEach(holder -> output.accept(ChemicalUtils.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder)));
+                          .forEach(holder -> output.accept(ChemicalUtils.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder, null)));
                 }
             }
         }
@@ -142,7 +142,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.ARMORED_FREE_RUNNERS, MekanismItems.ARMORED_JETPACK);
         } else if (tabKey == CreativeModeTabs.FOOD_AND_DRINKS) {
             //Only add the filled canteen
-            event.accept(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+            event.accept(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE, null), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
         } else if (tabKey == CreativeModeTabs.INGREDIENTS) {
             CreativeTabDeferredRegister.addToDisplay(event,
                   MekanismItems.MODULE_BASE, MekanismItems.INFUSED_ALLOY, MekanismItems.REINFORCED_ALLOY, MekanismItems.ATOMIC_ALLOY,

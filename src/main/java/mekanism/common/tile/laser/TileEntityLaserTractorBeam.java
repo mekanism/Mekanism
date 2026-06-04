@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     }
 
     @Override
-    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool) {
+    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool, TransactionContext transaction) {
         List<ItemStack> drops = WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool);
         //Collect any extra drops that might have happened due to say breaking the top part of a door or flower and try to add them
         //Note: Technically we should just always return true rather than relying on the return result of the add method,
@@ -71,55 +71,46 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
             BlockPos dropPos = null;
             Direction opposite = null;
             List<IInventorySlot> inventorySlots = getInventorySlots();
-            try (Transaction transaction = Transaction.openRoot()) {
-                for (ItemStack drop : drops) {
-                    if (drop.isEmpty()) {//Not sure if this can ever be the case, but handle it just in case
-                        continue;
-                    }
-                    int toInsert = drop.count();
-                    //Try inserting it first where it can stack and then into empty slots
-                    toInsert -= ContainerType.ITEM.insertInto(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
-                    if (toInsert > 0) {
-                        //If we have some drop left over that we couldn't fit, then spawn it into the world
-                        // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
-                        // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
-                        if (dropPos == null) {
-                            Direction direction = getDirection();
-                            dropPos = worldPosition.relative(direction, 2);
-                            opposite = direction.getOpposite();
-                        }
-                        Block.popResourceFromFace(level, dropPos, opposite, drop.copyWithCount(toInsert));
-                    }
+            for (ItemStack drop : drops) {
+                if (drop.isEmpty()) {//Not sure if this can ever be the case, but handle it just in case
+                    continue;
                 }
-                transaction.commit();
+                int toInsert = drop.count();
+                //Try inserting it first where it can stack and then into empty slots
+                int inserted = ContainerType.ITEM.insertInto(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
+                if (inserted < toInsert) {
+                    //If we have some drop left over that we couldn't fit, then spawn it into the world
+                    // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
+                    // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
+                    if (dropPos == null) {
+                        Direction direction = getDirection();
+                        dropPos = worldPosition.relative(direction, 2);
+                        opposite = direction.getOpposite();
+                    }
+                    Block.popResourceFromFace(level, dropPos, opposite, drop.copyWithCount(toInsert - inserted));
+                }
             }
         }
     }
 
     @Override
-    protected boolean handleHitItem(ItemEntity entity) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            ItemStack stack = entity.getItem();
-            //Try inserting it first where it can stack and then into empty slots
-            int inserted = ContainerType.ITEM.insertInto(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
-            if (inserted == stack.count()) {
-                //If we have finished grabbing it all then remove the entity
-                entity.discard();
-            } else {
-                //TODO - 26.1: Validate this, it didn't used to be part of this method but I think it is needed?
-                //If we couldn't fit it all, shrink how much of the item the entity is representing
-                stack.shrink(inserted);
-            }
-            transaction.commit();
+    protected boolean handleHitItem(ItemEntity entity, TransactionContext transaction) {
+        ItemStack stack = entity.getItem();
+        //Try inserting it first where it can stack and then into empty slots
+        int inserted = ContainerType.ITEM.insertInto(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
+        if (inserted == stack.count()) {
+            //If we have finished grabbing it all then remove the entity
+            entity.discard();
             return true;
         }
+        //If we couldn't fit it all, shrink how much of the item the entity is representing and let it continue processing
+        stack.shrink(inserted);
+        return super.handleHitItem(entity, transaction);
     }
 
     //Methods relating to IComputerTile
     @ComputerMethod
     int getSlotCount() {
-        //TODO - 26.1: This used to just call getSlots, which effectively now would be size, but that seems like an unclear name
-        // and we likely will move away from directly implementing IMekanismInventory. Evaluate if this handling will be fine, or if we need to change things
         return getInventorySlots().size();
     }
 

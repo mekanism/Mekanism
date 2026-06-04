@@ -236,7 +236,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
     }
 
     @Override

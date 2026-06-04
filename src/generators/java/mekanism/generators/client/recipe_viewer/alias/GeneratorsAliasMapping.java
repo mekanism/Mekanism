@@ -51,7 +51,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER),
               new ItemStack(GeneratorsBlocks.LASER_FOCUS_MATRIX),
               new ItemStack(GeneratorsBlocks.REACTOR_GLASS),
-              ChemicalUtils.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL)
+              ChemicalUtils.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL, null)
         ), GeneratorsAliases.FUSION_COMPONENT);
         rv.addAliases(List.of(
               GeneratorsBlocks.TURBINE_CASING,

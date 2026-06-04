@@ -130,7 +130,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismItems.MEKASUIT_PANTS
         ), MekanismAliases.MEKA_SUIT_POWER_ARMOR);
 
-        rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE),
+        rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE, null),
               MekanismAliases.CANTEEN_EDIBLE,
               MekanismAliases.CANTEEN_FOOD_STORAGE
         );
@@ -238,9 +238,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               new ItemStack(MekanismBlocks.ADVANCED_ENERGY_CUBE),
               new ItemStack(MekanismBlocks.ELITE_ENERGY_CUBE),
               new ItemStack(MekanismBlocks.ULTIMATE_ENERGY_CUBE),
-              StorageUtils.getFilledEnergyVariant(
-                    ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_OUTPUT)
-              )
+              StorageUtils.getFilledEnergyVariant(ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_OUTPUT), null)
         ), MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY, MekanismAliases.ITEM_CHARGER);
         rv.addItemAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
 

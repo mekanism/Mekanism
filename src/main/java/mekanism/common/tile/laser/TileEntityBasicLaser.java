@@ -87,27 +87,16 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        int firing;
-        try (Transaction simulation = Transaction.openRoot()) {
-            //TODO - 26.1: Re-evaluate this
-            firing = energyContainer.extract(toFire(), simulation, AutomationType.INTERNAL);
-        }
-        if (firing > 0) {
-            if (firing != lastFired || !getActive()) {
+        int energyFired = fireLaser();
+        if (energyFired > 0) {
+            if (energyFired != lastFired || !getActive()) {
                 setActive(true);
-                lastFired = firing;
+                lastFired = energyFired;
                 sendUpdatePacket = true;
-            }
-            try (Transaction transaction = Transaction.openRoot()) {
-                int energyFired = fireLaser(firing, transaction);
-                energyContainer.extract(energyFired, transaction, AutomationType.INTERNAL);
-                transaction.commit();
             }
         } else if (getActive()) {
             setActive(false);
-            if (diggingProgress != 0) {
-                diggingProgress = 0;
-            }
+            diggingProgress = 0;
             if (lastFired != 0) {
                 lastFired = 0;
                 sendUpdatePacket = true;
@@ -116,7 +105,22 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    private int fireLaser(int firing, TransactionContext transaction) {
+    private int fireLaser() {
+        int toFire = toFire();
+        if (toFire == 0) {
+            return 0;
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (energyContainer.extract(toFire, transaction, AutomationType.INTERNAL) == toFire) {
+                fireLaser(toFire, transaction);
+                transaction.commit();
+                return toFire;
+            }
+            return 0;
+        }
+    }
+
+    private void fireLaser(int firing, TransactionContext transaction) {
         Direction direction = getDirection();
         ServerLevel level = (ServerLevel) getWorldNN();
         Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
@@ -149,7 +153,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     //Update the position that the laser is going to
                     to = from.adjustPosition(direction, entity);
                     break;
-                } else if (entity instanceof ItemEntity item && handleHitItem(item)) {
+                } else if (entity instanceof ItemEntity item && handleHitItem(item, transaction)) {
                     //TODO: Allow the tractor beam to have an energy cost for pulling items?
                     continue;
                 }
@@ -301,7 +305,6 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             ILaserReceptor laserReceptor = WorldUtils.getCapability(level, Capabilities.LASER_RECEPTOR, hitPos, result.getDirection());
             if (laserReceptor != null && !laserReceptor.canLasersDig()) {
                 //Give the energy to the receptor
-                //TODO - 26.1: Re-evaluate making this reduce how much energy actually was spent
                 remainingEnergy -= laserReceptor.receiveLaserEnergy(remainingEnergy, transaction);
             } else {
                 //Otherwise, make progress on breaking the block
@@ -311,7 +314,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     diggingProgress += remainingEnergy;
                     if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyPerHardness.get()) {
                         if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                            withFakePlayer(level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
+                            withFakePlayer(level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection(), transaction);
                         }
                         diggingProgress = 0;
                     } else {
@@ -321,7 +324,6 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 }
             }
         }
-        return firing - remainingEnergy;
     }
 
     private static boolean isInvulnerableToLaser(Entity entity, ServerLevel level) {
@@ -343,7 +345,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         };
     }
 
-    private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide) {
+    private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide, TransactionContext transaction) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
         dummy.setEmulatingData(this);//pretend to be the owner
         //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
@@ -357,7 +359,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 level.removeBlock(hitPos, false);
             } else {
                 //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
-                handleBreakBlock(hitState, level, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
+                handleBreakBlock(hitState, level, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack(transaction), transaction);
             }
         }
         dummy.cleanupFakePlayer(level);
@@ -404,7 +406,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             blocksAttacks.hurtBlockingItem(level, blockingWith, livingEntity, livingEntity.getUsedItemHand(), damageBlocked, shieldDamage);
         }
         damageBlocked = event.getBlockedDamage();
-        if (livingEntity instanceof ServerPlayer player && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
+        if (livingEntity instanceof Player player && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
             player.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
         }
         return damageBlocked;
@@ -434,11 +436,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected void setEmittingRedstone(boolean foundEntity) {
     }
 
-    protected boolean handleHitItem(ItemEntity entity) {
+    protected boolean handleHitItem(ItemEntity entity, TransactionContext transaction) {
         return false;
     }
 
-    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool) {
+    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool, TransactionContext transaction) {
         for (ItemEntity drop : WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, true)) {
             if (!drop.getItem().isEmpty()) {
                 level.addFreshEntity(drop);
@@ -456,7 +458,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected int toFire() {
-        return Integer.MAX_VALUE;
+        return energyContainer.getAmountAsInt();
     }
 
     @Override

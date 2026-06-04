@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -38,8 +38,8 @@ public class ChemicalUtils {
      *
      * @return filled chemical tank
      */
-    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @NotNull Holder<Chemical> chemical) {
-        return getFilledVariant(getEmptyChemicalTank(tier), chemical);
+    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, Holder<Chemical> chemical, @Nullable TransactionContext transaction) {
+        return getFilledVariant(getEmptyChemicalTank(tier), chemical, transaction);
     }
 
     /**
@@ -57,9 +57,9 @@ public class ChemicalUtils {
         }).getItemHolder();
     }
 
-    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> chemical) {
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> chemical, @Nullable TransactionContext transaction) {
         ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
-        return ContainerType.CHEMICAL.getFilledVariant(itemAccess, ChemicalResource.of(chemical));
+        return ContainerType.CHEMICAL.getFilledVariant(itemAccess, ChemicalResource.of(chemical), transaction);
     }
 
     public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {

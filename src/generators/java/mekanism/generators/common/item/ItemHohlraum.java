@@ -66,6 +66,6 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtils.getFilledVariant(item, GeneratorsChemicals.FUSION_FUEL));
+        tabOutput.accept(ChemicalUtils.getFilledVariant(item, GeneratorsChemicals.FUSION_FUEL, null));
     }
 }

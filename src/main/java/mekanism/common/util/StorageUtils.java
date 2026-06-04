@@ -135,20 +135,20 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         return 0;
     }
 
-    public static ItemStack getFilledEnergyVariant(Holder<Item> toFill) {
-        return getFilledEnergyVariant(ItemResource.of(toFill));
+    public static ItemStack getFilledEnergyVariant(Holder<Item> toFill, @Nullable TransactionContext transaction) {
+        return getFilledEnergyVariant(ItemResource.of(toFill), transaction);
     }
 
-    public static ItemStack getFilledEnergyVariant(ItemResource toFill) {
-        return getFilledEnergyVariant(ItemAccessUtils.queryOnlyAccess(toFill));
+    public static ItemStack getFilledEnergyVariant(ItemResource toFill, @Nullable TransactionContext transaction) {
+        return getFilledEnergyVariant(ItemAccessUtils.queryOnlyAccess(toFill), transaction);
     }
 
-    public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess) {
+    public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
         EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
         IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(energyHandler);
         if (energyContainer != null) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
-            energyContainer.setEnergy(energyContainer.getCapacityAsLong(), null);
+            energyContainer.setEnergy(energyContainer.getCapacityAsLong(), transaction);
         }
         //The item is now filled return it for convenience
         return ItemAccessUtils.asStack(itemAccess);

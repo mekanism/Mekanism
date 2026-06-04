@@ -153,11 +153,11 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         to.copyContents(from);
     }
 
-    public ItemStack getFilledVariant(ItemAccess itemAccess, RESOURCE resource) {
+    public ItemStack getFilledVariant(ItemAccess itemAccess, RESOURCE resource, @Nullable TransactionContext transaction) {
         if (capability.getCapability(itemAccess) instanceof IMekanismResourceHandler<RESOURCE, ?> handler) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
             for (IResourceContainer<RESOURCE> container : handler.getContainers()) {
-                container.setContents(resource, container.capacityAsLong(resource), null);
+                container.setContents(resource, container.capacityAsLong(resource), transaction);
             }
         }
         //The item is now filled return it for convenience
