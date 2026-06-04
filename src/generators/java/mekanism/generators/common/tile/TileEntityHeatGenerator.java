@@ -120,7 +120,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         heatCapacitor.handleHeat(getBoost());
         FluidResource lavaResource = lavaTank.resource();
         boolean isActive = false;
-        if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFullenergyContainer())) {
+        if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {

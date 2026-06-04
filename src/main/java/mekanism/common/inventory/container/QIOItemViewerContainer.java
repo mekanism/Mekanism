@@ -395,7 +395,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             Object2LongMap.Entry<UUIDItemResource> entry = iterator.next();
             UUIDItemResource itemKey = entry.getKey();
             UUID itemUUID = itemKey.uuid();
-            ItemResource itemType = itemKey.itemType();
             long value = entry.getLongValue();
             if (value == 0) {
                 //Note: No sorting is required when removing as the lists will already be in the correct order

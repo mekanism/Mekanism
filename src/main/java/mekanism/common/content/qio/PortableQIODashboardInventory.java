@@ -37,10 +37,9 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
                     IInventorySlot inputSlot = craftingWindows[finalTableIndex].getInputSlot(slot);
                     ItemResource resource = this.itemAccess.getResource();
                     PortableDashboardContents content = resource.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY);
-                    resource = resource.with(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, inputSlot.asStack()));
                     //Note: This save listener is called from within `SnapshotJournal#onRootCommit`, but it is safe to open a new transaction
                     // from here thanks to https://github.com/neoforged/NeoForge/pull/2714
-                    ItemAccessUtils.exchange(this.itemAccess, resource, null);
+                    ItemAccessUtils.exchange(this.itemAccess, resource.with(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, inputSlot.asStack())), null);
                 }
             });
             craftingWindows[tableIndex] = craftingWindow;
