@@ -32,8 +32,6 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,7 +40,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,9 +66,9 @@ public class CommonPlayerTickHandler {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
     }
 
-    public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isScubaMaskOn(Player player, ITEM tank) {
+    public static boolean isScubaMaskOn(Player player, ItemAccess tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
-        return !mask.isEmpty() && tank.typeHolder().value() instanceof ItemScubaTank scubaTank && mask.getItem() instanceof ItemScubaMask &&
+        return !mask.isEmpty() && tank.getResource().getItem() instanceof ItemScubaTank scubaTank && mask.getItem() instanceof ItemScubaMask &&
                scubaTank.hasChemical(tank) && scubaTank.getMode(tank);
     }
 
@@ -136,7 +133,7 @@ public class CommonPlayerTickHandler {
         }
 
         ItemAccess chest = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST);
-        if (isScubaMaskOn(player, chest.getResource())) {
+        if (isScubaMaskOn(player, chest)) {
             final int max = player.getMaxAirSupply();
             ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(chest);
             if (chemicalHandler != null) {

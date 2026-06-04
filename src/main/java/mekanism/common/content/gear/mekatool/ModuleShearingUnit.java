@@ -71,20 +71,19 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     @NotNull
     @Override
-    public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand,
-          ItemAccess itemAccess, TransactionContext transaction) {
+    public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand, ItemAccess itemAccess,
+          TransactionContext transaction) {
         if (entity instanceof IShearable shearable) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
                 Level level = entity.level();
                 int cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-                if (module.useAllEnergy(player, itemAccess, cost, subTransaction) &&
-                    shearEntity(shearable, player, itemAccess.getResource().toStack(itemAccess.getAmount()), level, entity.blockPosition())) {
+                if (module.useAllEnergy(player, itemAccess, cost, subTransaction) && shearEntity(shearable, player, ItemAccessUtils.asStack(itemAccess), level, entity.blockPosition())) {
                     //Fire the game event on both sides
                     entity.gameEvent(GameEvent.SHEAR, player);
                     if (!level.isClientSide()) {
                         subTransaction.commit();
                     }
-                    return InteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
                 }
             }
         }
@@ -113,7 +112,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                     if (!level.isClientSide()) {
                         subTransaction.commit();
                     }
-                    return InteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
                 }
             }
         }
@@ -126,7 +125,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         ServerLevel world = source.level();
         Direction facing = source.state().getValue(DispenserBlock.FACING);
         BlockPos pos = source.pos().relative(facing);
-        ItemStack accessAsStack = itemAccess.getResource().toStack(itemAccess.getAmount());
+        ItemStack accessAsStack = ItemAccessUtils.asStack(itemAccess);
         if (CommonHooks.tryDispenseShearsHarvestBlock(source, accessAsStack, world, pos) || ShearsDispenseItemBehavior.tryShearBeehive(world, accessAsStack, pos)) {
             //Handle shearing via tool modified state or on a beehive as tool modified state doesn't get it
             return ModuleDispenseResult.HANDLED;

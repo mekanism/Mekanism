@@ -46,14 +46,12 @@ public class ItemCraftingFormula extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
-            if (!world.isClientSide()) {
-                stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
-            }
-            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
+        if (!player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
+        ItemStack stack = player.getItemInHand(hand);
+        stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
     }
 
     @NotNull

@@ -109,7 +109,7 @@ public class ClientTickHandler {
         if (player != minecraft.player) {
             return Mekanism.playerState.isScubaMaskOn(player);
         }
-        return CommonPlayerTickHandler.isScubaMaskOn(player, player.getItemBySlot(EquipmentSlot.CHEST));
+        return CommonPlayerTickHandler.isScubaMaskOn(player, ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST));
     }
 
     public static boolean isGravitationalModulationOn(Player player) {

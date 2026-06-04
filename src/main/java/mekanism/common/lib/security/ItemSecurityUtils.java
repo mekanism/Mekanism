@@ -1,9 +1,9 @@
 package mekanism.common.lib.security;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
@@ -16,7 +16,6 @@ import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -74,7 +73,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         }
     }
 
-    public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, BiConsumer<ServerPlayer, InteractionHand> openGui) {
+    public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<Player, InteractionHand, ItemAccess> openGui) {
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (!tryClaimItem(level, player, itemAccess, null)) {
             if (!INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
@@ -86,10 +85,11 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
                 if (itemAccess.getResource().getItem() instanceof IFrequencyItem frequencyItem) {
                     frequencyItem.pruneInvalidTrusted(itemAccess);
                 }
-                openGui.accept((ServerPlayer) player, hand);
+                openGui.accept(player, hand, itemAccess);
             }
         }
-        return InteractionResult.SUCCESS_SERVER;
+        //Transform it in case it got modified (such as part of pruning invalid trusted frequencies)
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
     }
 
     public boolean tryClaimItem(Level level, Player player, ItemAccess itemAccess, @Nullable TransactionContext transaction) {

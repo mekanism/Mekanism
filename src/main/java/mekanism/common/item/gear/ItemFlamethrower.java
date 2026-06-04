@@ -103,8 +103,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (hasChemical(stack)) {
+        if (hasChemical(ItemAccessUtils.playerHandAccess(player, hand))) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
             return InteractionResult.SUCCESS;
@@ -227,9 +226,9 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         //If a flamethrower has no gas it can't be idle
-        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower flamethrower && flamethrower.hasChemical(stack);
+        return itemAccess.getResource().getItem() instanceof ItemFlamethrower flamethrower && flamethrower.hasChemical(itemAccess);
     }
 
     @NothingNullByDefault

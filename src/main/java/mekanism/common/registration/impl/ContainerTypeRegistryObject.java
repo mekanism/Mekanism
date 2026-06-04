@@ -12,9 +12,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
@@ -76,8 +76,11 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
         return constructor == null ? null : new ContainerProvider(name, constructor, resetMousePosition);
     }
 
-    public void tryOpenGui(ServerPlayer player, InteractionHand hand) {
-        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+    public void tryOpenGui(Player player, InteractionHand hand) {
+        tryOpenGui(player, hand, ItemAccessUtils.playerHandAccess(player, hand));
+    }
+
+    public void tryOpenGui(Player player, InteractionHand hand, ItemAccess itemAccess) {
         ItemResource itemType = itemAccess.getResource();
         MenuProvider provider = getProvider(itemType.getHoverName(), hand, itemType, true);
         if (provider != null) {

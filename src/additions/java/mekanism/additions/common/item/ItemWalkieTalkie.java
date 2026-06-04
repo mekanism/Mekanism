@@ -56,12 +56,12 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
-            WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
-            stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(data.channel(), !data.running()));
-            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+        if (!player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
+        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+        stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(data.channel(), !data.running()));
+        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
     }
 
     @Override

@@ -23,6 +23,10 @@ public class ItemAccessUtils {
     private ItemAccessUtils() {
     }
 
+    public static ItemStack asStack(ItemAccess itemAccess) {
+        return itemAccess.getResource().toStack(itemAccess.getAmount());
+    }
+
     /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
     public static ItemAccess playerHandAccess(Player player, InteractionHand hand) {
         //TODO - 26.1: See if any usages of this should actually be forPlayerInteraction for creative player interaction of not mutating the initial stack

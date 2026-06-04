@@ -112,13 +112,12 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     public InteractionResult use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
         if (!MekanismUtils.isPlayingMode(player)) {
             return InteractionResult.PASS;
-        }
-        if (player.canEat(false)) {
+        } else if (player.canEat(false)) {
             ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
             if (fluidHandler != null) {
                 try (Transaction simulation = Transaction.openRoot()) {
                     int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
-                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
+                    int extracted = ResourceUtils.extractManual(fluidHandler, MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
                     if (extracted == pastePerFood) {
                         //Only allow to start drinking if we have at least enough paste to provide a single point of food
                         player.startUsingItem(hand);

@@ -91,7 +91,7 @@ public class BinExtractRecipe extends BinRecipe {
                         //Only attempt to do anything if there are items to try and remove
                         if (slot.extract(stored, toExtract, transaction, AutomationType.MANUAL) == toExtract) {
                             //If we extracted everything we expected to be able to, update the remaining, and commit the transaction
-                            remaining.set(i, binAccess.getResource().toStack(binAccess.getAmount()));
+                            remaining.set(i, ItemAccessUtils.asStack(binAccess));
                             transaction.commit();
                         }
                     }

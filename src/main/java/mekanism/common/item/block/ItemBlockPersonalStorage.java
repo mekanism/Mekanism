@@ -12,7 +12,6 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
@@ -44,13 +43,12 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h) -> {
-            ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(p, h);
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, itemAccess) -> {
             if (PersonalStorageManager.getInventoryFor(itemAccess) == null) {
                 //TODO - 26.1 make translated
-                p.sendSystemMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."), true);
+                p.sendOverlayMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."));
             }
-            getContainerType().tryOpenGui(p, h);
+            getContainerType().tryOpenGui(p, h, itemAccess);
             p.awardStat(Stats.CUSTOM.get(openStat));
         });
     }

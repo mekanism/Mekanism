@@ -67,17 +67,16 @@ public class ItemGaugeDropper extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        if (player.isShiftKeyDown()) {
-            if (level.isClientSide()) {
-                return InteractionResult.SUCCESS_SERVER;
-            }
-            BlockPos pos = player.blockPosition();
-            ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-            ContainerType.FLUID.tryDumpContents(level, pos, itemAccess, null);
-            ContainerType.CHEMICAL.tryDumpContents(level, pos, itemAccess, null);
-            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(itemAccess.getResource().toStack(itemAccess.getAmount()));
+        if (!player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        } else if (level.isClientSide()) {
+            return InteractionResult.SUCCESS_SERVER;
         }
-        return InteractionResult.PASS;
+        BlockPos pos = player.blockPosition();
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+        ContainerType.FLUID.tryDumpContents(level, pos, itemAccess, null);
+        ContainerType.CHEMICAL.tryDumpContents(level, pos, itemAccess, null);
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
     }
 
     @Override

@@ -25,6 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -52,29 +53,32 @@ public class ItemSeismicReader extends ItemEnergized {
     @Override
     public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
         if (world.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-        if (!WorldUtils.isChunkVibrated(ChunkPos.containing(player.blockPosition()), player.level())) {
+            return InteractionResult.SUCCESS_SERVER;
+        } else if (!WorldUtils.isChunkVibrated(ChunkPos.containing(player.blockPosition()), player.level())) {
             player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
             return InteractionResult.SUCCESS_SERVER;
-        } else if (!player.isCreative()) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
+        }
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+        if (!player.isCreative()) {
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
             if (energyHandler == null) {
-                player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
-                return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?
+                return needsEnergy(player);
             }
             try (Transaction transaction = Transaction.openRoot()) {
                 int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (EnergyUtils.extractManual(energyHandler, energyUsage, transaction) < energyUsage) {
-                    player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
-                    return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?
+                    return needsEnergy(player);
                 }
                 transaction.commit();
             }
         }
-        ServerPlayer serverPlayer = (ServerPlayer) player;
-        MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger(serverPlayer);
-        MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand);
-        return InteractionResult.SUCCESS_SERVER;//todo - 26.1: check this, do we need to return a transformation?
+        MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger((ServerPlayer) player);
+        MekanismContainerTypes.SEISMIC_READER.tryOpenGui(player, hand, itemAccess);
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
+    }
+
+    private InteractionResult needsEnergy(Player player) {
+        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
+        return InteractionResult.FAIL;
     }
 }

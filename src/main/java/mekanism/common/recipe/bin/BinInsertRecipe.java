@@ -110,8 +110,8 @@ public class BinInsertRecipe extends BinRecipe {
             //Note: If we only managed to insert some of it into the bin, we skip marking our bin stack as being from a recipe
             // as there is no benefit to checking if we can insert extra stuff if we know we can't fit anymore
             transaction.commit();
+            return ItemAccessUtils.asStack(binAccess);
         }
-        return binAccess.getResource().toStack(binAccess.getAmount());
     }
 
     @Override

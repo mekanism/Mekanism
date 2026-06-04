@@ -181,7 +181,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         if (!getMode(itemAccess.getResource())) {
             return InteractionResult.PASS;
         } else if (ItemSecurityUtils.get().tryClaimItem(world, player, itemAccess, null)) {
-            return InteractionResult.SUCCESS.heldItemTransformedTo(itemAccess.getResource().toStack(itemAccess.getAmount()));
+            //TODO - 26.1: Re-evaluate SUCCESS vs SUCCESS_SERVER for our use impls
+            return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
         } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
             return InteractionResult.FAIL;
         } else if (itemAccess.getAmount() > 1) {
@@ -204,10 +205,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             //If something went wrong, and we don't have a fluid handler fail
             return InteractionResult.FAIL;
         }
-        //TODO - 26.1: Re-evaluate this, and if we should get it from the item access
-        ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
-            if (!player.mayUseItemAt(pos, result.getDirection(), stack)) {
+            if (!player.mayUseItemAt(pos, result.getDirection(), ItemAccessUtils.asStack(itemAccess))) {
                 return InteractionResult.FAIL;
             }
             //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
@@ -239,7 +238,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                         transaction.commit();
                         WorldUtils.playFillSound(player, world, pos, fluidType, sound.orElse(null));
                         world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+                        return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
                     }
                     fluidType = FluidResource.of(bucket.content);
                 }//TODO - 26.1: Else do we want to just assume we got the type, and commit the transaction?
@@ -251,12 +250,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     transaction.commit();
                     WorldUtils.playFillSound(player, world, pos, fluidType, sound.orElse(null));
                     world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                    return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
                 }
             }
             Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                   fluidState.getType(), pos, world.dimension().identifier(), fluidType);
-        } else if (player.mayUseItemAt(pos.relative(result.getDirection()), result.getDirection(), stack)) {
+        } else if (player.mayUseItemAt(pos.relative(result.getDirection()), result.getDirection(), ItemAccessUtils.asStack(itemAccess))) {
             for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
                 FluidResource resource = fluidHandler.getResource(tank);
                 if (!resource.isEmpty()) {
@@ -270,8 +269,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                                 transaction.commit();
                             }
                             world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
-                            //TODO - 26.1: Do we need to relook up the stack?
-                            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+                            return InteractionResult.SUCCESS.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
                         }
                     }
                 }

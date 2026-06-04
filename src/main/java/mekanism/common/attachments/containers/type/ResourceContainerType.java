@@ -25,6 +25,7 @@ import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
@@ -160,7 +161,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
             }
         }
         //The item is now filled return it for convenience
-        return itemAccess.getResource().toStack(itemAccess.getAmount());
+        return ItemAccessUtils.asStack(itemAccess);
     }
 
     /// Gets the resource stored in an item's container by checking the attachment. This is for cases when we may not actually have a resource handler provided as a

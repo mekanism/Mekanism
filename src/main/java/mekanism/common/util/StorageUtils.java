@@ -151,7 +151,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             energyContainer.setEnergy(energyContainer.getCapacityAsLong(), null);
         }
         //The item is now filled return it for convenience
-        return itemAccess.getResource().toStack(itemAccess.getAmount());
+        return ItemAccessUtils.asStack(itemAccess);
     }
 
     public static double getEnergyRatio(TypedInstance<Item> stack) {
