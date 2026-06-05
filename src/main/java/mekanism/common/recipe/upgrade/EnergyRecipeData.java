@@ -32,12 +32,14 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             //TODO: Do we care to support cases where the output item might have a different default component so then a value of zero for stored should be written?
             return true;
         }
+        //TODO - 26.1: Do we want to just directly set the component onto the stack? Also what about resistive heater usage?
+        //ItemResource resource = itemAccess.getResource();
+        //return ItemAccessUtils.exchange(itemAccess, resource.with(ContainerType.ENERGY.getComponentType(), ContainerType.ENERGY.getOrEmpty(resource)),  transaction);
         EnergyHandler handler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (handler == null) {
             //Something went wrong, fail
             return false;
         }
-        //TODO - 26.1: Do we want to just directly set the component onto the stack? Also what about resistive heater usage?
         //Insert into the output using manual as the automation type
         //Note: We don't fail, as we allow voiding excess energy for upgrade recipes
         IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(handler);

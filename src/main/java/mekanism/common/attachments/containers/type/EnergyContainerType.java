@@ -42,7 +42,9 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
 
     @Override
     public void copyToContainer(IEnergyContainer container, Long stored) {
-        container.setEnergy(stored, null);
+        //Clamp contents to the max amount of energy that can be stored
+        container.setEnergy(Math.min(stored, container.getCapacityAsLong()), null);
+        //TODO - 26.1: Should we clamp on pick up as well?
     }
 
     @Override
