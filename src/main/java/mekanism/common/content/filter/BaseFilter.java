@@ -17,7 +17,7 @@ import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,10 +44,12 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
         }, BaseFilter::isEnabled);
     }
 
+    private static final Supplier<HolderLookup.@Nullable Provider> NO_ACCESS = () -> null;
+
     //Enabled by default
     private boolean enabled = true;
-    @Nullable //late init, once added to a manager
-    protected Provider registryAccess;
+    //late init, once added to a manager
+    protected Supplier<HolderLookup.@Nullable Provider> registryAccess = NO_ACCESS;
 
     protected BaseFilter() {
     }
@@ -95,7 +97,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     }
 
     @Override
-    public void setRegistryAccess(@NotNull Provider registryAccess) {
+    public void setRegistryAccess(@NotNull Supplier<HolderLookup.Provider> registryAccess) {
         this.registryAccess = registryAccess;
     }
 

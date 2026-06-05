@@ -45,7 +45,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     @Override
     public boolean test(ItemStack toCheck) {
-        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess, "Registry access not set up"), toCheck);
+        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess.get(), "Registry access not set up"), toCheck);
     }
 
     @Override

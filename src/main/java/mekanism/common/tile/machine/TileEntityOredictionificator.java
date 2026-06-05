@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ITileFilterHolder<OredictionificatorItemFilter> {
 
-    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave, this::getWorldNN);
+    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave, this::getLevel);
     public boolean didProcess;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
