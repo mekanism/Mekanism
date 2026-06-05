@@ -2715,8 +2715,8 @@
     {
       "methodName": "getMaxBurnRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -3852,8 +3852,8 @@
     {
       "methodName": "getFlowRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -3866,29 +3866,29 @@
     {
       "methodName": "getMaxFlowRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMaxProduction",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMaxWaterOutput",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {

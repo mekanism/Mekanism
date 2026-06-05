@@ -2115,8 +2115,8 @@ methods:
       type: Number (int)
   - methodName: getMaxBurnRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: true -> active, false -> off
     methodName: getStatus
     returns:
@@ -2791,28 +2791,28 @@ methods:
       type: String (GasMode)
   - methodName: getFlowRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getLastSteamInputRate
     returns:
       java_type: long
       type: Number (long)
   - methodName: getMaxFlowRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getMaxProduction
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getMaxWaterOutput
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getProductionRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - description: Get the contents of the steam tank.
     methodName: getSteam
     returns:

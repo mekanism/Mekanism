@@ -309,7 +309,7 @@ Fission Reactor Multiblock (formed),getHeatedCoolantCapacity,,Number (long),,fal
 Fission Reactor Multiblock (formed),getHeatedCoolantFilledPercentage,,Number (double),,false,Get the filled percentage of the heated coolant.
 Fission Reactor Multiblock (formed),getHeatedCoolantNeeded,,Number (long),,false,Get the amount needed to fill the heated coolant.
 Fission Reactor Multiblock (formed),getHeatingRate,,Number (int),,false,
-Fission Reactor Multiblock (formed),getMaxBurnRate,,Number (long),,false,
+Fission Reactor Multiblock (formed),getMaxBurnRate,,Number (int),,false,
 Fission Reactor Multiblock (formed),getStatus,,boolean,,false,"true -> active, false -> off"
 Fission Reactor Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the reactor in Kelvin.
 Fission Reactor Multiblock (formed),getWaste,,Table (LargeResourceStack),,false,Get the contents of the waste tank.
@@ -446,12 +446,12 @@ Industrial Turbine Multiblock (formed),getCoils,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getCondensers,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getDispersers,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getDumpingMode,,String (GasMode),,false,
-Industrial Turbine Multiblock (formed),getFlowRate,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getFlowRate,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getLastSteamInputRate,,Number (long),,false,
-Industrial Turbine Multiblock (formed),getMaxFlowRate,,Number (long),,false,
-Industrial Turbine Multiblock (formed),getMaxProduction,,Number (long),,false,
-Industrial Turbine Multiblock (formed),getMaxWaterOutput,,Number (long),,false,
-Industrial Turbine Multiblock (formed),getProductionRate,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getMaxFlowRate,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getMaxProduction,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getMaxWaterOutput,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getProductionRate,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getSteam,,Table (LargeResourceStack),,false,Get the contents of the steam tank.
 Industrial Turbine Multiblock (formed),getSteamCapacity,,Number (long),,false,Get the capacity of the steam tank.
 Industrial Turbine Multiblock (formed),getSteamFilledPercentage,,Number (double),,false,Get the filled percentage of the steam tank.
