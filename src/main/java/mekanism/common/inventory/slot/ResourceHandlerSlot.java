@@ -106,7 +106,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     protected <RESOURCE extends Resource> void handleContainer(IResourceContainer<RESOURCE> resourceContainer, IInventorySlot outputSlot, ContainerEditMode editMode,
           ResourceContainerType<RESOURCE, ?> containerType, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer);
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
@@ -223,7 +223,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
           ResourceContainerType<RESOURCE, ?> containerType, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             //Try filling from the slot's item
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer);
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
@@ -314,7 +314,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         if (!isEmpty()) {
             //Verify we have an item, we have tanks that may need to be drained, and that our item is a resource handler
             // This handles making sure it has a resource handler currently, even if it may have one when it isn't stacked
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer);
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {

@@ -44,12 +44,18 @@ public class ItemAccessUtils {
     /// type to change.
     public static ItemAccess sideEffectFreeAccess(TypedInstance<Item> instance) {
         //TODO - 26.1: SideEffectFreeItemAccess knows how to handle the size, are there any cases we should be taking the size into account?
+        return sideEffectFreeAccess(instance, 1);
+    }
+
+    /// Helper to create an ItemAccess for an item instance that doesn't take stack size into account, doesn't mutate the passed instance, and allows for the backing item
+    /// type to change.
+    public static ItemAccess sideEffectFreeAccess(TypedInstance<Item> instance, int size) {
         return new SideEffectFreeItemAccess(switch (instance) {
             case ItemResource resource -> resource;
             case ItemStack stack -> ItemResource.of(stack);
             case ItemStackTemplate template -> ItemResource.of(template);
             default -> ItemResource.of(instance.typeHolder());
-        });
+        }, size);
     }
 
     /// Helper method to exchange all the current resource in the given item access with the same amount of another.
