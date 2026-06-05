@@ -76,7 +76,6 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
                 List<RecipeUpgradeData<?>> upgradeData = entry.getValue();
                 if (!upgradeData.isEmpty()) {
                     //Skip any empty data, even though we should never have any
-                    //TODO - 26.1: Test that this properly updates the stack in place (it should)
                     RecipeUpgradeData<?> data = RecipeUpgradeData.mergeUpgradeData(upgradeData);
                     if (data == null || !data.applyToStack(toReturnAccess, transaction)) {
                         //Fail, incompatible data
@@ -84,6 +83,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
                     }
                 }
             }
+            transaction.commit();
             return toReturn;
         }
     }

@@ -101,7 +101,7 @@ public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgr
      */
     private long insertInto(IResourceContainer<RESOURCE> container, RESOURCE resource, final long amount, TransactionContext transaction) {
         //TODO - 26.1: Evaluate if any containers ever get passed to this that override insert that we potentially need bonus logic? In general as it is
-        // just component backed slots, most likely the answer is no
+        // just component backed slots, most likely the answer is no. Maybe if someone added a recipe to make creative bins would be the only case
         if (container.isEmpty() || container.resource().equals(resource)) {
             long capacity = container.capacityAsLong(resource);
             long stored = container.amountAsLong();

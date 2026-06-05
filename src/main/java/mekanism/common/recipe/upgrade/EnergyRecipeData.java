@@ -32,35 +32,25 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             //TODO: Do we care to support cases where the output item might have a different default component so then a value of zero for stored should be written?
             return true;
         }
-        EnergyHandler outputHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
-        if (outputHandler == null) {
+        EnergyHandler handler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        if (handler == null) {
             //Something went wrong, fail
             return false;
         }
         //TODO - 26.1: Do we want to just directly set the component onto the stack? Also what about resistive heater usage?
         //Insert into the output using manual as the automation type
         //Note: We don't fail, as we allow voiding excess energy for upgrade recipes
-        insertInto(outputHandler, storedEnergy, transaction);
-        return true;
-    }
-
-    private long insertInto(EnergyHandler handler, final long amount, TransactionContext transaction) {
         IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(handler);
         if (energyContainer != null) {
             long capacity = energyContainer.getCapacityAsLong();
             long stored = energyContainer.getAmountAsLong();
             if (energyContainer.isValidForInsertion(AutomationType.MANUAL)) {
-                long toAdd = Math.min(capacity - stored, amount);
+                long toAdd = Math.min(capacity - stored, storedEnergy);
                 if (toAdd > 0) {
                     energyContainer.setEnergy(stored + toAdd, transaction);
-                    return toAdd;
                 }
             }
-            return 0;
-        } else if (amount > Integer.MAX_VALUE) {
-            //We don't know how to force insert into non mekanism handlers, so if we end up with trying to, just return that we can't
-            return 0;
         }
-        return handler.insert((int) amount, transaction);
+        return true;
     }
 }
