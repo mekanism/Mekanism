@@ -266,6 +266,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                         tryMineBlock(transaction);
                         delay = getDelay();
                     }
+                    transaction.commit();
                 }
             }
         }
@@ -621,8 +622,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             ItemResource slotContents = slot.resource();
             if (!slotContents.isEmpty() && replaceStackMatches.test(slotContents)) {
                 //Try to extract the item from the slot if the type matches what we want
-                int extracted = slot.extract(slotContents, 1, transaction, AutomationType.INTERNAL);
-                if (extracted == 1) {
+                if (slot.extract(slotContents, 1, transaction, AutomationType.INTERNAL) == 1) {
                     return slotContents.toStack();
                 }
             }
@@ -640,7 +640,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
             ResourceHandler<ItemResource> pullInv = pullInventory.getCapability();
             if (pullInv != null) {
-                //TODO - 26.1: We used to go backwards through the inventory, but I don't think it really matters, and using this util makes it easier for us?
                 ResourceStack<ItemResource> extracted = ResourceHandlerUtil.extractFirst(pullInv, replaceStackMatches, 1, transaction);
                 if (extracted != null) {
                     //If we were able to extract something, then return it
