@@ -15,7 +15,6 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnergyUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -80,33 +79,19 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
 
     private void chargeInventory(EnergyHandler energyHandler, Player player, TransactionContext transaction) {
         //Only try to charge up to how much energy we actually have stored
-        int toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
-        //If we have more energy available than our charge rate, stop calculating the amount available and just pretend we have the rate limit worth of energy
-        int availableEnergy = Math.min(energyHandler.getAmountAsInt(), toCharge);
-        if (availableEnergy == 0) {
-            return;
-        }
-        //TODO - 26.1: Evaluate the below which basically manually reimplements ItemAccess#forPlayerSlot but using the corresponding handlers
-        // as it uses a HandlerItemAccess instead of PlayerItemAccess, but I think that might be fine?
-        PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
-        int selectedSlot = player.getInventory().getSelectedSlot();
-        // first try to charge mainhand/offhand item
-        availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getHandSlots(), availableEnergy, transaction);
-        if (toCharge > 0) {
-            //TODO - 26.1: Should this just use the following, and not care that it "tries" to insert into the held hand a second time?
-            // toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getMainSlots(), toCharge, transaction);
-            for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
-                if (slot != selectedSlot) {
-                    availableEnergy -= EnergyUtils.charge(energyHandler, ItemAccess.forHandlerIndexStrict(playerInv, slot), availableEnergy, transaction);
-                    if (availableEnergy == 0) {
-                        return;
+        int availableEnergy = Math.min(energyHandler.getAmountAsInt(), MekanismConfig.gear.mekaSuitInventoryChargeRate.get());
+        if (availableEnergy > 0) {
+            PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+            int selectedSlot = player.getInventory().getSelectedSlot();
+            // first try to charge mainhand/offhand item
+            availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getHandSlots(), availableEnergy, transaction);
+            if (availableEnergy > 0) {
+                availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getMainSlots(), availableEnergy, transaction, selectedSlot);
+                if (availableEnergy > 0 && Mekanism.hooks.curios.isLoaded()) {
+                    ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
+                    if (handler != null) {
+                        EnergyUtils.chargeContents(energyHandler, handler, availableEnergy, transaction);
                     }
-                }
-            }
-            if (availableEnergy > 0 && Mekanism.hooks.curios.isLoaded()) {
-                ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
-                if (handler != null) {
-                    EnergyUtils.chargeContents(energyHandler, handler, availableEnergy, transaction);
                 }
             }
         }

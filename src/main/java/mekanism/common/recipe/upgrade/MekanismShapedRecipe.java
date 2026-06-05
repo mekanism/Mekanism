@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -59,7 +60,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
             //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
             for (ItemStack stack : componentInputs) {
-                ItemAccess itemAccess = ItemAccess.forStack(stack);
+                ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
                 Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(itemAccess);
                 for (RecipeUpgradeType supportedType : stackSupportedTypes) {
                     if (supportedTypes.contains(supportedType)) {

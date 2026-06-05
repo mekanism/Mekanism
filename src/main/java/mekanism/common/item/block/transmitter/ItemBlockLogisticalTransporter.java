@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEntityLogisticalTransporter> {
@@ -31,8 +32,9 @@ public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEnt
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        super.addStats(stack, context, tooltipDisplay, tooltipAdder, flag);
+    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.addStats(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
         TransporterTier tier = getTier();
         //Ensure no one somehow passes in invalid data
         float tickRate = Math.max(context.tickRate(), TickRateManager.MIN_TICKRATE);

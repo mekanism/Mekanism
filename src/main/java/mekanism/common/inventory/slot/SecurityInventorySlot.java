@@ -22,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccessUtils.queryOnlyAccess(itemType)) != null;
+    public static final Predicate<ItemResource> VALIDATOR = itemType -> IItemSecurityUtils.INSTANCE.ownerCapability(ItemAccessUtils.sideEffectFreeAccess(itemType)) != null;
     public static final BiPredicate<ItemResource, AutomationType> LOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.queryOnlyAccess(itemType)) != null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.sideEffectFreeAccess(itemType)) != null;
     public static final BiPredicate<ItemResource, AutomationType> LOCK_INSERT_PREDICATE = (itemType, automationType) ->
           //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
-          automationType.isInternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.queryOnlyAccess(itemType)) == null;
+          automationType.isInternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.sideEffectFreeAccess(itemType)) == null;
     public static final BiPredicate<ItemResource, AutomationType> UNLOCK_EXTRACT_PREDICATE = (itemType, automationType) ->
-          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.queryOnlyAccess(itemType)) == null;
+          !automationType.isExternal() || IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.sideEffectFreeAccess(itemType)) == null;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
@@ -42,7 +42,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
             //Allow inserting internally even if it doesn't match, so that we can replace the item via the item access
             return true;
         }
-        UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.queryOnlyAccess(itemType));
+        UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(ItemAccessUtils.sideEffectFreeAccess(itemType));
         return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
     }
 

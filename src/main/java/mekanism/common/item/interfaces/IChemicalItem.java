@@ -11,6 +11,6 @@ public interface IChemicalItem {
     boolean hasChemical(ItemAccess itemAccess);
 
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasChemical(ITEM instance) {
-        return hasChemical(ItemAccessUtils.queryOnlyAccess(instance));
+        return hasChemical(ItemAccessUtils.sideEffectFreeAccess(instance));
     }
 }

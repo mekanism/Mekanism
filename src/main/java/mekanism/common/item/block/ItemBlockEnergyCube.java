@@ -22,6 +22,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Holder;
@@ -75,14 +76,16 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, true);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getCapacity())));
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Don't call super so that we can exclude the stored energy from being shown as we show it in hover text
     }
 

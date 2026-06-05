@@ -1,12 +1,15 @@
 package mekanism.common.capabilities;
 
 import java.util.function.BooleanSupplier;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,6 +36,11 @@ public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Di
 
     public boolean is(BlockCapability<?, ?> capability) {
         return capability == block();
+    }
+
+    @Nullable
+    public HANDLER getQueryOnlyCapability(TypedInstance<Item> instance) {
+        return getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
     }
 
     @Nullable

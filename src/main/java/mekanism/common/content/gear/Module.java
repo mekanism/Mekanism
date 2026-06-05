@@ -130,9 +130,6 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Nullable
     @Override
     public EnergyHandler getEnergyHandler(ItemAccess itemAccess) {
-        //TODO - 26.1: Wrap mekanism energy handlers to have manual interaction happen??
-        //TODO - 26.1: We might want to change how we expose item caps in general so that they go via manual by default. Is there any reason we wouldn't want to?
-        // It should be trivial to make the interface method for default type not private, and then override it on our items
         return Capabilities.ENERGY.getCapability(itemAccess);
     }
 

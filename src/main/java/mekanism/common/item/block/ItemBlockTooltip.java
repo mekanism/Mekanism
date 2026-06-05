@@ -33,6 +33,7 @@ import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
@@ -91,9 +92,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltipAdder.accept(getBlock().getDescription().translate());
         } else if (hasDetails && MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
+            addDetails(stack, ItemAccessUtils.sideEffectFreeAccess(stack), context, tooltipDisplay, tooltipAdder, flag);
         } else {
-            addStats(stack, context, tooltipDisplay, tooltipAdder, flag);
+            addStats(stack, ItemAccessUtils.sideEffectFreeAccess(stack), context, tooltipDisplay, tooltipAdder, flag);
             if (hasDetails) {
                 tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
             }
@@ -101,24 +102,25 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
     }
 
-    protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
-        addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
+        addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
         LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         if (!fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
-        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
+        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(itemAccess.getResource())) {
             tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
-            UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+            UpgradeAware upgradeAware = itemAccess.getResource().get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
                     tooltipAdder.accept(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
@@ -127,10 +129,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCapOrTooltips()) {
-            StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, false);
+            StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, false);
         }
     }
 

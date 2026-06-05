@@ -59,7 +59,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredEnergy(ItemAccess.forStack(stack), tooltipAdder, true);
+        StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
@@ -99,15 +99,15 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @Override
-    public FreeRunnerMode getFreeRunnerMode(ItemStack stack) {
-        return getMode(stack);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> FreeRunnerMode getFreeRunnerMode(ITEM instance) {
+        return getMode(instance);
     }
 
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(instance).getTextComponent()));
-            StorageUtils.addStoredEnergy(ItemAccessUtils.queryOnlyAccess(instance), list::add, true, MekanismLang.FREE_RUNNERS_STORED);
+            StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), list::add, true, MekanismLang.FREE_RUNNERS_STORED);
         }
     }
 

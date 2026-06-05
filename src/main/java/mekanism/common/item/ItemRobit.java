@@ -20,6 +20,7 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -75,7 +76,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         }
         tooltipAdder.accept(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
         tooltipAdder.accept(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
     }
@@ -97,7 +98,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                 //EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                 EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
                     robit.setHome(chargepad.getTileGlobalPos());
-                    ItemAccess itemAccess = ItemAccess.forStack(stack);
+                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
                     ItemResource itemType = itemAccess.getResource();
                     UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
                     if (ownerUUID == null) {

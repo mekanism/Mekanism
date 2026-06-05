@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -36,20 +35,20 @@ public class ItemAccessUtils {
         });
     }
 
+    /// Helper to create an ItemAccess for an entity's equipment slot.
     public static ItemAccess forEntitySlot(LivingEntity entity, EquipmentSlot slot) {
-        ResourceHandler<ItemResource> handler = LivingEntityEquipmentWrapper.of(entity, slot);
-        //TODO - 26.1: Does this need to be a strict handler?
-        return ItemAccess.forHandlerIndexStrict(handler, 0);
+        return ItemAccess.forHandlerIndexStrict(LivingEntityEquipmentWrapper.of(entity, slot), 0);
     }
 
-    //TODO - 26.1: Re-evaluate usages and add docs stating assumptions around using this
-    // Also document that it is sometimes preferred to use this over ItemAccess#forStack when no side effects should happen just to make sure that the stack doesn't get mutated
-    public static ItemAccess queryOnlyAccess(TypedInstance<Item> itemType) {
-        return new SideEffectFreeItemAccess(switch (itemType) {
+    /// Helper to create an ItemAccess for an item instance that doesn't take stack size into account, doesn't mutate the passed instance, and allows for the backing item
+    /// type to change.
+    public static ItemAccess sideEffectFreeAccess(TypedInstance<Item> instance) {
+        //TODO - 26.1: SideEffectFreeItemAccess knows how to handle the size, are there any cases we should be taking the size into account?
+        return new SideEffectFreeItemAccess(switch (instance) {
             case ItemResource resource -> resource;
             case ItemStack stack -> ItemResource.of(stack);
             case ItemStackTemplate template -> ItemResource.of(template);
-            default -> ItemResource.of(itemType.typeHolder());
+            default -> ItemResource.of(instance.typeHolder());
         });
     }
 

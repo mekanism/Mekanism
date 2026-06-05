@@ -90,9 +90,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
-        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(ItemAccess.forStack(stack));
+        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         if (fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {
@@ -108,9 +109,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(stack), true)));
-        super.addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(itemAccess), true)));
+        super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @NotNull

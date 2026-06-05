@@ -71,7 +71,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(ItemAccess.forStack(stack), tooltipAdder);
+        StorageUtils.addStoredChemical(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder);
         tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
@@ -156,7 +156,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(stack));
     }
 
     @Override
@@ -186,7 +186,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
         long stored = 0;
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
         if (handler != null && handler.size() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             stored = handler.getAmountAsLong(0);

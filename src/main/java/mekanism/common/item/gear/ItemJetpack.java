@@ -59,8 +59,8 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public boolean canUseJetpack(ItemStack stack) {
-        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
+    public boolean canUseJetpack(ItemAccess itemAccess) {
+        return ChemicalUtils.hasChemicalOfType(itemAccess, getChemicalType());
     }
 
     @Override
@@ -74,8 +74,8 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     @Override
-    public JetpackMode getJetpackMode(ItemStack stack) {
-        return getMode(stack);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> JetpackMode getJetpackMode(ITEM instance) {
+        return getMode(instance);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, getMode(instance)));
             long stored = 0;
             long capacity = 1;
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (handler != null && handler.size() > 0) {
                 stored = handler.getAmountAsLong(0);
                 capacity = handler.getCapacityAsLong(0, ChemicalResource.of(getChemicalType()));

@@ -54,7 +54,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
                 int cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-                return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), cost);
+                return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), cost);
             }
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
@@ -62,9 +62,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         } else if (action == ItemAbilities.SHEARS_DIG) {
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
-            return !instance.is(MekanismItems.MEKA_TOOL) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyHandler(ItemAccessUtils.queryOnlyAccess(instance)));
+            return !instance.is(MekanismItems.MEKA_TOOL) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyHandler(ItemAccessUtils.sideEffectFreeAccess(instance)));
         } else if (action == ItemAbilities.SHEARS_TRIM) {
-            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
+            return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShearTrim);
         }
         return ItemAbilities.DEFAULT_SHEARS_ACTIONS.contains(action);
     }

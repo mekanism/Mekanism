@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalInventorySlot extends ResourceHandlerSlot {
 
     public static boolean canFillOrConvert(IChemicalTank chemicalTank, Supplier<@Nullable Level> levelSupplier, ItemResource itemType) {
-        if (canFill(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.CHEMICAL.item())) {
+        if (canFill(chemicalTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.CHEMICAL.item())) {
             return true;
         }
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
@@ -56,8 +56,8 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
      */
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
-        return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canFill(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.CHEMICAL.item()),
-              (itemType, automationType) -> automationType.isInternal() || canFill(chemicalTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.CHEMICAL.item()), listener, x, y);
+        return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canFill(chemicalTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.CHEMICAL.item()),
+              (itemType, automationType) -> automationType.isInternal() || canFill(chemicalTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.CHEMICAL.item()), listener, x, y);
     }
 
     /**

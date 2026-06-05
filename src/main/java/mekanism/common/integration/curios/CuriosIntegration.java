@@ -7,6 +7,7 @@ import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -18,6 +19,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,10 +62,12 @@ public class CuriosIntegration {
         return capability.findFirstCurio(filter);
     }
 
-    public static ItemStack findFirstCurio(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
-        return findFirstCurioAsResult(entity, filter)
+    @Nullable
+    public static ItemAccess findFirstCurio(@NotNull LivingEntity entity, Predicate<ItemAccess> filter) {
+        return findFirstCurioAsResult(entity, stack -> filter.test(ItemAccessUtils.sideEffectFreeAccess(stack)))
               .map(SlotResult::stack)
-              .orElse(ItemStack.EMPTY);
+              .map(ItemAccess::forStack)
+              .orElse(null);
     }
 
     public static ItemStack getCurioStack(@NotNull LivingEntity entity, String slotType, int slot) {

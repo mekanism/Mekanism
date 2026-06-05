@@ -24,6 +24,7 @@ import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -174,7 +175,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                               .distinct()
                         ));
                     }
-                    ItemAccess itemAccess = ItemAccess.forStack(itemStack);
+                    ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(itemStack);
                     //Get tags of any contained fluids
                     collectTags(DictionaryTagType.FLUID, Capabilities.FLUID.getCapability(itemAccess));
                     //Get tags of any contained chemicals

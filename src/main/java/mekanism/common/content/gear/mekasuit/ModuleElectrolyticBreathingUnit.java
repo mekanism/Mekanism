@@ -78,7 +78,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
                     }
                 }
                 if (fillHeld) {
-                    ResourceHandler<ChemicalResource> handCapability = Capabilities.CHEMICAL.getCapability(ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
+                    ResourceHandler<ChemicalResource> handCapability = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.playerHandAccess(player, InteractionHand.MAIN_HAND));
                     if (handCapability != null) {
                         hydrogenUsed += handCapability.insert(MekanismChemicals.HYDROGEN.asResource(), availableHydrogen - hydrogenUsed, subTransaction);
                     }

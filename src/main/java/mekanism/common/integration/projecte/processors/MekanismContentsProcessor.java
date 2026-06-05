@@ -58,7 +58,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
     public long recalculateEMC(@NotNull ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC) throws ArithmeticException {
         IEMCProxy emcProxy = IEMCProxy.INSTANCE;
         //TODO: ItemInfo will probably just become an ItemResource natively, but for now we just build a resource from it
-        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(info.getItem(), info.getComponentsPatch()));
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(info.getItem(), info.getComponentsPatch()));
         ItemResource resource = itemAccess.getResource();
         //Stored items
         currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachedContents(resource));

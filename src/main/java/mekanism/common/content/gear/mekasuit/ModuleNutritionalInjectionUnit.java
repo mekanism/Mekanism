@@ -70,7 +70,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
           ITEM instance, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             double ratio = 0;
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (fluidHandler != null) {
                 long max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsLong();
                 long stored = 0;

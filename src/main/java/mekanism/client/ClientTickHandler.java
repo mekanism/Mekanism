@@ -66,6 +66,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -86,9 +87,13 @@ public class ClientTickHandler {
         visionEnhancement = false;
     }
 
-    public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
-        if (!player.isSpectator() && !jetpack.isEmpty()) {
-            JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
+    public static boolean isJetpackInUse(Player player, @Nullable ItemAccess jetpack) {
+        if (!player.isSpectator() && jetpack != null) {
+            ItemResource jetpackType = jetpack.getResource();
+            if (jetpackType.isEmpty()) {
+                return false;
+            }
+            JetpackMode mode = ((IJetpackItem) jetpackType.getItem()).getJetpackMode(jetpackType);
             boolean guiOpen = minecraft.screen != null;
             boolean ascending = minecraft.player.input.keyPresses.jump();
             boolean rising = ascending && !guiOpen;
@@ -167,7 +172,7 @@ public class ClientTickHandler {
         UUID playerUUID = minecraft.player.getUUID();
         // Update player's state for various items; this also automatically notifies server if something changed and
         // kicks off sounds as necessary
-        ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
+        ItemAccess jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
         boolean jetpackInUse = isJetpackInUse(minecraft.player, jetpack);
         Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
         Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
@@ -192,14 +197,14 @@ public class ClientTickHandler {
             }
         }
 
-        if (!jetpack.isEmpty()) {
-            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
+        if (jetpack != null) {
+            ItemResource primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
             if (!primaryJetpack.isEmpty()) {
                 JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
                 MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
                 try (Transaction simulation = Transaction.openRoot()) {
-                    double jetpackThrust = ((IJetpackItem) jetpack.getItem()).useJetpackFuel(ItemAccess.forStack(jetpack), primaryJetpack, simulation);
+                    double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(jetpack, primaryJetpack, simulation);
                     if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
                         minecraft.player.resetFallDistance();
                     }

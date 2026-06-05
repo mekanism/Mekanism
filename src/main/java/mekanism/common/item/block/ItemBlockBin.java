@@ -1,13 +1,13 @@
 package mekanism.common.item.block;
 
 import java.util.function.Consumer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.LockData;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
-import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.interfaces.IDroppableContents.IDroppableAttachmentContents;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
@@ -33,22 +33,22 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
-        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForAccess(itemAccess);
+    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         BinTier tier = getTier();
-        if (slot != null && tier != null) {
-            if (slot.isEmpty()) {
+        if (tier != null) {
+            LargeResourceStack<ItemResource> contents = ContainerType.ITEM.getStoredContentsFromAttachment(itemAccess);
+            if (contents.isEmpty()) {
                 tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {
-                tooltipAdder.accept(MekanismLang.STORING.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, slot.resource()));
+                tooltipAdder.accept(MekanismLang.STORING.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, contents.resource()));
                 if (tier == BinTier.CREATIVE) {
                     tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
                 } else {
-                    tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.amountAsLong())));
+                    tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(contents.amount())));
                 }
             }
-            ItemResource lockType = slot.getLockType();
+            ItemResource lockType = stack.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
             if (!lockType.isEmpty()) {
                 tooltipAdder.accept(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, lockType));
             }

@@ -125,7 +125,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
         if (ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
+            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (energyHandler != null) {
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
                 // as that is the best guess we can currently give whether the corresponding dig action is supported
@@ -156,7 +156,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
         if (energyHandler == null) {
             return 0;
         }
@@ -234,7 +234,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void adjustAttributes(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
         int energy = energyHandler == null ? 0 : energyHandler.getAmountAsInt();
         int energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
         double damage = MekanismConfig.gear.disassemblerMaxDamage.get();

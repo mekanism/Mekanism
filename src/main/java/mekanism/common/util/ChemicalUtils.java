@@ -16,7 +16,6 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -58,17 +57,13 @@ public class ChemicalUtils {
     }
 
     public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> chemical, @Nullable TransactionContext transaction) {
-        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(toFill));
         return ContainerType.CHEMICAL.getFilledVariant(itemAccess, ChemicalResource.of(chemical), transaction);
     }
 
     public static int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
         ChemicalResource chemicalType = ContainerType.CHEMICAL.getFirstResourceFromAttachment(itemAccess);
         return chemicalType.isEmpty() ? 0 : chemicalType.getChemicalColorRepresentation();
-    }
-
-    public static boolean hasChemicalOfType(TypedInstance<Item> stack, Holder<Chemical> type) {
-        return hasChemicalOfType(ItemAccessUtils.queryOnlyAccess(stack), type);
     }
 
     public static boolean hasChemicalOfType(ItemAccess itemAccess, Holder<Chemical> type) {

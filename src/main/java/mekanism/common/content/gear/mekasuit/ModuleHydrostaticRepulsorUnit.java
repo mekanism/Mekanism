@@ -35,7 +35,7 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
         //Note: Value copied from default for depth strider
         AttributeModifier modifier = new AttributeModifier(WATER_MOVEMENT, Math.min(1, 0.33333334F * module.getInstalledCount()), AttributeModifier.Operation.ADD_VALUE);
         event.addModifier(Attributes.WATER_MOVEMENT_EFFICIENCY, modifier, EquipmentSlotGroup.LEGS);
-        if (isSwimBoost(module) && module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(event.getItemStack()), MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion)) {
+        if (isSwimBoost(module) && module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(event.getItemStack()), MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion)) {
             event.addModifier(NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER, EquipmentSlotGroup.LEGS);
         }
     }

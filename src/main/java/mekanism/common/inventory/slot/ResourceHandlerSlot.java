@@ -347,7 +347,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     public static <RESOURCE extends Resource> boolean canInput(ItemAccess attachedAccess, ResourceContainerType<RESOURCE, ?> containerType, int containerIndex,
           ItemResource itemType) {
-        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (resourceHandler == null) {
             return false;
         }
@@ -387,7 +387,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     public static <RESOURCE extends Resource> boolean canFill(ItemAccess attachedAccess, ResourceContainerType<RESOURCE, ?> containerType, int containerIndex,
           ItemResource itemType) {
-        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (resourceHandler == null) {
             return false;
         }
@@ -409,7 +409,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     public static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ItemResource itemType,
           ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
-        return canDrain(resourceContainer, ItemAccessUtils.queryOnlyAccess(itemType), itemCapability);
+        return canDrain(resourceContainer, ItemAccessUtils.sideEffectFreeAccess(itemType), itemCapability);
     }
 
     public static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
@@ -420,7 +420,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     public static <RESOURCE extends Resource> boolean canDrain(ItemAccess attachedAccess, ResourceContainerType<RESOURCE, ?> containerType, int containerIndex,
           ItemResource itemType) {
-        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (resourceHandler == null) {
             return false;
         }
@@ -441,13 +441,13 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     protected static <RESOURCE extends Resource> boolean canRotaryInsert(IResourceContainer<RESOURCE> resourceContainer, ItemResource itemType,
           ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability, BooleanSupplier isProcessingResource) {
-        ResourceHandler<RESOURCE> resourceHandler = ItemAccessUtils.queryOnlyAccess(itemType).getCapability(itemCapability);
+        ResourceHandler<RESOURCE> resourceHandler = ItemAccessUtils.sideEffectFreeAccess(itemType).getCapability(itemCapability);
         return resourceHandler != null && canRotaryInsert(resourceContainer, resourceHandler, isProcessingResource.getAsBoolean());
     }
 
     public static <RESOURCE extends Resource> boolean canRotaryInsert(ItemAccess attachedAccess, ResourceContainerType<RESOURCE, ?> containerType, int containerIndex,
           ItemResource itemType, boolean isProcessingResource) {
-        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        ResourceHandler<RESOURCE> resourceHandler = containerType.capability().getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (resourceHandler == null) {
             return false;
         }

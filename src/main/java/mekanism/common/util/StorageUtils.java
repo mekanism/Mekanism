@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
@@ -24,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -75,22 +73,16 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
-        addStoredFluid(itemAccess, tooltipAdder, emptyLangEntry, (stored, emptyLang) -> {
-            if (stored.isEmpty()) {
-                return emptyLang.translateColored(EnumColor.GRAY);
-            }
-            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
-                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.amount())));
-        });
-    }
-
-    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
-          BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
         ResourceHandler<FluidResource> handler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
-                //TODO - 26.1: Custom function for storedFunction rather than converting this back into a stack?
-                tooltipAdder.accept(storedFunction.apply(handler.getResource(tank).toStack(handler.getAmountAsInt(tank)), emptyLangEntry));
+                FluidResource resource = handler.getResource(tank);
+                if (resource.isEmpty()) {
+                    tooltipAdder.accept(emptyLangEntry.translateColored(EnumColor.GRAY));
+                } else {
+                    tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, resource, EnumColor.GRAY,
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(handler.getAmountAsLong(tank)))));
+                }
             }
         } else {
             tooltipAdder.accept(emptyLangEntry.translate());
@@ -140,7 +132,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static ItemStack getFilledEnergyVariant(ItemResource toFill, @Nullable TransactionContext transaction) {
-        return getFilledEnergyVariant(ItemAccessUtils.queryOnlyAccess(toFill), transaction);
+        return getFilledEnergyVariant(ItemAccessUtils.sideEffectFreeAccess(toFill), transaction);
     }
 
     public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
@@ -155,7 +147,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static double getEnergyRatio(TypedInstance<Item> stack) {
-        EnergyHandler handler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
+        EnergyHandler handler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
         return handler == null ? 0 : ContainerType.ENERGY.divideToLevel(handler);
     }
 
@@ -192,7 +184,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         //If we are currently stacked, don't display the bar as it will overlap the stack count
         if (stack.count() == 1) {
             //We also don't display the bar if there is nothing stored in any of the containers
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
             ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
             if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
                 return true;
@@ -205,7 +197,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static int getBarWidth(ItemStack stack) {
         double bestRatio = 0;
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null) {
             for (int chemTank = 0, chemTanks = handler.size(); chemTank < chemTanks; chemTank++) {
@@ -232,7 +224,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         //If we are currently stacked, don't display the bar as it will overlap the stack count
         if (stack.count() == 1) {
             //We also don't display the bar if there is nothing stored in any of the containers
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+            EnergyHandler energyHandler = Capabilities.ENERGY.getQueryOnlyCapability(stack);
             if (energyHandler != null) {
                 return energyHandler.getAmountAsLong() > 0;
             }

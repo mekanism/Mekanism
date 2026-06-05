@@ -26,7 +26,7 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
             if (!automationType.isExternal()) {
                 return true;
             }
-            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
                 case FLUID -> !canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item());
                 case CHEMICAL -> !canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
@@ -37,7 +37,7 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
             if (automationType.isInternal()) {
                 return true;
             }
-            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(itemType);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(itemType);
             return switch (mergedTank.getCurrentType()) {
                 case FLUID -> canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item());
                 case CHEMICAL -> canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());

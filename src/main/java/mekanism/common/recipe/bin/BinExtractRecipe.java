@@ -31,7 +31,7 @@ public class BinExtractRecipe extends BinRecipe {
             return false;
         }
         //Only match the recipe if we have items in the bin that we can extract from
-        return !convertToSlot(ItemAccessUtils.queryOnlyAccess(binData)).isEmpty();
+        return !convertToSlot(ItemAccessUtils.sideEffectFreeAccess(binData)).isEmpty();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BinExtractRecipe extends BinRecipe {
             return ItemStack.EMPTY;
         }
         //Display that our output will be the bottom stack
-        ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.queryOnlyAccess(binData));
+        ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.sideEffectFreeAccess(binData));
         LargeResourceStack<ItemResource> stack = slot.asStack();
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;

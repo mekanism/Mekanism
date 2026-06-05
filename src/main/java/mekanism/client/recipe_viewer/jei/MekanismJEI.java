@@ -137,7 +137,7 @@ public class MekanismJEI implements IModPlugin {
 
     public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
-            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(item));
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(item));
             if (Capabilities.ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
                 Capabilities.FLUID.getCapability(itemAccess) != null) {
                 registry.registerSubtypeInterpreter(item.value(), MEKANISM_DATA_INTERPRETER);

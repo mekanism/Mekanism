@@ -126,7 +126,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         IModuleContainer container = moduleContainer(instance);
         if (container != null) {
             if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-                return hasEnergyForDigAction(container, Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(instance)));
+                return hasEnergyForDigAction(container, Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance)));
             }
             for (IModule<?> module : container.modules()) {
                 if (module.isEnabled() && canPerformAction(module, container, instance, action)) {
@@ -255,7 +255,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
         if (energyHandler == null) {
             return 0;
         }
@@ -390,7 +390,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
                 int energyCost = MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
-                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
                 int energy = energyHandler == null ? 0 : energyHandler.getAmountAsInt();
                 if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)

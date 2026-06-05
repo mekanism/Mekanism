@@ -8,7 +8,7 @@ import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@NothingNullByDefault//TODO - 26.1: Re-evaluate this and the name
+@NothingNullByDefault
 public class SideEffectFreeItemAccess extends SnapshotJournal<ResourceStack<ItemResource>> implements ItemAccess {
 
     private ItemResource currentType;

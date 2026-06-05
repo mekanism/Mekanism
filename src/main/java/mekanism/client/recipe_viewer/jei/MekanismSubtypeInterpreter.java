@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.util.ItemAccessUtils;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
         }
         List<Object> subTypeData = null;
 
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         ResourceHandler<ChemicalResource> chemicalHandler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (chemicalHandler != null) {
             for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {

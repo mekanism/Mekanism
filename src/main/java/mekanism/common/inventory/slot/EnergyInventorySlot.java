@@ -59,7 +59,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     private static boolean canDrain(EnergyHandler energyContainer, ItemResource itemType) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (energyHandler == null) {
             return false;
         }
@@ -98,7 +98,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean canFill(@Nullable IEnergyContainer energyContainer, ItemResource itemType) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
         if (energyHandler == null) {
             return false;
         } else if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {

@@ -105,7 +105,7 @@ public class ItemSlotsBuilder {
                   return true;
               }
               //Inversion of the insert check
-              EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+              EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
               if (energyHandler == null) {
                   return true;
               }
@@ -115,7 +115,7 @@ public class ItemSlotsBuilder {
               if (automationType.isInternal()) {
                   return true;
               }
-              EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(itemType));
+              EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
               if (energyHandler == null) {
                   return false;
               }

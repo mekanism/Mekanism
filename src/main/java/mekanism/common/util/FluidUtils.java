@@ -27,7 +27,7 @@ public final class FluidUtils {
     }
 
     public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid, @Nullable TransactionContext transaction) {
-        ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(toFill));
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(toFill));
         return ContainerType.FLUID.getFilledVariant(itemAccess, FluidResource.of(fluid), transaction);
     }
 

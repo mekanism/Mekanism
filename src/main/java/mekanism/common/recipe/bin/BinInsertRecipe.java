@@ -52,7 +52,7 @@ public class BinInsertRecipe extends BinRecipe {
             //If we didn't find a bin or an item to add it, we don't match the bin insertion recipe
             return false;
         }
-        ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.queryOnlyAccess(binType));
+        ComponentBackedBinInventorySlot slot = convertToSlot(ItemAccessUtils.sideEffectFreeAccess(binType));
         //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Return that it doesn't match if our simulation claims we would not be able to accept any items into the bin
@@ -93,7 +93,7 @@ public class BinInsertRecipe extends BinRecipe {
             //If we didn't find a bin or an item to add it, we don't match the bin insertion recipe
             return ItemStack.EMPTY;
         }
-        ItemAccess binAccess = ItemAccessUtils.queryOnlyAccess(binType);
+        ItemAccess binAccess = ItemAccessUtils.sideEffectFreeAccess(binType);
         ComponentBackedBinInventorySlot slot = convertToSlot(binAccess);
         //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
         try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
@@ -144,7 +144,7 @@ public class BinInsertRecipe extends BinRecipe {
             //If we didn't find a bin or an item to add it, we don't match the bin insertion recipe
             return remainingItems;
         }
-        ItemAccess binAccess = ItemAccessUtils.queryOnlyAccess(binType);
+        ItemAccess binAccess = ItemAccessUtils.sideEffectFreeAccess(binType);
         ComponentBackedBinInventorySlot slot = convertToSlot(binAccess);
         //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
         try (Transaction transaction = MekanismUtils.openTransactionSafe()) {

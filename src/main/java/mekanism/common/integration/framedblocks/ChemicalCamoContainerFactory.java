@@ -15,6 +15,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -168,7 +169,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     @Override
     public void registerTriggerItems(TriggerRegistrar registrar) {
-        Predicate<ItemStack> predicate = stack -> Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)) != null;
+        Predicate<ItemStack> predicate = stack -> Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)) != null;
         registrar.registerApplicationPredicate(predicate);
         registrar.registerRemovalPredicate(predicate);
     }

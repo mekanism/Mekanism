@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -51,6 +50,7 @@ import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -713,16 +713,9 @@ public class WorldUtils {
         }
     }
 
-    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull TypedInstance<Fluid> fluidInstance, @Nullable SoundEvent soundEvent) {
+    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull FluidResource fluidResource, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
-            Fluid fluid = fluidInstance.typeHolder().value();
-            Optional<SoundEvent> pickupSound = fluid.getPickupSound();
-            //noinspection OptionalIsPresent - Capturing lambdas
-            if (pickupSound.isPresent()) {
-                soundEvent = pickupSound.get();
-            } else {//TODO - 26.1: Should we query the fluid type before the fluid#getPickupSound?
-                soundEvent = fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL);
-            }
+            soundEvent = fluidResource.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL);
         }
         if (soundEvent != null) {
             world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);

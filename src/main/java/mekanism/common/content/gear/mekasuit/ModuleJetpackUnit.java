@@ -56,7 +56,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDElements(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ITEM instance,
           Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.queryOnlyAccess(instance));
+            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {

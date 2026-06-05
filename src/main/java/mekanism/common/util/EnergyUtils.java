@@ -17,9 +17,10 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-public final class EnergyUtils {//TODO - 26.1: Update docs
+public final class EnergyUtils {
 
     private EnergyUtils() {
     }
@@ -32,6 +33,8 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
             return energyHandler.getEnergyContainer();
         }
         //TODO - 26.1: Do we want a way to wrap energy handlers into an energy container for purposes of things like extractManual?
+        //TODO - 26.1: We might want to change how we expose item caps in general so that they go via manual by default. Is there any reason we wouldn't want to?
+        // It should be trivial to make the interface method for default type not private, and then override it on our items
         return null;
     }
 
@@ -44,7 +47,8 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
     ///
     /// @throws IllegalArgumentException If the amount is negative.
-    public static int extractManual(EnergyHandler handler, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int extractManual(EnergyHandler handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         IEnergyContainer energyContainer = getEnergyContainer(handler);
         if (energyContainer != null) {
             return energyContainer.extract(amount, transaction, AutomationType.MANUAL);
@@ -61,7 +65,8 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
     ///
     /// @throws IllegalArgumentException If the amount is negative.
-    public static int insertManual(EnergyHandler handler, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int insertManual(EnergyHandler handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         IEnergyContainer energyContainer = getEnergyContainer(handler);
         if (energyContainer != null) {
             return energyContainer.insert(amount, transaction, AutomationType.MANUAL);
@@ -77,6 +82,7 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return the amount of energy transferred out of the container and emitted among the given targets.
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer container, @Nullable TransactionContext transaction) {
         return emit(targets, container, container.getAmountAsInt(), transaction);
     }
@@ -90,7 +96,9 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return the amount of energy transferred out of the container and emitted among the given targets.
-    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer container, int maxOutput, @Nullable TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, IEnergyContainer container,
+          @Range(from = 0, to = Integer.MAX_VALUE) int maxOutput, @Nullable TransactionContext transaction) {
         if (!container.isEmpty() && maxOutput > 0) {
             int energyToSend;
             try (Transaction simulation = Transaction.open(transaction)) {
@@ -121,7 +129,9 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return the amount of energy emitted
-    public static long emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, long energyToSend, @Nullable TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public static long emit(Collection<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> targets, @Range(from = 0, to = Long.MAX_VALUE) long energyToSend,
+          @Nullable TransactionContext transaction) {
         if (energyToSend <= 0 || targets.isEmpty()) {
             return 0;
         }
@@ -136,7 +146,8 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     /// to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return the amount of energy emitted
-    public static long emit(List<EnergyHandler> targets, long energyToSend, @Nullable TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public static long emit(List<EnergyHandler> targets, @Range(from = 0, to = Long.MAX_VALUE) long energyToSend, @Nullable TransactionContext transaction) {
         if (targets.isEmpty() || energyToSend <= 0) {
             return 0;
         } else if (targets.size() == 1) {
@@ -150,12 +161,35 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return EmitUtils.sendToAcceptors(new EnergyHandlerTarget(targets), energyToSend, EnergyNetwork.ENERGY, transaction);
     }
 
+    /// @param chargeFrom  Handler to take energy from to charge energy capabilities in `handler`.
+    /// @param handler     Item handler to charge any contents that expose energy caps.
+    /// @param amount      Amount of energy to use during charging.
+    /// @param transaction The transaction that this operation is part of.
+    ///
     /// @return amount transferred
-    public static int chargeContents(IEnergyContainer energyContainer, ResourceHandler<ItemResource> handler, int amount, TransactionContext transaction) {
-        //TODO - 26.1: Docs
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int chargeContents(EnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
+          TransactionContext transaction) {
+        return chargeContents(chargeFrom, handler, amount, transaction, -1);
+    }
+
+    /// @param chargeFrom  Handler to take energy from to charge energy capabilities in `handler`.
+    /// @param handler     Item handler to charge any contents that expose energy caps.
+    /// @param amount      Amount of energy to use during charging.
+    /// @param transaction The transaction that this operation is part of.
+    /// @param slotToSkip  Slot index that should be skipped, or `-1` to not skip any slots.
+    ///
+    /// @return amount transferred
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int chargeContents(EnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
+          TransactionContext transaction, int slotToSkip) {
         int charged = 0;
         for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
-            charged += charge(energyContainer, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
+            if (slot == slotToSkip) {
+                continue;
+            }
+            //Note: We don't use strict here as we want to allow the item to move to an empty slot if it has to in order to be charged
+            charged += charge(chargeFrom, ItemAccess.forHandlerIndex(handler, slot), amount - charged, transaction);
             if (charged == amount) {
                 break;
             }
@@ -163,41 +197,25 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         return charged;
     }
 
+    /// @param chargeFrom  Handler to take energy from to charge the energy capability exposed by the `itemAccess`.
+    /// @param itemAccess  Item Access to query for an energy capability to charge.
+    /// @param amount      Amount of energy to use during charging.
+    /// @param transaction The transaction that this operation is part of.
+    ///
     /// @return amount transferred
-    public static int charge(IEnergyContainer chargeFrom, ItemAccess itemAccess, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int charge(EnergyHandler chargeFrom, ItemAccess itemAccess, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return amount == 0 ? 0 : charge(chargeFrom, Capabilities.ENERGY.getCapability(itemAccess), amount, transaction);
     }
 
+    /// @param chargeFrom      Handler to take energy from to charge `handlerToCharge`.
+    /// @param handlerToCharge Handler to charge.
+    /// @param amount          Amount of energy to use during charging.
+    /// @param transaction     The transaction that this operation is part of.
+    ///
     /// @return amount transferred
-    public static int charge(IEnergyContainer chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction) {
-        return charge(chargeFrom, handlerToCharge, amount, transaction, (container, toExtract, tx) -> container.extract(toExtract, tx, AutomationType.MANUAL));
-    }
-
-    /// @return amount transferred
-    public static int chargeContents(EnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, int amount, TransactionContext transaction) {
-        int charged = 0;
-        for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
-            charged += charge(chargeFrom, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
-            if (charged == amount) {
-                break;
-            }
-        }
-        return charged;
-    }
-
-    /// @return amount transferred
-    public static int charge(EnergyHandler chargeFrom, ItemAccess itemAccess, int amount, TransactionContext transaction) {
-        return amount == 0 ? 0 : charge(chargeFrom, Capabilities.ENERGY.getCapability(itemAccess), amount, transaction);
-    }
-
-    /// @return amount transferred
-    public static int charge(EnergyHandler chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction) {
-        return charge(chargeFrom, handlerToCharge, amount, transaction, EnergyUtils::extractManual);
-    }
-
-    /// @return amount transferred
-    private static <CONTAINER> int charge(CONTAINER chargeFrom, @Nullable EnergyHandler handlerToCharge, int amount, TransactionContext transaction,
-          EnergyExtractor<CONTAINER> extractor) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int charge(EnergyHandler chargeFrom, @Nullable EnergyHandler handlerToCharge, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         if (amount == 0 || handlerToCharge == null) {
             return 0;
         }
@@ -210,19 +228,12 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
             }
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            int extracted = extractor.extract(chargeFrom, toTransfer, subTransaction);
-            int inserted = handlerToCharge.insert(extracted, subTransaction);
-            if (inserted == extracted) {
+            int extracted = extractManual(chargeFrom, toTransfer, subTransaction);
+            if (extracted > 0 && handlerToCharge.insert(extracted, subTransaction) == extracted) {
                 subTransaction.commit();
-                return inserted;
+                return extracted;
             }
             return 0;
         }
-    }
-
-    @FunctionalInterface
-    private interface EnergyExtractor<CONTAINER> {
-
-        int extract(CONTAINER container, int amount, TransactionContext transaction);
     }
 }

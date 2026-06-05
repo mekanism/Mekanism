@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
@@ -44,12 +45,13 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
+          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
         AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
         if (factoryType != null) {
             tooltipAdder.accept(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
         }
-        super.addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
+        super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
     }
 }

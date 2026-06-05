@@ -45,6 +45,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnergyUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
@@ -158,7 +159,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltipAdder);
         } else {
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
             StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, true);
             if (!chemicalTankSpecs.isEmpty()) {
                 StorageUtils.addStoredChemical(itemAccess, tooltipAdder);
@@ -350,19 +351,20 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }*/
 
     @Override
-    public boolean canUseJetpack(ItemStack stack) {
+    public boolean canUseJetpack(ItemAccess itemAccess) {
         if (armorType == ArmorType.CHESTPLATE) {
-            if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
-                return ChemicalUtils.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN);
+            ItemResource armor = itemAccess.getResource();
+            if (isModuleEnabled(armor, MekanismModules.JETPACK_UNIT)) {
+                return ChemicalUtils.hasChemicalOfType(itemAccess, MekanismChemicals.HYDROGEN);
             }
-            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+            return getModules(armor).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
         return false;
     }
 
     @Override
-    public JetpackMode getJetpackMode(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> JetpackMode getJetpackMode(ITEM instance) {
+        IModule<ModuleJetpackUnit> module = getEnabledModule(instance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
             return module.getCustomInstance().mode();
         }

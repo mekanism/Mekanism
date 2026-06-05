@@ -5,6 +5,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -35,7 +36,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(ItemAccess.forStack(stack), tooltipAdder);
+        StorageUtils.addStoredChemical(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder);
     }
 
     @Override
@@ -50,7 +51,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccess.forStack(stack));
+        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(stack));
     }
 
     @Override

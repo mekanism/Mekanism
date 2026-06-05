@@ -120,11 +120,11 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer,
           ITEM instance, ItemAbility action) {
         if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
-            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageAxe);
+            return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ItemAbilities.SHOVEL_FLATTEN) {
-            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShovel);
+            return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageShovel);
         } else if (action == ItemAbilities.HOE_TILL) {
-            return module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageHoe);
+            return module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(instance), MekanismConfig.gear.mekaToolEnergyUsageHoe);
         }
         //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
         // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before

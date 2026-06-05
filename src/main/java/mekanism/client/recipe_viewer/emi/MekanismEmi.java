@@ -97,7 +97,7 @@ public class MekanismEmi implements EmiPlugin {
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         Set<Object> representation = new HashSet<>();
         ItemStack stack = emiStack.getItemStack();
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         addChemicalComponent(representation, itemAccess);
         addFluidComponent(representation, itemAccess);
         addEnergyComponent(representation, itemAccess);
@@ -184,7 +184,7 @@ public class MekanismEmi implements EmiPlugin {
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
             //Handle items
-            ItemAccess itemAccess = ItemAccessUtils.queryOnlyAccess(ItemResource.of(item));
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(item));
             if (Capabilities.ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
                 Capabilities.FLUID.getCapability(itemAccess) != null) {
                 registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);

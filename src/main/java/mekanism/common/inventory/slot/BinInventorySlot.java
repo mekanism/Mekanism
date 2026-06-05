@@ -10,14 +10,12 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
-import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -28,15 +26,6 @@ import org.jetbrains.annotations.Range;
 public class BinInventorySlot extends BasicInventorySlot {
 
     public static final Predicate<ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);
-
-    @Nullable
-    public static ComponentBackedBinInventorySlot getForAccess(ItemAccess itemAccess) {
-        ItemResource resource = itemAccess.getResource();
-        if (!resource.isEmpty() && resource.getItem() instanceof ItemBlockBin && ContainerType.ITEM.createContainer(itemAccess, 0) instanceof ComponentBackedBinInventorySlot binSlot) {
-            return binSlot;
-        }
-        return null;
-    }
 
     public static BinInventorySlot create(@Nullable IContentsListener listener, BinTier tier) {
         Objects.requireNonNull(tier, "Bin tier cannot be null");

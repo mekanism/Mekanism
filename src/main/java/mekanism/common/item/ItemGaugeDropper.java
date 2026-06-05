@@ -56,7 +56,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
             return FluidUtils.getRGBDurabilityForDisplay(fluid);
@@ -83,6 +83,6 @@ public class ItemGaugeDropper extends Item {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredSubstance(ItemAccess.forStack(stack), tooltipAdder, false);
+        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, false);
     }
 }

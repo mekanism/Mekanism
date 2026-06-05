@@ -7,6 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
 import mekanism.common.inventory.slot.ResourceHandlerSlot.LastTransferDirection;
+import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -47,8 +48,7 @@ public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends Inve
         if (getAmount() == 0) {
             //If we are currently empty, try to determine which slot we should be targeting
             IInventorySlot targetSlot = this.output;
-            //Rely on our earlier logic for when we constructed the item access to determine whether the amount is one and that this is a oneByOne item access
-            ResourceHandler<RESOURCE> insertedHandler = ItemAccess.forStack(resource.toStack(amount)).getCapability(capability);
+            ResourceHandler<RESOURCE> insertedHandler = ItemAccessUtils.sideEffectFreeAccess(resource).getCapability(capability);
             if (insertedHandler != null) {
                 try (Transaction simulation = Transaction.open(transaction)) {
                     LastTransferDirection lastTransferDirection = transferDirectionSupplier.get();

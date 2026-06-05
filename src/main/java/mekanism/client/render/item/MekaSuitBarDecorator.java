@@ -10,6 +10,7 @@ import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -34,7 +35,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         if (tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.CHEMICAL, armor.getChemicalTankSpecs(), ChemicalResource::getChemicalColorRepresentation)) {
             yOffset--;
         }

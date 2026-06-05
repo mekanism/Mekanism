@@ -44,12 +44,12 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             }
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
-            return fuelValue.applyAsInt(itemType) == 0 && !canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item());
+            return fuelValue.applyAsInt(itemType) == 0 && !canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item());
         }, (itemType, automationType) -> {
             if (automationType.isInternal() || fuelValue.applyAsInt(itemType) > 0) {
                 return true;
             }
-            return canFill(fluidTank, ItemAccessUtils.queryOnlyAccess(itemType), Capabilities.FLUID.item());
+            return canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item());
         }, listener, x, y);
     }
 

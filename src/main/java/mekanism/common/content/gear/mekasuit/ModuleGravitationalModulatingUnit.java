@@ -75,7 +75,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     @Override
     public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
-        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(ItemAccessUtils.queryOnlyAccess(stack), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
+        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
             event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
         }
     }

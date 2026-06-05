@@ -57,6 +57,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +85,7 @@ public class CommonPlayerTickHandler {
         if (hydraulic != null) {
             return hydraulic.getCustomInstance().getStepHeight();
         }
-        ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(player);
+        ItemResource primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(player);
         if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).providesStepBoost()) {
             return 0.5F;
         }
@@ -105,16 +106,16 @@ public class CommonPlayerTickHandler {
             PlayerExposure.tickServer(serverPlayer);
         }
 
-        ItemStack jetpack = IJetpackItem.getActiveJetpack(player);
-        if (!jetpack.isEmpty()) {
-            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(player);
+        ItemAccess jetpack = IJetpackItem.getActiveJetpack(player);
+        if (jetpack != null) {
+            ItemResource primaryJetpack = IJetpackItem.getPrimaryJetpack(player);
             if (!primaryJetpack.isEmpty()) {
                 IJetpackItem jetpackItem = (IJetpackItem) primaryJetpack.getItem();
                 JetpackMode primaryMode = jetpackItem.getJetpackMode(primaryJetpack);
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
                     try (Transaction transaction = Transaction.openRoot()) {
-                        double jetpackThrust = ((IJetpackItem) jetpack.getItem()).useJetpackFuel(ItemAccess.forStack(jetpack), primaryJetpack, transaction);
+                        double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(jetpack, primaryJetpack, transaction);
                         if (jetpackThrust > 0) {
                             if (IJetpackItem.handleJetpackMotion(player, mode, jetpackThrust, p -> Mekanism.keyMap.has(p.getUUID(), KeySync.ASCEND))) {
                                 player.resetFallDistance();
@@ -326,11 +327,11 @@ public class CommonPlayerTickHandler {
         if (feetAccess.getResource().getItem() instanceof ItemMekaSuitArmor) {
             return new FallEnergyInfo(Capabilities.ENERGY.getCapability(feetAccess), MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
-        ItemStack freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
-        if (!freeRunners.isEmpty()) {
-            ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
+        ItemAccess freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
+        if (freeRunners != null) {
+            ItemResource primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
             if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).preventsFallDamage()) {
-                return new FallEnergyInfo(Capabilities.ENERGY.getCapability(ItemAccess.forStack(freeRunners)), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                return new FallEnergyInfo(Capabilities.ENERGY.getCapability(freeRunners), MekanismConfig.gear.freeRunnerFallDamageRatio,
                       MekanismConfig.gear.freeRunnerFallEnergyCost);
             }
         }

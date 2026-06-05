@@ -90,7 +90,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
             // Do we want to somehow document that fact for the chargepad's limit
             int energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {
-                int inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);
+                //Note: We don't use strict here as we want to allow the item to move to an empty slot if it has to in order to be charged
+                int inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndex(itemHandler, slot), energyToGive, transaction);
                 if (inserted > 0) {
                     //Only allow charging one item per player each check of the chargepad
                     return true;

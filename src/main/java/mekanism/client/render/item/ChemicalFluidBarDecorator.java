@@ -8,6 +8,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -40,7 +41,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         yOffset += 12;
-        ItemAccess itemAccess = ItemAccess.forStack(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         if (showChemical && renderBars(guiGraphics, xOffset, yOffset, ContainerType.CHEMICAL, itemAccess, ChemicalResource::getChemicalColorRepresentation)) {
             yOffset--;
         }
