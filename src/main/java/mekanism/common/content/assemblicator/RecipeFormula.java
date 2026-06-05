@@ -1,5 +1,8 @@
 package mekanism.common.content.assemblicator;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.FormulaAttachment;
@@ -48,6 +51,21 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
             return this;
         }
         return create(world, CraftingInput.ofPositioned(3, 3, copy));
+    }
+
+    public Object2IntMap<ItemResource> getInputs() {
+        if (isEmpty()) {
+            return Object2IntMaps.emptyMap();
+        }
+        CraftingInput input = craftingInput.input();
+        //Note: We make this be a linked map to ensure it has a consistent ordering
+        Object2IntMap<ItemResource> inputs = new Object2IntLinkedOpenHashMap<>(input.size());
+        for (ItemStack item : input.items()) {
+            if (!item.isEmpty()) {
+                inputs.mergeInt(ItemResource.of(item), 1, Integer::sum);
+            }
+        }
+        return inputs;
     }
 
     public ItemStack getInputStack(int slot) {

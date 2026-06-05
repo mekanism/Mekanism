@@ -192,11 +192,13 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
             //Sync all Mekanism Recipes
             //TODO: Evaluate if there is a way we want to do this that doesn't require syncing everything
-            //TODO - 26.1: How does this handle the builtin smelting recipes? Note: It might work currently even if this doesn't sync, just because JEI syncs the vanilla types
-            // in which case we need to mark the vanilla type that we wrap for syncing in case JEI isn't present
             for (Holder<RecipeType<?>> entry : MekanismRecipeType.RECIPE_TYPES.getEntries()) {
                 event.sendRecipes(entry.value());
             }
+            //In case JEI isn't present, also sync the smelting recipes so that we can wrap them for testing the input
+            event.sendRecipes(RecipeType.SMELTING);
+            //TODO - 26.1: Re-evaluate this. If we rewrite how the formulaic assemblicator handles recipes on the client side, then this might not be necessary?
+            event.sendRecipes(RecipeType.CRAFTING);
         });
         modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
         modEventBus.addListener(Capabilities::registerCapabilities);

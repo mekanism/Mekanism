@@ -1,7 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.ints.IntArraySet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -9,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -17,7 +17,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
@@ -60,6 +59,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -89,7 +89,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private boolean stockControl = false;
     private boolean needsOrganize = true; //organize on load
     private boolean canTryToMove = true; //allow trying to move on load
-    private final ItemResource[] stockControlMap = new ItemResource[18];
+    private final ItemResource[] stockControlMap = Util.make(new ItemResource[18], map -> Arrays.fill(map, ItemResource.EMPTY));
 
     private int pulseOperations;
 
@@ -156,7 +156,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
-                InputInventorySlot inputSlot = InputInventorySlot.at((itemType, _) -> {
+                inputSlots.add(builder.addContainer(InputInventorySlot.at((itemType, _) -> {
                     //Is item valid
                     if (formula.isEmpty()) {
                         return true;
@@ -169,21 +169,18 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                     return formula.isValidIngredient(level, itemType);
-                }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
-                inputSlots.add(builder.addContainer(inputSlot));
+                }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18)));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
                 //If a crafting slot changes then we want to make sure that we recheck the recipe
-                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, listenAndRecheckRecipe, 26 + slotX * 18, 17 + slotY * 18);
-                craftingGridSlots.add(builder.addContainer(craftingSlot));
+                craftingGridSlots.add(builder.addContainer(FormulaicCraftingSlot.at(this::getAutoMode, listenAndRecheckRecipe, 26 + slotX * 18, 17 + slotY * 18)));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                OutputInventorySlot outputSlot = OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18);
-                outputSlots.add(builder.addContainer(outputSlot));
+                outputSlots.add(builder.addContainer(OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18)));
             }
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
@@ -585,94 +582,92 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formula.isEmpty()) {
             return;
         }
-        // build map of what items we have to organize
-        // Note: We keep track of the order so that it is more consistent
-        Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
-        for (IInventorySlot inputSlot : inputSlots) {
-            if (!inputSlot.isEmpty()) {
-                storedMap.mergeInt(inputSlot.resource(), inputSlot.amountAsInt(), Integer::sum);
-            }
-        }
-        // place items into respective controlled slots
-        IntSet unused = new IntArraySet(stockControlMap.length);
-        for (int i = 0; i < inputSlots.size(); i++) {
-            ItemResource itemType = stockControlMap[i];
-            if (itemType == null) {
-                unused.add(i);
-            } else {
-                IInventorySlot slot = inputSlots.get(i);
-                int stored = storedMap.getInt(itemType);
-                if (stored > 0) {
-                    int count = Math.min(itemType.getMaxStackSize(), stored);
-                    if (count == stored) {
-                        storedMap.removeInt(itemType);
-                    } else {
-                        storedMap.put(itemType, stored - count);
-                    }
-                    slot.setContents(itemType, count, null);
-                } else {
-                    //If we don't have the item stored anymore (already filled all previous slots with it),
-                    // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
-                    ContainerType.ITEM.clearContents(slot, null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int slotCount = inputSlots.size();
+            // build map of what items we have to organize
+            // Note: We keep track of the order so that it is more consistent
+            Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
+            for (IInventorySlot inputSlot : inputSlots) {
+                if (!inputSlot.isEmpty()) {
+                    //Track how much of the item is stored
+                    storedMap.mergeInt(inputSlot.resource(), inputSlot.amountAsInt(), Integer::sum);
+                    // and then clear the contents from the slot, as we will just roll this back if something goes wrong
+                    // and change listeners won't be fired if the slot ends up in the same state as it started
+                    ContainerType.ITEM.clearContents(inputSlot, transaction);
                 }
             }
-        }
-        // if we still have items, first try to add remaining items to known unused (non-controlled) slots
-        boolean empty = storedMap.isEmpty();
-        for (int i : unused) {
-            IInventorySlot slot = inputSlots.get(i);
-            if (empty) {
-                //If we don't have any more items to sort, clear all the other slots that we haven't set something in
-                ContainerType.ITEM.clearContents(slot, null);
-            } else {
-                empty = setSlotIfChanged(storedMap, slot);
+            List<IInventorySlot> emptySlots = new ArrayList<>(slotCount);
+            // place items into respective controlled slots
+            for (int i = 0; i < slotCount; i++) {
+                IInventorySlot slot = inputSlots.get(i);
+                //TODO: Can we make use of the fact the stock control map is now sorted to optimize out having to add it to a map unless it is in the wrong slot?
+                ItemResource itemType = stockControlMap[i];
+                if (itemType.isEmpty()) {
+                    //If this slot is uncontrolled, add it at the start of the list of empty slots
+                    emptySlots.addFirst(slot);
+                } else {
+                    int stored = storedMap.getInt(itemType);
+                    if (stored > 0) {
+                        int count = Math.min(slot.capacityAsInt(itemType), stored);
+                        if (count == stored) {
+                            //The item has been fully handled, remove it from the map
+                            storedMap.removeInt(itemType);
+                        } else {
+                            //Decrease how much is in the map by the amount we could take
+                            storedMap.put(itemType, stored - count);
+                        }
+                        slot.setContents(itemType, count, transaction);
+                    } else {
+                        emptySlots.addLast(slot);
+                    }
+                }
             }
-        }
-        if (empty) {
-            //If we are empty exit
-            return;
-        }
-        // if we still have items, just add them to any slots that are still empty
-        for (IInventorySlot inputSlot : inputSlots) {
-            if (inputSlot.isEmpty()) {
-                if (setSlotIfChanged(storedMap, inputSlot)) {
-                    //Exit all items accounted for
+            for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(storedMap); iterator.hasNext(); ) {
+                Object2IntMap.Entry<ItemResource> entry = iterator.next();
+                ItemResource itemType = entry.getKey();
+                int stored = entry.getIntValue();
+                //Iterate until we are out of empty slots or there is nothing still stored and pending
+                for (Iterator<IInventorySlot> slotIterator = emptySlots.iterator(); stored > 0 && slotIterator.hasNext(); ) {
+                    IInventorySlot slot = slotIterator.next();
+                    int count = Math.min(slot.capacityAsInt(itemType), stored);
+                    slot.setContents(itemType, count, transaction);
+                    //Decrease how much is left by the amount the slot could accept
+                    stored -= count;
+                    //Remove the slot from the empty slots as it is no longer empty
+                    slotIterator.remove();
+                }
+                if (stored > 0) {
+                    Mekanism.logger.warn("Unable to organize stock, could not fit all of the current contents!?");
+                    //Exit without committing
                     return;
                 }
             }
-        }
-        if (!storedMap.isEmpty()) {
-            Mekanism.logger.error("Critical error: Formulaic Assemblicator had items left over after organizing stock. Impossible!");
+            transaction.commit();
         }
     }
 
-    //TODO - 26.1: Replace this with transactionally moving things around?
-    private boolean setSlotIfChanged(Object2IntMap<ItemResource> storedMap, IInventorySlot inputSlot) {
-        boolean empty = false;
-        ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(storedMap);
-        Object2IntMap.Entry<ItemResource> next = iterator.next();
-        ItemResource itemType = next.getKey();
-        int stored = next.getIntValue();
-        int count = Math.min(itemType.getMaxStackSize(), stored);
-        if (count == stored) {
-            iterator.remove();
-            empty = storedMap.isEmpty();
-        } else {
-            next.setValue(stored - count);
-        }
-        inputSlot.setContents(itemType, count, null);
-        return empty;
-    }
-
+    //TODO - 26.1: Fix the placing into wrong slot briefly on the client side by ensuring the stock control map is synced to the client?
     private void buildStockControlMap() {
         if (formula.isEmpty()) {
             return;
         }
-        for (int i = 0; i < 9; i++) {
-            int j = i * 2;
-            ItemResource itemType = ItemResource.of(formula.getInputStack(i));
-            stockControlMap[j] = itemType;
-            stockControlMap[j + 1] = itemType;
+        int i = 0;
+        Object2IntMap<ItemResource> inputs = formula.getInputs();
+        for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(inputs); iterator.hasNext(); ) {
+            Object2IntMap.Entry<ItemResource> entry = iterator.next();
+            ItemResource itemType = entry.getKey();
+            int stored = entry.getIntValue();
+            //If the item appears multiple times in the recipe, add slots for each time it appears
+            while (stored > 0) {
+                //Add two slots per item type
+                stockControlMap[i++] = itemType;
+                stockControlMap[i++] = itemType;
+                stored--;
+            }
+        }
+        //Fill the remaining slots' type as empty to treat them as unmanaged
+        for (; i < stockControlMap.length; i++) {
+            stockControlMap[i] = ItemResource.EMPTY;
         }
     }
 

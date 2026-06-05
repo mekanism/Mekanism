@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
@@ -53,9 +52,9 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<RecipeHolder<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
-                if (optionalRecipe.isPresent()) {
-                    Recipe<?> recipe = optionalRecipe.get().value();
+                RecipeHolder<?> recipeHolder = MekanismRecipeType.byKey(player.level(), recipeID);
+                if (recipeHolder != null) {
+                    Recipe<?> recipe = recipeHolder.value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
                         QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
                     } else {

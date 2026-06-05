@@ -184,7 +184,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         for (BlockPos nodePos : activeNodes) {
             if (WorldUtils.isBlockLoaded(level, nodePos)) {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
-                    //TODO - 26.1: Make sure fluid type isn't empty?
                     if (canReplace(nodePos, true, false) &&
                         fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, subTransaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
                         WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidType.toStack(FluidType.BUCKET_VOLUME), null)) {
