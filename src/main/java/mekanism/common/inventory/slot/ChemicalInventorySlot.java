@@ -12,6 +12,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -131,27 +132,27 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
     /// Fills tank from slot, does not try converting the item via any conversions conversion
     public boolean fillTankFromSlot() {
         //Try filling from the tank's item
-        return fillContainerFromSlot(chemicalTank, Capabilities.CHEMICAL.item());
+        return fillContainerFromSlot(chemicalTank, ContainerType.CHEMICAL, null);
     }
 
     /// Fills the container from the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the item.
     public void fillTankFromSlot(IInventorySlot outputSlot) {
-        fillContainerFromSlot(chemicalTank, outputSlot, Capabilities.CHEMICAL.item());
+        fillContainerFromSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, null);
     }
 
     /**
      * Drains tank into slot
      */
     public boolean drainTankIntoSlot() {
-        return drainContainerIntoSlot(chemicalTank, Capabilities.CHEMICAL.item());
+        return drainContainerIntoSlot(chemicalTank, ContainerType.CHEMICAL, null);
     }
 
     /// Drains the container into the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the resource container.
     public void drainTankIntoSlot(IInventorySlot outputSlot) {
-        drainContainerIntoSlot(chemicalTank, outputSlot, Capabilities.CHEMICAL.item());
+        drainContainerIntoSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, null);
     }
 }

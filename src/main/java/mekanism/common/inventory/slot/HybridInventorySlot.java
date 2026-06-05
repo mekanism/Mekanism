@@ -7,6 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
@@ -59,14 +60,14 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
         CurrentType type = mergedTank.getCurrentType();
         IFluidTank fluidTank = mergedTank.getFluidTank();
         if (type == CurrentType.EMPTY) {
-            handleContainer(fluidTank, outputSlot, editMode, Capabilities.FLUID.item());
+            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, null);
             if (fluidTank.isEmpty()) {
-                handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, Capabilities.CHEMICAL.item());
+                handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, null);
             }
         } else if (type == CurrentType.FLUID) {
-            handleContainer(fluidTank, outputSlot, editMode, Capabilities.FLUID.item());
+            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, null);
         } else {//Chemicals
-            handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, Capabilities.CHEMICAL.item());
+            handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, null);
         }
     }
 }

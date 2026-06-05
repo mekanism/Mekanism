@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +33,8 @@ public class BinInventorySlot extends BasicInventorySlot {
         return new BinInventorySlot(listener, tier);
     }
 
+    private final LockTypeJournal lockTypeJournal = new LockTypeJournal();
     private final boolean isCreative;
-    private ItemResource lockType = ItemResource.EMPTY;
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
         super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, 0, 0);
@@ -50,7 +51,7 @@ public class BinInventorySlot extends BasicInventorySlot {
             return 0;
         }
         if (isEmpty()) {
-            if (isLocked() && !lockType.equals(resource)) {
+            if (isLocked() && !lockTypeJournal.lockType.equals(resource)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
             } else if (isCreative && automationType.isManual()) {
@@ -115,27 +116,27 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        setLockType(lock ? resource() : ItemResource.EMPTY);
+        setLockType(lock ? resource() : ItemResource.EMPTY, null);
         return true;
     }
 
     /**
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
-    public void setLockType(ItemResource lockType) {
-        this.lockType = lockType;
+    public void setLockType(ItemResource lockType, @Nullable TransactionContext transaction) {
+        lockTypeJournal.setLockType(lockType, transaction);
     }
 
     public boolean isLocked() {
-        return !lockType.isEmpty();
+        return !lockTypeJournal.lockType.isEmpty();
     }
 
     public ItemResource getBinItemType() {
-        return isLocked() ? lockType : resource();
+        return isLocked() ? lockTypeJournal.lockType : resource();
     }
 
     public ItemResource getLockType() {
-        return lockType;
+        return lockTypeJournal.lockType;
     }
 
     @Override
@@ -145,9 +146,9 @@ public class BinInventorySlot extends BasicInventorySlot {
         }
         super.copyContents(other, transaction);
         if (other instanceof BinInventorySlot otherSlot) {
-            setLockType(otherSlot.getLockType());
+            setLockType(otherSlot.getLockType(), transaction);
         } else if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
-            setLockType(otherSlot.getLockType());
+            setLockType(otherSlot.getLockType(), transaction);
         }
     }
 
@@ -157,13 +158,35 @@ public class BinInventorySlot extends BasicInventorySlot {
         // the tile copy the lock stack as a component
         super.serialize(output);
         if (isLocked()) {
-            output.store(SerializationConstants.LOCK_TYPE, ItemResource.CODEC, lockType);
+            output.store(SerializationConstants.LOCK_TYPE, ItemResource.CODEC, lockTypeJournal.lockType);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY));
+        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY), null);
         super.deserialize(input);
+    }
+
+    private static class LockTypeJournal extends SnapshotJournal<ItemResource> {
+
+        private ItemResource lockType = ItemResource.EMPTY;
+
+        public void setLockType(ItemResource lockType, @Nullable TransactionContext transaction) {
+            if (transaction != null) {
+                updateSnapshots(transaction);
+            }
+            this.lockType = lockType;
+        }
+
+        @Override
+        protected ItemResource createSnapshot() {
+            return lockType;
+        }
+
+        @Override
+        protected void revertToSnapshot(ItemResource snapshot) {
+            lockType = snapshot;
+        }
     }
 }

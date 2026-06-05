@@ -1,12 +1,13 @@
 package mekanism.common.inventory.access;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
-import mekanism.common.inventory.slot.ResourceHandlerSlot.LastTransferDirection;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.inventory.slot.LastTransferDirection;
+import mekanism.common.inventory.slot.LastTransferDirection.LastDirectionJournal;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -22,12 +23,17 @@ import org.jspecify.annotations.NonNull;
 public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends InventorySlotItemAccess {
 
     private final ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> capability;
-    private final Supplier<LastTransferDirection> transferDirectionSupplier;
+    private final LastDirectionJournal transferDirectionSupplier;
     private final IInventorySlot output;
     private final RESOURCE currentStoredContents;
 
+    public InOutSlotResourceItemAccess(IInventorySlot input, IInventorySlot output, ResourceContainerType<RESOURCE, ?> containerType,
+          LastDirectionJournal transferDirectionSupplier, RESOURCE currentStoredContents) {
+        this(input, output, containerType.capability().item(), transferDirectionSupplier, currentStoredContents);
+    }
+
     public InOutSlotResourceItemAccess(IInventorySlot input, IInventorySlot output, ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> capability,
-          Supplier<LastTransferDirection> transferDirectionSupplier, RESOURCE currentStoredContents) {
+          LastDirectionJournal transferDirectionSupplier, RESOURCE currentStoredContents) {
         super(input, AutomationType.INTERNAL);
         this.output = Objects.requireNonNull(output, "Output slot may not be null");
         this.capability = capability;
@@ -51,7 +57,7 @@ public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends Inve
             ResourceHandler<RESOURCE> insertedHandler = ItemAccessUtils.sideEffectFreeAccess(resource).getCapability(capability);
             if (insertedHandler != null) {
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    LastTransferDirection lastTransferDirection = transferDirectionSupplier.get();
+                    LastTransferDirection lastTransferDirection = transferDirectionSupplier.getDirection();
                     if (!currentStoredContents.isEmpty()) {
                         //TODO - 26.1: Re-evaluate this amount
                         int amountToTransfer = amount * FluidType.BUCKET_VOLUME;

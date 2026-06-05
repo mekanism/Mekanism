@@ -160,7 +160,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (upgradeData instanceof BinUpgradeData(boolean redstoneData, BinInventorySlot slot)) {
             redstone = redstoneData;
             binSlot.copyContents(slot, transaction);
-            binSlot.setLockType(slot.getLockType());
         } else {
             super.parseUpgradeData(upgradeData, provider, transaction);
         }
@@ -203,7 +202,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         //Apply the lock before processing the stored data
-        binSlot.setLockType(input.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock());
+        binSlot.setLockType(input.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock(), null);
         super.applyImplicitComponents(input);
     }
 

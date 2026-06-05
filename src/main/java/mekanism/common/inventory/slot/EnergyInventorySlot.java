@@ -67,8 +67,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean canDrain(EnergyHandler storage, EnergyHandler energyHandler) {
-        int storedEnergy = storage.getAmountAsInt();
-        if (storedEnergy == 0) {
+        if (storage.getAmountAsLong() == 0) {
             //If the energy container is empty, accept the energy item as long as it is not full
             return energyHandler.getAmountAsLong() < energyHandler.getCapacityAsLong();
         }
@@ -76,9 +75,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {
             return false;
         }
-        //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
-            return energyHandler.insert(storedEnergy, simulation) > 0;
+            //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
+            //Note: We try to insert the max amount we can store, in case the energy handler is like a bucket and can only accept
+            // amounts in specific increments
+            return energyHandler.insert(storage.getCapacityAsInt(), simulation) > 0;
         }
     }
 

@@ -1,14 +1,11 @@
 package mekanism.common.inventory.slot;
 
-import com.mojang.serialization.Codec;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -17,14 +14,13 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.inventory.access.InOutSlotResourceItemAccess;
+import mekanism.common.inventory.slot.LastTransferDirection.LastDirectionJournal;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -38,31 +34,21 @@ import org.jspecify.annotations.Nullable;
 @NothingNullByDefault
 public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
-    private LastTransferDirection lastTransferDirection = LastTransferDirection.UNKNOWN;
+    private final LastDirectionJournal lastDirectionJournal = new LastDirectionJournal();
 
     protected ResourceHandlerSlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a resource handler on the filled item or when the item isn't stacked
         // then we don't have it all of a sudden being invalid after it is emptied
-        //TODO: Eventually maybe we want to somehow enforce what the max stack size is for a given item and mark it as able to be accepted
-        // but only a single one of it so that we can provide the short circuit "is ever valid" check to mods querying our item handlers
-        // but at least for now given we fail fast, it shouldn't be *that* big a deal
-        // Similarly, this also means we don't currently allow inserting stacked items, which is probably correct, though if something tries to
-        // insert it stacked, and it would have a capability and be valid if they tried with only one item, we don't accept it
-        // (instead of only accepting a single item). This is the potentially more important reason why to address this comment
     }
 
-    public void resetLastTransferDirection() {
-        setLastTransferDirection(LastTransferDirection.UNKNOWN);
+    public void resetLastTransferDirection(@Nullable TransactionContext transaction) {
+        setLastTransferDirection(LastTransferDirection.UNKNOWN, transaction);
     }
 
-    public LastTransferDirection getLastTransferDirection() {
-        return lastTransferDirection;
-    }
-
-    public void setLastTransferDirection(LastTransferDirection direction) {
-        this.lastTransferDirection = direction;
+    public void setLastTransferDirection(LastTransferDirection direction, @Nullable TransactionContext transaction) {
+        lastDirectionJournal.updateDirection(direction, transaction);
     }
 
     @Override
@@ -70,7 +56,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         super.onContentsChanged(originalState);
         if (isEmpty()) {
             //If we are now empty, reset the last transfer direction as it is no longer valid
-            resetLastTransferDirection();
+            resetLastTransferDirection(null);
         }
     }
 
@@ -81,7 +67,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         }
         super.copyContents(other, transaction);
         if (other instanceof ResourceHandlerSlot otherSlot) {
-            setLastTransferDirection(otherSlot.getLastTransferDirection());
+            setLastTransferDirection(otherSlot.lastDirectionJournal.getDirection(), transaction);
         }
     }
 
@@ -89,15 +75,14 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     public void serialize(ValueOutput output) {
         super.serialize(output);
         //TODO - 1.21: This doesn't get persisted anymore when breaking blocks that have fluid inventory slots
-        if (lastTransferDirection != LastTransferDirection.UNKNOWN) {
-            output.store(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC, lastTransferDirection);
-        }
+        //TODO - 26.1: Re-implement it and allow keeping track of it similar to how bins keep track of their lock type?
+        lastDirectionJournal.serialize(output);
     }
 
     @Override
     public void deserialize(ValueInput input) {
         super.deserialize(input);
-        setLastTransferDirection(input.read(SerializationConstants.LAST_TRANSFER_DIRECTION, LastTransferDirection.CODEC).orElse(LastTransferDirection.UNKNOWN));
+        lastDirectionJournal.deserialize(input);
     }
 
     @Nullable
@@ -119,39 +104,52 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     protected <RESOURCE extends Resource> void handleContainer(IResourceContainer<RESOURCE> resourceContainer, IInventorySlot outputSlot, ContainerEditMode editMode,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ResourceContainerType<RESOURCE, ?> containerType, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, itemCapability, this::getLastTransferDirection,
-                  resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
-                switch (editMode) {
-                    case FILL -> {
-                        setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM);
-                        drainContainerIntoSlot(resourceContainer, handler);
-                    }
-                    case EMPTY -> {
-                        setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM);
-                        fillContainerFromSlot(resourceContainer, handler);
-                    }
-                    case BOTH -> {
-                        switch (getLastTransferDirection()) {
-                            case UNKNOWN -> {
-                                setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM);
-                                if (!drainContainerIntoSlot(resourceContainer, handler)) {
-                                    //If we can't fill the slot from our container, try to drain the slot into the container, and if that fails move it into the output slot
-                                    setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM);
-                                    if (!tryFillOrMove(resourceContainer, handler, outputSlot)) {
-                                        //If we weren't able to fill from it or move it to the output slot, just reset the last transfer direction to unknown,
-                                        // in case we are able to drain it before we can fill it
-                                        resetLastTransferDirection();
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    switch (editMode) {
+                        case FILL -> {
+                            setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM, subTransaction);
+                            if (drainContainerIntoSlot(resourceContainer, handler, subTransaction)) {
+                                subTransaction.commit();
+                            }
+                        }
+                        case EMPTY -> {
+                            setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM, subTransaction);
+                            if (fillContainerFromSlot(resourceContainer, handler, subTransaction)) {
+                                subTransaction.commit();
+                            }
+                        }
+                        case BOTH -> {
+                            switch (lastDirectionJournal.getDirection()) {
+                                case UNKNOWN -> {
+                                    setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM, subTransaction);
+                                    if (drainContainerIntoSlot(resourceContainer, handler, subTransaction)) {
+                                        subTransaction.commit();
+                                    } else {
+                                        //If we can't fill the slot from our container, try to drain the slot into the container, and if that fails move it into the output slot
+                                        setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM, subTransaction);
+                                        if (tryFillOrMove(resourceContainer, handler, outputSlot, subTransaction)) {
+                                            subTransaction.commit();
+                                        }
+                                        //Note: If we weren't able to fill from it or move it to the output slot, don't commit the subTransaction,
+                                        // and let the last attempted transfer direction reset
                                     }
                                 }
-                            }
-                            case FILL_FROM_ITEM -> tryFillOrMove(resourceContainer, handler, outputSlot);
-                            case DRAIN_INTO_ITEM -> {
-                                if (!drainContainerIntoSlot(resourceContainer, handler)) {
-                                    //TODO - 26.1: If the handler is full (of the type we can provide), we should try to move it? Is it possible for it to get into this state?
+                                case FILL_FROM_ITEM -> {
+                                    if (tryFillOrMove(resourceContainer, handler, outputSlot, subTransaction)) {
+                                        subTransaction.commit();
+                                    }
+                                }
+                                case DRAIN_INTO_ITEM -> {
+                                    //Note: We don't bother moving the item like we do for FILL_FROM_ITEM if we can't drain the container into the slot as it could be
+                                    // a voiding container (similar to a creative tank) that is just waiting for more contents in the container before it can drain them
+                                    if (drainContainerIntoSlot(resourceContainer, handler, subTransaction)) {
+                                        subTransaction.commit();
+                                    }
                                 }
                             }
                         }
@@ -161,14 +159,15 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
         }
     }
 
-    private <RESOURCE extends Resource> boolean tryFillOrMove(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler, IInventorySlot outputSlot) {
-        if (!fillContainerFromSlot(resourceContainer, handler)) {
+    private <RESOURCE extends Resource> boolean tryFillOrMove(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler, IInventorySlot outputSlot,
+          TransactionContext transaction) {
+        if (!fillContainerFromSlot(resourceContainer, handler, transaction)) {
             RESOURCE storedResource = resourceContainer.resource();
             boolean invalid;
             if (storedResource.isEmpty()) {
                 invalid = true;
             } else {
-                try (Transaction simulation = Transaction.openRoot()) {
+                try (Transaction simulation = Transaction.open(transaction)) {
                     //Note: This is a naive check as our resource container might have a rate limit that is lower than its max capacity
                     invalid = handler.extract(storedResource, resourceContainer.capacityAsInt(storedResource), simulation) == 0;
                 }
@@ -178,14 +177,14 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
                 // - don't currently have any resource stored so will never be able to accept any of the items
                 // - even if we could accept our maximum capacity of the resource, would not be able to extract any of it from the item
                 // move the item to the output slot as we can't process it
-                try (Transaction transaction = Transaction.openRoot()) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
                     //TODO: Do we have to handle if we have more than max int stored? None of our resource slots currently support that, so for now it is fine
                     ItemResource storedType = resource();
                     int stored = amountAsInt();
-                    int extracted = extract(storedType, stored, transaction, AutomationType.INTERNAL);
-                    if (extracted == stored && outputSlot.insert(storedType, stored, transaction, AutomationType.INTERNAL) == stored) {
-                        //If we managed to move it mark that we are no longer filling from the slot
-                        transaction.commit();
+                    int extracted = extract(storedType, stored, subTransaction, AutomationType.INTERNAL);
+                    if (extracted == stored && outputSlot.insert(storedType, stored, subTransaction, AutomationType.INTERNAL) == stored) {
+                        //If we managed to move it mark that we were successful, and allow the contents listener to reset that we are no longer filling from the slot
+                        subTransaction.commit();
                         return true;
                     }
                     //TODO - 26.1: Should we be resetting it to unknown if we failed to move it?
@@ -197,16 +196,21 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     /// Fills the container from the slot, and does not move it to an output slot afterward
-    protected <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+    protected <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceContainerType<RESOURCE, ?> containerType,
+          @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             //Note: We explicitly do not bother getting a one by one access here, as we only have the single slot,
             // so either we can act on the whole stack or we can't, doing one by one won't change anything
-            ResourceHandler<RESOURCE> handler = asItemAccess().getCapability(itemCapability);
+            ResourceHandler<RESOURCE> handler = containerType.capability().getCapability(asItemAccess());
             if (handler != null) {
-                //Unused, but we set it anyway
-                setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM);
-                return fillContainerFromSlot(resourceContainer, handler);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    //Unused, but we set it anyway
+                    setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM, subTransaction);
+                    if (fillContainerFromSlot(resourceContainer, handler, subTransaction)) {
+                        subTransaction.commit();
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -216,24 +220,28 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     ///
     /// @param outputSlot The slot to move our container to after draining the item.
     protected <RESOURCE extends Resource> void fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, IInventorySlot outputSlot,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ResourceContainerType<RESOURCE, ?> containerType, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             //Try filling from the slot's item
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, itemCapability, this::getLastTransferDirection,
-                  resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
-                setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM);
-                fillContainerFromSlot(resourceContainer, handler);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    setLastTransferDirection(LastTransferDirection.FILL_FROM_ITEM, subTransaction);
+                    if (fillContainerFromSlot(resourceContainer, handler, subTransaction)) {
+                        subTransaction.commit();
+                    }
+                }
             }
         }
     }
 
-    private <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler) {
+    private <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler,
+          TransactionContext transaction) {
         if (!resourceContainer.isEmpty()) {
             RESOURCE resource = resourceContainer.resource();
             int amountNeeded = resourceContainer.getNeededAsInt(resource);
-            return amountNeeded > 0 && fillContainerFromSlot(resourceContainer, handler, resource, amountNeeded);
+            return amountNeeded > 0 && fillContainerFromSlot(resourceContainer, handler, resource, amountNeeded, transaction);
         }
         //Start by gathering all the resources in the item that are valid for the container
         Set<RESOURCE> knownResources = new HashSet<>();
@@ -241,9 +249,8 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
             RESOURCE resource = handler.getResource(container);
             if (!resource.isEmpty() && knownResources.add(resource) && resourceContainer.isValidForInsertion(resource, AutomationType.INTERNAL)) {
                 //If we haven't tried to process this resource yet, and it is valid for insertion into our container
-                if (fillContainerFromSlot(resourceContainer, handler, resource, resourceContainer.capacityAsInt(resource))) {
+                if (fillContainerFromSlot(resourceContainer, handler, resource, resourceContainer.capacityAsInt(resource), transaction)) {
                     //Note: We can just exit as if we inserted something into our singular resource container, we can't insert a different type as well
-                    //TODO - 26.1: Validate we don't have any "voiding" resource containers that are exposed to this, namely the creative fluid tank
                     return true;
                 }
             }
@@ -252,26 +259,26 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     private <RESOURCE extends Resource> boolean fillContainerFromSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler, RESOURCE resource,
-          int amountNeeded) {
+          int amountNeeded, TransactionContext transaction) {
         if (amountNeeded == 0) {
             return false;
         }
         int roomFor;
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             //Check how much we can actually insert into our container in case it has a rate limit and can't accept everything it needs at once
             roomFor = resourceContainer.insert(resource, amountNeeded, simulation, AutomationType.INTERNAL);
             if (roomFor == 0) {
                 return false;
             }
         }
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //Extract the amount we simulated we can accept from the handler. It is important this happens before we then insert into our rate limit
             // based container as if the handler a stacked item, then it might only be able to provide things in discrete increments
-            int extracted = handler.extract(resource, roomFor, transaction);
-            if (extracted > 0 && resourceContainer.insert(resource, extracted, transaction, AutomationType.INTERNAL) == extracted) {
+            int extracted = handler.extract(resource, roomFor, subTransaction);
+            if (extracted > 0 && resourceContainer.insert(resource, extracted, subTransaction, AutomationType.INTERNAL) == extracted) {
                 //If we were able to accept  something, and extract the corresponding amount from the original handler
-                //Commit the changes to the transaction
-                transaction.commit();
+                //Commit the changes to the subTransaction
+                subTransaction.commit();
                 return true;
             }
             return false;
@@ -279,16 +286,21 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     /// Fills the container from the slot, and does not move it to an output slot afterward
-    protected <RESOURCE extends Resource> boolean drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+    protected <RESOURCE extends Resource> boolean drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceContainerType<RESOURCE, ?> containerType,
+          TransactionContext transaction) {
         if (!isEmpty()) {
             //Note: We explicitly do not bother getting a one by one access here, as we only have the single slot,
             // so either we can act on the whole stack or we can't, doing one by one won't change anything
-            ResourceHandler<RESOURCE> handler = asItemAccess().getCapability(itemCapability);
+            ResourceHandler<RESOURCE> handler = containerType.capability().getCapability(asItemAccess());
             if (handler != null) {
-                //Unused, but we set it anyway
-                setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM);
-                return drainContainerIntoSlot(resourceContainer, handler);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    //Unused, but we set it anyway
+                    setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM, subTransaction);
+                    if (drainContainerIntoSlot(resourceContainer, handler, subTransaction)) {
+                        subTransaction.commit();
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -298,26 +310,31 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     ///
     /// @param outputSlot The slot to move our container to after draining the resource container.
     protected <RESOURCE extends Resource> void drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer, IInventorySlot outputSlot,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ResourceContainerType<RESOURCE, ?> containerType, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             //Verify we have an item, we have tanks that may need to be drained, and that our item is a resource handler
             // This handles making sure it has a resource handler currently, even if it may have one when it isn't stacked
-            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, itemCapability, this::getLastTransferDirection, resourceContainer.resource());
+            InOutSlotResourceItemAccess<RESOURCE> access = new InOutSlotResourceItemAccess<>(this, outputSlot, containerType, lastDirectionJournal, resourceContainer.resource());
             ResourceHandler<RESOURCE> handler = getHandler(access);
             if (handler != null) {
-                setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM);
-                drainContainerIntoSlot(resourceContainer, handler);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    setLastTransferDirection(LastTransferDirection.DRAIN_INTO_ITEM, subTransaction);
+                    if (drainContainerIntoSlot(resourceContainer, handler, subTransaction)) {
+                        subTransaction.commit();
+                    }
+                }
             }
         }
     }
 
-    private <RESOURCE extends Resource> boolean drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler) {
+    private <RESOURCE extends Resource> boolean drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> handler,
+          TransactionContext transaction) {
         if (resourceContainer.isEmpty()) {
             return false;
         }
         RESOURCE resource = resourceContainer.resource();
         int availableResource;
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             //Check how much we can extract from the container to ensure we follow any transfer rate limits
             availableResource = resourceContainer.extract(resource, resourceContainer.amountAsInt(), simulation, AutomationType.INTERNAL);
             if (availableResource == 0) {
@@ -325,14 +342,14 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
                 return false;
             }
         }
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
             // and it does not actually matter that we are directly executing on the item
-            int inserted = handler.insert(resource, availableResource, transaction);
-            if (inserted > 0 && resourceContainer.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
+            int inserted = handler.insert(resource, availableResource, subTransaction);
+            if (inserted > 0 && resourceContainer.extract(resource, inserted, subTransaction, AutomationType.INTERNAL) == inserted) {
                 //If we were able to insert something into the original handler and extract the same amount from our container
-                //Commit the changes to the transaction
-                transaction.commit();
+                //Commit the changes to the subTransaction
+                subTransaction.commit();
                 return true;
             }
             return false;
@@ -370,13 +387,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
             //we return if there is at least one empty tank in the item so that we can then drain into it
             return hasEmpty;
         }
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
-            //Note: We try to insert a bucket's amount to work around buckets not being able to be filled with a smaller amount
-            // We try to insert more than a bucket though in case we have more, and it lets us get a better estimate on some custom handlers
-            //TODO - 26.1: Re-evaluate this, do we want to just pass a bucket volume to it so that it potentially has to do less checking
-            int toInsert = Math.max(resourceContainer.amountAsInt(), FluidType.BUCKET_VOLUME);
-            return resourceHandler.insert(resourceContainer.resource(), toInsert, simulation) > 0;
-        }
+        return canInsertNonEmpty(resourceContainer, resourceHandler);
     }
 
     public static <RESOURCE extends Resource> boolean canFill(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
@@ -430,12 +441,19 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     private static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
         //True if the tanks contents are valid, and we can fill the item with any of the contents
         if (resourceContainer.isEmpty()) {
-            //TODO - 26.1: Should we make this only check indices of a specific resource type???
+            //Do a best effort guess, that if any of the containers on the item's handler are not full, that then we potentially will eventually be able to fill them from our container
             return !ResourceHandlerUtil.isFull(resourceHandler);
         }
+        return canInsertNonEmpty(resourceContainer, resourceHandler);
+    }
+
+    private static <RESOURCE extends Resource> boolean canInsertNonEmpty(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
-            //TODO - 26.1: Do we need to do similar to the canInput that checks for bucket volume?
-            return resourceHandler.insert(resourceContainer.resource(), resourceContainer.amountAsInt(), simulation) > 0;
+            //Note: We try to insert the max amount we can store, in case the resource handler is like a bucket and can only accept
+            // amounts in specific increments. We could theoretically just pass a bucket's volume, but we want to make sure that
+            // any "large bucket" like items are supported as best as they can be
+            RESOURCE resource = resourceContainer.resource();
+            return resourceHandler.insert(resource, resourceContainer.capacityAsInt(resource), simulation) > 0;
         }
     }
 
@@ -476,24 +494,5 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
             return resourceContainer.isEmpty() || resourceContainer.resource().equals(resource);
         }
         return false;
-    }
-
-    public enum LastTransferDirection implements StringRepresentable {
-        UNKNOWN,
-        FILL_FROM_ITEM,
-        DRAIN_INTO_ITEM;
-
-        public static final Codec<LastTransferDirection> CODEC = StringRepresentable.fromEnum(LastTransferDirection::values);
-
-        private final String serializedName;
-
-        LastTransferDirection() {
-            this.serializedName = name().toLowerCase(Locale.ROOT);
-        }
-
-        @Override
-        public String getSerializedName() {
-            return serializedName;
-        }
     }
 }

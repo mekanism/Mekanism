@@ -8,6 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
@@ -73,25 +74,25 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
     }
 
     public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
-        handleContainer(getFluidTank(), outputSlot, editMode, Capabilities.FLUID.item());
+        handleContainer(getFluidTank(), outputSlot, editMode, ContainerType.FLUID, null);
     }
 
     /// Drains the container into the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the resource container.
     public void drainTankIntoSlot(IInventorySlot outputSlot) {
-        drainContainerIntoSlot(getFluidTank(), outputSlot, Capabilities.FLUID.item());
+        drainContainerIntoSlot(getFluidTank(), outputSlot, ContainerType.FLUID, null);
     }
 
     /// Fills the container from the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the item.
     public void fillTankFromSlot(IInventorySlot outputSlot) {
-        fillContainerFromSlot(getFluidTank(), outputSlot, Capabilities.FLUID.item());
+        fillContainerFromSlot(getFluidTank(), outputSlot, ContainerType.FLUID, null);
     }
 
     /// Fills tank from slot, does not try converting the item via any conversions conversion
     public boolean fillTankFromSlot() {
-        return fillContainerFromSlot(getFluidTank(), Capabilities.FLUID.item());
+        return fillContainerFromSlot(getFluidTank(), ContainerType.FLUID, null);
     }
 }

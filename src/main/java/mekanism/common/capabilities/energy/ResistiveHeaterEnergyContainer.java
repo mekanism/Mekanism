@@ -35,6 +35,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     public void updateEnergyUsage(int energyUsage) {
+        //TODO: Do we want to make this support transactions?
         currentEnergyPerTick = energyUsage;
         setMaxEnergy(AttributeEnergy.STORAGE_MULTIPLIER * energyUsage);
     }
