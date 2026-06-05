@@ -9,6 +9,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -138,8 +139,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public void copyContents(IHeatCapacitor other) {
-        IHeatCapacitor.super.copyContents(other);
+    public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
+        IHeatCapacitor.super.copyContents(other, transaction);
         //TODO - 26.1: Should heat capacity be copied before or after?
         setHeatCapacity(other.getHeatCapacity(), false);
     }

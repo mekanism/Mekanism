@@ -55,8 +55,8 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     }
 
     @Override
-    public void copy(IEnergyContainer from, IEnergyContainer to) {
-        to.copyContents(from);
+    public void copy(IEnergyContainer from, IEnergyContainer to, @Nullable TransactionContext transaction) {
+        to.copyContents(from, transaction);
     }
 
     //TODO - 26.1: Evaluate what other spots should be clamped

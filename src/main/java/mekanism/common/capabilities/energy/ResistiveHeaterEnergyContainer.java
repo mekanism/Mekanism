@@ -12,6 +12,7 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,13 +40,13 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     @Override
-    public void copyContents(IEnergyContainer other) {
+    public void copyContents(IEnergyContainer other, @Nullable TransactionContext transaction) {
         if (other instanceof ResistiveHeaterEnergyContainer otherContainer) {
             updateEnergyUsage(otherContainer.getEnergyPerTick());
         } else if (other instanceof ComponentBackedResistiveEnergyContainer otherContainer) {
             updateEnergyUsage(otherContainer.getEnergyPerTick());
         }
-        super.copyContents(other);
+        super.copyContents(other, transaction);
     }
 
     @Override

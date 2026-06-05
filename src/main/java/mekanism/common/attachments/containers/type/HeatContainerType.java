@@ -10,6 +10,8 @@ import mekanism.common.attachments.containers.heat.HeatCapacitorData;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<HeatCapacitorData, IHeatCapacitor, AttachedHeat> {
@@ -65,7 +67,7 @@ public final class HeatContainerType extends AbstractContainerType<IHeatCapacito
     }
 
     @Override
-    public void copy(IHeatCapacitor from, IHeatCapacitor to) {
-        to.copyContents(from);
+    public void copy(IHeatCapacitor from, IHeatCapacitor to, @Nullable TransactionContext transaction) {
+        to.copyContents(from, transaction);
     }
 }

@@ -21,6 +21,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlot {
@@ -92,7 +93,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      *
      * @see BinInventorySlot#setLockType(ItemResource)
      */
-    public boolean setLockType(ItemResource lockType) {
+    private boolean setLockType(ItemResource lockType, @Nullable TransactionContext transaction) {
         //Note: The attached access should handle snapshotting the backing stack
         //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
         ItemResource resource = attachedAccess.getResource();
@@ -101,9 +102,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
             return false;
         }
         if (lockType.isEmpty()) {
-            return ItemAccessUtils.exchange(attachedAccess, resource.without(MekanismDataComponents.LOCK), null);
+            return ItemAccessUtils.exchange(attachedAccess, resource.without(MekanismDataComponents.LOCK), transaction);
         }
-        return ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.LOCK, LockData.create(lockType)), null);
+        return ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.LOCK, LockData.create(lockType)), transaction);
     }
 
     public ItemResource getLockType() {
@@ -111,15 +112,15 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public void copyContents(IResourceContainer<ItemResource> other) {
+    public void copyContents(IResourceContainer<ItemResource> other, @Nullable TransactionContext transaction) {
         if (other instanceof ResourceContainerWrapper<ItemResource, ?> wrapper) {
             other = wrapper.getInternal();
         }
-        super.copyContents(other);
+        super.copyContents(other, transaction);
         if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
-            setLockType(otherSlot.getLockType());
+            setLockType(otherSlot.getLockType(), transaction);
         } else if (other instanceof BinInventorySlot otherSlot) {
-            setLockType(otherSlot.getLockType());
+            setLockType(otherSlot.getLockType(), transaction);
         }
     }
 
@@ -134,7 +135,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     @Override
     public void deserialize(ValueInput input) {
-        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY));
+        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY), null);
         super.deserialize(input);
     }
 }

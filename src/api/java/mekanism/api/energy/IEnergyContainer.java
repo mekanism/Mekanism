@@ -130,11 +130,12 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// cycle.
     ///
     /// @param other Container to copy data from.
+    /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     /// @since 10.8.0
-    default void copyContents(IEnergyContainer other) {
-        setEnergy(other.getAmountAsLong(), null);
+    default void copyContents(IEnergyContainer other, @Nullable TransactionContext transaction) {
+        setEnergy(other.getAmountAsLong(), transaction);
     }
 
     /// Determines which automation type methods defined via [EnergyHandler] methods will use.

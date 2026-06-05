@@ -16,7 +16,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
@@ -55,24 +57,24 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         return attachedAccess.getResource().getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
     }
 
-    private void updateEnergyUsage(int energyUsage) {
+    private void updateEnergyUsage(int energyUsage, @Nullable TransactionContext transaction) {
         ItemResource resource = attachedAccess.getResource();
         //Ensure the backing item has not somehow become empty
         if (!resource.isEmpty()) {
             //Note: The attached access should handle snapshotting the backing stack
-            ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.ENERGY_USAGE, energyUsage), null);
+            ItemAccessUtils.exchange(attachedAccess, resource.with(MekanismDataComponents.ENERGY_USAGE, energyUsage), transaction);
             //Note: We don't have to clamp the energy as all of our call sites call a method which sets the energy afterward anyway
         }
     }
 
     @Override
-    public void copyContents(IEnergyContainer other) {
+    public void copyContents(IEnergyContainer other, @Nullable TransactionContext transaction) {
         if (other instanceof ResistiveHeaterEnergyContainer otherContainer) {
-            updateEnergyUsage(otherContainer.getEnergyPerTick());
+            updateEnergyUsage(otherContainer.getEnergyPerTick(), transaction);
         } else if (other instanceof ComponentBackedResistiveEnergyContainer otherContainer) {
-            updateEnergyUsage(otherContainer.getEnergyPerTick());
+            updateEnergyUsage(otherContainer.getEnergyPerTick(), transaction);
         }
-        super.copyContents(other);
+        super.copyContents(other, transaction);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     @Override
     public void deserialize(ValueInput input) {
-        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
+        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(energy -> updateEnergyUsage(energy, null));
         super.deserialize(input);
     }
 }

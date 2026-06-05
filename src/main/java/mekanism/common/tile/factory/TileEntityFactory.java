@@ -71,6 +71,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -467,19 +468,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            energyContainer.copyContents(data.energyContainer);
+            energyContainer.copyContents(data.energyContainer, transaction);
             sorting = data.sorting;
-            energySlot.copyContents(data.energySlot);
+            energySlot.copyContents(data.energySlot, transaction);
             System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
             for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).copyContents(data.inputSlots.get(i));
+                inputSlots.get(i).copyContents(data.inputSlots.get(i), transaction);
             }
             for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).copyContents(data.outputSlots.get(i));
+                outputSlots.get(i).copyContents(data.outputSlots.get(i), transaction);
             }
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
@@ -488,7 +489,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 }
             }
         } else {
-            super.parseUpgradeData(upgradeData, provider);
+            super.parseUpgradeData(upgradeData, provider, transaction);
         }
     }
 

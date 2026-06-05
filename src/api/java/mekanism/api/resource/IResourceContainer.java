@@ -221,11 +221,12 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// cycle.
     ///
     /// @param other Container to copy data from. Might be [`wrapped`][ResourceContainerWrapper].
+    /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     /// @see ResourceContainerWrapper#getInternal() Getting the internal container when wrapped if instance checks are necessary.
-    default void copyContents(IResourceContainer<RESOURCE> other) {
-        setContents(other.asStack(), null);
+    default void copyContents(IResourceContainer<RESOURCE> other, @Nullable TransactionContext transaction) {
+        setContents(other.asStack(), transaction);
     }
 
     //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional

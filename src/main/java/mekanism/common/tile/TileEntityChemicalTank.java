@@ -59,6 +59,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements IHasGasMode {
@@ -155,14 +156,14 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            drainSlot.copyContents(data.drainSlot);
-            fillSlot.copyContents(data.fillSlot);
+            drainSlot.copyContents(data.drainSlot, transaction);
+            fillSlot.copyContents(data.fillSlot, transaction);
             dumping = data.dumping;
-            chemicalTank.copyContents(data.chemicalTank);
+            chemicalTank.copyContents(data.chemicalTank, transaction);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -170,7 +171,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 }
             }
         } else {
-            super.parseUpgradeData(upgradeData, provider);
+            super.parseUpgradeData(upgradeData, provider, transaction);
         }
     }
 

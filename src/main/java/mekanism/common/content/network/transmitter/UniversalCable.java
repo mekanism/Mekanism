@@ -111,10 +111,10 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     }
 
     @Override
-    public void parseUpgradeData(@NotNull UniversalCableUpgradeData data) {
+    public void parseUpgradeData(@NotNull UniversalCableUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        buffer.copyContents(data.buffer);
+        buffer.copyContents(data.buffer, transaction);
     }
 
     @Override

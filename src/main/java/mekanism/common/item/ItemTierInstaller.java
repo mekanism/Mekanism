@@ -16,6 +16,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -144,7 +146,10 @@ public class ItemTierInstaller extends Item {
                         if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
                             upgradedTile.setFacing(directional.getDirection(), false);
                         }
-                        upgradedTile.parseUpgradeData(upgradeData, world.registryAccess());
+                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                            upgradedTile.parseUpgradeData(upgradeData, world.registryAccess(), transaction);
+                            transaction.commit();
+                        }
                         upgradedTile.resyncMasterToBounding();
                         upgradedTile.sendUpdatePacket();
                         upgradedTile.setChanged();

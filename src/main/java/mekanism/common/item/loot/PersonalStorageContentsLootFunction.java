@@ -52,24 +52,24 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
             List<IInventorySlot> tileSlots = personalStorage.getInventorySlots();
             //Validate that at least one slot has something stored
             if (!ContainerType.ITEM.areContainersEmpty(tileSlots)) {
-                AbstractPersonalStorageItemInventory destInv;
-                if (EffectiveSide.get().isClient()) {
-                    destInv = new ClientSidePersonalStorageInventory();
-                } else {
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    AbstractPersonalStorageItemInventory destInv;
+                    if (EffectiveSide.get().isClient()) {
+                        destInv = new ClientSidePersonalStorageInventory();
+                    } else {
                         destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(ItemAccess.forStack(stack), transaction), "Inventory not available?!");
-                        transaction.commit();
                     }
-                }
-                int size = tileSlots.size();
-                List<IInventorySlot> containers = destInv.getContainers();
-                if (containers.size() == size) {//TODO - 26.1: If they don't match how should we handle it?
-                    for (int i = 0; i < size; i++) {
-                        IInventorySlot tileSlot = tileSlots.get(i);
-                        if (!tileSlot.isEmpty()) {
-                            containers.get(i).copyContents(tileSlot);
+                    int size = tileSlots.size();
+                    List<IInventorySlot> containers = destInv.getContainers();
+                    if (containers.size() == size) {//TODO - 26.1: If they don't match how should we handle it?
+                        for (int i = 0; i < size; i++) {
+                            IInventorySlot tileSlot = tileSlots.get(i);
+                            if (!tileSlot.isEmpty()) {
+                                containers.get(i).copyContents(tileSlot, transaction);
+                            }
                         }
                     }
+                    transaction.commit();
                 }
             }
         }

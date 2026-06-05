@@ -112,7 +112,7 @@ public class PersonalStorageManager {
         //Get a new inventory id
         PersonalStorageData data = forOwner(owner);
         if (data != null) {
-            data.addInventory(getInventoryId(itemAccess, transaction), contents);
+            data.addInventory(getInventoryId(itemAccess, transaction), contents, transaction);
             return true;
         }
         return false;

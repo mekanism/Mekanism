@@ -92,10 +92,10 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     }
 
     @Override
-    public void parseUpgradeData(@NotNull ResourceTransmitterUpgradeData<RESOURCE> data) {
+    public void parseUpgradeData(@NotNull ResourceTransmitterUpgradeData<RESOURCE> data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        bufferContainer.copyContents(data.buffer);
+        bufferContainer.copyContents(data.buffer, transaction);
     }
 
     protected CONTAINER getContainer() {

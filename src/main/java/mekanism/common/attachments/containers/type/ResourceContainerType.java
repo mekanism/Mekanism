@@ -152,8 +152,8 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     }
 
     @Override
-    public void copy(CONTAINER from, CONTAINER to) {
-        to.copyContents(from);
+    public void copy(CONTAINER from, CONTAINER to, @Nullable TransactionContext transaction) {
+        to.copyContents(from, transaction);
     }
 
     public ItemStack getFilledVariant(ItemAccess itemAccess, RESOURCE resource, @Nullable TransactionContext transaction) {

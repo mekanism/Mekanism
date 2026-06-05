@@ -91,7 +91,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public void parseUpgradeData(@NotNull ThermodynamicConductorUpgradeData data) {
+    public void parseUpgradeData(@NotNull ThermodynamicConductorUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         buffer.setHeat(data.heat);

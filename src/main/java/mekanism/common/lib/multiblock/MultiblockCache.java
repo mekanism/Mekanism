@@ -213,7 +213,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
 
         public void copy(ELEMENT from, ELEMENT to) {
-            containerType.copy(from, to);
+            containerType.copy(from, to, null);
         }
 
         public abstract <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache);

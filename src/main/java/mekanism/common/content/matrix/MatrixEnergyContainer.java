@@ -263,7 +263,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void copyContents(IEnergyContainer other) {
+    public void copyContents(IEnergyContainer other, @Nullable TransactionContext transaction) {
     }
 
     private long getRemainingInput() {

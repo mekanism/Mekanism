@@ -41,6 +41,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,13 +123,13 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            energyContainer.copyContents(data.energyContainer);
-            chargeSlot.copyContents(data.chargeSlot);
-            dischargeSlot.copyContents(data.dischargeSlot);
+            energyContainer.copyContents(data.energyContainer, transaction);
+            chargeSlot.copyContents(data.chargeSlot, transaction);
+            dischargeSlot.copyContents(data.dischargeSlot, transaction);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -136,7 +137,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
                 }
             }
         } else {
-            super.parseUpgradeData(upgradeData, provider);
+            super.parseUpgradeData(upgradeData, provider, transaction);
         }
     }
 

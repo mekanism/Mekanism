@@ -31,6 +31,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
@@ -51,6 +52,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -366,7 +369,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         } else {
                             Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
                             if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
-                                transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData);
+                                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                                    transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData, transaction);
+                                    transaction.commit();
+                                }
                             } else {
                                 Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
                             }
@@ -390,9 +396,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
-    private <DATA extends TransmitterUpgradeData> void transferUpgradeData(IUpgradeableTransmitter<DATA> upgradeableTransmitter, TransmitterUpgradeData data) {
+    private <DATA extends TransmitterUpgradeData> void transferUpgradeData(IUpgradeableTransmitter<DATA> upgradeableTransmitter, TransmitterUpgradeData data, TransactionContext transaction) {
         if (upgradeableTransmitter.dataTypeMatches(data)) {
-            upgradeableTransmitter.parseUpgradeData((DATA) data);
+            upgradeableTransmitter.parseUpgradeData((DATA) data, transaction);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
         }

@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -44,14 +45,14 @@ class PersonalStorageData extends SavedData {
     }
 
     @CanIgnoreReturnValue
-    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
+    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents, TransactionContext transaction) {
         PersonalStorageItemInventory inventory = inventoriesById.get(id);
         if (inventory == null) {
             inventory = createInventory();
             inventoriesById.put(id, inventory);
             List<IInventorySlot> inventorySlots = inventory.getContainers();
             for (int i = 0, slots = contents.size(); i < slots; i++) {
-                inventorySlots.get(i).copyContents(contents.get(i));
+                inventorySlots.get(i).copyContents(contents.get(i), transaction);
             }
             setDirty();
         }

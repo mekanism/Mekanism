@@ -52,8 +52,8 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
     }
 
     @Override
-    public void copyContents(IResourceContainer<RESOURCE> other) {
-        internal.copyContents(other);
+    public void copyContents(IResourceContainer<RESOURCE> other, @Nullable TransactionContext transaction) {
+        internal.copyContents(other, transaction);
     }
 
     @Override

@@ -126,7 +126,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        lockType = lock ? resource() : ItemResource.EMPTY;
+        setLockType(lock ? resource() : ItemResource.EMPTY);
         return true;
     }
 
@@ -150,11 +150,11 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public void copyContents(IResourceContainer<ItemResource> other) {
+    public void copyContents(IResourceContainer<ItemResource> other, @Nullable TransactionContext transaction) {
         if (other instanceof ResourceContainerWrapper<ItemResource, ?> wrapper) {
             other = wrapper.getInternal();
         }
-        super.copyContents(other);
+        super.copyContents(other, transaction);
         if (other instanceof BinInventorySlot otherSlot) {
             setLockType(otherSlot.getLockType());
         } else if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
@@ -174,7 +174,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public void deserialize(ValueInput input) {
-        this.lockType = input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY);
+        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY));
         super.deserialize(input);
     }
 }

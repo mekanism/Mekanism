@@ -18,6 +18,7 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED> {
@@ -61,7 +62,7 @@ public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED>
 
     void readFrom(ValueInput input, TileEntityMekanism tile);
 
-    void copy(CONTAINER from, CONTAINER to);
+    void copy(CONTAINER from, CONTAINER to, @Nullable TransactionContext transaction);
 
     void copyToTile(TileEntityMekanism tile, DataComponentGetter componentGetter);
 

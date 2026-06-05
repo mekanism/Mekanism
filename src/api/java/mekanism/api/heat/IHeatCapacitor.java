@@ -6,6 +6,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public interface IHeatCapacitor extends ValueIOSerializable {
@@ -91,10 +93,11 @@ public interface IHeatCapacitor extends ValueIOSerializable {
     /// Helper method to copy all pertinent data from another [`heat capacitor`][IHeatCapacitor] to this one without requiring a serialization, deserialization cycle.
     ///
     /// @param other Capacitor to copy data from.
+    /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
     /// @since 10.8.0
-    default void copyContents(IHeatCapacitor other) {
+    default void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
         setHeat(other.getHeat());
     }
 }

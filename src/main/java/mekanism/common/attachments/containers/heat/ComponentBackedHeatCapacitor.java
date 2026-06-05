@@ -10,6 +10,8 @@ import mekanism.common.attachments.containers.type.IContainerType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatCapacitorData, AttachedHeat> implements IHeatCapacitor {
@@ -103,9 +105,9 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    public void copyContents(IHeatCapacitor other) {
+    public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
         AttachedHeat attachedHeat = getAttached();
-        setContents(attachedHeat, new HeatCapacitorData(other.getHeat(), other.getHeatCapacity()));
+        setContents(attachedHeat, new HeatCapacitorData(other.getHeat(), other.getHeatCapacity()), transaction, true);
     }
 
     @Override

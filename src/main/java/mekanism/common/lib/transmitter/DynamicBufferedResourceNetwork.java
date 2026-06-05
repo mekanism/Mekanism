@@ -74,13 +74,13 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (this.container.isEmpty()) {
-                this.container.copyContents(net.container);
+                this.container.copyContents(net.container, null);
                 containerType().clearContents(net.container, null);
             }
         } else {
             if (!net.container.isEmpty()) {
                 if (this.container.isEmpty()) {
-                    this.container.copyContents(net.container);
+                    this.container.copyContents(net.container, null);
                     containerType().clearContents(net.container, null);
                 } else {
                     // compare the chemicals themselves
