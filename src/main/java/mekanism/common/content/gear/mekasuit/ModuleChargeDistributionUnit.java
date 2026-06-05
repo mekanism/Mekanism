@@ -1,5 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -51,21 +53,28 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     private void chargeSuit(Player player, TransactionContext transaction) {
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            EnergySaveTarget saveTarget = new EnergySaveTarget(4);
-            ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
-            long availableEnergy = 0;
-            for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
-                //TODO - 26.1: Instead of just directly going off of energy containers, should we support charging other armor that exposes energy capabilities?
-                IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
-                if (energyContainer != null) {
-                    saveTarget.addHandler(SaveHandler.startSaveHandling(energyContainer, subTransaction));
-                    //TODO - 26.1: Do we need to worry about overflow?
-                    availableEnergy += energyContainer.getAmountAsLong();
+        ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
+        int size = armorSlots.size();
+        long availableEnergy = 0;
+        List<IEnergyContainer> energyContainers = new ArrayList<>(size);
+        for (int slot = 0; slot < size; slot++) {
+            IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
+            if (energyContainer != null) {
+                energyContainers.add(energyContainer);
+                availableEnergy += energyContainer.getAmountAsLong();
+                if (availableEnergy < 0) {//TODO: Is there any way we can cleanly support this case? Maybe doing multiple distributions?
+                    Mekanism.logger.warn("Failed to distribute energy across worn armor due to having more than max long energy.");
+                    return;
                 }
             }
-            //If we only have one handler we can skip charging as it will all just go back into the chest piece
-            if (saveTarget.getHandlerCount() > 1 && availableEnergy > 0) {
+        }
+        //If we only have one handler we can skip charging as it will all just go back into the chest piece
+        if (energyContainers.size() > 1 && availableEnergy > 0) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                EnergySaveTarget saveTarget = new EnergySaveTarget(energyContainers.size());
+                for (IEnergyContainer energyContainer : energyContainers) {
+                    saveTarget.addHandler(SaveHandler.startSaveHandling(energyContainer, subTransaction));
+                }
                 long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, subTransaction);
                 if (distributed == availableEnergy) {
                     subTransaction.commit();
