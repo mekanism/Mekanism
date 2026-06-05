@@ -205,7 +205,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
             if (module != null) {
                 if (module.getUntypedData().isExclusive(ExclusiveFlag.ANY)) {
                     if (startY + 13 > shift) {
-                        drawScaledScrollingString(g, MekanismLang.MODULE_EXCLUSIVE.translate(), 2, startY, TextAlignment.LEFT, 0x635BD4,
+                        drawScaledScrollingString(g, MekanismLang.MODULE_EXCLUSIVE.translate(), 2, startY, TextAlignment.LEFT, 0xFF635BD4,
                               getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);
                     }
                     startY += 13;
@@ -224,7 +224,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     private void scissorScreen(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
         //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
-        guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getBottom() - 1);
+        guiGraphics.enableScissor(relativeX, relativeY + 1, guiGraphics.guiWidth() - relativeX, relativeY + height - 1);
         Matrix3x2fStack matrix = guiGraphics.pose();
         matrix.pushMatrix();
         int shift = getCurrentSelection();
