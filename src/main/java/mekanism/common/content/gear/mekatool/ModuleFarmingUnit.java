@@ -207,13 +207,17 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
               new AxeToolAOEData());
     }
 
-    //TODO - 26.1: Should we make the interaction free for creative players?
     private static InteractionResult useAOE(UseOnContext context, BlockState clickedState, EnergyHandler energyHandler, int diameter, TransactionContext transaction,
           ItemAbility action, @Nullable SoundEvent sound, int particle, int energyUsage, IToolAOEData toolAOEData) {
-        try (Transaction simulation = Transaction.open(transaction)) {
-            if (EnergyUtils.extractManual(energyHandler, energyUsage, simulation) < energyUsage) {
-                //Fail if we don't have enough energy
-                return InteractionResult.FAIL;
+        if (context.getPlayer() instanceof Player player && player.isCreative()) {
+            energyUsage = 0;
+        }
+        if (energyUsage > 0) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                if (EnergyUtils.extractManual(energyHandler, energyUsage, simulation) < energyUsage) {
+                    //Fail if we don't have enough energy
+                    return InteractionResult.FAIL;
+                }
             }
         }
         Level world = context.getLevel();
@@ -250,7 +254,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 continue;
             }
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (EnergyUtils.extractManual(energyHandler, energyUsage, subTransaction) < energyUsage) {
+                if (energyUsage > 0 && EnergyUtils.extractManual(energyHandler, energyUsage, subTransaction) < energyUsage) {
                     //We don't have enough energy to continue extracting from our container, break
                     break;
                 }

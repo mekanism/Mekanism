@@ -107,11 +107,6 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         amountCrafted += numItemsCrafted;
     }
 
-    //TODO - 26.1: Remove this in favor of https://github.com/neoforged/NeoForge/pull/3205
-    protected void clearCachedReturnStack() {
-        getItem();
-    }
-
     @Override
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         //Note: This method is only called if mayPickup returns true
