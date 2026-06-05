@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -25,6 +26,10 @@ import org.jspecify.annotations.NonNull;
 public abstract class TransitRequest implements Iterable<ItemData> {
 
     public static SimpleTransitRequest simple(ItemResource itemType, int amount) {
+        TransferPreconditions.checkNonEmptyNonNegative(itemType, amount);
+        if (amount == 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
         return new SimpleTransitRequest(itemType, amount);
     }
 
@@ -73,6 +78,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         }
         return ret;
     }
+
     @NotNull
     public TransitResponse eject(BlockEntity outputter, @Nullable ResourceHandler<ItemResource> target, int min, @Nullable EnumColor outputColor,
           @NotNull TransactionContext transaction) {
@@ -86,7 +92,6 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             return TransitResponse.EMPTY;
         } else if (target instanceof TransporterItemHandler cursed) {
             LogisticalTransporterBase transporter = cursed.getTransporter();
-            //TODO - 26.1: Re-evaluate this, but I am fairly sure that if the color is null, then it basically is "no color" so would just take the color of the transporter it is being inserted directly into
             EnumColor color = outputColor == null ? transporter.getColor() : outputColor;
             return transporter.insert(outputter, outputterPos, this, color, min, transaction);
         }
@@ -138,12 +143,6 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             return TransitResponse.EMPTY;
         }
         return new TransitResponse(itemType, inserted, data);
-    }
-
-    @NotNull
-    public TransitResponse getEmptyResponse() {
-        //TODO - 26.1: Evaluate if we want to inline this
-        return TransitResponse.EMPTY;
     }
 
     public record TransitResponse(ItemResource itemType, int sendingAmount, ItemData slotData) {
@@ -224,13 +223,8 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
         private final List<ItemData> slotData;
 
-        protected SimpleTransitRequest(ItemResource itemType, int amount) {
-            //TODO - 26.1: Re-evaluate this, but I think this makes sense and prevents transit requests from having any empty data in them
-            if (itemType.isEmpty() || amount <= 0) {
-                slotData = Collections.emptyList();
-            } else {
-                slotData = Collections.singletonList(new SimpleItemData(itemType, amount));
-            }
+        private SimpleTransitRequest(ItemResource itemType, int amount) {
+            slotData = Collections.singletonList(new SimpleItemData(itemType, amount));
         }
 
         @NonNull

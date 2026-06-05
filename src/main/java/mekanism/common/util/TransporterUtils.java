@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -75,13 +76,13 @@ public final class TransporterUtils {
         return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force, transaction);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force,
-          @Nullable TransactionContext transaction) {
-        if (itemType.isEmpty() || itemAmount <= 0) {
-            //TODO - 26.1: What do we want to return if itemType is empty
-            return false;
-        }
-        if (force && tile instanceof IAdvancedTransportEjector sorter) {
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side,
+          boolean force, @Nullable TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(itemType, itemAmount);
+        if (itemAmount == 0) {
+            //Note: Theoretically this should never be zero when passed, but if it is, just return that it can be inserted as there is nothing to insert
+            return true;
+        } else if (force && tile instanceof IAdvancedTransportEjector sorter) {
             return sorter.canSendHome(itemType, itemAmount, transaction);
         }
         if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {
@@ -96,9 +97,7 @@ public final class TransporterUtils {
             return false;
         }
         try (Transaction simulation = Transaction.open(transaction)) {
-            // Simulate insert, this will handle validating the item is valid for the inventory
-            //TODO - 26.1: Should we be taking the item stack's count into account, and only return true if it can all be inserted, or should we maybe just try inserting
-            // a single thing of the item for the simulation
+            //Simulate insert, this will handle validating the item is valid for the inventory, and that at least some of it can be accepted
             return inventory.insert(itemType, itemAmount, simulation) > 0;
         }
     }
