@@ -189,10 +189,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 lastBoilRate = 0;
             } else {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    ChemicalResource steam = MekanismChemicals.STEAM.asResource();
-                    int amountToBoil = Math.min(lastMaxBoil, steamTank.getNeededAsInt(steam));
+                    int amountToBoil = Math.min(lastMaxBoil, steamTank.getNeededAsInt(ChemicalResource.EMPTY));
                     int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
-                    if (boiled > 0 && steamTank.insert(steam, boiled, transaction, AutomationType.INTERNAL) == boiled) {
+                    if (boiled > 0 && steamTank.insert(MekanismChemicals.STEAM.asResource(), boiled, transaction, AutomationType.INTERNAL) == boiled) {
                         heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
                         transaction.commit();
                     }

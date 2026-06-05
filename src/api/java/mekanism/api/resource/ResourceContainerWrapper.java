@@ -22,8 +22,8 @@ public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAI
         this.internal = internal;
     }
 
-    /// This method gets the innermost resource container for use in [copyContents][IResourceContainer#copyContents(IResourceContainer)] when instance checks are
-    /// required.
+    /// This method gets the innermost resource container for use in [copyContents][IResourceContainer#copyContents(IResourceContainer, TransactionContext)] when instance
+    /// checks are required.
     public IResourceContainer<RESOURCE> getInternal() {
         IResourceContainer<RESOURCE> internal = this.internal;
         if (internal instanceof ResourceContainerWrapper<RESOURCE, ?> wrapper) {

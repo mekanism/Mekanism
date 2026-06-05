@@ -177,7 +177,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (below != null) {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                toEmit = Math.min(below.getNeededAsInt(below.resource()), toEmit);
+                toEmit = Math.min(below.getNeededAsInt(FluidResource.EMPTY), toEmit);
             }
             ResourceUtils.emit(belowTankCache.getHandler(), fluidTank, toEmit, null);
         }

@@ -3,6 +3,7 @@ package mekanism.common.attachments.containers.type;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -73,5 +74,9 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
                 container.setEnergy(capacity, transaction);
             }
         }
+    }
+
+    public double divideToLevel(EnergyHandler container) {
+        return MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
     }
 }

@@ -156,7 +156,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static double getEnergyRatio(TypedInstance<Item> stack) {
         EnergyHandler handler = Capabilities.ENERGY.getCapability(ItemAccessUtils.queryOnlyAccess(stack));
-        return handler == null ? 0 : MathUtils.divideToLevel(handler.getAmountAsLong(), handler.getCapacityAsLong());
+        return handler == null ? 0 : ContainerType.ENERGY.divideToLevel(handler);
     }
 
     public static Component getEnergyPercent(TypedInstance<Item> stack, boolean colorText) {
@@ -241,11 +241,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static int getEnergyBarWidth(ItemStack stack) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
-        if (energyHandler == null) {
-            return 0;
-        }
-        return getBarWidth(MathUtils.divideToLevel(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong()));
+        return getBarWidth(getEnergyRatio(stack));
     }
 
     public static void mergeEnergyContainers(@Nullable IEnergyContainer container, @Nullable IEnergyContainer mergeContainer, TransactionContext transaction) {

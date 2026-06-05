@@ -87,7 +87,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 if (below != null) {
                     //If the block below this barrel, is also a barrel. Only emit as much as it might be able to accept.
                     // This prevents it then trying to go up the chain back to this barrel and any ones above it
-                    toEmit = Math.min(below.getNeededAsInt(below.resource()), toEmit);
+                    toEmit = Math.min(below.getNeededAsInt(ChemicalResource.EMPTY), toEmit);
                 }
                 ResourceUtils.emit(belowTankCache.getHandler(), chemicalTank, toEmit, null);
             }

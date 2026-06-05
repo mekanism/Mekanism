@@ -105,7 +105,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (couldOperate && receivedEnergy > 0) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(outputTank.resource()) - 1);
+            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(ChemicalResource.EMPTY) - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);

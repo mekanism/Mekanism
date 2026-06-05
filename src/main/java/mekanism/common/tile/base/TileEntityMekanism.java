@@ -23,7 +23,6 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -1510,7 +1509,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (energyContainer == null) {
             return 1;
         }
-        return MathUtils.divideToLevel(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
+        return ContainerType.ENERGY.divideToLevel(energyContainer);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

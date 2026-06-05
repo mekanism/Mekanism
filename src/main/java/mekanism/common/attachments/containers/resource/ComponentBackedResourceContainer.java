@@ -160,6 +160,8 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         if (amount == 0) {
             //"Fail quick" if nothing is being inserted
             return 0;
+        } else if (!currentType.isEmpty() && !currentType.equals(resource)) {
+            return 0;
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         int needed = Ints.saturatedCast(capacity - currentAmount);
@@ -168,8 +170,6 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         if (needed <= 0 || !canInsert.test(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             //Note: We check directly against canInsert, as the capacity returns zero if isValid is false
-            return 0;
-        } else if (!currentType.isEmpty() && !currentType.equals(resource)) {
             return 0;
         }
         int toAdd = Math.min(amount, needed);

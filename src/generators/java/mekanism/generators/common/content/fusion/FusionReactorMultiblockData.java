@@ -298,7 +298,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 //Validate that the handler has some fusion fuel in it
                 try (Transaction transaction = Transaction.openRoot()) {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
-                    int availableFuel = ResourceUtils.extractManual(handler, fuelType, fuelTank.getNeededAsInt(fuelTank.resource()), transaction);
+                    int availableFuel = ResourceUtils.extractManual(handler, fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), transaction);
                     if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
                         lastPlasmaTemperature = getPlasmaTemp();
                         ContainerType.ITEM.clearContents(reactorSlot, transaction);
@@ -311,7 +311,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void injectFuel() {
-        int amountNeeded = fuelTank.getNeededAsInt(fuelTank.resource());
+        int amountNeeded = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
         int amountAvailable = 2 * Math.min(deuteriumTank.amountAsInt(), tritiumTank.amountAsInt());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
@@ -362,7 +362,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             FluidResource water = waterTank.resource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steamTank.resource())), transaction, AutomationType.INTERNAL);
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(ChemicalResource.EMPTY)), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
                         //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
                         steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);

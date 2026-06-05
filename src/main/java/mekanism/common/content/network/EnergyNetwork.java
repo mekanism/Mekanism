@@ -146,7 +146,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<EnergyHandler, EnergyN
 
     @Override
     protected float computeContentScale() {
-        float scale = (float) MathUtils.divideToLevel(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
+        float scale = (float) ContainerType.ENERGY.divideToLevel(energyContainer);
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount != 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

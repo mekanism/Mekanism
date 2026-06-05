@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.bar;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -33,7 +33,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
+                return ContainerType.ENERGY.divideToLevel(container);
             }
         }, x, y, desiredHeight);
     }

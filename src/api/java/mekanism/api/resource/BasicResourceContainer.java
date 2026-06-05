@@ -13,7 +13,11 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-//TODO - 26.1: Docs, and maybe make it a little more protected like BasicChemicalTank?
+/// A basic implementation of a generic container for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
+///
+/// @param <RESOURCE> The type of resource this container manages.
+///
+/// @since 10.8.0
 @NothingNullByDefault
 public abstract class BasicResourceContainer<RESOURCE extends Resource> extends SnapshotJournal<LargeResourceStack<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
@@ -27,6 +31,11 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     private LargeResourceStack<RESOURCE> current;
 
+    /// @param capacity   Tank capacity.
+    /// @param canExtract Extract predicate.
+    /// @param canInsert  Insert predicate.
+    /// @param validator  Validation predicate.
+    /// @param listener   Contents change listener.
     protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
         this.canExtract = canExtract;
@@ -62,6 +71,10 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         }
     }
 
+    /// Called when the contents this listener is monitoring gets changed. If the contents were changed as part of a transaction, this will get called during
+    /// [#onRootCommit(LargeResourceStack)].
+    ///
+    /// @param originalState Original contents from before the changes occurred.
     protected void onContentsChanged(LargeResourceStack<RESOURCE> originalState) {
         if (listener != null) {
             listener.onContentsChanged();
@@ -112,36 +125,29 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         return 0;
     }
 
-    /**
-     * Helper method to allow easily setting a rate at which resources can be inserted into this {@link BasicResourceContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
-     * stack.
-     */
+    /// Helper method to allow easily setting a rate at which resources can be inserted into this [BasicResourceContainer].
+    ///
+    /// @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
+    ///
+    /// @return The rate this tank can insert/extract at.
+    ///
+    /// @implNote By default, this returns [Integer#MAX_VALUE] to not actually limit the tank's rate. By default, this is also ignored for direct setting of the stack.
     @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getInsertionRate(AutomationType automationType) {
-        //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
-        // Main spot where they might not is for containers
+        //TODO: Figure out how to make InventoryContainerSlot properly support this and getExtractionRate for slot interactions
         //TODO - 26.1: Re-evaluate insertion and extraction rate, do we need to make them be tick based in case insertions/extractions are spread across multiple calls
         // but all within the same transaction? Maybe we should have a snapshot that keeps track of how much of the limit is remaining for the given transactional state?
         // Whatever we decide also mirror it for energy containers
         return Integer.MAX_VALUE;
     }
 
-    /**
-     * Helper method to allow easily setting a rate at which resources can be extracted from this {@link BasicResourceContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
-     * stack.
-     */
+    /// Helper method to allow easily setting a rate at which resources can be extracted from this [BasicResourceContainer].
+    ///
+    /// @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
+    ///
+    /// @return The rate this tank can insert/extract at.
+    ///
+    /// @implNote By default, this returns [Integer#MAX_VALUE] to not actually limit the tank's rate. By default, this is also ignored for direct setting of the stack.
     @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getExtractionRate(AutomationType automationType) {
         return Integer.MAX_VALUE;
@@ -154,6 +160,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         if (amount == 0) {
             //"Fail quick" if the given stack is empty
             return 0;
+        } else if (!isEmpty() && !this.current.matches(resource)) {
+            //Fail if the type being inserted doesn't match our current stored type
+            return 0;
         }
         long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
@@ -163,10 +172,6 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         if (needed <= 0 || !canInsert.test(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             //Note: We check directly against canInsert, as the capacity returns zero if isValid is false
-            return 0;
-        } else if (!isEmpty() && !this.current.matches(resource)) {
-            //Fail if the type being inserted doesn't match our current stored type
-            //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
             return 0;
         }
         int toAdd = Math.min(amount, needed);

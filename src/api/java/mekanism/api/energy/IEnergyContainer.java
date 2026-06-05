@@ -18,12 +18,14 @@ import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
 @NothingNullByDefault
-public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//TODO - 26.1: Add docs for methods that are missing them
+public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {
 
     /// Overrides the amount of energy in this [IEnergyContainer].
     ///
     /// @param energy      Energy to set this container's contents to. Must be greater than or equal to 0.
     /// @param transaction The transaction that this operation is part of if any.
+    ///
+    /// @since 10.8.0
     void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction);
 
     /// Inserts up to the given amount of energy into this container.
@@ -39,6 +41,7 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
     /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
     /// energy container.
+    /// @since 10.8.0
     @Range(from = 0, to = Integer.MAX_VALUE)
     int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
@@ -62,6 +65,7 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
     /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
     /// energy container.
+    /// @since 10.8.0
     @Range(from = 0, to = Integer.MAX_VALUE)
     int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
@@ -78,6 +82,8 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// extracted, is to try to [`extract`][#extract] it.
     ///
     /// @param automationType The automation type to check.
+    ///
+    /// @since 10.8.0
     default boolean isValidForExtraction(AutomationType automationType) {
         return true;
     }
@@ -88,6 +94,8 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// [`insert`][#insert] it.
     ///
     /// @param automationType The automation type to check.
+    ///
+    /// @since 10.8.0
     default boolean isValidForInsertion(AutomationType automationType) {
         return true;
     }
@@ -100,13 +108,20 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
         return getAmountAsLong() == 0L;
     }
 
-    /// {@return the amount of energy needed by this energy container to reach a filled state}
+    /// {@return the amount of energy needed by this energy container to reach a filled state as a `long`}
+    ///
+    /// @see #getNeededAsInt()
+    /// @since 10.8.0
     @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededAsLong() {
         return Math.max(0, getCapacityAsLong() - getAmountAsLong());
     }
 
+    /// {@return the amount of energy needed by this energy container to reach a filled state as an `int`}
+    ///
+    /// @see #getNeededAsLong()
+    /// @since 10.8.0
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeededAsInt() {
@@ -129,7 +144,7 @@ public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {//
     /// Helper method to copy all pertinent data from another [`energy container`][IEnergyContainer] to this one without requiring a serialization, deserialization
     /// cycle.
     ///
-    /// @param other Container to copy data from.
+    /// @param other       Container to copy data from.
     /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.

@@ -1,6 +1,5 @@
 package mekanism.client.gui.item;
 
-import mekanism.api.math.MathUtils;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -12,6 +11,7 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequenc
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IItemGuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
@@ -52,7 +52,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                   @Override
                   public double getLevel() {
                       EnergyHandler energyHandler = menu.getEnergyHandler();
-                      return energyHandler == null ? 0 : MathUtils.divideToLevel(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong());
+                      return energyHandler == null ? 0 : ContainerType.ENERGY.divideToLevel(energyHandler);
                   }
               }, 158, 26)
         ).warning(WarningType.NOT_ENOUGH_ENERGY, () -> menu.getStatus() == TeleporterStatus.NOT_ENOUGH_ENERGY);

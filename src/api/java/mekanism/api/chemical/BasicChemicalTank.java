@@ -161,6 +161,12 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
 
+    /// @param capacity           Tank capacity.
+    /// @param canExtract         Extract predicate.
+    /// @param canInsert          Insert predicate.
+    /// @param validator          Validation predicate.
+    /// @param attributeValidator Chemical Attribute Validator, or `null` to fall back to [ChemicalAttributeValidator#DEFAULT].
+    /// @param listener           Contents change listener.
     protected BasicChemicalTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, @Nullable ChemicalAttributeValidator attributeValidator,
           @Nullable IContentsListener listener) {

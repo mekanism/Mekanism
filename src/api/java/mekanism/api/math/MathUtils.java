@@ -95,7 +95,6 @@ public class MathUtils {
      * @since 10.6.6
      */
     public static double divideToLevel(double numerator, double toDivide) {
-        //TODO - 26.1: Add a helper for this for containers?
         return toDivide == 0D || numerator >= toDivide ? 1 : numerator / toDivide;
     }
 

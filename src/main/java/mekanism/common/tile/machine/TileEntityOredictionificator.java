@@ -88,12 +88,9 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 if (outputNeeded > 0) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         int available = inputSlot.extract(inputType, outputNeeded, transaction, AutomationType.INTERNAL);
-                        if (available > 0) {
-                            int inserted = outputSlot.insert(result, available, transaction, AutomationType.INTERNAL);
-                            if (inserted == available) {
-                                transaction.commit();
-                                didProcess = true;
-                            }
+                        if (available > 0 && outputSlot.insert(result, available, transaction, AutomationType.INTERNAL) == available) {
+                            transaction.commit();
+                            didProcess = true;
                         }
                     }
                 }

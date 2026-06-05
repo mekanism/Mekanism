@@ -121,19 +121,22 @@ public final class InventoryUtils {
     /// @param itemType Item type to drop.
     /// @param amount   Amount of the item to drop.
     /// @param dropper  Called to drop the item.
-    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, long amount, ItemDropper<POS> dropper) {
-        //TODO - 26.1: Do we really want to be letting it drop long amount of stacks?
-        // This never *really* would happen because of how our multiblock's inventories are currently setup... but this feels wrong
+    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, final long amount, ItemDropper<POS> dropper) {
+        if (amount > Integer.MAX_VALUE) {
+            //TODO: This never *really* would happen because of how our multiblock's inventories are currently setup... but maybe we should declare more explicit behavior?
+            return;
+        }
+        int amountAsInt = Ints.saturatedCast(amount);
         int max = itemType.getMaxStackSize();
         //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
         // stack counts, drop as many stacks as we need at their max size
-        while (amount > max) {
+        while (amountAsInt > max) {
             dropper.drop(level, pos, side, itemType.toStack(max));
-            amount -= max;
+            amountAsInt -= max;
         }
         if (amount > 0) {
             //If we have anything left to drop afterward, do so
-            dropper.drop(level, pos, side, itemType.toStack(Ints.saturatedCast(amount)));
+            dropper.drop(level, pos, side, itemType.toStack(amountAsInt));
         }
     }
 

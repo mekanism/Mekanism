@@ -11,6 +11,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
@@ -271,10 +272,10 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     /// @return A redstone level based on the percentage of the amount stored.
     ///
     /// @see ResourceHandlerUtil#getRedstoneSignalFromResourceHandler(ResourceHandler)
-    public int getRedstoneSignalFromContainers(List<CONTAINER> containers) {
+    public int getRedstoneSignalFromContainers(List<? extends IResourceContainer<RESOURCE>> containers) {
         float proportion = 0.0F;
         int sampleCount = 0; // Number of samples in proportion
-        for (CONTAINER container : containers) {
+        for (IResourceContainer<RESOURCE> container : containers) {
             long containerFill = container.amountAsLong();
             if (containerFill > 0) {
                 long capacity = container.capacityAsLong(container.resource());
@@ -294,7 +295,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
     }
 
-    public int getRedstoneSignalFromContainer(CONTAINER container) {
+    public int getRedstoneSignalFromContainer(IResourceContainer<RESOURCE> container) {
         long containerFill = container.amountAsLong();
         if (containerFill > 0) {
             long capacity = container.capacityAsLong(container.resource());
@@ -307,9 +308,13 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return Redstone.SIGNAL_NONE;
     }
 
+    public double divideToLevel(IResourceContainer<RESOURCE> container) {
+        return MathUtils.divideToLevel(container.amountAsLong(), container.capacityAsLong(container.resource()));
+    }
+
     //TODO - 26.1: Docs
-    public boolean areContainersEmpty(List<CONTAINER> containers) {
-        for (CONTAINER container : containers) {
+    public boolean areContainersEmpty(List<? extends IResourceContainer<RESOURCE>> containers) {
+        for (IResourceContainer<RESOURCE> container : containers) {
             if (!container.isEmpty()) {
                 return false;
             }

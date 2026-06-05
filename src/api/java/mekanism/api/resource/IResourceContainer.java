@@ -59,7 +59,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// The returned amount must be **non-negative**. If the [stored resource][#resource] is empty, the amount must be 0.
     ///
-    /// @return the amount in this container, as a long
+    /// @return the amount in this container, as a `long`
     ///
     /// @see #amountAsInt()
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -102,7 +102,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// resource container.
     @Range(from = 0, to = Integer.MAX_VALUE)
     int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
-    //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past for items extraction would be clamped at the max stack size
 
     /// Returns the capacity of this container for the given resource, irrespective of the current amount or resource currently in this container is, as an `int`.
     ///
@@ -122,7 +121,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int capacityAsInt(RESOURCE resource) {
-        //TODO - 26.1: Review uses and see what should be moved to capacityAsLong
         return Ints.saturatedCast(capacityAsLong(resource));
     }
 
@@ -137,24 +135,52 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @param resource The resource to get the capacity for. May be empty to get the general capacity of this container.
     ///
-    /// @return the capacity in this container, as a long
+    /// @return the capacity in this container, as a `long`
     ///
     /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`.
     /// @see #capacityAsInt(Resource)
     @Range(from = 0, to = Long.MAX_VALUE)
     long capacityAsLong(RESOURCE resource);
 
-    @NonExtendable//TODO - 26.1: Docs
+    /// Returns the amount needed by this container for the given resource to reach a full state.
+    ///
+    /// This is a convenience method to get the needed amount clamped to an `int`, for the cases where this container is known to only support capacities up to
+    /// `Integer.MAX_VALUE`, or if the caller prefers to deal in `int`s only.
+    ///
+    /// @param resource The resource to get the amount needed for. May be empty to get the amount needed by this container for the currently stored resource.
+    ///
+    /// @return the amount needed by this container for the given resource, as an `int`
+    ///
+    /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`, as well as if the resource does not match the currently
+    /// stored resource.
+    /// @see #getNeededAsLong(Resource)
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeededAsInt(RESOURCE resource) {
         return Ints.saturatedCast(getNeededAsLong(resource));
     }
 
-    //TODO - 26.1: Re-evaluate callers of this method that used to use IChemicalTank#getNeeded. Do they need to know it as a long? Most probably don't
+    /// Returns the amount needed by this container for the given resource to reach a full state.
+    ///
+    /// In general, resource containers can report `long` capacities. However, if the container is known to only support capacities up to `Integer.MAX_VALUE`, or if the
+    /// caller prefers to deal in `int`s only, the [int-returning overload][#getNeededAsInt] can be used instead.
+    ///
+    /// @param resource The resource to get the amount needed for. May be empty to get the amount needed by this container for the currently stored resource.
+    ///
+    /// @return the amount needed by this container for the given resource, as a `long`
+    ///
+    /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`, as well as if the resource does not match the currently
+    /// stored resource.
+    /// @see #getNeededAsInt(Resource)
     @NonExtendable
-    @Range(from = 0, to = Long.MAX_VALUE)//TODO - 26.1: Docs
+    @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededAsLong(RESOURCE resource) {
-        //TODO - 26.1: Do wew want this to return zero if the type doesn't match?
+        RESOURCE currentResource = resource();
+        if (resource.isEmpty()) {
+            return Math.max(0, capacityAsLong(currentResource) - amountAsLong());
+        } else if (!currentResource.isEmpty() && !currentResource.equals(resource)) {
+            return 0;
+        }
         return Math.max(0, capacityAsLong(resource) - amountAsLong());
     }
 
@@ -165,6 +191,8 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// [`insert`][#insert] it.
     ///
     /// @param resource The resource to check. **Must be non-empty.**
+    ///
+    /// @throws IllegalArgumentException If the resource is empty. See also [TransferPreconditions#checkNonEmpty] to help perform this check.
     boolean isValid(RESOURCE resource);
 
     /// {@return whether the current stored resource is generally allowed to be extracted from this container using the given automation type}
@@ -185,8 +213,9 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @param resource       The resource to check. **Must be non-empty.**
     /// @param automationType The automation type to check.
+    ///
+    /// @throws IllegalArgumentException If the resource is empty. See also [TransferPreconditions#checkNonEmpty] to help perform this check.
     default boolean isValidForInsertion(RESOURCE resource, AutomationType automationType) {
-        //TODO - 26.1: Update docs and state that the empty type can not be passed for resource
         return true;
     }
 
@@ -220,7 +249,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
     /// cycle.
     ///
-    /// @param other Container to copy data from. Might be [`wrapped`][ResourceContainerWrapper].
+    /// @param other       Container to copy data from. Might be [`wrapped`][ResourceContainerWrapper].
     /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
@@ -229,15 +258,22 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         setContents(other.asStack(), transaction);
     }
 
-    //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional
+    /// Sets the currently stored contents for this container.
+    ///
+    /// @param contents    Contents to update the container to.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
     void setContents(LargeResourceStack<RESOURCE> contents, @Nullable TransactionContext transaction);
 
-    //TODO - 26.1: Docs and Re-evaluate this method, and see if any of the callers can be transactional
+    /// Sets the currently stored contents for this container.
+    ///
+    /// @param type         Resource type.
+    /// @param storedAmount Amount of resource stored.
+    /// @param transaction  The transaction that this operation is part of. May be `null`.
     @NonExtendable
     default void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, @Nullable TransactionContext transaction) {
         setContents(stackHelper().createStack(type, storedAmount), transaction);
     }
 
-    //TODO - 26.1: Docs
+    /// {@return the stack helper for the type of resource this container stores}
     LargeResourceStack.StackHelper<RESOURCE> stackHelper();
 }

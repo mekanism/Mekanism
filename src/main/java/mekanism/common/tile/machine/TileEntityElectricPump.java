@@ -150,7 +150,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         energySlot.fillContainerOrConvert(null);
         inputSlot.drainTankIntoSlot(outputSlot);
         int clientEnergyUsed = 0;
-        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.resource()))) {
+        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(FluidResource.EMPTY))) {
             int energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
