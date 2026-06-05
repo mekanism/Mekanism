@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import com.google.common.primitives.Ints;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -87,24 +86,27 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         if (!fuelTank.isEmpty() && canFunction() && cachedFuel != null) {
             ChemicalResource fuel = fuelTank.resource();
-
-            //how full the tank is, poor-man's "pressure" measurement
-            double fullness = fuelTank.amountAsLong() / (double) fuelTank.capacityAsLong(fuel);
-
-            int energyDensity = cachedFuel.energyDensity();
-            //maximum amount that can be produced AND stored
-            //TODO - 26.1: Evaluate if this can overflow, it probably can
-            int maxEnergyThisTick = energyDensity * Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsInt());
-            if (maxEnergyThisTick > 0) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = energyContainer().insert(maxEnergyThisTick, transaction, AutomationType.INTERNAL);
-                    if (inserted > 0) {
-                        //calculate the mB for this amount of energy, rounded up
-                        long mbThisTick = Math.ceilDiv(inserted, energyDensity);
-                        //TODO - 26.1: Figure out this long to int conversion. We should make it so that the math doesn't cause issues
-                        //TODO - 26.1: Do we want to validate anything about the value we extracted from the fuel tank?
-                        gasUsedLastTick = fuelTank.extract(fuel, Ints.saturatedCast(mbThisTick), transaction, AutomationType.INTERNAL);
-                        transaction.commit();
+            int availableFuel;
+            try (Transaction simulation = Transaction.openRoot()) {
+                availableFuel = fuelTank.extract(fuel, fuelTank.amountAsInt(), simulation, AutomationType.INTERNAL);
+            }
+            if (availableFuel > 0) {
+                //how full the tank is, poor-man's "pressure" measurement
+                double fullness = fuelTank.amountAsLong() / (double) fuelTank.capacityAsLong(fuel);
+                int energyDensity = cachedFuel.energyDensity();
+                //maximum amount that can be produced AND stored
+                int maxEnergyThisTick = MathUtils.multiplyClamped(energyDensity, Math.min(Mth.ceil(cachedFuel.maxBurnPerTick() * fullness), availableFuel));
+                if (maxEnergyThisTick > 0) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int inserted = energyContainer().insert(maxEnergyThisTick, transaction, AutomationType.INTERNAL);
+                        if (inserted > 0) {
+                            //calculate the mB for this amount of energy, rounded up
+                            int mbThisTick = Math.ceilDiv(inserted, energyDensity);
+                            if (fuelTank.extract(fuel, mbThisTick, transaction, AutomationType.INTERNAL) == mbThisTick) {
+                                gasUsedLastTick = mbThisTick;
+                                transaction.commit();
+                            }
+                        }
                     }
                 }
             }
@@ -162,6 +164,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             super.onContentsChanged(originalState);
             ChemicalResource newType = resource();
             if (!newType.isEmpty() && !originalState.matches(newType)) {
+                //Check if the type changed (as this method might have been called from the amount changing)
                 cachedFuel = newType.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             }
         }
