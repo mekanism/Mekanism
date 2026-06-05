@@ -8,6 +8,7 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jspecify.annotations.Nullable;
 
@@ -23,8 +24,11 @@ public class QEEnergyHolder extends QEConfigHolder<@Nullable IEnergyContainer> i
     @Override
     public IEnergyContainer getContainer(@Nullable Direction side) {
         IEnergyContainer container = getData(side);
-        if (container == null && entangloporter.isRemote()) {
-            return clientContainer.get();
+        if (container == null) {
+            Level level = entangloporter.getLevel();
+            if (level != null && level.isClientSide()) {
+                return clientContainer.get();
+            }
         }
         return container;
     }

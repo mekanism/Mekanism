@@ -88,11 +88,6 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         return super.extract(attached, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 
-    /**
-     * For use by upgrade recipes
-     *
-     * @see BinInventorySlot#setLockType(ItemResource)
-     */
     private boolean setLockType(ItemResource lockType, @Nullable TransactionContext transaction) {
         //Note: The attached access should handle snapshotting the backing stack
         //If anything changed in the item access, that means it was able to perform the transfer, so return that things changed from the call to setContents
