@@ -49,7 +49,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public boolean test(ItemResource toCheck) {
-        Provider registries = Objects.requireNonNull(this.registryAccess, "Registry access not supplied");
+        Provider registries = Objects.requireNonNull(this.registryAccess.get(), "Registry access not supplied");
         return Finder.modID(modID, registries, toCheck);
     }
 

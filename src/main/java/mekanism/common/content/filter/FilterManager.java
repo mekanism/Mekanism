@@ -26,9 +26,9 @@ public class FilterManager<FILTER extends IFilter<?>> {
     protected HashList<FILTER> filters = new HashList<>();
     @Nullable
     protected List<FILTER> enabledFilters = null;
-    protected final Supplier<Level> levelSupplier;
+    protected final Supplier<@Nullable Level> levelSupplier;
 
-    public FilterManager(Class<? extends FILTER> filterClass, Runnable markForSave, Supplier<Level> levelSupplier) {
+    public FilterManager(Class<? extends FILTER> filterClass, Runnable markForSave, Supplier<@Nullable Level> levelSupplier) {
         this.filterClass = filterClass;
         this.markForSave = markForSave;
         this.levelSupplier = levelSupplier;
@@ -105,7 +105,10 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     private boolean addFilter(FILTER filter, boolean save) {
-        filter.setRegistryAccess(this.levelSupplier.get().registryAccess());
+        filter.setRegistryAccess(() -> {
+            Level level = this.levelSupplier.get();
+            return level == null ? null : level.registryAccess();
+        });
         boolean result = filters.add(filter);
         if (save) {
             markForSave.run();

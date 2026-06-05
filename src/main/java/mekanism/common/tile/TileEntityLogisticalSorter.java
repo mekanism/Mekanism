@@ -62,7 +62,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ITileFilterHolder<SorterFilter<?>>, IAdvancedTransportEjector {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave, this::getWorldNN);
+    private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave, this::getLevel);
     private final Finder strictFinder = itemType -> {
         for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
             if (!filter.allowDefault && filter.test(itemType)) {
