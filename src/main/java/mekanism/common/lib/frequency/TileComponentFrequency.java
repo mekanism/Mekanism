@@ -150,7 +150,10 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, UUID player) {
-        if (player != null) {
+        //Frequency controllers only exist server-side (FrequencyControllerManager#serverLoad), so getController() is null on
+        // the client. Block placement (BlockMekanism#setPlacedBy -> setOwnerUUID) and applyImplicitComponents both run on the
+        // client too; skip there to avoid an NPE. The client receives owner/frequency state via sync instead.
+        if (player != null && !tile.isRemote()) {
             FrequencyData frequencyData = getFrequencyData(type);
             if (frequencyData != null) {
                 setFrequencyFromData(type, data, player, frequencyData);
