@@ -1,7 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import java.util.function.Consumer;
-import mekanism.api.AutomationType;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
@@ -227,7 +226,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     private static ResourceHandler<FluidResource> getOneByOneFluidHandler(ItemAccess itemAccess) {
         //Note: We wrap the fluid handler to force it interacting with the manual automation type so that it can bypass the rate limit
         // and still work as a bucket when the tank's rate limit is less than a bucket
-        return AutomatedResourceHandler.wrap(Capabilities.FLUID.getCapability(itemAccess.oneByOne()), AutomationType.MANUAL);
+        return AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(itemAccess.oneByOne()));
     }
 
     @Override

@@ -27,6 +27,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit.ExcavationMode;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
@@ -38,7 +39,6 @@ import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -141,14 +141,14 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         super.postHurtEnemy(stack, target, attacker);
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack)));
         if (energyHandler != null) {
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
             // to the amount of damage we will actually do
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
             try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                EnergyUtils.extractManual(energyHandler, MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), transaction);
+                energyHandler.extract(MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), transaction);
                 transaction.commit();
             }
         }
@@ -156,7 +156,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)));
         if (energyHandler == null) {
             return 0;
         }
@@ -164,7 +164,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
             int energyRequired = getDestroyEnergy(stack, state.destroySpeed);
-            int energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
+            int energyAvailable = energyHandler.extract(energyRequired, simulation);
             if (energyAvailable < energyRequired) {
                 //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
                 return DisassemblerMode.NORMAL.getEfficiency() * ((float) energyAvailable / energyRequired);
@@ -175,18 +175,18 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack)));
         if (energyHandler != null) {
             int baseDestroyEnergy = getDestroyEnergy(stack);
             int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
             try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                EnergyUtils.extractManual(energyHandler, energyRequired, transaction);
+                energyHandler.extract(energyRequired, transaction);
                 //Vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN) {
                     boolean hasEnergyToVeinMine;
                     try (Transaction simulation = Transaction.open(transaction)) {
-                        hasEnergyToVeinMine = EnergyUtils.extractManual(energyHandler, energyRequired, simulation) == energyRequired;
+                        hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;
                     }
                     // Only allow mining things that are considered an ore
                     if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -12,7 +13,6 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -68,8 +68,8 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (!player.isCreative()) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand));
-                            if (energyHandler == null || EnergyUtils.extractManual(energyHandler, energyCost, transaction) < energyCost) {
+                            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.playerHandAccess(player, currentHand)));
+                            if (energyHandler == null || energyHandler.extract(energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
                                 return;
                             }

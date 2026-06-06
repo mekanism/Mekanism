@@ -7,9 +7,9 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -60,14 +60,14 @@ public class ItemSeismicReader extends ItemEnergized {
         }
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (!player.isCreative()) {
-            EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
             if (energyHandler == null) {
                 return needsEnergy(player);
             }
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
             try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
                 int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
-                if (EnergyUtils.extractManual(energyHandler, energyUsage, transaction) < energyUsage) {
+                if (energyHandler.extract(energyUsage, transaction) < energyUsage) {
                     return needsEnergy(player);
                 }
                 transaction.commit();

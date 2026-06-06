@@ -38,42 +38,6 @@ public final class EnergyUtils {
         return null;
     }
 
-    /// Extracts up to the given amount of energy from the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
-    ///
-    /// @param handler     to extract from.
-    /// @param amount      The maximum amount of energy to extract. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
-    ///
-    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
-    ///
-    /// @throws IllegalArgumentException If the amount is negative.
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    public static int extractManual(EnergyHandler handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        IEnergyContainer energyContainer = getEnergyContainer(handler);
-        if (energyContainer != null) {
-            return energyContainer.extract(amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.extract(amount, transaction);
-    }
-
-    /// Inserts up to the given amount of energy into the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
-    ///
-    /// @param handler     to insert into.
-    /// @param amount      The maximum amount of energy to insert. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
-    ///
-    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
-    ///
-    /// @throws IllegalArgumentException If the amount is negative.
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    public static int insertManual(EnergyHandler handler, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        IEnergyContainer energyContainer = getEnergyContainer(handler);
-        if (energyContainer != null) {
-            return energyContainer.insert(amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.insert(amount, transaction);
-    }
-
     /// Emits energy from the given container split among the given collection of targets.
     ///
     /// @param targets     Capability caches to output to.
@@ -228,7 +192,7 @@ public final class EnergyUtils {
             }
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            int extracted = extractManual(chargeFrom, toTransfer, subTransaction);
+            int extracted = chargeFrom.extract(toTransfer, subTransaction);
             if (extracted > 0 && handlerToCharge.insert(extracted, subTransaction) == extracted) {
                 subTransaction.commit();
                 return extracted;

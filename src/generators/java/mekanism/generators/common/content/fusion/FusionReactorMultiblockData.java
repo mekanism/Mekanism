@@ -23,6 +23,7 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -293,12 +294,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess());
+            ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess()));
             if (handler != null) {
                 //Validate that the handler has some fusion fuel in it
                 try (Transaction transaction = Transaction.openRoot()) {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
-                    int availableFuel = ResourceUtils.extractManual(handler, fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), transaction);
+                    int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), transaction);
                     if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
                         lastPlasmaTemperature = getPlasmaTemp();
                         ContainerType.ITEM.clearContents(reactorSlot, transaction);

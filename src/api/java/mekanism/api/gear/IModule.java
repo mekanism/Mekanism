@@ -159,18 +159,21 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
 
     /// Helper to get the energy handler of the item this module is installed on.
     ///
-    /// @param itemAccess The item access representing the item this module is installed on.
+    /// @param itemAccess             The item access representing the item this module is installed on.
+    /// @param bypassExtractionLimits `true` to bypass any extraction limits the energy container on the module holder might have.
     ///
     /// @return Energy handler or `null` if something failed.
+    ///
+    /// @since 10.8.0
     @Nullable
-    EnergyHandler getEnergyHandler(ItemAccess itemAccess);
+    EnergyHandler getEnergyHandler(ItemAccess itemAccess, boolean bypassExtractionLimits);
 
-    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess)].
+    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @param itemAccess     The item access representing the item this module is installed on.
     /// @param energySupplier Supplier that provides the minimum amount of required energy to check.
     ///
-    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess)].
+    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext) For validating it has enough and can be extracted, while just returning true for players in creative.
     /// @since 10.4.0
@@ -178,24 +181,24 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
         return hasEnoughEnergy(itemAccess, energySupplier.getAsInt());
     }
 
-    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess)].
+    /// Helper to check if there is at least a certain amount of energy stored in [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @param itemAccess The item access representing the item this module is installed on.
     /// @param energy     Minimum amount of required energy to check.
     ///
-    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess)].
+    /// @return `true` if there is no energy cost or there is at least that amount of energy stored in the [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @since 10.4.0
     boolean hasEnoughEnergy(ItemAccess itemAccess, int energy);
 
-    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess)].
+    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @param wearer      Wearer/User of the item the module is installed on.
     /// @param itemAccess  The item access representing the item this module is installed on.
     /// @param energy      Amount of energy to try and extract.
     /// @param transaction The transaction that this operation is part of. May be `null`
     ///
-    /// @return `true` if there is no energy cost, the player is in creative, or the given amount of energy could be extracted from the [#getEnergyHandler(ItemAccess)].
+    /// @return `true` if there is no energy cost, the player is in creative, or the given amount of energy could be extracted from the [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext, boolean)
     /// @since 10.8.0
@@ -203,7 +206,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
         return hasEnoughEnergy(wearer, itemAccess, energy, transaction, true);
     }
 
-    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess)].
+    /// Helper to check if there is at least a certain amount of energy stored and usable in [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @param wearer       Wearer/User of the item the module is installed on.
     /// @param itemAccess   The item access representing the item this module is installed on.
@@ -212,7 +215,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     /// @param freeCreative `true` to not use any energy from the item if the wearer is in creative.
     ///
     /// @return `true` if there is no energy cost, the player is in creative (and `freeCreative` is `true`), or the given amount of energy could be extracted from the
-    /// [#getEnergyHandler(ItemAccess)].
+    /// [#getEnergyHandler(ItemAccess, boolean)].
     ///
     /// @see #hasEnoughEnergy(LivingEntity, ItemAccess, int, TransactionContext)
     /// @since 10.8.0

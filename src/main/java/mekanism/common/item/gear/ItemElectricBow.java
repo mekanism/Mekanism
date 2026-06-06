@@ -6,12 +6,12 @@ import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -62,14 +62,14 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
         if (!(entity instanceof Player player) || player.isCreative()) {
             return super.releaseUsing(bow, world, entity, timeLeft);
         }
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow));
+        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(bow)));
         if (energyHandler == null) {
             return false;
         }
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
         try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
             int energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-            if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) == energyNeeded && super.releaseUsing(bow, world, entity, timeLeft)) {
+            if (energyHandler.extract(energyNeeded, transaction) == energyNeeded && super.releaseUsing(bow, world, entity, timeLeft)) {
                 //If we could use the energy, and we actually had a projectile to fire
                 // commit the transaction and return that we successfully released
                 transaction.commit();

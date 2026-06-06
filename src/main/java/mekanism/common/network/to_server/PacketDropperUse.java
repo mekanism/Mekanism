@@ -12,6 +12,7 @@ import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAc
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -109,13 +110,14 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
-        ResourceHandler<RESOURCE> dropperHandler = containerType.capability().getCapability(itemAccess);
+        //Ensure the dropper is interacted with via the manual automation type
+        ResourceHandler<RESOURCE> dropperHandler = AutomatedResourceHandler.manual(containerType.capability().getCapability(itemAccess));
         if (dropperHandler != null) {
             if (action == DropperAction.FILL_DROPPER) {
                 //Insert fluid into dropper
                 transferBetween(tank.resource(), tank.amountAsInt(), player, UseDropperAction.FILL,
                       tank, (target, type, amount, transaction) -> target.extract(type, amount, transaction, AutomationType.MANUAL),
-                      dropperHandler, ResourceUtils::insertManual
+                      dropperHandler, ResourceHandler::insert
                 );
             } else if (action == DropperAction.DRAIN_DROPPER) {
                 //Get the type of resource stored in our tank, or one from the dropper that can be inserted into the tank
@@ -126,7 +128,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                 }
                 //Calculate how much of the type our tank has room for based on the type we are going to try to insert
                 transferBetween(currentType, tank.getNeededAsInt(currentType), player, UseDropperAction.DRAIN,
-                      dropperHandler, ResourceUtils::extractManual,
+                      dropperHandler, ResourceHandler::extract,
                       tank, (target, type, amount, transaction) -> target.insert(type, amount, transaction, AutomationType.MANUAL)
                 );
             }

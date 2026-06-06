@@ -41,7 +41,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     public void tickServer(IModule<ModuleChargeDistributionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         // charge inventory first
         if (chargeInventory) {
-            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
+            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, false);
             if (energyHandler != null) {
                 chargeInventory(energyHandler, player, transaction);
             }
@@ -89,6 +89,12 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     private void chargeInventory(EnergyHandler energyHandler, Player player, TransactionContext transaction) {
         //Only try to charge up to how much energy we actually have stored
         int availableEnergy = Math.min(energyHandler.getAmountAsInt(), MekanismConfig.gear.mekaSuitInventoryChargeRate.get());
+        if (availableEnergy > 0) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Validate against any potential rate limit of the item
+                availableEnergy = energyHandler.extract(availableEnergy, simulation);
+            }
+        }
         if (availableEnergy > 0) {
             PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
             int selectedSlot = player.getInventory().getSelectedSlot();

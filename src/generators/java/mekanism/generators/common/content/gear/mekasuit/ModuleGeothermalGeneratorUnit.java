@@ -10,7 +10,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -46,7 +45,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
 
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
-        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
+        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, true);
         if (energyHandler != null && !EnergyHandlerUtil.isFull(energyHandler)) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
@@ -87,7 +86,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                 }
                 //Insert energy
                 int rate = MathUtils.clampToInt(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
-                EnergyUtils.insertManual(energyHandler, rate, transaction);
+                energyHandler.insert(rate, transaction);
             }
         }
     }

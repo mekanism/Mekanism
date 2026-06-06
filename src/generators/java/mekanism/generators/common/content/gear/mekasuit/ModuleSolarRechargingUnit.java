@@ -5,7 +5,6 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +20,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
 
     @Override
     public void tickServer(IModule<ModuleSolarRechargingUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
-        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess);
+        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, true);
         if (energyHandler != null && !EnergyHandlerUtil.isFull(energyHandler)) {
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());
@@ -49,7 +48,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 double production = peakOutput * brightness;
 
                 //Multiply actual production based on how many modules are installed
-                EnergyUtils.insertManual(energyHandler, MathUtils.clampToInt(production * module.getInstalledCount()), transaction);
+                energyHandler.insert(MathUtils.clampToInt(production * module.getInstalledCount()), transaction);
             }
         }
     }

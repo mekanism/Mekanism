@@ -18,7 +18,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -93,7 +92,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             //If we don't have any blocks we are going to want to do, then skip it
             return InteractionResult.PASS;
         }
-        EnergyHandler energyHandler = module.getEnergyHandler(ItemAccess.forStack(context.getItemInHand()));
+        EnergyHandler energyHandler = module.getEnergyHandler(ItemAccess.forStack(context.getItemInHand()), true);
         if (energyHandler == null) {
             return InteractionResult.FAIL;
         }
@@ -214,7 +213,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         }
         if (energyUsage > 0) {
             try (Transaction simulation = Transaction.open(transaction)) {
-                if (EnergyUtils.extractManual(energyHandler, energyUsage, simulation) < energyUsage) {
+                if (energyHandler.extract(energyUsage, simulation) < energyUsage) {
                     //Fail if we don't have enough energy
                     return InteractionResult.FAIL;
                 }
@@ -254,7 +253,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 continue;
             }
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (energyUsage > 0 && EnergyUtils.extractManual(energyHandler, energyUsage, subTransaction) < energyUsage) {
+                if (energyUsage > 0 && energyHandler.extract(energyUsage, subTransaction) < energyUsage) {
                     //We don't have enough energy to continue extracting from our container, break
                     break;
                 }

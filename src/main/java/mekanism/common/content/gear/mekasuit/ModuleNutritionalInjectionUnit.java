@@ -9,12 +9,12 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
@@ -36,7 +36,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         if (MekanismUtils.isPlayingMode(player) && player.canEat(false)) {
             //Check if we can use a single iteration of it
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+            ResourceHandler<FluidResource> fluidHandler = AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(itemAccess));
             if (fluidHandler != null) {
                 FluidResource paste = MekanismFluids.NUTRITIONAL_PASTE.asResource();
                 int missingFood = FoodConstants.MAX_FOOD - player.getFoodData().getFoodLevel();
@@ -44,7 +44,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 int energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
                 int foodToFill;
                 try (Transaction simulation = Transaction.open(transaction)) {
-                    foodToFill = ResourceUtils.extractManual(fluidHandler, paste, missingFood * pastePerFood, simulation) / pastePerFood;
+                    foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                     //Limit how much food we can handle by the amount of energy stored
                     foodToFill = module.getEnergyRateLimit(player, itemAccess, energyUsage, foodToFill, simulation);
                     if (foodToFill == 0) {
@@ -56,7 +56,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                     int pasteToUse = foodToFill * pastePerFood;
                     //Note: This if statement should always be true given we already simulated that we could extract at least this much,
                     // but we validate it just in case before actually committing any changes
-                    if (ResourceUtils.extractManual(fluidHandler, paste, pasteToUse, subTransaction) == pasteToUse && module.useAllEnergy(player, itemAccess, energyToUse, subTransaction)) {
+                    if (fluidHandler.extract(paste, pasteToUse, subTransaction) == pasteToUse && module.useAllEnergy(player, itemAccess, energyToUse, subTransaction)) {
                         player.getFoodData().eat(foodToFill, MekanismConfig.general.nutritionalPasteSaturation.get());
                         subTransaction.commit();
                     }

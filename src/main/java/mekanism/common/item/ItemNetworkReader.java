@@ -9,12 +9,12 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -60,13 +60,13 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (!player.isCreative()) {
                     int energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     if (energyPerUse > 0) {
-                        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
+                        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand())));
                         if (energyHandler == null) {
                             return InteractionResult.FAIL;
                         }
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
                         try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                            if (EnergyUtils.extractManual(energyHandler, energyPerUse, transaction) < energyPerUse) {
+                            if (energyHandler.extract(energyPerUse, transaction) < energyPerUse) {
                                 return InteractionResult.FAIL;
                             }
                             transaction.commit();

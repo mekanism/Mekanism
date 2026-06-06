@@ -30,6 +30,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -44,10 +46,8 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -376,12 +376,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         //Use the primary jetpack for calculating the thrust
         IModule<ModuleJetpackUnit> module = getEnabledModule(primaryInstance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(itemAccess));
             if (handler != null) {
                 float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
                 //If we don't have enough gas stored to go at the set thrust, scale down the thrust
                 // to be whatever gas we have remaining (this might be zero)
-                return 0.15 * ResourceUtils.extractManual(handler, MekanismChemicals.HYDROGEN.asResource(), Mth.ceil(thrustMultiplier), transaction);
+                return 0.15 * handler.extract(MekanismChemicals.HYDROGEN.asResource(), Mth.ceil(thrustMultiplier), transaction);
             }
         }
         return 0;
@@ -424,7 +424,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 ItemResource itemType = armorSlots.getResource(slot);
                 if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
                     ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
-                    EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+                    EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                     if (energyHandler != null) {
                         FoundArmorDetails details = new FoundArmorDetails(energyHandler, armor.absorption);
                         armorDetails.add(details);
@@ -501,7 +501,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 // or how small the amount to absorb is
                 return absorption;
             }
-            int energyUsed = EnergyUtils.extractManual(energyHandler, usage, transaction);
+            int energyUsed = energyHandler.extract(usage, transaction);
             if (energyUsed == usage) {
                 //If we have more energy available than we need, return that we can absorb it all
                 return absorption;

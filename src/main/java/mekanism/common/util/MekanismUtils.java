@@ -709,7 +709,7 @@ public final class MekanismUtils {
             int distance = foundEntry.getIntValue();
             int destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                if (EnergyUtils.extractManual(energyHandler, destroyEnergy, subTransaction) < destroyEnergy) {
+                if (energyHandler.extract(destroyEnergy, subTransaction) < destroyEnergy) {
                     //If we don't have energy to break the block continue
                     //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
                     // Given we validate the blocks are the same but their block states may be different thus making them have different

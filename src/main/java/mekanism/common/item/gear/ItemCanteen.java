@@ -3,13 +3,13 @@ package mekanism.common.item.gear;
 import java.util.function.Consumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -69,7 +69,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     @Override
     public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving) {
         if (!world.isClientSide() && entityLiving instanceof Player player) {
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            ResourceHandler<FluidResource> fluidHandler = AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(ItemAccess.forStack(stack)));
             if (fluidHandler != null) {
                 FluidResource paste = MekanismFluids.NUTRITIONAL_PASTE.asResource();
                 int missingFood = FoodConstants.MAX_FOOD - player.getFoodData().getFoodLevel();
@@ -77,13 +77,13 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
                 int foodToFill;
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
                 try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
-                    foodToFill = ResourceUtils.extractManual(fluidHandler, paste, missingFood * pastePerFood, simulation) / pastePerFood;
+                    foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
                 if (foodToFill > 0) {
                     int pasteToUse = foodToFill * pastePerFood;
                     //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
                     try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                        int extracted = ResourceUtils.extractManual(fluidHandler, paste, pasteToUse, transaction);
+                        int extracted = fluidHandler.extract(paste, pasteToUse, transaction);
                         if (extracted == pasteToUse) {
                             //Note: This if statement should always be true given we already simulated that we could extract at least this much,
                             // but we validate it just in case before actually committing any changes
@@ -115,12 +115,12 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
         if (!MekanismUtils.isPlayingMode(player)) {
             return InteractionResult.PASS;
         } else if (player.canEat(false)) {
-            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand));
+            ResourceHandler<FluidResource> fluidHandler = AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand)));
             if (fluidHandler != null) {
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
                 try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
                     int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
-                    int extracted = ResourceUtils.extractManual(fluidHandler, MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
+                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
                     if (extracted == pastePerFood) {
                         //Only allow to start drinking if we have at least enough paste to provide a single point of food
                         player.startUsingItem(hand);

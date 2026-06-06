@@ -11,6 +11,8 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.common.base.KeySync;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
@@ -27,10 +29,8 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -136,12 +136,12 @@ public class CommonPlayerTickHandler {
         ItemAccess chest = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST);
         if (isScubaMaskOn(player, chest)) {
             final int max = player.getMaxAirSupply();
-            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(chest);
+            ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(chest));
             if (chemicalHandler != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     //TODO - 26.1: Re-evaluate this single usage on its own
-                    ResourceUtils.extractManual(chemicalHandler, MekanismChemicals.OXYGEN.asResource(), 1, transaction);
-                    int extracted = ResourceUtils.extractManual(chemicalHandler, MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
+                    chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), 1, transaction);
+                    int extracted = chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
                     if (extracted > 0) {
                         player.setAirSupply(player.getAirSupply() + extracted);
                         transaction.commit();
@@ -262,7 +262,7 @@ public class CommonPlayerTickHandler {
             } else {
                 //Protect against any mods that might be doing transactional logic around an entity falling. Most likely this will never be necessary
                 try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                    int extracted = EnergyUtils.extractManual(info.energyHandler, energyRequirement, transaction);
+                    int extracted = info.energyHandler.extract(energyRequirement, transaction);
                     float absorbedPercent = extracted / (float) energyRequirement;
                     ratioAbsorbed = absorption * absorbedPercent;
                     transaction.commit();
@@ -325,14 +325,15 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemAccess feetAccess = ItemAccessUtils.forEntitySlot(base, EquipmentSlot.FEET);
         if (feetAccess.getResource().getItem() instanceof ItemMekaSuitArmor) {
-            return new FallEnergyInfo(Capabilities.ENERGY.getCapability(feetAccess), MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
+            EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(feetAccess));
+            return new FallEnergyInfo(energyHandler, MekanismConfig.gear.mekaSuitFallDamageRatio, MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
         ItemAccess freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
         if (freeRunners != null) {
             ItemResource primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
             if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).preventsFallDamage()) {
-                return new FallEnergyInfo(Capabilities.ENERGY.getCapability(freeRunners), MekanismConfig.gear.freeRunnerFallDamageRatio,
-                      MekanismConfig.gear.freeRunnerFallEnergyCost);
+                EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(freeRunners));
+                return new FallEnergyInfo(energyHandler, MekanismConfig.gear.freeRunnerFallDamageRatio, MekanismConfig.gear.freeRunnerFallEnergyCost);
             }
         }
         return null;

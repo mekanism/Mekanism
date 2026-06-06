@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
@@ -25,43 +24,6 @@ import org.jspecify.annotations.Nullable;
 public final class ResourceUtils {
 
     private ResourceUtils() {
-    }
-
-    /// Extracts up to the given amount of a resource from the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
-    ///
-    /// @param handler     to extract from.
-    /// @param resource    The resource to extract. **Must be non-empty.**
-    /// @param amount      The maximum amount of the resource to extract. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
-    ///
-    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
-    ///
-    /// @throws IllegalArgumentException If the resource is empty or the amount is negative.
-    public static <RESOURCE extends Resource> int extractManual(ResourceHandler<RESOURCE> handler, RESOURCE resource, int amount, TransactionContext transaction) {
-        //TODO - 26.1: Evaluate callers and potentially just wrap the handler via AutomatedResourceHandler#wrap
-        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.extract(resource, amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.extract(resource, amount, transaction);
-    }
-
-    /// Inserts up to the given amount of a resource into the handler, using the [`manual automation type`][AutomationType#MANUAL] if it is a Mekanism handler.
-    ///
-    /// @param handler     to insert into.
-    /// @param resource    The resource to insert. **Must be non-empty.**
-    /// @param amount      The maximum amount of the resource to insert. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
-    ///
-    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
-    ///
-    /// @throws IllegalArgumentException If the resource is empty or the amount is negative.
-    public static <RESOURCE extends Resource> int insertManual(ResourceHandler<RESOURCE> handler, RESOURCE resource, int amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.insert(resource, amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.insert(resource, amount, transaction);
     }
 
     /// Gets the current type of resource stored in the container, or if it is empty, gets the first resource that can be extracted from the given handler that is valid

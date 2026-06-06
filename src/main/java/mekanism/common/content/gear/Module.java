@@ -23,7 +23,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.EnergyUtils;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -129,8 +129,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Nullable
     @Override
-    public EnergyHandler getEnergyHandler(ItemAccess itemAccess) {
-        return Capabilities.ENERGY.getCapability(itemAccess);
+    public EnergyHandler getEnergyHandler(ItemAccess itemAccess, boolean bypassExtractionLimits) {
+        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+        if (bypassExtractionLimits) {
+            return AutomatedEnergyHandler.manual(energyHandler);
+        }
+        return energyHandler;
     }
 
     @Override
@@ -138,7 +142,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         if (energy == 0) {
             return true;
         }
-        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess, true);
         return energyHandler != null && energyHandler.getAmountAsInt() >= energy;
     }
 
@@ -157,13 +161,13 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             //Energy usage doesn't lower the usage rate
             return rate;
         }
-        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess, true);
         if (energyHandler == null) {
             return 0;
         }
         try (Transaction simulation = Transaction.open(transaction)) {
             //Calculate the max rate based on how much energy is available and can be extracted
-            return EnergyUtils.extractManual(energyHandler, MathUtils.multiplyClamped(rate, energyUsage), simulation) / energyUsage;
+            return energyHandler.extract(MathUtils.multiplyClamped(rate, energyUsage), simulation) / energyUsage;
         }
     }
 
@@ -175,12 +179,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         } else if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return true;
         }
-        EnergyHandler energyHandler = getEnergyHandler(itemAccess);
+        EnergyHandler energyHandler = getEnergyHandler(itemAccess, true);
         if (energyHandler == null) {
             return false;
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            if (EnergyUtils.extractManual(energyHandler, energy, subTransaction) == energy) {
+            if (energyHandler.extract(energy, subTransaction) == energy) {
                 subTransaction.commit();
                 return true;
             }

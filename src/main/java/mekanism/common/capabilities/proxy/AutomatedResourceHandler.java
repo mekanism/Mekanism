@@ -12,22 +12,20 @@ import org.jspecify.annotations.Nullable;
 public class AutomatedResourceHandler<RESOURCE extends Resource> implements ResourceHandler<RESOURCE> {
 
     @Nullable
-    public static <RESOURCE extends Resource> ResourceHandler<RESOURCE> wrap(@Nullable ResourceHandler<RESOURCE> handler, AutomationType automationType) {
-        return handler == null ? null : new AutomatedResourceHandler<>(handler, automationType);
+    public static <RESOURCE extends Resource> ResourceHandler<RESOURCE> manual(@Nullable ResourceHandler<RESOURCE> handler) {
+        return wrap(handler, AutomationType.MANUAL);
     }
 
     @Nullable
-    private final IMekanismResourceHandler<RESOURCE, ?> mekHandler;
-    private final ResourceHandler<RESOURCE> handler;
+    public static <RESOURCE extends Resource> ResourceHandler<RESOURCE> wrap(@Nullable ResourceHandler<RESOURCE> handler, AutomationType automationType) {
+        return handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler ? new AutomatedResourceHandler<>(mekHandler, automationType) : handler;
+    }
+
+    private final IMekanismResourceHandler<RESOURCE, ?> handler;
     private final AutomationType automationType;
 
-    private AutomatedResourceHandler(ResourceHandler<RESOURCE> handler, AutomationType automationType) {
+    private AutomatedResourceHandler(IMekanismResourceHandler<RESOURCE, ?> handler, AutomationType automationType) {
         this.handler = handler;
-        if (this.handler instanceof IMekanismResourceHandler<RESOURCE, ?> mek) {
-            this.mekHandler = mek;
-        } else {
-            this.mekHandler = null;
-        }
         this.automationType = automationType;
     }
 
@@ -58,33 +56,21 @@ public class AutomatedResourceHandler<RESOURCE extends Resource> implements Reso
 
     @Override
     public int insert(int index, RESOURCE resource, int amount, TransactionContext transaction) {
-        if (mekHandler == null) {
-            return handler.insert(index, resource, amount, transaction);
-        }
-        return mekHandler.insert(index, resource, amount, transaction, automationType);
+        return handler.insert(index, resource, amount, transaction, automationType);
     }
 
     @Override
     public int insert(RESOURCE resource, int amount, TransactionContext transaction) {
-        if (mekHandler == null) {
-            return handler.insert(resource, amount, transaction);
-        }
-        return mekHandler.insert(resource, amount, transaction, automationType);
+        return handler.insert(resource, amount, transaction, automationType);
     }
 
     @Override
     public int extract(int index, RESOURCE resource, int amount, TransactionContext transaction) {
-        if (mekHandler == null) {
-            return handler.extract(index, resource, amount, transaction);
-        }
-        return mekHandler.extract(index, resource, amount, transaction, automationType);
+        return handler.extract(index, resource, amount, transaction, automationType);
     }
 
     @Override
     public int extract(RESOURCE resource, int amount, TransactionContext transaction) {
-        if (mekHandler == null) {
-            return handler.extract(resource, amount, transaction);
-        }
-        return mekHandler.extract(resource, amount, transaction, automationType);
+        return handler.extract(resource, amount, transaction, automationType);
     }
 }
