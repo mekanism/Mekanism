@@ -62,6 +62,7 @@ import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -187,9 +188,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     float refractionPercent = 0;
                     ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(livingEntity, EquipmentSlot.Type.HUMANOID_ARMOR);
                     for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
-                        ItemResource itemType = armorSlots.getResource(slot);
-                        if (!itemType.isEmpty()) {
-                            ILaserDissipation laserDissipation = itemType.toStack(armorSlots.getAmountAsInt(slot)).getCapability(Capabilities.LASER_DISSIPATION);
+                        ItemStack stack = ItemUtil.getStack(armorSlots, slot);
+                        if (!stack.isEmpty()) {
+                            ILaserDissipation laserDissipation = stack.getCapability(Capabilities.LASER_DISSIPATION);
                             if (laserDissipation != null) {
                                 dissipationPercent += laserDissipation.getDissipationPercent();
                                 refractionPercent += laserDissipation.getRefractionPercent();

@@ -6,16 +6,16 @@ import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.FluidUtils;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +30,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                if (manageInventory(multiblock, player, hand, stack)) {
-                    player.getInventory().setChanged();
-                    return InteractionResult.SUCCESS_SERVER;
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    if (FluidUtil.interactWithFluidHandler(player, hand, null, multiblock.getDirectFluidHandler(), transaction) ||
+                        ChemicalUtils.interactWithChemicalHandler(player, hand, multiblock.getDirectChemicalHandler(), transaction)) {
+                        transaction.commit();
+                        return InteractionResult.SUCCESS_SERVER;
+                    }
                 }
                 InteractionResult result = openGui(player);
                 return result;
@@ -79,16 +82,5 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     public void previousMode() {
         TankMultiblockData multiblock = getMultiblock();
         multiblock.setContainerEditMode(multiblock.editMode.getPrevious());
-    }
-
-    private boolean manageInventory(TankMultiblockData multiblock, Player player, InteractionHand hand, ItemStack itemStack) {
-        if (multiblock.isFormed()) {
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                boolean result = FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank(), transaction);
-                transaction.commit();
-                return result;
-            }
-        }
-        return false;
     }
 }

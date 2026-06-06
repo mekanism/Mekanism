@@ -1,23 +1,16 @@
 package mekanism.common.util;
 
-import mekanism.api.AutomationType;
-import mekanism.api.fluid.IFluidTank;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.attachments.containers.type.ContainerType;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.Holder;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -50,99 +43,5 @@ public final class FluidUtils {
             return MekanismRenderer.getColorARGB(fluidType);
         }
         return 0xFFFFFFFF;
-    }
-
-    //TODO - 26.1: Do we want to just replace this with FluidUtil#interactWithFluidHandler?
-    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IFluidTank fluidTank, TransactionContext tankInteraction) {
-        //TODO - 26.1: Figure out whether there are cases where we would want it without the oneByOne access
-        // And if we should get the item access from the player's interaction hand or from the passed stack.
-        // I think the adding back to inventory part needs the player interaction item access?
-        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand).oneByOne());
-        if (handler == null) {
-            return false;
-        }
-        FluidResource fluidType = ResourceUtils.getTypeToExtract(fluidTank, handler, AutomationType.MANUAL, null);
-        if (fluidType.isEmpty()) {
-            //Nothing extractable and tank is empty so can't go from tank to handler
-            return false;
-        }
-        int amountInItem;
-        try (Transaction simulation = Transaction.open(tankInteraction)) {
-            amountInItem = handler.extract(fluidType, Integer.MAX_VALUE, simulation);
-        }
-        if (amountInItem == 0) {
-            if (fluidTank.isEmpty()) {
-                return false;
-            }
-            int spaceInItem;
-            try (Transaction simulation = Transaction.open(tankInteraction)) {
-                spaceInItem = handler.insert(fluidTank.resource(), fluidTank.amountAsInt(), simulation);
-                if (spaceInItem == 0) {
-                    return false;
-                }
-            }
-            try (Transaction transaction = Transaction.open(tankInteraction)) {
-                int extracted = fluidTank.extract(fluidType, spaceInItem, transaction, AutomationType.MANUAL);
-                if (extracted == 0) {
-                    return false;
-                }
-                try (Transaction subTransaction = Transaction.open(transaction)) {
-                    int inserted = handler.insert(fluidTank.resource(), extracted, subTransaction);
-                    if (inserted < extracted) {
-                        return false;
-                    } else if (!player.isCreative()) {//TODO - 26.1: Re-evaluate this
-                        subTransaction.commit();
-                    }
-                }
-                //TODO - 26.1: I believe the item access is responsible for handling this now
-                /*ItemStack container = handler.getContainer();
-                if (itemStack.count() == 1) {
-                    player.setItemInHand(hand, container);
-                } else if (itemStack.count() > 1 && player.getInventory().add(container)) {
-                    itemStack.shrink(1);
-                } else {
-                    player.drop(container, false, true);
-                    itemStack.shrink(1);
-                }*/
-                transaction.commit();
-                return true;
-            }
-        }
-        try (Transaction transaction = Transaction.open(tankInteraction)) {
-            int inserted = fluidTank.insert(fluidType, amountInItem, transaction, AutomationType.MANUAL);
-            if (inserted == 0) {
-                return false;
-            }
-            try (Transaction subTransaction = Transaction.open(transaction)) {
-                int extracted = handler.extract(fluidType, inserted, subTransaction);
-                if (extracted < inserted) {
-                    return false;
-                } else if (!player.isCreative()) {//TODO - 26.1: Re-evaluate this
-                    subTransaction.commit();
-                }
-            }
-            //TODO - 26.1: I believe the item access is responsible for handling this now
-            /*boolean filled = false;
-            ItemStack container = handler.getContainer();
-            if (player.isCreative()) {
-                filled = true;
-            } else if (!container.isEmpty()) {
-                if (itemStack.count() == 1) {
-                    player.setItemInHand(hand, container);
-                    filled = true;
-                } else if (player.getInventory().add(container)) {
-                    itemStack.shrink(1);
-                    filled = true;
-                }
-            } else {
-                itemStack.shrink(1);
-                if (itemStack.isEmpty()) {
-                    player.setItemInHand(hand, ItemStack.EMPTY);
-                }
-                filled = true;
-            }*/
-            transaction.commit();
-            return true;
-        }
     }
 }

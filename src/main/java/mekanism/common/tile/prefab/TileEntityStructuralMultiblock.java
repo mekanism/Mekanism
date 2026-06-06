@@ -16,7 +16,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -135,7 +134,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand) {
         if (!structuralGuiAccessAllowed()) {
             //If we don't have any structures that allow gui access, just short circuit and pass
             return InteractionResult.TRY_WITH_EMPTY_HAND;
@@ -149,7 +148,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
                     // make sure this block is on the structure first
                     if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                        InteractionResult result = master.onActivate(player, hand, stack);
+                        InteractionResult result = master.onActivate(player, hand);
                         if (result != InteractionResult.PASS) {
                             return result;
                         }

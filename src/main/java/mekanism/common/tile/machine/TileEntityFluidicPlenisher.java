@@ -54,6 +54,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -140,7 +141,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                             //Note: We already validated that the fluid tank is not empty so our resource doesn't represent the empty resource
                             if (canReplace(below, false, false) &&
                                 fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, transaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
-                                WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidType.toStack(FluidType.BUCKET_VOLUME), null)) {
+                                FluidUtil.tryPlaceFluid(fluidType, null, level, below, true)) {
                                 level.gameEvent(null, GameEvent.FLUID_PLACE, below);
                                 clientEnergyUsed = energyPerTick;
                                 transaction.commit();
@@ -186,8 +187,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     if (canReplace(nodePos, true, false) &&
                         fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, subTransaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
-                        WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidType.toStack(FluidType.BUCKET_VOLUME), null)) {
-                        level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
+                        FluidUtil.tryPlaceFluid(fluidType, null, level, nodePos, true)) {
                         subTransaction.commit();
                     }
                 }

@@ -5,13 +5,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -33,6 +38,7 @@ public final class ResourceUtils {
     ///
     /// @throws IllegalArgumentException If the resource is empty or the amount is negative.
     public static <RESOURCE extends Resource> int extractManual(ResourceHandler<RESOURCE> handler, RESOURCE resource, int amount, TransactionContext transaction) {
+        //TODO - 26.1: Evaluate callers and potentially just wrap the handler via AutomatedResourceHandler#wrap
         if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
             //Ensure droppers use the manual automation type
             return mekHandler.extract(resource, amount, transaction, AutomationType.MANUAL);
@@ -198,5 +204,17 @@ public final class ResourceUtils {
             }
         }
         return 0;
+    }
+
+    /// Simplified version for chemicals of [net.neoforged.neoforge.transfer.fluid.FluidUtil#interactWithFluidHandler]
+    public static <RESOURCE extends Resource> boolean interactWithHandler(Player player, InteractionHand hand, ResourceHandler<RESOURCE> handler,
+          MultiTypeCapability<ResourceHandler<RESOURCE>> capability, @Nullable TransactionContext transaction) {
+        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand).oneByOne();
+        ResourceHandler<RESOURCE> handHandler = capability.getCapability(itemAccess);
+        if (handHandler == null) {
+            return false;
+        }
+        return ResourceHandlerUtil.moveFirst(handler, handHandler, ConstantPredicates.alwaysTrue(), Integer.MAX_VALUE, transaction) != null ||
+               ResourceHandlerUtil.moveFirst(handHandler, handler, ConstantPredicates.alwaysTrue(), Integer.MAX_VALUE, transaction) != null;
     }
 }

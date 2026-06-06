@@ -29,6 +29,15 @@ public class ItemAccessUtils {
     /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
     public static ItemAccess playerHandAccess(Player player, InteractionHand hand) {
         //TODO - 26.1: See if any usages of this should actually be forPlayerInteraction for creative player interaction of not mutating the initial stack
+        // or the other variant of this method
+        return playerHandAccess(player, hand, false);
+    }
+
+    /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
+    public static ItemAccess playerHandAccess(Player player, InteractionHand hand, boolean sideEffectFreeCreative) {
+        if (sideEffectFreeCreative && player.isCreative()) {
+            return sideEffectFreeAccess(player.getItemInHand(hand));
+        }
         return ItemAccess.forPlayerSlot(player, switch (hand) {
             case MAIN_HAND -> player.getInventory().getSelectedSlot();
             case OFF_HAND -> Inventory.SLOT_OFFHAND;

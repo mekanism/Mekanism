@@ -47,7 +47,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
-        return tile.onActivate(player, hand, stack);
+        return tile.onActivate(player, hand);
     }
 
     @NotNull

@@ -16,6 +16,8 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -126,5 +128,9 @@ public class ChemicalUtils {
         if (toDump > 0) {
             chemicalTank.setContents(chemicalType, amount - toDump, null);
         }
+    }
+
+    public static boolean interactWithChemicalHandler(Player player, InteractionHand hand, ResourceHandler<ChemicalResource> handler, @Nullable TransactionContext transaction) {
+        return ResourceUtils.interactWithHandler(player, hand, handler, Capabilities.CHEMICAL, transaction);
     }
 }

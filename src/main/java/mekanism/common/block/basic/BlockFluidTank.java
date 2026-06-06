@@ -2,10 +2,10 @@ package mekanism.common.block.basic;
 
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -18,6 +18,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,12 +66,15 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
             }
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank, transaction)) {
-                    transaction.commit();
-                    //TODO - 26.1: Is this call even necessary?
-                    player.getInventory().setChanged();
-                    return InteractionResult.SUCCESS;
+            ResourceHandler<FluidResource> tankHandler = Capabilities.FLUID.getCapabilityIfLoaded(world, pos, null, tile, hit.getDirection());
+            if (tankHandler != null) {
+                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    //TODO - 26.1: Should we modify ResourceUtil#interactWithHandler and allow having it follow the tile's container edit mode?
+                    // That way it can be set to force fill/drain the item instead of doing its best guess? I suspect this would be a nice QoL change
+                    if (FluidUtil.interactWithFluidHandler(player, hand, pos, tankHandler, transaction)) {
+                        transaction.commit();
+                        return InteractionResult.SUCCESS;
+                    }
                 }
             }
         }

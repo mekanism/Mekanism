@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -37,10 +39,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
+    private final ResourceHandler<FluidResource> directFluidHandler;
+    private final ResourceHandler<ChemicalResource> directChemicalHandler;
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
@@ -64,6 +70,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());
         inventorySlots.addAll(createBaseInventorySlots());
+        directFluidHandler = (IMekanismResourceHandler<FluidResource, IFluidTank>) () -> fluidTanks;
+        directChemicalHandler = (IMekanismResourceHandler<ChemicalResource, IChemicalTank>) () -> chemicalTanks;
     }
 
     private List<IInventorySlot> createBaseInventorySlots() {
@@ -154,6 +162,14 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     private long getStoredAmount() {
         return mergedTank.getCurrentContainer().amountAsLong();
+    }
+
+    public ResourceHandler<FluidResource> getDirectFluidHandler() {
+        return directFluidHandler;
+    }
+
+    public ResourceHandler<ChemicalResource> getDirectChemicalHandler() {
+        return directChemicalHandler;
     }
 
     public IFluidTank getFluidTank() {

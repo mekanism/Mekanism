@@ -486,6 +486,14 @@ repositories { RepositoryHandler handler ->
             includeGroup('org.appliedenergistics')
         }
     }
+    maven {
+        name = "Maven for PR #3207" // https://github.com/neoforged/NeoForge/pull/3207
+        url = uri("https://prmaven.neoforged.net/NeoForge/pr3207")
+        content {
+            includeModule("net.neoforged", "neoforge")
+            includeModule("net.neoforged", "testframework")
+        }
+    }
 }
 
 tasks.named('test', Test) {

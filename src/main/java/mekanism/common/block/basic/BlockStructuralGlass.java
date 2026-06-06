@@ -41,7 +41,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
-        return tile.onActivate(player, hand, stack);
+        return tile.onActivate(player, hand);
     }
 
     @NotNull

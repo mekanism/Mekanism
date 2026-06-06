@@ -40,8 +40,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
-import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
+import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.loot.MekanismLootFunctions;
@@ -398,9 +397,10 @@ public class Mekanism {
         for (BlockRegistryObject<?, ?> tank : tanks) {
             Item item = tank.getItemHolder().value();
             DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
-            CauldronInteractions.EMPTY.put(item, BasicCauldronInteraction.EMPTY);
-            CauldronInteractions.WATER.put(item, BasicDrainCauldronInteraction.WATER);
-            CauldronInteractions.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
+            //TODO: Is there any generic cauldron interaction map that we could get for purposes of custom cauldrons from RegisterCauldronFluidContentEvent
+            CauldronInteractions.EMPTY.put(item, FluidTankCauldronInteraction.INSTANCE);
+            CauldronInteractions.WATER.put(item, FluidTankCauldronInteraction.INSTANCE);
+            CauldronInteractions.LAVA.put(item, FluidTankCauldronInteraction.INSTANCE);
         }
     }
 

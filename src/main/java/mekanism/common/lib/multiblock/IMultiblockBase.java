@@ -23,7 +23,7 @@ public interface IMultiblockBase extends ITileWrapper {
 
     MultiblockData getDefaultData();
 
-    InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack);
+    InteractionResult onActivate(Player player, InteractionHand hand);
 
     Structure getStructure(MultiblockManager<?> manager);
 

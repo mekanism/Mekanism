@@ -226,6 +226,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return false;
     }
 
+    /// @implNote This could potentially be somewhat replaced with FluidUtil#tryPickupFluid by using a custom resource handler that wraps the type that is passed to it,
+    /// but because of our handling for infinite fluid sources, it currently seems pointless to bother.
     private boolean suck(ServerLevel level, BlockPos pos, boolean hasFilter, boolean addRecurring, TransactionContext transaction) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
         Optional<BlockState> state = WorldUtils.getBlockState(level, pos);
@@ -238,6 +240,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         if (fluidState.isEmpty() || !fluidState.isSource() || !(blockState.getBlock() instanceof BucketPickup bucketPickup)) {
             return false;
         }
+        boolean pickedUpFluid = false;
         Fluid sourceFluid = fluidState.getType();
         try (Transaction subTransaction = Transaction.open(transaction)) {
             FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
@@ -272,33 +275,33 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                     return true;
                 }
                 sourceFluid = bucket.content;
-            } else {
-                //Don't know how to handle, return that we couldn't suck
-                return false;
+                pickedUpFluid = true;
             }
         }
-        try (Transaction subTransaction = Transaction.open(transaction)) {
-            //Update the fluid stack in case something somehow changed about the type making sure that we replace to heavy water if we got heavy water
-            FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
-            //Note: We don't validate the active type matching, as if the tank is empty we would rather try inserting it
-            // rather than voiding the picked up fluid
-            FluidResource fluidType = FluidResource.of(fluidStack);
-            int amountProduced = fluidStack.amount();
-            int inserted = fluidTank.insert(fluidType, amountProduced, subTransaction, AutomationType.INTERNAL);
-            if (inserted > 0) {
-                subTransaction.commit();
-                suck(fluidType, pos, addRecurring);
-                if (inserted < amountProduced) {
-                    //If we can't insert everything that we would pump up, log a warning
-                    Mekanism.logger.warn("Fluid removed without successfully picking the full thing up. Fluid {} at {} in {} was valid, but after picking up was {}. "
-                                         + "Accepted {} out of attempted {}.", fluidState.getType(), pos, level, sourceFluid, inserted, amountProduced);
+        if (pickedUpFluid) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                //Update the fluid stack in case something somehow changed about the type making sure that we replace to heavy water if we got heavy water
+                FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
+                //Note: We don't validate the active type matching, as if the tank is empty we would rather try inserting it
+                // rather than voiding the picked up fluid
+                FluidResource fluidType = FluidResource.of(fluidStack);
+                int amountProduced = fluidStack.amount();
+                int inserted = fluidTank.insert(fluidType, amountProduced, subTransaction, AutomationType.INTERNAL);
+                if (inserted > 0) {
+                    subTransaction.commit();
+                    suck(fluidType, pos, addRecurring);
+                    if (inserted < amountProduced) {
+                        //If we can't insert everything that we would pump up, log a warning
+                        Mekanism.logger.warn("Fluid removed without successfully picking the full thing up. Fluid {} at {} in {} was valid, but after picking up was {}. "
+                                             + "Accepted {} out of attempted {}.", fluidState.getType(), pos, level.dimension().identifier(), sourceFluid, inserted, amountProduced);
+                    }
+                    return true;
                 }
-                return true;
             }
-            Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                  fluidState.getType(), pos, level, sourceFluid);
-            return false;
         }
+        Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+              fluidState.getType(), pos, level.dimension().identifier(), sourceFluid);
+        return false;
     }
 
     private boolean isInfiniteSource(ServerLevel level, Fluid sourceFluid) {
