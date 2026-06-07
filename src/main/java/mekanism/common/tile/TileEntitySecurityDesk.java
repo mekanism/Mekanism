@@ -24,7 +24,6 @@ import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,11 +51,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         SecurityFrequency frequency = getFreq();
         UUID ownerUUID = getOwnerUUID();
         if (ownerUUID != null && frequency != null) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                unlockSlot.unlock(ownerUUID, transaction);
-                lockSlot.lock(ownerUUID, frequency, transaction);
-                transaction.commit();
-            }
+            unlockSlot.unlock(ownerUUID, null);
+            lockSlot.lock(ownerUUID, frequency, null);
         }
         return sendUpdatePacket;
     }

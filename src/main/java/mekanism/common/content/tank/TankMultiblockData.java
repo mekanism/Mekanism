@@ -85,7 +85,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
-        inputSlot.handleTank(outputSlot, editMode);
+        inputSlot.handleTank(outputSlot, editMode, null);
         float scale = getScale();
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;

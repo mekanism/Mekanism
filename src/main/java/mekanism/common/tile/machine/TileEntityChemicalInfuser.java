@@ -161,9 +161,9 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        leftInputSlot.fillTankFromSlot();
-        rightInputSlot.fillTankFromSlot();
-        outputSlot.drainTankIntoSlot();
+        leftInputSlot.fillTankFromSlot(null);
+        rightInputSlot.fillTankFromSlot(null);
+        outputSlot.drainTankIntoSlot(null);
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;
     }

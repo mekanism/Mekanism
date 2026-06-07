@@ -180,7 +180,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Override
     protected void handleSecondaryFuel() {
-        extraSlot.fillTankOrConvert();
+        extraSlot.fillTankOrConvert(null);
     }
 
     @NotNull

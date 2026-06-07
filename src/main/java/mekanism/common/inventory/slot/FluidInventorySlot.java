@@ -14,6 +14,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -73,26 +74,26 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
         return fluidTank;
     }
 
-    public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
-        handleContainer(getFluidTank(), outputSlot, editMode, ContainerType.FLUID, null);
+    public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode, @Nullable TransactionContext transaction) {
+        handleContainer(getFluidTank(), outputSlot, editMode, ContainerType.FLUID, transaction);
     }
 
     /// Drains the container into the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the resource container.
-    public void drainTankIntoSlot(IInventorySlot outputSlot) {
-        drainContainerIntoSlot(getFluidTank(), outputSlot, ContainerType.FLUID, null);
+    public void drainTankIntoSlot(IInventorySlot outputSlot, @Nullable TransactionContext transaction) {
+        drainContainerIntoSlot(getFluidTank(), outputSlot, ContainerType.FLUID, transaction);
     }
 
     /// Fills the container from the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the item.
-    public void fillTankFromSlot(IInventorySlot outputSlot) {
-        fillContainerFromSlot(getFluidTank(), outputSlot, ContainerType.FLUID, null);
+    public void fillTankFromSlot(IInventorySlot outputSlot, @Nullable TransactionContext transaction) {
+        fillContainerFromSlot(getFluidTank(), outputSlot, ContainerType.FLUID, transaction);
     }
 
     /// Fills tank from slot, does not try converting the item via any conversions conversion
-    public boolean fillTankFromSlot() {
-        return fillContainerFromSlot(getFluidTank(), ContainerType.FLUID, null);
+    public boolean fillTankFromSlot(@Nullable TransactionContext transaction) {
+        return fillContainerFromSlot(getFluidTank(), ContainerType.FLUID, transaction);
     }
 }

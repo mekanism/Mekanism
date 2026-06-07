@@ -624,7 +624,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
-            tile.upgradeComponent.tickServer();
+            tile.upgradeComponent.tickServer(null);
         }
         if (tile.hasChunkloader) {
             ((IChunkLoader) tile).getChunkLoader().tickServer();

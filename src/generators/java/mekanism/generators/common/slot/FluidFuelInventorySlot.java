@@ -19,6 +19,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -66,19 +67,19 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     /**
      * Fills tank from slot, allowing for the item to also be converted to fluid if need be
      */
-    public void fillOrBurn() {
+    public void fillOrBurn(@Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             int needed = fluidTank.getNeededAsInt(FluidResource.EMPTY);
             //Fill the tank from the item
-            if (needed > 0 && !fillTankFromSlot()) {
+            if (needed > 0 && !fillTankFromSlot(transaction)) {
                 //If filling from item failed, try doing it by conversion
                 int fuel = fuelValue.applyAsInt(resource());
                 if (fuel > 0 && fuel <= needed) {
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        if (FuelInventorySlot.consumeAndReplace(this, transaction)) {
-                            if (fluidTank.insert(FluidResource.of(fuelType), fuel, transaction, AutomationType.INTERNAL) == fuel) {
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        if (FuelInventorySlot.consumeAndReplace(this, subTransaction)) {
+                            if (fluidTank.insert(FluidResource.of(fuelType), fuel, subTransaction, AutomationType.INTERNAL) == fuel) {
                                 //If we were able to insert it all the fuel into the fluid tank, commit all of the changes
-                                transaction.commit();
+                                subTransaction.commit();
                             }
                         }
                     }

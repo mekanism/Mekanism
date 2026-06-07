@@ -145,7 +145,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        infusionSlot.fillTankOrConvert();
+        infusionSlot.fillTankOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

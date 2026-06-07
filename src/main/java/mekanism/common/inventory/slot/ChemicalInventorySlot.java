@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -101,9 +102,9 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
     /**
      * Fills tank from slot, allowing for the item to also be converted to chemical if need be
      */
-    public void fillTankOrConvert() {
+    public void fillTankOrConvert(@Nullable TransactionContext transaction) {
         //Fill the tank from the item
-        if (!fillTankFromSlot()) {
+        if (!fillTankFromSlot(transaction)) {
             //If filling from item failed, try doing it by conversion
             ItemStack current = resource().toStack(amountAsInt());
             ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
@@ -112,15 +113,15 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
                 if (!itemInput.isEmpty()) {
                     ChemicalStack output = foundRecipe.getOutput(itemInput);
                     if (!output.isEmpty()) {
-                        try (Transaction transaction = Transaction.openRoot()) {
+                        try (Transaction subTransaction = Transaction.open(transaction)) {
                             int recipeNeeded = itemInput.count();
                             int chemicalProduced = output.amount();
                             //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
-                            if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded &&
+                            if (extract(ItemResource.of(itemInput), recipeNeeded, subTransaction, AutomationType.INTERNAL) == recipeNeeded &&
                                 //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                                chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, transaction, AutomationType.MANUAL) == chemicalProduced) {
+                                chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, subTransaction, AutomationType.MANUAL) == chemicalProduced) {
                                 // if we succeeded, commit the changes
-                                transaction.commit();
+                                subTransaction.commit();
                             }
                         }
                     }
@@ -130,29 +131,28 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
     }
 
     /// Fills tank from slot, does not try converting the item via any conversions conversion
-    public boolean fillTankFromSlot() {
-        //Try filling from the tank's item
-        return fillContainerFromSlot(chemicalTank, ContainerType.CHEMICAL, null);
+    public boolean fillTankFromSlot(@Nullable TransactionContext transaction) {
+        return fillContainerFromSlot(chemicalTank, ContainerType.CHEMICAL, transaction);
     }
 
     /// Fills the container from the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the item.
-    public void fillTankFromSlot(IInventorySlot outputSlot) {
-        fillContainerFromSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, null);
+    public void fillTankFromSlot(IInventorySlot outputSlot, @Nullable TransactionContext transaction) {
+        fillContainerFromSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, transaction);
     }
 
     /**
      * Drains tank into slot
      */
-    public boolean drainTankIntoSlot() {
-        return drainContainerIntoSlot(chemicalTank, ContainerType.CHEMICAL, null);
+    public boolean drainTankIntoSlot(@Nullable TransactionContext transaction) {
+        return drainContainerIntoSlot(chemicalTank, ContainerType.CHEMICAL, transaction);
     }
 
     /// Drains the container into the slot
     ///
     /// @param outputSlot The slot to move our container to after draining the resource container.
-    public void drainTankIntoSlot(IInventorySlot outputSlot) {
-        drainContainerIntoSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, null);
+    public void drainTankIntoSlot(IInventorySlot outputSlot, @Nullable TransactionContext transaction) {
+        drainContainerIntoSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, transaction);
     }
 }

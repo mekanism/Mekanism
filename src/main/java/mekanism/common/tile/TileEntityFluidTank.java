@@ -167,7 +167,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             prevScale = scale;
             sendUpdatePacket = true;
         }
-        inputSlot.handleTank(outputSlot, editMode);
+        inputSlot.handleTank(outputSlot, editMode, null);
         if (getActive()) {
             if (belowTankCache == null) {
                 belowTankCache = new BelowContainerCache<>(Capabilities.FLUID, (ServerLevel) level, worldPosition);

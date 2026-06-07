@@ -119,7 +119,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        outputSlot.drainTankIntoSlot();
+        outputSlot.drainTankIntoSlot(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

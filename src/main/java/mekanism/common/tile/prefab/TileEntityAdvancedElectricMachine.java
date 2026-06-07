@@ -153,7 +153,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        secondarySlot.fillTankOrConvert();
+        secondarySlot.fillTankOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

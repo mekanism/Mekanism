@@ -29,7 +29,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
 public class TileComponentUpgrade implements ITileComponent, ISpecificContainerTracker {
@@ -67,7 +69,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         this.tile.addComponent(this);
     }
 
-    public void tickServer() {
+    public void tickServer(@Nullable TransactionContext transaction) {
         if (canCheckUpgrades) {
             ItemResource itemType = upgradeSlot.resource();
             if (!itemType.isEmpty() && itemType.getItem() instanceof IUpgradeItem upgradeItem) {
@@ -81,13 +83,13 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                         } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                             int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.amountAsInt());
                             if (toAdd > 0) {
-                                try (Transaction transaction = Transaction.openRoot()) {
-                                    int extracted = upgradeSlot.extract(itemType, toAdd, transaction, AutomationType.INTERNAL);
+                                try (Transaction subTransaction = Transaction.open(transaction)) {
+                                    int extracted = upgradeSlot.extract(itemType, toAdd, subTransaction, AutomationType.INTERNAL);
                                     if (extracted > 0) {//Note: This will always be <= toAdd
                                         //If we added any upgrades (even if it was less than the amount we expected to be able to add)
                                         // increment how many upgrades added, and commit the transaction to actually consume them from the slot
                                         setUpgrades(type, upgrades + extracted);
-                                        transaction.commit();
+                                        subTransaction.commit();
                                     }
                                 }
                             }

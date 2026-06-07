@@ -54,7 +54,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
         super(canExtract, canInsert, VALIDATOR, listener, x, y);
     }
 
-    public void unlock(UUID ownerUUID, TransactionContext transaction) {
+    public void unlock(UUID ownerUUID, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             ItemAccess itemAccess = asItemAccess();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);
@@ -71,7 +71,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
         }
     }
 
-    public void lock(UUID ownerUUID, SecurityFrequency frequency, TransactionContext transaction) {
+    public void lock(UUID ownerUUID, SecurityFrequency frequency, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             ItemAccess itemAccess = asItemAccess();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemAccess);

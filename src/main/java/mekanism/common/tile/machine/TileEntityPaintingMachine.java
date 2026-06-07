@@ -140,7 +140,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        pigmentInputSlot.fillTankOrConvert();
+        pigmentInputSlot.fillTankOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -29,13 +30,13 @@ public class FuelInventorySlot extends BasicInventorySlot {
         super(canExtract, canInsert, validator, listener, x, y);
     }
 
-    public int burn(FuelValues fuelValues) {
+    public int burn(FuelValues fuelValues, @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             int burnTime = resource().toStack().getBurnTime(null, fuelValues) / 2;
             if (burnTime > 0) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    if (consumeAndReplace(this, transaction)) {
-                        transaction.commit();
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    if (consumeAndReplace(this, subTransaction)) {
+                        subTransaction.commit();
                         return burnTime;
                     }
                 }

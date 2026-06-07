@@ -117,7 +117,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert(null);
-        inputSlot.fillTankFromSlot();
+        inputSlot.fillTankFromSlot(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }

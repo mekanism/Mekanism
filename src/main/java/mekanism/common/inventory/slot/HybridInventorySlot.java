@@ -15,6 +15,7 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -56,18 +57,18 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
         this.mergedTank = mergedTank;
     }
 
-    public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
+    public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode, @Nullable TransactionContext transaction) {
         CurrentType type = mergedTank.getCurrentType();
         IFluidTank fluidTank = mergedTank.getFluidTank();
         if (type == CurrentType.EMPTY) {
-            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, null);
+            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, transaction);
             if (fluidTank.isEmpty()) {
-                handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, null);
+                handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, transaction);
             }
         } else if (type == CurrentType.FLUID) {
-            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, null);
+            handleContainer(fluidTank, outputSlot, editMode, ContainerType.FLUID, transaction);
         } else {//Chemicals
-            handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, null);
+            handleContainer(mergedTank.getChemicalTank(), outputSlot, editMode, ContainerType.CHEMICAL, transaction);
         }
     }
 }

@@ -51,7 +51,7 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        ejectorComponent.tickServer();
+        ejectorComponent.tickServer(null);
         return sendUpdatePacket;
     }
 }

@@ -287,7 +287,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     /// Fills the container from the slot, and does not move it to an output slot afterward
     protected <RESOURCE extends Resource> boolean drainContainerIntoSlot(IResourceContainer<RESOURCE> resourceContainer, ResourceContainerType<RESOURCE, ?> containerType,
-          TransactionContext transaction) {
+          @Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             //Note: We explicitly do not bother getting a one by one access here, as we only have the single slot,
             // so either we can act on the whole stack or we can't, doing one by one won't change anything

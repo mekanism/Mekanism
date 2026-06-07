@@ -67,7 +67,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         if (burnTime == 0) {
-            maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues());
+            maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues(), null);
         }
         boolean isActive = false;
         if (burnTime > 0) {
