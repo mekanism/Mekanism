@@ -4,8 +4,8 @@ import java.util.List;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.ChemicalUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -51,7 +51,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               new ItemStack(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER),
               new ItemStack(GeneratorsBlocks.LASER_FOCUS_MATRIX),
               new ItemStack(GeneratorsBlocks.REACTOR_GLASS),
-              ChemicalUtils.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL, null)
+              ContainerType.CHEMICAL.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL, null)
         ), GeneratorsAliases.FUSION_COMPONENT);
         rv.addAliases(List.of(
               GeneratorsBlocks.TURBINE_CASING,

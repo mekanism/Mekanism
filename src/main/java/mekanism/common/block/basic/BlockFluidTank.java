@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,9 +69,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             ResourceHandler<FluidResource> tankHandler = Capabilities.FLUID.getCapabilityIfLoaded(world, pos, null, tile, hit.getDirection());
             if (tankHandler != null) {
                 try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                    //TODO - 26.1: Should we modify ResourceUtil#interactWithHandler and allow having it follow the tile's container edit mode?
-                    // That way it can be set to force fill/drain the item instead of doing its best guess? I suspect this would be a nice QoL change
-                    if (FluidUtil.interactWithFluidHandler(player, hand, pos, tankHandler, transaction)) {
+                    if (ContainerType.FLUID.interactWithHandler(player, hand, pos, tankHandler, transaction)) {
                         transaction.commit();
                         return InteractionResult.SUCCESS;
                     }

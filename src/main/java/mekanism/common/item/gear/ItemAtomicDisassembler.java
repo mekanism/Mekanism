@@ -26,6 +26,7 @@ import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
@@ -41,7 +42,6 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
@@ -99,7 +99,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
      * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
      */
     public static ItemStack fullyChargedStack(@Nullable TransactionContext transaction) {
-        return StorageUtils.getFilledEnergyVariant(MekanismItems.ATOMIC_DISASSEMBLER, transaction);
+        return ContainerType.ENERGY.getFilledVariant(MekanismItems.ATOMIC_DISASSEMBLER, transaction);
     }
 
     public ItemAtomicDisassembler(Properties properties) {

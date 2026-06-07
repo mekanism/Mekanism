@@ -348,7 +348,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Amount inserted
      *
-     * @see mekanism.common.attachments.containers.type.ResourceContainerType#insertInto(List, Resource, int, TransactionContext, AutomationType)
+     * @see mekanism.api.resource.IMekanismResourceHandler#insert(Resource, int, TransactionContext, AutomationType)
      */
     public static <SLOT extends Slot & ITransactionalSlot> int insertItem(Iterable<SLOT> slots, ItemResource itemType, final int amount, TransactionContext transaction,
           boolean ignoreEmpty, @Nullable SelectedWindowData selectedWindow) {

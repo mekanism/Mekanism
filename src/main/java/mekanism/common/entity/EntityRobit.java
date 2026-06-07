@@ -28,6 +28,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IEntitySecurityUtils;
@@ -187,9 +188,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     private final List<IInventorySlot> smeltingContainerSlots;
     @NotNull
     private final List<IInventorySlot> inventoryContainerSlots;
+    private final IMekanismResourceHandler<ItemResource, IInventorySlot> directInventoryHandler;
     private final EnergyInventorySlot energySlot;
-    private final InputInventorySlot smeltingInputSlot;
-    private final OutputInventorySlot smeltingOutputSlot;
     private final BasicEnergyContainer energyContainer;
 
     public EntityRobit(EntityType<EntityRobit> type, Level world) {
@@ -218,15 +218,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             }
         }
         inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::level, this, 153, 17));
-        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35));
+        InputInventorySlot smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35);
+        inventorySlots.add(smeltingInputSlot);
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
-        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35));
+        OutputInventorySlot smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35);
+        inventorySlots.add(smeltingOutputSlot);
         smeltingInputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
 
         mainContainerSlots = Collections.singletonList(energySlot);
         smeltingContainerSlots = List.of(smeltingInputSlot, smeltingOutputSlot);
+        directInventoryHandler = () -> inventorySlots;
 
         inputHandler = InputHelper.getInputHandler(smeltingInputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
@@ -355,7 +358,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         for (ItemEntity item : level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5), RobitAIPickup.ITEM_PREDICATE)) {
             ItemStack stack = item.getItem();
             int toPickUp = stack.count();
-            int inserted = ContainerType.ITEM.insertInto(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
+            int inserted = directInventoryHandler.insert(ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
             if (inserted > 0) {
                 take(item, inserted);
                 stack.shrink(inserted);

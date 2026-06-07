@@ -4,8 +4,8 @@ import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -70,14 +70,14 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         if (!drops.isEmpty()) {
             BlockPos dropPos = null;
             Direction opposite = null;
-            List<IInventorySlot> inventorySlots = getInventorySlots();
+            IMekanismResourceHandler<ItemResource, IInventorySlot> inventoryHandler = this::getInventorySlots;
             for (ItemStack drop : drops) {
                 if (drop.isEmpty()) {//Not sure if this can ever be the case, but handle it just in case
                     continue;
                 }
                 int toInsert = drop.count();
                 //Try inserting it first where it can stack and then into empty slots
-                int inserted = ContainerType.ITEM.insertInto(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
+                int inserted = inventoryHandler.insert(ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
                 if (inserted < toInsert) {
                     //If we have some drop left over that we couldn't fit, then spawn it into the world
                     // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
@@ -97,7 +97,8 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     protected boolean handleHitItem(ItemEntity entity, TransactionContext transaction) {
         ItemStack stack = entity.getItem();
         //Try inserting it first where it can stack and then into empty slots
-        int inserted = ContainerType.ITEM.insertInto(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
+        IMekanismResourceHandler<ItemResource, IInventorySlot> inventoryHandler = this::getInventorySlots;
+        int inserted = inventoryHandler.insert(ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
         if (inserted == stack.count()) {
             //If we have finished grabbing it all then remove the entity
             entity.discard();

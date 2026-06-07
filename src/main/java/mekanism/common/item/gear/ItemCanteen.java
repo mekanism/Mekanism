@@ -2,12 +2,12 @@ package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -57,12 +57,12 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return FluidUtils.getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return ContainerType.FLUID.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(item, MekanismFluids.NUTRITIONAL_PASTE, null));
+        tabOutput.accept(ContainerType.FLUID.getFilledVariant(item, MekanismFluids.NUTRITIONAL_PASTE, null));
     }
 
     @NotNull

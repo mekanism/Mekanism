@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ItemAccessUtils;
@@ -43,7 +44,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
+        tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
     }
 
     @Override

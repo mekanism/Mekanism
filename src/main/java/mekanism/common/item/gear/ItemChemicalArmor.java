@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtils;
@@ -51,11 +52,11 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType(), null));
+        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, getChemicalType(), null));
     }
 }

@@ -28,12 +28,11 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils
+public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils or the corresponding container type
 
     private StorageUtils() {
     }
@@ -125,25 +124,6 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             }
         }
         return 0;
-    }
-
-    public static ItemStack getFilledEnergyVariant(Holder<Item> toFill, @Nullable TransactionContext transaction) {
-        return getFilledEnergyVariant(ItemResource.of(toFill), transaction);
-    }
-
-    public static ItemStack getFilledEnergyVariant(ItemResource toFill, @Nullable TransactionContext transaction) {
-        return getFilledEnergyVariant(ItemAccessUtils.sideEffectFreeAccess(toFill), transaction);
-    }
-
-    public static ItemStack getFilledEnergyVariant(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
-        EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
-        IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(energyHandler);
-        if (energyContainer != null) {
-            //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
-            energyContainer.setEnergy(energyContainer.getCapacityAsLong(), transaction);
-        }
-        //The item is now filled return it for convenience
-        return ItemAccessUtils.asStack(itemAccess);
     }
 
     public static double getEnergyRatio(TypedInstance<Item> stack) {

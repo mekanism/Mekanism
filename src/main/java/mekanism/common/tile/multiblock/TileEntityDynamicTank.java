@@ -1,12 +1,12 @@
 package mekanism.common.tile.multiblock;
 
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -15,7 +15,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +34,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
-                    if (FluidUtil.interactWithFluidHandler(player, hand, null, multiblock.getDirectFluidHandler(), transaction) ||
-                        ChemicalUtils.interactWithChemicalHandler(player, hand, multiblock.getDirectChemicalHandler(), transaction)) {
+                    if (ContainerType.FLUID.interactWithHandler(player, hand, null, multiblock.getDirectFluidHandler(), transaction) ||
+                        ContainerType.CHEMICAL.interactWithHandler(player, hand, null, multiblock.getDirectChemicalHandler(), transaction)) {
                         transaction.commit();
                         return InteractionResult.SUCCESS_SERVER;
                     }

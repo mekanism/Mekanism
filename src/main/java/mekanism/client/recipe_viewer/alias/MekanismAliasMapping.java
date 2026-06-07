@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -16,10 +17,8 @@ import mekanism.common.resource.IResource;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
-import mekanism.common.util.StorageUtils;
-import net.minecraft.util.Util;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -130,7 +129,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismItems.MEKASUIT_PANTS
         ), MekanismAliases.MEKA_SUIT_POWER_ARMOR);
 
-        rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE, null),
+        rv.addAliases(ContainerType.FLUID.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE, null),
               MekanismAliases.CANTEEN_EDIBLE,
               MekanismAliases.CANTEEN_FOOD_STORAGE
         );
@@ -238,7 +237,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               new ItemStack(MekanismBlocks.ADVANCED_ENERGY_CUBE),
               new ItemStack(MekanismBlocks.ELITE_ENERGY_CUBE),
               new ItemStack(MekanismBlocks.ULTIMATE_ENERGY_CUBE),
-              StorageUtils.getFilledEnergyVariant(ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_OUTPUT), null)
+              ContainerType.ENERGY.getFilledVariant(ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_OUTPUT), null)
         ), MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY, MekanismAliases.ITEM_CHARGER);
         rv.addItemAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
 

@@ -3,13 +3,10 @@ package mekanism.client.render.item;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
-import java.util.function.ToIntFunction;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,16 +33,16 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         yOffset += 12;
 
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-        if (tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.CHEMICAL, armor.getChemicalTankSpecs(), ChemicalResource::getChemicalColorRepresentation)) {
+        if (tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.CHEMICAL, armor.getChemicalTankSpecs())) {
             yOffset--;
         }
 
-        tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.FLUID, armor.getFluidTankSpecs(), FluidUtils::getRGBDurabilityForDisplay);
+        tryRender(guiGraphics, itemAccess, xOffset, yOffset, ContainerType.FLUID, armor.getFluidTankSpecs());
         return true;
     }
 
     private <RESOURCE extends Resource> boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemAccess itemAccess, int xOffset, int yOffset,
-          ResourceContainerType<RESOURCE, ?> containerType, List<GenericTankSpec<RESOURCE>> tankSpecs, ToIntFunction<RESOURCE> color) {
+          ResourceContainerType<RESOURCE, ?> containerType, List<GenericTankSpec<RESOURCE>> tankSpecs) {
         if (!tankSpecs.isEmpty()) {
             //Note: We just directly query the stored contents of the containers and don't care about the size of the item access
             ResourceHandler<RESOURCE> handler = containerType.getCapOrUnexposed(itemAccess);
@@ -53,7 +50,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                 return false;
             }
             int tank = getDisplayTank(tankSpecs, itemAccess.getResource(), handler.size());
-            return ChemicalFluidBarDecorator.renderBars(guiGraphics, xOffset, yOffset, handler, tank, color);
+            return ChemicalFluidBarDecorator.renderBars(guiGraphics, xOffset, yOffset, handler, tank, containerType::getRGBDurabilityForDisplay);
         }
         return false;
     }

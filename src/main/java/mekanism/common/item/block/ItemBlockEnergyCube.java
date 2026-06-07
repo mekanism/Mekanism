@@ -12,6 +12,7 @@ import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.config.MekanismConfig;
@@ -110,9 +111,9 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT), null));
+            tabOutput.accept(ContainerType.ENERGY.getFilledVariant(withCreativeSideConfig(ALL_OUTPUT), null));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
+            tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
         }
     }
 

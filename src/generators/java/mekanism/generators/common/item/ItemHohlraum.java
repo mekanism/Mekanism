@@ -4,10 +4,9 @@ import java.util.function.Consumer;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsChemicals;
@@ -61,11 +60,11 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtils.getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(stack));
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtils.getFilledVariant(item, GeneratorsChemicals.FUSION_FUEL, null));
+        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, GeneratorsChemicals.FUSION_FUEL, null));
     }
 }

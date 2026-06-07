@@ -2,12 +2,10 @@ package mekanism.client.render.item;
 
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
@@ -42,21 +40,21 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
-        if (showChemical && renderBars(guiGraphics, xOffset, yOffset, ContainerType.CHEMICAL, itemAccess, ChemicalResource::getChemicalColorRepresentation)) {
+        if (showChemical && renderBars(guiGraphics, xOffset, yOffset, ContainerType.CHEMICAL, itemAccess)) {
             yOffset--;
         }
 
         if (showFluid) {
-            renderBars(guiGraphics, xOffset, yOffset, ContainerType.FLUID, itemAccess, FluidUtils::getRGBDurabilityForDisplay);
+            renderBars(guiGraphics, xOffset, yOffset, ContainerType.FLUID, itemAccess);
         }
         return true;
     }
 
     private static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, ResourceContainerType<RESOURCE, ?> containerType,
-          ItemAccess itemAccess, ToIntFunction<RESOURCE> color) {
+          ItemAccess itemAccess) {
         //Note: We just directly query the stored contents of the containers and don't care about the size of the item access
         ResourceHandler<RESOURCE> handler = containerType.getCapOrUnexposed(itemAccess);
-        return handler != null && renderBars(guiGraphics, xOffset, yOffset, handler, getDisplayTank(handler.size()), color);
+        return handler != null && renderBars(guiGraphics, xOffset, yOffset, handler, getDisplayTank(handler.size()), containerType::getRGBDurabilityForDisplay);
     }
 
     protected static <RESOURCE extends Resource> boolean renderBars(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset,

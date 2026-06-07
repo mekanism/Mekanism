@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IFreeRunnerItem;
 import mekanism.common.item.interfaces.IFreeRunnerItem.FreeRunnerMode;
@@ -65,7 +66,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item, null));
+        tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
     }
 
     @Override

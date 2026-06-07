@@ -17,6 +17,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
@@ -70,7 +71,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +107,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
+    /// For in inserting to input slots and stacking before going to empty slots
+    private IMekanismResourceHandler<ItemResource, IInventorySlot> directInputHandler;
+    /// For in inserting to output slots and stacking before going to empty slots
+    private IMekanismResourceHandler<ItemResource, IInventorySlot> directOutputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
     BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
@@ -185,6 +189,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
+        directInputHandler = () -> inputSlots;
+        directOutputHandler = () -> outputSlots;
         return builder.build();
     }
 
@@ -361,7 +367,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ItemResource output = ItemResource.of(lastOutputStack);
         int outputAmount = lastOutputStack.count();
         try (Transaction transaction = Transaction.openRoot()) {
-            if (!tryMoveToOutput(output, outputAmount, transaction)) {
+            if (directOutputHandler.insert(output, outputAmount, transaction) < outputAmount) {
                 //Can't fit it all, bail and revert changes
                 return false;
             }
@@ -370,15 +376,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 // The better solution would be to not allow continuing until we moved output AND all remaining items
                 // instead of trying to move all at once??
                 //TODO - 26.1: validate we don't have to clear the list anywhere
-                if (!remainingItem.isEmpty() && !tryMoveToOutput(ItemResource.of(remainingItem), remainingItem.count(), transaction)) {
+                int remainingAmount = remainingItem.count();
+                if (remainingAmount > 0 && directOutputHandler.insert(ItemResource.of(remainingItem), remainingAmount, transaction) < remainingAmount) {
                     //Can't fit it all, bail and revert changes
                     return false;
                 }
             }
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
-                    int extracted = craftingSlot.extract(craftingSlot.resource(), 1, transaction, AutomationType.INTERNAL);
-                    if (extracted == 0) {
+                    if (craftingSlot.extract(craftingSlot.resource(), 1, transaction, AutomationType.INTERNAL) == 0) {
                         //Something went horribly wrong when removing the inputs from the input slots, bail and revert changes
                         return false;
                     }
@@ -433,7 +439,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     // Theoretically this if statement should never be true as it always returns true for if extracting is allowed
                     return false;
                 }
-                int inserted = ContainerType.ITEM.insertInto(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
+                int inserted = directInputHandler.insert(resource, stored, transaction, AutomationType.INTERNAL);
                 if (inserted < stored) {
                     //Failed to insert the removed contents into the input slots, so mark that we failed to handle at least one of the slots,
                     // and continue onto the next one
@@ -512,7 +518,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             ItemResource resource = recipeSlot.resource();
             if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = ContainerType.ITEM.insertInto(inputSlots, resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
+                    int inserted = directInputHandler.insert(resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
                     if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                         //If we are able to fully extract from the recipe slot the amount that we inserted into the input slots
                         // then commit the change. We rely on the fact that our recipe slot should always be able to extract
@@ -669,14 +675,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (; i < stockControlMap.length; i++) {
             stockControlMap[i] = ItemResource.EMPTY;
         }
-    }
-
-    private boolean tryMoveToOutput(ItemResource itemType, int amount, TransactionContext transaction) {
-        //Try to insert the item (simulating as needed), and overwrite our local reference to point to the remainder
-        // We can then continue on to the next slot if we did not fit it all and try to insert it.
-        // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
-        // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-        return ContainerType.ITEM.insertInto(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL) == amount;
     }
 
     public void encodeFormula() {

@@ -4,33 +4,29 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
-import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.containers.resource.ComponentBackedResourceHandler;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
-import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
-import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
-import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.redstone.Redstone;
@@ -45,22 +41,15 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER extends IResourceContainer<RESOURCE>>
+public abstract class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER extends IResourceContainer<RESOURCE>>
       extends CapableContainerType<CONTAINER, AttachedResources<RESOURCE>, ResourceHandler<RESOURCE>> implements IListContainerType<LargeResourceStack<RESOURCE>, CONTAINER, AttachedResources<RESOURCE>> {
 
-    private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
-    private final Predicate<TileEntityMekanism> canHandle;
-    private final Predicate<Resource> isResourceType;
 
     protected ResourceContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> component, String containerTag,
-          MultiTypeCapability<ResourceHandler<RESOURCE>> capability, Function<TileEntityMekanism, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle,
-          LargeResourceStack.StackHelper<RESOURCE> stackHelper, Predicate<Resource> isResourceType) {
+          MultiTypeCapability<ResourceHandler<RESOURCE>> capability, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
         super(component, containerTag, capability, AttachedResources.empty());
-        this.containersFromTile = containersFromTile;
-        this.isResourceType = isResourceType;
         this.stackHelper = stackHelper;
-        this.canHandle = canHandle;
     }
 
     public RESOURCE emptyResource() {
@@ -72,27 +61,11 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
     }
 
     @Override
-    public List<CONTAINER> getContainers(TileEntityMekanism tile) {
-        return containersFromTile.apply(tile);
-    }
-
-    @Override
-    public boolean canHandle(TileEntityMekanism tile) {
-        return canHandle.test(tile);
-    }
-
-    @Override
     protected boolean shouldAddAttachment(AttachedResources<RESOURCE> attached) {
         return !attached.isEmpty();
     }
 
-    @SuppressWarnings("unchecked")
-    public RESOURCE asResourceOrEmpty(Resource resource) {
-        if (isResourceType.test(resource)) {
-            return (RESOURCE) resource;
-        }
-        return emptyResource();
-    }
+    public abstract RESOURCE asResourceOrEmpty(Resource resource);
 
     @Nullable
     @Override
@@ -125,13 +98,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
                 CONTAINER container = containers.get(i);
-                LargeResourceStack<RESOURCE> stack;
-                if (container instanceof CraftingWindowOutputInventorySlot) {
-                    //TODO: Can we do this handling for the crafting window output slot in a more generic way?
-                    stack = stackHelper().empty();
-                } else {
-                    stack = attachedContainers.get(i);
-                }
+                LargeResourceStack<RESOURCE> stack = isFakeOutput(container) ? stackHelper().empty() : attachedContainers.get(i);
                 container.setContents(stack, null);
             }
         }
@@ -143,7 +110,7 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         boolean hasNonEmpty = false;
         List<LargeResourceStack<RESOURCE>> stacks = new ArrayList<>(containers.size());
         for (CONTAINER container : containers) {
-            LargeResourceStack<RESOURCE> stack = container instanceof CraftingWindowOutputInventorySlot ? stackHelper.empty() : container.asStack();
+            LargeResourceStack<RESOURCE> stack = isFakeOutput(container) ? stackHelper.empty() : container.asStack();
             stacks.add(stack);
             if (!stack.isEmpty()) {
                 hasNonEmpty = true;
@@ -152,11 +119,34 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return hasNonEmpty ? new AttachedResources<>(stacks) : null;
     }
 
+    protected boolean isVariableSize(IResourceContainer<RESOURCE> container) {
+        return false;
+    }
+
+    protected boolean isFakeOutput(CONTAINER container) {
+        return false;
+    }
+
     @Override
     public void copy(CONTAINER from, CONTAINER to, @Nullable TransactionContext transaction) {
         to.copyContents(from, transaction);
     }
 
+    /// @param toFill      Item type to try and fill.
+    /// @param resource    Resource to fill the item with.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
+    ///
+    /// @return Stack representation of the item access once it has been filled with the given resource.
+    public ItemStack getFilledVariant(Holder<Item> toFill, RESOURCE resource, @Nullable TransactionContext transaction) {
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(toFill));
+        return getFilledVariant(itemAccess, resource, transaction);
+    }
+
+    /// @param itemAccess  Item access to try and fill the represented item.
+    /// @param resource    Resource to fill the item with.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
+    ///
+    /// @return Stack representation of the item access once it has been filled with the given resource.
     public ItemStack getFilledVariant(ItemAccess itemAccess, RESOURCE resource, @Nullable TransactionContext transaction) {
         if (capability.getCapability(itemAccess) instanceof IMekanismResourceHandler<RESOURCE, ?> handler) {
             //Note: Just directly interact with the containers as we want to change the entire access and don't care about splitting between multiple items
@@ -211,6 +201,12 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return emptyResource();
     }
 
+    /// Dumps the contents of a container into the level, and then clears the container.
+    ///
+    /// @param level       The level on which to act.
+    /// @param pos         Location in the level that the container was dumped.
+    /// @param itemAccess  The item access that may expose a capability of this container's type that then will have the contents dumped.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
     public void tryDumpContents(Level level, BlockPos pos, ItemAccess itemAccess, @Nullable TransactionContext transaction) {
         if (capability.getCapability(itemAccess) instanceof IMekanismResourceHandler<RESOURCE, ?> handler) {
             for (IResourceContainer<RESOURCE> container : handler.getContainers()) {
@@ -219,23 +215,37 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         }
     }
 
+    /// Helper to clear the contents of a container.
+    ///
+    /// @param container   The container to clear
+    /// @param transaction The transaction that this operation is part of. May be `null`.
     public void clearContents(IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
         container.setContents(stackHelper.empty(), transaction);
     }
 
+    /// Dumps the contents of a container into the level, and then clears the container.
+    ///
+    /// @param level       The level on which to act.
+    /// @param pos         Location in the level that the container was dumped.
+    /// @param container   The container to dump the contents of. This is effectively just clears it if there are no side effects for dumping the stored resource.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
     public void dumpContents(Level level, BlockPos pos, IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
         clearContents(container, transaction);
     }
 
+    /// Clamps the contents of the container to its capacity.
+    ///
+    /// @param container   Container to clamp.
+    /// @param transaction The transaction that this operation is part of. May be `null`.
+    ///
+    /// @implNote If the capacity is zero, and the container is of variable size, this will skip clamping the container.
     public void clampContents(IResourceContainer<RESOURCE> container, @Nullable TransactionContext transaction) {
         RESOURCE resource = container.resource();
         if (!resource.isEmpty()) {
             long capacity = container.capacityAsLong(resource);
-            if (capacity == 0 && (container instanceof VariableCapacityFluidTank || container instanceof VariableCapacityChemicalTank)) {
-                //TODO - 26.1: Re-evaluate this, and add comments
-                //Our capacity should never actually be zero, and given we fake it being zero
-                // until we finish building the network, we need to override this method to bypass the upper limit check
-                // when our upper limit is zero
+            if (capacity == 0 && isVariableSize(container)) {
+                //Our capacity should never actually be zero, and given we fake it being zero until we finish building the network,
+                // we need to override this method to bypass the upper limit check when our upper limit is zero
                 return;
             }
             if (container.amountAsLong() > capacity) {
@@ -244,7 +254,14 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         }
     }
 
-    //TODO - 26.1: validate and then add as docs that we don't need to also be modifying toAdd
+    /// Merges the contents from two sets of containers into the first set, and keeps track of any rejected contents.
+    ///
+    /// @param orig        List of containers to merge `toAdd`'s contents into
+    /// @param toAdd       List of containers to merge with the corresponding original container.
+    /// @param rejects     Map to add rejected resources to, and how much of each resource was rejected.
+    /// @param transaction The transaction that this operation is part of. The changes to `rejects` will not be rolled back if this transaction is not committed.
+    ///
+    /// @implNote `toAdd` does not get modified by this method.
     public void merge(List<CONTAINER> orig, List<CONTAINER> toAdd, Object2LongMap<RESOURCE> rejects, TransactionContext transaction) {
         StorageUtils.validateSizeMatches(orig, toAdd, "container");
         for (int container = 0, size = toAdd.size(); container < size; container++) {
@@ -254,10 +271,9 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
                 long toAddAmount = toAddContainer.amountAsLong();
                 CONTAINER origContainer = orig.get(container);
                 //TODO - 26.1: Validate all callers have this work with the given automation type
-                // Also how much do we care about merging identical slots? Should we use the InventoryUtils#insertItem helper
-                // to try inserting against all the slots of the other?
-                //TODO - 26.1: Is  this how we want to handle trying to insert it, or would it be better to basically loop inserting multiple times as long
-                // as we are inserting max int while we get closer to toAddAmount
+                //TODO - 26.1: Should we change this to bypass all rate limits in case we add a multiblock that has them at a later date.
+                // That might be problematic to do, as the container merging uses dummy containers, that have no limits
+                //TODO - 26.1: If toAddAmount is greater than max int how do we want to handle it
                 int added = origContainer.insert(toAddResource, Ints.saturatedCast(toAddAmount), transaction, AutomationType.INTERNAL);
                 if (added < toAddAmount) {
                     //Add any remainder to the rejects
@@ -267,52 +283,79 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         }
     }
 
-    /// Calculates the redstone level based on the percentage of amount stored.
+    /// Calculates the redstone signal strength based on the given containers' content. This value is between 0 and 15.
     ///
-    /// @return A redstone level based on the percentage of the amount stored.
+    /// This method is based on [AbstractContainerMenu#getRedstoneSignalFromContainer(Container)].
     ///
+    /// @param containers the containers to calculate the signal from
+    ///
+    /// @return the redstone signal strength
+    ///
+    /// @implNote Unlike the method in [ResourceHandlerUtil], this method follows how [AbstractContainerMenu] does it, and does not ignore empty containers, it only
+    /// ignores containers that have a zero capacity.
     /// @see ResourceHandlerUtil#getRedstoneSignalFromResourceHandler(ResourceHandler)
     public int getRedstoneSignalFromContainers(List<? extends IResourceContainer<RESOURCE>> containers) {
         float proportion = 0.0F;
         int sampleCount = 0; // Number of samples in proportion
         for (IResourceContainer<RESOURCE> container : containers) {
-            long containerFill = container.amountAsLong();
-            if (containerFill > 0) {
-                long capacity = container.capacityAsLong(container.resource());
-                if (capacity > 0) {
-                    // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
-                    proportion += Math.min(1.0f, (float) containerFill / capacity);
-                    sampleCount++;
+            long capacity = container.capacityAsLong(container.resource());
+            if (capacity > 0) {
+                long containerFill = container.amountAsLong();
+                if (containerFill > 0) {
+                    //Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
+                    proportion += Math.min(1, (float) containerFill / capacity);
                 }
+                sampleCount++;
             }
         }
         if (sampleCount == 0) {
             return Redstone.SIGNAL_NONE;
         }
-        //TODO - 26.1: This ignores empty slots? I think that is wrong, even though it is like ResourceHandlerUtil...
-        // Vanilla's getRedstoneSignalFromContainer takes the container size
         proportion /= sampleCount;
         return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
     }
 
+    /// Calculates the redstone signal strength based on the given resource container's content. This value is between 0 and 15.
+    ///
+    /// This method is based on [AbstractContainerMenu#getRedstoneSignalFromContainer(Container)].
+    ///
+    /// @param container Container to calculate the signal from
+    ///
+    /// @return the redstone signal strength
+    ///
+    /// @see ResourceHandlerUtil#getRedstoneSignalFromResourceHandler(ResourceHandler)
     public int getRedstoneSignalFromContainer(IResourceContainer<RESOURCE> container) {
         long containerFill = container.amountAsLong();
         if (containerFill > 0) {
             long capacity = container.capacityAsLong(container.resource());
             if (capacity > 0) {
-                // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
-                float proportion = Math.min(1.0f, (float) containerFill / capacity);
+                //Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
+                float proportion = Math.min(1, (float) containerFill / capacity);
                 return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
             }
         }
         return Redstone.SIGNAL_NONE;
     }
 
+    /// Divides amount stored in the container by the capacity of the container and returns the result as a double.
+    ///
+    /// @param container The container to calculate the level of.
+    ///
+    /// @return A double representing the value of dividing the amount stored by the capacity, or `1` if the capacity is `0`, or the stored amount is larger than the
+    /// capacity.
+    ///
+    /// @implNote This caps the returned value at `1`
     public double divideToLevel(IResourceContainer<RESOURCE> container) {
         return MathUtils.divideToLevel(container.amountAsLong(), container.capacityAsLong(container.resource()));
     }
 
-    //TODO - 26.1: Docs
+    /// Checks if all the given containers are currently empty.
+    ///
+    /// @param containers Containers to check.
+    ///
+    /// @return `true` if all the containers are empty.
+    ///
+    /// @see ResourceHandlerUtil#isEmpty(ResourceHandler)
     public boolean areContainersEmpty(List<? extends IResourceContainer<RESOURCE>> containers) {
         for (IResourceContainer<RESOURCE> container : containers) {
             if (!container.isEmpty()) {
@@ -340,90 +383,44 @@ public class ResourceContainerType<RESOURCE extends @NonNull Resource, CONTAINER
         return ResourceHandlerUtil.insertStacking(handler, resource, amount, transaction);
     }
 
-    /// Helper to first try inserting ignoring empty containers, and then insert not ignoring empty containers
+    /// Used to handle the common case of a player holding a container item and right-clicking on a resource handler. First it tries to fill the item from the handler, if
+    /// that action fails then it tries to drain the item into the handler. Automatically updates the item in the player's hand and stashes any extra items created.
     ///
-    /// @param containers     Containers to insert into
-    /// @param resource       Type of resource to insert.
-    /// @param amount         Amount of the resource to insert.
-    /// @param transaction    The transaction that this operation is part of.
-    /// @param automationType The method that this container is being interacted from.
+    /// @param player      The player doing the interaction between the item and resource handler.
+    /// @param hand        The player's hand that is holding an item that should interact with the resource handler.
+    /// @param pos         The position at which to send game events and play sounds. If `null`, the player's position will be used.
+    /// @param handler     The resource handler.
+    /// @param transaction The transaction context for the operation. Passing in `null` will open a root transaction, whereas passing in a transaction will allow you to
+    /// make the final decision to commit based on the results of this method.
     ///
-    /// @return Amount inserted
+    /// @return true if the interaction succeeded, false otherwise.
     ///
-    /// @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
-    public int insertInto(List<? extends IResourceContainer<RESOURCE>> containers, RESOURCE resource, final int amount, TransactionContext transaction,
-          AutomationType automationType) {
-        //TODO: Would it be simpler to just make an IMekanismResourceHandler that returns the containers and then call insert on it?
-        // Or better yet if we have a handler anywhere this is called, then directly use it
-        if (containers.isEmpty()) {
-            return 0;
-        } else if (containers.size() == 1) {
-            return containers.getFirst().insert(resource, amount, transaction, automationType);
+    /// @see net.neoforged.neoforge.transfer.fluid.FluidUtil#interactWithFluidHandler(Player, InteractionHand, BlockPos, ResourceHandler, TransactionContext)
+    public boolean interactWithHandler(Player player, InteractionHand hand, @Nullable BlockPos pos, ResourceHandler<RESOURCE> handler, @Nullable TransactionContext transaction) {
+        //TODO - 26.1: Should we add a variant of this that allows following a container edit mode?
+        // That way it can be set to force fill/drain the item instead of doing its best guess? I suspect this would be a nice QoL change
+        //TODO - 26.1: Do we want chemical handler interactions to fire game events or make sounds?
+        ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand).oneByOne();
+        ResourceHandler<RESOURCE> handHandler = capability().getCapability(itemAccess);
+        if (handHandler == null) {
+            return false;
         }
-        int inserted = 0;
-        List<IResourceContainer<RESOURCE>> emptyContainers = new ArrayList<>(containers.size());
-        for (IResourceContainer<RESOURCE> container : containers) {
-            if (container.isEmpty()) {
-                emptyContainers.add(container);
-            } else {
-                inserted += container.insert(resource, amount - inserted, transaction, automationType);
-                if (inserted == amount) {
-                    return inserted;
-                }
-            }
-        }
-        for (IResourceContainer<RESOURCE> container : emptyContainers) {
-            inserted += container.insert(resource, amount - inserted, transaction, automationType);
-            if (inserted == amount) {
-                return inserted;
-            }
-        }
-        return inserted;
+        return ResourceHandlerUtil.moveFirst(handler, handHandler, ConstantPredicates.alwaysTrue(), Integer.MAX_VALUE, transaction) != null ||
+               ResourceHandlerUtil.moveFirst(handHandler, handler, ConstantPredicates.alwaysTrue(), Integer.MAX_VALUE, transaction) != null;
     }
 
-    public static class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {
+    /// Gets the color that represents the first resource stored on the item instance for use in "durability" bars.
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> int getRGBDurabilityForDisplay(ITEM instance) {
+        return getRGBDurabilityForDisplay(ItemAccessUtils.sideEffectFreeAccess(instance));
+    }
 
-        ChemicalContainerType() {
-            super(MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, Capabilities.CHEMICAL,
-                  TileEntityMekanism::getChemicalTanks, TileEntityMekanism::canHandleChemicals, LargeResourceStack.CHEMICAL_HELPER,
-                  resource -> resource instanceof ChemicalResource);
-        }
+    /// Gets the color that represents the first resource stored on the item access for use in "durability" bars.
+    public int getRGBDurabilityForDisplay(ItemAccess itemAccess) {
+        return getRGBDurabilityForDisplay(getFirstResourceFromAttachment(itemAccess));
+    }
 
-        public void dumpOrClearContents(@Nullable Level level, BlockPos pos, IResourceContainer<ChemicalResource> container, @Nullable TransactionContext transaction) {
-            if (level == null) {
-                clearContents(container, transaction);
-            } else {
-                dumpContents(level, pos, container, transaction);
-            }
-        }
-
-        @Override
-        public void dumpContents(Level level, BlockPos pos, IResourceContainer<ChemicalResource> container, @Nullable TransactionContext transaction) {
-            LargeResourceStack<ChemicalResource> current = container.asStack();
-            //Dump any radiation the current contents might contain
-            IRadiationManager.INSTANCE.dumpRadiation(level, pos, current.resource(), current.amount());
-            super.dumpContents(level, pos, container, transaction);
-        }
-
-        @Nullable
-        @Override
-        public AttachedResources<ChemicalResource> copyFromTile(TileEntityMekanism tile, List<IChemicalTank> containers) {
-            boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && tile.shouldDumpRadiation();
-            boolean hasNonEmpty = false;
-            List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(containers.size());
-            for (IChemicalTank container : containers) {
-                LargeResourceStack<ChemicalResource> stack;
-                if (skipRadioactive && container instanceof IChemicalTank tank && tank.resource().isRadioactive()) {
-                    stack = stackHelper().empty();
-                } else {
-                    stack = container.asStack();
-                }
-                stacks.add(stack);
-                if (!stack.isEmpty()) {
-                    hasNonEmpty = true;
-                }
-            }
-            return hasNonEmpty ? new AttachedResources<>(stacks) : null;
-        }
+    /// Gets the color that represents the given resource for use in "durability" bars.
+    public int getRGBDurabilityForDisplay(RESOURCE resource) {
+        return 0xFFFFFFFF;
     }
 }

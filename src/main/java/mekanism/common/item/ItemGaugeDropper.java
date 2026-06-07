@@ -8,8 +8,6 @@ import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -59,9 +57,9 @@ public class ItemGaugeDropper extends Item {
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
-            return FluidUtils.getRGBDurabilityForDisplay(fluid);
+            return ContainerType.FLUID.getRGBDurabilityForDisplay(fluid);
         }
-        return ChemicalUtils.getRGBDurabilityForDisplay(itemAccess);
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(itemAccess);
     }
 
     @NotNull
