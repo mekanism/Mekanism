@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOptions {
 
-    //TODO - 26.1: Should this be an optional codec or not?
     private static final MapCodec<ChemicalParticleOptions> CODEC = ChemicalResource.OPTIONAL_CODEC.xmap(
           ChemicalParticleOptions::new,
           ChemicalParticleOptions::chemical

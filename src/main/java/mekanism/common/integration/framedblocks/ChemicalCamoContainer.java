@@ -1,19 +1,20 @@
 package mekanism.common.integration.framedblocks;
 
-import io.github.xfacthd.framedblocks.api.camo.CamoContainer;
 import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
+import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContainer;
 import mekanism.api.chemical.ChemicalResource;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
 
-final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, ChemicalCamoContainer> {
+final class ChemicalCamoContainer extends ResourceCamoContainer<ChemicalResource, ChemicalCamoContent, ChemicalCamoContainer> {
 
     ChemicalCamoContainer(ChemicalResource chemical) {
         super(new ChemicalCamoContent(chemical));
     }
 
     ChemicalResource getChemicalType() {
-        return content.getChemicalType();
+        return content.getResource();
     }
 
     @Override
@@ -50,7 +51,7 @@ final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, Che
     }
 
     @Override
-    public ChemicalCamoContainer adjustForCarrierRotation(Rotation rotation) {
+    public ChemicalCamoContainer adjustForCarrierRotation(Mirror mirror, Rotation rotation) {
         return this;
     }
 }

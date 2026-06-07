@@ -260,7 +260,7 @@ def setupTasks(SourceSet sourceSet) {
         setGroup('process resources')
         duplicatesStrategy = DuplicatesStrategy.FAIL
         var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'neo_version': neo_version_range,
-                                 'jei_version': jei_version_range]
+                                 'jei_version': jei_version_range, 'fb_version': fb_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
@@ -478,7 +478,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
-    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade', 'io.github.xfacthd.framedblocks')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
         it.forRepositories(handler.mavenCentral())
@@ -577,8 +577,7 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
-    //compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
-    compileOnly("io.github.xfacthd.framedblocks:FramedBlocks-26.1:${framedblocks_version}")
+    compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 final class ChemicalSpriteParticle extends SingleQuadParticle {
 
+    private final SingleQuadParticle.Layer layer;
     private final BlockPos pos;
     private final float uo;
     private final float vo;
@@ -34,13 +35,13 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.rCol = 0.6F * ARGB.redFloat(tint);
         this.gCol = 0.6F * ARGB.greenFloat(tint);
         this.bCol = 0.6F * ARGB.blueFloat(tint);
+        this.layer = Layer.bySprite(sprite);
     }
 
     @NotNull
     @Override
     protected SingleQuadParticle.Layer getLayer() {
-        //TODO - 26.1: Validate this
-        return SingleQuadParticle.Layer.TRANSLUCENT_TERRAIN;
+        return layer;
     }
 
     @Override
@@ -74,7 +75,10 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz, @NotNull RandomSource random) {
-            return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
+            if (!type.chemical().isEmpty()) {
+                return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
+            }
+            return null;
         }
     }
 }
