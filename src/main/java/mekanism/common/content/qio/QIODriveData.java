@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.VisibleForTesting;
 
 @NothingNullByDefault
 public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
@@ -39,9 +40,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
         if (!itemType.isEmpty() && amount > 0) {
             //Only add the item if the item type is known. If it can't that means the mod adding the item was probably removed
             //TODO: Eventually we may want to keep the UUID so that if the mod gets added back it exists again?
-            StoredAmountJournal storedAmount = new StoredAmountJournal(itemType);
-            storedAmount.stored = amount;
-            itemMap.put(itemType, storedAmount);
+            itemMap.put(itemType, new StoredAmountJournal(itemType, amount));
             // update cached item count and type value
             itemTypes++;
             itemCount += amount;
@@ -60,7 +59,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
                 return 0;
             }
         } else {
-            storedAmount = itemMap.computeIfAbsent(type, StoredAmountJournal::new);
+            storedAmount = itemMap.computeIfAbsent(type, t -> new StoredAmountJournal(t, 0));
         }
         updateSnapshots(transaction);
         long toAdd = Math.min(amount, countCapacity - itemCount);
@@ -113,6 +112,17 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
         }
     }
 
+    @VisibleForTesting
+    public boolean hasCache(ItemResource itemType) {
+        return itemMap.get(itemType) != null;
+    }
+
+    @VisibleForTesting
+    public boolean isStoringEmpty(ItemResource itemType) {
+        StoredAmountJournal storedAmount = itemMap.get(itemType);
+        return storedAmount != null && storedAmount.stored == 0;
+    }
+
     public boolean isStoring(ItemResource type) {
         StoredAmountJournal storedAmount = itemMap.get(type);
         return storedAmount != null && storedAmount.stored > 0;
@@ -150,37 +160,49 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
     public record Snapshot(long itemCount, int itemTypes) {
     }
 
-    private class StoredAmountJournal extends SnapshotJournal<Long> {
+    private class StoredAmountJournal extends SnapshotJournal<StoredAmountJournal.Snapshot> {
 
         private final ItemResource itemType;
+        private boolean justAdded;
         private long stored;
 
-        public StoredAmountJournal(ItemResource itemType) {
+        public StoredAmountJournal(ItemResource itemType, long stored) {
             this.itemType = itemType;
+            this.stored = stored;
+            this.justAdded = this.stored == 0;
         }
 
         @Override
-        protected Long createSnapshot() {
-            return stored;
+        public void updateSnapshots(TransactionContext transaction) {
+            super.updateSnapshots(transaction);
+            justAdded = false;
         }
 
         @Override
-        protected void revertToSnapshot(Long snapshot) {
-            stored = snapshot;
-            if (stored == 0) {
-                //TODO - 26.1: Is this correct to do it when reverting? Or is it supposed to still be present for a bit
-                //If we end up with having nothing remove the tracking for this item type
+        protected StoredAmountJournal.Snapshot createSnapshot() {
+            return new Snapshot(stored, justAdded);
+        }
+
+        @Override
+        protected void revertToSnapshot(StoredAmountJournal.Snapshot snapshot) {
+            stored = snapshot.stored();
+            justAdded = snapshot.justAdded();
+            if (stored == 0 && justAdded) {
+                //If we end up with having nothing stored, and we were just added in the snapshot we were reverted to, remove the tracking for this item type
                 itemMap.remove(itemType);
             }
         }
 
         @Override
-        protected void onRootCommit(Long originalState) {
+        protected void onRootCommit(StoredAmountJournal.Snapshot originalState) {
             super.onRootCommit(originalState);
             if (stored == 0) {
-                //If we end up with having nothing remove the tracking for this item type
+                //If we end up with having nothing when the transactional context is complete, remove the tracking for this item type
                 itemMap.remove(itemType);
             }
+        }
+
+        public record Snapshot(long stored, boolean justAdded) {
         }
     }
 

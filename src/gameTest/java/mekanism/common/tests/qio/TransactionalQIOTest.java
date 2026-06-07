@@ -1,6 +1,8 @@
 package mekanism.common.tests.qio;
 
+import java.util.Set;
 import java.util.function.Supplier;
+import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.MekanismTests;
@@ -33,7 +35,7 @@ public class TransactionalQIOTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that frequency insertions don't work if there is no storage for the frequency.")
     public static void testQIOInsertNoStorage(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(frequency -> {
                   try (Transaction simulation = Transaction.openRoot()) {
                       long inserted = frequency.massInsert(ItemResource.of(Items.STONE), 1_000, simulation);
@@ -48,7 +50,7 @@ public class TransactionalQIOTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that frequency extraction doesn't work if there is no storage for the frequency.")
     public static void testQIOExtractNoStorage(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(frequency -> {
                   try (Transaction simulation = Transaction.openRoot()) {
                       long inserted = frequency.massExtract(ItemResource.of(Items.STONE), 1_000, simulation);
@@ -62,7 +64,7 @@ public class TransactionalQIOTest {
     @GameTest(template = BASE_DRIVE)
     @TestHolder(description = "Tests to make sure frequency insertions properly roll back when the transaction is not committed.")
     public static void testQIOSimulateInsert(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(helper::addDrives)
               .thenExecute(frequency -> helper.testInsert(frequency, ItemResource.of(Items.STONE), 1_000, false))
               .thenSucceed();
@@ -71,7 +73,7 @@ public class TransactionalQIOTest {
     @GameTest(template = BASE_DRIVE)
     @TestHolder(description = "Tests to make sure frequency insertions properly reflected after the transaction is committed.")
     public static void testQIOInsert(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(helper::addDrives)
               .thenExecute(frequency -> helper.testInsert(frequency, ItemResource.of(Items.STONE), 1_000, true))
               .thenSucceed();
@@ -80,7 +82,7 @@ public class TransactionalQIOTest {
     @GameTest(template = BASE_DRIVE)
     @TestHolder(description = "Tests to make sure frequency extractions properly roll back when the transaction is not committed.")
     public static void testQIOSimulateExtract(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(helper::addDrives)
               .thenExecute(frequency -> helper.testExtract(frequency, ItemResource.of(Items.STONE), 1_000, false))
               .thenSucceed();
@@ -89,9 +91,84 @@ public class TransactionalQIOTest {
     @GameTest(template = BASE_DRIVE)
     @TestHolder(description = "Tests to make sure frequency extractions are properly reflected after the transaction is committed.")
     public static void testQIOExtract(final QIOGameTestHelper helper) {
-        helper.startWithFrequency("transactions")
+        helper.startWithFrequency()
               .thenExecute(helper::addDrives)
               .thenExecute(frequency -> helper.testExtract(frequency, ItemResource.of(Items.STONE), 1_000, true))
+              .thenSucceed();
+    }
+
+    @GameTest(template = BASE_DRIVE)
+    @TestHolder(description = "Tests to make sure that the frequency does not persist any unnecessary objects when a transaction is rolled back.")
+    public static void testQIORollback(final QIOGameTestHelper helper) {
+        helper.startWithFrequency()
+              .thenExecute(helper::addDrives)
+              .thenExecute(frequency -> {
+                  ItemResource itemType = ItemResource.of(Items.STONE);
+                  long initialAmount = 1_000;
+                  int assertCall = 0;
+                  try (Transaction transaction = Transaction.openRoot()) {
+                      frequency.massInsert(itemType, initialAmount, transaction);
+                      try (Transaction nonPersistent = Transaction.open(transaction)) {
+                          frequency.massExtract(itemType, initialAmount, nonPersistent);
+                          helper.assertHasCache(frequency, itemType, assertCall++);
+                      }
+                      helper.assertHasCache(frequency, itemType, assertCall++);
+                      transaction.commit();
+                  }
+                  Set<QIODriveKey> driveKeys = frequency.getDriveKeys(itemType);
+                  try (Transaction outer = Transaction.openRoot()) {
+                      try (Transaction transaction = Transaction.open(outer)) {
+                          frequency.massExtract(itemType, initialAmount, transaction);
+                          helper.assertHasCache(frequency, itemType, assertCall++);
+                          helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                          helper.assertNoDriveCache(frequency, frequency.getDriveKeys(itemType), itemType, assertCall++);
+                          try (Transaction nonPersistent = Transaction.open(transaction)) {
+                              frequency.massInsert(itemType, initialAmount, nonPersistent);
+                              helper.assertHasDriveCache(frequency, driveKeys, itemType, assertCall++);
+                          }
+                          helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                          helper.assertNoDriveCache(frequency, frequency.getDriveKeys(itemType), itemType, assertCall++);
+                          transaction.commit();
+                      }
+                      helper.assertHasCache(frequency, itemType, assertCall++);
+                      helper.assertHasDriveCache(frequency, driveKeys, itemType, assertCall++);
+                      helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                      outer.commit();
+                  }
+                  helper.assertNotCached(frequency, itemType, assertCall++);
+                  helper.assertNoDriveCache(frequency, driveKeys, itemType, assertCall++);
+                  helper.assertNoDriveCache(frequency, frequency.getDriveKeys(itemType), itemType, assertCall++);
+
+                  try (Transaction a = Transaction.openRoot()) {
+                      frequency.massInsert(itemType, initialAmount, a);
+                      helper.assertNoDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                      helper.assertHasCache(frequency, itemType, assertCall++);
+                      try (Transaction b = Transaction.open(a)) {
+                          frequency.massExtract(itemType, initialAmount, b);
+                          helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                          helper.assertHasCache(frequency, itemType, assertCall++);
+                          try (Transaction c = Transaction.open(b)) {
+                              frequency.massInsert(itemType, initialAmount, c);
+                              helper.assertNoDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                              helper.assertHasCache(frequency, itemType, assertCall++);
+                              try (Transaction d = Transaction.open(c)) {
+                                  frequency.massExtract(itemType, initialAmount, d);
+                                  helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                                  helper.assertHasCache(frequency, itemType, assertCall++);
+                              }
+                              helper.assertNoDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                              helper.assertHasCache(frequency, itemType, assertCall++);
+                          }
+                          helper.assertHasDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                          helper.assertHasCache(frequency, itemType, assertCall++);
+                      }
+                      helper.assertNoDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                      helper.assertHasCache(frequency, itemType, assertCall++);
+                  }
+                  helper.assertNotCached(frequency, itemType, assertCall++);
+                  helper.assertNoDriveEmpty(frequency, driveKeys, itemType, assertCall++);
+                  helper.assertNoDriveCache(frequency, driveKeys, itemType, assertCall++);
+              })
               .thenSucceed();
     }
 

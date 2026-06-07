@@ -1,6 +1,7 @@
 package mekanism.common.tests.helpers;
 
 import java.util.List;
+import java.util.Set;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
@@ -18,21 +19,20 @@ public class QIOGameTestHelper extends MekGameTestHelper {
         super(info);
     }
 
-    //TODO - 26.1: Do we need a frequency name here or can we just use a constant when passing to the constructor
-    public ParametrizedGameTestSequence<QIOFrequency> startWithFrequency(String frequencyName) {
+    public ParametrizedGameTestSequence<QIOFrequency> startWithFrequency() {
         return startSequence().thenMap(() -> {
-            //TODO - 26.1: Re-evaluate this, but I think this makes the most sense as then we don't persist it so don't have to worry if our test is polluted with previous data
-            return new QIOFrequency(frequencyName, Mekanism.gameProfile.id(), SecurityMode.PUBLIC);
+            //Note: Create a new frequency that isn't added to the frequency manager to ensure we don't persist it
+            return new QIOFrequency("test_frequency", Mekanism.gameProfile.id(), SecurityMode.PUBLIC);
         }).thenExecute(frequency -> {
             if (frequency.getTotalItemCount() > 0 || frequency.getTotalItemTypes(false) > 0) {
-                fail("Newly created QIO frequency with name '" + frequencyName + "' was not empty");
+                fail("Newly created QIO frequency was not empty");
             }
         });
     }
 
     public void addDrives(QIOFrequency frequency) {
         TileEntityQIODriveArray driveArray = getBlockEntity(0, 0, 0, TileEntityQIODriveArray.class);
-        //TODO - 26.1: Do we need to somehow set the frequency on the BE?
+        //TODO - 26.1: Do we need to somehow set the frequency on the BE? Maybe for testing modifications to the drive slots
         List<QIODriveSlot> driveSlots = driveArray.getDriveSlots();
         for (int slot = 0, size = driveSlots.size(); slot < size; slot++) {
             QIODriveSlot driveSlot = driveSlots.get(slot);
@@ -63,8 +63,10 @@ public class QIOGameTestHelper extends MekGameTestHelper {
             fail("Expected frequency to contain: 0 " + itemType + " after rolling back the transaction");
         } else if (frequency.getTotalItemCount() > 0) {
             fail("Expected frequency to have zero total items after rolling back the transaction");
+        } else {
+            //Validate that the item type is not present in amy of the internal caches
+            assertNotCached(frequency, itemType, 0);
         }
-        //TODO - 26.1: Validate that the item type is not present in the map anymore (or any of that extra data) after it had been added during the transaction
     }
 
     public void testExtract(QIOFrequency frequency, ItemResource itemType, long amount, boolean commit) {
@@ -86,11 +88,36 @@ public class QIOGameTestHelper extends MekGameTestHelper {
             if (stored > 0) {
                 fail("Expected frequency to contain: 0 " + itemType + " after committing");
             }
-            //TODO - 26.1: Validate that the item type is not present in the map anymore (or any of that extra data)
+            //Validate that the item type is not present in amy of the internal caches anymore
+            assertNotCached(frequency, itemType, 0);
         } else if (stored != amount) {
             fail("Expected frequency to contain: 0 " + itemType + " after rolling back the transaction");
         } else if (frequency.getTotalItemCount() != amount) {
             fail("Expected frequency to have " + amount + " total items after rolling back the transaction");
         }
+    }
+
+    public void assertHasCache(QIOFrequency frequency, ItemResource itemType, int assertCall) {
+        assertTrue(frequency.anyCacheExists(itemType), "Expected frequency cache types to contain " + itemType + ". Call time: " + assertCall);
+    }
+
+    public void assertNotCached(QIOFrequency frequency, ItemResource itemType, int assertCall) {
+        assertFalse(frequency.anyCacheExists(itemType), "Expected frequency cache types to not contain " + itemType + ". Call time: " + assertCall);
+    }
+
+    public void assertHasDriveCache(QIOFrequency frequency, Set<QIODriveKey> driveKeys, ItemResource itemType, int assertCall) {
+        assertTrue(frequency.anyDriveCacheExists(driveKeys, itemType), "Expected frequency drive cache to contain an entry for " + itemType + ". Call time: " + assertCall);
+    }
+
+    public void assertNoDriveCache(QIOFrequency frequency, Set<QIODriveKey> driveKeys, ItemResource itemType, int assertCall) {
+        assertFalse(frequency.anyDriveCacheExists(driveKeys, itemType), "Expected frequency drive cache to not contain an entry for " + itemType + ". Call time: " + assertCall);
+    }
+
+    public void assertHasDriveEmpty(QIOFrequency frequency, Set<QIODriveKey> driveKeys, ItemResource itemType, int assertCall) {
+        assertTrue(frequency.anyDriveCachedEmpty(driveKeys, itemType), "Expected frequency drive cache to contain an empty entry for " + itemType + ". Call time: " + assertCall);
+    }
+
+    public void assertNoDriveEmpty(QIOFrequency frequency, Set<QIODriveKey> driveKeys, ItemResource itemType, int assertCall) {
+        assertFalse(frequency.anyDriveCachedEmpty(driveKeys, itemType), "Expected frequency drive cache to not contain an empty entry for " + itemType + ". Call time: " + assertCall);
     }
 }

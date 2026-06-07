@@ -61,6 +61,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.NonNull;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
@@ -169,7 +170,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 return 0;
             } else {
                 // at this point we're guaranteed at least part of the input stack will be inserted
-                data = createTypeDataForAbsent(itemType);
+                data = createTypeDataForAbsent(itemType, false);
                 itemDataMap.put(itemType, data);
             }
         }
@@ -188,8 +189,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return Ints.saturatedCast(massInsert(itemType, amount, transaction));
     }
 
-    private QIOItemTypeData createTypeDataForAbsent(ItemResource type) {
-        //TODO - 26.1: Do we only want to add these lookup maps when the transaction's root commit is done?
+    private QIOItemTypeData createTypeDataForAbsent(ItemResource type, boolean fromDrive) {
         List<String> tags = TagCache.getItemTags(type);
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
@@ -213,10 +213,50 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         modItems.add(type);
         //Fuzzy item lookup has no wildcard cache related to it
         fuzzyItemLookupMap.computeIfAbsent(type.getItem(), _ -> new HashSet<>()).add(type);
-        QIOItemTypeData data = new QIOItemTypeData(type);
-        //Ensure we have a matching uuid for this item
-        data.getItemUUID();
-        return data;
+        return new QIOItemTypeData(type, !fromDrive);
+    }
+
+    @VisibleForTesting
+    public boolean anyDriveCacheExists(Set<QIODriveKey> driveKeys, ItemResource itemType) {
+        for (QIODriveKey key : driveKeys) {
+            if (driveMap.get(key).hasCache(itemType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @VisibleForTesting
+    public boolean anyDriveCachedEmpty(Set<QIODriveKey> driveKeys, ItemResource itemType) {
+        for (QIODriveKey key : driveKeys) {
+            if (driveMap.get(key).isStoringEmpty(itemType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @VisibleForTesting
+    public Set<QIODriveKey> getDriveKeys(ItemResource itemType) {
+        QIOItemTypeData data = itemDataMap.get(itemType);
+        if (data != null) {
+            return new HashSet<>(data.containingDrives);
+        }
+        return Collections.emptySet();
+    }
+
+    @VisibleForTesting
+    public boolean anyCacheExists(ItemResource itemType) {
+        if (fuzzyItemLookupMap.containsKey(itemType.getItem())) {
+            return true;
+        }
+        for (String tag : TagCache.getItemTags(itemType)) {
+            Set<ItemResource> lookup = tagLookupMap.getValues(tag);
+            if (lookup != null && lookup.contains(itemType)) {
+                return true;
+            }
+        }
+        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(this.registries, itemType.toStack()), Collections.emptySet()).contains(itemType);
     }
 
     @Override
@@ -553,7 +593,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     private void addDriveContent(QIODriveKey key, ItemResource storedType, long amountStored) {
-        QIOItemTypeData typeData = itemDataMap.computeIfAbsent(storedType, this::createTypeDataForAbsent);
+        QIOItemTypeData typeData = itemDataMap.computeIfAbsent(storedType, type -> createTypeDataForAbsent(type, true));
         totalCount.value += amountStored;
         typeData.driveAdded(key, amountStored);
         markForUpdate(storedType);
@@ -626,15 +666,17 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     public class QIOItemTypeData extends SnapshotJournal<QIOItemTypeData.Snapshot> {
 
-        private final Set<QIODriveKey> containingDrives = new HashSet<>();
+        private Set<QIODriveKey> containingDrives = new HashSet<>();
         private final ItemResource itemType;
+        private final UUID itemUUID;
 
-        @Nullable
-        private UUID itemUUID;
         private long count = 0;
+        private boolean justAdded;
 
-        public QIOItemTypeData(ItemResource itemType) {
+        private QIOItemTypeData(ItemResource itemType, boolean justAdded) {
             this.itemType = itemType;
+            this.justAdded = justAdded;
+            this.itemUUID = QIOGlobalItemLookup.instance().getOrTrackUUID(itemType);
         }
 
         private void driveAdded(QIODriveKey driveKey, long toAdd) {
@@ -645,6 +687,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         private long add(long amount, TransactionContext transaction) {
             long added = 0;
             boolean hasUpdated = false;
+            if (justAdded) {
+                //Eagerly initialize a snapshot if we just got added, so that we can know to remove it if we get reverted
+                updateSnapshots(transaction);
+                hasUpdated = true;
+            }
             // first we try to add the items to an already-containing drive
             for (QIODriveKey key : containingDrives) {
                 added += driveMap.get(key).add(itemType, amount - added, transaction);
@@ -721,10 +768,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         public UUID getItemUUID() {
-            if (itemUUID == null) {
-                //Lazily cache what the uuid for the stack is
-                itemUUID = QIOGlobalItemLookup.instance().getOrTrackUUID(itemType);
-            }
             return itemUUID;
         }
 
@@ -733,20 +776,23 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
+        public void updateSnapshots(@NonNull TransactionContext transaction) {
+            super.updateSnapshots(transaction);
+            justAdded = false;
+        }
+
+        @Override
         protected QIOItemTypeData.Snapshot createSnapshot() {
-            return new QIOItemTypeData.Snapshot(count, new HashSet<>(containingDrives));
+            return new QIOItemTypeData.Snapshot(count, justAdded, new HashSet<>(containingDrives));
         }
 
         @Override
         protected void revertToSnapshot(QIOItemTypeData.@NonNull Snapshot snapshot) {
-            //TODO - 26.1: Re-evaluate this impl
             count = snapshot.count();
-            containingDrives.clear();
-            containingDrives.addAll(snapshot.containingDrives());
-            //TODO - 26.1: Do we also need to roll back whether the itemType is present or not for the frequency?
-            if (count == 0) {
-                //TODO - 26.1: Is this correct to do it when reverting? Or is it supposed to still be present for a bit
-                //If we end up with having nothing remove the tracking for this item type
+            justAdded = snapshot.justAdded();
+            containingDrives = snapshot.containingDrives();
+            if (count == 0 && justAdded) {
+                //If we end up with having nothing stored, and we were just added in the snapshot we were reverted to, remove the tracking for this item type
                 removeItemData(itemType);
             }
         }
@@ -759,14 +805,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                     // remove this item type if it's now empty
                     removeItemData(itemType);
                 }
-
-                //TODO - 26.1: is marking it as needing an update handled by the remove item data path?
-                // Also should we mark this at the start of this method or at the end here
                 setNeedsUpdate(itemType);
             }
         }
 
-        public record Snapshot(long count, Set<QIODriveKey> containingDrives) {
+        public record Snapshot(long count, boolean justAdded, Set<QIODriveKey> containingDrives) {
         }
     }
 }
