@@ -7,7 +7,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyEnergyHandler;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
-import mekanism.common.lib.LastEnergyTracker;
+import mekanism.common.lib.transaction.LastEnergyTracker;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;

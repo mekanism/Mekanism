@@ -12,12 +12,13 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.resource.ResourceContainerWrapper;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.inventory.access.InOutSlotResourceItemAccess;
 import mekanism.common.inventory.slot.LastTransferDirection.LastDirectionJournal;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -37,8 +38,8 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     private final LastDirectionJournal lastDirectionJournal = new LastDirectionJournal();
 
     protected ResourceHandlerSlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), insertionRateLimiter, extractionRateLimiter, listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a resource handler on the filled item or when the item isn't stacked
         // then we don't have it all of a sudden being invalid after it is emptied
     }
@@ -448,7 +449,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     private static <RESOURCE extends Resource> boolean canInsertNonEmpty(IResourceContainer<RESOURCE> resourceContainer, ResourceHandler<RESOURCE> resourceHandler) {
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+        try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //Note: We try to insert the max amount we can store, in case the resource handler is like a bucket and can only accept
             // amounts in specific increments. We could theoretically just pass a bucket's volume, but we want to make sure that
             // any "large bucket" like items are supported as best as they can be

@@ -26,7 +26,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     private boolean isSaving;
 
     public QIODriveSlot(IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
-        super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, listener, x, y);
+        super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
         this.key = new QIODriveKey(this.driveHolder, slot);

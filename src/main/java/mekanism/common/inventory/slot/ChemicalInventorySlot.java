@@ -12,6 +12,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -80,7 +81,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new ChemicalInventorySlot(gasTank, worldSupplier, (itemType, automationType) -> !automationType.isExternal() || !canFillOrConvert(gasTank, worldSupplier, itemType),
-              (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(gasTank, worldSupplier, itemType), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(gasTank, worldSupplier, itemType), null, null, listener, x, y);
     }
 
     private final Supplier<Level> worldSupplier;
@@ -88,12 +89,13 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
 
     protected ChemicalInventorySlot(IChemicalTank chemicalTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
-        this(chemicalTank, () -> null, canExtract, canInsert, listener, x, y);
+        this(chemicalTank, NO_LEVEL, canExtract, canInsert, null, null, listener, x, y);
     }
 
     protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, listener, x, y);
+          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
+          @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.chemicalTank = chemicalTank;
         this.worldSupplier = worldSupplier;

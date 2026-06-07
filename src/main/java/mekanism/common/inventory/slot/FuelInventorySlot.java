@@ -9,6 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.transaction.RateLimitTracker;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -22,12 +23,12 @@ public class FuelInventorySlot extends BasicInventorySlot {
     public static FuelInventorySlot forFuel(ToIntFunction<ItemResource> fuelValue, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         return new FuelInventorySlot((itemType, automationType) -> !automationType.isExternal() || fuelValue.applyAsInt(itemType) == 0,
-              (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || fuelValue.applyAsInt(itemType) != 0, ConstantPredicates.alwaysTrue(), null, null, listener, x, y);
     }
 
     private FuelInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator,
-          @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, validator, listener, x, y);
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, insertionRateLimiter, extractionRateLimiter, listener, x, y);
     }
 
     public int burn(FuelValues fuelValues, @Nullable TransactionContext transaction) {

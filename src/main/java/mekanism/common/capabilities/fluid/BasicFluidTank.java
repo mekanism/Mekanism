@@ -7,9 +7,10 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.BasicResourceContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.BasicResourceContainer;
+import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -31,22 +32,16 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
     }
 
     public static BasicFluidTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
+        return create(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
     public static BasicFluidTank input(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator,
           @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), canInsert, validator, listener);
+        return create(capacity, ConstantPredicates.notExternal(), canInsert, validator, listener);
     }
 
     public static BasicFluidTank output(@Range(from = 0, to = Long.MAX_VALUE) long capacity, @Nullable IContentsListener listener) {
-        MekanismPreconditions.checkNonNegative(capacity);
-        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener);
+        return create(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicFluidTank create(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
@@ -55,11 +50,12 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
+        return new BasicFluidTank(capacity, canExtract, canInsert, validator, null, null, listener);
     }
 
     protected BasicFluidTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
-          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        super(capacity, canExtract, canInsert, validator, listener);
+          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable RateLimitTracker insertionRateLimiter,
+          @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
+        super(capacity, canExtract, canInsert, validator, insertionRateLimiter, extractionRateLimiter, listener);
     }
 }

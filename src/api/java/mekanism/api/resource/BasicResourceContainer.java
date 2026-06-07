@@ -6,12 +6,14 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /// A basic implementation of a generic container for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
 ///
@@ -24,6 +26,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
+    //TODO: Figure out how to make InventoryContainerSlot properly support this and extractionRateLimiter for slot interactions
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     @Nullable
     private final IContentsListener listener;
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -31,18 +36,23 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     private LargeResourceStack<RESOURCE> current;
 
-    /// @param capacity   Tank capacity.
-    /// @param canExtract Extract predicate.
-    /// @param canInsert  Insert predicate.
-    /// @param validator  Validation predicate.
-    /// @param listener   Contents change listener.
+    /// @param capacity              Tank capacity.
+    /// @param canExtract            Extract predicate.
+    /// @param canInsert             Insert predicate.
+    /// @param validator             Validation predicate.
+    /// @param insertionRateLimiter  Insertion rate limit handler, or `null` to not limit the insertion rate.
+    /// @param extractionRateLimiter Extraction rate limit handler, or `null` to not limit the insertion rate.
+    /// @param listener              Contents change listener.
     protected BasicResourceContainer(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<RESOURCE, AutomationType> canExtract,
-          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
+          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable RateLimitTracker insertionRateLimiter,
+          @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         this.listener = listener;
         this.capacity = capacity;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
         this.current = stackHelper().empty();
     }
 
@@ -125,34 +135,6 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         return 0;
     }
 
-    /// Helper method to allow easily setting a rate at which resources can be inserted into this [BasicResourceContainer].
-    ///
-    /// @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-    ///
-    /// @return The rate this tank can insert/extract at.
-    ///
-    /// @implNote By default, this returns [Integer#MAX_VALUE] to not actually limit the tank's rate. By default, this is also ignored for direct setting of the stack.
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(AutomationType automationType) {
-        //TODO: Figure out how to make InventoryContainerSlot properly support this and getExtractionRate for slot interactions
-        //TODO - 26.1: Re-evaluate insertion and extraction rate, do we need to make them be tick based in case insertions/extractions are spread across multiple calls
-        // but all within the same transaction? Maybe we should have a snapshot that keeps track of how much of the limit is remaining for the given transactional state?
-        // Whatever we decide also mirror it for energy containers
-        return Integer.MAX_VALUE;
-    }
-
-    /// Helper method to allow easily setting a rate at which resources can be extracted from this [BasicResourceContainer].
-    ///
-    /// @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-    ///
-    /// @return The rate this tank can insert/extract at.
-    ///
-    /// @implNote By default, this returns [Integer#MAX_VALUE] to not actually limit the tank's rate. By default, this is also ignored for direct setting of the stack.
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(AutomationType automationType) {
-        return Integer.MAX_VALUE;
-    }
-
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
@@ -167,8 +149,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         int needed = Ints.saturatedCast(capacityAsLong(resource) - currentStored);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can add at once to the insertion rate the container sets
-        needed = Math.min(needed, getInsertionRate(automationType));
+        needed = Math.min(needed, insertionRate);
         if (needed <= 0 || !canInsert.test(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             //Note: We check directly against canInsert, as the capacity returns zero if isValid is false
@@ -177,6 +160,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         int toAdd = Math.min(amount, needed);
         //Note: We know toAdd is greater than zero, so we can just always call setContents
         setContents(resource, currentStored + toAdd, transaction);
+        insertionRateLimiter.consumeLimit(toAdd, automationType, transaction);
         return toAdd;
     }
 
@@ -191,10 +175,12 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         long currentStored = amountAsLong();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can remove at once to the extraction rate the container sets
-        toRemove = Math.min(toRemove, getExtractionRate(automationType));
+        toRemove = Math.min(toRemove, extractionRate);
         if (toRemove > 0) {
             setContents(resource, currentStored - toRemove, transaction);
+            extractionRateLimiter.consumeLimit(toRemove, automationType, transaction);
         }
         return toRemove;
     }

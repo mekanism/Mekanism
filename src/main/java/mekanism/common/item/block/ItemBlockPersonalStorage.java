@@ -10,9 +10,9 @@ import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
@@ -88,7 +88,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
             ItemAccess itemAccess = ItemAccess.forStack(stack);
             //If the inventory was actually empty we can prune the data from the storage manager
             // (if it isn't empty we want to persist it so that server admins can recover their items)
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(itemAccess, transaction);
                 if (inventory != null && ResourceHandlerUtil.isEmpty(inventory)) {
                     PersonalStorageManager.deleteInventory(itemAccess, transaction);

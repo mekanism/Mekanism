@@ -22,6 +22,7 @@ import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
@@ -120,7 +121,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
             ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)));
             if (chemicalHandler != null) {
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     if (chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction) == 1) {
                         if (!level.isClientSide()) {
                             EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));

@@ -30,7 +30,7 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
 
     private ComponentBackedChemicalTankTank(ItemAccess attachedAccess, int tankIndex, ChemicalTankTier tier) {
         super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              tier::getTransferRate, tier::getCapacity, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
+              tier::getCapacity, tier::getTransferRate, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
         isCreative = tier == ChemicalTankTier.CREATIVE;
     }
 

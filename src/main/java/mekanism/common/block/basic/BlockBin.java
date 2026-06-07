@@ -4,6 +4,7 @@ import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -45,7 +46,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                         bin.removeTicks = 3;
                         ItemResource binItemType = binSlot.getBinItemType();
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                             int extracted = binSlot.extract(binItemType, player.isShiftKeyDown() ? binItemType.getMaxStackSize() : 1, transaction, AutomationType.MANUAL);
                             if (extracted > 0) {
                                 PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
@@ -97,7 +98,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                             ItemResource resource = ItemResource.of(stack);
                             int inserted = binSlot.insert(resource, stack.count(), transaction, AutomationType.MANUAL);
                             if (PlayerInventoryWrapper.of(player).getHandSlot(hand).extract(resource, inserted, transaction) == inserted) {
@@ -115,7 +116,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     }
                 } else if (bin.addTicks > 0 && !binItemType.isEmpty()) {
                     //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         boolean added = false;
                         PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
                         ResourceHandler<ItemResource> playerInvHandler = playerInv.getMainSlots();

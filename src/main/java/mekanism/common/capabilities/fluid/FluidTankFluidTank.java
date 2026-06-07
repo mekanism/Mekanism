@@ -2,12 +2,15 @@ package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -25,27 +28,16 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     private final TileEntityFluidTank tile;
     private final boolean isCreative;
-    private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
-        super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        IntSupplier rateLimit = tile.tier::getTransferRate;
+        super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
+              ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),
+              ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit), listener);
         this.tile = tile;
-        rate = tile.tier::getTransferRate;
         isCreative = tile.tier == FluidTankTier.CREATIVE;
-    }
-
-    @Override
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType.isInternal() ? rate.getAsInt() : super.getInsertionRate(automationType);
-    }
-
-    @Override
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType.isInternal() ? rate.getAsInt() : super.getExtractionRate(automationType);
     }
 
     @Override

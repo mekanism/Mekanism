@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -11,19 +12,24 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
 import mekanism.api.resource.BasicResourceContainer;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
+///Semi similar to Neo's new [net.neoforged.neoforge.transfer.item.ItemStackResourceHandler]
 @NothingNullByDefault
-public class BasicInventorySlot extends BasicResourceContainer<ItemResource> implements IInventorySlot {//TODO - 26.1: Docs on how this is similar to ItemStackResourceHandler
+public class BasicInventorySlot extends BasicResourceContainer<ItemResource> implements IInventorySlot {
+
+    public static final Supplier<@Nullable Level> NO_LEVEL = () -> null;
 
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
@@ -38,7 +44,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         if (capacity < 1) {
             throw new IllegalArgumentException("Slots with a custom capacity must allow at least one item");
         }
-        return new BasicInventorySlot(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, x, y);
+        return new BasicInventorySlot(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, null, null, listener, x, y);
     }
 
     public static BasicInventorySlot at(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
@@ -51,7 +57,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Item validity check cannot be null");
-        return new BasicInventorySlot(canExtract, canInsert, validator, listener, x, y);
+        return new BasicInventorySlot(canExtract, canInsert, validator, null, null, listener, x, y);
     }
 
     //TODO - 26.1: Figure out what automation type this should have, or if it should be hardcoded to automation type internal?
@@ -66,13 +72,15 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     private Consumer<ISupportsWarning<?>> warningAdder;
 
     protected BasicInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        this(Item.ABSOLUTE_MAX_STACK_SIZE, canExtract, canInsert, validator, listener, x, y);
+          Predicate<ItemResource> validator, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
+          @Nullable IContentsListener listener, int x, int y) {
+        this(Item.ABSOLUTE_MAX_STACK_SIZE, canExtract, canInsert, validator, insertionRateLimiter, extractionRateLimiter, listener, x, y);
     }
 
     protected BasicInventorySlot(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(capacity, canExtract, canInsert, validator, listener);
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable RateLimitTracker insertionRateLimiter,
+          @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener, int x, int y) {
+        super(capacity, canExtract, canInsert, validator, insertionRateLimiter, extractionRateLimiter, listener);
         this.x = x;
         this.y = y;
     }

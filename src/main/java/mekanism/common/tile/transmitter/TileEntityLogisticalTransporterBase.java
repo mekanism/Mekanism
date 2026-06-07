@@ -4,8 +4,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.item.TransporterCapabilityResolver;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -50,7 +50,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
             if (!transporter.isUpgrading()) {
                 //If the transporter is not currently being upgraded, drop the contents
                 //Note: Protect against the block being broken by an auto clicker that might have already checked if it can extract energy
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     for (TransporterStack stack : transporter.getTransit()) {
                         transporter.drop(stack, transaction);
                     }

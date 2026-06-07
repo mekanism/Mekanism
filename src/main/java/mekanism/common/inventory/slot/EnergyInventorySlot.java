@@ -9,13 +9,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -35,7 +36,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, (itemType, automationType) -> !automationType.isExternal() || !canFillOrConvert(energyContainer, worldSupplier, itemType),
-              (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(energyContainer, worldSupplier, itemType), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(energyContainer, worldSupplier, itemType), null, null, listener, x, y);
     }
 
     /**
@@ -75,7 +76,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {
             return false;
         }
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+        try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
             //Note: We try to insert the max amount we can store, in case the energy handler is like a bucket and can only accept
             // amounts in specific increments
@@ -105,7 +106,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         } else if (energyContainer != null && !energyContainer.isValidForExtraction(AutomationType.INTERNAL)) {
             return false;
         }
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+        try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //If we can extract any energy we are valid
             return energyHandler.extract(Integer.MAX_VALUE, simulation) > 0;
         }
@@ -116,14 +117,15 @@ public class EnergyInventorySlot extends BasicInventorySlot {
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
-        this(energyContainer, () -> null, canExtract, canInsert, listener, x, y);
+        this(energyContainer, NO_LEVEL, canExtract, canInsert, null, null, listener, x, y);
     }
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
+          BiPredicate<ItemResource, AutomationType> canInsert, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
+          @Nullable IContentsListener listener, int x, int y) {
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a resource handler on the filled item or when the item isn't stacked
         // then we don't have it all of a sudden being invalid after it is emptied
-        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), insertionRateLimiter, extractionRateLimiter, listener, x, y);
         this.energyContainer = energyContainer;
         this.worldSupplier = worldSupplier;
         setSlotType(ContainerSlotType.POWER);

@@ -25,6 +25,7 @@ import mekanism.common.item.interfaces.IFreeRunnerItem;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.PlayerExposure;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
@@ -261,7 +262,7 @@ public class CommonPlayerTickHandler {
                 ratioAbsorbed = absorption;
             } else {
                 //Protect against any mods that might be doing transactional logic around an entity falling. Most likely this will never be necessary
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     int extracted = info.energyHandler.extract(energyRequirement, transaction);
                     float absorbedPercent = extracted / (float) energyRequirement;
                     ratioAbsorbed = absorption * absorbedPercent;
@@ -298,7 +299,7 @@ public class CommonPlayerTickHandler {
                 float boost = propulsionModule.getCustomInstance().getBoost();
                 int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 //Protect against any mods that might be doing transactional logic around an entity jumping. Most likely this will never be necessary
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     //TODO - 26.1: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
                     // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
                     if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {

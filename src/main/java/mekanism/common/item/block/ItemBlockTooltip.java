@@ -181,7 +181,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
                 return new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
-                      () -> MekanismUtils.calculateUsage(capacity.getAsLong()), capacity);
+                      capacity, () -> MekanismUtils.calculateUsage(capacity.getAsLong()));
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values

@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -39,12 +40,13 @@ public class InputInventorySlot extends BasicInventorySlot {
         if (capacity < 1) {
             throw new IllegalArgumentException("Slots with a custom capacity must allow at least one item");
         }
-        return new InputInventorySlot(capacity, insertPredicate, isItemValid, listener, x, y);
+        return new InputInventorySlot(capacity, insertPredicate, isItemValid, null, null, listener, x, y);
     }
 
     protected InputInventorySlot(@Range(from = 1, to = Long.MAX_VALUE) long capacity, BiPredicate<ItemResource, AutomationType> insertPredicate,
-          Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        super(capacity, ConstantPredicates.notExternal(), insertPredicate, isItemValid, listener, x, y);
+          Predicate<ItemResource> isItemValid, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
+          @Nullable IContentsListener listener, int x, int y) {
+        super(capacity, ConstantPredicates.notExternal(), insertPredicate, isItemValid, insertionRateLimiter, extractionRateLimiter, listener, x, y);
         setSlotType(ContainerSlotType.INPUT);
     }
 }

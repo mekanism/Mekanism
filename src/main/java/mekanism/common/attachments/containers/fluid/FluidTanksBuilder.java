@@ -36,6 +36,6 @@ public class FluidTanksBuilder extends ResourceContainersBuilder<FluidResource, 
     @Override
     protected IFluidTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, LongSupplier capacity) {
-        return new ComponentBackedFluidTank(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity);
+        return new ComponentBackedFluidTank(attachedAccess, tankIndex, canExtract, canInsert, validator, capacity, rate);
     }
 }

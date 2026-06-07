@@ -24,6 +24,7 @@ import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
@@ -31,7 +32,6 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
@@ -369,7 +369,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         } else {
                             Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
                             if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
-                                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                                     transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData, transaction);
                                     transaction.commit();
                                 }

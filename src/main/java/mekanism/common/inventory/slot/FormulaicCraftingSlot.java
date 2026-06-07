@@ -16,7 +16,7 @@ public class FormulaicCraftingSlot extends BasicInventorySlot {
 
     private FormulaicCraftingSlot(BooleanSupplier autoModeSupplier, @Nullable IContentsListener listener, int x, int y) {
         super(ConstantPredicates.alwaysTrueBi(), (_, automationType) -> automationType.isInternal() || !autoModeSupplier.getAsBoolean(),
-              ConstantPredicates.alwaysTrue(), listener, x, y);
+              ConstantPredicates.alwaysTrue(), null, null, listener, x, y);
         setSlotType(ContainerSlotType.VALIDITY);
     }
 }

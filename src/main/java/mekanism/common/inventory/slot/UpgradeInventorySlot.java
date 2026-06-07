@@ -35,7 +35,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     }
 
     private UpgradeInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener) {
-        super(canExtract, canInsert, itemType -> itemType.getItem() instanceof IUpgradeItem, listener, 0, 0);
+        super(canExtract, canInsert, itemType -> itemType.getItem() instanceof IUpgradeItem, null, null, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 

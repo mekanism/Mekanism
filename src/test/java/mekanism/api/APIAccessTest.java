@@ -9,6 +9,7 @@ import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.ITooltipHelper;
+import mekanism.api.transaction.ITransactionHelper;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.lib.radial.data.RadialDataHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -16,6 +17,7 @@ import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.EntitySecurityUtils;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.service.MekanismAccess;
 import mekanism.common.util.text.TooltipHelper;
@@ -84,5 +86,11 @@ class APIAccessTest {
     @DisplayName("Test getting the Tooltip Helper")
     void testGetTooltipHelper() {
         Assertions.assertInstanceOf(TooltipHelper.class, ITooltipHelper.INSTANCE);
+    }
+
+    @Test
+    @DisplayName("Test getting access the Transaction Helper")
+    void testGetTransactionHelper() {
+        Assertions.assertInstanceOf(TransactionHelper.class, ITransactionHelper.INSTANCE);
     }
 }

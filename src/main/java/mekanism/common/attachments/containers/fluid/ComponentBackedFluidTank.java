@@ -17,8 +17,8 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource> implements IFluidTank {
 
     public ComponentBackedFluidTank(ItemAccess attachedAccess, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
-          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, LongSupplier capacity) {
-        super(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity);
+          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, LongSupplier capacity, IntSupplier rate) {
+        super(attachedAccess, tankIndex, canExtract, canInsert, validator, capacity, rate);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
 
     protected CraftingWindowInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           QIOCraftingWindow craftingWindow, @Nullable IContentsListener saveListener, @Nullable IContentsListener inputTypeChange) {
-        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), saveListener, 0, 0);
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), null, null, saveListener, 0, 0);
         this.craftingWindow = craftingWindow;
         this.inputTypeChange = inputTypeChange;
     }

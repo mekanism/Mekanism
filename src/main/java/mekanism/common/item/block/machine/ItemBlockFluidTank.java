@@ -14,11 +14,11 @@ import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
@@ -117,7 +117,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 //TODO: Should this use the stack or the player's held item?
                 ItemAccess itemAccess = ItemAccess.forStack(stack);
                 if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, transaction)) {
@@ -180,7 +180,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             return InteractionResult.PASS;
         }
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             if (ItemSecurityUtils.get().tryClaimItem(level, player, itemAccess, transaction)) {
                 transaction.commit();
                 //TODO - 26.1: Re-evaluate SUCCESS vs SUCCESS_SERVER for our use impls
@@ -282,7 +282,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
                 FluidState fluidState = level.getFluidState(pos);
                 //Protect against any mods that might be doing transactional logic, such as if a custom dispenser validates it has enough energy before calling this method
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     FluidStack result;
                     //If the fluid state in the world isn't empty and is a source try to pick it up otherwise try to dispense the stored fluid
                     if (fluidState.isEmpty() || !fluidState.isSource()) {
@@ -340,7 +340,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 }
                 Item usedItem = stack.getItem();
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     FluidResource targetFluidType = FluidResource.EMPTY;
                     int amountToTransfer = 0;
                     //Note: The cauldron capability that Neo provides for vanilla cauldrons just have a single index supported

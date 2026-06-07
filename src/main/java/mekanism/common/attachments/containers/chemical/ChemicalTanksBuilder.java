@@ -36,6 +36,6 @@ public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalReso
     @Override
     protected IChemicalTank createBasicContainer(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
           BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
-        return new ComponentBackedChemicalTank(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
+        return new ComponentBackedChemicalTank(attachedAccess, tankIndex, canExtract, canInsert, validator, capacity, rate);
     }
 }

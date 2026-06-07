@@ -4,10 +4,10 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.multiblock.MultiblockType;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     if (ContainerType.FLUID.interactWithHandler(player, hand, null, multiblock.getDirectFluidHandler(), transaction) ||
                         ContainerType.CHEMICAL.interactWithHandler(player, hand, null, multiblock.getDirectChemicalHandler(), transaction)) {
                         transaction.commit();

@@ -9,6 +9,8 @@ import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -23,36 +25,40 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     public static final Predicate<@NotNull AutomationType> notExternal = automationType -> !automationType.isExternal();
 
     public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
+        return create(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
+        return create(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
+        return create(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
     }
 
     public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, listener);
+        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, null, null, listener);
     }
 
     private long stored = 0L;
-    protected final Predicate<@NotNull AutomationType> canExtract;
-    protected final Predicate<@NotNull AutomationType> canInsert;
+    private final Predicate<@NotNull AutomationType> canExtract;
+    private final Predicate<@NotNull AutomationType> canInsert;
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     private final long maxEnergy;
     @Nullable
     private final IContentsListener listener;
 
     protected BasicEnergyContainer(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
-          @Nullable IContentsListener listener) {
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
         this.listener = listener;
     }
 
@@ -82,36 +88,6 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
     }
 
-    /**
-     * Helper method to allow easily setting a rate at which energy can be inserted into this {@link BasicEnergyContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
-     * stack/stack size
-     */
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(AutomationType automationType) {
-        return Integer.MAX_VALUE;
-    }
-
-    /**
-     * Helper method to allow easily setting a rate at which energy can be extracted from this {@link BasicEnergyContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
-     * stack/stack size
-     */
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(AutomationType automationType) {
-        return Integer.MAX_VALUE;
-    }
-
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
@@ -122,8 +98,9 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         int needed = Ints.saturatedCast(getCapacityAsLong() - stored);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can add at once to the insertion rate the container sets
-        needed = Math.min(needed, getInsertionRate(automationType));
+        needed = Math.min(needed, insertionRate);
         if (needed <= 0) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
@@ -131,6 +108,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         int toAdd = Math.min(amount, needed);
         //Note: We know toAdd is greater than zero, so we can just always call setEnergy
         setEnergy(stored + toAdd, transaction);
+        insertionRateLimiter.consumeLimit(toAdd, automationType, transaction);
         return toAdd;
     }
 
@@ -144,10 +122,12 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, Ints.saturatedCast(stored));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can remove at once to the extraction rate the container sets
-        toRemove = Math.min(toRemove, getExtractionRate(automationType));
+        toRemove = Math.min(toRemove, extractionRate);
         if (toRemove > 0) {
             setEnergy(stored - toRemove, transaction);
+            extractionRateLimiter.consumeLimit(toRemove, automationType, transaction);
         }
         return toRemove;
     }

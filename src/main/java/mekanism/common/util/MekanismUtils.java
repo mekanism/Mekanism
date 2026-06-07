@@ -15,9 +15,11 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
@@ -48,6 +50,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.stats.Stat;
@@ -107,14 +110,22 @@ public final class MekanismUtils {
     // and in fact the first pass was spent just trying to convert use cases to referencing constants rather than also figuring out if they should
     // be transitioned over to the level's tickrate
     public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;
+    public static final LongSupplier GAME_TIME_SUPPLIER = () -> {
+        //TODO - 26.1: Re-evaluate If this is a reasonable enough implementation for rate limits on items, or if there is some other way we want to do it.
+        // We could theoretically reset the limit when the root transaction is committed, and then just not care about the game time at all
+        // Yes it wouldn't stop multiple calls from different transactions from being limitted, but in general if multiple calls do happen,
+        // odds are they will be within a single overall transaction (except? maybe for cases like multiple mods wireless charging a player's inventory)
+        Level level;
+        if (FMLEnvironment.getDist().isClient()) {
+            level = MekanismClient.tryGetClientWorld();
+        } else {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            level = server == null ? null : server.overworld();
+        }
+        return level == null ? 0 : level.getGameTime();
+    };
 
     private static final List<UUID> warnedFails = new ArrayList<>();
-
-    //TODO - 26.1: Docs and re-evaluate usages/if we can avoid having to do it/can provide the transactional context
-    @SuppressWarnings("deprecation")
-    public static Transaction openTransactionSafe() {
-        return Transaction.open(Transaction.getCurrentOpenedTransaction());
-    }
 
     public static Component logFormat(Object message) {
         return logFormat(EnumColor.GRAY, message);
@@ -127,6 +138,14 @@ public final class MekanismUtils {
     public static boolean isTickingNormally(@Nullable Level level) {
         //Same as Minecraft#isLevelRunningNormally
         return level == null || level.tickRateManager().runsNormally();
+    }
+
+    public static LongSupplier getGameTimeSupplier(BlockEntity blockEntity) {
+        Objects.requireNonNull(blockEntity);
+        return () -> {
+            Level level = blockEntity.getLevel();
+            return level == null ? 0 : level.getGameTime();
+        };
     }
 
     @Nullable

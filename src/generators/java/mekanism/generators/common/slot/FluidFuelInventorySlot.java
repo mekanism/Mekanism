@@ -59,7 +59,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, ToIntFunction<ItemResource> fuelValue, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(fluidTank, canExtract, canInsert, listener, x, y);
+        super(fluidTank, canExtract, canInsert, null, null, listener, x, y);
         this.fuelType = fuelType;
         this.fuelValue = fuelValue;
     }

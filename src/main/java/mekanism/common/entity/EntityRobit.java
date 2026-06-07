@@ -57,6 +57,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.lib.security.EntitySecurityUtils;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
@@ -494,7 +495,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     @Override
     public void onDamageTaken(@NotNull DamageContainer damageContainer) {
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before hitting a robit
-        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             energyContainer.extract(MathUtils.clampToInt(1_000 * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
             transaction.commit();
         }

@@ -1,36 +1,25 @@
-package mekanism.common.lib;
+package mekanism.common.lib.transaction;
 
 import java.util.function.LongSupplier;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class LastEnergyTracker extends SnapshotJournal<Long> {
+public class LastEnergyTracker extends GameTimeBasedJournal<Long> {
 
-    private final LongSupplier gameTimeSupplier;
     private long lastEnergyReceived;
     private long currentEnergyReceived;
-    private long currentGameTime;
 
     public LastEnergyTracker(LongSupplier gameTimeSupplier) {
-        this.gameTimeSupplier = gameTimeSupplier;
+        super(gameTimeSupplier);
     }
 
-    public void tickChanged() {
-        tickChanged(gameTimeSupplier.getAsLong());
-    }
-
-    private void tickChanged(long gameTime) {
+    @Override
+    protected void tickChanged(long gameTime) {
+        super.tickChanged(gameTime);
         lastEnergyReceived = currentEnergyReceived;
-        currentGameTime = gameTime;
         currentEnergyReceived = 0;
     }
 
     public void received(long amount, TransactionContext transaction) {
-        long gameTime = gameTimeSupplier.getAsLong();
-        if (currentGameTime != gameTime) {
-            //If the tick is different from what the last cached tick was, we need to force mark that the tick changed before doing any transaction based handling
-            tickChanged(gameTime);
-        }
         updateSnapshots(transaction);
         currentEnergyReceived += amount;
     }

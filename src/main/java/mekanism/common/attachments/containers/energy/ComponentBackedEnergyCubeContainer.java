@@ -23,7 +23,7 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     private final boolean isCreative;
 
     private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, EnergyCubeTier tier) {
-        super(attachedAccess, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
+        super(attachedAccess, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 

@@ -8,6 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -28,7 +29,7 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
         // OR accepts a fluid container tha that has contents that match the handler for purposes of filling the handler
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canInput(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()),
-              (itemType, automationType) -> automationType.isInternal() || canInput(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canInput(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), null, null, listener, x, y);
     }
 
     /**
@@ -38,7 +39,7 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(isProcessingResource, "The supplier that determines whether the resource is being processed cannot be null");
         return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canRotaryInsert(fluidTank, itemType, Capabilities.FLUID.item(), isProcessingResource),
-              (itemType, automationType) -> automationType.isInternal() || canRotaryInsert(fluidTank, itemType, Capabilities.FLUID.item(), isProcessingResource), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canRotaryInsert(fluidTank, itemType, Capabilities.FLUID.item(), isProcessingResource), null, null, listener, x, y);
     }
 
     /**
@@ -47,7 +48,7 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
     public static FluidInventorySlot fill(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()),
-              (itemType, automationType) -> automationType.isInternal() || canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canFill(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), null, null, listener, x, y);
     }
 
     /**
@@ -58,14 +59,14 @@ public class FluidInventorySlot extends ResourceHandlerSlot {
     public static FluidInventorySlot drain(IFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
         return new FluidInventorySlot(fluidTank, (itemType, automationType) -> !automationType.isExternal() || !canDrain(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()),
-              (itemType, automationType) -> automationType.isInternal() || canDrain(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), listener, x, y);
+              (itemType, automationType) -> automationType.isInternal() || canDrain(fluidTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.FLUID.item()), null, null, listener, x, y);
     }
 
     protected final IFluidTank fluidTank;
 
     protected FluidInventorySlot(IFluidTank fluidTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, listener, x, y);
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.fluidTank = fluidTank;
     }

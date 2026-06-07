@@ -15,6 +15,7 @@ import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -50,7 +51,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             public boolean canExtract(@Nullable Direction direction) {
                 return TileEntityUniversalCable.this.canExtract(direction);
             }
-        }, () -> level == null ? 0 : level.getGameTime()));
+        }, MekanismUtils.getGameTimeSupplier(this)));
     }
 
     @Override

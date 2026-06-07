@@ -40,6 +40,7 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
@@ -47,7 +48,6 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -417,7 +417,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         float ratioAbsorbed = 0;
         List<FoundArmorDetails> armorDetails = new ArrayList<>();
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             //Start by looping the armor, allowing modules to absorb damage if they can
             ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
             for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {

@@ -14,7 +14,7 @@ public class EntangloporterInventorySlot extends BasicInventorySlot {
     }
 
     private EntangloporterInventorySlot(@Nullable IContentsListener listener) {
-        super(ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener, 0, 0);
+        super(ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), null, null, listener, 0, 0);
     }
 
     @Nullable

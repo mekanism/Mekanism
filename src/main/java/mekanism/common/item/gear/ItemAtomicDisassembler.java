@@ -37,6 +37,7 @@ import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -147,7 +148,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
             // to the amount of damage we will actually do
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 energyHandler.extract(MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), transaction);
                 transaction.commit();
             }
@@ -161,7 +162,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return 0;
         }
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+        try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
             int energyRequired = getDestroyEnergy(stack, state.destroySpeed);
             int energyAvailable = energyHandler.extract(energyRequired, simulation);
@@ -180,7 +181,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             int baseDestroyEnergy = getDestroyEnergy(stack);
             int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 energyHandler.extract(energyRequired, transaction);
                 //Vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN) {

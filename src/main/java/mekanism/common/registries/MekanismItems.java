@@ -278,8 +278,8 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.creator(attachedAccess -> new ComponentBackedEnergyContainer(
                 attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-                      () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate),
-                      () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity))), MekanismConfig.gear
+                      () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaToolBaseEnergyCapacity), () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaToolBaseChargeRate)
+                )), MekanismConfig.gear
           );
     // Armor
     public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new)

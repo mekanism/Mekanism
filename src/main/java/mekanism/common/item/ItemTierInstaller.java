@@ -11,12 +11,12 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeUpgradeable;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -146,7 +146,7 @@ public class ItemTierInstaller extends Item {
                         if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
                             upgradedTile.setFacing(directional.getDirection(), false);
                         }
-                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                             upgradedTile.parseUpgradeData(upgradeData, world.registryAccess(), transaction);
                             transaction.commit();
                         }

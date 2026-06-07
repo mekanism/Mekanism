@@ -11,8 +11,8 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.tile.TileEntityPersonalStorage;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -52,7 +52,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
             List<IInventorySlot> tileSlots = personalStorage.getInventorySlots();
             //Validate that at least one slot has something stored
             if (!ContainerType.ITEM.areContainersEmpty(tileSlots)) {
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     AbstractPersonalStorageItemInventory destInv;
                     if (EffectiveSide.get().isClient()) {
                         destInv = new ClientSidePersonalStorageInventory();

@@ -10,8 +10,11 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -28,17 +31,27 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     private final LongSupplier capacity;
-    private final IntSupplier rate;
 
     public ComponentBackedResourceContainer(ItemAccess attachedAccess, int slotIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
-          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity) {
+          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, LongSupplier capacity, IntSupplier rate) {
+        //Allow manual interaction to bypass rate limit for the item
+        this(attachedAccess, slotIndex, canExtract, canInsert, validator, capacity, ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate),
+              ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate));
+    }
+
+    public ComponentBackedResourceContainer(ItemAccess attachedAccess, int slotIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
+          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, LongSupplier capacity, @Nullable RateLimitTracker insertionRateLimiter,
+          @Nullable RateLimitTracker extractionRateLimiter) {
         super(attachedAccess, slotIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
-        this.rate = rate;
         this.capacity = capacity;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
         //TODO - 1.21: Serialization for this is copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
@@ -108,18 +121,6 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         return isValid(type) && canInsert.test(type, automationType);
     }
 
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getInsertionRate(AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
-    }
-
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    protected int getExtractionRate(AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
-    }
-
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     public final int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
@@ -165,8 +166,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         int needed = Ints.saturatedCast(capacity - currentAmount);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can add at once to the insertion rate the container sets
-        needed = Math.min(needed, getInsertionRate(automationType));
+        needed = Math.min(needed, insertionRate);
         if (needed <= 0 || !canInsert.test(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             //Note: We check directly against canInsert, as the capacity returns zero if isValid is false
@@ -174,6 +176,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         }
         int toAdd = Math.min(amount, needed);
         if (setContents(attached, resource, currentAmount + toAdd, transaction)) {
+            insertionRateLimiter.consumeLimit(toAdd, automationType, transaction);
             return toAdd;
         }
         //If we couldn't update the backing item access, return that we didn't actually insert anything
@@ -218,10 +221,12 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         }
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, Ints.saturatedCast(currentAmount));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can remove at once to the extraction rate the container sets
-        toRemove = Math.min(toRemove, getExtractionRate(automationType));
+        toRemove = Math.min(toRemove, extractionRate);
         //Shrink the stack by the amount removed
         if (toRemove > 0 && setContents(attached, currentType, currentAmount - toRemove, transaction)) {
+            extractionRateLimiter.consumeLimit(toRemove, automationType, transaction);
             return toRemove;
         }
         //If we couldn't update the backing item access, return that we didn't actually extract anything

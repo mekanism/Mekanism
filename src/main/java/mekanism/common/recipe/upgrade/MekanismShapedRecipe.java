@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -56,7 +56,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             return toReturn;
         }
         //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
-        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
             //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
             for (ItemStack stack : componentInputs) {

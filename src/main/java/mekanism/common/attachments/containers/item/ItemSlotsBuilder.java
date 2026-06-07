@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -21,6 +20,7 @@ import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -35,17 +35,13 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: Do we want this to extend ResourceContainersBuilder
 public class ItemSlotsBuilder {
-
-    private static final Supplier<@Nullable Level> NO_LEVEL = () -> null;
 
     //Note: For a lot of slots with specific helper methods we can simply use a ComponentBackedInventorySlot as we don't have any overrides or desire to call those methods while on an itemstack
     private static final IBasicContainerCreator<IInventorySlot> BASIC_SLOT_CREATOR = (attachedAccess, containerIndex) ->
@@ -91,13 +87,13 @@ public class ItemSlotsBuilder {
                   return true;
               }
               IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(ContainerType.ENERGY.getCapOrUnexposed(attachedAccess));
-              return !EnergyInventorySlot.canFillOrConvert(energyContainer, NO_LEVEL, itemType);
+              return !EnergyInventorySlot.canFillOrConvert(energyContainer, BasicInventorySlot.NO_LEVEL, itemType);
           }, (itemType, automationType) -> {
               if (automationType.isInternal()) {
                   return true;
               }
               IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(ContainerType.ENERGY.getCapOrUnexposed(attachedAccess));
-              return EnergyInventorySlot.canFillOrConvert(energyContainer, NO_LEVEL, itemType);
+              return EnergyInventorySlot.canFillOrConvert(energyContainer, BasicInventorySlot.NO_LEVEL, itemType);
           }, ConstantPredicates.alwaysTrue());
     private static final IBasicContainerCreator<IInventorySlot> DRAIN_ENERGY_SLOT_CREATOR = (attachedAccess, containerIndex) ->
           new ComponentBackedInventorySlot(attachedAccess, containerIndex, (itemType, automationType) -> {
@@ -359,7 +355,7 @@ public class ItemSlotsBuilder {
             //Copy of logic from ChemicalInventorySlot#getFillOrConvertExtractPredicate
             //Note: We eagerly resolve the chemical tank as it makes things easier, as the only case where we would not need it is:
             // no handler on the item, AND no conversion recipe
-            return !ChemicalInventorySlot.canFillOrConvert(ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex), NO_LEVEL, itemType);
+            return !ChemicalInventorySlot.canFillOrConvert(ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex), BasicInventorySlot.NO_LEVEL, itemType);
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
                 return true;
@@ -367,7 +363,7 @@ public class ItemSlotsBuilder {
             //Copy of logic from ChemicalInventorySlot#getFillOrConvertInsertPredicate
             //Note: We eagerly resolve the chemical tank as it makes things easier, as the only case where we would not need it is:
             // no handler on the item, AND no conversion recipe
-            return ChemicalInventorySlot.canFillOrConvert(ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex), NO_LEVEL, itemType);
+            return ChemicalInventorySlot.canFillOrConvert(ContainerType.CHEMICAL.createContainer(attachedAccess, tankIndex), BasicInventorySlot.NO_LEVEL, itemType);
         }, ConstantPredicates.alwaysTrue()));
     }
 }

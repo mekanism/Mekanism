@@ -7,6 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -46,9 +47,14 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     private long currentMaxEnergy;
     protected int currentEnergyPerTick;
 
-    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
-        super(maxEnergy, canExtract, canInsert, listener);
+    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+          TILE tile, @Nullable IContentsListener listener) {
+        this(maxEnergy, energyPerTick, canExtract, canInsert, tile, null, null, listener);
+    }
+
+    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+          TILE tile, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
+        super(maxEnergy, canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener);
         this.baseEnergyPerTick = energyPerTick;
         this.tile = tile;
         currentMaxEnergy = getBaseMaxEnergy();

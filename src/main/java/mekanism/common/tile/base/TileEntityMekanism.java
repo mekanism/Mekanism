@@ -75,7 +75,7 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.lib.LastEnergyTracker;
+import mekanism.common.lib.transaction.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
@@ -282,7 +282,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
-            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, () -> level == null ? 0 : level.getGameTime()));
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, MekanismUtils.getGameTimeSupplier(this)));
         } else {
             energyHandlerManager = null;
         }
@@ -652,7 +652,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         // and we don't actually receive anything then we will properly update it to zero
         LastEnergyTracker lastEnergyTracker = tile.getLastEnergyTracker();
         if (lastEnergyTracker != null) {
-            lastEnergyTracker.tickChanged();
+            //Note: This should always be the case that the tick is considered changed
+            lastEnergyTracker.checkTickChanged();
         }
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {

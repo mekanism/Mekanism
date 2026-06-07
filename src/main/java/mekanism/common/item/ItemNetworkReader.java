@@ -12,6 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -65,7 +66,7 @@ public class ItemNetworkReader extends ItemEnergized {
                             return InteractionResult.FAIL;
                         }
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                             if (energyHandler.extract(energyPerUse, transaction) < energyPerUse) {
                                 return InteractionResult.FAIL;
                             }

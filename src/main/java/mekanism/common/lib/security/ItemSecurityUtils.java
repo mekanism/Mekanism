@@ -10,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
@@ -74,7 +75,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
 
     public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, GuiItemOpener openGui) {
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
-        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             if (!tryClaimItem(level, player, itemAccess, transaction)) {
                 if (!INSTANCE.canAccessOrDisplayError(player, itemAccess)) {
                     return InteractionResult.FAIL;

@@ -20,6 +20,7 @@ import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -67,7 +68,7 @@ public final class InventoryUtils {
                 if (inventory.canContentsDrop(itemType)) {
                     scalar = inventory.getScalar(itemAccess);
                     List<LargeResourceStack<ItemResource>> droppedSlots;
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         droppedSlots = inventory.getDroppedSlots(itemAccess, transaction);
                         transaction.commit();
                     }

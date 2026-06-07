@@ -6,6 +6,7 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
@@ -76,13 +77,13 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
                 int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                 int foodToFill;
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+                try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
                 if (foodToFill > 0) {
                     int pasteToUse = foodToFill * pastePerFood;
                     //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         int extracted = fluidHandler.extract(paste, pasteToUse, transaction);
                         if (extracted == pasteToUse) {
                             //Note: This if statement should always be true given we already simulated that we could extract at least this much,
@@ -118,7 +119,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
             ResourceHandler<FluidResource> fluidHandler = AutomatedResourceHandler.manual(Capabilities.FLUID.getCapability(ItemAccessUtils.playerHandAccess(player, hand)));
             if (fluidHandler != null) {
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+                try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
                     int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
                     int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
                     if (extracted == pastePerFood) {

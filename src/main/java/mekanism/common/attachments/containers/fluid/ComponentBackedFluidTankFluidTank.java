@@ -25,7 +25,7 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     }
 
     private ComponentBackedFluidTankFluidTank(ItemAccess attachedAccess, int tankIndex, FluidTankTier tier) {
-        super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getTransferRate, tier::getCapacity);
+        super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
         isCreative = tier == FluidTankTier.CREATIVE;
     }
 

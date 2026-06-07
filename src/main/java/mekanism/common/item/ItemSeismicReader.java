@@ -9,6 +9,7 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
@@ -65,7 +66,7 @@ public class ItemSeismicReader extends ItemEnergized {
                 return needsEnergy(player);
             }
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 int energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyHandler.extract(energyUsage, transaction) < energyUsage) {
                     return needsEnergy(player);

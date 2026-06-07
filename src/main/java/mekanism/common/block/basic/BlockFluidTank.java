@@ -5,9 +5,9 @@ import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -68,7 +68,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             }
             ResourceHandler<FluidResource> tankHandler = Capabilities.FLUID.getCapabilityIfLoaded(world, pos, null, tile, hit.getDirection());
             if (tankHandler != null) {
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     if (ContainerType.FLUID.interactWithHandler(player, hand, pos, tankHandler, transaction)) {
                         transaction.commit();
                         return InteractionResult.SUCCESS;

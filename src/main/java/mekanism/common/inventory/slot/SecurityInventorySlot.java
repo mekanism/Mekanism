@@ -51,7 +51,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
     }
 
     private SecurityInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, VALIDATOR, listener, x, y);
+        super(canExtract, canInsert, VALIDATOR, null, null, listener, x, y);
     }
 
     public void unlock(UUID ownerUUID, @Nullable TransactionContext transaction) {

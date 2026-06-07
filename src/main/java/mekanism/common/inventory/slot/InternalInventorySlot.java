@@ -14,7 +14,7 @@ public class InternalInventorySlot extends BasicInventorySlot {
     }
 
     private InternalInventorySlot(@Nullable IContentsListener listener) {
-        super(ConstantPredicates.internalOnly(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener, 0, 0);
+        super(ConstantPredicates.internalOnly(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), null, null, listener, 0, 0);
     }
 
     @Nullable

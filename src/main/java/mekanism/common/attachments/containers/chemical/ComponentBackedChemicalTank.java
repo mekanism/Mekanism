@@ -23,14 +23,14 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     private final ChemicalAttributeValidator attributeValidator;
 
     public ComponentBackedChemicalTank(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
-          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
-        this(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
+          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, LongSupplier capacity, IntSupplier rate) {
+        this(attachedAccess, tankIndex, canExtract, canInsert, validator, capacity, rate, null);
     }
 
     public ComponentBackedChemicalTank(ItemAccess attachedAccess, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
-          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity,
+          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, LongSupplier capacity, IntSupplier rate,
           @Nullable ChemicalAttributeValidator attributeValidator) {
-        super(attachedAccess, tankIndex, canExtract, canInsert, validator, rate, capacity);
+        super(attachedAccess, tankIndex, canExtract, canInsert, validator, capacity, rate);
         this.attributeValidator = attributeValidator;
     }
 

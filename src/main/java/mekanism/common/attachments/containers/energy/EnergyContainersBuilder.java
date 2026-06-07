@@ -18,8 +18,7 @@ public class EnergyContainersBuilder {
 
     public static final IContainerCreator<IEnergyContainer, Long> MEKASUIT = creator(attachedAccess -> new ComponentBackedEnergyContainer(
           attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
-          () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaSuitBaseChargeRate),
-          () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaSuitBaseEnergyCapacity)
+          () -> ModuleEnergyUnit.getEnergyCapacity(attachedAccess, MekanismConfig.gear.mekaSuitBaseEnergyCapacity), () -> ModuleEnergyUnit.getChargeRate(attachedAccess, MekanismConfig.gear.mekaSuitBaseChargeRate)
     ));
     public static final IContainerCreator<IEnergyContainer, Long> ENERGY_CUBE = creator(ComponentBackedEnergyCubeContainer::create);
     public static final IContainerCreator<IEnergyContainer, Long> RESISTIVE_HEATER = creator(ComponentBackedResistiveEnergyContainer::create);
@@ -28,12 +27,12 @@ public class EnergyContainersBuilder {
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(IntSupplier rate, LongSupplier maxEnergy) {
-        return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), rate, maxEnergy));
+        return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), maxEnergy, rate));
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, IntSupplier rate,
           LongSupplier maxEnergy) {
-        return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, canExtract, canInsert, rate, maxEnergy));
+        return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, canExtract, canInsert, maxEnergy, rate));
     }
 
     public static IContainerCreator<IEnergyContainer, Long> creator(Function<ItemAccess, IEnergyContainer> creator) {

@@ -6,9 +6,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -86,7 +86,7 @@ public class BinExtractRecipe extends BinRecipe {
                 if (!stack.isEmpty()) {
                     ItemResource stored = stack.resource();
                     //Protect against any mods that might be doing transactional logic, such as if an auto crafter validates it has enough energy before calling this method
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         int toExtract = Math.min(Ints.saturatedCast(stack.amount()), stored.getMaxStackSize());
                         //Only attempt to do anything if there are items to try and remove
                         if (slot.extract(stored, toExtract, transaction, AutomationType.MANUAL) == toExtract) {

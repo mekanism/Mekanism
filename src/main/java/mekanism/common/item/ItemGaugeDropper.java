@@ -28,13 +28,11 @@ import org.jetbrains.annotations.NotNull;
 public class ItemGaugeDropper extends Item {
 
     public static final IBasicContainerCreator<MergedTank> MERGED_TANK_CREATOR = (attachedAccess, containerIndex) -> MergedTank.create(
-          new ComponentBackedFluidTank(attachedAccess, containerIndex,
-                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity
+          new ComponentBackedFluidTank(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDropperCapacity, MekanismConfig.gear.gaugeDroppedTransferRate
           ),
-          new ComponentBackedChemicalTank(attachedAccess, containerIndex,
-                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
+          new ComponentBackedChemicalTank(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDropperCapacity, MekanismConfig.gear.gaugeDroppedTransferRate
           )
     );
 

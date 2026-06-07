@@ -34,6 +34,7 @@ import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
@@ -206,7 +207,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         for (IModule<?> module : getModules(context.getItemInHand())) {
             if (module.isEnabled()) {
                 //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     InteractionResult result = onModuleUse(module, context, transaction);
                     if (result != InteractionResult.PASS) {
                         if (result.consumesAction()) {
@@ -233,7 +234,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.isEnabled()) {
                     //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         InteractionResult result = onModuleInteract(module, player, entity, hand, itemAccess, transaction);
                         if (result != InteractionResult.PASS) {
                             if (result.consumesAction()) {
@@ -260,7 +261,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             return 0;
         }
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-        try (Transaction simulation = MekanismUtils.openTransactionSafe()) {
+        try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
             //Use raw hardness to get the best guess of if it is zero or not
             int energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
             int energyAvailable = energyHandler.extract(energyRequired, simulation);
@@ -281,7 +282,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             int modDestroyEnergy = getDestroyEnergy(stack, silk);
             int energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                 energyHandler.extract(energyRequired, transaction);
                 //AOE/vein mining handling
                 if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative()) {
@@ -328,7 +329,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
                     // to the amount of damage we will actually do
                     //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                    try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                    try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                         energyHandler.extract(MathUtils.clampToInt(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D)), transaction);
                         transaction.commit();
                     }
@@ -424,7 +425,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                             return InteractionResult.PASS;
                         }
                         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-                        try (Transaction transaction = MekanismUtils.openTransactionSafe()) {
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                             if (!player.isCreative()) {
                                 EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
                                 if (energyHandler == null) {

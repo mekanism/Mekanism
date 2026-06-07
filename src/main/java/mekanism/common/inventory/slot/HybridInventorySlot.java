@@ -7,6 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -33,7 +34,8 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
                 case FLUID -> !canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item());
                 case CHEMICAL -> !canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
                 //Tank is empty, check if any insert predicate is valid
-                case EMPTY -> !canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item()) && !canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
+                case EMPTY -> !canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item()) &&
+                              !canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
             };
         }, (itemType, automationType) -> {
             if (automationType.isInternal()) {
@@ -44,16 +46,17 @@ public class HybridInventorySlot extends ResourceHandlerSlot {
                 case FLUID -> canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item());
                 case CHEMICAL -> canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
                 //Tank is empty, check if any insert predicate is valid
-                case EMPTY -> canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item()) || canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
+                case EMPTY -> canInput(mergedTank.getFluidTank(), itemAccess, Capabilities.FLUID.item()) ||
+                              canInput(mergedTank.getChemicalTank(), itemAccess, Capabilities.CHEMICAL.item());
             };
-        }, listener, x, y);
+        }, null, null, listener, x, y);
     }
 
     private final MergedTank mergedTank;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, listener, x, y);
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener, x, y);
         this.mergedTank = mergedTank;
     }
 

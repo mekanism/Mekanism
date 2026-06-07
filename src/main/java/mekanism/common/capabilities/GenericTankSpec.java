@@ -58,10 +58,11 @@ public class GenericTankSpec<RESOURCE extends Resource> {
           ComponentTankFromSpecCreator<RESOURCE, CONTAINER> tankCreator) {
         if (itemBasedCapacity == null) {
             builder.addContainer((attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
-                  (resource, automationType) -> canInsert.test(resource, automationType, attachedAccess), isValid, rate, capacity));
+                  (resource, automationType) -> canInsert.test(resource, automationType, attachedAccess), isValid, capacity, rate));
         } else {
             builder.addContainer((attachedAccess, containerIndex) -> tankCreator.create(attachedAccess, containerIndex, canExtract,
-                  (chemicalType, automationType) -> canInsert.test(chemicalType, automationType, attachedAccess), isValid, rate, () -> itemBasedCapacity.applyAsLong(attachedAccess)
+                  (chemicalType, automationType) -> canInsert.test(chemicalType, automationType, attachedAccess), isValid,
+                  () -> itemBasedCapacity.applyAsLong(attachedAccess), rate
             ));
         }
     }
@@ -90,6 +91,6 @@ public class GenericTankSpec<RESOURCE extends Resource> {
     public interface ComponentTankFromSpecCreator<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> {
 
         CONTAINER create(ItemAccess attachedAccess, int tankIndex, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
-              Predicate<RESOURCE> isValid, IntSupplier rate, LongSupplier capacity);
+              Predicate<RESOURCE> isValid, LongSupplier capacity, IntSupplier rate);
     }
 }

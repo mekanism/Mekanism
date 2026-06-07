@@ -96,7 +96,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
-        builder.addContainer(chemicalTank = ChemicalTankChemicalTank.create(tier, listener));
+        builder.addContainer(chemicalTank = ChemicalTankChemicalTank.create(this, listener));
         return builder.build();
     }
 

@@ -80,7 +80,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Override
     protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
-        energyContainer = EnergyCubeEnergyContainer.create(tier, listener);
+        energyContainer = EnergyCubeEnergyContainer.create(this, listener);
         return new EnergyConfigHolder(energyContainer, this);
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.attachments.containers.energy;
 
-import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -28,29 +27,13 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private ComponentBackedResistiveEnergyContainer(ItemAccess attachedAccess) {
-        super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO, ConstantPredicates.ZERO_LONG);
+        super(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), MekanismUtils::calculateUsage);
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getCapacityAsLong() {
         return AttributeEnergy.STORAGE_MULTIPLIER * getEnergyPerTick();
-    }
-
-    private int getRate() {
-        return MekanismUtils.calculateUsage(getCapacityAsLong());
-    }
-
-    @Override
-    protected int getInsertionRate(AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : getRate();
-    }
-
-    @Override
-    protected int getExtractionRate(AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : getRate();
     }
 
     public int getEnergyPerTick() {

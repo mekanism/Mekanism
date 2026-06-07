@@ -3,14 +3,19 @@ package mekanism.common.attachments.containers.energy;
 import com.google.common.primitives.Ints;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
+import java.util.function.LongToIntFunction;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.attachments.containers.SimpleComponentBackedContainer;
 import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.containers.type.EnergyContainerType;
+import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -23,16 +28,36 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
 
     private final Predicate<AutomationType> canExtract;
     private final Predicate<AutomationType> canInsert;
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     private final LongSupplier maxEnergy;
-    private final IntSupplier rate;
 
-    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
-          LongSupplier maxEnergy) {
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
+          IntSupplier rate) {
+        //Allow manual interaction to bypass rate limit for the item
+        this(attachedAccess, canExtract, canInsert, maxEnergy, ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate),
+              ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate));
+    }
+
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter) {
         super(attachedAccess);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.maxEnergy = maxEnergy;
-        this.rate = rate;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
+    }
+
+    //For the resistive heater
+    protected ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongToIntFunction capacityToRateLimit) {
+        super(attachedAccess);
+        this.canExtract = canExtract;
+        this.canInsert = canInsert;
+        this.maxEnergy = ConstantPredicates.ZERO_LONG;
+        IntSupplier rate = () -> capacityToRateLimit.applyAsInt(getCapacityAsLong());
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
     }
 
     @Override
@@ -60,18 +85,6 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         }
     }
 
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected int getInsertionRate(AutomationType automationType) {
-        //Allow manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
-    }
-
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected int getExtractionRate(AutomationType automationType) {
-        //Allow manual interaction to bypass rate limit for the item
-        return automationType.isManual() ? Integer.MAX_VALUE : rate.getAsInt();
-    }
-
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
@@ -83,8 +96,9 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         long currentStored = getAmountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         int needed = Ints.saturatedCast(getCapacityAsLong() - currentStored);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can add at once to the insertion rate the container sets
-        needed = Math.min(needed, getInsertionRate(automationType));
+        needed = Math.min(needed, insertionRate);
         if (needed <= 0) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
@@ -92,6 +106,7 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         int toAdd = Math.min(amount, needed);
         // Note: We just set it as unchecked as we have already validated it
         if (setContents(currentStored + toAdd, transaction)) {
+            insertionRateLimiter.consumeLimit(toAdd, automationType,  transaction);
             return toAdd;
         }
         //If we couldn't update the backing item access, return that we didn't actually insert anything
@@ -113,10 +128,12 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         }
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
         //Limit how much we can remove at once to the extraction rate the container sets
-        toRemove = Math.min(toRemove, getExtractionRate(automationType));
+        toRemove = Math.min(toRemove, extractionRate);
         //Shrink the stack by the amount removed
         if (toRemove > 0 && setContents(currentStored - toRemove, transaction)) {
+            extractionRateLimiter.consumeLimit(toRemove, automationType,  transaction);
             return toRemove;
         }
         //If we couldn't update the backing item access, return that we didn't actually extract anything
