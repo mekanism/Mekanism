@@ -8,7 +8,6 @@ import io.netty.handler.codec.EncoderException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -19,10 +18,6 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -31,10 +26,8 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 26.1: Look at FluidStack and cleanup what extra things we might be defining
+@NothingNullByDefault
 public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey {
-
-    private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
 
     /**
      * Empty ChemicalStack instance.
@@ -232,41 +225,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     }
 
     /**
-     * Saves this stack to a tag, directly writing the keys into the passed tag.
-     *
-     * @throws IllegalStateException if this stack is empty
-     * @since 10.6.0
-     */
-    public Tag save(HolderLookup.Provider lookupProvider, Tag prefix) {
-        if (isEmpty()) {
-            throw new IllegalStateException("Cannot encode empty ChemicalStack");
-        }
-        return CODEC.encode(this, lookupProvider.createSerializationContext(NbtOps.INSTANCE), prefix).getOrThrow();
-    }
-
-    /**
-     * Saves this stack to a new tag.
-     *
-     * @throws IllegalStateException if this stack is empty
-     * @since 10.6.0
-     */
-    public Tag save(HolderLookup.Provider lookupProvider) {
-        if (isEmpty()) {
-            throw new IllegalStateException("Cannot encode empty ChemicalStack");
-        }
-        return CODEC.encodeStart(lookupProvider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-    }
-
-    /**
-     * Saves this stack to a new tag. Empty stacks are supported and will be saved as an empty tag.
-     *
-     * @since 10.6.0
-     */
-    public Tag saveOptional(HolderLookup.Provider lookupProvider) {
-        return isEmpty() ? new CompoundTag() : save(lookupProvider);
-    }
-
-    /**
      * Gets whether this chemical stack is empty.
      *
      * @return {@code true} if this stack is empty, {@code false} otherwise.
@@ -347,6 +305,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
         if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return;
         }
+        //TODO - 26.1: Do we want to fire an event similar to fluid stacks?
         chemicalHolder.value().appendHoverText(this, context, tooltips, tooltipFlag);
         if (chemicalHolder.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
             tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
@@ -405,23 +364,5 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      */
     public static boolean isSameChemical(ChemicalStack first, ChemicalStack second) {
         return first.is(second.typeHolder());
-    }
-
-    /**
-     * Tries to parse a chemical stack. Empty stacks cannot be parsed with this method.
-     *
-     * @since 10.6.0
-     */
-    public static Optional<ChemicalStack> parse(HolderLookup.Provider lookupProvider, Tag tag) {
-        return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag).resultOrPartial(ON_STACK_LOAD_ERROR);
-    }
-
-    /**
-     * Tries to parse a chemical stack, defaulting to {@link #EMPTY} on parsing failure.
-     *
-     * @since 10.6.0
-     */
-    public static ChemicalStack parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
-        return tag.isEmpty() ? EMPTY : parse(lookupProvider, tag).orElse(EMPTY);
     }
 }
