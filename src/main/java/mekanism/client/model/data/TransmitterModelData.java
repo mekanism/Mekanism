@@ -110,10 +110,10 @@ public sealed class TransmitterModelData permits Diversion {
 
         public static VisualConnectionStatus from(ConnectionType raw) {
             return switch (raw) {
-                case NORMAL -> VisualConnectionStatus.NORMAL;
-                case PUSH -> VisualConnectionStatus.PUSH;
-                case PULL -> VisualConnectionStatus.PULL;
-                case NONE -> VisualConnectionStatus.NONE;
+                case NORMAL -> NORMAL;
+                case PUSH -> PUSH;
+                case PULL -> PULL;
+                case NONE -> NONE;
             };
         }
     }

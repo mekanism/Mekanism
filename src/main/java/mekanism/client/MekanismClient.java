@@ -131,7 +131,7 @@ public class MekanismClient {
     public static void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
         if (!isConnected) {//Note: This should always be true when the event is fired
             isConnected = true;
-            MekanismClient.launchClient(event.getConnection());
+            launchClient(event.getConnection());
         }
     }
 
@@ -140,7 +140,7 @@ public class MekanismClient {
         //Note: We check if the client has actually connected before handling this, as this event is also called when the client is setting up the server
         if (isConnected) {
             isConnected = false;
-            MekanismClient.reset();
+            reset();
         }
     }
 

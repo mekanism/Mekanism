@@ -27,7 +27,7 @@ public record ConditionExistsCondition(@Nullable ICondition condition) implement
 
     public static MapCodec<ConditionExistsCondition> makeCodec() {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-              ICondition.CODEC.fieldOf(SerializationConstants.CONDITION).orElse(DOES_NOT_EXIST).forGetter(ConditionExistsCondition::condition)
+              CODEC.fieldOf(SerializationConstants.CONDITION).orElse(DOES_NOT_EXIST).forGetter(ConditionExistsCondition::condition)
         ).apply(instance, ConditionExistsCondition::new));
     }
 }
