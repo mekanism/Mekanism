@@ -9,7 +9,7 @@ import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.item.interfaces.IUpgradeItem;

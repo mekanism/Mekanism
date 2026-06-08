@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtils;

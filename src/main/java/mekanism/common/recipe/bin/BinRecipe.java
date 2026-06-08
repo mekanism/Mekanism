@@ -1,8 +1,8 @@
 package mekanism.common.recipe.bin;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockBin;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

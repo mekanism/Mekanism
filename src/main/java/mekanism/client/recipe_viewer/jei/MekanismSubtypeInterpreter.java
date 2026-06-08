@@ -3,7 +3,7 @@ package mekanism.client.recipe_viewer.jei;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.util.ItemAccessUtils;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;

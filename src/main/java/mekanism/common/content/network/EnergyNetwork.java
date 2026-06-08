@@ -8,7 +8,7 @@ import java.util.UUID;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.UniversalCable;

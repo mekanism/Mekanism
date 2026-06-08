@@ -3,7 +3,7 @@ package mekanism.common.network.to_server.frequency;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyLookup;

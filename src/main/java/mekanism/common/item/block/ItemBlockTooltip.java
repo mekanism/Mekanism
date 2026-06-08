@@ -14,12 +14,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.creator.IContainerCreator;
-import mekanism.common.attachments.containers.energy.ComponentBackedEnergyContainer;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.IComponentAware;
+import mekanism.common.component.component.UpgradeAware;
+import mekanism.common.component.containers.creator.IContainerCreator;
+import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
+import mekanism.common.component.containers.energy.EnergyContainersBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -56,7 +56,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IAttachmentAware {
+public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
 
     private final boolean hasDetails;
 
@@ -197,7 +197,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public void attachAttachments(IEventBus eventBus) {
+    public void addComponents(IEventBus eventBus) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;

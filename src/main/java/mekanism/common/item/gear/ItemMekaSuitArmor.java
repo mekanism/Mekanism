@@ -20,12 +20,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
-import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.IComponentAware;
+import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
+import mekanism.common.component.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.component.containers.fluid.FluidTanksBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
@@ -87,7 +87,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware, ICapabilityAware {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IComponentAware, ICapabilityAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
@@ -260,7 +260,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void attachAttachments(IEventBus eventBus) {
+    public void addComponents(IEventBus eventBus) {
         if (!chemicalTankSpecs.isEmpty()) {
             ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
                 ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();

@@ -1,6 +1,6 @@
 package mekanism.common.item.interfaces;
 
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.registries.MekanismDataComponents;

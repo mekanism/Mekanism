@@ -1,7 +1,7 @@
 package mekanism.client.gui.qio;
 
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.registries.MekanismDataComponents;

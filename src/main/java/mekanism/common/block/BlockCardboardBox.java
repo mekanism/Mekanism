@@ -2,7 +2,7 @@ package mekanism.common.block;
 
 import java.util.Optional;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.attachments.BlockData;
+import mekanism.common.component.BlockData;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateStorage;

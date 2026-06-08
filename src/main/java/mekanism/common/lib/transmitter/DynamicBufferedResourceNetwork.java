@@ -17,7 +17,7 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.util.EmitUtils;

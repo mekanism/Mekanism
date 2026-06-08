@@ -14,12 +14,12 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
-import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.FormulaAttachment;
-import mekanism.common.attachments.OverflowAware;
-import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.resource.AttachedResources;
-import mekanism.common.attachments.qio.PortableDashboardContents;
+import mekanism.common.component.FilterAware;
+import mekanism.common.component.FormulaComponent;
+import mekanism.common.component.OverflowAware;
+import mekanism.common.component.component.UpgradeAware;
+import mekanism.common.component.containers.resource.AttachedResources;
+import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -123,7 +123,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         });
     }
 
-    public FormulaAttachment makeFormula() {
+    public FormulaComponent makeFormula() {
         List<ItemResource> stacks = NonNullList.withSize(9, ItemResource.EMPTY);
         ItemResource planks = ItemResource.of(Items.OAK_PLANKS);
         stacks.set(0, planks);
@@ -131,7 +131,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         stacks.set(3, planks);
         stacks.set(4, failureItemType());
         stacks.set(5, planks);
-        return new FormulaAttachment(stacks, false);
+        return new FormulaComponent(stacks, false);
     }
 
     public OverflowAware makeOverflow() {

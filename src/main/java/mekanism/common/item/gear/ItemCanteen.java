@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.config.MekanismConfig;

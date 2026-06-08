@@ -1,7 +1,7 @@
 package mekanism.common.item.block.machine;
 
 import java.util.function.Consumer;
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.block.ItemBlockTooltip;

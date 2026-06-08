@@ -12,7 +12,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.component.FormulaComponent;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
@@ -137,7 +137,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         if (!tile.hasValidFormula()) {
             ItemResource resource = tile.getFormulaSlot().resource();
             if (!resource.isEmpty() && MekanismItems.CRAFTING_FORMULA.is(resource)) {
-                return resource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
+                return resource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY).isEmpty();
             }
         }
         return false;

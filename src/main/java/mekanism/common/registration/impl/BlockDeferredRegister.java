@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;

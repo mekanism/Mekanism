@@ -13,7 +13,7 @@ import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.resource.ResourceContainerWrapper;
 import mekanism.api.transaction.RateLimitTracker;
-import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.inventory.access.InOutSlotResourceItemAccess;
 import mekanism.common.inventory.slot.LastTransferDirection.LastDirectionJournal;
 import mekanism.common.lib.transaction.TransactionHelper;

@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.inventory.slot.LastTransferDirection;
 import mekanism.common.inventory.slot.LastTransferDirection.LastDirectionJournal;
 import mekanism.common.util.ItemAccessUtils;

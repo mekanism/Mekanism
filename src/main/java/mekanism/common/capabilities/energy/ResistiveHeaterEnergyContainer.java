@@ -7,7 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.energy.ComponentBackedResistiveEnergyContainer;
+import mekanism.common.component.containers.energy.ComponentBackedResistiveEnergyContainer;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.world.level.storage.ValueInput;

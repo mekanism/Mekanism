@@ -2,10 +2,10 @@ package mekanism.common.item;
 
 import java.util.function.Consumer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
-import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.chemical.ComponentBackedChemicalTank;
+import mekanism.common.component.containers.creator.IBasicContainerCreator;
+import mekanism.common.component.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemAccessUtils;

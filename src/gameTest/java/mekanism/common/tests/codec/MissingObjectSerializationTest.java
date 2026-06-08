@@ -3,10 +3,10 @@ package mekanism.common.tests.codec;
 
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.FormulaAttachment;
-import mekanism.common.attachments.LockData;
-import mekanism.common.attachments.OverflowAware;
-import mekanism.common.attachments.qio.PortableDashboardContents;
+import mekanism.common.component.FormulaComponent;
+import mekanism.common.component.LockData;
+import mekanism.common.component.OverflowAware;
+import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
@@ -55,7 +55,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that formulas that contain invalid items fall back to an empty formula.")
     public static void testFormulaAttachment(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidItemSerializationCycle(FormulaAttachment.CODEC, MissingObjectTestHelper::makeFormula, FormulaAttachment::isEmpty);
+        helper.succeedIfInvalidItemSerializationCycle(FormulaComponent.CODEC, MissingObjectTestHelper::makeFormula, FormulaComponent::isEmpty);
     }
 
     @GameTest
@@ -69,7 +69,7 @@ public class MissingObjectSerializationTest {
             return formulaItem;
         }, formulaItem -> {
             if (formulaItem.is(MekanismItems.CRAFTING_FORMULA)) {
-                FormulaAttachment formula = formulaItem.get(MekanismDataComponents.FORMULA_HOLDER);
+                FormulaComponent formula = formulaItem.get(MekanismDataComponents.FORMULA_HOLDER);
                 return formula != null && formula.isEmpty() && formulaItem.getComponentsPatch().getPatch(MekanismDataComponents.FORMULA_HOLDER.get()) == null;
             }
             return false;

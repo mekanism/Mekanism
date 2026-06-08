@@ -1,7 +1,7 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.security.IBlockSecurityUtils;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;

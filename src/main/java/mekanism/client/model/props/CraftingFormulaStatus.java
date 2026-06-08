@@ -2,7 +2,7 @@ package mekanism.client.model.props;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.component.FormulaComponent;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperty;
@@ -21,7 +21,7 @@ public record CraftingFormulaStatus() implements SelectItemModelProperty<Craftin
     @Nullable
     @Override
     public CraftingCardStatus get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity owner, int seed, ItemDisplayContext displayContext) {
-        FormulaAttachment attachment = stack.get(MekanismDataComponents.FORMULA_HOLDER);
+        FormulaComponent attachment = stack.get(MekanismDataComponents.FORMULA_HOLDER);
         if (attachment == null) {
             return null;
         }

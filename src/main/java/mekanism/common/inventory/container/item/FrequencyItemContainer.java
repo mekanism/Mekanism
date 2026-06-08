@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.item;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency;

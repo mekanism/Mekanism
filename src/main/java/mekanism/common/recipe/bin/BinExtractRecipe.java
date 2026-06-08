@@ -4,7 +4,7 @@ import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;

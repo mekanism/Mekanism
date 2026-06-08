@@ -1,7 +1,7 @@
 package mekanism.common.recipe.upgrade;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.LockData;
+import mekanism.common.component.LockData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

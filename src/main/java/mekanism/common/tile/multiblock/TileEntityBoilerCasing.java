@@ -2,8 +2,8 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.attachments.containers.type.ContainerType;
-import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;

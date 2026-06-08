@@ -1,8 +1,8 @@
 package mekanism.common.item.block.machine;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.creator.IContainerCreator;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
+import mekanism.common.component.containers.creator.IContainerCreator;
+import mekanism.common.component.containers.energy.EnergyContainersBuilder;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registries.MekanismDataComponents;

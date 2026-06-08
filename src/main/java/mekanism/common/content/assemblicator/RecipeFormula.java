@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.component.FormulaComponent;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
@@ -22,7 +22,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
 
     public static final RecipeFormula EMPTY = new RecipeFormula(CraftingInput.Positioned.EMPTY, null);
 
-    public static RecipeFormula create(Level world, FormulaAttachment attachment) {
+    public static RecipeFormula create(Level world, FormulaComponent attachment) {
         //Should always be a 3x3 grid for the size
         return create(world, MekanismUtils.getCraftingInput(3, 3, attachment.inventory()));
     }

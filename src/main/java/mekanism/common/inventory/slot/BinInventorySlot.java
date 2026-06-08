@@ -9,7 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.ResourceContainerWrapper;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;

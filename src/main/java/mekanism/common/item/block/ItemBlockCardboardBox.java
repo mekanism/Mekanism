@@ -5,7 +5,7 @@ import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.BlockData;
+import mekanism.common.component.BlockData;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;

@@ -20,8 +20,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.FormulaAttachment;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.FormulaComponent;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
@@ -274,7 +274,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private void checkFormula() {
         ItemResource formulaStack = formulaSlot.resource();
-        FormulaAttachment attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaComponent attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY);
         if (!attachment.isEmpty() && !attachment.invalid()) {
             if (formula.isEmpty() || !lastFormulaStack.equals(formulaStack)) {
                 formula = loadFormula(formulaStack, attachment);
@@ -288,7 +288,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Note: Assumes attachment is not invalid
-    private RecipeFormula loadFormula(ItemResource formulaStack, FormulaAttachment attachment) {
+    private RecipeFormula loadFormula(ItemResource formulaStack, FormulaComponent attachment) {
         RecipeFormula recipe = RecipeFormula.create(level, attachment);
         if (recipe.valid()) {
             if (!formula.isEmpty() && !formula.equals(recipe)) {
@@ -682,11 +682,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             return;
         }
         ItemResource currentResource = formulaSlot.resource();
-        FormulaAttachment formulaAttachment = currentResource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaComponent formulaAttachment = currentResource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY);
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
-                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.amountAsLong(), null);
+                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.create(formula)), formulaSlot.amountAsLong(), null);
             }
         }
     }
@@ -796,7 +796,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
-        FormulaAttachment formulaAttachment = formulaSlot.resource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaComponent formulaAttachment = formulaSlot.resource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY);
         if (formulaAttachment.isEmpty()) {
             throw new ComputerException("No formula found.");
         } else if (hasValidFormula() || formulaAttachment.hasItems()) {

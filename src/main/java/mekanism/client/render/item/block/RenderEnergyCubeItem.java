@@ -11,7 +11,7 @@ import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
-import mekanism.common.attachments.component.AttachedSideConfig;
+import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;

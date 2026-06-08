@@ -7,7 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.attachments.containers.type.ResourceContainerType;
+import mekanism.common.component.containers.type.ResourceContainerType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;

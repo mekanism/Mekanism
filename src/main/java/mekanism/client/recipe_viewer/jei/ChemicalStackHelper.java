@@ -12,7 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.helpers.IColorHelper;

@@ -1,6 +1,6 @@
 package mekanism.common.block;
 
-import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;

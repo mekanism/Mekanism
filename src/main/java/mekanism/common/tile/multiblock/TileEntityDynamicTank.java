@@ -1,6 +1,6 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.multiblock.MultiblockType;

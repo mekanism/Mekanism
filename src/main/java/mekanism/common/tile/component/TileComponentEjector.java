@@ -19,7 +19,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
-import mekanism.common.attachments.component.AttachedEjector;
+import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;

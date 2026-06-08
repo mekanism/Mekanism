@@ -10,21 +10,21 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.BlockData;
-import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.FormulaAttachment;
-import mekanism.common.attachments.FrequencyAware;
-import mekanism.common.attachments.LockData;
-import mekanism.common.attachments.OverflowAware;
-import mekanism.common.attachments.StabilizedChunks;
-import mekanism.common.attachments.component.AttachedEjector;
-import mekanism.common.attachments.component.AttachedSideConfig;
-import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.resource.AttachedResources;
-import mekanism.common.attachments.qio.DriveContents;
-import mekanism.common.attachments.qio.DriveMetadata;
-import mekanism.common.attachments.qio.PortableDashboardContents;
+import mekanism.common.component.BlockData;
+import mekanism.common.component.FilterAware;
+import mekanism.common.component.FormulaComponent;
+import mekanism.common.component.FrequencyAware;
+import mekanism.common.component.LockData;
+import mekanism.common.component.OverflowAware;
+import mekanism.common.component.StabilizedChunks;
+import mekanism.common.component.component.AttachedEjector;
+import mekanism.common.component.component.AttachedSideConfig;
+import mekanism.common.component.component.UpgradeAware;
+import mekanism.common.component.containers.heat.AttachedHeat;
+import mekanism.common.component.containers.resource.AttachedResources;
+import mekanism.common.component.qio.DriveContents;
+import mekanism.common.component.qio.DriveMetadata;
+import mekanism.common.component.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.qio.QIOFrequency;
@@ -199,9 +199,9 @@ public class MekanismDataComponents {
                 .networkSynchronized(LockData.STREAM_CODEC)
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FormulaAttachment>> FORMULA_HOLDER = DATA_COMPONENTS.simple("formula",
-          builder -> builder.persistent(FormulaAttachment.CODEC)
-                .networkSynchronized(FormulaAttachment.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FormulaComponent>> FORMULA_HOLDER = DATA_COMPONENTS.simple("formula",
+          builder -> builder.persistent(FormulaComponent.CODEC)
+                .networkSynchronized(FormulaComponent.STREAM_CODEC)
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CONFIGURATION_DATA = DATA_COMPONENTS.simple("configuration_data",

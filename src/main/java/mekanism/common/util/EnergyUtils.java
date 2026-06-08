@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
+import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyHandlerTarget;

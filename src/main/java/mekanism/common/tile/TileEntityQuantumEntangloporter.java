@@ -16,7 +16,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;

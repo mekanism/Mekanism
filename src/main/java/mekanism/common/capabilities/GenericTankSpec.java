@@ -9,7 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.common.attachments.containers.resource.ResourceContainersBuilder;
+import mekanism.common.component.containers.resource.ResourceContainersBuilder;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;

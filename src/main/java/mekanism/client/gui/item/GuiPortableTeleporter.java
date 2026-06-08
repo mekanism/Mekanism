@@ -11,7 +11,7 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequenc
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IItemGuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
