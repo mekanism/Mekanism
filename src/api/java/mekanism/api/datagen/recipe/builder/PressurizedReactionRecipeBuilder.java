@@ -1,7 +1,8 @@
 package mekanism.api.datagen.recipe.builder;
 
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
@@ -23,10 +24,11 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     private final int duration;
     @Nullable
     private final ItemStackTemplate outputItem;
-    private final ChemicalStack outputChemical;
+    @Nullable
+    private final ChemicalStackTemplate outputChemical;
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
-          @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
+          @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical) {
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputChemical = inputChemical;
@@ -50,12 +52,10 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputItem    Item Output.
      */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, @Nullable ItemStackTemplate outputItem) {
-        if (outputItem == null) {
-            throw new IllegalArgumentException("This reaction recipe requires a non empty output item.");
-        }
+          int duration, ItemStackTemplate outputItem) {
+        Objects.requireNonNull(outputItem, "This reaction recipe requires a non empty output item.");
         validateDuration(duration);
-        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, outputItem, ChemicalStack.EMPTY);
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, outputItem, null);
     }
 
     /**
@@ -68,10 +68,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputChemical Chemical Output.
      */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ChemicalStack outputChemical) {
-        if (outputChemical.isEmpty()) {
-            throw new IllegalArgumentException("This reaction recipe requires a non empty output chemical.");
-        }
+          int duration, ChemicalStackTemplate outputChemical) {
+        Objects.requireNonNull(outputChemical, "This reaction recipe requires a non empty output chemical.");
         validateDuration(duration);
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, null, outputChemical);
     }
@@ -87,10 +85,9 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputChemical Chemical Output.
      */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
-        if (outputItem == null || outputChemical.isEmpty()) {
-            throw new IllegalArgumentException("This reaction recipe requires non empty item and chemical outputs.");
-        }
+          int duration, ItemStackTemplate outputItem, ChemicalStackTemplate outputChemical) {
+        Objects.requireNonNull(outputItem, "This reaction recipe requires non empty item and chemical outputs.");
+        Objects.requireNonNull(outputChemical, "This reaction recipe requires non empty item and chemical outputs.");
         validateDuration(duration);
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, outputItem, outputChemical);
     }

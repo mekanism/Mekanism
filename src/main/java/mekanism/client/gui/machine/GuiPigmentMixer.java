@@ -2,6 +2,7 @@ package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -103,7 +104,8 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                         }
                     }
                     if (recipe != null) {
-                        return recipe.getOutput(leftInput.toStack(tile.leftInputTank.amountAsInt()), rightInput.toStack(tile.rightInputTank.amountAsInt())).getChemicalColorRepresentation();
+                        ChemicalStackTemplate output = recipe.getOutput(leftInput.toStack(tile.leftInputTank.amountAsInt()), rightInput.toStack(tile.rightInputTank.amountAsInt()));
+                        return output.typeHolder().value().getColorRepresentation();
                     }
                 }
                 return CommonColors.WHITE;

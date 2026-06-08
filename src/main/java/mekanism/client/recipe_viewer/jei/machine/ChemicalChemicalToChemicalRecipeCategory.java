@@ -56,7 +56,7 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
               .setSlotName(LEFT_INPUT);
         initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations(slotDisplayContext))
               .setSlotName(RIGHT_INPUT);
-        initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition())
+        initChemical(builder, outputGauge, recipe.getOutputDefinition())
               .setSlotName(OUTPUT);
     }
 }

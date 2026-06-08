@@ -26,10 +26,6 @@ public abstract class RecipeViewerColorDetails implements ColorDetails {
     }
 
     protected int getColor(Supplier<ChemicalStack> ingredient) {
-        return getColor(ingredient.get());
-    }
-
-    protected int getColor(ChemicalStack ingredient) {
-        return ingredient.getChemicalColorRepresentation();
+        return ingredient.get().getChemical().getColorRepresentation();
     }
 }

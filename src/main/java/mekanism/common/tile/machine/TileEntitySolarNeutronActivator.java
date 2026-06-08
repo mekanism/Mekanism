@@ -6,6 +6,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
@@ -76,7 +77,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     private float productionRate;
     private boolean settingsChecked;
 
-    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")

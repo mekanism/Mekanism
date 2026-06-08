@@ -8,19 +8,17 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -78,10 +76,10 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
         return FluidStackTemplate.fromNonEmptyStack(stack.getImmutableInternal());
     }
 
-    protected ChemicalStack getAndValidateNotEmpty(ICrTChemicalStack stack) {
+    protected ChemicalStackTemplate getAndValidateNotEmpty(ICrTChemicalStack stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
-        return stack.getImmutableInternal();
+        return ChemicalStackTemplate.fromNonEmptyStack(stack.getImmutableInternal());
     }
 }

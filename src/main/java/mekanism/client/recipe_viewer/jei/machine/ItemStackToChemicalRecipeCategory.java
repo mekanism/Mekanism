@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemStackToChemicalRecipeCategory<RECIPE extends ItemStackToChemicalRecipe> extends HolderRecipeCategory<RECIPE> {
 
-    protected static final String CHEMICAL_INPUT = "chemicalInput";
+    protected static final String CHEMICAL_OUTPUT = "chemicalOutput";
 
     protected final GuiProgress progressBar;
     private final GuiGauge<?> output;
@@ -37,7 +37,7 @@ public class ItemStackToChemicalRecipeCategory<RECIPE extends ItemStackToChemica
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {
         RECIPE recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition())
-              .setSlotName(CHEMICAL_INPUT);
+        initChemical(builder, output, recipe.getOutputDefinition())
+              .setSlotName(CHEMICAL_OUTPUT);
     }
 }

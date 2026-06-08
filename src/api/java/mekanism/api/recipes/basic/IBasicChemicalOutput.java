@@ -1,13 +1,13 @@
 package mekanism.api.recipes.basic;
 
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 
 public interface IBasicChemicalOutput {
 
     /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     * For Serializer use.
      *
      * @return the uncopied basic output
      */
-    ChemicalStack getOutputRaw();
+    ChemicalStackTemplate getOutputRaw();
 }

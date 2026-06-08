@@ -41,6 +41,6 @@ public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<
         ContextMap slotDisplayContext = getSlotDisplayContext();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations(slotDisplayContext));
         initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput().getRepresentations(slotDisplayContext));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initChemical(builder, output, recipe.getOutputDefinition());
     }
 }

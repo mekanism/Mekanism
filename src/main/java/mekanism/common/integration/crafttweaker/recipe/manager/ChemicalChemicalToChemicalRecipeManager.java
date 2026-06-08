@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
@@ -52,7 +52,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
         return makeRecipe(leftInput, rightInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output);
+    protected abstract ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output);
 
     @Override
     protected String describeOutputs(ChemicalChemicalToChemicalRecipe recipe) {
@@ -70,7 +70,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
         }
 
         @Override
-        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
+        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
             return new BasicChemicalInfuserRecipe(left, right, output);
         }
     }
@@ -86,7 +86,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRe
         }
 
         @Override
-        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
+        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStackTemplate output) {
             return new BasicPigmentMixingRecipe(left, right, output);
         }
     }

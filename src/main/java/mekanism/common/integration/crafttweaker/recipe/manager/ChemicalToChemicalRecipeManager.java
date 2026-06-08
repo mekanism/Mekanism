@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
@@ -48,7 +48,7 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output);
+    protected abstract ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output);
 
     @Override
     protected String describeOutputs(ChemicalToChemicalRecipe recipe) {
@@ -66,7 +66,7 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
         }
 
         @Override
-        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
+        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
             return new BasicActivatingRecipe(ingredient, output);
         }
     }
@@ -82,7 +82,7 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
         }
 
         @Override
-        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
+        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStackTemplate output) {
             return new BasicCentrifugingRecipe(ingredient, output);
         }
     }

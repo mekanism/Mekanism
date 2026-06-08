@@ -3,6 +3,7 @@ package mekanism.api.recipes.basic;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -19,7 +20,7 @@ public class BasicActivatingRecipe extends BasicChemicalToChemicalRecipe {
 
     private static final Holder<Item> SOLAR_NEUTRON_ACTIVATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "solar_neutron_activator"));
 
-    public BasicActivatingRecipe(ChemicalStackIngredient input, ChemicalStack output) {
+    public BasicActivatingRecipe(ChemicalStackIngredient input, ChemicalStackTemplate output) {
         super(input, output, MekanismRecipeTypes.TYPE_ACTIVATING.value());
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
@@ -91,7 +92,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
-    public abstract List<ChemicalStack> getChemicalOutputDefinition();
+    public abstract List<ChemicalStackTemplate> getChemicalOutputDefinition();
 
     /**
      * For JEI, gets the fluid output representations to display.
@@ -114,8 +115,8 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @Contract(value = "_ -> new", pure = true)
-    public abstract ChemicalStack getChemicalOutput(FluidStack input);
+    @Contract(pure = true)
+    public abstract ChemicalStackTemplate getChemicalOutput(FluidStack input);
 
     /**
      * Gets a new fluid output based on the given input.

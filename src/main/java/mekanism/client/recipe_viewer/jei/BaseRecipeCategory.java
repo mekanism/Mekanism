@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -322,6 +323,10 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         int max = stacks.stream().mapToInt(FluidInstance::amount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
         return init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
+    }
+
+    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, GuiElement element, List<ChemicalStackTemplate> stacks) {
+        return initChemical(builder, RecipeIngredientRole.OUTPUT, element, stacks.stream().map(ChemicalStackTemplate::create).toList());
     }
 
     protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, List<ChemicalStack> stacks) {

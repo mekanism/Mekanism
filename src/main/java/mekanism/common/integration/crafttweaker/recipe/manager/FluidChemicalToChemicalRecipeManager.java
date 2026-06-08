@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -48,7 +48,7 @@ public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecip
         return makeRecipe(fluidInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output);
+    protected abstract FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output);
 
     @Override
     protected String describeOutputs(FluidChemicalToChemicalRecipe recipe) {
@@ -66,7 +66,7 @@ public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecip
         }
 
         @Override
-        protected FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+        protected FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
             return new BasicWashingRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, output);
         }
     }

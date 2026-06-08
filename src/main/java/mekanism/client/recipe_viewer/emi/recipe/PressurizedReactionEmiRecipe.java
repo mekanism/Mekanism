@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -29,19 +30,21 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
         addInputDefinition(recipe.getInputFluid());
         addInputDefinition(recipe.getInputChemical());
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
-        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
+        List<ChemicalStackTemplate> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             if (output.item() != null) {
                 itemOutputs.add(output.item());
             }
-            chemicalOutputs.add(output.chemical());
+            if (output.chemical() != null) {
+                chemicalOutputs.add(output.chemical());
+            }
         }
         if (!itemOutputs.isEmpty()) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addItemOutputDefinition(itemOutputs);
         }
-        if (chemicalOutputs.stream().allMatch(ChemicalStack::isEmpty)) {
+        if (!chemicalOutputs.isEmpty()) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addChemicalOutputDefinition(chemicalOutputs);

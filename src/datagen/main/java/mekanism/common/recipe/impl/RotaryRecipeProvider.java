@@ -53,7 +53,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
-              gas.asStack(1),
+              gas.asTemplate(1),
               new FluidStackTemplate(fluidOutput, 1)
         ).save(consumer, Mekanism.rl(basePath + gas.getName()));
     }

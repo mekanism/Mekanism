@@ -51,7 +51,7 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
             }
         } else if (recipe.hasFluidToChemical()) {
             initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations(slotDisplayContext));
-            initChemical(builder, RecipeIngredientRole.OUTPUT, chemicalGauge, recipe.getChemicalOutputDefinition());
+            initChemical(builder, chemicalGauge, recipe.getChemicalOutputDefinition());
         }
     }
 

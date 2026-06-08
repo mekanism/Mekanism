@@ -8,13 +8,13 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.transaction.RateLimitTracker;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.ItemAccessUtils;
@@ -113,18 +113,16 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
             if (foundRecipe != null) {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                 if (!itemInput.isEmpty()) {
-                    ChemicalStack output = foundRecipe.getOutput(itemInput);
-                    if (!output.isEmpty()) {
-                        try (Transaction subTransaction = Transaction.open(transaction)) {
-                            int recipeNeeded = itemInput.count();
-                            int chemicalProduced = output.amount();
-                            //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
-                            if (extract(ItemResource.of(itemInput), recipeNeeded, subTransaction, AutomationType.INTERNAL) == recipeNeeded &&
-                                //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                                chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, subTransaction, AutomationType.MANUAL) == chemicalProduced) {
-                                // if we succeeded, commit the changes
-                                subTransaction.commit();
-                            }
+                    ChemicalStackTemplate output = foundRecipe.getOutput(itemInput);
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        int recipeNeeded = itemInput.count();
+                        int chemicalProduced = output.amount();
+                        //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
+                        if (extract(ItemResource.of(itemInput), recipeNeeded, subTransaction, AutomationType.INTERNAL) == recipeNeeded &&
+                            //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                            chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, subTransaction, AutomationType.MANUAL) == chemicalProduced) {
+                            // if we succeeded, commit the changes
+                            subTransaction.commit();
                         }
                     }
                 }

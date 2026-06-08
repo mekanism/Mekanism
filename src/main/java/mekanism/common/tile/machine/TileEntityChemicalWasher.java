@@ -7,6 +7,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -86,7 +87,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> slurryInputHandler;
 

@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
@@ -65,7 +66,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IChemicalTank pigmentTank;
 
-    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityPigmentExtractor> energyContainer;

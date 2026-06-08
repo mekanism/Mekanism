@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 
 /**
@@ -19,5 +19,5 @@ import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackToChemicalRecipe extends ItemInputRecipe<ChemicalStack> {
+public abstract class ItemStackToChemicalRecipe extends ItemInputRecipe<ChemicalStackTemplate> {
 }

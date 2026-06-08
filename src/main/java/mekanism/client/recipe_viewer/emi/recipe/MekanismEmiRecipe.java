@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -111,7 +112,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         addOutputDefinition(definition.stream().map(FluidStackTemplate::create).map(NeoForgeEmiStack::of).toList());
     }
 
-    protected void addChemicalOutputDefinition(List<ChemicalStack> definition) {
+    protected void addChemicalOutputDefinition(List<ChemicalStackTemplate> definition) {
         addOutputDefinition(definition.stream().<EmiStack>map(ChemicalEmiStack::new).toList());
     }
 

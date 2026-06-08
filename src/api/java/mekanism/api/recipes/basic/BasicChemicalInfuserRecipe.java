@@ -2,7 +2,7 @@ package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -26,7 +26,7 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
      *
      * @apiNote The order of the inputs does not matter.
      */
-    public BasicChemicalInfuserRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output) {
+    public BasicChemicalInfuserRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
         super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value());
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.TypedInstance;
@@ -16,21 +16,17 @@ import org.jetbrains.annotations.Contract;
 public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRecipe {
 
     private final RecipeType<ChemicalToChemicalRecipe> recipeType;
-    protected final ChemicalStack output;
+    protected final ChemicalStackTemplate output;
     private final ChemicalStackIngredient input;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicChemicalToChemicalRecipe(ChemicalStackIngredient input, ChemicalStack output, RecipeType<ChemicalToChemicalRecipe> recipeType) {
+    public BasicChemicalToChemicalRecipe(ChemicalStackIngredient input, ChemicalStackTemplate output, RecipeType<ChemicalToChemicalRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = Objects.requireNonNull(output, "Output cannot be null.");
     }
 
     @Override
@@ -44,14 +40,14 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
     }
 
     @Override
-    public List<ChemicalStack> getOutputDefinition() {
+    public List<ChemicalStackTemplate> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public ChemicalStack getOutput(TypedInstance<Chemical> input) {
-        return output.copy();
+    public ChemicalStackTemplate getOutput(TypedInstance<Chemical> input) {
+        return output;
     }
 
     /**
@@ -59,7 +55,7 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
      *
      * @return the uncopied output definition
      */
-    public ChemicalStack getOutputRaw() {
+    public ChemicalStackTemplate getOutputRaw() {
         return output;
     }
 

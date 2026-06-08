@@ -4,7 +4,7 @@ import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -36,17 +36,17 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<ChemicalStack> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<ChemicalStackTemplate> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
             @Override
-            public boolean handleOutput(@Nullable ChemicalStack toOutput, int operations, TransactionContext transaction) {
+            public boolean handleOutput(@Nullable ChemicalStackTemplate toOutput, int operations, TransactionContext transaction) {
                 return OutputHelper.handleOutput(tank, toOutput, operations, transaction);
             }
 
             @Override
-            public void calculateOperationsCanSupport(OperationTracker tracker, ChemicalStack toOutput) {
+            public void calculateOperationsCanSupport(OperationTracker tracker, ChemicalStackTemplate toOutput) {
                 OutputHelper.calculateOperationsCanSupport(tracker, notEnoughSpaceError, tank, toOutput);
             }
         };
@@ -174,8 +174,9 @@ public class OutputHelper {
                     return false;
                 }
                 ItemStackTemplate item = toOutput.item();
+                ChemicalStackTemplate chemical = toOutput.chemical();
                 return (item == null || OutputHelper.handleOutput(slot, item, operations, transaction)) &&
-                       (toOutput.chemical().isEmpty() || OutputHelper.handleOutput(tank, toOutput.chemical(), operations, transaction));
+                       (chemical == null || OutputHelper.handleOutput(tank, chemical, operations, transaction));
             }
 
             @Override
@@ -258,8 +259,8 @@ public class OutputHelper {
         };
     }
 
-    private static boolean handleOutput(IChemicalTank tank, @Nullable ChemicalStack toOutput, int operations, TransactionContext transaction) {
-        return toOutput != null && !toOutput.isEmpty() && handleOutput(tank, ChemicalResource.of(toOutput), toOutput.amount(), operations, transaction);
+    private static boolean handleOutput(IChemicalTank tank, @Nullable ChemicalStackTemplate toOutput, int operations, TransactionContext transaction) {
+        return toOutput != null && handleOutput(tank, ChemicalResource.of(toOutput), toOutput.amount(), operations, transaction);
     }
 
     private static boolean handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
@@ -291,8 +292,11 @@ public class OutputHelper {
      * @param toOutput       Output result.
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, ChemicalStack toOutput) {
-        calculateOperationsCanSupport(tracker, notEnoughSpace, tank, ChemicalResource.of(toOutput), toOutput.amount(), Integer.MAX_VALUE);
+    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, @Nullable ChemicalStackTemplate toOutput) {
+        //If our output is empty, we have nothing to add, so we treat it as being able to fit all
+        if (toOutput != null) {
+            calculateOperationsCanSupport(tracker, notEnoughSpace, tank, ChemicalResource.of(toOutput), toOutput.amount(), Integer.MAX_VALUE);
+        }
     }
 
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IFluidTank tank, @Nullable FluidStackTemplate toOutput) {

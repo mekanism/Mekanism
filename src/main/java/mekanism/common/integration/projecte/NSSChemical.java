@@ -9,6 +9,7 @@ import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -29,7 +30,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
      * Helper method to create an {@link NSSChemical} representing a chemical from a {@link ChemicalStack}
      */
     @NotNull
-    public static NSSChemical createChemical(@NotNull ChemicalStack stack) {
+    public static NSSChemical createChemical(@NotNull TypedInstance<Chemical> stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createChemical(stack.typeHolder());
     }

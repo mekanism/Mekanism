@@ -62,8 +62,8 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
             initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations(slotDisplayContext));
         }
         initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations(slotDisplayContext));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
+        initChemical(builder, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
+        initChemical(builder, wasteTank, Collections.singletonList(recipe.waste()));
     }
 
     @Nullable

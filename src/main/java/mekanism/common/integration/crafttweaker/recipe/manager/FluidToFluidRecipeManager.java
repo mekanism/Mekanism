@@ -10,7 +10,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -45,7 +45,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStack output);
+    protected abstract BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStackTemplate output);
 
     @Override
     protected String describeOutputs(FluidToFluidRecipe recipe) {
@@ -63,7 +63,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
         }
 
         @Override
-        protected BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStack output) {
+        protected BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, FluidStackTemplate output) {
             return new BasicFluidToFluidRecipe(CrTUtils.fromCrT(input), output);
         }
     }

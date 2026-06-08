@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -49,13 +49,13 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ElectrolysisRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
-        List<ChemicalStack> leftDefinition = new ArrayList<>();
-        List<ChemicalStack> rightDefinition = new ArrayList<>();
+        List<ChemicalStackTemplate> leftDefinition = new ArrayList<>();
+        List<ChemicalStackTemplate> rightDefinition = new ArrayList<>();
         for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition()) {
             leftDefinition.add(output.left());
             rightDefinition.add(output.right());
         }
-        initChemical(builder, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
-        initChemical(builder, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
+        initChemical(builder, leftOutput, leftDefinition);
+        initChemical(builder, rightOutput, rightDefinition);
     }
 }

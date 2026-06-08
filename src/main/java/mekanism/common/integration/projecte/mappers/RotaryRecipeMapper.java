@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.Objects;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -30,7 +29,7 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
             }
         } else {
             if (recipe.hasFluidToChemical()) {
-                handled = addConversions(mapper, recipe.getFluidInput(), recipe::getChemicalOutput, ChemicalStack::isEmpty, fakeGroupHelper::forFluids, null,
+                handled = addConversions(mapper, recipe.getFluidInput(), recipe::getChemicalOutput, Objects::nonNull, fakeGroupHelper::forFluids, null,
                       TypedMekanismRecipeMapper::addConversion);
             }
             if (recipe.hasChemicalToFluid()) {

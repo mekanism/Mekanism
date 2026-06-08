@@ -2,7 +2,7 @@ package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -19,7 +19,7 @@ public class BasicChemicalOxidizerRecipe extends BasicItemStackToChemicalRecipe 
 
     private static final Holder<Item> CHEMICAL_OXIDIZER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_oxidizer"));
 
-    public BasicChemicalOxidizerRecipe(ItemStackIngredient input, ChemicalStack output) {
+    public BasicChemicalOxidizerRecipe(ItemStackIngredient input, ChemicalStackTemplate output) {
         super(input, output, MekanismRecipeTypes.TYPE_OXIDIZING.value());
     }
 

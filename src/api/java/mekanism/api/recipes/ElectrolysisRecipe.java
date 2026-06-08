@@ -3,7 +3,7 @@ package mekanism.api.recipes;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
 import net.minecraft.core.Holder;
@@ -43,16 +43,11 @@ public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRe
         return new ItemStack(ELECTROLYTIC_SEPARATOR);
     }
 
-    public record ElectrolysisRecipeOutput(ChemicalStack left, ChemicalStack right) {
+    public record ElectrolysisRecipeOutput(ChemicalStackTemplate left, ChemicalStackTemplate right) {
 
         public ElectrolysisRecipeOutput {
             Objects.requireNonNull(left, "Left output cannot be null.");
             Objects.requireNonNull(right, "Right output cannot be null.");
-            if (left.isEmpty()) {
-                throw new IllegalArgumentException("Left output cannot be empty.");
-            } else if (right.isEmpty()) {
-                throw new IllegalArgumentException("Right output cannot be empty.");
-            }
         }
     }
 }

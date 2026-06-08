@@ -1,4 +1,4 @@
-package mekanism.client.recipe_viewer.emi;
+package mekanism.client.recipe_viewer;
 
 import net.minecraft.resources.Identifier;
 

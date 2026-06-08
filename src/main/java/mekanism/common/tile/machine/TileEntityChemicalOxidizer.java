@@ -3,7 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
@@ -64,7 +64,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IChemicalTank gasTank;
 
-    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;

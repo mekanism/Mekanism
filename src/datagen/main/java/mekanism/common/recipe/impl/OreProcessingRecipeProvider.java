@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import java.util.Objects;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
@@ -275,7 +274,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         FluidChemicalToChemicalRecipeBuilder.washing(
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 5),
               IngredientCreatorAccess.chemicalStack().fromHolder(slurry, 1),
-              new ChemicalStack(slurry.getCleanSlurry(), 1)
+              slurry.asCleanTemplate(1)
         ).save(consumer, Mekanism.rl(basePath + "slurry/clean"));
 
         // From ore
@@ -300,7 +299,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(this.items, oreTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
-              new ChemicalStack(slurry, 1_000),
+              slurry.asDirtyTemplate(1_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "slurry/dirty/from_ore"));
 
@@ -326,7 +325,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(this.items, rawTag, 3),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
-              new ChemicalStack(slurry, 2_000),
+              slurry.asDirtyTemplate(2_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_ore"));
 
@@ -352,7 +351,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(this.items, rawBlockTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 2),
-              new ChemicalStack(slurry, 6_000),
+              slurry.asDirtyTemplate(6_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_block"));
     }
@@ -636,30 +635,30 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.GEMS_FLUORITE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
-              MekanismChemicals.HYDROFLUORIC_ACID.asStack(1_000),
+              MekanismChemicals.HYDROFLUORIC_ACID.asTemplate(1_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.STORAGE_BLOCKS_FLUORITE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 9),
-              MekanismChemicals.HYDROFLUORIC_ACID.asStack(9_000),
+              MekanismChemicals.HYDROFLUORIC_ACID.asTemplate(9_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "hydrofluoric_acid_from_block"));
         //uranium oxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismItems.YELLOW_CAKE_URANIUM),
-              MekanismChemicals.URANIUM_OXIDE.asStack(250)
+              MekanismChemicals.URANIUM_OXIDE.asTemplate(250)
         ).save(consumer, Mekanism.rl(basePath + "uranium_oxide"));
         //uranium hexafluoride
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROFLUORIC_ACID, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.URANIUM_OXIDE, 1),
-              MekanismChemicals.URANIUM_HEXAFLUORIDE.asStack(2)
+              MekanismChemicals.URANIUM_HEXAFLUORIDE.asTemplate(2)
         ).save(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
         //fissile fuel
         ChemicalToChemicalRecipeBuilder.centrifuging(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.URANIUM_HEXAFLUORIDE, 1),
-              MekanismChemicals.FISSILE_FUEL.asStack(1)
+              MekanismChemicals.FISSILE_FUEL.asTemplate(1)
         ).save(consumer, Mekanism.rl(basePath + "fissile_fuel"));
         //fissile fuel reprocessing (IMPORTANT)
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -671,7 +670,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //fragment -> fuel
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
-              MekanismChemicals.FISSILE_FUEL.asStack(2_000)
+              MekanismChemicals.FISSILE_FUEL.asTemplate(2_000)
         ).save(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));
     }
 }

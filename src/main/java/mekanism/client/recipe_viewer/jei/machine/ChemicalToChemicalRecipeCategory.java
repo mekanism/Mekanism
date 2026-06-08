@@ -37,6 +37,6 @@ public class ChemicalToChemicalRecipeCategory extends HolderRecipeCategory<Chemi
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalToChemicalRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalToChemicalRecipe recipe = recipeHolder.value();
         initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
-        initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initChemical(builder, output, recipe.getOutputDefinition());
     }
 }

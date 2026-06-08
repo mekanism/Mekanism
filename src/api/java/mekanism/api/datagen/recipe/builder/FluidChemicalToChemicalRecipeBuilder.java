@@ -1,7 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicWashingRecipe;
@@ -15,9 +15,9 @@ public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<
 
     private final ChemicalStackIngredient chemicalInput;
     private final FluidStackIngredient fluidInput;
-    private final ChemicalStack output;
+    private final ChemicalStackTemplate output;
 
-    protected FluidChemicalToChemicalRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+    protected FluidChemicalToChemicalRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
         this.fluidInput = fluidInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
@@ -35,10 +35,7 @@ public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<
      * @param chemicalInput Chemical Input.
      * @param output        Output.
      */
-    public static FluidChemicalToChemicalRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This washing recipe requires a non empty chemical output.");
-        }
+    public static FluidChemicalToChemicalRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
         return new FluidChemicalToChemicalRecipeBuilder(fluidInput, chemicalInput, output);
     }
 

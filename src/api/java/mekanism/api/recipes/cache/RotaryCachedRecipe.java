@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
-    private final IOutputHandler<@NotNull ChemicalStack> chemicalOutputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> chemicalOutputHandler;
     private final IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler;
     private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
@@ -34,17 +35,18 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     private final Consumer<FluidStack> fluidInputSetter;
     private final Consumer<ChemicalStack> chemicalInputSetter;
     private final Consumer<FluidStackTemplate> fluidOutputSetter;
-    private final Consumer<ChemicalStack> chemicalOutputSetter;
+    private final Consumer<ChemicalStackTemplate> chemicalOutputSetter;
     private final Supplier<FluidStackIngredient> fluidInputGetter;
     private final Supplier<ChemicalStackIngredient> chemicalInputGetter;
     private final Function<ChemicalStack, FluidStackTemplate> fluidOutputGetter;
-    private final Function<FluidStack, ChemicalStack> chemicalOutputGetter;
+    private final Function<FluidStack, ChemicalStackTemplate> chemicalOutputGetter;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
     private ChemicalStack recipeChemical = ChemicalStack.EMPTY;
     @Nullable
     private FluidStackTemplate fluidOutput;
-    private ChemicalStack chemicalOutput = ChemicalStack.EMPTY;
+    @Nullable
+    private ChemicalStackTemplate chemicalOutput;
 
     /**
      * @param recipe                Recipe.
@@ -57,7 +59,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
      * @param modeSupplier          Machine handling mode. Returns {@code true} for fluid to chemical, and {@code false} for chemical to fluid.
      */
     public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler,
-          IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> chemicalOutputHandler,
+          IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStackTemplate> chemicalOutputHandler,
           IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler, BooleanSupplier modeSupplier) {
         super(recipe, recheckAllErrors);
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");

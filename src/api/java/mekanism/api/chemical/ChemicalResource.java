@@ -41,6 +41,15 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalResource> STREAM_CODEC = Chemical.STREAM_CODEC.map(ChemicalResource::of, ChemicalResource::typeHolder);
 
     /**
+     * Creates a {@link ChemicalResource} for the given chemical stack template. Note the amount is lost.
+     *
+     * @param template template to get the holder of
+     */
+    public static ChemicalResource of(ChemicalStackTemplate template) {
+        return of(template.typeHolder());
+    }
+
+    /**
      * Creates a {@link ChemicalResource} for the given chemical stack. Note the amount is lost.
      *
      * @param stack stack to get the holder of

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Contract;
 public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     protected final FluidStackIngredient input;
-    protected final ChemicalStack leftChemicalOutput;
-    protected final ChemicalStack rightChemicalOutput;
+    protected final ChemicalStackTemplate leftChemicalOutput;
+    protected final ChemicalStackTemplate rightChemicalOutput;
     protected final int energyMultiplier;//todo double?
 
     /**
@@ -27,21 +27,14 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
      * @param leftChemicalOutput  Left output.
      * @param rightChemicalOutput Right output.
      */
-    public BasicElectrolysisRecipe(FluidStackIngredient input, int energyMultiplier, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
+    public BasicElectrolysisRecipe(FluidStackIngredient input, int energyMultiplier, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
         if (energyMultiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be at least one.");
         }
-        Objects.requireNonNull(leftChemicalOutput, "Left output cannot be null");
-        Objects.requireNonNull(rightChemicalOutput, "Right output cannot be null");
-        if (leftChemicalOutput.isEmpty()) {
-            throw new IllegalArgumentException("Left output cannot be empty.");
-        } else if (rightChemicalOutput.isEmpty()) {
-            throw new IllegalArgumentException("Right output cannot be empty.");
-        }
-        this.leftChemicalOutput = leftChemicalOutput.copy();
-        this.rightChemicalOutput = rightChemicalOutput.copy();
+        this.leftChemicalOutput = Objects.requireNonNull(leftChemicalOutput, "Left output cannot be null");
+        this.rightChemicalOutput = Objects.requireNonNull(rightChemicalOutput, "Right output cannot be null");
     }
 
     @Override
@@ -57,7 +50,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     @Override
     @Contract(value = "_ -> new", pure = true)
     public ElectrolysisRecipeOutput getOutput(TypedInstance<Fluid> input) {
-        return new ElectrolysisRecipeOutput(leftChemicalOutput.copy(), rightChemicalOutput.copy());
+        return new ElectrolysisRecipeOutput(leftChemicalOutput, rightChemicalOutput);
     }
 
     @Override
@@ -65,11 +58,11 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
         return energyMultiplier;
     }
 
-    public ChemicalStack getLeftChemicalOutput() {
+    public ChemicalStackTemplate getLeftChemicalOutput() {
         return leftChemicalOutput;
     }
 
-    public ChemicalStack getRightChemicalOutput() {
+    public ChemicalStackTemplate getRightChemicalOutput() {
         return rightChemicalOutput;
     }
 

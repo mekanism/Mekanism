@@ -1,12 +1,12 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
-import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
-import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
@@ -16,9 +16,9 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
 
     private final ItemStackToChemicalRecipeBuilder.Factory factory;
     private final ItemStackIngredient input;
-    private final ChemicalStack output;
+    private final ChemicalStackTemplate output;
 
-    protected ItemStackToChemicalRecipeBuilder(ItemStackIngredient input, ChemicalStack output, ItemStackToChemicalRecipeBuilder.Factory factory) {
+    protected ItemStackToChemicalRecipeBuilder(ItemStackIngredient input, ChemicalStackTemplate output, ItemStackToChemicalRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
@@ -35,10 +35,7 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This chemical conversion recipe requires a non empty chemical output.");
-        }
+    public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalConversionRecipe::new);
     }
 
@@ -48,10 +45,7 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder oxidizing(ItemStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This oxidizing recipe requires a non empty chemical output.");
-        }
+    public static ItemStackToChemicalRecipeBuilder oxidizing(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalOxidizerRecipe::new);
     }
 
@@ -61,10 +55,7 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder pigmentExtracting(ItemStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty chemical output.");
-        }
+    public static ItemStackToChemicalRecipeBuilder pigmentExtracting(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicPigmentExtractingRecipe::new);
     }
 
@@ -76,6 +67,6 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
     @FunctionalInterface
     public interface Factory {
 
-        ItemStackToChemicalRecipe create(ItemStackIngredient input, ChemicalStack output);
+        ItemStackToChemicalRecipe create(ItemStackIngredient input, ChemicalStackTemplate output);
     }
 }

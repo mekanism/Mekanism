@@ -1,7 +1,7 @@
 package mekanism.common.integration.projecte.mappers;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -33,8 +33,8 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
         if (OPTIMIZE_BASIC && recipe instanceof BasicPressurizedReactionRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
             ItemStackTemplate outputItem = basicRecipe.getOutputItem();
-            ChemicalStack outputChemical = basicRecipe.getOutputChemical();
-            if (outputItem == null && outputChemical.isEmpty()) {
+            ChemicalStackTemplate outputChemical = basicRecipe.getOutputChemical();
+            if (outputItem == null && outputChemical == null) {
                 return false;
             }
             return addConversions(mapper, new PressurizedReactionRecipeOutput(outputItem, outputChemical), fakeGroupHelper.forIngredients(
@@ -54,10 +54,10 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
             return false;
         }
         ItemStackTemplate outputItem = output.item();
-        ChemicalStack outputChemical = output.chemical();
+        ChemicalStackTemplate outputChemical = output.chemical();
         if (outputItem == null) {
             return addConversion(mapper, outputChemical, inputs);
-        } else if (outputChemical.isEmpty()) {
+        } else if (outputChemical == null) {
             return addConversion(mapper, outputItem, inputs);
         }
         //Use bitwise or as we want to try and add both of them

@@ -72,7 +72,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (colorHelper == null) {
             return IIngredientHelper.super.getColors(ingredient);
         }
-        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.typeHolder()), ingredient.getChemicalTint(), 1);
+        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.typeHolder()), ingredient.getChemical().getTint(), 1);
     }
 
     @Override

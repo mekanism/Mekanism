@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalInstance;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -154,12 +154,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return ResourceKey.create(Registries.RECIPE, fluid.typeHolder().unwrapKey().orElseThrow().identifier());
     }
 
-    //TODO - 26.1 - probably needs to not be a chemical stack?
-    public static ResourceKey<Recipe<?>> getDefaultRecipeId(ChemicalStack stack) {
-        return ResourceKey.create(Registries.RECIPE, chemicalId(stack));
+    public static ResourceKey<Recipe<?>> getDefaultRecipeId(ChemicalInstance chemical) {
+        return ResourceKey.create(Registries.RECIPE, chemicalId(chemical));
     }
 
-    public static Identifier chemicalId(ChemicalStack stack) {
-        return stack.typeHolder().unwrapKey().orElseThrow().identifier();
+    public static Identifier chemicalId(ChemicalInstance chemical) {
+        return chemical.typeHolder().unwrapKey().orElseThrow().identifier();
     }
 }

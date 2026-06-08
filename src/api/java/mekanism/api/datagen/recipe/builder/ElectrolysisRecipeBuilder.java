@@ -1,7 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
@@ -15,11 +15,11 @@ import net.minecraft.world.item.crafting.Recipe;
 public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
 
     private final FluidStackIngredient input;
-    private final ChemicalStack leftChemicalOutput;
-    private final ChemicalStack rightChemicalOutput;
+    private final ChemicalStackTemplate leftChemicalOutput;
+    private final ChemicalStackTemplate rightChemicalOutput;
     private int energyMultiplier = 1;
 
-    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
+    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
         this.input = input;
         this.leftChemicalOutput = leftChemicalOutput;
         this.rightChemicalOutput = rightChemicalOutput;
@@ -40,10 +40,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
      * @param leftChemicalOutput  Left Output.
      * @param rightChemicalOutput Right Output.
      */
-    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
-        if (leftChemicalOutput.isEmpty() || rightChemicalOutput.isEmpty()) {
-            throw new IllegalArgumentException("This separating recipe requires non empty chemical outputs.");
-        }
+    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
         return new ElectrolysisRecipeBuilder(input, leftChemicalOutput, rightChemicalOutput);
     }
 

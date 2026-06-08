@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -15,8 +15,9 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.openzen.zencode.java.ZenCodeType;
+import org.openzen.zencode.java.ZenCodeType.Nullable;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_REACTION)
@@ -44,7 +45,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem, int energyRequired) {
-        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), ChemicalStack.EMPTY, energyRequired);
+        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), null, energyRequired);
     }
 
     /**
@@ -63,7 +64,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem) {
-        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), ChemicalStack.EMPTY, 0);
+        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), null, 0);
     }
 
     /**
@@ -81,7 +82,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           ICrTChemicalStack outputChemical, int energyRequired) {
-        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputChemical), energyRequired);
+        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, null, getAndValidateNotEmpty(outputChemical), energyRequired);
     }
 
     /**
@@ -100,7 +101,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           ICrTChemicalStack outputChemical) {
-        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputChemical), 0);
+        addRecipe(name, inputSolid, inputFluid, inputChemical, duration, null, getAndValidateNotEmpty(outputChemical), 0);
     }
 
     /**
@@ -143,7 +144,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     }
 
     private void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
-          ItemStack outputItem, ChemicalStack outputChemical, int energyRequired) {
+          @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical, int energyRequired) {
         addRecipe(name, makeRecipe(inputSolid, inputFluid, inputChemical, duration, outputItem, outputChemical, energyRequired));
     }
 
@@ -162,7 +163,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      *                       recipe.
      */
     public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ItemStack outputItem, ChemicalStack outputChemical, int energyRequired) {
+          int duration, ItemStackTemplate outputItem, ChemicalStackTemplate outputChemical, int energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
@@ -174,13 +175,13 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     protected String describeOutputs(PressurizedReactionRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> {
             StringBuilder builder = new StringBuilder();
-            ItemStack itemOutput = output.item();
-            if (!itemOutput.isEmpty()) {
-                builder.append(ItemStackUtil.getCommandString(itemOutput));
+            ItemStackTemplate itemOutput = output.item();
+            if (itemOutput != null) {
+                builder.append(ItemStackUtil.getCommandString(itemOutput.create()));
             }
-            ChemicalStack chemicalOutput = output.chemical();
-            if (!chemicalOutput.isEmpty()) {
-                if (!itemOutput.isEmpty()) {
+            ChemicalStackTemplate chemicalOutput = output.chemical();
+            if (chemicalOutput != null) {
+                if (itemOutput != null) {
                     builder.append(" and ");
                 }
                 builder.append(new CrTChemicalStack(chemicalOutput));

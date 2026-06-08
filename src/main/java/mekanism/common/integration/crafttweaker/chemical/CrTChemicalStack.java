@@ -1,15 +1,20 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 
 public class CrTChemicalStack extends BaseCrTChemicalStack {
+
+    public CrTChemicalStack(ChemicalStackTemplate template) {
+        this(template.create());
+    }
 
     public CrTChemicalStack(ChemicalStack stack) {
         super(stack, CrTChemicalStack::new);
     }
 
     @Override
-    public ICrTChemicalStack setAmount(long amount) {
+    public ICrTChemicalStack setAmount(int amount) {
         return stackConverter.apply(stack.copyWithAmount(amount));
     }
 

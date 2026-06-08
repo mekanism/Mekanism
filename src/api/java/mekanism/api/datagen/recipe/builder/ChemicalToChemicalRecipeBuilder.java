@@ -1,11 +1,11 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
-import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,9 +18,9 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
 
     private final ChemicalToChemicalRecipeBuilder.Factory factory;
     private final ChemicalStackIngredient input;
-    private final ChemicalStack output;
+    private final ChemicalStackTemplate output;
 
-    protected ChemicalToChemicalRecipeBuilder(ChemicalStackIngredient input, ChemicalStack output, ChemicalToChemicalRecipeBuilder.Factory factory) {
+    protected ChemicalToChemicalRecipeBuilder(ChemicalStackIngredient input, ChemicalStackTemplate output, ChemicalToChemicalRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
@@ -37,10 +37,7 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
      * @param input  Input.
      * @param output Output.
      */
-    public static ChemicalToChemicalRecipeBuilder activating(ChemicalStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty chemical output.");
-        }
+    public static ChemicalToChemicalRecipeBuilder activating(ChemicalStackIngredient input, ChemicalStackTemplate output) {
         return new ChemicalToChemicalRecipeBuilder(input, output, BasicActivatingRecipe::new);
     }
 
@@ -50,10 +47,7 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
      * @param input  Input.
      * @param output Output.
      */
-    public static ChemicalToChemicalRecipeBuilder centrifuging(ChemicalStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty chemical output.");
-        }
+    public static ChemicalToChemicalRecipeBuilder centrifuging(ChemicalStackIngredient input, ChemicalStackTemplate output) {
         return new ChemicalToChemicalRecipeBuilder(input, output, BasicCentrifugingRecipe::new);
     }
 
@@ -65,6 +59,6 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
     @FunctionalInterface
     public interface Factory {
 
-        ChemicalToChemicalRecipe create(ChemicalStackIngredient input, ChemicalStack output);
+        ChemicalToChemicalRecipe create(ChemicalStackIngredient input, ChemicalStackTemplate output);
     }
 }

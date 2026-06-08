@@ -8,6 +8,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.fluid.IFluidTank;
@@ -97,7 +98,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
      */
     private boolean mode;
 
-    private final IOutputHandler<@NotNull ChemicalStack> gasOutputHandler;
+    private final IOutputHandler<@NotNull ChemicalStackTemplate> gasOutputHandler;
     private final IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler;
     private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;

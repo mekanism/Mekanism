@@ -58,6 +58,6 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Singl
 
     @Override
     protected String describeOutputs(NucleosynthesizingRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
     }
 }

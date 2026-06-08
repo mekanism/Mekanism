@@ -21,6 +21,7 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -36,7 +37,7 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 public class CrTUtils {
 
-    private static final Function<ChemicalStack, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
+    private static final Function<ChemicalStackTemplate, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
 
     /**
      * Helper method to convert a {@link Chemical} holder to an {@link ICrTChemicalStack}.
@@ -123,7 +124,7 @@ public class CrTUtils {
     /**
      * Helper method for describing the outputs of a recipe that may have multiple outputs.
      */
-    public static String describeOutputs(List<ChemicalStack> outputs) {
+    public static String describeOutputs(List<ChemicalStackTemplate> outputs) {
         if (outputs.isEmpty()) {
             return "";
         }
@@ -192,7 +193,7 @@ public class CrTUtils {
     /**
      * Helper to convert a list of chemicals to a list of crafttweaker chemicals.
      */
-    public static List<ICrTChemicalStack> convertChemical(List<ChemicalStack> elements) {
+    public static List<ICrTChemicalStack> convertChemical(List<ChemicalStackTemplate> elements) {
         if (elements.isEmpty()) {
             return Collections.emptyList();
         }

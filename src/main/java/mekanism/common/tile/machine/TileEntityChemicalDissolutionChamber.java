@@ -7,6 +7,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -81,7 +82,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private double injectUsage = 1;
     private int usedSoFar;
 
-    private final IOutputHandler<ChemicalStack> outputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
     private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 

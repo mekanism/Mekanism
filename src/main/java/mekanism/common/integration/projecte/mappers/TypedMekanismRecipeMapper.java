@@ -21,6 +21,7 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -113,9 +114,9 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return handleRecipe(mapper, typedRecipe, new MekFakeGroupHelper(fakeGroupManager), contextMap);
     }
 
-    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalStack output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
-        if (!output.isEmpty() && !recipeInput.isEmpty()) {
-            mapper.addConversion(output.amount(), NSSChemical.createChemical(output), recipeInput);
+    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, @Nullable ChemicalStackTemplate output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
+        if (output != null && !recipeInput.isEmpty()) {
+            mapper.addConversion(output.amount(), NSSChemical.createChemical(output.chemical()), recipeInput);
             return true;
         }
         return false;

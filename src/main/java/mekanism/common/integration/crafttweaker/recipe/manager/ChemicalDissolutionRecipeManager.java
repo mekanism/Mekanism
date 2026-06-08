@@ -52,9 +52,6 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Sing
 
     @Override
     protected String describeOutputs(ChemicalDissolutionRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), stack -> {
-            ICrTChemicalStack output = new CrTChemicalStack(stack);
-            return output.toString();
-        });
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), stack -> new CrTChemicalStack(stack.create()).toString());
     }
 }

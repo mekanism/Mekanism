@@ -46,6 +46,6 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Sin
 
     @Override
     protected String describeOutputs(ChemicalCrystallizerRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
     }
 }

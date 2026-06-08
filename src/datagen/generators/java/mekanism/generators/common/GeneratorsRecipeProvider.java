@@ -70,8 +70,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.HEAVY_WATER, 2),
-                    GeneratorsChemicals.DEUTERIUM.asStack(2),
-                    MekanismChemicals.OXYGEN.asStack(1)
+                    GeneratorsChemicals.DEUTERIUM.asTemplate(2),
+                    MekanismChemicals.OXYGEN.asTemplate(1)
               ).energyMultiplier(2)
               .save(output, MekanismGenerators.rl(basePath + "heavy_water"));
     }
@@ -88,7 +88,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(this.fluids, fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, gasInput, 1),
-              gas.asStack(1),
+              gas.asTemplate(1),
               new FluidStackTemplate(fluidOutput, 1)
         ).save(output, MekanismGenerators.rl(basePath + gas.getName()));
     }
@@ -99,7 +99,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
               IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.DEUTERIUM, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.TRITIUM, 1),
-              GeneratorsChemicals.FUSION_FUEL.asStack(2)
+              GeneratorsChemicals.FUSION_FUEL.asTemplate(2)
         ).save(output, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
@@ -107,7 +107,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 1),
-              GeneratorsChemicals.TRITIUM.asStack(1)
+              GeneratorsChemicals.TRITIUM.asTemplate(1)
         ).save(output, MekanismGenerators.rl(basePath + "tritium"));
     }
 

@@ -97,11 +97,11 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
         ContextMap context = getSlotDisplayContext();
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations(context));
         if (recipe.superHeatedCoolant() == null) {
-            initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
         } else {
             initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations(context));
-            initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
-            initChemical(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
+            initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
         }
     }
 }

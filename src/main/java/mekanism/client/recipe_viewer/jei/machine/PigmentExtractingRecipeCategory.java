@@ -22,7 +22,7 @@ public class PigmentExtractingRecipeCategory extends ItemStackToChemicalRecipeCa
     @Override
     public void draw(RecipeHolder<ItemStackToChemicalRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        currentDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
+        currentDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_OUTPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         currentDetails.reset();
     }

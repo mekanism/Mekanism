@@ -56,7 +56,7 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, inputGauge, scaledChemicals);
-        initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition());
+        initChemical(builder, outputGauge, recipe.getOutputDefinition());
     }
 
 }

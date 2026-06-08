@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
@@ -24,11 +25,8 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicElectrolysisRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
-            ChemicalStack leftOutput = basicRecipe.getLeftChemicalOutput();
-            ChemicalStack rightOutput = basicRecipe.getRightChemicalOutput();
-            if (leftOutput.isEmpty() || rightOutput.isEmpty()) {//Shouldn't be the case, but validate it just in case
-                return false;
-            }
+            ChemicalStackTemplate leftOutput = basicRecipe.getLeftChemicalOutput();
+            ChemicalStackTemplate rightOutput = basicRecipe.getRightChemicalOutput();
             return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
         return addConversions(mapper, recipe.getInput(), recipe::getOutput, output -> output.left().isEmpty() || output.right().isEmpty(),
@@ -36,8 +34,8 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipeOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {
-        ChemicalStack leftOutput = output.left();
-        ChemicalStack rightOutput = output.right();
+        ChemicalStackTemplate leftOutput = output.left();
+        ChemicalStackTemplate rightOutput = output.right();
         if (inputs.isEmpty()) {
             return false;
         }

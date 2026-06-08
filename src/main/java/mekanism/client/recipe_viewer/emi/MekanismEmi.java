@@ -25,6 +25,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.MekanismClient;
+import mekanism.client.recipe_viewer.INamedRVRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.recipe.BoilerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalChemicalToChemicalEmiRecipe;

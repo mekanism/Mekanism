@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
@@ -52,7 +52,7 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output);
+    protected abstract ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output);
 
     @Override
     protected String describeOutputs(ItemStackToChemicalRecipe recipe) {
@@ -70,7 +70,7 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output) {
+        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
             return new BasicChemicalConversionRecipe(CrTUtils.fromCrT(input), output);
         }
     }
@@ -86,7 +86,7 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output) {
+        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
             return new BasicChemicalOxidizerRecipe(CrTUtils.fromCrT(input), output);
         }
     }
@@ -102,7 +102,7 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output) {
+        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStackTemplate output) {
             return new BasicPigmentExtractingRecipe(CrTUtils.fromCrT(input), output);
         }
     }

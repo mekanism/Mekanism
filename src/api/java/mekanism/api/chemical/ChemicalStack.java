@@ -28,7 +28,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,14 +75,14 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
             if (amount <= 0) {
                 return EMPTY;
             }
-            return new ChemicalStack(Chemical.STREAM_CODEC.decode(buffer), amount);
+            return new ChemicalStack(CHEMICAL_HOLDER_STREAM_CODEC.decode(buffer), amount);
         }
 
         @Override
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
             buffer.writeVarInt(stack.amount());
             if (!stack.isEmpty()) {
-                Chemical.STREAM_CODEC.encode(buffer, stack.typeHolder());
+                CHEMICAL_HOLDER_STREAM_CODEC.encode(buffer, stack.typeHolder());
             }
         }
     };
@@ -114,7 +113,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     /**
      * A standard codec for chemical stacks that always deserializes with a fixed amount, and does not accept empty stacks.
      * <p>
-     * Chemical equivalent of {@link ItemStack#SINGLE_ITEM_CODEC}. and {@link net.neoforged.neoforge.fluids.FluidStack#fixedAmountCodec(int)}
+     * Chemical equivalent of {@link net.neoforged.neoforge.fluids.FluidStack#fixedAmountCodec(int)}
      *
      * @since 10.6.0
      */
@@ -268,29 +267,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     }
 
     /**
-     * Helper to get the tint of the stored chemical. This is equivalent to calling {@code getType().getTint()}
-     *
-     * @return The tint of the stored chemical.
-     *
-     * @apiNote Does not have any special handling for when the stack is empty.
-     */
-    public int getChemicalTint() {
-        return getChemical().getTint();
-    }
-
-    /**
-     * Helper to get the color representation of the stored chemical. This is equivalent to calling {@code getType().getColorRepresentation()} and is used for things like
-     * durability bars of chemical tanks.
-     *
-     * @return The color representation of the stored chemical.
-     *
-     * @apiNote Does not have any special handling for when the stack is empty.
-     */
-    public int getChemicalColorRepresentation() {
-        return getChemical().getColorRepresentation();
-    }
-
-    /**
      * Gets whether this chemical stack is empty.
      *
      * @return {@code true} if this stack is empty, {@code false} otherwise.
@@ -354,26 +330,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      */
     public void shrink(int amount) {
         setAmount(this.amount - amount);
-    }
-
-    /**
-     * Helper to check if this chemical is radioactive without having to look it up from the attributes.
-     *
-     * @return {@code true} if this chemical is radioactive.
-     *
-     * @since 10.5.15
-     */
-    public boolean isRadioactive() {
-        return getChemical().isRadioactive();
-    }
-
-    /**
-     * {@return radiation level of this chemical (scaled based on amount), or zero if it is not radioactive}
-     *
-     * @since 10.7.11
-     */
-    public double getRadioactivity() {
-        return getChemical().getRadioactivity() * amount();
     }
 
     /**

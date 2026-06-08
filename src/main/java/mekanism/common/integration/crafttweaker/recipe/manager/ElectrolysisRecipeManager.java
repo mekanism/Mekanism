@@ -33,7 +33,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
      *                            greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, long energyMultiplier) {
+    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, int energyMultiplier) {
         addRecipe(name, makeRecipe(input, leftChemicalOutput, rightChemicalOutput, energyMultiplier));
     }
 
@@ -50,7 +50,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
     @ZenCodeType.Method
     public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput) {
         //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
-        addRecipe(name, makeRecipe(input, leftChemicalOutput, rightChemicalOutput, 1L));
+        addRecipe(name, makeRecipe(input, leftChemicalOutput, rightChemicalOutput, 1));
     }
 
     /**
@@ -62,8 +62,8 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
      * @param energyMultiplier    Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to
      *                            be greater than or equal to one.
      */
-    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, long energyMultiplier) {
-        if (energyMultiplier < 1L) {
+    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, int energyMultiplier) {
+        if (energyMultiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
         return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftChemicalOutput), getAndValidateNotEmpty(rightChemicalOutput));

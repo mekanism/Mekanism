@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
@@ -118,7 +119,7 @@ public class RecipeViewerUtils {
         if (recipeType != null) {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();
-                for (ChemicalStack output : recipe.getOutputDefinition()) {
+                for (ChemicalStackTemplate output : recipe.getOutputDefinition()) {
                     if (anyMatch(supportedTypes, output.typeHolder())) {
                         stacks.addAll(recipe.getInput().getRepresentations(slotDisplayContext));
                         break;

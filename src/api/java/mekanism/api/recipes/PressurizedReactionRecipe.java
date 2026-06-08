@@ -5,6 +5,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -126,11 +127,10 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * @apiNote Both item and chemical may be present or one may be empty.
      */
-    public record PressurizedReactionRecipeOutput(@Nullable ItemStackTemplate item, @NotNull ChemicalStack chemical) {
+    public record PressurizedReactionRecipeOutput(@Nullable ItemStackTemplate item, @Nullable ChemicalStackTemplate chemical) {
 
         public PressurizedReactionRecipeOutput {
-            Objects.requireNonNull(chemical, "Chemical output cannot be null.");
-            if (item == null && chemical.isEmpty()) {
+            if (item == null && chemical == null) {
                 throw new IllegalArgumentException("At least one output must be present.");
             }
         }
@@ -143,12 +143,15 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
                 return false;
             }
             PressurizedReactionRecipeOutput other = (PressurizedReactionRecipeOutput) o;
-            return Objects.equals(item, other.item) && chemical.equals(other.chemical);
+            return Objects.equals(item, other.item) && Objects.equals(chemical, other.chemical);
         }
 
         @Override
         public int hashCode() {
-            int hash = chemical.hashCode();
+            int hash = 1;
+            if (chemical != null) {
+                hash = 31 * hash + chemical.hashCode();
+            }
             if (item != null) {
                 hash = 31 * hash + item.hashCode();
             }

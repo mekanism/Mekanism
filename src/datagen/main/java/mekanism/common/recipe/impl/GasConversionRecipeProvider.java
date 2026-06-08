@@ -28,27 +28,27 @@ class GasConversionRecipeProvider implements ISubRecipeProvider {
         //Flint -> oxygen
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(Items.FLINT),
-              MekanismChemicals.OXYGEN.asStack(10)
+              MekanismChemicals.OXYGEN.asTemplate(10)
         ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
-              MekanismChemicals.OSMIUM.asStack(1_800)
+              MekanismChemicals.OSMIUM.asTemplate(1_800)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              MekanismChemicals.OSMIUM.asStack(200)
+              MekanismChemicals.OSMIUM.asTemplate(200)
         ).save(consumer, Mekanism.rl(basePath + "osmium_from_ingot"));
         //Salt -> hydrogen chloride
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SALT),
-              MekanismChemicals.HYDROGEN_CHLORIDE.asStack(2)
+              MekanismChemicals.HYDROGEN_CHLORIDE.asTemplate(2)
         ).save(consumer, Mekanism.rl(basePath + "salt_to_hydrogen_chloride"));
         //Sulfur -> sulfuric acid
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_SULFUR),
-              MekanismChemicals.SULFURIC_ACID.asStack(2)
+              MekanismChemicals.SULFURIC_ACID.asTemplate(2)
         ).save(consumer, Mekanism.rl(basePath + "sulfur_to_sulfuric_acid"));
     }
 }

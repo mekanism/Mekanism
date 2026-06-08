@@ -48,6 +48,6 @@ public class CombinerRecipeManager extends MekanismRecipeManager<RecipeInput, Co
 
     @Override
     protected String describeOutputs(CombinerRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
     }
 }

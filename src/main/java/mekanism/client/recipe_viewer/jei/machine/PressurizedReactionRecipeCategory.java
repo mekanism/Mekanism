@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -70,18 +70,20 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations(slotDisplayContext));
         initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations(slotDisplayContext));
         List<ItemStackTemplate> itemOutputs = new ArrayList<>();
-        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
+        List<ChemicalStackTemplate> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             if (output.item() != null) {
                 itemOutputs.add(output.item());
             }
-            chemicalOutputs.add(output.chemical());
+            if (output.chemical() != null) {
+                chemicalOutputs.add(output.chemical());
+            }
         }
         if (!itemOutputs.isEmpty()) {
             initItem(builder, outputItem, itemOutputs);
         }
-        if (!chemicalOutputs.stream().allMatch(ChemicalStack::isEmpty)) {
-            initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, chemicalOutputs)
+        if (!chemicalOutputs.isEmpty()) {
+            initChemical(builder, outputChemical, chemicalOutputs)
                   .setSlotName(OUTPUT_CHEMICAL);
         }
     }

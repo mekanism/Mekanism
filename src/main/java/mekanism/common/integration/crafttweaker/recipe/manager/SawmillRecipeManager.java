@@ -12,7 +12,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
@@ -101,7 +100,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
      * @param mainOutput {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
      */
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack mainOutput) {
-        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
+        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), null, 0);
     }
 
     /**
@@ -112,7 +111,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
      * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
      */
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack secondaryOutput, double secondaryChance) {
-        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        return new BasicSawmillRecipe(CrTUtils.fromCrT(input), null, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     /**

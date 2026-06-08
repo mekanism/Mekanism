@@ -2,7 +2,7 @@ package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -23,7 +23,7 @@ public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe
      * @param input  Input.
      * @param output Output.
      */
-    public BasicPigmentExtractingRecipe(ItemStackIngredient input, ChemicalStack output) {
+    public BasicPigmentExtractingRecipe(ItemStackIngredient input, ChemicalStackTemplate output) {
         super(input, output, MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value());
     }
 

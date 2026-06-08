@@ -12,7 +12,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -53,11 +53,11 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStack output);
+    protected abstract ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output);
 
     @Override
     protected String describeOutputs(ItemStackToItemStackRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), template -> ItemStackUtil.getCommandString(template.create()));
     }
 
     @ZenRegister
@@ -71,7 +71,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
             return new BasicCrushingRecipe(CrTUtils.fromCrT(input), output);
         }
     }
@@ -87,7 +87,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
             return new BasicEnrichingRecipe(CrTUtils.fromCrT(input), output);
         }
     }
@@ -103,7 +103,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(IIngredientWithAmount input, ItemStackTemplate output) {
             return new BasicSmeltingRecipe(CrTUtils.fromCrT(input), output);
         }
     }

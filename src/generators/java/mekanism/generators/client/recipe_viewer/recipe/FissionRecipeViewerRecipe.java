@@ -10,12 +10,13 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.client.recipe_viewer.INamedRVRecipe;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.RegistryUtils;
@@ -28,16 +29,15 @@ import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.Nullable;
 
 //If null -> coolant is water
-public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStack outputCoolant,
-                                        ChemicalStack waste)
-      /*implements INamedRVRecipe */ {
+public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStackTemplate outputCoolant,
+                                        ChemicalStackTemplate waste) implements INamedRVRecipe {
 
     public static final Codec<FissionRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(FissionRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.EXTRA_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.inputCoolant())),
           ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(FissionRecipeViewerRecipe::fuel),
-          ChemicalStack.CODEC.fieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(FissionRecipeViewerRecipe::outputCoolant),
-          ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(FissionRecipeViewerRecipe::waste)
+          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(FissionRecipeViewerRecipe::outputCoolant),
+          ChemicalStackTemplate.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(FissionRecipeViewerRecipe::waste)
     ).apply(instance, (id, inputCoolant, fuel, outputCoolant, waste) ->
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
@@ -55,7 +55,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         recipes.add(new FissionRecipeViewerRecipe(
               RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-              MekanismChemicals.STEAM.asStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+              MekanismChemicals.STEAM.asTemplate(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.asTemplate(1)
         ));
         //Add recipes for all cooled coolants
         for (Map.Entry<ResourceKey<Chemical>, CooledCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()).entrySet()) {
@@ -66,7 +66,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
                   RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                  coolant.heat().toStack(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+                  ChemicalStackTemplate.fromNonEmptyStack(coolant.heat().toStack(amount)), MekanismChemicals.NUCLEAR_WASTE.asTemplate(1)
             ));
         }
         return recipes;
