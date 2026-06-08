@@ -15,6 +15,7 @@ import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.Nullable;
 
 public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityComponentProvider {
@@ -79,7 +80,7 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         @Override
         public void render(GuiGraphicsExtractor guiGraphics, int x, int y, DeltaTracker delta) {
             if (text != null) {
-                element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, 0xFFFFFFFF, 4, false);
+                element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, CommonColors.WHITE, 4, false);
                 y += 13;
             }
             element.render(guiGraphics, x, y + 1);

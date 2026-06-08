@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
@@ -97,7 +98,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true));
         searchField.setMaxLength(50);
         searchField.setVisible(true);
-        searchField.setTextColor(0xFFFFFF);
+        searchField.setTextColor(CommonColors.WHITE);
         if (MekanismConfig.client.qioAutoFocusSearchBar.get()) {
             setInitialFocus(searchField);
         }

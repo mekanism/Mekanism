@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -183,7 +184,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 200);
-        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, 0xFFFFFFFF, 16, 0, true, scale);
+        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, CommonColors.WHITE, 16, 0, true, scale);
         //pose.popPose();
     }
 

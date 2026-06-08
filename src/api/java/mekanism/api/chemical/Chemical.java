@@ -172,7 +172,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
     /**
      * Get the tint for rendering the chemical
      *
-     * @return int representation of color in RRGGBB format
+     * @return int representation of color in AARRGGBB format
      */
     public int getTint() {
         return tint;
@@ -181,7 +181,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
     /**
      * Get the color representation used for displaying in things like durability bars of chemical tanks.
      *
-     * @return int representation of color in RRGGBB format
+     * @return int representation of color in AARRGGBB format
      */
     public int getColorRepresentation() {
         return getTint();

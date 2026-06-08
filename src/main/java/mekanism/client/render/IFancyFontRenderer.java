@@ -10,6 +10,7 @@ import net.minecraft.client.gui.ActiveTextCollector.Parameters;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -266,7 +267,7 @@ public interface IFancyFontRenderer {
         }
 
         private void render(GuiGraphicsExtractor graphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
-            if ((color & 0xFF000000) == 0) {
+            if (ARGB.alpha(color) == 0) {
                 Mekanism.logger.warn("Alpha not supplied?", new Exception());
             }
             Font font = fontRenderer.font();

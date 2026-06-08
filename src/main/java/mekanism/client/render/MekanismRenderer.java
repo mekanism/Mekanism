@@ -37,6 +37,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -159,7 +160,7 @@ public class MekanismRenderer {
         if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
         }
-        return color(instance.typeHolder().value().getTint(), 1F);
+        return instance.typeHolder().value().getTint();
     }
 
     public static int color(@Nullable SupportsColorMap color) {
@@ -178,14 +179,14 @@ public class MekanismRenderer {
         FluidModel fluidModel = getFluidModel(typedInstance);
         FluidTintSource tintSource = fluidModel.fluidTintSource();
         if (tintSource == null) {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         }
         return tintSource.color(typedInstance.typeHolder().value().defaultFluidState());
     }
 
     public static int getColorARGB(@NotNull FluidResource fluidType, float fluidScale) {
         if (fluidType.isEmpty()) {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         }
         int color = getColorARGB(fluidType);
         if (MekanismUtils.lighterThanAirGas(fluidType)) {
@@ -205,20 +206,20 @@ public class MekanismRenderer {
 
     public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
             return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
         return ARGB.opaque(getTint(chemical));
     }
 
-    public static int getColorARGB(int rgb, float alpha) {
+    public static int getColorARGB(int argb, float alpha) {
         if (alpha >= 1) {
-            return ARGB.opaque(rgb);
-        } else if (alpha < 0) {
-            return ARGB.transparent(rgb);
+            return ARGB.opaque(argb);
+        } else if (alpha <= 0) {
+            return ARGB.transparent(argb);
         }
-        return ARGB.color(alpha, rgb);
+        return ARGB.color(alpha, argb);
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidResource fluidType) {

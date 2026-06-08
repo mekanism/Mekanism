@@ -4,12 +4,15 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 @NothingNullByDefault
 public class ChemicalBuilder {
 
     private final Identifier texture;
-    private int tint = 0xFFFFFF;
+    private int tint = CommonColors.WHITE;
 
     protected ChemicalBuilder(Identifier texture) {
         this.texture = texture;
@@ -25,9 +28,16 @@ public class ChemicalBuilder {
     /**
      * Sets the tint to apply to this chemical when rendering.
      *
-     * @param tint Color in RRGGBB format
+     * @param tint Color in AARRGGBB format
      */
     public ChemicalBuilder tint(int tint) {
+        if (ARGB.alpha(tint) == 0) {
+            if (FMLEnvironment.isProduction()) {
+                tint = ARGB.opaque(tint);
+            } else {
+                throw new IllegalArgumentException("Chemical tint should now includes alpha.");
+            }
+        }
         this.tint = tint;
         return this;
     }
@@ -35,7 +45,7 @@ public class ChemicalBuilder {
     /**
      * Gets the tint to apply to this chemical when rendering.
      *
-     * @return Tint in RRGGBB format.
+     * @return Tint in AARRGGBB format.
      */
     public int getTint() {
         return tint;

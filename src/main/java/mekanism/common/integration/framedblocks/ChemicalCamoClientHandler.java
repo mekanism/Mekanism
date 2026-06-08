@@ -12,6 +12,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
@@ -27,8 +28,7 @@ final class ChemicalCamoClientHandler extends ResourceCamoContentClientHandler<C
         ChemicalResource resource = chemicalCamoContent.getResource();
         //TODO - 26.1: Should we force translucency?
         Material.Baked stillMaterial = new Material.Baked(MekanismRenderer.getChemicalTexture(resource), false);
-        //TODO - 26.1: Check if we define alpha for chemicals is defined. We might want to enforce alpha to be specified when we used to not
-        return new ResourceModelSpec(stillMaterial, null, resource.getChemicalTint() != 0XFFFFFFFF, null);
+        return new ResourceModelSpec(stillMaterial, null, resource.getChemicalTint() != CommonColors.WHITE, null);
     }
 
     @Override

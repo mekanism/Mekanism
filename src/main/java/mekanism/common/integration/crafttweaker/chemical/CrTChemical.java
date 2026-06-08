@@ -37,7 +37,7 @@ public class CrTChemical {
     /**
      * Get the tint for rendering the chemical
      *
-     * @return int representation of color in RRGGBB format
+     * @return int representation of color in AARRGGBB format
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("tint")
@@ -48,7 +48,7 @@ public class CrTChemical {
     /**
      * Get the color representation used for displaying in things like durability bars of chemical tanks.
      *
-     * @return int representation of color in RRGGBB format
+     * @return int representation of color in AARRGGBB format
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("colorRepresentation")

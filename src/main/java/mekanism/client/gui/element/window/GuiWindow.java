@@ -21,6 +21,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -143,7 +144,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
             //todo - 26.1: check this vs the old. Looks rather strong on top of other windows
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.SHADOW, relativeX - 3, relativeY - 3, width + 6, height + 6, ARGB.color(0.75F, 0xFFFFFF));
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.SHADOW, relativeX - 3, relativeY - 3, width + 6, height + 6, ARGB.color(0.75F, CommonColors.WHITE));
         }
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
@@ -178,7 +179,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void renderBlur(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.BLUR, relativeX, relativeY, width, height, ARGB.color(0.3F, 0xFFFFFF));
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.BLUR, relativeX, relativeY, width, height, ARGB.color(0.3F, CommonColors.WHITE));
     }
 
     public final boolean togglePinned(GuiElement toggler, MouseButtonEvent event, boolean isDoubleClick) {

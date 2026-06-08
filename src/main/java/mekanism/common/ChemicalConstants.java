@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.common.base.IChemicalConstant;
+import net.minecraft.util.CommonColors;
 
 /**
  * Contains various information about different chemicals.
@@ -9,7 +10,7 @@ import mekanism.common.base.IChemicalConstant;
  * point they start supporting more accurate data, without us having to look any of the data back up.
  */
 public enum ChemicalConstants implements IChemicalConstant {
-    HYDROGEN("hydrogen", 0xFFFFFFFF, 0, 20.28F, 70.85F),
+    HYDROGEN("hydrogen", CommonColors.WHITE, 0, 20.28F, 70.85F),
     OXYGEN("oxygen", 0xFF6CE2FF, 0, 90.19F, 1_141),
     CHLORINE("chlorine", 0xFFCFE800, 0, 207.15F, 1_422.92F),
     SULFUR_DIOXIDE("sulfur_dioxide", 0xFFA99D90, 0, 263.05F, 1_400),

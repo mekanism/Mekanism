@@ -44,7 +44,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         /*if (state.currentScale > 0) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
-            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, state.currentScale, LightCoordsUtil.FULL_BRIGHT,
+            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), CommonColors.WHITE, state.currentScale, LightCoordsUtil.FULL_BRIGHT,
                   OverlayTexture.NO_OVERLAY, MekanismRenderer.energyIcon);
 
             poseStack.popPose();

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
@@ -81,10 +82,10 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
     public void collect(FreeRunnerRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
         setupAnim(state);
         if (state.leftVisible()) {
-            collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, 0xFFFFFFFF, null, hasEffect);
+            collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, hasEffect);
         }
         if (state.rightVisible) {
-            collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, 0xFFFFFFFF, null, hasEffect);
+            collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, hasEffect);
         }
     }
 

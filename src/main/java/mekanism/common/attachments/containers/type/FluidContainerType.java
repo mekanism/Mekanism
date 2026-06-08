@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -66,7 +67,7 @@ public class FluidContainerType extends ResourceContainerType<FluidResource, IFl
     @Override
     public int getRGBDurabilityForDisplay(FluidResource fluidType) {
         if (fluidType.isEmpty()) {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         }
         //TODO: Technically doesn't support things where the color is part of the texture such as lava
         // for chemicals it is supported via allowing people to override getColorRepresentation in their

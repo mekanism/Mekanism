@@ -18,6 +18,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -56,14 +57,14 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
         @Override
         public int getColorFrom() {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         }
 
         @Override
         public int getColorTo() {
             if (tile == null) {
                 //Should never actually be null, but just in case check it to make intellij happy
-                return 0xFFFFFFFF;
+                return CommonColors.WHITE;
             }
             if (tile.pigmentTank.isEmpty()) {
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
@@ -80,12 +81,12 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                         }
                     }
                     if (recipe != null) {
-                        return getColor(recipe.getOutput(input.toStack(inputSlot.amountAsInt())).getChemicalColorRepresentation());
+                        return recipe.getOutput(input.toStack(inputSlot.amountAsInt())).getChemicalColorRepresentation();
                     }
                 }
-                return 0xFFFFFFFF;
+                return CommonColors.WHITE;
             }
-            return getColor(tile.pigmentTank.resource().getChemicalColorRepresentation());
+            return tile.pigmentTank.resource().getChemicalColorRepresentation();
         }
 
         private ItemStackToChemicalRecipe getRecipeAndCache() {
@@ -96,13 +97,6 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 cachedRecipe = new WeakReference<>(recipe);
             }
             return recipe;
-        }
-
-        private int getColor(int tint) {
-            if ((tint & 0xFF000000) == 0) {
-                return 0xFF000000 | tint;
-            }
-            return tint;
         }
     }
 }

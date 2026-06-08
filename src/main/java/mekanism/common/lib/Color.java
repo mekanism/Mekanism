@@ -227,10 +227,6 @@ public class Color {
         return ret;
     }
 
-    public static int packOpaque(int rgb) {
-        return rgb | 0xFF000000;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

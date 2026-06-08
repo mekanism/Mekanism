@@ -9,6 +9,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 
 /**
  * Immutable class representing a color based module config (name and int value).
@@ -51,12 +53,12 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     );
 
     /**
-     * Creates a new {@link ModuleColorConfig} that supports alpha and has a default value of white ({@code 0xFFFFFFFF}).
+     * Creates a new {@link ModuleColorConfig} that supports alpha and has a default value of white.
      *
      * @implNote Color format is ARGB.
      */
     public static ModuleColorConfig argb(Identifier name) {
-        return argb(name, 0xFFFFFFFF);
+        return argb(name, CommonColors.WHITE);
     }
 
     /**
@@ -71,12 +73,12 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     /**
-     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has a default value of white ({@code 0xFFFFFFFF}).
+     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has a default value of white.
      *
      * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
      */
     public static ModuleColorConfig rgb(Identifier name) {
-        return rgb(name, 0xFFFFFFFF);
+        return rgb(name, CommonColors.WHITE);
     }
 
     /**
@@ -98,7 +100,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
         super(name);
         this.supportsAlpha = supportsAlpha;
         //If we don't handle alpha make sure we do have the alpha component present though
-        this.value = this.supportsAlpha ? value : value | 0xFF000000;
+        this.value = this.supportsAlpha ? value : ARGB.opaque(value);
     }
 
     /**
@@ -131,7 +133,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     @Override
     public ModuleColorConfig with(Integer value) {
         Objects.requireNonNull(value, "Value cannot be null.");
-        int sanitizedValue = this.supportsAlpha ? value : value | 0xFF000000;
+        int sanitizedValue = this.supportsAlpha ? value : ARGB.opaque(value);
         return this.value == sanitizedValue ? this : new ModuleColorConfig(name(), supportsAlpha, sanitizedValue);
     }
 

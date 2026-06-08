@@ -12,6 +12,8 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -63,7 +65,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             RESOURCE resource = handler.getResource(index);
             renderBar(guiGraphics, xOffset, yOffset, handler.getAmountAsLong(index), handler.getCapacityAsLong(index, resource), color.applyAsInt(resource));
         } else if (handler.size() == 0) {
-            renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
+            renderBar(guiGraphics, xOffset, yOffset, 0, 1, CommonColors.WHITE);
         } else {
             return false;
         }
@@ -72,8 +74,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
 
     private static void renderBar(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset, long amount, long capacity, int color) {
         int pixelWidth = StorageUtils.getBarWidth(MathUtils.divideToLevel(amount, capacity));
-        GuiUtils.fill(guiGraphics, xOffset + 2 + pixelWidth, yOffset, 13 - pixelWidth, 1, 0xFF000000);
-        GuiUtils.fill(guiGraphics, xOffset + 2, yOffset, pixelWidth, 1, color | 0xFF000000);
+        GuiUtils.fill(guiGraphics, xOffset + 2 + pixelWidth, yOffset, 13 - pixelWidth, 1, CommonColors.BLACK);
+        GuiUtils.fill(guiGraphics, xOffset + 2, yOffset, pixelWidth, 1, ARGB.opaque(color));
     }
 
     static int getDisplayTank(int tanks) {

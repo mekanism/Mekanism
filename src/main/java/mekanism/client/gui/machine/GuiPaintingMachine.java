@@ -14,6 +14,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityPaintingMachine;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,18 +52,14 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
         public int getColorFrom() {
             if (tile == null) {
                 //Should never actually be null, but just in case check it to make intellij happy
-                return 0xFFFFFFFF;
+                return CommonColors.WHITE;
             }
-            int tint = tile.pigmentTank.resource().getChemicalColorRepresentation();
-            if ((tint & 0xFF000000) == 0) {
-                return 0xFF000000 | tint;
-            }
-            return tint;
+            return tile.pigmentTank.resource().getChemicalColorRepresentation();
         }
 
         @Override
         public int getColorTo() {
-            return 0xFFFFFFFF;
+            return CommonColors.WHITE;
         }
     }
 }

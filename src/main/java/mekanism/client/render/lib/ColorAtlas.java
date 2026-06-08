@@ -11,6 +11,7 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.Nullable;
 
 public class ColorAtlas {
@@ -26,7 +27,7 @@ public class ColorAtlas {
 
     public ColorRegistryObject register() {
         //Default to white as the fallback
-        return register(0xFFFFFFFF);
+        return register(CommonColors.WHITE);
     }
 
     public ColorRegistryObject register(int defaultARGB) {

@@ -2,6 +2,7 @@ package mekanism.client;
 
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
+import net.minecraft.util.CommonColors;
 
 public class SpecialColors {
 
@@ -37,10 +38,10 @@ public class SpecialColors {
     public static final ColorRegistryObject TAB_TARGET_DIRECTION = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_JEI_REJECTS_TARGET = GUI_OBJECTS.register();
 
-    public static final ColorRegistryObject TEXT_TITLE = GUI_TEXT.register(0xFF404040);
+    public static final ColorRegistryObject TEXT_TITLE = GUI_TEXT.register(CommonColors.DARK_GRAY);
     public static final ColorRegistryObject TEXT_HEADING = GUI_TEXT.register(0xFF202020);
     public static final ColorRegistryObject TEXT_SUBHEADING = GUI_TEXT.register(0xFF787878);
     public static final ColorRegistryObject TEXT_SCREEN = GUI_TEXT.register(0xFF3CFE9A);
-    public static final ColorRegistryObject TEXT_ACTIVE_BUTTON = GUI_TEXT.register(0xFFFFFFFF);
-    public static final ColorRegistryObject TEXT_INACTIVE_BUTTON = GUI_TEXT.register(0xFFA0A0A0);
+    public static final ColorRegistryObject TEXT_ACTIVE_BUTTON = GUI_TEXT.register(CommonColors.WHITE);
+    public static final ColorRegistryObject TEXT_INACTIVE_BUTTON = GUI_TEXT.register(CommonColors.LIGHT_GRAY);
 }

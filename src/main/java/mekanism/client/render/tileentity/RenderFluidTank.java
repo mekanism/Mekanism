@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
@@ -95,11 +96,11 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     public static class FluidTankRenderState extends BlockEntityRenderState {
 
         public float contentsMaxY;
-        public int fluidTint = 0xFFFFFFFF;
+        public int fluidTint = CommonColors.WHITE;
         public int fluidGlow;
         public float fluidScale;
         public float valveMinY;
-        public int valveTint = 0xFFFFFFFF;
+        public int valveTint = CommonColors.WHITE;
         public int valveGlow;
         @Nullable
         public RenderResizableCuboid.TexturePicker fluidTexture;

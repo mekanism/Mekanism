@@ -29,6 +29,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
@@ -315,7 +316,7 @@ public class GuiColorWindow extends GuiWindow {
             drawTiledGradient(guiGraphics, relativeX, relativeY, width, height);
             int posX = relativeX + Math.round(GuiColorWindow.this.saturation * width) - 2;
             int posY = relativeY + Math.round((1 - GuiColorWindow.this.value) * height) - 2;
-            GuiUtils.drawOutline(guiGraphics, posX, posY, 5, 5, 0xFFFFFFFF);
+            GuiUtils.drawOutline(guiGraphics, posX, posY, 5, 5, CommonColors.WHITE);
             //Fill the selection in without taking alpha into account
             GuiUtils.fill(guiGraphics, posX + 1, posY + 1, 3, 3, getColor().alpha(1.0).argb());
         }

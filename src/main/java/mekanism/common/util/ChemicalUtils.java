@@ -13,6 +13,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import net.minecraft.core.Holder;
+import net.minecraft.util.ARGB;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -43,7 +45,16 @@ public class ChemicalUtils {
         if (colorRepresentation == null) {
             return new Chemical(builder);
         }
-        int color = colorRepresentation;
+        int color;
+        if (ARGB.alpha(colorRepresentation) == 0) {
+            if (FMLEnvironment.isProduction()) {
+                color = ARGB.opaque(colorRepresentation);
+            } else {
+                throw new IllegalArgumentException("Chemical tint should now includes alpha.");
+            }
+        } else {
+            color = colorRepresentation;
+        }
         return new Chemical(builder) {
             @Override
             public int getColorRepresentation() {

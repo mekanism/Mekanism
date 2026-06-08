@@ -17,6 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
@@ -144,7 +145,7 @@ public class FluidDeferredRegister {
     }
 
     public static MapColor getClosestColor(int tint) {
-        if (tint == 0xFFFFFFFF) {
+        if (tint == CommonColors.WHITE) {
             return MapColor.NONE;
         }
         int red = ARGB.red(tint);
@@ -226,7 +227,7 @@ public class FluidDeferredRegister {
         //For now all our fluids use the same "overlay" for being against glass as vanilla water.
         private Identifier overlayTexture = OVERLAY;
         private Identifier renderOverlayTexture = RENDER_OVERLAY;
-        private int color = 0xFFFFFFFF;
+        private int color = CommonColors.WHITE;
 
         private FluidTypeRenderProperties() {
         }

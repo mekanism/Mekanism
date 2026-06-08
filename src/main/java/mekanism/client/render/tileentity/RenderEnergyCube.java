@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -100,7 +101,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
 
     public static class EnergyCubeRenderState extends BlockEntityRenderState {
 
-        public int coreTint = 0xFFFFFFFF;
+        public int coreTint = CommonColors.WHITE;
         public float ticks;
     }
 }

@@ -26,7 +26,7 @@ public class CrTChemicalBuilder {
     /**
      * Sets the tint to apply to this chemical when rendering.
      *
-     * @param tint Color in RRGGBB format
+     * @param tint Color in AARRGGBB format
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder tint(int tint) {
@@ -38,7 +38,7 @@ public class CrTChemicalBuilder {
      * Sets the color representation to apply to this chemical when used for things like durability bars. Mostly for use in combination with custom textures that are not
      * tinted.
      *
-     * @param color Color in RRGGBB format
+     * @param color Color in AARRGGBB format
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder colorRepresentation(int color) {

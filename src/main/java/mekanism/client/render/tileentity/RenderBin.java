@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -171,7 +172,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                       false,
                       DisplayMode.POLYGON_OFFSET,
                       state.lightCoords,
-                      0xFFFFFFFF,//TODO - 26.1: What color do we want to be using?
+                      CommonColors.WHITE,//TODO - 26.1: What color do we want to be using?
                       0,
                       0
 

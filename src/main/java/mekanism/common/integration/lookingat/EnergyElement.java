@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 
 public non-sealed class EnergyElement extends LookingAtElement {
 
@@ -22,7 +23,7 @@ public non-sealed class EnergyElement extends LookingAtElement {
     protected final long maxEnergy;
 
     public EnergyElement(long energy, long maxEnergy) {
-        super(0xFF000000, 0xFFFFFFFF);
+        super(CommonColors.BLACK, CommonColors.WHITE);
         this.energy = energy;
         this.maxEnergy = maxEnergy;
     }

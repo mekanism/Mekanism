@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material.Baked;
 import net.minecraft.data.AtlasIds;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -166,7 +167,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         public float bladeRotation;
         public float itemRotation;
         public boolean active;
-        public int pasteTint = 0xFFFFFFFF;
+        public int pasteTint = CommonColors.WHITE;
         @Nullable
         public RenderResizableCuboid.TexturePicker pasteTexture;
         public int stage;
@@ -292,7 +293,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             Vector3f vector3f = new Vector3f(xOffset, yOffset, 0.0F).rotate(quaternion).mul(quadSize).add(x, y, z);
             buffer.addVertex(poseStack, vector3f.x(), vector3f.y(), vector3f.z())
                   .setUv(u, v)
-                  .setColor(0xFFFFFFFF)
+                  .setColor(CommonColors.WHITE)
                   .setLight(light);
         }
 

@@ -1,5 +1,7 @@
 package mekanism.client.recipe_viewer.color;
 
+import net.minecraft.util.CommonColors;
+
 public class PaintingColorDetails extends RecipeViewerColorDetails {
 
     @Override
@@ -9,6 +11,6 @@ public class PaintingColorDetails extends RecipeViewerColorDetails {
 
     @Override
     public int getColorTo() {
-        return 0xFFFFFFFF;
+        return CommonColors.WHITE;
     }
 }

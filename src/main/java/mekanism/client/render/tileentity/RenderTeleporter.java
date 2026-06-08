@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -144,7 +145,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
-        public int tint = 0xFFFFFFFF;
+        public int tint = CommonColors.WHITE;
         public byte renderAxis = RenderResizableCuboid.SideRender.ALL_FACES;
     }
 }

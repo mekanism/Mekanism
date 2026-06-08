@@ -78,7 +78,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
         return actualAlpha > 0 && super.shouldRender(flame, camera, camX, camY, camZ);
     }
 
-    public class FlameRenderState extends EntityRenderState {
+    public static class FlameRenderState extends EntityRenderState {
 
         public float xRot;
         public float yRot;

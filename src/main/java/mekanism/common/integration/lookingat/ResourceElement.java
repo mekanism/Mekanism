@@ -5,6 +5,7 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public abstract sealed class ResourceElement<RESOURCE extends Resource> extends 
     protected final long capacity;
 
     public ResourceElement(@NotNull LargeResourceStack<RESOURCE> stored, long capacity) {
-        super(0xFF000000, 0xFFFFFFFF);
+        super(CommonColors.BLACK, CommonColors.WHITE);
         this.stored = stored;
         this.capacity = capacity;
     }

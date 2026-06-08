@@ -23,6 +23,7 @@ import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +36,8 @@ import org.joml.Matrix3x2fStack;
  */
 public class GuiTextField extends GuiElement {
 
-    public static final int DEFAULT_BORDER_COLOR = 0xFFA0A0A0;
-    public static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;
+    public static final int DEFAULT_BORDER_COLOR = CommonColors.LIGHT_GRAY;
+    public static final int DEFAULT_BACKGROUND_COLOR = CommonColors.BLACK;
     public static final IntSupplier SCREEN_COLOR = SpecialColors.TEXT_SCREEN::argb;
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 

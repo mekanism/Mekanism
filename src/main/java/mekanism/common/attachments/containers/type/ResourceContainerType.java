@@ -21,6 +21,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -421,6 +422,6 @@ public abstract class ResourceContainerType<RESOURCE extends @NonNull Resource, 
 
     /// Gets the color that represents the given resource for use in "durability" bars.
     public int getRGBDurabilityForDisplay(RESOURCE resource) {
-        return 0xFFFFFFFF;
+        return CommonColors.WHITE;
     }
 }
