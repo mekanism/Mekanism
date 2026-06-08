@@ -1,5 +1,6 @@
 package mekanism.common.tile.multiblock;
 
+import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -15,9 +16,10 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
     private MachineEnergyContainer<TileEntityInductionCell> energyContainer;
-    public InductionCellTier tier;
+    public final InductionCellTier tier;
 
     public TileEntityInductionCell(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, InductionCellTier.class));
         super(blockProvider, pos, state);
     }
 
@@ -25,12 +27,6 @@ public class TileEntityInductionCell extends TileEntityInternalMultiblock {
     protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.internal(this, listener);
         return _ -> energyContainer;
-    }
-
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), InductionCellTier.class);
     }
 
     public MachineEnergyContainer<TileEntityInductionCell> energyContainer() {

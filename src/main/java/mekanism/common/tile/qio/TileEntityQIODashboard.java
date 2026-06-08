@@ -32,18 +32,18 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     /**
      * @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
      */
-    private QIOCraftingWindow[] craftingWindows;
+    private final QIOCraftingWindow[] craftingWindows;
     private boolean insertIntoFrequency = true;
     private boolean recipesChecked = false;
 
     public TileEntityQIODashboard(BlockPos pos, BlockState state) {
+        craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
         super(MekanismBlocks.QIO_DASHBOARD, pos, state);
     }
 
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
         for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
             //Note: We don't bother passing a special listener as:
             // a. We don't support comparators

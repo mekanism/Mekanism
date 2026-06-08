@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
@@ -62,7 +63,10 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return new AttachedSideConfig(configInfo);
     }
 
+    private final EnergyCubeTier tier;
+
     public ItemBlockEnergyCube(BlockEnergyCube block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, EnergyCubeTier.class));
         super(block, true, properties
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
@@ -72,7 +76,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @NotNull
     @Override
     public EnergyCubeTier getTier() {
-        return Attribute.getTier(getBlock(), EnergyCubeTier.class);
+        return tier;
     }
 
     @Override
@@ -80,7 +84,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
           @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
-        tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getCapacity())));
+        tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(tier.getCapacity())));
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
@@ -107,7 +111,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT).toStack());
@@ -119,7 +122,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public boolean addDefault() {
-        return getTier() != EnergyCubeTier.CREATIVE;
+        return tier != EnergyCubeTier.CREATIVE;
     }
 
     public static ItemResource withCreativeSideConfig(AttachedSideConfig config) {

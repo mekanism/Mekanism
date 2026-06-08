@@ -1,5 +1,6 @@
 package mekanism.common.item.block.transmitter;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -19,14 +20,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPressurizedTube extends ItemBlockTooltip<BlockSmallTransmitter<TileEntityPressurizedTube>> {
 
+    private final TubeTier tier;
+
     public ItemBlockPressurizedTube(BlockSmallTransmitter<TileEntityPressurizedTube> block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, TubeTier.class));
         super(block, true, properties);
     }
 
     @NotNull
     @Override
     public TubeTier getTier() {
-        return Attribute.getTier(getBlock(), TubeTier.class);
+        return tier;
     }
 
     @Override
@@ -41,7 +45,6 @@ public class ItemBlockPressurizedTube extends ItemBlockTooltip<BlockSmallTransmi
     protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
           @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.addStats(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
-        TubeTier tier = getTier();
         tooltipAdder.accept(MekanismLang.CAPACITY_MB_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
         tooltipAdder.accept(MekanismLang.PUMP_RATE_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getTransferRate())));
     }

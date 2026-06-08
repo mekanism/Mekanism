@@ -41,31 +41,17 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    private static WindowPosition calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
-        WindowPosition lastPosition = windowData.getLastPosition();
-        int lastX = lastPosition.x();
-        if (lastX != Integer.MAX_VALUE) {
-            int guiLeft = gui.getGuiLeft();
-            if (guiLeft + lastX < 0) {
-                //If our x position would be off the screen, then we shift it to as close as we can go
-                lastX = -guiLeft;
-            } else if (guiLeft + lastX + width > minecraft.getWindow().getGuiScaledWidth()) {
-                //If our window's end would be off the screen shift it to be as close as we can go
-                lastX = minecraft.getWindow().getGuiScaledWidth() - guiLeft - width;
-            }
+    private static int calculateTarget(int lastPosition, int start, int size, int scaledSize, int defaultValue) {
+        if (lastPosition == Integer.MAX_VALUE) {
+            return defaultValue;
+        } else if (start + lastPosition < 0) {
+            //If our x position would be off the screen, then we shift it to as close as we can go
+            return -start;
+        } else if (start + lastPosition + size > scaledSize) {
+            //If our window's end would be off the screen shift it to be as close as we can go
+            return scaledSize - start - size;
         }
-        int lastY = lastPosition.y();
-        if (lastY != Integer.MAX_VALUE) {
-            int guiTop = gui.getGuiTop();
-            if (guiTop + lastY < 0) {
-                //If our y position would be off the screen, then we shift it to as close as we can go
-                lastY = -guiTop;
-            } else if (guiTop + lastY + height > minecraft.getWindow().getGuiScaledHeight()) {
-                //If our window's end would be off the screen shift it to be as close as we can go
-                lastY = minecraft.getWindow().getGuiScaledHeight() - guiTop - height;
-            }
-        }
-        return new WindowPosition(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY, lastPosition.pinned());
+        return lastPosition;
     }
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, WindowType windowType) {
@@ -73,14 +59,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, SelectedWindowData windowData) {
-        //Hacky system to calculate proper x and y positions
-        this(gui, calculateOpenPosition(gui, windowData, x, y, width, height), width, height, windowData);
-    }
-
-    private GuiWindow(IGuiWrapper gui, WindowPosition calculatedPosition, int width, int height, SelectedWindowData windowData) {
-        super(GuiMekanism.BASE_BACKGROUND_SLICE, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
+        WindowPosition lastPosition = windowData.getLastPosition();
+        int targetX = calculateTarget(lastPosition.x(), gui.getGuiLeft(), width, minecraft.getWindow().getGuiScaledWidth(), x);
+        int targetY = calculateTarget(lastPosition.y(), gui.getGuiTop(), height, minecraft.getWindow().getGuiScaledHeight(), y);
+        this.pinned = lastPosition.pinned();
         this.windowData = windowData;
-        this.pinned = calculatedPosition.pinned();
+        super(GuiMekanism.BASE_BACKGROUND_SLICE, gui, targetX, targetY, width, height);
         isOverlay = true;
         active = true;
         msOpened = Util.getMillis();

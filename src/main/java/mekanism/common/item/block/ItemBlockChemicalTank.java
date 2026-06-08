@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -37,7 +38,10 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
         return new AttachedSideConfig(configInfo);
     });
 
+    private final ChemicalTankTier tier;
+
     public ItemBlockChemicalTank(BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>> block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, ChemicalTankTier.class));
         super(block, true, properties
               .component(MekanismDataComponents.DUMP_MODE, GasMode.IDLE)
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
@@ -47,13 +51,12 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public ChemicalTankTier getTier() {
-        return Attribute.getTier(getBlock(), ChemicalTankTier.class);
+        return tier;
     }
 
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        ChemicalTankTier tier = getTier();
         StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier == ChemicalTankTier.CREATIVE);
         if (tier == ChemicalTankTier.CREATIVE) {
             tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));

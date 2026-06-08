@@ -1,5 +1,6 @@
 package mekanism.common.item.block.machine;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
@@ -73,7 +74,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implements IAttachmentBasedModeItem<Boolean> {
 
+    private final FluidTankTier tier;
+
     public ItemBlockFluidTank(BlockFluidTank block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, FluidTankTier.class));
         super(block, true, properties.component(MekanismDataComponents.BUCKET_MODE, false)
               .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH)
         );
@@ -82,13 +86,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @NotNull
     @Override
     public FluidTankTier getTier() {
-        return Attribute.getTier(getBlock(), FluidTankTier.class);
+        return tier;
     }
 
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
           @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        FluidTankTier tier = getTier();
         LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         if (fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));

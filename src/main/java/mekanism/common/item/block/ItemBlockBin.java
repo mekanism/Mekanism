@@ -1,5 +1,6 @@
 package mekanism.common.item.block;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
@@ -23,19 +24,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
 
+    private final BinTier tier;
+
     public ItemBlockBin(BlockBin block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, BinTier.class));
         super(block, properties.component(MekanismDataComponents.LOCK, LockData.EMPTY));
     }
 
     @Override
     public BinTier getTier() {
-        return Attribute.getTier(getBlock(), BinTier.class);
+        return tier;
     }
 
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
           @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        BinTier tier = getTier();
         if (tier != null) {
             LargeResourceStack<ItemResource> contents = ContainerType.ITEM.getStoredContentsFromAttachment(itemAccess);
             if (contents.isEmpty()) {
@@ -62,6 +65,6 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
 
     @Override
     public boolean canContentsDrop(ItemResource itemType) {
-        return getTier() != BinTier.CREATIVE;
+        return tier != BinTier.CREATIVE;
     }
 }

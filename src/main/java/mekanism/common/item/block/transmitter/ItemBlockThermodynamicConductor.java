@@ -1,5 +1,6 @@
 package mekanism.common.item.block.transmitter;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -18,14 +19,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockThermodynamicConductor extends ItemBlockTooltip<BlockSmallTransmitter<TileEntityThermodynamicConductor>> {
 
+    private final ConductorTier tier;
+
     public ItemBlockThermodynamicConductor(BlockSmallTransmitter<TileEntityThermodynamicConductor> block, Item.Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, ConductorTier.class));
         super(block, true, properties);
     }
 
     @NotNull
     @Override
     public ConductorTier getTier() {
-        return Attribute.getTier(getBlock(), ConductorTier.class);
+        return tier;
     }
 
     @Override
@@ -40,7 +44,6 @@ public class ItemBlockThermodynamicConductor extends ItemBlockTooltip<BlockSmall
     protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
           @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.addStats(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
-        ConductorTier tier = getTier();
         tooltipAdder.accept(MekanismLang.CONDUCTION.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getInverseConduction()));
         tooltipAdder.accept(MekanismLang.INSULATION.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getInverseConductionInsulation()));
         tooltipAdder.accept(MekanismLang.HEAT_CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getHeatCapacity()));

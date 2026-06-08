@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -75,7 +76,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    public FluidTankTier tier;
+    public final FluidTankTier tier;
 
     private ValveJournal valveJournal;
 
@@ -92,6 +93,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private int lightUpdateDelay;
 
     public TileEntityFluidTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, FluidTankTier.class));
         super(blockProvider, pos, state);
         delaySupplier = NO_DELAY;
     }
@@ -99,7 +101,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), FluidTankTier.class);
         valveJournal = new ValveJournal();
     }
 

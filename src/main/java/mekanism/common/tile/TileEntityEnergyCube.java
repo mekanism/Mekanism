@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -52,7 +53,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     /**
      * This Energy Cube's tier.
      */
-    private EnergyCubeTier tier;
+    private final EnergyCubeTier tier;
     private float prevScale;
 
     private EnergyCubeEnergyContainer energyContainer;
@@ -65,17 +66,12 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
      * A block used to store and transfer electricity.
      */
     public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, EnergyCubeTier.class));
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer);
-        ejectorComponent = new TileComponentEjector(this, () -> tier.getTransferRate(), false);
+        ejectorComponent = new TileComponentEjector(this, tier::getTransferRate, false);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> canFunction());
-    }
-
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), EnergyCubeTier.class);
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
@@ -70,7 +71,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                         "getFilledPercentage"}, docPlaceholder = "tank")
     private IChemicalTank chemicalTank;
-    private ChemicalTankTier tier;
+    private final ChemicalTankTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem", docPlaceholder = "drain slot")
     ChemicalInventorySlot drainSlot;
@@ -78,18 +79,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     ChemicalInventorySlot fillSlot;
 
     public TileEntityChemicalTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, ChemicalTankTier.class));
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank);
-        ejectorComponent = new TileComponentEjector(this, () -> tier.getTransferRate());
+        ejectorComponent = new TileComponentEjector(this, tier::getTransferRate);
         ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL)
               .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
-    }
-
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), ChemicalTankTier.class);
     }
 
     @NotNull

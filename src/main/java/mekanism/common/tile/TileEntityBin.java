@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Objects;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -55,20 +56,15 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public int removeTicks = 0;
     private int delayTicks;
     private boolean needsSync;
-    private BinTier tier;
+    private final BinTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored", docPlaceholder = "bin")
     BinInventorySlot binSlot;
 
     public TileEntityBin(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, BinTier.class));
         super(blockProvider, pos, state);
         delaySupplier = NO_DELAY;
-    }
-
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), BinTier.class);
     }
 
     @NotNull

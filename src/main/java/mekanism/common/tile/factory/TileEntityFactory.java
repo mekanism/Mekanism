@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -83,7 +84,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
      */
     protected static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
-    protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
+    protected final FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     protected BooleanSupplier[] recheckAllRecipeErrors;
     protected final ErrorTracker errorTracker;
     private final boolean[] activeStates;
@@ -91,7 +92,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     /**
      * This Factory's tier.
      */
-    public FactoryTier tier;
+    public final FactoryTier tier;
     /**
      * An int[] used to track all current operations' progress.
      */
@@ -119,6 +120,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
+        FactoryTier tier = Objects.requireNonNull(Attribute.getTier(blockProvider, FactoryTier.class));
+        this.tier = tier;
+        recipeCacheLookupMonitors = new FactoryRecipeCacheLookupMonitor[tier.processes];
         super(blockProvider, pos, state);
         type = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
         inputSlots = new ArrayList<>();
@@ -171,9 +175,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        tier = Attribute.getTier(getBlockHolder(), FactoryTier.class);
         Runnable setSortingNeeded = () -> sortingNeeded = true;
-        recipeCacheLookupMonitors = new FactoryRecipeCacheLookupMonitor[tier.processes];
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
             recipeCacheLookupMonitors[i] = new FactoryRecipeCacheLookupMonitor<>(this, i, setSortingNeeded);
         }

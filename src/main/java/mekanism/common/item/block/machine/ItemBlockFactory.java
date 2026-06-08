@@ -1,5 +1,6 @@
 package mekanism.common.item.block.machine;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -31,7 +32,10 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
         };
     }
 
+    private final FactoryTier tier;
+
     public ItemBlockFactory(BlockFactory<?> block, Properties properties) {
+        tier = Objects.requireNonNull(Attribute.getTier(block, FactoryTier.class));
         super(block, true, properties
               .component(MekanismDataComponents.SORTING, false)
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
@@ -41,7 +45,7 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     @Override
     public FactoryTier getTier() {
-        return Attribute.getTier(getBlock(), FactoryTier.class);
+        return tier;
     }
 
     @Override
