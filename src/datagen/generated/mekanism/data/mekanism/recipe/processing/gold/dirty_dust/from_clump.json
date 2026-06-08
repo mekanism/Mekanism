@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "#c:clumps/gold"
+    "ingredient": "#mekanism:clumps/gold"
   },
   "output": {
     "id": "mekanism:dirty_dust_gold"

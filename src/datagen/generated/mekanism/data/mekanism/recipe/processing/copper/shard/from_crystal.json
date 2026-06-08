@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/copper"
+    "ingredient": "#mekanism:crystals/copper"
   },
   "output": {
     "id": "mekanism:shard_copper"

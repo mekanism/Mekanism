@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "#c:clumps/lead"
+    "ingredient": "#mekanism:clumps/lead"
   },
   "output": {
     "id": "mekanism:dirty_dust_lead"

@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:shards/tin"
+    "ingredient": "#mekanism:shards/tin"
   },
   "output": {
     "id": "mekanism:clump_tin"

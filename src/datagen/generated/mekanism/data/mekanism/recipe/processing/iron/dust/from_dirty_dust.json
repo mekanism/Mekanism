@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "#c:dirty_dusts/iron"
+    "ingredient": "#mekanism:dirty_dusts/iron"
   },
   "output": {
     "id": "mekanism:dust_iron"

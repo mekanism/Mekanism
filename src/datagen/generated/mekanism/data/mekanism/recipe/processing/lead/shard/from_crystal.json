@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/lead"
+    "ingredient": "#mekanism:crystals/lead"
   },
   "output": {
     "id": "mekanism:shard_lead"

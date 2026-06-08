@@ -48,7 +48,7 @@ public class MekanismTags {
                         if (type.isVanilla() || type == ResourceType.DUST) {
                             PROCESSED_RESOURCES.put(type, resource, commonTag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
                         } else {
-                            PROCESSED_RESOURCES.put(type, resource, commonTag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
+                            PROCESSED_RESOURCES.put(type, resource, tag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
                         }
                     }
                 }

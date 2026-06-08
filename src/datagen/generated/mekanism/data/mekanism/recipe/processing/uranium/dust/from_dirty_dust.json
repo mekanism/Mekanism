@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "#c:dirty_dusts/uranium"
+    "ingredient": "#mekanism:dirty_dusts/uranium"
   },
   "output": {
     "id": "mekanism:dust_uranium"

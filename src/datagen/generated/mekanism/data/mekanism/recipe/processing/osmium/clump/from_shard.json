@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:shards/osmium"
+    "ingredient": "#mekanism:shards/osmium"
   },
   "output": {
     "id": "mekanism:clump_osmium"

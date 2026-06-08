@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "ingredient": "#c:dirty_dusts/tin"
+    "ingredient": "#mekanism:dirty_dusts/tin"
   },
   "output": {
     "id": "mekanism:dust_tin"

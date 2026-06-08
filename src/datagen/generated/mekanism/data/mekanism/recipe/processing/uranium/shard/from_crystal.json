@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/uranium"
+    "ingredient": "#mekanism:crystals/uranium"
   },
   "output": {
     "id": "mekanism:shard_uranium"

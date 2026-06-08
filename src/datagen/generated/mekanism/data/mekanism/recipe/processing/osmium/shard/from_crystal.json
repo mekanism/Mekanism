@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/osmium"
+    "ingredient": "#mekanism:crystals/osmium"
   },
   "output": {
     "id": "mekanism:shard_osmium"

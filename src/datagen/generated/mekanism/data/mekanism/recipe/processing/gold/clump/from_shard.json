@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:shards/gold"
+    "ingredient": "#mekanism:shards/gold"
   },
   "output": {
     "id": "mekanism:clump_gold"

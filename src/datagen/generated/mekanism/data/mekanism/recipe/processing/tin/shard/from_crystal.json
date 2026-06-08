@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/tin"
+    "ingredient": "#mekanism:crystals/tin"
   },
   "output": {
     "id": "mekanism:shard_tin"

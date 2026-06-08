@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "#c:clumps/iron"
+    "ingredient": "#mekanism:clumps/iron"
   },
   "output": {
     "id": "mekanism:dirty_dust_iron"

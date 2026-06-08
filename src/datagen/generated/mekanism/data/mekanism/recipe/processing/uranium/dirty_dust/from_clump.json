@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "#c:clumps/uranium"
+    "ingredient": "#mekanism:clumps/uranium"
   },
   "output": {
     "id": "mekanism:dirty_dust_uranium"

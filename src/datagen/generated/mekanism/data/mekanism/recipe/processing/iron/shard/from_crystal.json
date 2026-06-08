@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "ingredient": "#c:crystals/iron"
+    "ingredient": "#mekanism:crystals/iron"
   },
   "output": {
     "id": "mekanism:shard_iron"
