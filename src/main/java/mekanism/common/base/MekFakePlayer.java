@@ -84,7 +84,7 @@ public class MekFakePlayer extends FakePlayer {
 
     @Override
     public @NonNull String getPlainTextName() {
-        return emulatingName != null ? emulatingName : super.getPlainTextName();
+        return emulatingName == null ? super.getPlainTextName() : emulatingName;
     }
 
     public void cleanupFakePlayer(ServerLevel world) {

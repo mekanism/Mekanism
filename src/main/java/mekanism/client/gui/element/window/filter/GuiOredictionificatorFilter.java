@@ -44,7 +44,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (element, event, isDoubleClick) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (_, _, _) -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
@@ -52,7 +52,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             }
             return false;
         })).setTooltip(MekanismLang.LAST_ITEM);
-        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (element, event, isDoubleClick) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (_, _, _) -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();

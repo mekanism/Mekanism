@@ -407,9 +407,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
         if (!isFocused()) {
             return switch (event) {
-                case ArrowNavigation arrowNavigation when supportsArrowNavigation() -> ComponentPath.leaf(this);
-                case TabNavigation tabNavigation when supportsTabNavigation() -> ComponentPath.leaf(this);
-                case InitialFocus initialFocus -> ComponentPath.leaf(this);
+                case ArrowNavigation _ when supportsArrowNavigation() -> ComponentPath.leaf(this);
+                case TabNavigation _ when supportsTabNavigation() -> ComponentPath.leaf(this);
+                case InitialFocus _ -> ComponentPath.leaf(this);
                 default -> ContainerEventHandler.super.nextFocusPath(event);
             };
         }
@@ -702,8 +702,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
         ButtonBackground(Identifier base) {
             this.base = base;
-            this.focus = base != null ? base.withSuffix("_focus") : null;
-            this.inactive = base != null ? base.withSuffix("_inactive") : null;
+            this.focus = base == null ? null : base.withSuffix("_focus");
+            this.inactive = base == null ? null : base.withSuffix("_inactive");
         }
 
         public Identifier base() {
@@ -722,6 +722,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @FunctionalInterface
     public interface IClickable {
 
+        //TODO: Can we make the element be a generic type? It might allow for making the implementations non-capturing
         boolean onClick(GuiElement element, @NotNull MouseButtonEvent event, boolean isDoubleClick);
     }
 }

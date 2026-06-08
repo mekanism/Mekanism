@@ -195,7 +195,7 @@ public class BoltEffect {
     private record BoltQuadData(BoltQuads quads, QuadCache cache) {
     }
 
-    protected record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
+    private record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
     }
 
     public static class BoltQuads {
@@ -216,6 +216,7 @@ public class BoltEffect {
      *
      * @author aidancbrady
      */
+    @FunctionalInterface
     public interface SpreadFunction {
 
         /** A steady linear increase in perpendicular noise. */
@@ -235,6 +236,7 @@ public class BoltEffect {
      *
      * @author aidancbrady
      */
+    @FunctionalInterface
     public interface RandomFunction {
 
         /** Uniform probability distribution. */
@@ -250,18 +252,19 @@ public class BoltEffect {
      *
      * @author aidancbrady
      */
+    @FunctionalInterface
     public interface SegmentSpreader {
 
         /**
          * Don't remember where the last segment left off, just randomly move from the straight-line vector.
          */
-        SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff, scale, progress, rand) -> randVec.scale(maxDiff * rand);
+        SegmentSpreader NO_MEMORY = (_, randVec, maxDiff, _, _, rand) -> randVec.scale(maxDiff * rand);
 
         /**
          * Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement.
          */
         static SegmentSpreader memory(float memoryFactor) {
-            return (perpendicularDist, randVec, maxDiff, spreadScale, progress, rand) -> {
+            return (perpendicularDist, randVec, maxDiff, _, _, rand) -> {
                 double nextDiff = maxDiff * (1 - memoryFactor) * rand;
                 Vec3 cur = randVec.scale(nextDiff);
                 perpendicularDist = perpendicularDist.add(cur);
@@ -283,6 +286,7 @@ public class BoltEffect {
      *
      * @author aidancbrady
      */
+    @FunctionalInterface
     public interface SpawnFunction {
 
         /** Allow for bolts to be spawned each update call without any delay. */
@@ -340,10 +344,11 @@ public class BoltEffect {
      *
      * @author aidancbrady
      */
+    @FunctionalInterface
     public interface FadeFunction {
 
         /** No fade; render the bolts entirely throughout their lifespan. */
-        FadeFunction NONE = (totalBolts, lifeScale) -> new RenderBounds(0, totalBolts);
+        FadeFunction NONE = (totalBolts, _) -> new RenderBounds(0, totalBolts);
 
         /**
          * Render bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).

@@ -62,7 +62,7 @@ public final class InventoryUtils {
             }
             int scalar = itemAccess.getAmount();
             BlockPos blockPos = entity.blockPosition();
-            ItemDropper<BlockPos> dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
+            ItemDropper<BlockPos> dropper = (lvl, pos, _, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
             if (itemType.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(itemType)) {

@@ -121,7 +121,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         return 0;
                     }
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
-                    return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
+                    return module == null ? 0L : MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount();
                 }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3F;

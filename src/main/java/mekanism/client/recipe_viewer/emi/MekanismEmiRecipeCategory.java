@@ -28,7 +28,7 @@ public class MekanismEmiRecipeCategory extends EmiRecipeCategory {
     }
 
     private static EmiRenderable renderIcon(Identifier icon) {
-        return (graphics, x, y, delta) -> graphics.blit(icon, x - 1, y - 1, 0, 0, 18, 18, 18, 18);
+        return (graphics, x, y, _) -> graphics.blit(icon, x - 1, y - 1, 0, 0, 18, 18, 18, 18);
     }
 
     private final IRecipeViewerRecipeType<?> recipeType;

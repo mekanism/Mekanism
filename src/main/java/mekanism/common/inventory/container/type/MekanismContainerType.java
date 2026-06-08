@@ -68,7 +68,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
     public MenuConstructor create(Object data) {
         if (type.isInstance(data)) {
             T d = type.cast(data);
-            return (id, inv, player) -> mekanismConstructor.create(id, inv, d);
+            return (id, inv, _) -> mekanismConstructor.create(id, inv, d);
         }
         return null;
     }

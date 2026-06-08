@@ -20,6 +20,6 @@ public class GuiQIOImporter extends GuiQIOFilterHandler<TileEntityQIOImporter> {
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiScreenSwitch(this, 9, 122, imageWidth - 18, MekanismLang.QIO_IMPORT_WITHOUT_FILTER.translate(), tile::getImportWithoutFilter,
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_IMPORT_WITHOUT_FILTER, ((GuiQIOImporter) element.gui()).tile))));
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_IMPORT_WITHOUT_FILTER, ((GuiQIOImporter) element.gui()).tile))));
     }
 }

@@ -39,7 +39,6 @@ import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.list.SyncableCollection;
-import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
@@ -592,7 +591,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         switch (data) {
             case SyncableByteArray syncable -> syncable.set(value);
             case SyncableFrequency<?> syncable -> syncable.set(getLevel().registryAccess(), value);
-            case SyncableList<?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case SyncableCollection<?, ?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case null, default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data == null ? null : data.getClass().getName());
         }

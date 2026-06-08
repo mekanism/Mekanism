@@ -85,7 +85,7 @@ public class MekanismHUD implements GuiLayer {
                         IItemHUDProvider hudProvider = getHudProvider(stack);
                         if (hudProvider != null) {
                             count += makeComponent(hudProvider, player, stack.toStack(), null, renderStrings,
-                                  (provider, l, plyr, s, ignored) -> provider.addCurioHUDStrings(l, plyr, s));
+                                  (provider, l, plyr, s, _) -> provider.addCurioHUDStrings(l, plyr, s));
                         }
                     }
                 }

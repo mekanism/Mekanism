@@ -22,7 +22,7 @@ public class AdditionsCreativeTabs {
                 builder.backgroundTexture(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
-                      .displayItems((displayParameters, output) -> {
+                      .displayItems((_, output) -> {
                           CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, output);
                           CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, output);
                       })

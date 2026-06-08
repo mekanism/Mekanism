@@ -42,7 +42,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, isDoubleClick) -> {
+        removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, _) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
             return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getDataHolder(), event.hasShiftDown()));
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);

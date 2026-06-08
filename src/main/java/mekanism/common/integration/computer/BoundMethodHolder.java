@@ -119,7 +119,7 @@ public abstract class BoundMethodHolder {
         }
         Map<String, MethodHelpData> helpItems = methods.values().stream()
               .sorted(METHODDATA_COMPARATOR)
-              .collect(Collectors.toMap(md -> md.name() + "(" + String.join(", ", md.argumentNames()) + ")", MethodHelpData::from, (a, b) -> b));
+              .collect(Collectors.toMap(md -> md.name() + "(" + String.join(", ", md.argumentNames()) + ")", MethodHelpData::from, (_, b) -> b));
         return helper.convert(helpItems, helper::convert, helper::convert);
     }
 

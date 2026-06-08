@@ -31,7 +31,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
 
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        ItemStackTemplate template = Objects.requireNonNull(mainOutput != null ? mainOutput : secondaryOutput, "Illegal config");
+        ItemStackTemplate template = Objects.requireNonNull(mainOutput == null ? secondaryOutput : mainOutput, "Illegal config");
         return RecipeBuilder.getDefaultRecipeId(template);
     }
 

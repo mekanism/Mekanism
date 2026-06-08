@@ -62,7 +62,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             return genericClientActivated(stack, tile);
         }
         InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
-        return wrenchResult != InteractionResult.PASS ? wrenchResult : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return wrenchResult == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : wrenchResult;
     }
 
     @NotNull

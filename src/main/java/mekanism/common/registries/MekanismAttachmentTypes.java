@@ -25,7 +25,7 @@ public class MekanismAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
           () -> AttachmentType.builder(IRadiationManager.INSTANCE::baselineRadiation)
                 .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).fieldOf(SerializationConstants.RADIATION), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
-                .copyHandler((radiation, holder, provider) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
+                .copyHandler((radiation, _, _) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
                 .build()
     );
 

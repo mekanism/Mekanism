@@ -174,7 +174,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
 
         //Explore short circuits if the start position is not valid
         structure.coils = FormationProtocol.explore(world, chunkMap, complex.relative(Direction.UP), null,
-              (level, chunks, start, n, pos) -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, level, chunks, pos) != null);
+              (level, chunks, _, _, pos) -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, level, chunks, pos) != null);
 
         if (coils.size() > structure.coils) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS);

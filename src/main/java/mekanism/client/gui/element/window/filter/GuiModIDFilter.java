@@ -93,7 +93,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Nullable
     @Override
     protected IClickable getSlotClickHandler() {
-        return (element, event, isDoubleClick) -> {
+        return (element, event, _) -> {
             if (!event.hasShiftDown()) {
                 ItemStack stack = element.gui().getCarriedItem();
                 if (!stack.isEmpty()) {

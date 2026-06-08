@@ -163,7 +163,7 @@ public class GuiTextField extends GuiElement {
     }
 
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
-        checkmarkButton = addChild(type.getButton(this, (element, event, isDoubleClick) -> {
+        checkmarkButton = addChild(type.getButton(this, (_, _, _) -> {
             callback.run();
             parent.setFocused(this);
             return true;

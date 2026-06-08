@@ -131,7 +131,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             }
             return close(element, event, isDoubleClick);
         }));
-        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (element, event, isDoubleClick) -> {
+        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (_, _, _) -> {
             validateAndSave();
             return true;
         }));
@@ -234,7 +234,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract FILTER createNewFilter();
 
     public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemResource> itemConsumer) {
-        return (element, event, isDoubleClick) -> {
+        return (element, event, _) -> {
             if (event.hasShiftDown()) {
                 itemConsumer.accept(ItemResource.EMPTY);
             } else {

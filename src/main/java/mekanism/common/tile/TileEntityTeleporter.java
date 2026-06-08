@@ -393,9 +393,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private static SoundEvent getTeleportSound(Entity entity) {
         return switch (entity) {
-            case Player player -> SoundEvents.PLAYER_TELEPORT;
-            case Fox fox -> SoundEvents.FOX_TELEPORT;
-            case Shulker shulker -> SoundEvents.SHULKER_TELEPORT;
+            case Player _ -> SoundEvents.PLAYER_TELEPORT;
+            case Fox _ -> SoundEvents.FOX_TELEPORT;
+            case Shulker _ -> SoundEvents.SHULKER_TELEPORT;
             //Fall back to enderman teleporting sound
             default -> SoundEvents.ENDERMAN_TELEPORT;
         };

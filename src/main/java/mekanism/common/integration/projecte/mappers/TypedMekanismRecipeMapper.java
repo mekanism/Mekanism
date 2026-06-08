@@ -265,7 +265,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
             try {
                 resultMap.mergeInt(entry.getKey(), Math.multiplyExact(entry.getIntValue(), scale), MERGE);
                 hasValidInput = true;
-            } catch (ArithmeticException ignored) {
+            } catch (ArithmeticException _) {
             }
         }
         if (!hasValidInput) {

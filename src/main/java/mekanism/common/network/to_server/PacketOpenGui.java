@@ -42,7 +42,7 @@ public record PacketOpenGui(GuiType guiType) implements IMekanismPacket {
     }
 
     public enum GuiType {
-        MODULE_TWEAKER(() -> new ContainerProvider(MekanismLang.MODULE_TWEAKER, (id, inv, player) -> MekanismContainerTypes.MODULE_TWEAKER.get().create(id, inv)),
+        MODULE_TWEAKER(() -> new ContainerProvider(MekanismLang.MODULE_TWEAKER, (id, inv, _) -> MekanismContainerTypes.MODULE_TWEAKER.get().create(id, inv)),
               ModuleTweakerContainer::hasTweakableItem);
 
         public static final IntFunction<GuiType> BY_ID = ByIdMap.continuous(GuiType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);

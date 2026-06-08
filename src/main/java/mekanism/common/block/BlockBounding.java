@@ -326,13 +326,13 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @NotNull
     @Override
     protected VoxelShape getBlockSupportShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getBlockSupportShape(level, p));
+        return proxyShape(world, pos, null, (s, level, p, _) -> s.getBlockSupportShape(level, p));
     }
 
     @NotNull
     @Override
     protected VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getInteractionShape(level, p));
+        return proxyShape(world, pos, null, (s, level, p, _) -> s.getInteractionShape(level, p));
     }
 
     //Context should only be null if there is none, and it isn't used in the shape proxy

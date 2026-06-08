@@ -370,7 +370,7 @@ public class SearchQueryParser {
     @FunctionalInterface
     public interface ISearchQuery {
 
-        ISearchQuery INVALID = (level, player, stack) -> false;
+        ISearchQuery INVALID = (_, _, _) -> false;
 
         boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack);
 

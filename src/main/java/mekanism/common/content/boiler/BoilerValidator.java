@@ -84,7 +84,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         }
 
         structure.superheatingElements = FormationProtocol.explore(world, chunkMap, elements.getFirst(), initDisperser,
-              (level, chunks, start, n, pos) -> pos.getY() < n.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, level, chunks, pos) != null);
+              (level, chunks, _, n, pos) -> pos.getY() < n.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, level, chunks, pos) != null);
 
         if (elements.size() > structure.superheatingElements) {
             return FormationResult.fail(MekanismLang.BOILER_INVALID_SUPERHEATING);
@@ -112,7 +112,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         record Data(int disperserY, BlockPos renderLoc, int volLength, int volWidth) {
         }
         Data data = new Data(initDisperser.getY(), renderLocation, structure.length(), structure.width());
-        structure.setWaterVolume(FormationProtocol.explore(world, chunkMap, initAir, data, (level, chunks, start, d, pos) -> {
+        structure.setWaterVolume(FormationProtocol.explore(world, chunkMap, initAir, data, (_, chunks, _, d, pos) -> {
             BlockPos renderLoc = d.renderLoc();
             return pos.getY() >= renderLoc.getY() - 1 && pos.getY() < d.disperserY() &&
                    pos.getX() >= renderLoc.getX() && pos.getX() < renderLoc.getX() + d.volLength() &&

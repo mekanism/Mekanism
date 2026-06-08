@@ -359,7 +359,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             ModuleVeinMiningUnit customInstance = veinMiningUnit.getCustomInstance();
             return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.extended() ? customInstance.getExcavationRange() : 0, oreTracker);
         }
-        return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
+        return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, _ -> 0, (l, _) -> l, Object2IntArrayMap::new));
     }
 
     private static int getDestroyEnergy(boolean silk) {

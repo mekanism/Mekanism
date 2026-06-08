@@ -5,6 +5,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
+import mekanism.client.render.RenderResizableCuboid.SideRender;
 import mekanism.client.render.tileentity.RenderTeleporter.TeleporterRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -146,6 +147,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
         public int tint = CommonColors.WHITE;
+        @SideRender.SideRenderFlags
         public byte renderAxis = RenderResizableCuboid.SideRender.ALL_FACES;
     }
 }

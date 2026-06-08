@@ -1,7 +1,5 @@
 package mekanism.client.model.blockstate;
 
-import static mekanism.common.tile.qio.TileEntityQIODriveArray.DRIVE_SLOTS;
-
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
@@ -41,7 +39,7 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
     }
 
     public void collectDriveParts(List<BlockStateModelPart> parts, long driveStatus) {
-        for (int slot = 0; slot < DRIVE_SLOTS; slot++) {
+        for (int slot = 0; slot < TileEntityQIODriveArray.DRIVE_SLOTS; slot++) {
             int statusOrdinal = TileEntityQIODriveArray.getStatusOrdinal(slot, driveStatus);
             BlockStateModelPart modelPart = slotToBakedDrive[slot][statusOrdinal];
             if (modelPart != null) {
@@ -95,8 +93,8 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
             ModelState baseTransforms = baseModel.modelState().asModelState();
             ResolvedModel model = baker.getModel(baseModel.modelLocation());
             BlockStateModelPart bakedBase = SimpleModelWrapper.bake(baker, model, baseTransforms);
-            BlockStateModelPart[][] slotToBakedDrive = new BlockStateModelPart[DRIVE_SLOTS][];
-            for (int slot = 0; slot < DRIVE_SLOTS; slot++) {
+            BlockStateModelPart[][] slotToBakedDrive = new BlockStateModelPart[TileEntityQIODriveArray.DRIVE_SLOTS][];
+            for (int slot = 0; slot < TileEntityQIODriveArray.DRIVE_SLOTS; slot++) {
                 BlockStateModelPart[] slotBakedParts = new BlockStateModelPart[DriveStatus.VALUES.length];
                 slotToBakedDrive[slot] = slotBakedParts;
                 for (int statusOrdinal = 0; statusOrdinal < DriveStatus.VALUES.length; statusOrdinal++) {

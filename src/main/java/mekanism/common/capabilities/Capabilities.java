@@ -42,7 +42,7 @@ public class Capabilities {
     private Capabilities() {
     }
 
-    public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
+    public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, _) -> obj;
 
     public static final MultiTypeCapability<EnergyHandler> ENERGY = new MultiTypeCapability<>(Energy.BLOCK, Energy.ITEM, Energy.ENTITY);
     public static final MultiTypeCapability<ResourceHandler<FluidResource>> FLUID = new MultiTypeCapability<>(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
@@ -80,13 +80,13 @@ public class Capabilities {
         Mekanism.hooks.hookCapabilityRegistration(event);
 
         EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
-        event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, ctx) -> robit);
-        event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, ctx) -> robit);
-        event.registerEntity(ENERGY.entity(), robitEntityType, (robit, ctx) -> robit.getEnergyContainer());
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, _) -> robit);
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, _) -> robit);
+        event.registerEntity(ENERGY.entity(), robitEntityType, (robit, _) -> robit.getEnergyContainer());
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //Note: The jvm will reuse the lambda between types
-            event.registerEntity(RADIATION_ENTITY, entityType, (entity, ctx) -> entity instanceof LivingEntity living ? new RadiationEntity(living) : null);
+            event.registerEntity(RADIATION_ENTITY, entityType, (entity, _) -> entity instanceof LivingEntity living ? new RadiationEntity(living) : null);
         }
 
         //Register bounding block proxies

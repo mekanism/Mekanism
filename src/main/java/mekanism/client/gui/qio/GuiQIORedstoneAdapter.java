@@ -44,7 +44,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
-        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, event, isDoubleClick) -> {
+        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, event, _) -> {
             GuiQIORedstoneAdapter gui = (GuiQIORedstoneAdapter) element.gui();
             ItemStack stack = gui.getCarriedItem();
             if (stack.isEmpty() == event.hasShiftDown()) {
@@ -59,10 +59,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP_ON.get(), 1.0F, 1.0F));
         });
         addRenderableWidget(new ToggleButton(this, 9, 64, 14, tile::isInverted,
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile))))
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile))))
               .setTooltip(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL);
         addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, ((GuiQIORedstoneAdapter) element.gui()).tile))))
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, ((GuiQIORedstoneAdapter) element.gui()).tile))))
               .setTooltip(MekanismLang.FUZZY_MODE);
         addRenderableWidget(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, GuiQIOFilterHandler.getFrequencyText(tile))
               .tooltip(GuiQIOFilterHandler.getFrequencyTooltip(tile)));

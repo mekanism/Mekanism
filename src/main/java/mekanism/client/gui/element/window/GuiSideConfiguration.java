@@ -78,13 +78,13 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             configTabs.add(tab);
         }
         ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType))))
+              (_, _, _) -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType))))
               .setTooltip(MekanismLang.AUTO_EJECT);
         addChild(new TooltipToggleButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
-              () -> getTargetType(minecraft.hasShiftDown(), DataType::getNext) == DataType.NONE, (element, event, isDoubleClick) -> {
+              () -> getTargetType(minecraft.hasShiftDown(), DataType::getNext) == DataType.NONE, (_, event, _) -> {
             DataType targetType = getTargetType(event, DataType::getNext);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), event.hasShiftDown() ? null : currentType, targetType));
-        }, (element, event, isDoubleClick) -> {
+        }, (_, event, _) -> {
             DataType targetType = getTargetType(event, DataType::getPrevious);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), event.hasShiftDown() ? null : currentType, targetType));
         }, TooltipUtils.create(MekanismLang.SIDE_CONFIG_CLEAR, MekanismLang.SIDE_CONFIG_CLEAR_ALL), TooltipUtils.create(MekanismLang.SIDE_CONFIG_INCREMENT)));

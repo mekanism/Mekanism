@@ -159,9 +159,9 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker modelBakery) {
             ResolvedModel baseModel = modelBakery.getModel(base.modelLocation());
-            ResolvedModel glassModel = glass != null ? modelBakery.getModel(glass) : null;
+            ResolvedModel glassModel = glass == null ? null : modelBakery.getModel(glass);
             PartStorage baseParts = new PartStorage(hideContiguousJoin);
-            PartStorage glassParts = glassModel != null ? new PartStorage(hideContiguousJoin) : null;
+            PartStorage glassParts = glassModel == null ? null : new PartStorage(hideContiguousJoin);
             int materialFlags = 0;
             ModelState modelState = base.modelState().asModelState();
             Map<String, Boolean> partsVisibility = new HashMap<>(ALL_PART_GROUPS.size());//nb: shared with the delegate
@@ -183,8 +183,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                 ModelBaker bakerToUse = (connectionType == VisualConnectionStatus.NONE_CONTIGUOUS || connectionType == VisualConnectionStatus.NONE_CONTIGUOUS_ROTATED) ?
                                         noneSegmentOverrider : modelBakery;
                 for (Direction direction : EnumUtils.DIRECTIONS) {
-                    ModelState modelStateToUse = connectionType != VisualConnectionStatus.NONE_CONTIGUOUS_ROTATED ?
-                                                 modelState : new ComposedModelState(modelState, makeIconStatusTransform(direction));
+                    ModelState modelStateToUse = connectionType == VisualConnectionStatus.NONE_CONTIGUOUS_ROTATED ? new ComposedModelState(modelState, makeIconStatusTransform(direction)) : modelState;
 
                     //setup visibility
                     String partName = getPartName(direction, connectionType);

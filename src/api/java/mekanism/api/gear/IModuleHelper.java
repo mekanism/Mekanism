@@ -295,7 +295,7 @@ public interface IModuleHelper {
      */
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> Set<ModuleData<?>> getAllTypes(ITEM instance) {
         IModuleContainer container = getModuleContainer(instance);
-        return container != null ? container.moduleTypes() : Collections.emptySet();
+        return container == null ? Collections.emptySet() : container.moduleTypes();
     }
 
     /**

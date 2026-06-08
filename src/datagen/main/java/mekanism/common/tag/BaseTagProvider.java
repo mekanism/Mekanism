@@ -110,7 +110,7 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected <TYPE> MekanismTagBuilder<TYPE> getBuilder(TagKey<TYPE> tag) {
         Map<TagKey<?>, TagBuilder> tagTypeMap = supportedTagTypes.computeIfAbsent(tag.registry(), type -> new Object2ObjectLinkedOpenHashMap<>());
-        return new MekanismTagBuilder<>(tagTypeMap.computeIfAbsent(tag, ignored -> TagBuilder.create()));
+        return new MekanismTagBuilder<>(tagTypeMap.computeIfAbsent(tag, _ -> TagBuilder.create()));
     }
 
     @SafeVarargs

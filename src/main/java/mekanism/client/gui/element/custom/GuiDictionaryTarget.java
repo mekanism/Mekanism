@@ -164,7 +164,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     }
                     //Get any attribute tags
                     Set<Holder<Attribute>> attributes = new HashSet<>();
-                    BiConsumer<Holder<Attribute>, AttributeModifier> attributeCollector = (holder, modifier) -> attributes.add(holder);
+                    BiConsumer<Holder<Attribute>, AttributeModifier> attributeCollector = (holder, _) -> attributes.add(holder);
                     for (EquipmentSlot slotType : EnumUtils.EQUIPMENT_SLOT_TYPES) {
                         itemStack.forEachModifier(slotType, attributeCollector);
                     }

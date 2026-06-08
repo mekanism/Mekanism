@@ -82,7 +82,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!minField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.MIN_THRESHOLD, tile.getBlockPos(), parseInt(minField)));
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException _) {
             }
             minField.setText("");
         }
@@ -92,7 +92,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!maxField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.MAX_THRESHOLD, tile.getBlockPos(), parseInt(maxField)));
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException _) {
             }
             maxField.setText("");
         }
@@ -102,7 +102,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!timerField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException _) {
             }
             timerField.setText("");
         }

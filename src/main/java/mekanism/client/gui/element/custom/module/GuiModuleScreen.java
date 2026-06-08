@@ -194,13 +194,13 @@ public class GuiModuleScreen extends GuiScrollableElement {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
         //Draw contents
-        scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> getStartY(module), MiniElement::renderBackground);
+        scissorScreen(guiGraphics, mx, my, (_, module, _) -> getStartY(module), MiniElement::renderBackground);
     }
 
     @Override
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mx, int my) {
         super.renderForeground(guiGraphics, mx, my);
-        scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
+        scissorScreen(guiGraphics, mx, my, (g, module, shift) -> {
             int startY = ELEMENT_SPACER + 1;
             if (module != null) {
                 if (module.getUntypedData().isExclusive(ExclusiveFlag.ANY)) {
@@ -233,7 +233,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         mouseY += shift;
 
         //Draw any needed text and calculate where our elements will start rendering
-        int startY = renderer.render(guiGraphics, mouseX, mouseY, currentModule, shift);
+        int startY = renderer.render(guiGraphics, currentModule, shift);
         //Draw elements
         for (MiniElement<?> element : miniElements.values()) {
             if (startY >= shift + height) {
@@ -253,7 +253,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @FunctionalInterface
     private interface ScissorRender {
 
-        int render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, @Nullable IModule<?> module, int shift);
+        int render(GuiGraphicsExtractor guiGraphics, @Nullable IModule<?> module, int shift);
     }
 
     @FunctionalInterface

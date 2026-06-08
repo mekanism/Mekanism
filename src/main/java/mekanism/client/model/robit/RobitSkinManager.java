@@ -193,7 +193,7 @@ public class RobitSkinManager {
         @Override
         public CompletableFuture<Void> reload(SharedState currentReload, Executor taskExecutor, PreparationBarrier preparationBarrier, Executor reloadExecutor) {
             ResourceManager manager = currentReload.resourceManager();
-            return CompletableFuture.<Map<Identifier, Resource>>supplyAsync(() -> ModelManager.MODEL_LISTER.listMatchingResources(manager), taskExecutor)
+            return CompletableFuture.supplyAsync(() -> ModelManager.MODEL_LISTER.listMatchingResources(manager), taskExecutor)
             .thenAccept(
                 resources -> {
                     Set<Identifier> robitModels = new HashSet<>();

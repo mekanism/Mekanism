@@ -64,7 +64,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
                     VoxelShape faceShape = shape.getFaceShape(side);
                     VoxelShape adjacentFaceShape = adjacentShape.getFaceShape(side.getOpposite());
                     return !Shapes.joinIsNotEmpty(faceShape, adjacentFaceShape, BooleanOp.ONLY_FIRST);
-                } catch (Exception ignored) {
+                } catch (Exception _) {
                     //Something might have errored due to the null world and position
                 }
             }

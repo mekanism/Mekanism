@@ -43,7 +43,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     private ReactorLogicButton(IGuiWrapper gui, int x, int y, @NotNull IReactorLogic<TYPE> tile, Class<TYPE> clazz, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
-        super(gui, x, y, 128, 22, CommonComponents.EMPTY, (element, event, isDoubleClick) -> ((ReactorLogicButton<?>) element).click());
+        super(gui, x, y, 128, 22, CommonComponents.EMPTY, (element, _, _) -> ((ReactorLogicButton<?>) element).click());
         this.onPress = onPress;
         this.modeSupplier = modeSupplier;
         this.tile = tile;

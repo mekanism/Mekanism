@@ -111,7 +111,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level(), this, localVec, motionVec,
                   getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0), this::canHitEntity);
             if (entityResult != null && entityResult.getType() == Type.ENTITY) {
-                if (entityResult.getEntity() instanceof Player target && getOwner() instanceof Player owner && !owner.canHarmPlayer(target)) {
+                if (entityResult.getEntity() instanceof Player target && getOwner() instanceof Player ownerPlayer && !ownerPlayer.canHarmPlayer(target)) {
                     hitResult = null;
                 } else {
                     hitResult = entityResult;

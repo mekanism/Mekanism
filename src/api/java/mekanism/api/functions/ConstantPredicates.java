@@ -37,11 +37,11 @@ public class ConstantPredicates {
      */
     public static final IntSupplier ZERO = () -> 0;
 
-    private static final Predicate<Object> alwaysTrue = t -> true;
-    private static final BiPredicate<Object, Object> alwaysTrueBi = (t, u) -> true;
+    private static final Predicate<Object> alwaysTrue = _ -> true;
+    private static final BiPredicate<Object, Object> alwaysTrueBi = (_, _) -> true;
 
-    private static final Predicate<Object> alwaysFalse = t -> false;
-    private static final BiPredicate<Object, Object> alwaysFalseBi = (t, u) -> false;
+    private static final Predicate<Object> alwaysFalse = _ -> false;
+    private static final BiPredicate<Object, Object> alwaysFalseBi = (_, _) -> false;
 
     private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (_, automationType) -> automationType.isInternal();
     private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (_, automationType) -> !automationType.isExternal();

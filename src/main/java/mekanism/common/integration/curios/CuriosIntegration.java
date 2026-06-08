@@ -32,7 +32,7 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 public class CuriosIntegration {
 
     public static void addListeners(IEventBus bus) {
-        bus.addListener((FMLClientSetupEvent event) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
+        bus.addListener((FMLClientSetupEvent _) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
     }
 
     @SafeVarargs

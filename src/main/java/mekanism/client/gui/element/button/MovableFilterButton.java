@@ -42,12 +42,12 @@ public class MovableFilterButton extends FilterButton {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
         int arrowX = relativeX + this.width - 14;
         int halfHeight = this.height / 2;
-        upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (element, event, isDoubleClick) -> {
+        upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (_, event, _) -> {
             upButtonPress.accept(event, getActualIndex());
             return true;
         }));
         upButton.setTooltip(MOVE_UP);
-        downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (element, event, isDoubleClick) -> {
+        downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (_, event, _) -> {
             downButtonPress.accept(event, getActualIndex());
             return true;
         }));
@@ -82,9 +82,9 @@ public class MovableFilterButton extends FilterButton {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         IFilter<?> filter = getFilter();
         EnumColor color = switch (filter) {
-            case IItemStackFilter<?> stackFilter -> EnumColor.INDIGO;
-            case ITagFilter<?> tagFilter -> EnumColor.BRIGHT_GREEN;
-            case IModIDFilter<?> modIDFilter -> EnumColor.RED;
+            case IItemStackFilter<?> _ -> EnumColor.INDIGO;
+            case ITagFilter<?> _ -> EnumColor.BRIGHT_GREEN;
+            case IModIDFilter<?> _ -> EnumColor.RED;
             case null, default -> null;
         };
         if (color != null) {

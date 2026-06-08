@@ -59,14 +59,14 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                 int shiftedZ = z + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
                 int chunkZ = tileChunkZ + z;
                 if (x == 0 && z == 0) {
-                    addRenderableWidget(new BasicColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, () -> EnumColor.DARK_BLUE, (element, event, isDoubleClick) -> {
+                    addRenderableWidget(new BasicColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, () -> EnumColor.DARK_BLUE, (_, _, _) -> {
                         for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
                             if (hasAtRadius(i, false)) {
                                 return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENABLE_RADIUS_CHUNKLOAD, tile, i));
                             }
                         }
                         return false;
-                    }, (element, event, isDoubleClick) -> {
+                    }, (_, _, _) -> {
                         for (int i = TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i > 0; i--) {
                             if (hasAtRadius(i, true)) {
                                 return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.DISABLE_RADIUS_CHUNKLOAD, tile, i));
@@ -110,7 +110,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                     int packetTarget = shiftedX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + shiftedZ;
                     addRenderableWidget(new TooltipColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
                           () -> tile.isChunkLoadingAt(shiftedX, shiftedZ),
-                          (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
+                          (_, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
                           MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.ON_COLORED, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ),
                           MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.OFF_COLORED, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
                     ));

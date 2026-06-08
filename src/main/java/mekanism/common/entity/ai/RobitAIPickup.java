@@ -53,7 +53,7 @@ public class RobitAIPickup extends RobitAIBase {
     }
 
     private boolean validateClosest() {
-        return closest != null && theRobit.isItemValid(closest) && closest.level().dimension() == theRobit.level().dimension() &&
+        return closest != null && EntityRobit.isItemValid(closest) && closest.level().dimension() == theRobit.level().dimension() &&
                theRobit.distanceToSqr(closest) <= SEARCH_RADIUS_SQ;
     }
 

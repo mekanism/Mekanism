@@ -44,7 +44,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public FuelTank fuelTank;
+    FuelTank fuelTank;
     @Nullable
     private ChemicalFuel cachedFuel = null;
     private int gasUsedLastTick;
@@ -114,6 +114,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         setActive(gasUsedLastTick != 0);
         return sendUpdatePacket;
+    }
+
+    public IChemicalTank getFuelTank() {
+        return fuelTank;
     }
 
     @ComputerMethod(nameOverride = "getBurnRate")

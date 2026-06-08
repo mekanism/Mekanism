@@ -149,14 +149,14 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketPlayerRadiationData.TYPE, PacketPlayerRadiationData.STREAM_CODEC);
         registrar.play(PacketResetPlayerClient.TYPE, PacketResetPlayerClient.STREAM_CODEC);
         registrar.play(PacketSyncSecurity.TYPE, PacketSyncSecurity.STREAM_CODEC);
-        showModeChange = registrar.playInstanced(Mekanism.rl("show_mode_change"), (ignored, context) -> MekanismStatusOverlay.INSTANCE.setTimer());
+        showModeChange = registrar.playInstanced(Mekanism.rl("show_mode_change"), (_, _) -> MekanismStatusOverlay.INSTANCE.setTimer());
         registrar.play(PacketUpdateContainer.TYPE, PacketUpdateContainer.STREAM_CODEC);
         registrar.play(PacketUpdateTile.TYPE, PacketUpdateTile.STREAM_CODEC);
         registrar.play(PacketSetDeltaMovement.TYPE, PacketSetDeltaMovement.STREAM_CODEC);
 
         //QIO
         registrar.play(PacketUpdateItemViewer.TYPE, PacketUpdateItemViewer.STREAM_CODEC);
-        killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), (ignored, context) -> {
+        killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), (_, context) -> {
             if (context.player().containerMenu instanceof QIOItemViewerContainer container) {
                 container.handleKill();
             }

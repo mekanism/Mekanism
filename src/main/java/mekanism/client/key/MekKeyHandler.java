@@ -38,7 +38,7 @@ public class MekKeyHandler {
                     //TODO - 26.1: Figure out how to replace this so that it doesn't need to directly access GLFW
                     return GLFW.glfwGetMouseButton(window.handle(), keyCode) == InputConstants.PRESS;
                 }
-            } catch (Exception ignored) {
+            } catch (Exception _) {
             }
         }
         return false;

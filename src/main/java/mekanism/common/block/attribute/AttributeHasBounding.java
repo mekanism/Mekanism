@@ -28,7 +28,7 @@ public class AttributeHasBounding implements Attribute {
     }
 
     public void removeBoundingBlocks(Level world, BlockPos pos, BlockState state) {
-        handle(world, pos, state, null, (level, p, ignored) -> {
+        handle(world, pos, state, null, (level, p, _) -> {
             BlockState boundingState = level.getBlockState(p);
             if (!boundingState.isAir()) {
                 //The state might be air if we broke a bounding block first

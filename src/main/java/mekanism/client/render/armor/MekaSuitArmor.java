@@ -101,7 +101,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     private static Color getColor(ItemStack stack) {
         IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
-        return colorUnit != null ? colorUnit.getCustomInstance().color() : Color.WHITE;
+        return colorUnit == null ? Color.WHITE : colorUnit.getCustomInstance().color();
     }
 
     public <STATE extends HumanoidRenderState> void renderArm(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,

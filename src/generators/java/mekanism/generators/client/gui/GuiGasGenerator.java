@@ -31,13 +31,13 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyTab(this, () -> {
-            long fuelDensity = tile.getCachedFuel() != null ? tile.getCachedFuel().energyDensity() : 0;
+            long fuelDensity = tile.getCachedFuel() == null ? 0 : tile.getCachedFuel().energyDensity();
             long productionAmount = MathUtils.clampToLong(fuelDensity * tile.getUsed());
             return List.of(
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(productionAmount))
             );
         }));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.fuelTank, tile::getChemicalTanks, GaugeType.WIDE, this, 55, 18));
+        addRenderableWidget(new GuiChemicalGauge(tile::getFuelTank, tile::getChemicalTanks, GaugeType.WIDE, this, 55, 18));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15));
     }
 

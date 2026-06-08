@@ -61,7 +61,7 @@ public class VoiceConnection extends Thread {
                             }
                             retryCount++;
                             sleep(50);
-                        } catch (Exception ignored) {
+                        } catch (Exception _) {
                         }
                     }
 

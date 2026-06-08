@@ -83,20 +83,20 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addNameLookupOverride(Boolean.TYPE, "bool");
         addPrimitiveInfo(Boolean.TYPE, Boolean.class, "bool");
         addNameLookupOverride(Character.class, "char");
-        addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
-        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackUtil.getCommandString(stack));
-        addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> IFluidStack.of(stack).getCommandString());
+        addSupportedConversion(Character.TYPE, Character.class, (_, c) -> "'" + c + "'");
+        addSupportedConversion(IItemStack.class, ItemStack.class, (_, stack) -> ItemStackUtil.getCommandString(stack));
+        addSupportedConversion(IFluidStack.class, FluidStack.class, (_, stack) -> IFluidStack.of(stack).getCommandString());
         addSupportedConversion(Percentaged.class, IItemStack.class, WeightedItemStack.class,
-              (imports, stack) -> IItemStack.of(stack.stack).percent(stack.chance).getCommandString(),
-              (imports, stack) -> {
+              (_, stack) -> IItemStack.of(stack.stack).percent(stack.chance).getCommandString(),
+              (_, stack) -> {
                   if (stack.chance == 1) {
                       return ItemStackUtil.getCommandString(stack.stack);
                   }
                   return null;
               }
         );
-        addSupportedConversion(IIngredientWithAmount.class, ItemStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
-        addSupportedConversion(CTFluidIngredient.class, FluidStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
+        addSupportedConversion(IIngredientWithAmount.class, ItemStackIngredient.class, (_, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
+        addSupportedConversion(CTFluidIngredient.class, FluidStackIngredient.class, (_, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
         addChemicalConversions();
         if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
@@ -123,7 +123,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     protected void addPrimitiveInfo(Class<?> primitiveClass, Class<?> objectClass, String name) {
         addNameLookupOverride(objectClass, name);
-        addSupportedConversion(primitiveClass, objectClass, (imports, primitive) -> primitive.toString());
+        addSupportedConversion(primitiveClass, objectClass, (_, primitive) -> primitive.toString());
     }
 
     @SafeVarargs
@@ -252,10 +252,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private void addChemicalConversions() {
-        addSupportedConversion(ICrTChemicalStack.class, ChemicalStack.class, (imports, stack) -> new CrTChemicalStack(stack).getCommandString());
+        addSupportedConversion(ICrTChemicalStack.class, ChemicalStack.class, (_, stack) -> new CrTChemicalStack(stack).getCommandString());
         addSupportedConversion(ChemicalStackIngredient.class, ChemicalStackIngredient.class,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT), CrTChemicalStack::new, CrTUtils.chemicalTags()),
-              (imports, ingredient) -> {
+              (_, ingredient) -> {
                   if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
                       return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount(ingredient.amount()).getCommandString();
                   } else {

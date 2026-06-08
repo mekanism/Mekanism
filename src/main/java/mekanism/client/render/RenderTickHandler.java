@@ -2,9 +2,10 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class RenderTickHandler {
 
     private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
-    private static final Map<Class<?>, Boolean> IS_EMI_SCREEN = new HashMap<>();
+    private static final Object2BooleanMap<Class<?>> IS_EMI_SCREEN = new Object2BooleanOpenHashMap<>();
 
     private boolean outliningArea = false;
 
@@ -135,12 +136,7 @@ public class RenderTickHandler {
     }
 
     private static boolean isEmiScreen(@Nullable Screen newScreen) {
-        return newScreen != null && IS_EMI_SCREEN.computeIfAbsent(newScreen.getClass(), cl -> {
-            if (cl.getName().startsWith("dev.emi.emi")) {
-                return Boolean.TRUE;
-            }
-            return Boolean.FALSE;
-        }) == Boolean.TRUE;
+        return newScreen != null && IS_EMI_SCREEN.computeIfAbsent(newScreen.getClass(), (Class<?> cl) -> cl.getName().startsWith("dev.emi.emi"));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

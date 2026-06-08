@@ -7,7 +7,7 @@ import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import org.jetbrains.annotations.NotNull;
 
 public enum AnchorType implements IHasEnumNameTranslationKey {
-    ABSOLUTE(MekanismLang.ANCHOR_TYPE_ABSOLUTE, (context, value) -> value),
+    ABSOLUTE(MekanismLang.ANCHOR_TYPE_ABSOLUTE, (_, value) -> value),
     ABOVE_BOTTOM(MekanismLang.ANCHOR_TYPE_ABOVE_BOTTOM, (context, value) -> context.getMinGenY() + value),
     BELOW_TOP(MekanismLang.ANCHOR_TYPE_BELOW_TOP, (context, value) -> context.getGenDepth() - 1 + context.getMinGenY() - value);
 

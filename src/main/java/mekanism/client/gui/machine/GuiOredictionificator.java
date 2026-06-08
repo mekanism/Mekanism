@@ -50,7 +50,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         FilterManager<OredictionificatorItemFilter> filterManager = tile.getFilterManager();
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 213, 17, 90, filterManager::count, () -> FILTER_COUNT));
         addRenderableWidget(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 94, 119));
-        addRenderableWidget(new TranslationButton(this, 10, 86, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, event, isDoubleClick) -> {
+        addRenderableWidget(new TranslationButton(this, 10, 86, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, _, _) -> {
             GuiOredictionificator gui = (GuiOredictionificator) element.gui();
             gui.addWindow(GuiOredictionificatorFilter.create(gui, gui.tile));
             return true;

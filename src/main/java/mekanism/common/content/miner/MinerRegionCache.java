@@ -63,7 +63,7 @@ public class MinerRegionCache implements CollisionGetter {
                 if (hasAnchor) {
                     try {
                         chunkAccess = chunksource.getChunkFuture(x, z, ChunkStatus.FULL, true).get().orElse(null);
-                    }catch (InterruptedException | ExecutionException ignored){
+                    }catch (InterruptedException | ExecutionException _){
                         chunkAccess = null;
                     }
                 } else {
@@ -96,7 +96,7 @@ public class MinerRegionCache implements CollisionGetter {
         int j = z - this.centerZ;
         if (i >= 0 && i < this.chunks.length && j >= 0 && j < this.chunks[i].length) {
             ChunkAccess chunkaccess = this.chunks[i][j];
-            return chunkaccess != null ? chunkaccess : new EmptyLevelChunk(this.level, new ChunkPos(x, z), this.plains.get());
+            return chunkaccess == null ? new EmptyLevelChunk(this.level, new ChunkPos(x, z), this.plains.get()) : chunkaccess;
         } else {
             return new EmptyLevelChunk(this.level, new ChunkPos(x, z), this.plains.get());
         }

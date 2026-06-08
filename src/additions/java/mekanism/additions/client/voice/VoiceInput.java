@@ -45,24 +45,24 @@ public class VoiceInput extends Thread {
                                 voiceClient.getOutputStream().writeShort(audioData.length);
                                 voiceClient.getOutputStream().write(audioData);
                             }
-                        } catch (Exception ignored) {
+                        } catch (Exception _) {
                         }
                     }
                     try {
                         sleep(200L);
-                    } catch (InterruptedException ignored) {
+                    } catch (InterruptedException _) {
                     }
                     doFlush = true;
                 } else if (doFlush) {
                     try {
                         voiceClient.getOutputStream().flush();
-                    } catch (Exception ignored) {
+                    } catch (Exception _) {
                     }
                     doFlush = false;
                 }
                 try {
                     sleep(20L);
-                } catch (InterruptedException ignored) {
+                } catch (InterruptedException _) {
                 }
             }
             audioInput.close();

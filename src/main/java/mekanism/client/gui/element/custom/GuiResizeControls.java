@@ -32,9 +32,9 @@ public class GuiResizeControls extends GuiSideHolder {
     public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
         super(gui, -26, y, 40, true, false);
         expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
-              (element, event, isDoubleClick) -> handleResize(ResizeType.EXPAND_Y, event.hasShiftDown())));
+              (_, event, _) -> handleResize(ResizeType.EXPAND_Y, event.hasShiftDown())));
         shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 26, 19, 9, 19, 9, MINUS,
-              (element, event, isDoubleClick) -> handleResize(ResizeType.SHRINK_Y, event.hasShiftDown())));
+              (_, event, _) -> handleResize(ResizeType.SHRINK_Y, event.hasShiftDown())));
         updateButtonState();
         active = true;
     }

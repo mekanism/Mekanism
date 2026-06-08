@@ -36,7 +36,7 @@ public class MekanismJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeTooltipRenderer.INSTANCE, Block.class);
         registration.registerEntityComponent((IComponentProvider<EntityAccessor>) JadeBuiltinRemover.INSTANCE, EntityRobit.class);
         registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeBuiltinRemover.INSTANCE, Block.class);
-        registration.addRayTraceCallback((hitResult, accessor, originalAccessor) -> {
+        registration.addRayTraceCallback((_, accessor, _) -> {
             //Redirect bounding blocks to the main tile for purposes of naming and the like
             if (accessor instanceof BlockAccessor target && target.getBlockState().is(MekanismBlocks.BOUNDING_BLOCK)) {
                 Level level = target.getLevel();

@@ -94,9 +94,9 @@ public class Attributes {
     /** If mobs can spawn on the block. */
     public static class AttributeMobSpawn implements Attribute {
 
-        public static final StateArgumentPredicate<EntityType<?>> NEVER_PREDICATE = (state, reader, pos, entityType) -> false;
+        public static final StateArgumentPredicate<EntityType<?>> NEVER_PREDICATE = (_, _, _, _) -> false;
         public static final AttributeMobSpawn NEVER = new AttributeMobSpawn(NEVER_PREDICATE);
-        public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
+        public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, _) -> {
             if (WorldUtils.isInsideFormedMultiblock(reader, pos, null)) {
                 return false;
             }
@@ -125,7 +125,7 @@ public class Attributes {
 
     public record AttributeCustomPathType(Attributes.PathCheck pathCheck) implements Attribute {
 
-        public static final AttributeCustomPathType WHEN_NOT_FORMED = new AttributeCustomPathType((state, level, pos, mob) ->
+        public static final AttributeCustomPathType WHEN_NOT_FORMED = new AttributeCustomPathType((_, level, pos, mob) ->
               WorldUtils.isInsideFormedMultiblock(level, pos, mob) ? PathType.FENCE : null);
     }
 

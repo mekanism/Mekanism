@@ -62,7 +62,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
           ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, CommonComponents.EMPTY, (element, event, isDoubleClick) -> {
+        super(gui, x, y, width, height, CommonComponents.EMPTY, (element, _, _) -> {
             FilterButton button = (FilterButton) element;
             int actualIndex = button.filterIndex.getAsInt() + button.index;
             button.onPress.accept(getFilter(button.filterManager, actualIndex), actualIndex);
@@ -75,7 +75,7 @@ public class FilterButton extends MekanismButton {
         slot = addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 2, relativeY + 2));
         slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3, () -> renderStackSupplier.apply(getFilter())));
         toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + (this.height / 2) - (RadioButton.RADIO_SIZE / 2),
-              this::isEnabled, (element, event, isDoubleClick) -> {
+              this::isEnabled, (_, _, _) -> {
             toggleButtonPress.accept(getActualIndex());
             return true;
         }, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER), MekanismLang.FILTER_STATE.translate(EnumColor.RED, MekanismLang.MODULE_DISABLED_LOWER)));

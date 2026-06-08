@@ -24,10 +24,10 @@ public class GuiQIOExporter extends GuiQIOFilterHandler<TileEntityQIOExporter> {
         super.addGuiElements();
         int toggleWidth = (imageWidth - 18) / 2 - GAP;
         addRenderableWidget(new GuiScreenSwitch(this, 9, 122, toggleWidth, MekanismLang.QIO_EXPORT_WITHOUT_FILTER.translate(), tile::getExportWithoutFilter,
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_EXPORT_WITHOUT_FILTER, ((GuiQIOExporter) element.gui()).tile))));
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_EXPORT_WITHOUT_FILTER, ((GuiQIOExporter) element.gui()).tile))));
         List<Component> rrDescription = List.of(MekanismLang.QIO_EXPORTER_ROUND_ROBIN_DESCRIPTION.translate());
         addRenderableWidget(new GuiScreenSwitch(this, 9 + toggleWidth + 2 * GAP, 122, toggleWidth, MekanismLang.QIO_EXPORTER_ROUND_ROBIN.translate(), tile::getRoundRobin,
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, ((GuiQIOExporter) element.gui()).tile))))
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, ((GuiQIOExporter) element.gui()).tile))))
               .tooltip(() -> rrDescription);
     }
 }

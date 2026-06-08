@@ -429,7 +429,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
           .withEnergyStorage(MekanismConfig.storage.laserAmplifier)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
-                new AttributeRedstoneEmitter<>((tile, side) -> tile.getRedstoneLevel()), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
+                new AttributeRedstoneEmitter<>((tile, _) -> tile.getRedstoneLevel()), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .withComputerSupport("laserAmplifier")
           .build();

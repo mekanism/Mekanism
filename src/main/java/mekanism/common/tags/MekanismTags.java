@@ -45,10 +45,11 @@ public class MekanismTags {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
                     if (type.usedByPrimary(resource)) {
+                        String name = type.getBaseTagPath() + "/" + resource.getRegistrySuffix();
                         if (type.isVanilla() || type == ResourceType.DUST) {
-                            PROCESSED_RESOURCES.put(type, resource, commonTag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
+                            PROCESSED_RESOURCES.put(type, resource, commonTag(name));
                         } else {
-                            PROCESSED_RESOURCES.put(type, resource, tag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
+                            PROCESSED_RESOURCES.put(type, resource, tag(name));
                         }
                     }
                 }

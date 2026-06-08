@@ -63,28 +63,28 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, relativeX, relativeY + 22, 122, 42));
         publicButton = addChild(new MekanismImageButton(frequencySelector, relativeX, relativeY, 38, 20, 38, 20, getButtonLocation("public"),
-              (element, event, isDoubleClick) -> {
+              (_, _, _) -> {
                   this.securityMode = SecurityMode.PUBLIC;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
               })).setTooltip(MekanismLang.PUBLIC_MODE);
         trustedButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 42, relativeY, 38, 20, 38, 20, getButtonLocation("trusted"),
-              (element, event, isDoubleClick) -> {
+              (_, _, _) -> {
                   this.securityMode = SecurityMode.TRUSTED;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
               })).setTooltip(MekanismLang.TRUSTED_MODE);
         privateButton = addChild(new MekanismImageButton(frequencySelector, relativeX + 84, relativeY, 38, 20, 38, 20, getButtonLocation("private"),
-              (element, event, isDoubleClick) -> {
+              (_, _, _) -> {
                   this.securityMode = SecurityMode.PRIVATE;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
               })).setTooltip(MekanismLang.PRIVATE_MODE);
         int buttonWidth = hasColor ? 50 : 60;
-        setButton = addChild(new TranslationButton(frequencySelector, relativeX, relativeY + 113, buttonWidth, 18, MekanismLang.BUTTON_SET, (element, event, isDoubleClick) -> {
+        setButton = addChild(new TranslationButton(frequencySelector, relativeX, relativeY + 113, buttonWidth, 18, MekanismLang.BUTTON_SET, (_, _, _) -> {
             int selection = this.scrollList.getSelection();
             if (selection != -1) {
                 Frequency frequency = getFrequencies().get(selection);
@@ -95,7 +95,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             updateButtons();
             return true;
         }));
-        deleteButton = addChild(new TranslationButton(frequencySelector, relativeX + 2 + buttonWidth, relativeY + 113, buttonWidth, 18, MekanismLang.BUTTON_DELETE, (element, event, isDoubleClick) -> {
+        deleteButton = addChild(new TranslationButton(frequencySelector, relativeX + 2 + buttonWidth, relativeY + 113, buttonWidth, 18, MekanismLang.BUTTON_DELETE, (_, _, _) -> {
             GuiConfirmationDialog.show(gui(), MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
                 int selection = this.scrollList.getSelection();
                 if (selection != -1) {
@@ -115,10 +115,10 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             addChild(new ColorButton(frequencySelector, relativeX + 105, relativeY + 114, 16, 16, () -> {
                 IColorableFrequency frequency = colorFrequencySelector.getFrequency();
                 return frequency == null ? null : frequency.getColor();
-            }, (element, event, isDoubleClick) -> {
+            }, (_, _, _) -> {
                 colorFrequencySelector.sendColorUpdate(true);
                 return true;
-            }, (element, event, isDoubleClick) -> {
+            }, (_, _, _) -> {
                 colorFrequencySelector.sendColorUpdate(false);
                 return true;
             }));

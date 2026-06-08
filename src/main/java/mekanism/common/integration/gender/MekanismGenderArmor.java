@@ -34,6 +34,6 @@ public record MekanismGenderArmor(boolean coversBreasts, boolean alwaysHidesBrea
     }
 
     public void register(RegisterCapabilitiesEvent event, ItemLike... items) {
-        event.registerItem(GENDER_ARMOR_CAPABILITY, (stack, ctx) -> this, items);
+        event.registerItem(GENDER_ARMOR_CAPABILITY, (_, _) -> this, items);
     }
 }

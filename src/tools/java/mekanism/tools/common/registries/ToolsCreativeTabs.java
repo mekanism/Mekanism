@@ -24,7 +24,7 @@ public class ToolsCreativeTabs {
           builder.backgroundTexture(MekanismTools.rl("textures/gui/creative_tab.png"))
                 .withSearchBar(80)//Allow our tabs to be searchable for convenience purposes
                 .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
-                .displayItems((displayParameters, output) -> CreativeTabDeferredRegister.addToDisplay(ToolsItems.ITEMS, output))
+                .displayItems((_, output) -> CreativeTabDeferredRegister.addToDisplay(ToolsItems.ITEMS, output))
     );
 
     private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {

@@ -89,7 +89,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
             AttributeHasBounding attribute = Attribute.get(state, AttributeHasBounding.class);
             if (attribute != null) {
                 //Mark all bounding positions as having invalid caps
-                attribute.handle(level, worldPosition, state, null, (world, pos, ignoredData) -> {
+                attribute.handle(level, worldPosition, state, null, (world, pos, _) -> {
                     world.invalidateCapabilities(pos);
                     return true;
                 });

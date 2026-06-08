@@ -24,7 +24,7 @@ public class GeneratorsCreativeTabs {
                 builder.backgroundTexture(MekanismGenerators.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(50)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
-                      .displayItems((displayParameters, output) -> {
+                      .displayItems((_, output) -> {
                           CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, output);
                           CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, output);
                           CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, output);

@@ -77,9 +77,9 @@ class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
             }
             Codec<ModuleConfig<?>> elementCodec = codecs.get(index++);
             final DataResult<Pair<ModuleConfig<?>, T>> elementResult = elementCodec.decode(ops, value);
-            elementResult.error().ifPresent(error -> failed.add(value));
+            elementResult.error().ifPresent(_ -> failed.add(value));
             elementResult.resultOrPartial().ifPresent(pair -> elements.add(pair.getFirst()));
-            result = result.apply2stable((result, element) -> result, elementResult);
+            result = result.apply2stable((result, _) -> result, elementResult);
         }
 
         public DataResult<Pair<List<ModuleConfig<?>>, T>> build() {
@@ -90,7 +90,7 @@ class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
             }
             final T errors = ops.createList(failed.build());
             final Pair<List<ModuleConfig<?>>, T> pair = Pair.of(List.copyOf(elements), errors);
-            return result.map(ignored -> pair).setPartial(pair);
+            return result.map(_ -> pair).setPartial(pair);
         }
     }
 }

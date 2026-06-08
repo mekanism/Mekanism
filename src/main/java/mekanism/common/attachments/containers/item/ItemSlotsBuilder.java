@@ -55,7 +55,7 @@ public class ItemSlotsBuilder {
     //TODO - 26.1: this now needs world access. Does it really matter as it's only used on the Fuelwood heater's item inv, which we don't expose?
     /*private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> !automationType.isExternal() || itemType.toStack().getBurnTime(null) == 0;
     private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_INSERT = (itemType, automationType) -> automationType.isInternal() || itemType.toStack().getBurnTime(null) != 0;
-    private static final IBasicContainerCreator<IInventorySlot> FUEL_SLOT_CREATOR = (_, attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess,
+    private static final IBasicContainerCreator<IInventorySlot> FUEL_SLOT_CREATOR = (attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess,
           containerIndex, FUEL_CAN_EXTRACT, FUEL_CAN_INSERT, ConstantPredicates.alwaysTrue());*/
 
     //Security Inventory Slot

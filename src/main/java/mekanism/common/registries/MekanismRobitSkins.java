@@ -72,7 +72,7 @@ public class MekanismRobitSkins {
     public static RobitSkin get(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
         Registry<RobitSkin> skinRegistry = getSkinRegistry(registryAccess);
         RobitSkin value = skinRegistry.getValue(key);
-        return value != null ? value : BASE_HOLDER.value();
+        return value == null ? BASE_HOLDER.value() : value;
     }
 
     public record SkinLookup(ResourceKey<RobitSkin> name, Holder.Reference<RobitSkin> skinHolder) {

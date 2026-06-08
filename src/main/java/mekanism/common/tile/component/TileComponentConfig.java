@@ -289,7 +289,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
-        read(configInput, configInfo, (type, side) -> {
+        read(configInput, configInfo, (_, _) -> {
         });
     }
 

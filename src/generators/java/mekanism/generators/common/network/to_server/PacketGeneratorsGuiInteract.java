@@ -64,21 +64,21 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
     }
 
     public enum GeneratorsGuiInteraction {
-        INJECTION_RATE((tile, player, extra) -> {
+        INJECTION_RATE((tile, _, extra) -> {
             if (tile instanceof TileEntityFusionReactorBlock reactorBlock) {
                 reactorBlock.setInjectionRateFromPacket((int) Math.round(extra));
             } else if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
                 reactorCasing.setRateLimitFromPacket(extra);
             }
         }),
-        LOGIC_TYPE((tile, player, extra) -> {
+        LOGIC_TYPE((tile, _, extra) -> {
             if (tile instanceof TileEntityFissionReactorLogicAdapter logicAdapter) {
                 logicAdapter.setLogicTypeFromPacket(FissionReactorLogic.BY_ID.apply((int) Math.round(extra)));
             } else if (tile instanceof TileEntityFusionReactorLogicAdapter logicAdapter) {
                 logicAdapter.setLogicTypeFromPacket(FusionReactorLogic.BY_ID.apply((int) Math.round(extra)));
             }
         }),
-        FISSION_ACTIVE((tile, player, extra) -> {
+        FISSION_ACTIVE((tile, _, extra) -> {
             if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
                 reactorCasing.setReactorActive(Math.round(extra) == 1);
             }

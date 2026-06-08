@@ -43,7 +43,7 @@ public class GuiCraftingWindow extends GuiWindow {
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
-              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, event.hasShiftDown()))))
+              (_, event, _) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, event.hasShiftDown()))))
               .setTooltip(MekanismLang.CRAFTING_WINDOW_CLEAR);
     }
 

@@ -76,7 +76,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                     PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, limit));
                     rateLimitField.setText("");
                 }
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException _) {
             }
         }
     }

@@ -40,7 +40,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
             minField = min;
             maxField = max;
         });
-        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, 14, getButtonLocation("fuzzy"), (element, event, isDoubleClick) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, 14, getButtonLocation("fuzzy"), (_, _, _) -> {
             filter.fuzzyMode = !filter.fuzzyMode;
             return true;
         })).setTooltip(MekanismLang.FUZZY_MODE);

@@ -227,7 +227,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (filterLocation != null ? filterLocation.hashCode() : 0);
+        result = 31 * result + (filterLocation == null ? 0 : filterLocation.hashCode());
         result = 31 * result + selectedOutput.hashCode();
         return result;
     }

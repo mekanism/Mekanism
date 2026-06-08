@@ -75,7 +75,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
         scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
-        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, event, isDoubleClick) -> {
+        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, _, _) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();
             return true;
         }));
@@ -89,7 +89,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
-                  .click((element, event, isDoubleClick) -> select(index), 1.0F, MekanismSounds.BEEP_ON)
+                  .click((_, _, _) -> select(index), 1.0F, MekanismSounds.BEEP_ON)
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }

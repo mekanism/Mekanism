@@ -122,11 +122,9 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         return level.getData(type.attachment());
     }
 
-    /**
-     * Bit of a hack, really the multiblock system needs to not have a 'cache' middle-man.
-     * <p></p>
-     * Causes any multiblocks that became dirty after the master ticked to have their contents synced and thus saved (if one occurs after this tick)
-     */
+    /// Bit of a hack, really the multiblock system needs to not have a 'cache' middle-man.
+    ///
+    /// Causes any multiblocks that became dirty after the master ticked to have their contents synced and thus saved (if one occurs after this tick)
     @SubscribeEvent(priority = EventPriority.LOWEST)
     static void endOfTickEvent(ServerTickEvent.Post event) {
         event.getServer().getAllLevels().forEach(level -> {

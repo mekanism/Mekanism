@@ -90,7 +90,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
     @Override
     public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         ItemStack stack = gui().getCarriedItem();
-        if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+        if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             int index = infoHandler == null ? -1 : infoHandler.getContainerIndex();
             if (index != -1) {
                 DropperAction action;

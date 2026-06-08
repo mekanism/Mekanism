@@ -77,9 +77,9 @@ public record SequencedCollectionCodec<E>(Codec<E> elementCodec, int minSize, in
                 return;
             }
             final DataResult<Pair<E, T>> elementResult = elementCodec.decode(ops, value);
-            elementResult.error().ifPresent(error -> failed.add(value));
+            elementResult.error().ifPresent(_ -> failed.add(value));
             elementResult.resultOrPartial().ifPresent(pair -> elements.add(pair.getFirst()));
-            result = result.apply2stable((result, element) -> result, elementResult);
+            result = result.apply2stable((result, _) -> result, elementResult);
         }
 
         public DataResult<Pair<SequencedCollection<E>, T>> build() {
@@ -91,7 +91,7 @@ public record SequencedCollectionCodec<E>(Codec<E> elementCodec, int minSize, in
             if (totalCount > maxSize) {
                 result = createTooLongError(totalCount);
             }
-            return result.map(ignored -> pair).setPartial(pair);
+            return result.map(_ -> pair).setPartial(pair);
         }
     }
 }

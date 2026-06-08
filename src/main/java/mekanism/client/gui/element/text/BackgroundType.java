@@ -18,7 +18,7 @@ public enum BackgroundType {
         GuiUtils.fill(guiGraphics, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, field.isTextFieldFocused() ? GuiTextField.SCREEN_COLOR.getAsInt() : GuiTextField.DARK_SCREEN_COLOR.getAsInt());
         GuiUtils.fill(guiGraphics, field.getRelativeX(), field.getRelativeY(), field.getWidth(), field.getHeight(), GuiTextField.DEFAULT_BACKGROUND_COLOR);
     }),
-    NONE((field, guiGraphics) -> {
+    NONE((_, _) -> {
     });
 
     private final BiConsumer<GuiTextField, GuiGraphicsExtractor> renderFunction;

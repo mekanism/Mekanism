@@ -555,7 +555,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     /// Based on [PlayerInventoryWrapper.DroppedItems]
     private class DroppedItems extends SnapshotJournal<Integer> {
 
-        private static final ItemDropper<BlockPos> DROPPER = (lvl, pos, ignored, item) -> Block.popResource(lvl, pos, item);
+        private static final ItemDropper<BlockPos> DROPPER = (lvl, pos, _, item) -> Block.popResource(lvl, pos, item);
 
         final Deque<DroppedItems.DropInfo> entries = new ArrayDeque<>();
 

@@ -182,7 +182,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     public static <CAP> void proxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, @Nullable Direction> capability) {
-        event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
+        event.registerBlock(capability, (_, pos, _, blockEntity, context) -> {
             if (blockEntity instanceof TileEntityBoundingBlock bounding) {
                 IBoundingBlock main = bounding.getMain();
                 if (main != null) {
@@ -194,7 +194,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     public static <CAP, CONTEXT> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
-        event.registerBlock(capability, (level, pos, state, boundingBlock, context) -> {
+        event.registerBlock(capability, (level, pos, _, boundingBlock, context) -> {
             if (boundingBlock instanceof TileEntityBoundingBlock bounding && bounding.canRedirectFrom(pos)) {
                 return WorldUtils.getCapability(level, capability, bounding.getMainPos(), context);
             }

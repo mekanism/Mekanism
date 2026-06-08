@@ -29,7 +29,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank, Tooltip dumpExcess, Tooltip dump) {
-        super(gui, x, y, 10, IDLE, (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
+        super(gui, x, y, 10, IDLE, (_, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
         this.textSide = left ? TextAlignment.RIGHT : TextAlignment.LEFT;
         this.gasModeSupplier = gasModeSupplier;
         this.dumpExcess = dumpExcess;
