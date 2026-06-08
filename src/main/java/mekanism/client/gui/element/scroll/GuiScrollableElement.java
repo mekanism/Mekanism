@@ -68,7 +68,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         super.onDrag(event, deltaX, deltaY);
         if (isDragging() && needsScrollBars()) {
             double yAxis = event.y() - getGuiTop();
-            this.scroll = Mth.clamp((yAxis - barY - dragOffset) / getMax(), 0, 1);
+            this.scroll = Math.clamp((yAxis - barY - dragOffset) / getMax(), 0, 1);
         }
     }
 
@@ -97,7 +97,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected int getScroll() {
         //Calculate thumb position along scrollbar
         int max = getMax();
-        return Mth.clamp((int) (scroll * max), 0, max);
+        return Math.clamp((int) (scroll * max), 0, max);
     }
 
     public int getCurrentSelection() {
@@ -114,7 +114,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
                 } else {
                     delta = -1;
                 }
-                scroll = (float) Mth.clamp(scroll - delta / elements, 0, 1);
+                scroll = Math.clamp((float) (scroll - delta / elements), 0, 1);
                 return true;
             }
         }

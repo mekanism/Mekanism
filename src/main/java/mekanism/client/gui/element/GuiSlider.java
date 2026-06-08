@@ -71,14 +71,14 @@ public class GuiSlider extends GuiElement {
         } else {
             return false;
         }
-        value = Mth.clamp(value + shift, 0, 1);
+        value = Math.clamp(value + shift, 0, 1);
         callback.accept(value);
         return true;
     }
 
     private void set(double mouseX) {
         double oldValue = value;
-        value = Mth.clamp((mouseX - getX() - 2) / (width - 6), 0, 1);
+        value = Math.clamp((mouseX - getX() - 2) / (width - 6), 0, 1);
         if (!Mth.equal(value, oldValue)) {
             callback.accept(value);
         }

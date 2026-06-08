@@ -30,7 +30,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -324,9 +323,9 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         protected void set(double mouseX, double mouseY) {
             float newS = (float) (mouseX - getX()) / width;
-            GuiColorWindow.this.saturation = Mth.clamp(newS, 0, 1);
+            GuiColorWindow.this.saturation = Math.clamp(newS, 0, 1);
             float newV = (float) (mouseY - getY()) / height;
-            GuiColorWindow.this.value = 1 - Mth.clamp(newV, 0, 1);
+            GuiColorWindow.this.value = 1 - Math.clamp(newV, 0, 1);
             updateTextFromColor();
             updateArmorPreview();
         }
@@ -352,7 +351,7 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         protected void set(double mouseX, double mouseY) {
             float val = (float) (mouseX - getX()) / width;
-            GuiColorWindow.this.hue = Mth.clamp(val, 0, 1) * 360F;
+            GuiColorWindow.this.hue = Math.clamp(val, 0, 1) * 360F;
             updateTextFromColor();
             updateArmorPreview();
         }
@@ -388,7 +387,7 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         protected void set(double mouseX, double mouseY) {
             float val = (float) (mouseX - getX()) / width;
-            GuiColorWindow.this.alpha = Mth.clamp(val, 0, 1);
+            GuiColorWindow.this.alpha = Math.clamp(val, 0, 1);
             updateTextFromColor();
             updateArmorPreview();
         }

@@ -337,7 +337,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             return 0;
         }
         try (Transaction transaction = Transaction.openRoot()) {
-            int fuelBurned = Mth.clamp(MathUtils.clampToInt((lastPlasmaTemperature - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
+            int fuelBurned = Math.clamp(MathUtils.clampToInt((lastPlasmaTemperature - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
             int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
             if (fuelUsed < fuelBurned) {//Failed to actually burn anything
                 return 0;

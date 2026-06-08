@@ -86,7 +86,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -393,7 +392,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     public void setRadiusFromPacket(int newRadius) {
-        setRadius(Mth.clamp(newRadius, 0, MekanismConfig.general.minerMaxRadius.get()));
+        setRadius(Math.clamp(newRadius, 0, MekanismConfig.general.minerMaxRadius.get()));
         //Send a packet to update the visual renderer
         //TODO: Only do this if the renderer is actually active
         sendUpdatePacket();
@@ -413,7 +412,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public void setMinYFromPacket(int newMinY) {
         if (level != null) {
-            setMinY(Mth.clamp(newMinY, level.getMinY(), getMaxY()));
+            setMinY(Math.clamp(newMinY, level.getMinY(), getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -432,7 +431,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public void setMaxYFromPacket(int newMaxY) {
         if (level != null) {
-            setMaxY(Mth.clamp(newMaxY, getMinY(), level.getMaxY()));
+            setMaxY(Math.clamp(newMaxY, getMinY(), level.getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();

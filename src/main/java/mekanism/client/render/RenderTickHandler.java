@@ -271,7 +271,7 @@ public class RenderTickHandler {
             float f = p.getSwimAmount(partialTicks);
             if (p.isFallFlying()) {
                 float f1 = p.getFallFlyingTicks() + partialTicks;
-                float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+                float f2 = Math.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                 xRot = f2 * (-90.0F - p.getXRot());
             } else {
                 float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;

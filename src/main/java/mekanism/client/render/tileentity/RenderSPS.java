@@ -155,7 +155,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
 
         public void setProcessed(double processed) {
             this.processed = processed;
-            this.energyScale = Mth.clamp((float) (Math.log10(processed) + 2) / 4, 0, 1);
+            this.energyScale = Math.clamp((float) (Math.log10(processed) + 2) / 4, 0, 1);
         }
 
         public float lerpEnergy(float min, float max) {

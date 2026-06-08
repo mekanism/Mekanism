@@ -116,7 +116,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         List<TYPE> options = enumConstants;
         int size = options.size() - 1;
         int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * size);
-        cur = Mth.clamp(cur, 0, size);
+        cur = Math.clamp(cur, 0, size);
         if (cur != data.get().ordinal()) {
             setData(options.get(cur));
         }

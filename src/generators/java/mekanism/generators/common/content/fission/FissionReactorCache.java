@@ -3,7 +3,6 @@ package mekanism.generators.common.content.fission;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +40,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     public void apply(FissionReactorMultiblockData data) {
         super.apply(data);
         data.reactorDamage = reactorDamage;
-        data.rateLimit = Mth.clamp(getRateLimit(), 0, data.getMaxBurnRate());
+        data.rateLimit = Math.clamp(getRateLimit(), 0, data.getMaxBurnRate());
         data.burnRemaining = burnRemaining;
         data.partialWaste = partialWaste;
         //Update the force disabled state of it before setting it to active to make sure that we properly deny it being active,

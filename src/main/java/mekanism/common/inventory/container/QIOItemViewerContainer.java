@@ -75,7 +75,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static int getSlotsYMax() {
         int maxY = Mth.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
-        return Mth.clamp(maxY, SLOTS_Y_MIN, SLOTS_Y_MAX);
+        return Math.clamp(maxY, SLOTS_Y_MIN, SLOTS_Y_MAX);
     }
 
     private final Map<UUID, ItemSlotData> cachedInventory;

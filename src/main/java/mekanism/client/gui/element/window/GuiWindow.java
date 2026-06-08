@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
@@ -129,8 +128,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         super.onDrag(event, deltaX, deltaY);
         if (isDragging()) {
             int newDX = (int) Math.round(event.x() - dragX), newDY = (int) Math.round(event.y() - dragY);
-            int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - getRight());
-            int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - getBottom());
+            int changeX = Math.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - getRight());
+            int changeY = Math.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - getBottom());
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);

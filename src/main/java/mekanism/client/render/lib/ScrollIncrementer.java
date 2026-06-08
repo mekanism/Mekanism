@@ -2,7 +2,6 @@ package mekanism.client.render.lib;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Mth;
 
 public class ScrollIncrementer {
 
@@ -24,7 +23,7 @@ public class ScrollIncrementer {
         int shift = (int) scrollDelta;
         scrollDelta %= 1;
         if (discrete) {
-            shift = Mth.clamp(shift, -1, 1);
+            shift = Math.clamp(shift, -1, 1);
         }
         return shift;
     }

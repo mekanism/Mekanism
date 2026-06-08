@@ -474,7 +474,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private int clampCoolantHeated(double heated, int stored) {
-        return Mth.clamp(MathUtils.clampToInt(heated), 0, stored);
+        return Math.clamp(MathUtils.clampToInt(heated), 0, stored);
     }
 
     private void burnFuel(Level world) {
@@ -611,7 +611,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     public void setRateLimit(double rate) {
-        rate = Mth.clamp(rate, 0, getMaxBurnRate());
+        rate = Math.clamp(rate, 0, getMaxBurnRate());
         if (!Mth.equal(rateLimit, rate)) {
             rateLimit = rate;
             markDirty();

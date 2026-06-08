@@ -40,7 +40,7 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, CreeperRen
     protected void scale(CreeperRenderState state, PoseStack poseStack) {
         float swelling = state.swelling;
         float wobble = 1.0F + Mth.sin(swelling * 100.0F) * swelling * 0.01F;
-        swelling = Mth.clamp(swelling, 0.0F, 1.0F);
+        swelling = Math.clamp(swelling, 0.0F, 1.0F);
         swelling *= swelling;
         swelling *= swelling;
         float s = (1.0F + swelling * 0.4F) * wobble;
@@ -50,7 +50,7 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, CreeperRen
 
     @Override
     protected float getWhiteOverlayProgress(CreeperRenderState state) {
-        return (int) (state.swelling * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(state.swelling, 0.5F, 1.0F);
+        return (int) (state.swelling * 10.0F) % 2 == 0 ? 0.0F : Math.clamp(state.swelling, 0.5F, 1.0F);
     }
 
     @Override

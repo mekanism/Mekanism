@@ -35,7 +35,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -164,10 +163,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
         if (changeX != null || changeY != null) {
             if (changeX != null) {
-                MekanismConfig.client.qioItemViewerSlotsX.set(Mth.clamp(changeX.getAsInt(), QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
+                MekanismConfig.client.qioItemViewerSlotsX.set(Math.clamp(changeX.getAsInt(), QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
             }
             if (changeY != null) {
-                MekanismConfig.client.qioItemViewerSlotsY.set(Mth.clamp(changeY.getAsInt(), QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.getSlotsYMax()));
+                MekanismConfig.client.qioItemViewerSlotsY.set(Math.clamp(changeY.getAsInt(), QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.getSlotsYMax()));
             }
             // save the updated config info
             MekanismConfig.client.save();

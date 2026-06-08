@@ -2,7 +2,6 @@ package mekanism.api.heat;
 
 import com.mojang.math.Constants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +76,7 @@ public class HeatAPI {
     public static double getAmbientTemp(double biomeTemp) {
         //See implementation note about this range. If any other mods do have valid more extreme temperatures,
         // we may want to consider expanding this range to [-10, 10]
-        biomeTemp = Mth.clamp(biomeTemp, -5, 5);
+        biomeTemp = Math.clamp(biomeTemp, -5, 5);
         return AMBIENT_TEMP + 25 * (biomeTemp - 0.8);
     }
 

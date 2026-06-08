@@ -20,7 +20,6 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -156,7 +155,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     public static int getBarWidth(double ratio) {
-        return Mth.clamp(Math.round(Item.MAX_BAR_WIDTH * (float) ratio), 0, Item.MAX_BAR_WIDTH);
+        return Math.clamp(Math.round(Item.MAX_BAR_WIDTH * (float) ratio), 0, Item.MAX_BAR_WIDTH);
     }
 
     public static boolean isBarVisible(ItemStack stack) {
