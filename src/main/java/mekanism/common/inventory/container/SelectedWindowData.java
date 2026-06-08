@@ -13,47 +13,27 @@ import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.util.Util;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SelectedWindowData {
+public record SelectedWindowData(@NotNull WindowType type, byte extraData) {
 
     public static final SelectedWindowData UNSPECIFIED = new SelectedWindowData(WindowType.UNSPECIFIED);
-
-    @NotNull
-    public final WindowType type;
-    public final byte extraData;
-
-    public SelectedWindowData(@NotNull WindowType type) {
-        this(type, (byte) 0);
-    }
 
     /**
      * It is expected to only call this with a piece of extra data that is valid. If it is not valid this end up treating it as zero instead.
      */
-    public SelectedWindowData(@NotNull WindowType type, byte extraData) {
-        this.type = Objects.requireNonNull(type);
-        this.extraData = this.type.isValid(extraData) ? extraData : 0;
+    public SelectedWindowData {
+        Objects.requireNonNull(type);
+        extraData = type.isValid(extraData) ? extraData : 0;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        } else if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SelectedWindowData other = (SelectedWindowData) o;
-        return extraData == other.extraData && type == other.type;
-    }
-
-    @Override
-    public int hashCode() {
-        return 31 * type.hashCode() + extraData;
+    public SelectedWindowData(@NotNull WindowType type) {
+        this(type, (byte) 0);
     }
 
     /**

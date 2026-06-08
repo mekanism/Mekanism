@@ -63,17 +63,7 @@ public final class MultipartUtils {
     public record RayTraceVectors(Vec3 start, Vec3 end) {
     }
 
-    public static class AdvancedRayTraceResult {
-
-        public final VoxelShape bounds;
-        public final HitResult hit;
-        public final int subHit;
-
-        public AdvancedRayTraceResult(HitResult mop, VoxelShape shape, int subHit) {
-            hit = mop;
-            bounds = shape;
-            this.subHit = subHit;
-        }
+    public record AdvancedRayTraceResult(HitResult hit, VoxelShape bounds, int subHit) {
 
         public boolean valid() {
             return hit != null && bounds != null;

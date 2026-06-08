@@ -49,7 +49,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
 
     public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TILE tile, SelectedWindowData windowData) {
         super(gui, x, y, 156, 135, windowData);
-        if (windowData.type != WindowType.SIDE_CONFIG) {
+        if (windowData.type() != WindowType.SIDE_CONFIG) {
             throw new IllegalArgumentException("Side configs must have a side config window type");
         }
         this.tile = tile;

@@ -36,7 +36,7 @@ public record QIODriveArrayBlockStateModel(BlockStateModelPart basePart, BlockSt
         if (!data.has(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY)) {
             return;
         }
-        long driveStatus = Objects.requireNonNullElse(data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY), Long.valueOf(0));
+        long driveStatus = Objects.requireNonNullElse(data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY), 0L);
         collectDriveParts(parts, driveStatus);
     }
 

@@ -32,7 +32,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile, SelectedWindowData windowData) {
         super(gui, x, y, 156, 119, windowData);
-        if (windowData.type != WindowType.TRANSPORTER_CONFIG) {
+        if (windowData.type() != WindowType.TRANSPORTER_CONFIG) {
             throw new IllegalArgumentException("Transporter configs must have a transporter config window type");
         }
         this.tile = tile;

@@ -62,7 +62,7 @@ public class RenderRobitItem implements SpecialModelRenderer<BakeResult> {
 
             List<Identifier> textures = skin.textures();
 
-            return RobitSkinManager.get().getBaked(skin, textures.isEmpty() ? null : textures.get(0));
+            return RobitSkinManager.get().getBaked(skin, textures.isEmpty() ? null : textures.getFirst());
         } catch (Exception e) {
             Mekanism.logger.error("Failed to get robit item skin", e);
             return null;

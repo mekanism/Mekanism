@@ -110,7 +110,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
                 return bounds[0];
             }
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
-            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));
+            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.facingProperty() == BlockStateProperties.FACING ? 0 : 2));
             return bounds[index];
         }
         return super.getShape(state, world, pos, context);

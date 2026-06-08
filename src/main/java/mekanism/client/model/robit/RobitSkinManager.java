@@ -10,10 +10,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
@@ -96,7 +94,7 @@ public class RobitSkinManager {
 
     public Vector3fc[] getExtents() {
         BakeResult defaultModel = getBaked(MekanismRobitSkins.BASE_HOLDER.value(), MekanismRobitSkins.BASE_SKIN_TEXTURE);
-        return CuboidItemModelWrapper.computeExtents(defaultModel.model.get(0).getQuads(null));
+        return CuboidItemModelWrapper.computeExtents(defaultModel.model.getFirst().getQuads(null));
     }
 
     public BakeResult getBaked(RobitSkin skin, @Nullable Identifier activeTexture) {

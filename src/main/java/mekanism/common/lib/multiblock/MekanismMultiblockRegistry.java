@@ -45,7 +45,7 @@ public class MekanismMultiblockRegistry {
           Supplier<IStructureValidator<DATA>> validatorSupplier
     ) {
         Identifier id = Identifier.fromNamespaceAndPath(modId, multiblockType);
-        var mbType = new MultiblockType<DATA>(id, cacheSupplier, validatorSupplier, ()-> this.getById(id));
+        MultiblockType<DATA> mbType = new MultiblockType<>(id, cacheSupplier, validatorSupplier, () -> this.getById(id));
         var attachment = ATTACHMENT_TYPES.register(
               "multiblock/"+id.getPath(),
               () -> AttachmentType.serializable(() -> new MultiblockManager<>(mbType)).build()

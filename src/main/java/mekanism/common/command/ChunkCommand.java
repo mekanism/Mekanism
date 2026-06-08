@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.ChunkEvent;
@@ -167,9 +168,9 @@ public class ChunkCommand {
         }
     }
 
-    private static void handleChunkEvent(ChunkEvent event, LangData direction) {
+    private static void handleChunkEvent(ChunkEvent<LevelChunk> event, LangData direction) {
         LevelAccessor level = event.getLevel();
-        if (level != null && !level.isClientSide()) {
+        if (!level.isClientSide()) {
             if (chunkWatchers.isEmpty() || level.players().isEmpty()) {
                 return;
             }

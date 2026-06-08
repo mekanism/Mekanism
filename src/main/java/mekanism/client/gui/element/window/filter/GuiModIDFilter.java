@@ -71,20 +71,13 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 if (ingredient instanceof ItemStack stack) {
                     return stack.isEmpty() ? null : MekanismClient.getModId(stack);
                 }
-                Identifier registryName = null;
-                if (ingredient instanceof FluidStack stack) {
-                    if (!stack.isEmpty()) {
-                        registryName = RegistryUtils.getName(stack.typeHolder());
-                    }
-                } else if (ingredient instanceof ChemicalStack stack) {
-                    if (!stack.isEmpty()) {
-                        registryName = RegistryUtils.getName(stack.typeHolder());
-                    }
-                } else if (ingredient instanceof TypedInstance<?> instance) {
-                    registryName = RegistryUtils.getName(instance.typeHolder());
-                } else {
-                    registryName = RegistryUtils.getNameGeneric(ingredient);
-                }
+                Identifier registryName = switch (ingredient) {
+                    case FluidStack stack -> stack.isEmpty() ? null : RegistryUtils.getName(stack.typeHolder());
+                    case ChemicalStack stack -> stack.isEmpty() ? null : RegistryUtils.getName(stack.typeHolder());
+                    case TypedInstance<?> instance -> RegistryUtils.getName(instance.typeHolder());
+                    case null -> null;
+                    default -> RegistryUtils.getNameGeneric(ingredient);
+                };
                 return registryName == null ? null : registryName.getNamespace();
             }
 

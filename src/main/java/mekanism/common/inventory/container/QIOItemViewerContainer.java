@@ -587,8 +587,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private byte getSelectedCraftingGrid(@Nullable SelectedWindowData selectedWindow) {
-        if (selectedWindow != null && selectedWindow.type == WindowType.CRAFTING) {
-            return selectedWindow.extraData;
+        if (selectedWindow != null && selectedWindow.type() == WindowType.CRAFTING) {
+            return selectedWindow.extraData();
         }
         return (byte) -1;
     }

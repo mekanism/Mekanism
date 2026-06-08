@@ -350,15 +350,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
     }
 
-    private static class BakerOverrider implements ModelBaker {
-
-        private final ModelBaker delegateBaker;
-        private final DelegateMaterialBaker materialBaker;
-
-        private BakerOverrider(ModelBaker delegateBaker, DelegateMaterialBaker materialBaker) {
-            this.delegateBaker = delegateBaker;
-            this.materialBaker = materialBaker;
-        }
+    private record BakerOverrider(ModelBaker delegateBaker, DelegateMaterialBaker materials) implements ModelBaker {
 
         @Override
         public ResolvedModel getModel(Identifier location) {
@@ -368,11 +360,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModelPart missingBlockModelPart() {
             return delegateBaker.missingBlockModelPart();
-        }
-
-        @Override
-        public MaterialBaker materials() {
-            return materialBaker;
         }
 
         @Override

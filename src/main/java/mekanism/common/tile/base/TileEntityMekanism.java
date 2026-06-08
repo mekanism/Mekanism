@@ -534,7 +534,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isDirectional()) {
             AttributeStateFacing attribute = Attribute.getOrThrow(getBlockHolder(), AttributeStateFacing.class);
             if (attribute.canRotate()) {
-                setFacing(MekanismUtils.rotate(getDirection(), attribute.getFacingProperty() == BlockStateProperties.FACING));
+                setFacing(MekanismUtils.rotate(getDirection(), attribute.facingProperty() == BlockStateProperties.FACING));
                 return WrenchResult.SUCCESS;
             }
         }

@@ -41,7 +41,7 @@ public class GuiUpgradeWindow extends GuiWindow {
 
     public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile, SelectedWindowData windowData) {
         super(gui, x, y, 198, 76 + Math.max(18, 12 * GuiSupportedUpgrades.calculateNeededRows(gui)), windowData);
-        if (windowData.type != WindowType.UPGRADE) {
+        if (windowData.type() != WindowType.UPGRADE) {
             throw new IllegalArgumentException("Upgrade windows must have an upgrade window type");
         }
         this.tile = tile;

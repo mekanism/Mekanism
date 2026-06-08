@@ -24,12 +24,12 @@ public class GuiCraftingWindow extends GuiWindow {
 
     public GuiCraftingWindow(IGuiWrapper gui, int x, int y, QIOItemViewerContainer container, SelectedWindowData windowData) {
         super(gui, x, y, 124, 80, windowData);
-        if (windowData.type != WindowType.CRAFTING) {
+        if (windowData.type() != WindowType.CRAFTING) {
             throw new IllegalArgumentException("Crafting windows must have a crafting window type");
-        } else if (windowData.extraData >= IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
+        } else if (windowData.extraData() >= IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
             throw new IllegalArgumentException("Crafting window index is too high");
         }
-        this.index = windowData.extraData;
+        this.index = windowData.extraData();
         this.container = container;
         interactionStrategy = InteractionStrategy.ALL;
         slots = new ArrayList<>();

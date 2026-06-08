@@ -236,7 +236,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     list.add(dir);
                 }
             }
-            int boxIndex = result.subHit + 1;
+            int boxIndex = result.subHit() + 1;
             if (boxIndex < list.size()) {
                 return list.get(boxIndex);
             }
@@ -350,7 +350,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     if (!sharesSet) {
                         if (transmitterNetwork instanceof DynamicBufferedNetwork dynamicNetwork) {
                             //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
-                            dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter, null);
+                            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                                dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter, transaction);
+                                transaction.commit();
+                            }
                         }
                         sharesSet = true;
                     }

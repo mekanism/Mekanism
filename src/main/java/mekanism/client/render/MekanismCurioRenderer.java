@@ -20,7 +20,12 @@ public record MekanismCurioRenderer(ICustomArmor model) implements ICurioRendere
           SubmitNodeCollector submitNodeCollector, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context,
           float yRotation, float xRotation) {
         if (renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel) {
-            this.model.render((HumanoidModel) humanoidModel, matrixStack, submitNodeCollector, packedLight, (HumanoidRenderState) renderState, stack);
+            render(humanoidModel, matrixStack, submitNodeCollector, packedLight, renderState, stack);
         }
+    }
+
+    private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
+          LivingEntityRenderState state, ItemStack stack) {
+        this.model.render(baseModel, poseStack, nodeCollector, lightCoords, (STATE) state, stack);
     }
 }

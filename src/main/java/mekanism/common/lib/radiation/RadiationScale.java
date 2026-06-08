@@ -66,7 +66,7 @@ public enum RadiationScale implements StringRepresentable {
         if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
             return 0;
         }
-        return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));
+        return Math.clamp((-LOG_BASELINE + Math.log10(magnitude)) / SCALE, 0, 1);
     }
 
     public SoundEvent getSoundEvent() {

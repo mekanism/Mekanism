@@ -104,7 +104,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         //TODO: Try to cache some of this? At the very least the collision boxes
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(entityContext.getEntity(), pos, tile.getCollisionBoxes());
         if (result != null && result.valid()) {
-            return result.bounds;
+            return result.bounds();
         }
         //If we failed to figure it out somehow, just fall back to the center. This should never happen
         return getCenter();
