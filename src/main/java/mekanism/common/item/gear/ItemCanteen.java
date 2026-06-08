@@ -12,6 +12,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -101,7 +103,8 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-        return 32;
+        //Based off of Consumable#consumeTicks
+        return (int) (SharedConstants.TICKS_PER_SECOND * Consumable.DEFAULT_CONSUME_SECONDS);
     }
 
     @NotNull

@@ -30,7 +30,6 @@ import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -84,11 +83,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-        //Note: This is the same value as tridents and shields use. Technically we would be fine with them using it forever, but this is fine
-        // while we could base this on how much gas is stored in the flamethrower, then if something is filling it while using, then it will be wrong
-        //Secondary note: When this does run out the use animation briefly resets so the item renders slightly different for a second,
-        // but I don't think it is worth trying to fix given how long a use duration we have
-        return 60 * SharedConstants.TICKS_PER_MINUTE;
+        return APPROXIMATELY_INFINITE_USE_DURATION;
     }
 
     @NotNull

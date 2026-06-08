@@ -30,6 +30,7 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IFreeRunnerItem.FreeRunnerMode;
@@ -81,6 +82,10 @@ public class MekanismDataComponents {
           builder -> builder.persistent(AttachedHeat.CODEC)
                 .networkSynchronized(AttachedHeat.STREAM_CODEC)
                 .cacheEncoding()
+    );
+
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<PasteBucketConsumption>> NUTRITIONAL_PASTE_CONSUMPTION = DATA_COMPONENTS.simple("paste_consumption",
+          builder -> builder.networkSynchronized(PasteBucketConsumption.STREAM_CODEC)
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DisassemblerMode>> DISASSEMBLER_MODE = DATA_COMPONENTS.simple("disassembler_mode",
