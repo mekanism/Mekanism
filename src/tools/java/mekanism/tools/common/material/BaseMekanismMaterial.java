@@ -102,6 +102,7 @@ public interface BaseMekanismMaterial extends IPaxelMaterial {
 
     int getDurabilityForType(ArmorType type);
 
+    @Override
     default ToolMaterial toToolMaterial() {
         return new ToolMaterial(incorrectBlocksForDrops(), getDurability(), getSpeed(), getAttackDamageBonus(), getEnchantmentValue(), getRepairItems());
     }

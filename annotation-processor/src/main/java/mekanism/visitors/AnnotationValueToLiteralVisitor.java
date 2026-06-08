@@ -41,7 +41,7 @@ public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisito
             AnnotationValueToLiteralVisitor elementVisitor = new AnnotationValueToLiteralVisitor();
             CodeBlock elements = vals.stream().map(value -> {
                 Object mappedValue = value.accept(elementVisitor, componentType);
-                return CodeBlock.of((mappedValue instanceof String ? "$S" : "$L"), mappedValue);
+                return CodeBlock.of(mappedValue instanceof String ? "$S" : "$L", mappedValue);
             }).collect(CodeBlock.joining(", "));
             return CodeBlock.of("new $T[]{$L}", ClassName.get(componentType), elements);
         }

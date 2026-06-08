@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
-    public static int MAX_CHANNEL = 9;
+    public static final int MAX_CHANNEL = 9;
 
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.stacksTo(1).component(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT));
@@ -74,7 +74,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         ItemResource resource = itemAccess.getResource();
         WalkieData data = resource.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         if (data.running()) {
-            int newChannel = Math.floorMod(data.channel() + shift - 1, (MAX_CHANNEL - 1)) + 1;
+            int newChannel = Math.floorMod(data.channel() + shift - 1, MAX_CHANNEL - 1) + 1;
             if (data.channel() != newChannel && ItemAccessUtils.exchange(itemAccess, resource.with(AdditionsDataComponents.WALKIE_DATA, new WalkieData(newChannel, true)), transaction)) {
                 displayChange.sendMessage(player, newChannel, AdditionsLang.CHANNEL_CHANGE::translate);
             }

@@ -32,7 +32,7 @@ public class BoltEffect {
     private FadeFunction fadeFunction = FadeFunction.fade(0.5F);
 
     public BoltEffect(Vec3 start, Vec3 end) {
-        this(BoltRenderInfo.DEFAULT, start, end, (int) (Math.sqrt(start.distanceTo(end) * 100)));
+        this(BoltRenderInfo.DEFAULT, start, end, (int) Math.sqrt(start.distanceTo(end) * 100));
     }
 
     public BoltEffect(BoltRenderInfo info, Vec3 start, Vec3 end, int segments) {

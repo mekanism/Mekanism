@@ -29,7 +29,7 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
     private final Direction face;
     private final int transmissionColor;
     //Must be in same order as Direction
-    private static final Quaternionf[] V_ROT = new Quaternionf[]{
+    private static final Quaternionf[] V_ROT = {
           new Quaternionf().setAngleAxis(180 * Mth.DEG_TO_RAD, 0, 1, 0),//south
           new Quaternionf().setAngleAxis(90 * Mth.DEG_TO_RAD, 0, 1, 0),//west
           new Quaternionf().setAngleAxis(270 * Mth.DEG_TO_RAD, 0, 1, 0)//east

@@ -234,7 +234,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     }
                     if (updateDamage) {
                         //Update the damage we are actually going to try and do to the entity as the amount of energy being used changed
-                        value = ((double) remainingEnergy / energyPerDamage);
+                        value = (double) remainingEnergy / energyPerDamage;
                         damage = (float) value;
                     }
                     health = livingEntity.getHealth();

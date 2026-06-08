@@ -14,7 +14,8 @@ public class ValveRenderData {
     private final BlockPos valveLocation;
     public final float minX, minY, minZ;
     public final float maxX, maxY, maxZ;
-    public final @RenderResizableCuboid.SideRender.SideRenderFlags byte renderCheck;
+    @RenderResizableCuboid.SideRender.SideRenderFlags
+    public final byte renderCheck;
 
     private ValveRenderData(Direction side, BlockPos valveLocation, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, @RenderResizableCuboid.SideRender.SideRenderFlags byte renderCheck, BlockPos renderLocation) {
         //super(renderData.location, renderData.width, renderData.height, renderData.length, renderData.fluidType);

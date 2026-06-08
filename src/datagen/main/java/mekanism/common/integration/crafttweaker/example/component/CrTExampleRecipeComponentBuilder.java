@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SequencedMap;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
@@ -290,7 +291,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         }
     }
 
-    private void addParameter(LinkedHashMap<String, ParameterData> parameters, List<String> parameterNames, MethodParameter parameter, int index) {
+    private void addParameter(SequencedMap<String, ParameterData> parameters, List<String> parameterNames, MethodParameter parameter, int index) {
         String name;
         if (index < parameterNames.size()) {
             name = parameterNames.get(index);
@@ -329,7 +330,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         private final String methodName;
         private boolean hasExample;
 
-        public RecipeMethod(String methodName, LinkedHashMap<String, ParameterData> parameters) {
+        public RecipeMethod(String methodName, SequencedMap<String, ParameterData> parameters) {
             this.methodName = methodName;
             for (Map.Entry<String, ParameterData> entry : parameters.entrySet()) {
                 parameterNames.add(entry.getKey());

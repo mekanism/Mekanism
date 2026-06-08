@@ -261,7 +261,8 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
 
     public record RenderPiece(int x, int xLength, int z, int zLength, boolean renderNorth, boolean renderSouth, boolean renderEast, boolean renderWest) {
 
-        public @SideRender.SideRenderFlags byte sidesToRender() {
+        @SideRender.SideRenderFlags
+        public byte sidesToRender() {
             return RenderResizableCuboid.SideRender.from(false, false, renderNorth, renderSouth, renderWest, renderEast);
         }
     }

@@ -46,7 +46,7 @@ public class PaxelRecipe extends WrappedShapedRecipe {
                 // percent durability directly with these two numbers without having to care how many inputs were
                 // damageable
                 int max = stack.getMaxDamage();
-                totalDurability += (max - stack.getDamageValue());
+                totalDurability += max - stack.getDamageValue();
                 totalMaxDurability += max;
             }
         }

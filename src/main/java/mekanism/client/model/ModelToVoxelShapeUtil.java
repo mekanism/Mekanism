@@ -45,7 +45,7 @@ public class ModelToVoxelShapeUtil {
         return VoxelShapeUtils.combine(shapes, false);
     }*/
 
-    public static void main(String[] args) {
+    static void main() {
         printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/digital_miner.json");
     }
 

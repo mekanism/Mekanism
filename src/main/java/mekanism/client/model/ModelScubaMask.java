@@ -132,6 +132,7 @@ public class ModelScubaMask extends MekanismJavaModel.NoState {
         glass = getRenderableParts(root, GLASS_TOP, GLASS_FRONT, GLASS_R, GLASS_L, GLASS_BACK_R, GLASS_BACK_L);
     }
 
+    @Override
     public void collect(@NotNull PoseStack matrix, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim();
         collectParts(parts, matrix, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, hasFoil);

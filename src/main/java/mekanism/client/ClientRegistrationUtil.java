@@ -58,7 +58,7 @@ import org.jspecify.annotations.NullMarked;
 
 public class ClientRegistrationUtil {
 
-    private static final List<BlockTintSource> COLORED_BLOCK_COLOR = Collections.singletonList((state) -> {
+    private static final List<BlockTintSource> COLORED_BLOCK_COLOR = Collections.singletonList(state -> {
         Block block = state.getBlock();
         if (block instanceof IColoredBlock coloredBlock) {
             return coloredBlock.getColor().getPackedColor();

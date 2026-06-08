@@ -10,6 +10,6 @@ public interface ISupportsWarning<TYPE extends ISupportsWarning<TYPE>> {
     TYPE warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier);
 
     static BooleanSupplier compound(@Nullable BooleanSupplier existing, BooleanSupplier newSupplier) {
-        return existing == null ? newSupplier : (() -> existing.getAsBoolean() || newSupplier.getAsBoolean());
+        return existing == null ? newSupplier : () -> existing.getAsBoolean() || newSupplier.getAsBoolean();
     }
 }

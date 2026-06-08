@@ -29,6 +29,7 @@ public class BabyCreeperChargeLayer extends EnergySwirlLayer<CreeperRenderState,
         return POWER_LOCATION;
     }
 
+    @Override
     protected boolean isPowered(CreeperRenderState state) {
         return state.isPowered;
     }

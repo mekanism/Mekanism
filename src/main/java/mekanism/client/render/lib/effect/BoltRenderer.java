@@ -48,7 +48,7 @@ public class BoltRenderer {
         VertexConsumer buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
         Matrix4f matrix = matrixStack.last().pose();
         Timestamp timestamp = new Timestamp(gameTime, partialTicks);
-        boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
+        boolean refresh = timestamp.isPassed(refreshTimestamp, 1 / REFRESH_TIME);
         if (refresh) {
             refreshTimestamp = timestamp;
         }

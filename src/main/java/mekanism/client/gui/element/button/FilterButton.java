@@ -114,6 +114,7 @@ public class FilterButton extends MekanismButton {
         this.toggleButton.visible = visible;
     }
 
+    @Override
     public void updateBeforeExtract() {
         setVisibility(getFilter() != null);
     }

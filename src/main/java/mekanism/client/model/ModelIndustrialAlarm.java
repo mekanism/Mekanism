@@ -56,6 +56,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
         bulb.setRotation(0, yRot, 0);*/
     }
 
+    @Override
     public void collect(IndustrialAlarmRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim(state);
         collectParts(allParts, poseStack, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, hasFoil);

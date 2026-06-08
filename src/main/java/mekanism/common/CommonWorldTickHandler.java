@@ -3,6 +3,7 @@ package mekanism.common;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -53,7 +54,7 @@ public class CommonWorldTickHandler {
         }
         Identifier dimensionName = dimension.identifier();
         if (!chunkRegenMap.containsKey(dimensionName)) {
-            LinkedList<ChunkPos> list = new LinkedList<>();
+            Deque<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
             chunkRegenMap.put(dimensionName, list);
         } else {

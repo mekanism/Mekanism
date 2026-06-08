@@ -1,10 +1,5 @@
 package mekanism.common.tests.network;
 
-import static mekanism.common.tests.util.StructureBuilderUtils.configured;
-import static mekanism.common.tests.util.StructureBuilderUtils.containing;
-import static mekanism.common.tests.util.StructureBuilderUtils.diversionMode;
-import static mekanism.common.tests.util.StructureBuilderUtils.diversionModes;
-
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -13,6 +8,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tests.MekanismTests;
 import mekanism.common.tests.helpers.TransmitterTestHelper;
+import mekanism.common.tests.util.StructureBuilderUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,12 +39,12 @@ public class InventoryNetworkTest {
     @RegisterStructureTemplate(UPGRADEABLE)
     public static final Supplier<StructureTemplate> UPGRADEABLE_TEMPLATE = StructureTemplateBuilder.lazy(10, 1, 3, builder -> builder
           //Start barrel
-          .set(3, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 20))
+          .set(3, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
           //End barrels
           .set(2, 0, 0, Blocks.BARREL.defaultBlockState())
           .set(8, 0, 0, Blocks.BARREL.defaultBlockState())
 
-          .set(3, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+          .set(3, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
 
           .fill(0, 0, 0, 1, 0, 0, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
           .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
@@ -60,11 +56,11 @@ public class InventoryNetworkTest {
     @RegisterStructureTemplate(SIMPLE_PATH)
     public static final Supplier<StructureTemplate> SIMPLE_PATH_TEMPLATE = StructureTemplateBuilder.lazy(1, 1, 6, builder -> builder
           //Start barrel
-          .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+          .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
           //End barrel
           .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
-          .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+          .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
           .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
     );
 
@@ -114,11 +110,11 @@ public class InventoryNetworkTest {
     public static void colorChangesStillValid(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrel
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK, Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK, Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
@@ -140,11 +136,11 @@ public class InventoryNetworkTest {
     public static void sendsBackToHomeWhileFilled(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrel
-              .set(0, 0, 5, Blocks.BARREL.defaultBlockState(), containing(Items.OAK_LOG.getDefaultInstance(), 26))
+              .set(0, 0, 5, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.OAK_LOG.getDefaultInstance(), 26))
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
@@ -170,13 +166,13 @@ public class InventoryNetworkTest {
     public static void sendsBackHomeDiversionDisabled(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 2, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrel
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
-              .set(0, 0, 4, MekanismBlocks.DIVERSION_TRANSPORTER.defaultState(), diversionMode(Direction.SOUTH, DiversionControl.LOW))
+              .set(0, 0, 4, MekanismBlocks.DIVERSION_TRANSPORTER.defaultState(), StructureBuilderUtils.diversionMode(Direction.SOUTH, DiversionControl.LOW))
               .set(0, 1, 5, Blocks.STONE.defaultBlockState())
               .set(0, 1, 4, Blocks.LEVER.defaultBlockState())
         );
@@ -198,11 +194,11 @@ public class InventoryNetworkTest {
     public static void pathDisabledButStillHasPath(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
               .fill(1, 0, 4, 1, 0, 5, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
@@ -238,12 +234,12 @@ public class InventoryNetworkTest {
     public static void shorterDestinationRemoved(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
@@ -269,12 +265,12 @@ public class InventoryNetworkTest {
     public static void shorterNewDestination(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
@@ -297,16 +293,16 @@ public class InventoryNetworkTest {
     public static void shorterEnabledPath(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
 
               .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
-              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(null, Direction.WEST, ConnectionType.NONE))
+              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(null, Direction.WEST, ConnectionType.NONE))
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
@@ -327,11 +323,11 @@ public class InventoryNetworkTest {
     public static void colorlessIntoColor(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 2)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrel
               .set(1, 0, 0, Blocks.BARREL.defaultBlockState())
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
-              .set(1, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
+              .set(1, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK))
         );
 
         //Note: We initialize the starting inventory above
@@ -350,14 +346,14 @@ public class InventoryNetworkTest {
     public static void colorMatches(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 4)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 2))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 2))
               //End barrels
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 3, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK, Direction.NORTH))
-              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.DARK_BLUE))
-              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK, Direction.NORTH))
+              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.DARK_BLUE))
+              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK))
               .fill(0, 0, 2, 0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
@@ -379,14 +375,14 @@ public class InventoryNetworkTest {
     public static void colorIsNotPriority(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 4)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 2))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 2))
               //End barrels
               .set(1, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(1, 0, 3, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK, Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK, Direction.NORTH))
               .set(0, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
-              .set(0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(EnumColor.BLACK))
+              .set(0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(EnumColor.BLACK))
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
@@ -406,12 +402,12 @@ public class InventoryNetworkTest {
     public static void restrictiveIsLowPriority(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(2, 1, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE))
               //End barrels
               .set(1, 0, 0, Blocks.BARREL.defaultBlockState())
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .set(1, 0, 1, MekanismBlocks.RESTRICTIVE_TRANSPORTER.defaultState())
 
               .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
@@ -482,15 +478,15 @@ public class InventoryNetworkTest {
     public static void diversionSwitchPaths(final DynamicTest test) {
         test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 2, 6)
               //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE, 20))
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), StructureBuilderUtils.containing(Items.STONE, 20))
               //End barrels
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), StructureBuilderUtils.configured(Direction.NORTH))
               .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
               .fill(0, 0, 3, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
-              .set(0, 0, 2, MekanismBlocks.DIVERSION_TRANSPORTER.defaultState(), diversionModes(
+              .set(0, 0, 2, MekanismBlocks.DIVERSION_TRANSPORTER.defaultState(), StructureBuilderUtils.diversionModes(
                     DiversionControl.DISABLED,
                     DiversionControl.DISABLED,
                     DiversionControl.DISABLED,

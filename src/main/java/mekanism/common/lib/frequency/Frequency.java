@@ -158,7 +158,7 @@ public abstract class Frequency implements IFrequency {
             code = 31 * code + ownerUUID.hashCode();
         }
         if (frequencyType != FrequencyTypes.SECURITY) {
-            code = 31 * code + (securityMode.ordinal());
+            code = 31 * code + securityMode.ordinal();
         }
         return code;
     }

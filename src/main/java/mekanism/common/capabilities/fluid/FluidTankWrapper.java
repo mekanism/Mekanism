@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class FluidTankWrapper extends ResourceContainerWrapper<FluidResource, IFluidTank> implements IFluidTank {
 
-    private final IChemicalTank chemicalTank;;
+    private final IChemicalTank chemicalTank;
     private final MergedTank mergedTank;
 
     public FluidTankWrapper(MergedTank mergedTank, IFluidTank internal, IChemicalTank chemicalTank) {

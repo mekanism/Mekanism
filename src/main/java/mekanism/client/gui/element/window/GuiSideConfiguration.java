@@ -73,7 +73,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             return Collections.emptyList();
         }));
         for (int i = 0; i < transmissions.size(); i++) {
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + 2 + 28 * (i % 4), this, i < 4);
             addChild(tab);
             configTabs.add(tab);
         }

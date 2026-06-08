@@ -377,7 +377,7 @@ public final class MekanismUtils {
      */
     public static long getMaxEnergy(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY))));
+            return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY)));
         }
         return def;
     }
@@ -391,7 +391,7 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static long getMaxEnergy(int energyUpgrades, long def) {
-        return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax())));
+        return MathUtils.clampToLong(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
     }
 
     /**

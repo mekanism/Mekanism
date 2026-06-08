@@ -78,7 +78,7 @@ public class GuiSlider extends GuiElement {
 
     private void set(double mouseX) {
         double oldValue = value;
-        value = Mth.clamp(((mouseX - getX() - 2) / (width - 6)), 0, 1);
+        value = Mth.clamp((mouseX - getX() - 2) / (width - 6), 0, 1);
         if (!Mth.equal(value, oldValue)) {
             callback.accept(value);
         }

@@ -55,7 +55,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
         Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
             || adjacentBlock instanceof BlockPlasticTransparentStairs) {
-            IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
+            IColoredBlock plastic = (IColoredBlock) adjacentBlock;
             if (plastic.getColor() == block.getColor()) {
                 try {
                     VoxelShape shape = state.getShape(null, null);

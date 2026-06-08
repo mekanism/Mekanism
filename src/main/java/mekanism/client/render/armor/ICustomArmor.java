@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 @FunctionalInterface
 public interface ICustomArmor {
 
-    BabyModelTransform BABY_MODEL_TRANSFORM = ((BabyModelTransform) HumanoidModel.BABY_TRANSFORMER);
+    BabyModelTransform BABY_MODEL_TRANSFORM = (BabyModelTransform) HumanoidModel.BABY_TRANSFORMER;
 
     <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, STATE state, ItemStack stack);
 }

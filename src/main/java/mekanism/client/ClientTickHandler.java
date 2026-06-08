@@ -322,7 +322,7 @@ public class ClientTickHandler {
                     event.setFarPlaneDistance(Math.min(192, scalar));
                 }
                 //Scale the distance based on the number of installed modules
-                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getUntypedData().getMaxStackSize());
+                event.scaleFarPlaneDistance((float) Math.pow(module.getInstalledCount(), 1.25) / module.getUntypedData().getMaxStackSize());
             }
         }
     }

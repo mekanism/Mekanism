@@ -119,9 +119,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 int clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
-                double slope = ((double) (maxG - minG)) / (maxY - minY);
+                double slope = (double) (maxG - minG) / (maxY - minY);
                 double toGen = minG + (slope * (clampedY - minY));
-                return (toGen / minG);
+                return toGen / minG;
             }
         }
         return 0L;

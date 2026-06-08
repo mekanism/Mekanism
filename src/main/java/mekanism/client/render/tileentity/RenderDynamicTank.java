@@ -73,9 +73,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
                 state.tankColor = MekanismRenderer.getColorARGB(chemical, scale);
                 state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, chemical.is(MekanismAPITags.Chemicals.GASEOUS));
             }
-            case EMPTY -> {
-                state.tankTexture = null;
-            }
+            case EMPTY -> state.tankTexture = null;
         }
     }
 

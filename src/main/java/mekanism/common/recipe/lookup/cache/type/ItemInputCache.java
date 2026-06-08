@@ -17,10 +17,6 @@ import org.jetbrains.annotations.UnknownNullability;
 //TODO - 26.1 - should it still use Item or should we use holders?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
-    public ItemInputCache() {
-        super();
-    }
-
     @Override
     public boolean mapInputs(RECIPE recipe, ItemStackIngredient inputIngredient) {
         return mapIngredient(recipe, inputIngredient.ingredient().ingredient());

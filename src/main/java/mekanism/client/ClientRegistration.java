@@ -466,7 +466,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> {
+        ClientRegistrationUtil.registerBlockColorHandler(event, state -> {
                   BaseTier tier = Attribute.getBaseTier(state.typeHolder());
                   if (tier != null) {
                       return tier.getPackedColor();
@@ -481,7 +481,7 @@ public class ClientRegistration {
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {
                 int tint = primaryResource.getTint();
-                ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> tint, entry.getValue());
+                ClientRegistrationUtil.registerBlockColorHandler(event, _ -> tint, entry.getValue());
             }
         }
     }

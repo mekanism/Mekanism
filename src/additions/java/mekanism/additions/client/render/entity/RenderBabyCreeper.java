@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.CreeperRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.monster.Creeper;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Copy of vanilla's creeper render, modified to use our own model/layer that is properly scaled

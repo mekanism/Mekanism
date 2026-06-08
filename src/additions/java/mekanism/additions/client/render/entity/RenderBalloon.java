@@ -76,6 +76,6 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
         @Nullable
         public Vec3 latchedAdjustment;
         public List<BlockStateModelPart> model = Collections.emptyList();
-        public int[] tint = new int[1];
+        public final int[] tint = new int[1];
     }
 }

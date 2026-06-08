@@ -42,7 +42,8 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public int glow;
         public int stage;
         public boolean[] renderSideModel = new boolean[EnumUtils.DIRECTIONS.length];
-        public @SideRenderFlags byte coreSideRender = 0;
+        @SideRenderFlags
+        public byte coreSideRender = 0;
         public boolean renderBase;
     }
 

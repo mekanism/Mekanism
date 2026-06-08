@@ -166,8 +166,8 @@ public class MekanismAPI {
         }
 
         IllegalStateException illegalStateException = new IllegalStateException("No valid ServiceImpl for " + serviceClass.getSimpleName() + " found");
-        MekanismAPI.logger.error("Failed to load service", illegalStateException);
-        MekanismAPI.logger.error("CL: {} CCL: {}", SERVICE_CL, Thread.currentThread().getContextClassLoader());
+        logger.error("Failed to load service", illegalStateException);
+        logger.error("CL: {} CCL: {}", SERVICE_CL, Thread.currentThread().getContextClassLoader());
         throw illegalStateException;
 
     }

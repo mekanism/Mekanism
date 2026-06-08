@@ -125,7 +125,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             return FormationResult.fail(MekanismLang.BOILER_INVALID_AIR_POCKETS);
         }
 
-        int steamHeight = (structure.renderLocation.getY() + structure.height() - 2) - initDisperser.getY();
+        int steamHeight = structure.renderLocation.getY() + structure.height() - 2 - initDisperser.getY();
         structure.setSteamVolume(structure.width() * structure.length() * steamHeight);
         structure.upperRenderLocation = new BlockPos(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ());
         return FormationResult.SUCCESS;

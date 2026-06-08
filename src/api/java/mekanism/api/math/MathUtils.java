@@ -132,7 +132,7 @@ public class MathUtils {
         long r = x * y;
         long ax = Math.abs(x);
         long ay = Math.abs(y);
-        if (((ax | ay) >>> 31 != 0)) {
+        if ((ax | ay) >>> 31 != 0) {
             // Some bits greater than 2^31 that might cause overflow
             // Check the result using the divide operator
             // and check for the special case of Long.MIN_VALUE * -1

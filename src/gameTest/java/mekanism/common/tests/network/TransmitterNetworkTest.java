@@ -22,6 +22,7 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.testframework.DynamicTest;
@@ -206,7 +207,7 @@ public class TransmitterNetworkTest {
             return level;
         }
 
-        public void updateChunk(ChunkEvent event, boolean loaded) {
+        public void updateChunk(ChunkEvent<LevelChunk> event, boolean loaded) {
             if (!event.getLevel().isClientSide() && event.getChunk().getPos().equals(absolutePos)) {
                 //If we are watching the chunk and the loaded state isn't what we already had it as
                 if (isLoaded != loaded) {

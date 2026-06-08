@@ -193,7 +193,7 @@ public interface IFancyFontRenderer {
         double seconds = visibleDuration / 1_000D;
         double scrollPeriod = Math.max(maxPosition * ActiveTextCollector.PERIOD_PER_SCROLLED_PIXEL, ActiveTextCollector.MIN_SCROLL_PERIOD);
         //Controls the speed at which we go between the start of the scroll and the end
-        double scrollSpeedModifier = Math.cos((2 * Math.PI) * seconds / scrollPeriod);
+        double scrollSpeedModifier = Math.cos(2 * Math.PI * seconds / scrollPeriod);
         if (!font.isBidirectional()) {
             //If the text is left to right (such as english). We need to start the modifier at the opposite peak so that it starts
             // at the beginning of the string

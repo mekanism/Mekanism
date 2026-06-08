@@ -52,7 +52,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         this.saveShareJournal = new SaveShareJournal();
     }
 
-    protected abstract Codec<RESOURCE> resourceCodec();;
+    protected abstract Codec<RESOURCE> resourceCodec();
 
     @Override
     public abstract IStorageTier getTier();

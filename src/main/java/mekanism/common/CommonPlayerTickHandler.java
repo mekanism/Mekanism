@@ -364,7 +364,7 @@ public class CommonPlayerTickHandler {
                         float destroySpeed = entry.getValue().getDestroySpeed(player.level(), entry.getKey());
                         maxHardness = Math.max(maxHardness, destroySpeed);
                     }
-                    speed *= (targetHardness / maxHardness);
+                    speed *= targetHardness / maxHardness;
                 }
             }
         }

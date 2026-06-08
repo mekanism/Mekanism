@@ -131,6 +131,7 @@ public class ModelFlamethrower extends MekanismJavaModel.NoState {
               FLAME, FLAME_STRUT, HYDROGEN_DECOR, HYDROGEN);
     }
 
+    @Override
     public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim();
         collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, hasFoil);

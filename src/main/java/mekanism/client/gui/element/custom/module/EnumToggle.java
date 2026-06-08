@@ -33,7 +33,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         super(parent, data, description, xPos, yPos);
         BAR_LENGTH = this.parent.getScreenWidth() - 24;
         enumConstants = data.getEnumConstants();
-        this.optionDistance = (BAR_LENGTH / (enumConstants.size() - 1));
+        this.optionDistance = BAR_LENGTH / (enumConstants.size() - 1);
         this.usesIcons = !enumConstants.isEmpty() && enumConstants.getFirst() instanceof IHasModeIcon;
     }
 

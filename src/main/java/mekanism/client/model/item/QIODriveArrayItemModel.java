@@ -175,7 +175,7 @@ public record QIODriveArrayItemModel(
         @Override
         public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transformation) {
             ModelBaker baker = context.blockModelBaker();
-            QIODriveArrayBlockStateModel stateModel = (new QIODriveArrayBlockStateModel.Unbaked(new Variant(cuboidUnbaked.model(), Variant.SimpleModelState.DEFAULT)))
+            QIODriveArrayBlockStateModel stateModel = new QIODriveArrayBlockStateModel.Unbaked(new Variant(cuboidUnbaked.model(), Variant.SimpleModelState.DEFAULT))
                   .bake(context.blockModelBaker());
             ResolvedModel resolvedBaseModel = baker.getModel(cuboidUnbaked.model());
             ModelRenderProperties properties = new ModelRenderProperties(resolvedBaseModel.getTopGuiLight().lightLikeBlock(), stateModel.particleMaterial(), resolvedBaseModel.getTopTransforms());

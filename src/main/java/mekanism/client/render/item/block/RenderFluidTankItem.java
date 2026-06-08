@@ -32,9 +32,6 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
 
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_FLUID_TANK));
 
-    public RenderFluidTankItem() {
-    }
-
     @Override
     public void submit(@Nullable TankRenderState argument, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         if (argument == null) {

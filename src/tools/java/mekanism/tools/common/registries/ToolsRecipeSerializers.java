@@ -6,7 +6,6 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.recipe.MekBannerShieldRecipe;
 import mekanism.tools.common.recipe.PaxelRecipe;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

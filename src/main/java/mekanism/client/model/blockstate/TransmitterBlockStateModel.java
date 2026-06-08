@@ -299,7 +299,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
     }
 
-    private static abstract class DelegateMaterialBaker implements MaterialBaker {
+    private abstract static class DelegateMaterialBaker implements MaterialBaker {
 
         private final MaterialBaker upstream;
 
