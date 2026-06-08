@@ -1,55 +1,58 @@
 package mekanism.common.recipe.upgrade;
 
-import java.util.ArrayList;
-import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.LongTransferUtils;
-import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.util.EnergyUtils;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
 
-    private final List<IEnergyContainer> energyContainers;
+    private final long storedEnergy;
 
-    EnergyRecipeData(List<IEnergyContainer> energyContainers) {
-        this.energyContainers = energyContainers;
+    EnergyRecipeData(long storedEnergy) {
+        this.storedEnergy = storedEnergy;
     }
 
     @Nullable
     @Override
     public EnergyRecipeData merge(EnergyRecipeData other) {
-        List<IEnergyContainer> allContainers = new ArrayList<>(energyContainers);
-        allContainers.addAll(other.energyContainers);
-        return new EnergyRecipeData(allContainers);
+        return new EnergyRecipeData(MathUtils.addClamped(this.storedEnergy, other.storedEnergy));
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
-        if (energyContainers.isEmpty()) {
+    public boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction) {
+        if (storedEnergy == 0) {
+            //TODO: Do we care to support cases where the output item might have a different default component so then a value of zero for stored should be written?
             return true;
         }
-        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.createHandler(stack);
-        if (outputHandler == null) {
+        //TODO - 26.1: Do we want to just directly set the component onto the stack? Also what about resistive heater usage?
+        //ItemResource resource = itemAccess.getResource();
+        //return ItemAccessUtils.exchange(itemAccess, resource.with(ContainerType.ENERGY.getComponentType(), ContainerType.ENERGY.getOrEmpty(resource)),  transaction);
+        EnergyHandler handler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        if (handler == null) {
             //Something went wrong, fail
             return false;
         }
-        for (IEnergyContainer energyContainer : this.energyContainers) {
-            if (!energyContainer.isEmpty() && insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()) > 0) {
-                //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
-                break;
+        //Insert into the output using manual as the automation type
+        //Note: We don't fail, as we allow voiding excess energy for upgrade recipes
+        IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(handler);
+        if (energyContainer != null) {
+            long capacity = energyContainer.getCapacityAsLong();
+            long stored = energyContainer.getAmountAsLong();
+            if (energyContainer.isValidForInsertion(AutomationType.MANUAL)) {
+                long toAdd = Math.min(capacity - stored, storedEnergy);
+                if (toAdd > 0) {
+                    energyContainer.setEnergy(stored + toAdd, transaction);
+                }
             }
         }
         return true;
-    }
-
-    private long insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, long energy) {
-        //Insert into the output using manual as the automation type
-        return LongTransferUtils.insert(energy, null, outputHandler::getEnergyContainers, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

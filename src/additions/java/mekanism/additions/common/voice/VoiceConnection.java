@@ -15,8 +15,12 @@ import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.common.Mekanism;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 
 public class VoiceConnection extends Thread {
 
@@ -125,18 +129,22 @@ public class VoiceConnection extends Thread {
     }
 
     public boolean canListen(int channel) {
-        ServerPlayer player = getPlayer();
-        for (ItemStack itemStack : player.getInventory().getNonEquipmentItems()) {
-            if (canListen(channel, itemStack)) {
-                return true;
-            }
-        }
-        return canListen(channel, player.getOffhandItem());
+        PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(getPlayer());
+        //TODO: Should we just check the entire inventory and maybe curios as well?
+        return canListen(playerInv.getMainSlots(), channel) || canListen(playerInv.getHandSlot(InteractionHand.OFF_HAND), channel);
     }
 
-    private boolean canListen(int channel, ItemStack stack) {
-        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
-        return data.running() && data.channel() == channel;
+    private boolean canListen(ResourceHandler<ItemResource> itemHandler, int channel) {
+        for (int slot = 0, size = itemHandler.size(); slot < size; slot++) {
+            ItemResource itemType = itemHandler.getResource(slot);
+            if (!itemType.isEmpty()) {
+                WalkieData data = itemType.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+                if (data.running() && data.channel() == channel) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public int getCurrentChannel() {

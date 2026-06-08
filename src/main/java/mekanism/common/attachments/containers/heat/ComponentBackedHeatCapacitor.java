@@ -5,10 +5,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatCapacitorData, AttachedHeat> implements IHeatCapacitor {
@@ -17,22 +20,16 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     private final double inverseInsulationCoefficient;
     private final HeatCapacitorData defaultData;
 
-    public ComponentBackedHeatCapacitor(ItemStack attachedTo, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
-        this(attachedTo, slotIndex, inverseConductionCoefficient, inverseInsulationCoefficient, HeatAPI.DEFAULT_HEAT_CAPACITY);
-    }
-
-    public ComponentBackedHeatCapacitor(ItemStack attachedTo, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
+    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           double defaultHeatCapacity) {
-        super(attachedTo, slotIndex);
+        super(attachedAccess, slotIndex);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
         this.defaultData = new HeatCapacitorData(defaultHeatCapacity);
     }
 
-    @Override
-    protected HeatCapacitorData copy(HeatCapacitorData toCopy) {
-        //HeatCapacitorData is already immutable, so we don't need to copy it
-        return toCopy;
+    protected boolean setContents(AttachedHeat attached, HeatCapacitorData value) {
+        return setContents(attached, value, null, true);
     }
 
     @Override
@@ -41,7 +38,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    protected ContainerType<?, AttachedHeat, ?> containerType() {
+    protected IContainerType<?, AttachedHeat> containerType() {
         return ContainerType.HEAT;
     }
 
@@ -91,11 +88,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         setContents(attachedHeat, getContents(attachedHeat).withHeat(heat));
     }
 
-    @Override//TODO - 1.21: Re-evaluate this override
-    protected boolean shouldUpdate(AttachedHeat attached, HeatCapacitorData value) {
-        return !getContents(attached).equals(value);
-    }
-
     @Override
     public void handleHeat(double transfer) {
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
@@ -110,6 +102,12 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     @Override
     public boolean isAmbientTemperature() {
         return getData().heat().isEmpty();
+    }
+
+    @Override
+    public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
+        AttachedHeat attachedHeat = getAttached();
+        setContents(attachedHeat, new HeatCapacitorData(other.getHeat(), other.getHeatCapacity()), transaction, true);
     }
 
     @Override

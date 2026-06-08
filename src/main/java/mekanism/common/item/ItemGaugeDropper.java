@@ -1,18 +1,16 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
+import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.FluidUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,21 +21,18 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemGaugeDropper extends Item {
 
-    public static final MergedTankCreator MERGED_TANK_CREATOR = new MergedTankCreator(
-          (type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex,
-                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
+    public static final IBasicContainerCreator<MergedTank> MERGED_TANK_CREATOR = (attachedAccess, containerIndex) -> MergedTank.create(
+          new ComponentBackedFluidTank(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDropperCapacity, MekanismConfig.gear.gaugeDroppedTransferRate
           ),
-          (type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex,
-                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity
+          new ComponentBackedChemicalTank(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDropperCapacity, MekanismConfig.gear.gaugeDroppedTransferRate
           )
     );
 
@@ -47,7 +42,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override
@@ -57,41 +52,33 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        FluidStack fluid = StorageUtils.getFirstFluidFromAttachment(stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
-            return FluidUtils.getRGBDurabilityForDisplay(stack);
+            return ContainerType.FLUID.getRGBDurabilityForDisplay(fluid);
         }
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(itemAccess);
     }
 
     @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
-            if (!world.isClientSide()) {
-                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
-                if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
-                    for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                        fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
-                    }
-                }
-                IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-                if (handler != null) {
-                    for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                        handler.setChemicalInTank(tank, ChemicalStack.EMPTY);
-                    }
-                }
-            }
-            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
+    public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+        if (!player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        } else if (level.isClientSide()) {
+            return InteractionResult.SUCCESS_SERVER;
         }
-        return InteractionResult.PASS;
+        BlockPos pos = player.blockPosition();
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+        ContainerType.FLUID.tryDumpContents(level, pos, itemAccess, null);
+        ContainerType.CHEMICAL.tryDumpContents(level, pos, itemAccess, null);
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(ItemAccessUtils.asStack(itemAccess));
     }
 
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredSubstance(stack, tooltipAdder, false);
+        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, false);
     }
 }

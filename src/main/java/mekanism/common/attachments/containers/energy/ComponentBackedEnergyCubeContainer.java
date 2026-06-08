@@ -1,38 +1,53 @@
 package mekanism.common.attachments.containers.energy;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
-    public static ComponentBackedEnergyCubeContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockEnergyCube item)) {
+    public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockEnergyCube item)) {
             throw new IllegalStateException("Attached to should always be an energy cube item");
         }
-        return new ComponentBackedEnergyCubeContainer(attachedTo, containerIndex, item.getTier());
+        return new ComponentBackedEnergyCubeContainer(attachedAccess, item.getTier());
     }
 
     private final boolean isCreative;
 
-    private ComponentBackedEnergyCubeContainer(ItemStack attachedTo, int containerIndex, EnergyCubeTier tier) {
-        super(attachedTo, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getMaxEnergy);
+    private ComponentBackedEnergyCubeContainer(ItemAccess attachedAccess, EnergyCubeTier tier) {
+        super(attachedAccess, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        return super.insert(amount, action.combine(!isCreative), automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes)
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(amount, simulation, automationType);
+            }
+        }
+        return super.insert(amount, transaction, automationType);
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        return super.extract(amount, action.combine(!isCreative), automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(amount, simulation, automationType);
+            }
+        }
+        return super.extract(amount, transaction, automationType);
     }
 }

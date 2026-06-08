@@ -5,14 +5,14 @@ import java.util.function.UnaryOperator;
 
 public enum TranslationPreset {
     ENERGY_STORAGE(
-          type -> "storage." + type + ".energy",
-          type -> type + " Energy Storage",
-          type -> "Base energy storage in Joules of: " + type
+          type -> "capacity." + type + ".energy",
+          type -> type + " Energy Capacity",
+          type -> "Base energy capacity of: " + type
     ),
     ENERGY_USAGE(
           type -> "usage." + type + ".energy",
           type -> type + " Energy Usage",
-          type -> "Energy per operation in Joules of: " + type
+          type -> "Energy per operation of: " + type
     );
 
     private final UnaryOperator<String> pathCreator;

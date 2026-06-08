@@ -8,26 +8,32 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -49,7 +55,10 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
@@ -64,7 +73,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredChemical(stack, tooltipAdder);
+        StorageUtils.addStoredChemical(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder);
         tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
@@ -96,8 +105,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (hasChemical(stack)) {
+        if (hasChemical(ItemAccessUtils.playerHandAccess(player, hand))) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
             return InteractionResult.SUCCESS;
@@ -110,32 +118,37 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         //TODO: Do we want to allow non players to use the flamethrower?
         if (remainingDuration >= 0 && entity instanceof Player player) {
             //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
-            if (hasChemical(stack)) {
-                if (!level.isClientSide()) {
-                    EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
-                    if (flame != null) {
-                        if (flame.isAlive()) {
-                            //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
-                            level.addFreshEntity(flame);
+            ResourceHandler<ChemicalResource> chemicalHandler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)));
+            if (chemicalHandler != null) {
+                //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                    if (chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction) == 1) {
+                        if (!level.isClientSide()) {
+                            EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
+                            if (flame != null) {
+                                if (flame.isAlive()) {
+                                    //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
+                                    level.addFreshEntity(flame);
+                                }
+                                if (MekanismUtils.isPlayingMode(player)) {
+                                    //Only consume fuel if the player is actually playing and isn't in creative
+                                    transaction.commit();
+                                }
+                            }
                         }
-                        if (MekanismUtils.isPlayingMode(player)) {
-                            useChemical(stack, 1);
-                        }
+                        return;
                     }
                 }
-            } else {
-                //If the flamethrower runs out of gas, make it act as if the entity stopped using the item
-                // Have this happen on both the server and the client
-                entity.releaseUsingItem();
             }
-        } else {
-            entity.releaseUsingItem();
         }
+        //If the flamethrower runs out of gas, make it act as if the entity stopped using the item
+        // Have this happen on both the server and the client
+        entity.releaseUsingItem();
     }
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override
@@ -145,12 +158,21 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(item, MekanismChemicals.HYDROGEN));
+        tabOutput.accept(ContainerType.CHEMICAL.getFilledVariant(item, getChemicalType(), null));
+    }
+
+    private Holder<Chemical> getChemicalType() {
+        return MekanismChemicals.HYDROGEN;
+    }
+
+    @Override
+    public boolean hasChemical(ItemAccess itemAccess) {
+        return ChemicalUtils.hasChemicalOfType(itemAccess, getChemicalType());
     }
 
     @Override
@@ -164,37 +186,35 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        boolean hasGas = false;
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-        if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
+        long stored = 0;
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(instance));
+        if (handler != null && handler.size() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-            ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);
-            if (!storedGas.isEmpty()) {
-                list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.amount()));
-                hasGas = true;
+            stored = handler.getAmountAsLong(0);
+            if (stored > 0) {
+                list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, stored));
             }
         }
-        if (!hasGas) {
+        if (stored == 0) {
             list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_CHEMICAL));
         }
-        list.add(MekanismLang.MODE.translate(getMode(stack)));
+        list.add(MekanismLang.MODE.translate(getMode(instance)));
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        FlamethrowerMode mode = getMode(stack);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        FlamethrowerMode mode = getMode(itemAccess);
         FlamethrowerMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, player, newMode);
+        if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
             displayChange.sendMessage(player, newMode, MekanismLang.FLAMETHROWER_MODE_CHANGE::translate);
         }
     }
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getMode(stack).getTextComponent();
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        return getMode(instance).getTextComponent();
     }
 
     @Override
@@ -208,9 +228,9 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         //If a flamethrower has no gas it can't be idle
-        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasAnyChemical(stack);
+        return itemAccess.getResource().getItem() instanceof ItemFlamethrower flamethrower && flamethrower.hasChemical(itemAccess);
     }
 
     @NothingNullByDefault

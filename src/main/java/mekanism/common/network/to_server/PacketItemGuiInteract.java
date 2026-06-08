@@ -2,20 +2,21 @@ package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionHand hand, int extra) implements IMekanismPacket {
@@ -41,29 +42,39 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty()) {
-            interaction.consume(stack, player, extra);
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
+        if (itemAccess.getAmount() > 0) {
+            interaction.consume(itemAccess, player, extra);
         }
     }
 
     public enum ItemGuiInteraction {
-        TARGET_DIRECTION_BUTTON((stack, player, extra) -> stack.update(MekanismDataComponents.INSERT_INTO_FREQUENCY, true, val -> !val)),
+        TARGET_DIRECTION_BUTTON((itemAccess, _, _) -> {
+            ItemResource resource = itemAccess.getResource();
+            boolean currentValue = resource.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
+            ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.INSERT_INTO_FREQUENCY, !currentValue), null);
+        }),
 
-        NEXT_SECURITY_MODE((stack, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack))),
-        PREVIOUS_SECURITY_MODE((stack, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack)));
+        NEXT_SECURITY_MODE((itemAccess, player, _) -> SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), null)),
+        PREVIOUS_SECURITY_MODE((itemAccess, player, _) -> SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(itemAccess), null));
 
         public static final IntFunction<ItemGuiInteraction> BY_ID = ByIdMap.continuous(ItemGuiInteraction::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ItemGuiInteraction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ItemGuiInteraction::ordinal);
 
-        private final TriConsumer<ItemStack, Player, Integer> consumerForTile;
+        private final ConsumerForItem consumerForItem;
 
-        ItemGuiInteraction(TriConsumer<ItemStack, Player, Integer> consumerForTile) {
-            this.consumerForTile = consumerForTile;
+        ItemGuiInteraction(ConsumerForItem consumerForItem) {
+            this.consumerForItem = consumerForItem;
         }
 
-        public void consume(ItemStack stack, Player player, int extra) {
-            consumerForTile.accept(stack, player, extra);
+        public void consume(ItemAccess itemAccess, Player player, int extra) {
+            consumerForItem.accept(itemAccess, player, extra);
+        }
+
+        @FunctionalInterface
+        private interface ConsumerForItem {
+
+            void accept(ItemAccess itemAccess, Player player, int extra);
         }
     }
 }

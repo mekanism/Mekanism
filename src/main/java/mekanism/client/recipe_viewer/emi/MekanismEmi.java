@@ -20,9 +20,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
@@ -60,7 +58,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.Capabilities;
@@ -75,6 +73,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -83,9 +82,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
@@ -96,85 +97,58 @@ public class MekanismEmi implements EmiPlugin {
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         Set<Object> representation = new HashSet<>();
         ItemStack stack = emiStack.getItemStack();
-        addChemicalComponent(representation, stack);
-        addFluidComponent(representation, stack);
-        addEnergyComponent(representation, stack);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        addChemicalComponent(representation, itemAccess);
+        addFluidComponent(representation, itemAccess);
+        addEnergyComponent(representation, itemAccess);
         if (!representation.isEmpty()) {
             return representation;
         }
         return null;
     });
 
-    private static void addChemicalComponent(Set<Object> representation, ItemStack stack) {
-        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
-        if (handler == null) {
-            handler = stack.getCapability(Capabilities.CHEMICAL.item());
-        }
+    private static void addChemicalComponent(Set<Object> representation, ItemAccess itemAccess) {
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (handler != null) {
-            int tanks = handler.getChemicalTanks();
+            int tanks = handler.size();
             if (tanks == 1) {
-                ChemicalStack chemicalStack = handler.getChemicalInTank(0);
-                if (!chemicalStack.isEmpty()) {
-                    representation.add(chemicalStack.getChemical());
+                ChemicalResource chemicalType = handler.getResource(0);
+                if (!chemicalType.isEmpty()) {
+                    representation.add(chemicalType);
                 }
             } else if (tanks > 1) {
-                List<Chemical> chemicals = new ArrayList<>(tanks);
+                List<ChemicalResource> chemicals = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
-                    chemicals.add(handler.getChemicalInTank(tank).getChemical());
+                    chemicals.add(handler.getResource(tank));
                 }
                 representation.add(chemicals);
             }
         }
     }
 
-    private static void addFluidComponent(Set<Object> representation, ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
-        if (handler == null) {
-            handler = Capabilities.FLUID.getCapability(stack);
-        }
+    private static void addFluidComponent(Set<Object> representation, ItemAccess itemAccess) {
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (handler != null) {
-            int tanks = handler.getTanks();
+            int tanks = handler.size();
             if (tanks == 1) {
-                FluidStack fluidStack = handler.getFluidInTank(0);
+                FluidResource fluidStack = handler.getResource(0);
                 if (!fluidStack.isEmpty()) {
-                    //Equals and hashcode ignore the count, so we can just add the fluid stack
                     representation.add(fluidStack);
                 }
             } else if (tanks > 1) {
-                List<FluidStack> fluids = new ArrayList<>(tanks);
+                List<FluidResource> fluids = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
-                    //Equals and hashcode ignore the count, so we can just add the fluid stack
-                    fluids.add(handler.getFluidInTank(tank));
+                    fluids.add(handler.getResource(tank));
                 }
                 representation.add(fluids);
             }
         }
     }
 
-    private static void addEnergyComponent(Set<Object> representation, ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
-        if (energyHandlerItem == null) {
-            energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
-        }
-        if (energyHandlerItem != null) {
-            int containers = energyHandlerItem.getEnergyContainerCount();
-            if (containers == 1) {
-                long neededEnergy = energyHandlerItem.getNeededEnergy(0);
-                if (neededEnergy == 0L) {
-                    representation.add("filled");
-                }
-            } else if (containers > 1) {
-                StringBuilder component = new StringBuilder();
-                for (int container = 0; container < containers; container++) {
-                    long neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                    if (neededEnergy == 0L) {
-                        component.append("filled");
-                    } else {
-                        component.append("empty");
-                    }
-                }
-                representation.add(component.toString());
-            }
+    private static void addEnergyComponent(Set<Object> representation, ItemAccess itemAccess) {
+        EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
+        if (energyHandler != null && energyHandler.getAmountAsLong() >= energyHandler.getCapacityAsLong()) {
+            representation.add("filled");
         }
     }
 
@@ -210,10 +184,10 @@ public class MekanismEmi implements EmiPlugin {
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(item);
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
-                registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(item));
+            if (Capabilities.ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
+                Capabilities.FLUID.getCapability(itemAccess) != null) {
+                registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }
         }
     }

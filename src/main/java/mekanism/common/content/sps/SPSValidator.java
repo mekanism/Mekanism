@@ -3,6 +3,7 @@ package mekanism.common.content.sps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
@@ -18,6 +19,7 @@ import mekanism.common.lib.multiblock.Structure.Axis;
 import mekanism.common.lib.multiblock.StructureHelper;
 import mekanism.common.registries.MekanismBlockTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -78,10 +80,12 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     public FormationResult postcheck(SPSMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         Set<BlockPos> validCoils = new ObjectOpenHashSet<>();
         BlockPos.MutableBlockPos valvePos = new BlockPos.MutableBlockPos();
-        for (ValveData valve : structure.valves) {
-            valvePos.setWithOffset(valve.location, valve.side.getOpposite());
+        for (Map.Entry<BlockPos, ValveData> entry : structure.valves.entrySet()) {
+            BlockPos valveLoc = entry.getKey();
+            Direction valveSide = entry.getValue().side;
+            valvePos.setWithOffset(valveLoc, valveSide.getOpposite());
             if (structure.internalLocations.contains(valvePos)) {
-                structure.addCoil(valve.location, valve.side.getOpposite());
+                structure.addCoil(valveLoc, valveSide.getOpposite());
                 validCoils.add(valvePos.immutable());
             }
         }

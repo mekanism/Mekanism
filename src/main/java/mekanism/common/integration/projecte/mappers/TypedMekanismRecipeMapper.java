@@ -114,8 +114,8 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
     }
 
     protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalStack output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
-        if (!output.isEmpty() && !recipeInput.isEmpty() && output.amount() <= Integer.MAX_VALUE) {
-            mapper.addConversion((int) output.amount(), NSSChemical.createChemical(output), recipeInput);
+        if (!output.isEmpty() && !recipeInput.isEmpty()) {
+            mapper.addConversion(output.amount(), NSSChemical.createChemical(output), recipeInput);
             return true;
         }
         return false;
@@ -326,12 +326,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         }
 
         public Object2IntMap<NormalizedSimpleStack> forChemicals(SequencedCollection<ChemicalStack> representations) {
-            for (ChemicalStack representation : representations) {
-                if (representation.amount() > Integer.MAX_VALUE) {
-                    return Object2IntMaps.emptyMap();
-                }
-            }
-            return forIngredient(representations, NSSChemical::createChemical, stack -> (int) stack.amount());
+            return forIngredient(representations, NSSChemical::createChemical, ChemicalStack::amount);
         }
 
         private <STACK> Object2IntMap<NormalizedSimpleStack> forIngredient(SequencedCollection<STACK> representations, Function<STACK, NormalizedSimpleStack> nssCreator,

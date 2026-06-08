@@ -1,82 +1,53 @@
 package mekanism.client.gui.element.bar;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
+public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> {
 
-    public GuiChemicalBar(IGuiWrapper gui, TankInfoProvider<ChemicalStack> infoProvider, int x, int y, int width, int height, boolean horizontal) {
+    public GuiChemicalBar(IGuiWrapper gui, ResourceTankInfoProvider<ChemicalResource, IChemicalTank> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(gui, infoProvider, x, y, width, height, horizontal);
     }
 
     @Override
-    protected boolean isEmpty(ChemicalStack stack) {
-        return stack.isEmpty();
-    }
-
-    @Nullable
-    @Override
-    protected TankType getType(ChemicalStack stack) {
+    protected TankType getType() {
         return TankType.CHEMICAL_TANK;
     }
 
     @Override
-    protected List<Component> getTooltip(ChemicalStack stack) {
-        List<Component> tooltips = super.getTooltip(stack);
-        stack.appendHoverText(TooltipContext.of(minecraft.level), tooltips, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-        return tooltips;
+    protected List<Component> getContentsTooltips(ChemicalResource resource, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        List<Component> tooltip = super.getContentsTooltips(resource, amount, context, player, tooltipFlag);
+        ChemicalStack stack = resource.toStack(Ints.saturatedCast(amount));
+        if (!stack.isEmpty()) {
+            stack.appendHoverText(context, tooltip, tooltipFlag);
+        }
+        return tooltip;
     }
 
     @Override
-    protected int getRenderColor(ChemicalStack stack) {
-        return MekanismRenderer.color(stack);
+    protected int getRenderColor(ChemicalResource resource) {
+        return MekanismRenderer.color(resource);
     }
 
     @Override
-    protected TextureAtlasSprite getIcon(ChemicalStack stack) {
-        return MekanismRenderer.getChemicalTexture(stack);
+    protected TextureAtlasSprite getIcon(ChemicalResource resource) {
+        return MekanismRenderer.getChemicalTexture(resource);
     }
 
-    public static TankInfoProvider<ChemicalStack> getProvider(IChemicalTank tank, List<IChemicalTank> tanks) {
-        return new TankInfoProvider<>() {
-            @NotNull
-            @Override
-            public ChemicalStack getStack() {
-                return tank.getStack();
-            }
-
-            @Override
-            public int getTankIndex() {
-                return tanks.indexOf(tank);
-            }
-
-            @Override
-            public Component getTooltip() {
-                if (tank.isEmpty()) {
-                    return MekanismLang.EMPTY.translate();
-                } else if (tank.getStored() == Long.MAX_VALUE) {
-                    return MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE);
-                }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(tank.getStored()));
-            }
-
-            @Override
-            public double getLevel() {
-                return MathUtils.divideToLevel(tank.getStored(), tank.getCapacity());
-            }
-        };
+    @Override
+    protected Object toIngredientStack(ChemicalResource resource, long amount) {
+        return resource.toStack(Ints.saturatedCast(amount));
     }
 }

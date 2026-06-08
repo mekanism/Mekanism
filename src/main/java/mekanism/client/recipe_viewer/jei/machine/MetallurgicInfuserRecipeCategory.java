@@ -52,7 +52,7 @@ public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemS
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, infusionBar, scaledChemicals);
-        initItems(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }
 }

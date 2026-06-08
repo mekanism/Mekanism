@@ -12,7 +12,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     private double progress;
     private int inputProcessed;
     private boolean couldOperate;
-    private long receivedEnergy = 0;
+    private long receivedEnergy;
     private double lastProcessed;
 
     @Override

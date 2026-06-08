@@ -2,16 +2,21 @@ package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
 import java.util.function.IntSupplier;
-import mekanism.api.Action;
+import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class FluidTankFluidTank extends BasicFluidTank {
@@ -23,85 +28,65 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     private final TileEntityFluidTank tile;
     private final boolean isCreative;
-    private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
-        super(tile.tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
+        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        IntSupplier rateLimit = tile.tier::getTransferRate;
+        super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
+              ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),
+              ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit), listener);
         this.tile = tile;
-        rate = tile.tier::getOutput;
         isCreative = tile.tier == FluidTankTier.CREATIVE;
     }
 
     @Override
-    protected int getInsertRate(@Nullable AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertRate(automationType);
-    }
-
-    @Override
-    protected int getExtractRate(@Nullable AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractRate(automationType);
-    }
-
-    @Override
-    public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        FluidStack remainder;
-        if (isCreative && isEmpty() && action.execute() && automationType != AutomationType.EXTERNAL) {
-            //If a player manually inserts into a creative tank (or internally, via a FluidInventorySlot), that is empty we need to allow setting the type,
-            // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
-            remainder = super.insert(stack, Action.SIMULATE, automationType);
-            if (remainder.isEmpty()) {
-                //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(stack.copyWithAmount(getCapacity()));
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        int inserted;
+        if (isCreative) {
+            if (isEmpty() && !automationType.isExternal()) {
+                //If a player manually inserts into a creative tank (or internally, via a FluidInventorySlot), that is empty we need to allow setting the type,
+                // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    if (super.insert(resource, amount, simulation, automationType) == 0) {
+                        return 0;
+                    }
+                }
+                //If we managed to insert anything, set the contents to the maximum amount of that item type
+                // Note: We just set it as unchecked as we have already validated it
+                setContents(resource, capacityAsLong(resource), transaction);
+                //Return that we accepted the entire amount we were passed
+                return amount;
+            }
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                inserted = super.insert(resource, amount, simulation, automationType);
             }
         } else {
-            remainder = super.insert(stack, action.combine(!isCreative), automationType);
+            inserted = super.insert(resource, amount, transaction, automationType);
         }
         //Ensure we have the same type of fluid stored as we failed to insert, in which case we want to try to insert to the one above
-        if (!remainder.isEmpty() && FluidStack.isSameFluidSameComponents(stored, remainder)) {
+        if (inserted < amount && resource().equals(resource)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
-                remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
+                inserted += tileAbove.fluidTank.insert(resource, amount - inserted, transaction, AutomationType.EXTERNAL);
             }
         }
-        return remainder;
+        return inserted;
     }
 
     @Override
-    public int growStack(int amount, Action action) {
-        int grownAmount = super.growStack(amount, action);
-        if (amount > 0 && grownAmount < amount) {
-            //If we grew our stack less than we tried to, and we were actually growing and not shrinking it
-            // try inserting into above tiles
-            if (!tile.getActive()) {
-                TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
-                if (tileAbove != null) {
-                    int leftOverToInsert = amount - grownAmount;
-                    //Note: We do external so that it is not limited by the internal rate limits
-                    FluidStack remainder = tileAbove.fluidTank.insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
-                    grownAmount += leftOverToInsert - remainder.amount();
-                }
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
             }
         }
-        return grownAmount;
-    }
-
-    @Override
-    public FluidStack extract(int amount, Action action, AutomationType automationType) {
-        return super.extract(amount, action.combine(!isCreative), automationType);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(int, Action)}, as both {@link #growStack(int, Action)} and {@link #shrinkStack(int, Action)} are wrapped through
-     * this method.
-     */
-    @Override
-    public int setStackSize(int amount, Action action) {
-        return super.setStackSize(amount, action.combine(!isCreative));
+        return super.extract(resource, amount, transaction, automationType);
     }
 }

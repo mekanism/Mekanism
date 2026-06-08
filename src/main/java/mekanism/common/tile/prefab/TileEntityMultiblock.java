@@ -5,11 +5,13 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.FactoryRegistry;
@@ -37,7 +39,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -204,7 +205,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         //Comparators are handled via the multiblock, no special listeners are needed
         return false;
     }
@@ -215,7 +216,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
@@ -333,7 +334,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         if (type == ContainerType.ITEM) {
             return false;
         }
@@ -342,8 +343,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        return side -> getMultiblock().getInventorySlots(side);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        return _ -> getMultiblock().getInventorySlots();
     }
 
     @Override

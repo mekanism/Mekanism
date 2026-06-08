@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.TooltipFlag;
  *
  * @since 10.7.11
  */
-public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IChemicalAttribute {
+public record ChemicalFuel(int maxBurnPerTick, int energyPerTick) implements IChemicalAttribute {
 
     /**
      * The ID of the data map.
@@ -37,7 +37,7 @@ public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IC
      */
     public static final Codec<ChemicalFuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.MAX_BURN_RATE).forGetter(ChemicalFuel::maxBurnPerTick),
-          SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(ChemicalFuel::energyPerTick)
+          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.ENERGY).forGetter(ChemicalFuel::energyPerTick)
     ).apply(instance, ChemicalFuel::new));
 
     public ChemicalFuel {
@@ -51,7 +51,7 @@ public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IC
     /**
      * The energy density in one mB of fuel.
      */
-    public long energyDensity() {
+    public int energyDensity() {
         return energyPerTick;
     }
 
@@ -62,10 +62,10 @@ public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IC
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               tooltipHelper.getEnergyPerMBDisplayShort(energyDensity())));
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              tooltipHelper.getEnergyDisplay(getMaxJoulesPerTick(), true)));
+              tooltipHelper.getEnergyDisplay(getMaxEnergyPerTick(), true)));
     }
 
-    public long getMaxJoulesPerTick() {
-        return maxBurnPerTick() * energyPerTick();
+    private int getMaxEnergyPerTick() {
+        return MathUtils.multiplyClamped(maxBurnPerTick(), energyPerTick());
     }
 }

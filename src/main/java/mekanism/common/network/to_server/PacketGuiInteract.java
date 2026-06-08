@@ -25,11 +25,11 @@ import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -347,12 +347,12 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         NEXT_SECURITY_MODE((tile, player, extra) -> {
             if (tile.getLevel() != null) {
-                SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile));
+                SecurityUtils.get().incrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
             }
         }),
         PREVIOUS_SECURITY_MODE((tile, player, extra) -> {
             if (tile.getLevel() != null) {
-                SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile));
+                SecurityUtils.get().decrementSecurityMode(player, IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile), null);
             }
         }),
 
@@ -444,6 +444,21 @@ public class PacketGuiInteract implements IMekanismPacket {
                 amplifier.setDelay(extra);
             }
         }),
+        MIN_THRESHOLD((tile, _, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMinThresholdFromPacket(extra);
+            }
+        }),
+        MAX_THRESHOLD((tile, _, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMaxThresholdFromPacket(extra);
+            }
+        }),
+        ENERGY_USAGE((tile, _, extra) -> {
+            if (tile instanceof TileEntityResistiveHeater heater) {
+                heater.setEnergyUsageFromPacket(extra);
+            }
+        }),
 
         TOGGLE_CHUNKLOAD((tile, player, extra) -> {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
@@ -476,8 +491,8 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionEntity {
-        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity))),
-        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity))),
+        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity), null)),
+        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, IEntitySecurityUtils.INSTANCE.securityCapability(entity), null)),
         CONTAINER_STOP_TRACKING((entity, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);

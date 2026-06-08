@@ -27,6 +27,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstoneAdapter, MekanismTileContainer<TileEntityQIORedstoneAdapter>> {
@@ -67,7 +68,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
               .tooltip(GuiQIOFilterHandler.getFrequencyTooltip(tile)));
         addRenderableWidget(new GuiInnerScreen(this, 27, 30, imageWidth - 27 - 8, 64, () -> {
             List<Component> list = new ArrayList<>();
-            ItemStack itemType = tile.getItemType();
+            ItemResource itemType = tile.getItemType();
             list.add(itemType.isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : itemType.getHoverName());
             ILangEntry match = tile.isInverted() ? MekanismLang.GENERIC_LESS_THAN : MekanismLang.GENERIC_GREATER_EQUAL;
             list.add(match.translate(MekanismLang.QIO_TRIGGER_COUNT, TextUtils.format(tile.getCount())));
@@ -101,7 +102,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
-        renderItem(guiGraphics, tile.getItemType(), 8, 31);
+        renderItem(guiGraphics, tile.getItemType().toStack(), 8, 31);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

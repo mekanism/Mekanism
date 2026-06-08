@@ -68,7 +68,7 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
     }
 
     @Override
-    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
+    public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
         return PAXEL_ACTIONS.contains(action);
     }
 

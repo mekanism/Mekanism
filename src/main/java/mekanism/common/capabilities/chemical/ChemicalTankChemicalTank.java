@@ -1,76 +1,83 @@
 package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.util.MekanismUtils;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ChemicalTankChemicalTank extends BasicChemicalTank {
 
-    public static ChemicalTankChemicalTank create(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-        Objects.requireNonNull(tier, "Chemical tank tier cannot be null");
-        return new ChemicalTankChemicalTank(tier, listener);
+    public static ChemicalTankChemicalTank create(TileEntityChemicalTank tile, @Nullable IContentsListener listener) {
+        Objects.requireNonNull(tile, "Chemical tank tile cannot be null");
+        ChemicalTankTier tier = tile.getTier();
+        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        IntSupplier rateLimit = tier::getTransferRate;
+        //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
+        return new ChemicalTankChemicalTank(tier, ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),
+              ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit), listener);
     }
 
     private final boolean isCreative;
-    private final LongSupplier rate;
 
-    private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-        super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener, null);
+    private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
+          @Nullable IContentsListener listener) {
+        //TODO - 26.1: Should this and the one for fluid tanks and energy cubes be variable capacity instead of just caching the capacity at time of creation?
+        super(tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), insertionRateLimiter,
+              extractionRateLimiter, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
-        rate = tier::getOutput;
     }
 
     @Override
-    protected long getInsertRate(@Nullable AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getInsertRate(automationType);
-    }
-
-    @Override
-    protected long getExtractRate(@Nullable AutomationType automationType) {
-        //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getExtractRate(automationType);
-    }
-
-    @Override
-    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        if (isCreative && isEmpty() && action.execute() && automationType != AutomationType.EXTERNAL) {
-            //If a player manually inserts into a creative tank (or internally, via a GasInventorySlot), that is empty we need to allow setting the type,
-            // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
-            ChemicalStack simulatedRemainder = super.insert(stack, Action.SIMULATE, automationType);
-            if (simulatedRemainder.isEmpty()) {
-                //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(stack.copyWithAmount(getCapacity()));
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            if (isEmpty() && !automationType.isExternal()) {
+                //If a player manually inserts into a creative tank (or internally, via a ChemicalInventorySlot), that is empty we need to allow setting the type,
+                // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    if (super.insert(resource, amount, simulation, automationType) == 0) {
+                        return 0;
+                    }
+                }
+                //If we managed to insert anything, set the contents to the maximum amount of that item type
+                // Note: We just set it as unchecked as we have already validated it
+                setContents(resource, capacityAsLong(resource), transaction);
+                //Return that we accepted the entire amount we were passed
+                return amount;
             }
-            return simulatedRemainder;
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(resource, amount, simulation, automationType);
+            }
         }
-        return super.insert(stack, action.combine(!isCreative), automationType);
+        return super.insert(resource, amount, transaction, automationType);
     }
 
     @Override
-    public ChemicalStack extract(long amount, Action action, AutomationType automationType) {
-        return super.extract(amount, action.combine(!isCreative), automationType);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped through
-     * this method.
-     */
-    @Override
-    public long setStackSize(long amount, Action action) {
-        return super.setStackSize(amount, action.combine(!isCreative));
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 }

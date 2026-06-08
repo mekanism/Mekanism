@@ -1,7 +1,5 @@
 package mekanism.client.gui.item;
 
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.MathUtils;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -13,6 +11,7 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequenc
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IItemGuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
@@ -25,6 +24,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
@@ -45,14 +45,14 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
                   @Override
                   public Component getTooltip() {
-                      IEnergyContainer container = menu.getEnergyContainer();
-                      return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
+                      EnergyHandler energyHandler = menu.getEnergyHandler();
+                      return energyHandler == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(energyHandler).getTextComponent();
                   }
 
                   @Override
                   public double getLevel() {
-                      IEnergyContainer container = menu.getEnergyContainer();
-                      return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
+                      EnergyHandler energyHandler = menu.getEnergyHandler();
+                      return energyHandler == null ? 0 : ContainerType.ENERGY.divideToLevel(energyHandler);
                   }
               }, 158, 26)
         ).warning(WarningType.NOT_ENOUGH_ENERGY, () -> menu.getStatus() == TeleporterStatus.NOT_ENOUGH_ENERGY);

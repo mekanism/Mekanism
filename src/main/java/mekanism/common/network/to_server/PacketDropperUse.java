@@ -1,43 +1,41 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.function.IntFunction;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public record PacketDropperUse(DropperAction action, TankType tankType, int tankId) implements IMekanismPacket {
 
@@ -57,7 +55,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
 
     @Override
     public void handle(IPayloadContext context) {
-        //todo - 26.1: validate that this successfully gets the tile
         if (tankId >= 0 && context.player() instanceof ServerPlayer player && player.containerMenu instanceof MekanismTileContainer<?> mekTileContainer) {
             ItemAccess itemAccess = ItemAccess.forPlayerCursor(player, mekTileContainer);
             ItemResource itemResource = itemAccess.getResource();
@@ -67,7 +64,11 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                     if (tile instanceof TileEntityMultiblock<?> multiblock) {
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
-                            handleTankType(structure, player, itemAccess, player.level(), structure.getBounds().getCenter());
+                            if (tankType == TankType.FLUID_TANK) {
+                                handleResourceTank(player, itemAccess, ContainerType.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                            } else if (tankType == TankType.CHEMICAL_TANK) {
+                                handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                            }
                         }
                     } else {
                         if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -78,115 +79,90 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                                 return;
                             }
                         }
-                        handleTankType(tile, player, itemAccess, tile.getLevel(), tile.getBlockPos());
+                        if (tankType == TankType.FLUID_TANK) {
+                            handleResourceTank(player, itemAccess, ContainerType.FLUID, tile);
+                        } else if (tankType == TankType.CHEMICAL_TANK) {
+                            handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, tile);
+                        }
                     }
                 }
             }
         }
     }
 
-    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemAccess itemAccess, Level level, BlockPos pos) {
-        if (tankType == TankType.FLUID_TANK) {
-            IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
-            if (fluidTank != null) {
-                handleFluidTank(player, itemAccess, fluidTank);
-            }
-        } else if (tankType == TankType.CHEMICAL_TANK) {
-            IChemicalTank chemicalTank = handler.getChemicalTank(tankId, null);
-            if (chemicalTank != null) {
-                handleChemicalTank(player, itemAccess, chemicalTank, level, pos);
-            }
-        }
+    @Nullable
+    private <TANK> TANK getTank(List<TANK> tanks) {
+        return tankId >= 0 && tankId < tanks.size() ? tanks.get(tankId) : null;
     }
 
-    private void handleChemicalTank(ServerPlayer player, ItemAccess itemAccess, IChemicalTank tank, Level level, BlockPos pos) {
-        if (action == DropperAction.DUMP_TANK) {
-            //Dump the tank
-            if (!tank.isEmpty()) {
-                //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(level, pos, tank.getStack());
-                tank.setEmpty();
-                MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
-            }
-        } else {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
-            if (handler instanceof IMekanismChemicalHandler chemicalHandler) {
-                IChemicalTank itemTank = chemicalHandler.getChemicalTank(0, null);
-                //It is a chemical tank
-                if (itemTank != null) {
-                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    if (action == DropperAction.FILL_DROPPER) {
-                        //Insert chemical into dropper
-                        transferBetweenTanks(tank, itemTank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.FILL);
-                    } else if (action == DropperAction.DRAIN_DROPPER) {
-                        //Extract chemical from dropper
-                        transferBetweenTanks(itemTank, tank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DRAIN);
-                    }
-                }
-            }
-        }
+    private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
+          ResourceContainerType<RESOURCE, TANK> containerType, TileEntityMekanism tile) {
+        handleResourceTank(player, itemAccess, containerType, containerType.getContainers(tile), tile.getLevel(), tile.getBlockPos());
     }
 
-    private void handleFluidTank(ServerPlayer player, ItemAccess itemAccess, IExtendedFluidTank fluidTank) {
-        if (action == DropperAction.DUMP_TANK) {
-            //Dump the tank
-            fluidTank.setEmpty();
+    private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
+          ResourceContainerType<RESOURCE, TANK> containerType, List<TANK> tanks, Level level, BlockPos pos) {
+        TANK tank = getTank(tanks);
+        if (tank == null) {
+            return;
+        } else if (action == DropperAction.DUMP_TANK) {
+            containerType.dumpContents(level, pos, tank, null);
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(itemAccess);
-        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-            IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
-            if (itemFluidTank != null) {
-                if (action == DropperAction.FILL_DROPPER) {
-                    //Insert fluid into dropper
-                    transferBetweenTanks(fluidTank, itemFluidTank, player);
-                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.FILL);
-                } else if (action == DropperAction.DRAIN_DROPPER) {
-                    //Extract fluid from dropper
-                    transferBetweenTanks(itemFluidTank, fluidTank, player);
-                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DRAIN);
+        //Ensure the dropper is interacted with via the manual automation type
+        ResourceHandler<RESOURCE> dropperHandler = AutomatedResourceHandler.manual(containerType.capability().getCapability(itemAccess));
+        if (dropperHandler != null) {
+            if (action == DropperAction.FILL_DROPPER) {
+                //Insert fluid into dropper
+                transferBetween(tank.resource(), tank.amountAsInt(), player, UseDropperAction.FILL,
+                      tank, (target, type, amount, transaction) -> target.extract(type, amount, transaction, AutomationType.MANUAL),
+                      dropperHandler, ResourceHandler::insert
+                );
+            } else if (action == DropperAction.DRAIN_DROPPER) {
+                //Get the type of resource stored in our tank, or one from the dropper that can be inserted into the tank
+                RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
+                if (currentType.isEmpty()) {
+                    //Failed to find a resource that could be extracted that is valid for the tank, exit
+                    return;
+                }
+                //Calculate how much of the type our tank has room for based on the type we are going to try to insert
+                transferBetween(currentType, tank.getNeededAsInt(currentType), player, UseDropperAction.DRAIN,
+                      dropperHandler, ResourceHandler::extract,
+                      tank, (target, type, amount, transaction) -> target.insert(type, amount, transaction, AutomationType.MANUAL)
+                );
+            }
+        }
+    }
+
+    private <RESOURCE extends Resource, EXTRACT_FROM, INSERT_INTO> void transferBetween(RESOURCE type, int needed, ServerPlayer player, UseDropperAction action,
+          EXTRACT_FROM extractFrom, ContainerInteractor<RESOURCE, EXTRACT_FROM> extractor, INSERT_INTO insertInto, ContainerInteractor<RESOURCE, INSERT_INTO> insertor) {
+        if (type.isEmpty() || needed <= 0) {
+            return;
+        }
+        int drainAmount;
+        try (Transaction simulation = Transaction.openRoot()) {
+            drainAmount = extractor.process(extractFrom, type, needed, simulation);
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = insertor.process(insertInto, type, drainAmount, transaction);
+            if (inserted > 0) {
+                //There is room for at least some of the fluid, extract what we can
+                int extracted = extractor.process(extractFrom, type, inserted, transaction);
+                if (extracted == inserted) {
+                    //We were able to extract the same amount as we inserted, commit it, sync and trigger advancements
+                    //Note: This should always be true given we simulated how much could be extracted at once, but we validate it just in case
+                    transaction.commit();
+                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, action);
                 }
             }
         }
     }
 
-    private static void transferBetweenTanks(IChemicalTank drainTank, IChemicalTank fillTank, Player player) {
-        if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
-            ChemicalStack chemicalInDrainTank = drainTank.getStack();
-            ChemicalStack simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            long remainder = simulatedRemainder.amount();
-            long amount = chemicalInDrainTank.amount();
-            if (remainder < amount) {
-                //We are able to fit at least some of the chemical from our drain tank into the fill tank
-                ChemicalStack extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
-                if (!extractedChemical.isEmpty()) {
-                    //If we were able to actually extract it from our tank, then insert it into the tank
-                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
-                    player.containerMenu.synchronizeCarriedToRemote();
-                }
-            }
-        }
-    }
+    @FunctionalInterface
+    private interface ContainerInteractor<RESOURCE extends Resource, TARGET> {
 
-    private static void transferBetweenTanks(IExtendedFluidTank drainTank, IExtendedFluidTank fillTank, Player player) {
-        if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
-            FluidStack fluidInDrainTank = drainTank.getFluid();
-            FluidStack simulatedRemainder = fillTank.insert(fluidInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            int remainder = simulatedRemainder.amount();
-            int amount = fluidInDrainTank.amount();
-            if (remainder < amount) {
-                //We are able to fit at least some of the fluid from our drain tank into the fill tank
-                FluidStack extractedFluid = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
-                if (!extractedFluid.isEmpty()) {
-                    //If we were able to actually extract it from our tank, then insert it into the tank
-                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
-                    player.containerMenu.synchronizeCarriedToRemote();
-                }
-            }
-        }
+        int process(TARGET target, RESOURCE resource, int amount, TransactionContext transaction);
     }
 
     public enum DropperAction {

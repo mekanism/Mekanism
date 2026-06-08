@@ -42,7 +42,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
     public FluidStackIngredient waterInput() {
-        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, Ints.saturatedCast(outputCoolant().amount()));
+        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, outputCoolant().amount());
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
@@ -51,7 +51,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         List<FissionRecipeViewerRecipe> recipes = new ArrayList<>();
         long energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get();
         //Special case water recipe
-        long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
+        int coolantAmount = Ints.saturatedCast(Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy()));
         recipes.add(new FissionRecipeViewerRecipe(
               RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
@@ -61,12 +61,12 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         for (Map.Entry<ResourceKey<Chemical>, CooledCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()).entrySet()) {
             ResourceKey<Chemical> key = entry.getKey();
             CooledCoolant coolant = entry.getValue();
-            long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
+            int amount = Ints.saturatedCast(Math.round(energyPerFuel / coolant.thermalEnthalpy()));
             recipes.add(new FissionRecipeViewerRecipe(
                   RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                  coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+                  coolant.heat().toStack(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
             ));
         }
         return recipes;

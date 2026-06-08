@@ -40,8 +40,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
-import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
+import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.loot.MekanismLootFunctions;
@@ -192,11 +191,13 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
             //Sync all Mekanism Recipes
             //TODO: Evaluate if there is a way we want to do this that doesn't require syncing everything
-            //TODO - 26.1: How does this handle the builtin smelting recipes? Note: It might work currently even if this doesn't sync, just because JEI syncs the vanilla types
-            // in which case we need to mark the vanilla type that we wrap for syncing in case JEI isn't present
             for (Holder<RecipeType<?>> entry : MekanismRecipeType.RECIPE_TYPES.getEntries()) {
                 event.sendRecipes(entry.value());
             }
+            //In case JEI isn't present, also sync the smelting recipes so that we can wrap them for testing the input
+            event.sendRecipes(RecipeType.SMELTING);
+            //TODO - 26.1: Re-evaluate this. If we rewrite how the formulaic assemblicator handles recipes on the client side, then this might not be necessary?
+            event.sendRecipes(RecipeType.CRAFTING);
         });
         modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
         modEventBus.addListener(Capabilities::registerCapabilities);
@@ -396,9 +397,10 @@ public class Mekanism {
         for (BlockRegistryObject<?, ?> tank : tanks) {
             Item item = tank.getItemHolder().value();
             DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
-            CauldronInteractions.EMPTY.put(item, BasicCauldronInteraction.EMPTY);
-            CauldronInteractions.WATER.put(item, BasicDrainCauldronInteraction.WATER);
-            CauldronInteractions.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
+            //TODO: Is there any generic cauldron interaction map that we could get for purposes of custom cauldrons from RegisterCauldronFluidContentEvent
+            CauldronInteractions.EMPTY.put(item, FluidTankCauldronInteraction.INSTANCE);
+            CauldronInteractions.WATER.put(item, FluidTankCauldronInteraction.INSTANCE);
+            CauldronInteractions.LAVA.put(item, FluidTankCauldronInteraction.INSTANCE);
         }
     }
 
@@ -412,7 +414,7 @@ public class Mekanism {
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getRegisteredName(), networkID);
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.typeHolder().getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(networkID, event.transferType));
     }
 

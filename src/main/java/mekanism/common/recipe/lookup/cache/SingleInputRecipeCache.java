@@ -116,7 +116,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public <DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, STACK input, DATA data, TriPredicate<RECIPE, STACK, DATA> matchCriteria) {
+    public <INPUT extends TypedInstance<TYPE>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<RECIPE, INPUT, DATA> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -145,7 +145,8 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public <DATA_1, DATA_2> RECIPE findTypeBasedRecipe(@Nullable Level world, STACK input, DATA_1 data1, DATA_2 data2, CheckRecipeType<STACK, RECIPE, DATA_1, DATA_2> matchCriteria) {
+    public <INPUT extends TypedInstance<TYPE>, DATA_1, DATA_2> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA_1 data1, DATA_2 data2,
+          CheckRecipeType<TYPE, INPUT, RECIPE, DATA_1, DATA_2> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -175,7 +176,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
     }
 
     @FunctionalInterface
-    public interface CheckRecipeType<INPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, DATA_1, DATA_2> {
+    public interface CheckRecipeType<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<? extends TypedInstance<TYPE>>, DATA_1, DATA_2> {
 
         boolean testType(RECIPE recipe, INPUT input, DATA_1 data1, DATA_2 data2);
     }

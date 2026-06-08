@@ -2,9 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToLongFunction;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -22,7 +20,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidInstance;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, MekanismTileContainer<TileEntityDynamicTank>> {
@@ -44,13 +42,10 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addRenderableWidget(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<Component> ret = new ArrayList<>();
             TankMultiblockData multiblock = tile.getMultiblock();
-            long capacity = multiblock.getChemicalTankCapacity();
+            long capacity = multiblock.getTankCapacity();
             switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY -> ret.add(MekanismLang.EMPTY.translate());
-                case FLUID -> {
-                    addStored(ret, multiblock.getFluidTank().getFluid(), FluidInstance::amount);
-                    capacity = multiblock.getTankCapacity();
-                }
+                case FLUID -> addStored(ret, multiblock.getFluidTank());
                 case CHEMICAL -> addStored(ret, multiblock.getChemicalTank());
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
@@ -59,16 +54,12 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         }).spacing(1));
         addRenderableWidget(new GuiDownArrow(this, 150, 39));
         addRenderableWidget(new GuiContainerEditModeTab<>(this, tile));
-        addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
+        addRenderableWidget(new GuiMergedTankGauge(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
-    private void addStored(List<Component> ret, IChemicalTank tank) {
-        addStored(ret, tank.getStack(), ChemicalStack::amount);
-    }
-
-    private <STACK> void addStored(List<Component> ret, STACK stack, ToLongFunction<STACK> amountGetter) {
-        ret.add(MekanismLang.GENERIC_PRE_COLON.translate(stack));
-        ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(amountGetter.applyAsLong(stack))));
+    private <RESOURCE extends Resource> void addStored(List<Component> ret, IResourceContainer<RESOURCE> container) {
+        ret.add(MekanismLang.GENERIC_PRE_COLON.translate(container.resource()));
+        ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(container.amountAsLong())));
     }
 
     @Override

@@ -1,36 +1,4 @@
 {
-  "API Global: computerEnergyHelper": [
-    {
-      "description": "Convert Forge Energy to Mekanism Joules",
-      "methodName": "feToJoules",
-      "params": [
-        {
-          "type": "Number (long)",
-          "java_type": "long",
-          "name": "fe"
-        }
-      ],
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Convert Mekanism Joules to Forge Energy",
-      "methodName": "joulesToFE",
-      "params": [
-        {
-          "type": "Number (long)",
-          "java_type": "long",
-          "name": "joules"
-        }
-      ],
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    }
-  ],
   "API Global: computerFilterHelper": [
     {
       "description": "Create a Digital Miner Item Filter from an Item name",
@@ -208,24 +176,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the input gas tank.",
       "methodName": "getInputChemical",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -248,8 +216,8 @@
       "description": "Get the contents of the input gas item slot.",
       "methodName": "getInputChemicalItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -264,16 +232,16 @@
       "description": "Get the contents of the input item slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -282,24 +250,24 @@
       "description": "Get the maximum number of items the bin can contain.",
       "methodName": "getCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the type of item the Bin is locked to (or Air if not locked)",
       "methodName": "getLock",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (ItemResource)",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
     {
       "description": "Get the contents of the bin.",
       "methodName": "getStored",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -324,16 +292,16 @@
       "description": "Get the contents of the biofuel tank.",
       "methodName": "getBioFuel",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the biofuel tank.",
       "methodName": "getBioFuelCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -348,24 +316,24 @@
       "description": "Get the amount needed to fill the biofuel tank.",
       "methodName": "getBioFuelNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the energy item.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the fuel slot.",
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -374,8 +342,8 @@
       "description": "Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements",
       "methodName": "getBoilCapacity",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -390,8 +358,8 @@
       "description": "Get the contents of the cooled coolant tank.",
       "methodName": "getCooledCoolant",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -430,8 +398,8 @@
       "description": "Get the contents of the heated coolant tank.",
       "methodName": "getHeatedCoolant",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -470,8 +438,8 @@
       "description": "Get the contents of the steam tank.",
       "methodName": "getSteam",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -518,16 +486,16 @@
       "description": "Get the contents of the water tank.",
       "methodName": "getWater",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the water tank.",
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -542,8 +510,8 @@
       "description": "Get the amount needed to fill the water tank.",
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -581,8 +549,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -597,8 +565,8 @@
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -621,8 +589,8 @@
       "description": "Get the contents of the input item slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -637,8 +605,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -647,8 +615,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -663,8 +631,8 @@
       "description": "Get the contents of the gas input tank.",
       "methodName": "getGasInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -695,24 +663,24 @@
       "description": "Get the contents of the gas input item slot.",
       "methodName": "getInputGasItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -735,8 +703,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -753,24 +721,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the left input tank.",
       "methodName": "getLeftInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -793,8 +761,8 @@
       "description": "Get the contents of the left input item slot.",
       "methodName": "getLeftInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -809,8 +777,8 @@
       "description": "Get the contents of the output (center) tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -833,8 +801,8 @@
       "description": "Get the contents of the output item slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -849,8 +817,8 @@
       "description": "Get the contents of the right input tank.",
       "methodName": "getRightInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -873,8 +841,8 @@
       "description": "Get the contents of the right input item slot.",
       "methodName": "getRightInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -891,8 +859,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -907,16 +875,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -939,8 +907,8 @@
       "description": "Get the contents of the output item slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -970,8 +938,8 @@
       "description": "Get the contents of the drain slot.",
       "methodName": "getDrainItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -986,8 +954,8 @@
       "description": "Get the contents of the fill slot.",
       "methodName": "getFillItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1010,8 +978,8 @@
       "description": "Get the contents of the tank.",
       "methodName": "getStored",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1037,32 +1005,32 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the fluid tank.",
       "methodName": "getFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the fluid tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1077,40 +1045,40 @@
       "description": "Get the contents of the fluid item input slot.",
       "methodName": "getFluidItemInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the fluid item output slot.",
       "methodName": "getFluidItemOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the fluid tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the slurry item output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the input slurry tank.",
       "methodName": "getSlurryInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1141,8 +1109,8 @@
       "description": "Get the contents of the output slurry tank.",
       "methodName": "getSlurryOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1175,8 +1143,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1191,24 +1159,24 @@
       "description": "Get the contents of the main input slot.",
       "methodName": "getMainInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the secondary input slot.",
       "methodName": "getSecondaryInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -1217,8 +1185,8 @@
       "description": "Get the contents of the secondary input slot.",
       "methodName": "getSecondaryInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -1232,8 +1200,8 @@
       "description": "Get the contents of the chemical tank.",
       "methodName": "getChemical",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1256,8 +1224,8 @@
       "description": "Get the contents of the chemical item (extra) slot.",
       "methodName": "getChemicalItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1279,8 +1247,8 @@
       "description": "Get the contents of the chemical tank.",
       "methodName": "getChemical",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1303,8 +1271,8 @@
       "description": "Get the contents of the secondary input slot.",
       "methodName": "getChemicalItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1319,8 +1287,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1335,16 +1303,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -1390,8 +1358,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1448,8 +1416,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1701,8 +1669,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1821,13 +1789,6 @@
       "methodName": "decrementContainerEditMode"
     },
     {
-      "methodName": "getChemicalTankCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
       "methodName": "getContainerEditMode",
       "returns": {
         "type": "String (ContainerEditMode)",
@@ -1845,34 +1806,30 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table (ChemicalStack) or Table (FluidStack)",
-        "java_extra": [
-          "mekanism.api.chemical.ChemicalStack",
-          "net.neoforged.neoforge.fluids.FluidStack"
-        ],
-        "java_type": "com.mojang.datafixers.util.Either"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "methodName": "getTankCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1894,8 +1851,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1910,16 +1867,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -1928,24 +1885,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the buffer tank.",
       "methodName": "getFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the buffer tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1960,24 +1917,24 @@
       "description": "Get the amount needed to fill the buffer tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -1998,32 +1955,32 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the input tank.",
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2038,24 +1995,24 @@
       "description": "Get the contents of the input item slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the input tank.",
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the left output tank.",
       "methodName": "getLeftOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2085,8 +2042,8 @@
       "description": "Get the contents of the left output item slot.",
       "methodName": "getLeftOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2101,8 +2058,8 @@
       "description": "Get the contents of the right output tank.",
       "methodName": "getRightOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2132,8 +2089,8 @@
       "description": "Get the contents of the right output item slot.",
       "methodName": "getRightOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2180,16 +2137,16 @@
       "description": "Get the contents of the charge slot.",
       "methodName": "getChargeItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the discharge slot.",
       "methodName": "getDischargeItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -2198,8 +2155,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2211,6 +2168,7 @@
       }
     },
     {
+      "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "params": [
         {
@@ -2220,11 +2178,12 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
+      "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "params": [
         {
@@ -2234,8 +2193,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2357,10 +2316,10 @@
   ],
   "Filter Wrapper (ItemStack)": [
     {
-      "methodName": "getItemStack",
+      "methodName": "getItemType",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (ItemResource)",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
     {
@@ -2374,12 +2333,12 @@
       ]
     },
     {
-      "methodName": "setItemStack",
+      "methodName": "setItemType",
       "params": [
         {
-          "type": "Table (ItemStack)",
-          "java_type": "net.minecraft.world.item.ItemStack",
-          "name": "stack"
+          "type": "Table (ItemResource)",
+          "java_type": "net.neoforged.neoforge.transfer.item.ItemResource",
+          "name": "itemType"
         }
       ]
     }
@@ -2622,12 +2581,8 @@
     {
       "methodName": "getCoolant",
       "returns": {
-        "type": "Table (ChemicalStack) or Table (FluidStack)",
-        "java_extra": [
-          "mekanism.api.chemical.ChemicalStack",
-          "net.neoforged.neoforge.fluids.FluidStack"
-        ],
-        "java_type": "com.mojang.datafixers.util.Either"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2669,8 +2624,8 @@
       "description": "Get the contents of the fuel tank.",
       "methodName": "getFuel",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2722,8 +2677,8 @@
       "description": "Get the contents of the heated coolant.",
       "methodName": "getHeatedCoolant",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2753,15 +2708,15 @@
     {
       "methodName": "getHeatingRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMaxBurnRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -2784,8 +2739,8 @@
       "description": "Get the contents of the waste tank.",
       "methodName": "getWaste",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2868,8 +2823,8 @@
       "description": "Get the capacity of the tank.",
       "methodName": "getCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2891,32 +2846,32 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the tank.",
       "methodName": "getNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the tank.",
       "methodName": "getStored",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2940,24 +2895,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the buffer tank.",
       "methodName": "getFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the buffer tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2972,24 +2927,24 @@
       "description": "Get the amount needed to fill the buffer tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3033,6 +2988,7 @@
       }
     },
     {
+      "description": "Get the contents of the crafting input slot.",
       "methodName": "getCraftingInputSlot",
       "params": [
         {
@@ -3042,11 +2998,12 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
+      "description": "Get the contents of the crafting output slot.",
       "methodName": "getCraftingOutputSlot",
       "params": [
         {
@@ -3056,8 +3013,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3071,8 +3028,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3089,11 +3046,12 @@
       "description": "Get the contents of the formula slot.",
       "methodName": "getFormulaItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
+      "description": "Get the contents of the input slot.",
       "methodName": "getItemInSlot",
       "params": [
         {
@@ -3103,8 +3061,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3188,8 +3146,8 @@
       "description": "Get the contents of the fuel slot.",
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3256,8 +3214,8 @@
       "description": "Get the contents of the fuel tank.",
       "methodName": "getDTFuel",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3288,8 +3246,8 @@
       "description": "Get the contents of the deuterium tank.",
       "methodName": "getDeuterium",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3327,8 +3285,8 @@
       "description": "Get the contents of the Hohlraum slot.",
       "methodName": "getHohlraum",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3430,8 +3388,8 @@
       "description": "Get the contents of the steam tank.",
       "methodName": "getSteam",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3469,8 +3427,8 @@
       "description": "Get the contents of the tritium tank.",
       "methodName": "getTritium",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3501,16 +3459,16 @@
       "description": "Get the contents of the water tank.",
       "methodName": "getWater",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the water tank.",
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3525,8 +3483,8 @@
       "description": "Get the amount needed to fill the water tank.",
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3573,24 +3531,24 @@
     {
       "methodName": "getBurnRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the energy item slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the fuel tank.",
       "methodName": "getFuel",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3613,8 +3571,8 @@
       "description": "Get the contents of the fuel item slot.",
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3631,8 +3589,8 @@
       "description": "Get the amount of energy produced by this generator in the last tick.",
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     }
   ],
@@ -3711,8 +3669,8 @@
       "description": "Get the contents of the energy item slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3726,24 +3684,24 @@
       "description": "Get the contents of the fuel item slot.",
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the lava tank.",
       "methodName": "getLava",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the lava tank.",
       "methodName": "getLavaCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3758,8 +3716,8 @@
       "description": "Get the amount needed to fill the lava tank.",
       "methodName": "getLavaNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3783,8 +3741,8 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3819,8 +3777,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3894,8 +3852,8 @@
     {
       "methodName": "getFlowRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -3908,37 +3866,37 @@
     {
       "methodName": "getMaxFlowRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMaxProduction",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMaxWaterOutput",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the steam tank.",
       "methodName": "getSteam",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -3991,24 +3949,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4031,8 +3989,8 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4047,8 +4005,8 @@
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4071,8 +4029,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4104,15 +4062,15 @@
     {
       "methodName": "getMaxThreshold",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "methodName": "getMinThreshold",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -4137,8 +4095,8 @@
       "methodName": "setMaxThreshold",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "threshold"
         }
       ],
@@ -4148,8 +4106,8 @@
       "methodName": "setMinThreshold",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "threshold"
         }
       ],
@@ -4169,6 +4127,7 @@
   ],
   "Laser Tractor Beam": [
     {
+      "description": "Get the contents of the amplifier slot.",
       "methodName": "getItemInSlot",
       "params": [
         {
@@ -4178,8 +4137,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4638,36 +4597,6 @@
       }
     }
   ],
-  "Mechanical Pipe": [
-    {
-      "methodName": "getBuffer",
-      "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
-      }
-    },
-    {
-      "methodName": "getCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "methodName": "getFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "methodName": "getNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    }
-  ],
   "Metallurgic Infuser": [
     {
       "methodName": "dumpInfuseType",
@@ -4677,8 +4606,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4693,8 +4622,8 @@
       "description": "Get the contents of the infusion buffer.",
       "methodName": "getInfuseType",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4717,8 +4646,8 @@
       "description": "Get the contents of the infusion (extra) input slot.",
       "methodName": "getInfuseTypeItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4733,16 +4662,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -4751,24 +4680,24 @@
       "description": "Get the contents of the module holder slot (suit, tool, etc).",
       "methodName": "getContainerItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the module slot.",
       "methodName": "getModuleItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -4824,24 +4753,24 @@
       "description": "Get the contents of the fillable container slot.",
       "methodName": "getContainerFillItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the filled container output slot.",
       "methodName": "getContainerOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4856,24 +4785,24 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the output tank.",
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4888,16 +4817,16 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the output tank.",
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -4931,16 +4860,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4964,8 +4893,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -4980,32 +4909,32 @@
       "description": "Get the contents of the paintable item slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the pigment slot.",
       "methodName": "getInputPigmentItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the painted item slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the pigment tank.",
       "methodName": "getPigmentInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5038,8 +4967,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5054,16 +4983,16 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the pigment tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5086,8 +5015,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5104,24 +5033,24 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the left pigment tank.",
       "methodName": "getLeftInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5144,8 +5073,8 @@
       "description": "Get the contents of the left input slot.",
       "methodName": "getLeftInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5160,8 +5089,8 @@
       "description": "Get the contents of the output pigment tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5184,8 +5113,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5200,8 +5129,8 @@
       "description": "Get the contents of the right pigment tank.",
       "methodName": "getRightInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5224,8 +5153,8 @@
       "description": "Get the contents of the right input slot.",
       "methodName": "getRightInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5242,8 +5171,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5258,24 +5187,24 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output slot.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the secondary output slot.",
       "methodName": "getSecondaryOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -5284,8 +5213,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5300,16 +5229,16 @@
       "description": "Get the contents of the fluid input.",
       "methodName": "getInputFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the fluid input.",
       "methodName": "getInputFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5324,16 +5253,16 @@
       "description": "Get the amount needed to fill the fluid input.",
       "methodName": "getInputFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the gas input.",
       "methodName": "getInputGas",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5364,16 +5293,16 @@
       "description": "Get the contents of the item input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the gas output.",
       "methodName": "getOutputGas",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5404,43 +5333,14 @@
       "description": "Get the contents of the item output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    }
-  ],
-  "Pressurized Tube": [
-    {
-      "methodName": "getBuffer",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "methodName": "getCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "methodName": "getFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "methodName": "getNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
   "QIO Dashboard": [
     {
+      "description": "Get the contents of the crafting input slot.",
       "methodName": "getCraftingInput",
       "params": [
         {
@@ -5455,11 +5355,12 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
+      "description": "Get the contents of the crafting output slot.",
       "methodName": "getCraftingOutput",
       "params": [
         {
@@ -5469,13 +5370,14 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
   "QIO Drive Array": [
     {
+      "description": "Get the contents of the drive slot.",
       "methodName": "getDrive",
       "params": [
         {
@@ -5485,8 +5387,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5756,8 +5658,8 @@
     {
       "methodName": "getTargetItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (ItemResource)",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
     {
@@ -5844,8 +5746,8 @@
       "description": "Get the contents of the chemical buffer.",
       "methodName": "getBufferChemical",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -5876,16 +5778,16 @@
       "description": "Get the contents of the fluid buffer.",
       "methodName": "getBufferFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the fluid buffer.",
       "methodName": "getBufferFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5900,15 +5802,16 @@
       "description": "Get the amount needed to fill the fluid buffer.",
       "methodName": "getBufferFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
+      "description": "Get the contents of the buffer slot.",
       "methodName": "getBufferItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6003,8 +5906,8 @@
       "description": "Get the contents of the barrel.",
       "methodName": "getStored",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -6013,8 +5916,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6028,8 +5931,8 @@
     {
       "methodName": "getEnergyUsed",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -6058,12 +5961,42 @@
       "methodName": "setEnergyUsage",
       "params": [
         {
-          "type": "Number (long)",
-          "java_type": "long",
+          "type": "Number (int)",
+          "java_type": "int",
           "name": "usage"
         }
       ],
       "requires_public_security": true
+    }
+  ],
+  "Resource Transmitter": [
+    {
+      "methodName": "getBuffer",
+      "returns": {
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
+      }
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
     }
   ],
   "Rotary Condensentrator": [
@@ -6071,32 +6004,32 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
       "description": "Get the contents of the fluid tank.",
       "methodName": "getFluid",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the fluid tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6111,32 +6044,32 @@
       "description": "Get the contents of the fluid item input slot.",
       "methodName": "getFluidItemInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
-      "description": "Get the contents of the fluid item ouput slot.",
+      "description": "Get the contents of the fluid item output slot.",
       "methodName": "getFluidItemOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the fluid tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the gas tank.",
       "methodName": "getGas",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6159,16 +6092,16 @@
       "description": "Get the contents of the gas item input slot.",
       "methodName": "getGasItemInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the gas item output slot.",
       "methodName": "getGasItemOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6210,8 +6143,8 @@
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6242,8 +6175,8 @@
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6301,6 +6234,7 @@
   ],
   "Sawing Factory": [
     {
+      "description": "Get the contents of the secondary output slot.",
       "methodName": "getSecondaryOutput",
       "params": [
         {
@@ -6310,8 +6244,8 @@
         }
       ],
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -6368,8 +6302,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6392,8 +6326,8 @@
       "description": "Get the contents of the energy item slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     }
   ],
@@ -6409,8 +6343,8 @@
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6433,8 +6367,8 @@
       "description": "Get the contents of the input slot.",
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6449,8 +6383,8 @@
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6473,8 +6407,8 @@
       "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6533,8 +6467,8 @@
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -6627,16 +6561,16 @@
       "description": "Get the contents of the input tank.",
       "methodName": "getInput",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the input tank.",
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6651,40 +6585,40 @@
       "description": "Get the contents of the input side's input slot.",
       "methodName": "getInputItemInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the input side's output slot.",
       "methodName": "getInputItemOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the input tank.",
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the contents of the output tank.",
       "methodName": "getOutput",
       "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the capacity of the output tank.",
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6699,24 +6633,24 @@
       "description": "Get the contents of the output side's input slot.",
       "methodName": "getOutputItemInput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the contents of the output side's output slot.",
       "methodName": "getOutputItemOutput",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
       "description": "Get the amount needed to fill the output tank.",
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6769,8 +6703,8 @@
       "description": "Get the contents of the energy item slot.",
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Table (LargeResourceStack)",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {

@@ -16,6 +16,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -63,11 +64,11 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
         throw new UnsupportedOperationException("Mekanism's recipe managers don't support removal by output, please remove by recipe name.");
     }
 
-    protected ItemStack getAndValidateNotEmpty(IItemStack stack) {
+    protected ItemStackTemplate getAndValidateNotEmpty(IItemStack stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
-        return stack.getImmutableInternal();
+        return ItemStackTemplate.fromNonEmptyStack(stack.getImmutableInternal());
     }
 
     protected FluidStackTemplate getAndValidateNotEmpty(IFluidStack stack) {

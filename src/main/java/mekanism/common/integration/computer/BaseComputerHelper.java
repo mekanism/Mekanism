@@ -10,7 +10,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -54,6 +56,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,30 +155,46 @@ public abstract class BaseComputerHelper {
      */
     public Item getItem(int param) throws ComputerException {
         Identifier itemName = getIdentifier(param);
-        return getItemFromResourceLocation(itemName);
+        return getItemFromResourceLocation(itemName).value();
     }
 
     @NotNull
-    private static Item getItemFromResourceLocation(Identifier itemName) {
+    private static Holder<Item> getItemFromResourceLocation(Identifier itemName) {
+        Holder.Reference<Item> air = Items.AIR.builtInRegistryHolder();
         if (itemName == null) {
-            return Items.AIR;
+            return air;
         }
-        return BuiltInRegistries.ITEM.get(itemName).map(Holder::value).orElse(Items.AIR);
+        return BuiltInRegistries.ITEM.get(itemName).orElse(air);
     }
 
     public ItemStack getItemStack(int param) throws ComputerException {
         Map<?, ?> map = getMap(param);
         try {
-            Item item = getItemFromResourceLocation(Identifier.tryParse((String) map.get(SerializationConstants.NAME)));
+            Holder<Item> item = getItemFromResourceLocation(Identifier.tryParse((String) map.get(SerializationConstants.NAME)));
             int count = SpecialConverters.getIntFromRaw(map.get(SerializationConstants.COUNT));
             String components = (String) map.get(SerializationConstants.COMPONENTS);
             if (components != null) {
                 DataComponentPatch dataComponents = SpecialConverters.unwrapComponents(components);
-                return new ItemStack(item.builtInRegistryHolder(), count, dataComponents);
+                return new ItemStack(item, count, dataComponents);
             }
             return new ItemStack(item, count);
         } catch (ClassCastException ex) {
             throw new ComputerException("Invalid ItemStack at index " + param);
+        }
+    }
+
+    public ItemResource getItemResource(int param) throws ComputerException {
+        Map<?, ?> map = getMap(param);
+        try {
+            Holder<Item> item = getItemFromResourceLocation(Identifier.tryParse((String) map.get(SerializationConstants.NAME)));
+            String components = (String) map.get(SerializationConstants.COMPONENTS);
+            if (components != null) {
+                DataComponentPatch dataComponents = SpecialConverters.unwrapComponents(components);
+                return ItemResource.of(item, dataComponents);
+            }
+            return ItemResource.of(item);
+        } catch (ClassCastException ex) {
+            throw new ComputerException("Invalid ItemResource at index " + param);
         }
     }
 
@@ -230,10 +250,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        Map<String, Object> wrapped = new HashMap<>(2);
-        wrapped.put(SerializationConstants.NAME, stack.typeHolder().getRegisteredName());
-        wrapped.put(SerializationConstants.AMOUNT, stack.amount());
-        return wrapped;
+        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), DataComponentPatch.EMPTY);
+    }
+
+    public Map<String, Object> convert(@Nullable ChemicalResource type) {
+        if (type == null) {
+            return null;
+        }
+        return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), DataComponentPatch.EMPTY);
     }
 
     public Object convert(@Nullable FluidStack stack) {
@@ -241,6 +265,37 @@ public abstract class BaseComputerHelper {
             return null;
         }
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), stack.getComponentsPatch());
+    }
+
+    public Map<String, Object> convert(@Nullable FluidResource type) {
+        if (type == null) {
+            return null;
+        }
+        return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), type.getComponentsPatch());
+    }
+
+    public Object convert(@Nullable LargeResourceStack<?> stack) {
+        if (stack == null) {
+            return null;
+        }
+        Map<String, Object> wrapped = switch (stack.resource()) {
+            case ItemResource resource -> convert(resource);
+            case FluidResource resource -> convert(resource);
+            case ChemicalResource resource -> convert(resource);
+            default -> null;
+        };
+        if (wrapped == null) {
+            return null;
+        }
+        wrapped.put(SerializationConstants.AMOUNT, stack.amount());
+        return wrapped;
+    }
+
+    public Map<String, Object> convert(@Nullable ItemResource type) {
+        if (type == null) {
+            return null;
+        }
+        return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), type.getComponentsPatch());
     }
 
     public Object convert(@Nullable ItemStack stack) {
@@ -317,10 +372,10 @@ public abstract class BaseComputerHelper {
         wrapped.put(SerializationConstants.ENABLED, result.isEnabled());
         switch (result) {
             case IItemStackFilter<?> itemFilter -> {
-                ItemStack stack = itemFilter.getItemStack();
-                wrapped.put(SerializationConstants.ITEM, convert(stack.getItem()));
-                if (!stack.isEmpty()) {
-                    DataComponentPatch components = stack.getComponentsPatch();
+                ItemResource itemType = itemFilter.getItemType();
+                wrapped.put(SerializationConstants.ITEM, convert(itemType.getItem()));
+                if (!itemType.isEmpty()) {
+                    DataComponentPatch components = itemType.getComponentsPatch();
                     if (!components.isEmpty()) {
                         wrapped.put(SerializationConstants.COMPONENTS, SpecialConverters.wrapComponents(components));
                     }
@@ -447,7 +502,8 @@ public abstract class BaseComputerHelper {
         if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return String.class;
         }
-        if (clazz == Frequency.class || clazz == GlobalPos.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class) {
+        if (clazz == Frequency.class || clazz == GlobalPos.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class
+            || clazz == FluidResource.class || clazz == ItemResource.class || clazz == BlockState.class) {
             return Map.class;
         }
         if (ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
@@ -481,15 +537,35 @@ public abstract class BaseComputerHelper {
               .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the item, in Command JSON format")
               .build(types);
 
+        TableType.builder(ItemResource.class, "An item type")
+              .addField(SerializationConstants.NAME, Item.class, "The Item's registered name")
+              .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the item, in Command JSON format")
+              .build(types);
+
         TableType.builder(FluidStack.class, "An amount of fluid")
               .addField(SerializationConstants.NAME, Identifier.class, "The Fluid's registered name, e.g. minecraft:water")
               .addField(SerializationConstants.AMOUNT, int.class, "The amount in mB")
               .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the fluid, in Command JSON format")
               .build(types);
 
+        TableType.builder(FluidResource.class, "A fluid type")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Fluid's registered name, e.g. minecraft:water")
+              .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the fluid, in Command JSON format")
+              .build(types);
+
         TableType.builder(ChemicalStack.class, "An amount of Gas/Fluid/Slurry/Pigment")
-              .addField(SerializationConstants.NAME, Item.class, "The Chemical's registered name")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Chemical's registered name")
               .addField(SerializationConstants.AMOUNT, int.class, "The amount in mB")
+              .build(types);
+
+        TableType.builder(ChemicalResource.class, "A chemical type")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Chemical's registered name")
+              .build(types);
+
+        TableType.builder(LargeResourceStack.class, "An amount of a resource")
+              .addField(SerializationConstants.NAME, Identifier.class, "The registry name of the backing resource")
+              .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the resource, in Command JSON format")
+              .addField(SerializationConstants.AMOUNT, int.class, "The amount of resource stored")
               .build(types);
 
         TableType.builder(BlockState.class, "A Block State")

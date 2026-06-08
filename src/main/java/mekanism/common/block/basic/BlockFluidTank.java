@@ -1,11 +1,13 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +19,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
@@ -34,11 +38,8 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             return ambientLight;
         }
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
-        if (tile != null) {
-            FluidStack fluid = tile.fluidTank.getFluid();
-            if (!fluid.isEmpty()) {
-                ambientLight = Math.max(ambientLight, fluid.getFluidType().getLightLevel(fluid));
-            }
+        if (tile != null && !tile.fluidTank.isEmpty()) {
+            ambientLight = Math.max(ambientLight, tile.fluidTank.resource().getFluidType().getLightLevel());
         }
         return ambientLight;
     }
@@ -64,9 +65,15 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (!player.isShiftKeyDown()) {
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
-            } else if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
-                player.getInventory().setChanged();
-                return InteractionResult.SUCCESS;
+            }
+            ResourceHandler<FluidResource> tankHandler = Capabilities.FLUID.getCapabilityIfLoaded(world, pos, null, tile, hit.getDirection());
+            if (tankHandler != null) {
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                    if (ContainerType.FLUID.interactWithHandler(player, hand, pos, tankHandler, transaction)) {
+                        transaction.commit();
+                        return InteractionResult.SUCCESS;
+                    }
+                }
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

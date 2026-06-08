@@ -3,49 +3,34 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.recipes.ChemicalDissolutionRecipe;
-import mekanism.api.recipes.CombinerRecipe;
-import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
-import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.TwoInputMekRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.core.TypedInstance;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of recipes with two inputs.
  */
 @NothingNullByDefault
-public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
+public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
+      HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
+      OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT>> extends CachedRecipe<RECIPE> {
 
-    private final IInputHandler<HOLDER_A, INPUT_A> inputHandler;
-    private final IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler;
-    private final IOutputHandler<OUTPUT> outputHandler;
-    private final Predicate<INPUT_A> inputEmptyCheck;
-    private final Predicate<INPUT_B> secondaryInputEmptyCheck;
-    private final Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputSupplier;
-    private final Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> secondaryInputSupplier;
-    private final BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter;
-    private final Predicate<OUTPUT> outputEmptyCheck;
-    private final BiConsumer<INPUT_A, INPUT_B> inputsSetter;
-    private final Consumer<OUTPUT> outputSetter;
+    protected final IInputHandler<HOLDER_A, INPUT_A> inputHandler;
+    protected final IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler;
+    protected final IOutputHandler<OUTPUT> outputHandler;
+    protected final BiConsumer<INPUT_A, INPUT_B> inputsSetter;
+    protected final Consumer<OUTPUT> outputSetter;
+    protected final Supplier<INGREDIENT_A> inputASupplier;
+    protected final Supplier<INGREDIENT_B> inputBSupplier;
+    protected final BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter;
 
     //Note: Our inputs and outputs shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
     @Nullable
@@ -62,27 +47,16 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
      * @param inputHandler             Main input handler.
      * @param secondaryInputHandler    Secondary input handler.
      * @param outputHandler            Output handler.
-     * @param inputSupplier            Supplier of the recipe's input ingredient.
-     * @param secondaryInputSupplier   Supplier of the recipe's secondary input ingredient.
-     * @param outputGetter             Gets the recipe's output when given the corresponding inputs.
-     * @param inputEmptyCheck          Checks if the primary input is empty.
-     * @param secondaryInputEmptyCheck Checks if the secondary input is empty.
-     * @param outputEmptyCheck         Checks if the output is empty (indicating something went horribly wrong).
      */
-    protected TwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<HOLDER_A, INPUT_A> inputHandler, IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler,
-          IOutputHandler<OUTPUT> outputHandler, Supplier<InputIngredient<HOLDER_A, INPUT_A>> inputSupplier, Supplier<InputIngredient<HOLDER_B, INPUT_B>> secondaryInputSupplier,
-          BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Predicate<INPUT_A> inputEmptyCheck, Predicate<INPUT_B> secondaryInputEmptyCheck,
-          Predicate<OUTPUT> outputEmptyCheck) {
+    public TwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<HOLDER_A, INPUT_A> inputHandler,
+          IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler, IOutputHandler<OUTPUT> outputHandler) {
         super(recipe, recheckAllErrors);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
         this.secondaryInputHandler = Objects.requireNonNull(secondaryInputHandler, "Secondary input handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
-        this.inputSupplier = Objects.requireNonNull(inputSupplier, "Input ingredient supplier cannot be null.");
-        this.secondaryInputSupplier = Objects.requireNonNull(secondaryInputSupplier, "Secondary input ingredient supplier cannot be null.");
-        this.outputGetter = Objects.requireNonNull(outputGetter, "Output getter cannot be null.");
-        this.inputEmptyCheck = Objects.requireNonNull(inputEmptyCheck, "Input empty check cannot be null.");
-        this.secondaryInputEmptyCheck = Objects.requireNonNull(secondaryInputEmptyCheck, "Secondary input empty check cannot be null.");
-        this.outputEmptyCheck = Objects.requireNonNull(outputEmptyCheck, "Output empty check cannot be null.");
+        this.inputASupplier = recipe::getInputA;
+        this.inputBSupplier = recipe::getInputB;
+        this.outputGetter = recipe::getOutput;
         this.inputsSetter = (input, secondary) -> {
             this.input = input;
             this.secondaryInput = secondary;
@@ -91,100 +65,30 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
     }
 
     @Override
-    protected void calculateOperationsThisTick(OperationTracker tracker) {
+    protected final void calculateOperationsThisTick(OperationTracker tracker) {
         super.calculateOperationsThisTick(tracker);
-        CachedRecipeHelper.twoInputCalculateOperationsThisTick(tracker, inputHandler, inputSupplier, secondaryInputHandler, secondaryInputSupplier, inputsSetter,
-              outputHandler, outputGetter, outputSetter, inputEmptyCheck, secondaryInputEmptyCheck);
+        calculateOperations(tracker);
+    }
+
+    protected void calculateOperations(OperationTracker tracker) {
+        CachedRecipeHelper.twoInputCalculateOperationsThisTick(tracker, inputHandler, inputASupplier, secondaryInputHandler, inputBSupplier, inputsSetter,
+              outputHandler, this.outputGetter, outputSetter);
     }
 
     @Override
     public boolean isInputValid() {
         INPUT_A input = inputHandler.getInput();
-        if (inputEmptyCheck.test(input)) {
+        if (inputHandler.isEmpty(input)) {
             return false;
         }
         INPUT_B secondaryInput = secondaryInputHandler.getInput();
-        return !secondaryInputEmptyCheck.test(secondaryInput) && recipe.test(input, secondaryInput);
+        return !secondaryInputHandler.isEmpty(secondaryInput) && recipe.test(input, secondaryInput);
     }
 
     @Override
-    protected void finishProcessing(int operations) {
-        //Validate something didn't go horribly wrong
-        if (input != null && secondaryInput != null && output != null && !inputEmptyCheck.test(input) && !secondaryInputEmptyCheck.test(secondaryInput) &&
-            !outputEmptyCheck.test(output)) {
-            inputHandler.use(input, operations);
-            secondaryInputHandler.use(secondaryInput, operations);
-            outputHandler.handleOutput(output, operations);
-        }
-    }
-
-    /**
-     * Base implementation for handling Fluid Chemical To Chemical Recipes.
-     *
-     * @param recipe               Recipe.
-     * @param recheckAllErrors     Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
-     *                             not do this every tick or if there is no one viewing recipes.
-     * @param fluidInputHandler    Fluid input handler.
-     * @param chemicalInputHandler Chemical input handler.
-     * @param outputHandler        Output handler.
-     */
-    public static <RECIPE extends FluidChemicalToChemicalRecipe> TwoInputCachedRecipe<Fluid, @NotNull FluidStack, Chemical, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
-    fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler,
-          IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, fluidInputHandler, chemicalInputHandler, outputHandler, recipe::getFluidInput,
-              recipe::getChemicalInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
-    }
-
-    /**
-     * Base implementation for handling ItemStack Chemical To ItemStack Recipes.
-     *
-     * @param recipe               Recipe.
-     * @param recheckAllErrors     Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
-     *                             not do this every tick or if there is no one viewing recipes.
-     * @param itemInputHandler     Item input handler.
-     * @param chemicalInputHandler Chemical input handler.
-     * @param outputHandler        Output handler.
-     */
-    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> TwoInputCachedRecipe<Item, @NotNull ItemStack, Chemical, @NotNull ChemicalStack, @NotNull ItemStackTemplate, RECIPE>
-    itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler,
-          IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);
-    }
-
-    /**
-     * Base implementation for handling ItemStack Chemical To Chemical Recipes.
-     *
-     * @param recipe               Recipe.
-     * @param recheckAllErrors     Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
-     *                             not do this every tick or if there is no one viewing recipes.
-     * @param itemInputHandler     Item input handler.
-     * @param chemicalInputHandler Chemical input handler.
-     * @param outputHandler        Output handler.
-     *
-     * @since 10.7.0
-     */
-    public static <RECIPE extends ChemicalDissolutionRecipe> TwoInputCachedRecipe<Item, @NotNull ItemStack, Chemical, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
-    itemChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler,
-          IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
-    }
-
-    /**
-     * Base implementation for handling Combiner Recipes.
-     *
-     * @param recipe            Recipe.
-     * @param recheckAllErrors  Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
-     *                          do this every tick or if there is no one viewing recipes.
-     * @param inputHandler      Main input handler.
-     * @param extraInputHandler Secondary/Extra input handler.
-     * @param outputHandler     Output handler.
-     */
-    public static TwoInputCachedRecipe<Item, @NotNull ItemStack, Item, @NotNull ItemStack, @Nullable ItemStackTemplate, CombinerRecipe> combiner(CombinerRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> inputHandler, IInputHandler<Item, @NotNull ItemStack> extraInputHandler,
-          IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
-        return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, extraInputHandler, outputHandler, recipe::getMainInput, recipe::getExtraInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);
+    protected boolean finishProcessing(int operations, TransactionContext transaction) {
+        return inputHandler.use(input, operations, transaction) &&
+               secondaryInputHandler.use(secondaryInput, operations, transaction) &&
+               outputHandler.handleOutput(output, operations, transaction);
     }
 }

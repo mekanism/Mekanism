@@ -10,25 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.IMultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -46,13 +42,12 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.util.CableUtils;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -62,8 +57,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,14 +72,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
-    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
-    private final Function<LogisticalTransporterBase, EnumColor> outputColorFunction;
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
-    private final LongSupplier chemicalEjectRate;
+    private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
-    private final LongSupplier energyEjectRate;
+    private final IntSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
     @Nullable//TODO: At some point it would be nice to be able to generify this further
@@ -93,24 +90,23 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this(tile, MekanismConfig.general.chemicalAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate) {
         this(tile, chemicalEjectRate, MekanismConfig.general.fluidAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this(tile, chemicalEjectRate, fluidEjectRate, null);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier energyEjectRate, boolean energyMarker) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier energyEjectRate, boolean energyMarker) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable IntSupplier energyEjectRate) {
         this.tile = tile;
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
         this.energyEjectRate = energyEjectRate;
-        this.outputColorFunction = transporter -> this.outputColor;
         tile.addComponent(this);
     }
 
@@ -138,7 +134,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return info.isEjecting() && (canEject == null || canEject.test(type));
     }
 
-    public void tickServer() {
+    public void tickServer(@Nullable TransactionContext transaction) {
         //loop on array to avoid iterator usage and high memory consumption
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             ConfigInfo info = configInfo.get(type);
@@ -148,31 +144,33 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
-                        outputItems(tile.facingSupplier.get(), info);
+                        outputItems(tile.facingSupplier.get(), info, transaction);
                     } else {
                         tickDelay--;
                     }
                 } else if (type != TransmissionType.HEAT) {
-                    eject(type, tile.facingSupplier.get(), info);
+                    eject(type, tile.facingSupplier.get(), info, transaction);
                 }
             }
         }
     }
 
-    private void addData(Map<Object, Set<Direction>> outputData, Object container, Set<Direction> outputSides) {
-        Set<Direction> directions = outputData.get(container);
-        if (directions == null) {
-            outputSides = EnumSet.copyOf(outputSides);
-            outputData.put(container, outputSides);
-        } else {
-            directions.addAll(outputSides);
+    private void addData(Map<Object, Set<Direction>> outputData, @Nullable Object container, Set<Direction> outputSides) {
+        if (container != null) {
+            Set<Direction> directions = outputData.get(container);
+            if (directions == null) {
+                outputSides = EnumSet.copyOf(outputSides);
+                outputData.put(container, outputSides);
+            } else {
+                directions.addAll(outputSides);
+            }
         }
     }
 
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void eject(TransmissionType type, Direction facing, ConfigInfo info) {
+    private void eject(TransmissionType type, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         //Used to keep track of tanks to what sides they output to
         Map<Object, Set<Direction>> outputData = null;//todo what is the point of putting it into a map??
         for (DataType dataType : info.getSupportedDataTypes()) {
@@ -194,19 +192,13 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                                 }
                             }
                             case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
-                                for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
+                                for (IFluidTank tank : fluidSlotInfo.getTanks()) {
                                     if (!tank.isEmpty()) {
                                         addData(outputData, tank, outputSides);
                                     }
                                 }
                             }
-                            case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
-                                for (IEnergyContainer container : energySlotInfo.getContainers()) {
-                                    if (!container.isEmpty()) {
-                                        addData(outputData, container, outputSides);
-                                    }
-                                }
-                            }
+                            case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> addData(outputData, energySlotInfo.getContainer(), outputSides);
                             default -> {
                             }
                         }
@@ -217,31 +209,16 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         if (outputData != null && !outputData.isEmpty()) {
             ServerLevel level = (ServerLevel) tile.getLevel();
             BlockPos pos = tile.getBlockPos();
-            Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
+            Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, _ -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
                 switch (type) {
-                    case CHEMICAL -> {
-                        IChemicalTank tank = (IChemicalTank) entry.getKey();
-                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
-                        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
-                    }
-                    case FLUID -> {
-                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                        FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
-                    }
+                    case CHEMICAL -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.CHEMICAL, chemicalEjectRate, transaction);
+                    case FLUID -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.FLUID, fluidEjectRate, transaction);
                     case ENERGY -> {
+                        List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches = initializeCaches(level, pos, sides, typeCapabilityCaches, Capabilities.ENERGY);
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                        List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
-                        for (Direction side : sides) {
-                            BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
-                            if (cache == null) {
-                                cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
-                                energyCapabilityCache.put(side, cache);
-                            }
-                            caches.add(cache);
-                        }
-                        CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.getAmountAsInt() : energyEjectRate.getAsInt(), transaction);
                     }
                 }
             }
@@ -249,24 +226,37 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @SuppressWarnings("unchecked")
-    private static <HANDLER> List<BlockCapabilityCache<HANDLER, @Nullable Direction>> getCapabilityCaches(ServerLevel level, BlockPos pos,
-          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
-        List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = new ArrayList<>(sides.size());
+    private <RESOURCE extends Resource> void emitResource(ServerLevel level, BlockPos pos, Set<Direction> sides, Object container,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<ResourceHandler<RESOURCE>> capability, IntSupplier ejectRate,
+          @Nullable TransactionContext transaction) {
+        List<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> caches = initializeCaches(level, pos, sides, typeCapabilityCaches, capability);
+        ResourceUtils.emit(caches, (IResourceContainer<RESOURCE>) container, ejectRate.getAsInt(), transaction);
+    }
+
+    private <TYPE> List<BlockCapabilityCache<TYPE, @Nullable Direction>> initializeCaches(ServerLevel level, BlockPos pos, Set<Direction> sides,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<TYPE> capability) {
+        List<BlockCapabilityCache<TYPE, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            BlockCapabilityCache<HANDLER, @Nullable Direction> cache = (BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.get(side);
-            if (cache == null) {
-                cache = capability.createCache(level, pos.relative(side), side.getOpposite());
-                typeCapabilityCaches.put(side, cache);
-            }
-            caches.add(cache);
+            caches.add(initializeCache(level, pos, side, typeCapabilityCaches, capability));
         }
         return caches;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TYPE> BlockCapabilityCache<TYPE, @Nullable Direction> initializeCache(ServerLevel level, BlockPos pos, Direction side,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, MultiTypeCapability<TYPE> capability) {
+        BlockCapabilityCache<TYPE, @Nullable Direction> cache = (BlockCapabilityCache<TYPE, @Nullable Direction>) typeCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = capability.createCache(level, pos.relative(side), side.getOpposite());
+            typeCapabilityCaches.put(side, cache);
+        }
+        return cache;
     }
 
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void outputItems(Direction facing, ConfigInfo info) {
+    private void outputItems(Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         ServerLevel level = (ServerLevel) tile.getLevel();
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
@@ -286,39 +276,36 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         typeCapabilityCaches = capabilityCaches.computeIfAbsent(TransmissionType.ITEM, t -> new EnumMap<>(Direction.class));
                     }
                     for (Direction side : outputs) {
-                        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = (BlockCapabilityCache<IItemHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
-                        if (cache == null) {
-                            cache = Capabilities.ITEM.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
-                            typeCapabilityCaches.put(side, cache);
-                        }
-                        IItemHandler capability = cache.getCapability();
+                        ResourceHandler<ItemResource> capability = initializeCache(level, tile.getBlockPos(), side, typeCapabilityCaches, Capabilities.ITEM).getCapability();
                         if (capability == null) {
                             //Skip sides where there isn't a target
                             continue;
                         }
-                        IItemHandler handler = getHandler(side);
+                        ResourceHandler<ItemResource> handler = getHandler(side);
                         if (ejectMap == null) {
                             //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
                             // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
                             // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
                             // instead of only having to do it once per DataType
-                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
+                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots(), transaction);
                             //No items to eject, exit
                             if (ejectMap.isEmpty()) {
                                 break;
                             }
                         } else {
                             //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
-                            ejectMap.handler = handler;
+                            ejectMap.setHandler(handler);
                         }
                         //If the spot is not loaded just skip trying to eject to it
-                        TransitResponse response = ejectMap.eject(tile, capability, 0, this.outputColorFunction);
-                        if (!response.isEmpty()) {
-                            // use the items returned by the TransitResponse; will be visible next loop
-                            response.useAll();
-                            if (ejectMap.isEmpty()) {
-                                //If we are out of items to eject, break
-                                break;
+                        try (Transaction subTransaction = Transaction.open(transaction)) {
+                            TransitResponse response = ejectMap.eject(tile, capability, 1, this.outputColor, subTransaction);
+                            if (response.useAll(subTransaction)) {
+                                // use the items returned by the TransitResponse; will be visible next loop
+                                subTransaction.commit();
+                                if (ejectMap.isEmpty()) {
+                                    //If we are out of items to eject, break
+                                    break;
+                                }
                             }
                         }
                     }
@@ -344,7 +331,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return directions == null ? Collections.emptySet() : directions;
     }
 
-    private IItemHandler getHandler(Direction side) {
+    private ResourceHandler<ItemResource> getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
         // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
         return CapabilityTileEntity.ITEM_HANDLER_PROVIDER.getCapability(tile, side);
@@ -541,16 +528,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public IItemHandler handler;
-
-        public EjectTransitRequest(IItemHandler handler) {
+        public EjectTransitRequest(ResourceHandler<ItemResource> handler) {
             super(handler);
-            this.handler = handler;
         }
 
-        @Override
-        protected IItemHandler getHandler() {
-            return handler;
+        protected void setHandler(ResourceHandler<ItemResource> handler) {
+            this.handler = handler;
         }
     }
 }

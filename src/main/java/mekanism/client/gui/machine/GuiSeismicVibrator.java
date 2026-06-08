@@ -30,12 +30,12 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
               tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
               MekanismLang.CHUNK.translate(SectionPos.blockToSectionCoord(tile.getBlockPos().getX()), SectionPos.blockToSectionCoord(tile.getBlockPos().getZ()))
         )));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                  MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer = tile.energyContainer();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
     }
 
     @Override

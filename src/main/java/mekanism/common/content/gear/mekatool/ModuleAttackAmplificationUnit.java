@@ -15,6 +15,8 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,7 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 
 @ParametersAreNotNullByDefault
 public record ModuleAttackAmplificationUnit(AttackDamage attackDamage) implements ICustomModule<ModuleAttackAmplificationUnit> {
@@ -38,7 +40,8 @@ public record ModuleAttackAmplificationUnit(AttackDamage attackDamage) implement
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<Component> hudStringAdder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, IModuleContainer moduleContainer,
+          ITEM instance, Player player, Consumer<Component> hudStringAdder) {
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.MODULE_DAMAGE.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, getDamage()));
         }

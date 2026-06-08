@@ -7,10 +7,10 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.model.blockstate.QIODriveArrayBlockStateModel;
 import mekanism.common.attachments.FrequencyAware;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIOFrequency;
@@ -39,6 +39,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
@@ -107,26 +108,26 @@ public record QIODriveArrayItemModel(
     private static long getDriveStatus(ItemStack stack) {
         long driveStatus = 0;
         if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.getItemHolder())) {
-            List<IInventorySlot> inventorySlots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
+            List<LargeResourceStack<ItemResource>> inventorySlots = ContainerType.ITEM.getAttachedContents(stack);
             boolean hasFrequency = hasFrequency(stack);
             for (int i = 0; i < TileEntityQIODriveArray.DRIVE_SLOTS; i++) {
                 DriveStatus status;
-                ItemStack driveStack;
+                ItemResource driveData;
                 if (i < inventorySlots.size()) {
-                    driveStack = inventorySlots.get(i).getStack();
+                    driveData = inventorySlots.get(i).resource();
                 } else {
                     break;
                 }
-                if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem)) {
+                if (driveData.isEmpty() || !(driveData.getItem() instanceof IQIODriveItem driveItem)) {
                     continue;
                 } else {
-                    DriveMetadata metadata = driveStack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
+                    DriveMetadata metadata = driveData.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
                     if (hasFrequency) {
-                        long countCapacity = driveItem.getCountCapacity(driveStack);
+                        long countCapacity = driveItem.getCountCapacity();
                         if (metadata.count() == countCapacity) {
                             //If we are at max item capacity: Full
                             status = DriveStatus.FULL;
-                        } else if (metadata.types() == driveItem.getTypeCapacity(driveStack) || metadata.count() >= countCapacity * 0.75) {
+                        } else if (metadata.types() == driveItem.getTypeCapacity() || metadata.count() >= countCapacity * 0.75) {
                             //If we are at max type capacity OR we are at 75% or more capacity: Near full
                             status = DriveStatus.NEAR_FULL;
                         } else {

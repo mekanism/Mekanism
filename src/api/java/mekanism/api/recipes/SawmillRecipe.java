@@ -1,10 +1,11 @@
 package mekanism.api.recipes;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
+import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -13,11 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,67 +27,36 @@ import org.jetbrains.annotations.Nullable;
  * @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
+public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
 
     protected static final RandomSource RANDOM = RandomSource.create();
     private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
-
-    @Override
-    public abstract boolean test(ItemStack stack);
-
-    @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.item());
-    }
-
-    /**
-     * Gets a new chance output based on the given input.
-     *
-     * @param input Specific input.
-     *
-     * @return New chance output.
-     *
-     * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
-     * outputs where things like NBT may be different.
-     * @implNote The passed in input should <strong>NOT</strong> be modified.
-     */
-    @Contract("_ -> new")
-    public abstract ChanceOutput getOutput(ItemStack input);
 
     /**
      * For JEI, gets the main output representations to display.
      *
      * @return Representation of the main output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<ItemStack> getMainOutputDefinition();
+    public abstract List<ItemStackTemplate> getMainOutputDefinition();
 
     /**
      * For JEI, gets the secondary output representations to display.
      *
      * @return Representation of the secondary output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<ItemStack> getSecondaryOutputDefinition();
+    public abstract List<ItemStackTemplate> getSecondaryOutputDefinition();
+
+    @Override
+    @Deprecated
+    public List<ChanceOutput> getOutputDefinition() {
+        //TODO - 26.1: Re-evaluate should we throw instead?
+        return Collections.emptyList();
+    }
 
     /**
      * Gets the chance (between 0 and 1) of the secondary output being produced.
      */
     public abstract double getSecondaryChance();
-
-    /**
-     * Gets the input ingredient.
-     */
-    public abstract ItemStackIngredient getInput();
-
-    @Override
-    public boolean isIncomplete() {
-        return getInput().hasNoMatchingInstances();
-    }
-
-    @Override
-    public void logMissingTags() {
-        getInput().logMissingTags();
-    }
 
     @Override
     public final RecipeType<SawmillRecipe> getType() {
@@ -126,6 +92,8 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
         /**
          * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
          * an empty stack.
+         *
+         * @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in {@link #getMaxSecondaryOutput()}
          */
         @Nullable
         ItemStackTemplate getSecondaryOutput();
@@ -134,7 +102,8 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
          * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
          * multiple operations at once.
          *
-         * @implNote return a new copy or ItemStack.EMPTY
+         * @implNote return a new copy or {@code null}
+         * @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in {@link #getMaxSecondaryOutput()}
          */
         @Nullable
         ItemStackTemplate nextSecondaryOutput();

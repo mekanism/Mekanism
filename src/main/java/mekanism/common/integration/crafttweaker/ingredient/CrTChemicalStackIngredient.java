@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,11 +55,11 @@ public class CrTChemicalStackIngredient {
      * @return A {@link ChemicalStackIngredient} that matches the given chemicals and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... chemicals) {
+    public static ChemicalStackIngredient from(int amount, ICrTChemicalStack... chemicals) {
         return from(amount, Arrays.stream(chemicals).map(ICrTChemicalStack::getChemicalHolder));
     }
 
-    private static ChemicalStackIngredient from(long amount, Stream<Holder<Chemical>> holders) {
+    private static ChemicalStackIngredient from(int amount, Stream<Holder<Chemical>> holders) {
         assertValidAmount(amount);
         Holder<Chemical>[] chemicals = holders.toArray(Holder[]::new);
         if (chemicals.length == 0) {
@@ -85,12 +86,12 @@ public class CrTChemicalStackIngredient {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
         }
         List<ChemicalIngredient> ingredients = new ArrayList<>(chemicals.length);
-        long amount = 0;
+        int amount = 0;
         for (ICrTChemicalStack instance : chemicals) {
             if (instance.isEmpty()) {
                 throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
             } else if (amount == 0) {
-                amount = instance.getAmount();
+                amount = Ints.saturatedCast(instance.getAmount());
             }
             ingredients.add(IngredientCreatorAccess.chemical().of(instance.getChemicalHolder()));
         }
@@ -107,7 +108,7 @@ public class CrTChemicalStackIngredient {
      * @return A {@link ChemicalStackIngredient} that matches a given chemical tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, long amount) {
+    public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, int amount) {
         assertValidAmount(amount);
         TagKey<Chemical> tag = CrTUtils.validateTagAndGet(chemicalTag);
         return IngredientCreatorAccess.chemicalStack().from(MekanismAPI.CHEMICAL_REGISTRY, tag, amount);
@@ -192,7 +193,7 @@ public class CrTChemicalStackIngredient {
     /**
      * Validates that the amount is greater than zero. If it is not it throws an error.
      */
-    private static void assertValidAmount(long amount) {
+    private static void assertValidAmount(int amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("ChemicalStackIngredients can only be created with a size of at least one. Received size was: " + amount);
         }

@@ -1,15 +1,18 @@
 package mekanism.common.content.tank;
 
-import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.LargeResourceStack;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -22,19 +25,28 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
+import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.tile.multiblock.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
+    private final ResourceHandler<FluidResource> directFluidHandler;
+    private final ResourceHandler<ChemicalResource> directChemicalHandler;
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
@@ -44,9 +56,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     HybridInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
-    HybridInventorySlot outputSlot;
-    private int tankCapacity;
-    private long chemicalTankCapacity;
+    OutputInventorySlot outputSlot;
+    private long tankCapacity;
     public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
@@ -54,42 +65,53 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator),
-              VariableCapacityChemicalTank.create(this, this::getChemicalTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator)
+              VariableCapacityChemicalTank.create(this, this::getTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());
         inventorySlots.addAll(createBaseInventorySlots());
+        directFluidHandler = (IMekanismResourceHandler<FluidResource, IFluidTank>) () -> fluidTanks;
+        directChemicalHandler = (IMekanismResourceHandler<ChemicalResource, IChemicalTank>) () -> chemicalTanks;
     }
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        inventorySlots.add(inputSlot = HybridInventorySlot.inputOrDrain(mergedTank, this, 146, 21));
-        inventorySlots.add(outputSlot = HybridInventorySlot.outputOrFill(mergedTank, this, 146, 51));
+        inventorySlots.add(inputSlot = HybridInventorySlot.input(mergedTank, this, 146, 21));
+        inventorySlots.add(outputSlot = OutputInventorySlot.at(this, 146, 51));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
-        outputSlot.setSlotType(ContainerSlotType.OUTPUT);
         return inventorySlots;
     }
 
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
-        CurrentType type = mergedTank.getCurrentType();
-        if (type == CurrentType.EMPTY) {
-            inputSlot.handleTank(outputSlot, editMode);
-            inputSlot.drainChemicalTank();//todo will this do anything if empty??
-            outputSlot.fillChemicalTank();
-        } else if (type == CurrentType.FLUID) {
-            inputSlot.handleTank(outputSlot, editMode);
-        } else { //Chemicals
-            inputSlot.drainChemicalTank();
-            outputSlot.fillChemicalTank();
-        }
+        inputSlot.handleTank(outputSlot, editMode, null);
         float scale = getScale();
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        if (!world.isClientSide()) {
+            //Note: We don't need to wrap valve tanks on the client side
+            for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+                TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, entry.getKey());
+                if (tile != null) {
+                    ValveData valve = entry.getValue();
+                    valve.resetTanks();
+                    valve.addTank(mergedTank.getFluidTank(), true);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
     }
 
     @Override
@@ -112,19 +134,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> MekanismUtils.getScale(prevScale, getFluidTank());
             case CHEMICAL -> MekanismUtils.getScale(prevScale, getChemicalTank());
-            //todo shouldn't this use the lowest amount? - Thiakil
-            default -> MekanismUtils.getScale(prevScale, 0, getChemicalTankCapacity(), true);
+            default -> MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
         };
     }
 
     @ComputerMethod
-    public int getTankCapacity() {
+    public long getTankCapacity() {
         return tankCapacity;
-    }
-
-    @ComputerMethod
-    public long getChemicalTankCapacity() {
-        return chemicalTankCapacity;
     }
 
     @Override
@@ -132,25 +148,31 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         if (getVolume() != volume) {
             super.setVolume(volume);
             tankCapacity = volume * MekanismConfig.general.dynamicTankFluidPerTank.get();
-            chemicalTankCapacity = volume * MekanismConfig.general.dynamicTankChemicalPerTank.get();
         }
     }
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
-        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), capacity);
-    }
-
-    private long getStoredAmount() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> getFluidTank().getFluidAmount();
-            case CHEMICAL -> getChemicalTank().getStored();
-            default -> 0;
+            case FLUID -> ContainerType.FLUID.getRedstoneSignalFromContainer(getFluidTank());
+            case CHEMICAL -> ContainerType.CHEMICAL.getRedstoneSignalFromContainer(getChemicalTank());
+            default -> Redstone.SIGNAL_NONE;
         };
     }
 
-    public IExtendedFluidTank getFluidTank() {
+    private long getStoredAmount() {
+        return mergedTank.getCurrentContainer().amountAsLong();
+    }
+
+    public ResourceHandler<FluidResource> getDirectFluidHandler() {
+        return directFluidHandler;
+    }
+
+    public ResourceHandler<ChemicalResource> getDirectChemicalHandler() {
+        return directChemicalHandler;
+    }
+
+    public IFluidTank getFluidTank() {
         return mergedTank.getFluidTank();
     }
 
@@ -166,6 +188,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public void setContainerEditMode(ContainerEditMode mode) {
         if (editMode != mode) {
             editMode = mode;
+            //Reset the transfer direction if the edit mode changes so that it can better determine the direction if it has been changed to BOTH
+            inputSlot.resetLastTransferDirection(null);
             markDirty();
         }
     }
@@ -182,18 +206,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @ComputerMethod
-    Either<ChemicalStack, FluidStack> getStored() {
-        return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Either.right(getFluidTank().getFluid());
-            case CHEMICAL -> Either.left(getChemicalTank().getStack());
-            default -> Either.right(FluidStack.EMPTY);
-        };
+    LargeResourceStack<?> getStored() {
+        return mergedTank.getCurrentContainer().asStack();
     }
 
     @ComputerMethod
     double getFilledPercentage() {
-        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
-        return getStoredAmount() / (double) capacity;
+        return getStoredAmount() / (double) getTankCapacity();
     }
     //End computer related methods
 }

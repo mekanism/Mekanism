@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
@@ -129,7 +129,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
                 }
             }
             case FluidSlotInfo fluidSlotInfo -> {
-                for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
+                for (IFluidTank tank : fluidSlotInfo.getTanks()) {
                     containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
                 }
             }

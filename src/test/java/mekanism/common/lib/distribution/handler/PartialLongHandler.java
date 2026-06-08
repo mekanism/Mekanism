@@ -1,13 +1,11 @@
 package mekanism.common.lib.distribution.handler;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 public class PartialLongHandler extends LongHandler {
 
     @Override
-    public long perform(long amountOffered, boolean isSimulate) {
-        long amountToTake = amountOffered / 2;
-        if (!isSimulate) {
-            accept(amountToTake);
-        }
-        return amountToTake;
+    public long perform(long amountOffered, TransactionContext transaction) {
+        return accept(amountOffered / 2, transaction);
     }
 }

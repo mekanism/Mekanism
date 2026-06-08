@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A sided variant of {@link IHeatHandler}
  */
-@NothingNullByDefault
+@NothingNullByDefault//TODO - 26.1: Re-evaluate this class
 public interface ISidedHeatHandler extends IHeatHandler {
 
     /**

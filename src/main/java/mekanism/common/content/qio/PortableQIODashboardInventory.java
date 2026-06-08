@@ -3,45 +3,50 @@ package mekanism.common.content.qio;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.world.item.ItemStack;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
 
     private final QIOCraftingWindow[] craftingWindows;
     private final List<IInventorySlot> slots;
-    private final ItemStack stack;
+    private final ItemAccess itemAccess;
     @Nullable
     private final Level level;
     private boolean initializing;
 
-    public PortableQIODashboardInventory(@Nullable Level level, ItemStack stack) {
-        this.stack = stack;
+    public PortableQIODashboardInventory(@Nullable Level level, ItemAccess itemAccess) {
+        this.itemAccess = itemAccess;
         this.level = level;
         List<IInventorySlot> slots = new ArrayList<>();
         craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
-        List<ItemStack> contents = stack.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY).contents();
+        List<LargeResourceStack<ItemResource>> contents = itemAccess.getResource().getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY).contents();
         initializing = true;
         for (int tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
             int finalTableIndex = tableIndex;
             QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, (byte) tableIndex, slot -> () -> {
                 //Skip contents change handling until we actually have our crafting window updated
                 if (!initializing) {
-                    ItemStack stored = craftingWindows[finalTableIndex].getInputSlot(slot).getStack().copy();
-                    PortableDashboardContents content = stack.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY);
-                    stack.set(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, stored));
+                    IInventorySlot inputSlot = craftingWindows[finalTableIndex].getInputSlot(slot);
+                    ItemResource resource = this.itemAccess.getResource();
+                    PortableDashboardContents content = resource.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY);
+                    //Note: This save listener is called from within `SnapshotJournal#onRootCommit`, but it is safe to open a new transaction
+                    // from here thanks to https://github.com/neoforged/NeoForge/pull/2714
+                    ItemAccessUtils.exchange(this.itemAccess, resource.with(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, inputSlot.asStack())), null);
                 }
             });
             craftingWindows[tableIndex] = craftingWindow;
-            for (int slot = 0; slot < 9; slot++) {
+            for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
                 IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 slots.add(inputSlot);
-                //Note: setStack will ensure the stack is copied
-                inputSlot.setStack(contents.get(tableIndex * 9 + slot));
+                inputSlot.setContents(contents.get(tableIndex * QIOCraftingWindow.SLOTS_PER_WINDOW + slot), null);
             }
             slots.add(craftingWindow.getOutputSlot());
         }
@@ -67,10 +72,13 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
     @Nullable
     @Override
     public QIOFrequency getFrequency() {
-        if (level != null && !level.isClientSide() && !stack.isEmpty()) {//Note: This shouldn't be empty, but we validate it just in case
-            FrequencyAware<QIOFrequency> frequencyAware = stack.get(MekanismDataComponents.QIO_FREQUENCY);
-            if (frequencyAware != null) {
-                return frequencyAware.getFrequency(stack, MekanismDataComponents.QIO_FREQUENCY.value());
+        if (level != null && !level.isClientSide()) {
+            ItemResource resource = itemAccess.getResource();
+            if (!resource.isEmpty()) {
+                FrequencyAware<QIOFrequency> frequencyAware = resource.get(MekanismDataComponents.QIO_FREQUENCY);
+                if (frequencyAware != null) {
+                    return frequencyAware.frequency().orElse(null);
+                }
             }
         }
         return null;

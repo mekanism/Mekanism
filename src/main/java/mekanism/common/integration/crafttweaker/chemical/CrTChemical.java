@@ -65,7 +65,7 @@ public class CrTChemical {
      */
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
-    public static ICrTChemicalStack makeStack(Chemical _this, long amount) {
+    public static ICrTChemicalStack makeStack(Chemical _this, int amount) {
         return new CrTChemicalStack(new ChemicalStack(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(_this), amount));
     }
 

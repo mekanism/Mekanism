@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.Function;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -12,18 +11,18 @@ import mekanism.common.lib.inventory.Finder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
 
     public static final MapCodec<QIOItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
-          .and(ItemStackTemplateHelper.NO_COUNT_ITEMSTACK.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
+          .and(ItemResource.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemType))
           .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, QIOItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, QIOItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseQIOStreamCodec(QIOItemStackFilter::new), Function.identity(),
-          ItemStack.OPTIONAL_STREAM_CODEC, QIOItemStackFilter::getItemStack,
+          ItemResource.STREAM_CODEC, QIOItemStackFilter::getItemType,
           ByteBufCodecs.BOOL, filter -> filter.fuzzyMode,
           (filter, itemType, fuzzyMode) -> {
               filter.itemType = itemType;
@@ -32,13 +31,13 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
           }
     );
 
-    private ItemStack itemType = ItemStack.EMPTY;
+    private ItemResource itemType = ItemResource.EMPTY;
     public boolean fuzzyMode;
 
     public QIOItemStackFilter() {
     }
 
-    protected QIOItemStackFilter(boolean enabled, ItemStack itemType, boolean fuzzyMode) {
+    protected QIOItemStackFilter(boolean enabled, ItemResource itemType, boolean fuzzyMode) {
         super(enabled);
         this.itemType = itemType;
         this.fuzzyMode = fuzzyMode;
@@ -46,13 +45,13 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     public QIOItemStackFilter(QIOItemStackFilter filter) {
         super(filter);
-        this.itemType = filter.itemType.copy();
+        this.itemType = filter.itemType;
         this.fuzzyMode = filter.fuzzyMode;
     }
 
     @Override
-    public boolean test(ItemStack toCheck) {
-        return fuzzyMode ? Finder.item(itemType, toCheck) : Finder.strict(itemType, toCheck);
+    public boolean test(ItemResource toCheck) {
+        return fuzzyMode ? Finder.item(itemType, toCheck) : itemType.equals(toCheck);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
             if (fuzzyMode) {
                 return itemType.getItem() == other.itemType.getItem();
             }
-            return ItemStack.isSameItemSameComponents(itemType, other.itemType);
+            return itemType.equals(other.itemType);
         }
         return false;
     }
@@ -92,12 +91,12 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @NotNull
     @Override
-    public ItemStack getItemStack() {
+    public ItemResource getItemType() {
         return itemType;
     }
 
     @Override
-    public void setItemStack(@NotNull ItemStack stack) {
-        itemType = stack;
+    public void setItemType(@NotNull ItemResource itemType) {
+        this.itemType = itemType;
     }
 }

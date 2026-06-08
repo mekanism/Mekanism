@@ -70,77 +70,74 @@ public class ItemConfigurationCard extends Item {
         Direction side = context.getClickedFace();
         BlockState blockState = world.getBlockState(pos);
         IConfigCardAccess configCardAccess = WorldUtils.getCapability(world, Capabilities.CONFIG_CARD, pos, blockState, null, side);
-        //TODO - 26.1: Figure out if there is any other information we want to include in the problem path
-        if (configCardAccess != null) {
-            if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
-                return InteractionResult.FAIL;
-            }
-            ProblemReporter.PathElement problemPath = new ConfigurationCardPathElement(blockState.getBlock(), pos);
-            ItemStack stack = context.getItemInHand();
-            if (player.isShiftKeyDown()) {
-                if (!world.isClientSide()) {
-                    String translationKey = configCardAccess.getConfigCardName();
-                    try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
-                        TagValueOutput output = TagValueOutput.createWithContext(reporter, world.registryAccess());
-                        output.putString(SerializationConstants.DATA_NAME, translationKey);
-                        output.store(SerializationConstants.DATA_TYPE, BLOCK_CODEC, configCardAccess.getConfigurationDataType());
-                        //Note: We store the child data in a separate value output to not impose restrictions on the allowed keys
-                        ValueOutput configOutput = output.child(SerializationConstants.CONFIG);
-                        configCardAccess.writeConfigurationData(configOutput, player);
-                        if (configOutput.isEmpty()) {
-                            configOutput.discard(SerializationConstants.CONFIG);
-                        }
-                        stack.set(MekanismDataComponents.CONFIGURATION_DATA, output.buildResult());
-                    }
-                    player.sendOverlayMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)));
-                    MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
-                }
-            } else {
-                CompoundTag data = getData(stack);
-                if (data == null) {
-                    return InteractionResult.PASS;
-                }
-                try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
-                    ValueInput input = TagValueInput.create(reporter, world.registryAccess(), data);
-                    Block storedType = input.read(SerializationConstants.DATA_TYPE, BLOCK_CODEC).orElse(null);
-                    if (storedType == null) {
-                        return InteractionResult.PASS;
-                    }
-                    if (!world.isClientSide()) {
-                        if (configCardAccess.isConfigurationDataCompatible(storedType)) {
-                            //Note: We store the child data in a separate value output to not impose restrictions on the allowed keys
-                            Optional<ValueInput> configInput = input.child(SerializationConstants.CONFIG);
-                            //noinspection OptionalIsPresent - Capturing lambda
-                            if (configInput.isPresent()) {
-                                configCardAccess.setConfigurationData(configInput.get(), player);
-                            }
-                            configCardAccess.configurationDataSet();
-                            player.sendOverlayMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, getConfigCardName(input)));
-                            MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, false);
-                        } else {
-                            player.sendOverlayMessage(MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED));
-                        }
-                    }
-                }
-            }
-            return InteractionResult.SUCCESS_SERVER;
+        if (configCardAccess == null) {
+            return InteractionResult.PASS;
+        } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
+            return InteractionResult.FAIL;
         }
-        return InteractionResult.SUCCESS;
+        //TODO - 26.1: Figure out if there is any other information we want to include in the problem path
+        ProblemReporter.PathElement problemPath = new ConfigurationCardPathElement(blockState.getBlock(), pos);
+        ItemStack stack = context.getItemInHand();
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide()) {
+                String translationKey = configCardAccess.getConfigCardName();
+                try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
+                    TagValueOutput output = TagValueOutput.createWithContext(reporter, world.registryAccess());
+                    output.putString(SerializationConstants.DATA_NAME, translationKey);
+                    output.store(SerializationConstants.DATA_TYPE, BLOCK_CODEC, configCardAccess.getConfigurationDataType());
+                    //Note: We store the child data in a separate value output to not impose restrictions on the allowed keys
+                    ValueOutput configOutput = output.child(SerializationConstants.CONFIG);
+                    configCardAccess.writeConfigurationData(configOutput, player);
+                    if (configOutput.isEmpty()) {
+                        configOutput.discard(SerializationConstants.CONFIG);
+                    }
+                    stack.set(MekanismDataComponents.CONFIGURATION_DATA, output.buildResult());
+                }
+                player.sendOverlayMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)));
+                MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
+            }
+        } else {
+            CompoundTag data = getData(stack);
+            if (data == null) {
+                return InteractionResult.PASS;
+            }
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
+                ValueInput input = TagValueInput.create(reporter, world.registryAccess(), data);
+                Block storedType = input.read(SerializationConstants.DATA_TYPE, BLOCK_CODEC).orElse(null);
+                if (storedType == null) {
+                    return InteractionResult.PASS;
+                } else if (!world.isClientSide()) {
+                    if (configCardAccess.isConfigurationDataCompatible(storedType)) {
+                        //Note: We store the child data in a separate value output to not impose restrictions on the allowed keys
+                        Optional<ValueInput> configInput = input.child(SerializationConstants.CONFIG);
+                        //noinspection OptionalIsPresent - Capturing lambda
+                        if (configInput.isPresent()) {
+                            configCardAccess.setConfigurationData(configInput.get(), player);
+                        }
+                        configCardAccess.configurationDataSet();
+                        player.sendOverlayMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, getConfigCardName(input)));
+                        MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, false);
+                    } else {
+                        player.sendOverlayMessage(MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED));
+                    }
+                }
+            }
+        }
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
     @NotNull
     public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
-        if (player.isShiftKeyDown()) {
-            ItemStack configCard = player.getItemInHand(usedHand);
-            if (!level.isClientSide()) {
-                configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
-                player.sendOverlayMessage(MekanismLang.CONFIG_CARD_CLEARED.translate());
-            }
-            //TODO - 26.1: Does this need to use a copy of the stack rather than directly removing the component above?
-            return InteractionResult.SUCCESS.heldItemTransformedTo(configCard);
+        if (!player.isShiftKeyDown()) {
+            return super.use(level, player, usedHand);
+        } else if (!level.isClientSide()) {
+            player.sendOverlayMessage(MekanismLang.CONFIG_CARD_CLEARED.translate());
         }
-        return super.use(level, player, usedHand);
+        ItemStack configCard = player.getItemInHand(usedHand);
+        configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
+        //TODO - 26.1: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(configCard);
     }
 
     @Nullable

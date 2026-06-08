@@ -46,7 +46,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("amount")
-    default long getAmount() {
+    default int getAmount() {
         return getInternal().amount();
     }
 
@@ -58,7 +58,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      * @return A new stack, or this stack, depending on if this stack is mutable
      */
     @ZenCodeType.Method
-    ICrTChemicalStack setAmount(long amount);
+    ICrTChemicalStack setAmount(int amount);
 
     /**
      * Multiplies the stack's amount by the given amount in MilliBuckets (MB)
@@ -67,10 +67,10 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      *
      * @return A new stack, or this stack, depending on if this stack is mutable
      *
-     * @implNote No checks are made to ensure that the long does not overflow.
+     * @implNote No checks are made to ensure that the int does not overflow.
      */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
-    default ICrTChemicalStack multiply(long amount) {
+    default ICrTChemicalStack multiply(int amount) {
         return setAmount(getAmount() * amount);
     }
 
@@ -82,10 +82,10 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      * @return A new stack, or this stack, depending on if this stack is mutable
      *
      * @apiNote Negative values are valid and will instead shrink the stack.
-     * @implNote No checks are made to ensure that the long does not overflow.
+     * @implNote No checks are made to ensure that the int does not overflow.
      */
     @ZenCodeType.Method
-    default ICrTChemicalStack grow(long amount) {
+    default ICrTChemicalStack grow(int amount) {
         return setAmount(getAmount() + amount);
     }
 
@@ -97,10 +97,10 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      * @return A new stack, or this stack, depending on if this stack is mutable
      *
      * @apiNote Negative values are valid and will instead grow the stack.
-     * @implNote No checks are made to ensure that the long does not underflow.
+     * @implNote No checks are made to ensure that the int does not underflow.
      */
     @ZenCodeType.Method
-    default ICrTChemicalStack shrink(long amount) {
+    default ICrTChemicalStack shrink(int amount) {
         return setAmount(getAmount() - amount);
     }
 

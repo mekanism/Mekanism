@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
@@ -16,7 +17,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -53,24 +54,18 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         ChemicalTankTier tier = getTier();
-        StorageUtils.addStoredSubstance(stack, tooltipAdder, tier == ChemicalTankTier.CREATIVE);
+        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier == ChemicalTankTier.CREATIVE);
         if (tier == ChemicalTankTier.CREATIVE) {
             tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
+            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
         }
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        // No bar for empty or stacked containers as bars are drawn on top of stack count number
-        if (stack.count() > 1) {
-            //Note: Technically this is handled by the below checks as the capability isn't exposed,
-            // but we may as well short circuit it here
-            return false;
-        }
-        return ChemicalUtil.hasAnyChemical(stack);
+        return StorageUtils.isBarVisible(stack);
     }
 
     @Override
@@ -80,6 +75,6 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 }

@@ -1,209 +1,47 @@
 package mekanism.common.attachments.containers.item;
 
 import java.util.function.BiPredicate;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.resource.ComponentBackedResourceContainer;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.ResourceContainerType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemStack, AttachedItems> implements IInventorySlot {
+public class ComponentBackedInventorySlot extends ComponentBackedResourceContainer<ItemResource> implements IInventorySlot {
 
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract;
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert;
-    private final Predicate<@NotNull ItemStack> validator;
+    private static final LongSupplier ABSOLUTE_MAX_STACK_SIZE = () -> Item.ABSOLUTE_MAX_STACK_SIZE;
+
     private final boolean obeyStackLimit;
-    private final int limit;
 
-    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator) {
-        this(attachedTo, slotIndex, canExtract, canInsert, validator, true, Item.ABSOLUTE_MAX_STACK_SIZE);
+    public ComponentBackedInventorySlot(ItemAccess attachedAccess, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator) {
+        this(attachedAccess, slotIndex, canExtract, canInsert, validator, true, ABSOLUTE_MAX_STACK_SIZE);
     }
 
-    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator, boolean obeyStackLimit, int limit) {
-        super(attachedTo, slotIndex);
-        this.canExtract = canExtract;
-        this.canInsert = canInsert;
-        this.validator = validator;
+    public ComponentBackedInventorySlot(ItemAccess attachedAccess, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, boolean obeyStackLimit, LongSupplier limit) {
+        super(attachedAccess, slotIndex, canExtract, canInsert, validator, limit, null, null);
         this.obeyStackLimit = obeyStackLimit;
-        this.limit = limit;
     }
 
     @Override
-    protected ItemStack copy(ItemStack toCopy) {
-        return toCopy.copy();
-    }
-
-    @Override
-    protected boolean isEmpty(ItemStack value) {
-        return value.isEmpty();
-    }
-
-    @Override
-    protected ContainerType<?, AttachedItems, ?> containerType() {
+    protected ResourceContainerType<ItemResource, IInventorySlot> containerType() {
         return ContainerType.ITEM;
     }
 
-    /**
-     * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
-     */
     @Override
-    public ItemStack getStack() {
-        return getContents(getAttached());
-    }
-
-    @Override
-    public final void setStack(ItemStack stack) {
-        setContents(getAttached(), stack);
-    }
-
-    /**
-     * Ignores current contents
-     */
-    private boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        return validator.test(stack) && canInsert.test(stack, automationType);
-    }
-
-    @Override
-    public final ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
-            //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
-        }
-        AttachedItems attachedItems = getAttached();
-        return insertItem(attachedItems, getContents(attachedItems), stack, action, automationType);
-    }
-
-    public ItemStack insertItem(AttachedItems attachedItems, ItemStack current, ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
-            //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
-        }
-        //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(stack) - current.count();
-        if (needed <= 0 || !isItemValidForInsertion(stack, automationType)) {
-            //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return stack;
-        } else if (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack)) {
-            int toAdd = Math.min(stack.count(), needed);
-            if (action.execute()) {
-                //Note: We let setStack handle updating the backing holding stack
-                // We use current.getCount + toAdd so that if we are empty we end up at toAdd
-                // but if we aren't then we grow by the given amount
-                setContents(attachedItems, stack.copyWithCount(current.count() + toAdd));
-            }
-            return stack.copyWithCount(stack.count() - toAdd);
-        }
-        //If we didn't accept this item, then just return the given stack
-        return stack;
-    }
-
-    @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (amount < 1) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
-            return ItemStack.EMPTY;
-        }
-        AttachedItems attachedItems = getAttached();
-        ItemStack current = getContents(attachedItems);
-        if (current.isEmpty() || !canExtract.test(current, automationType)) {
-            return ItemStack.EMPTY;
-        }
-        //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
-        // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.count(), current.getMaxStackSize());
-        if (currentAmount < amount) {
-            //If we are trying to extract more than we have, just change it so that we are extracting it all
-            amount = currentAmount;
-        }
-        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = current.copyWithCount(amount);
-        if (action.execute()) {
-            //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedItems, current.copyWithCount(current.count() - amount));
-        }
-        return toReturn;
-    }
-
-    @Override
-    public int getLimit(ItemStack stack) {
-        return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
-    }
-
-    @Override
-    public boolean isItemValid(ItemStack stack) {
-        return validator.test(stack);
-    }
-
-    @Override
-    public final int setStackSize(int amount, Action action) {
-        AttachedItems attachedItems = getAttached();
-        return setStackSize(attachedItems, getContents(attachedItems), amount, action);
-    }
-
-    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, Action action) {
-        if (current.isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setContents(attachedItems, ItemStack.EMPTY);
-            }
-            return 0;
-        }
-        int maxStackSize = getLimit(current);
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (current.count() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setContents(attachedItems, current.copyWithCount(amount));
-        return amount;
-    }
-
-    @Override
-    public int growStack(int amount, Action action) {
-        AttachedItems attachedItems = getAttached();
-        //Avoid extra getStack lookup calls
-        ItemStack stack = getContents(attachedItems);
-        int current = stack.count();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getLimit(stack));
-        }
-        int newSize = setStackSize(attachedItems, stack, current + amount, action);
-        return newSize - current;
-    }
-
-    @Override
-    public void serialize(ValueOutput output) {
-        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
-        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
-        ItemStack current = getStack();
-        if (!current.isEmpty()) {
-            output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, current);
-        }
-    }
-
-    @Override
-    public void deserialize(ValueInput input) {
-        setStack(input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY));
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long capacityAsLong(ItemResource resource) {
+        //Note: The below logic gracefully handles when zero is returned from super due to the resource not being valid
+        long limit = super.capacityAsLong(resource);
+        return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 }

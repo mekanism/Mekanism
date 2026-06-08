@@ -6,17 +6,22 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import mekanism.api.IContentsListener;
+import mekanism.api.math.MathUtils;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.lib.math.Range3D;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
-      TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
+      TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> implements IContentsListener {
 
     protected final LongSet chunks = new LongOpenHashSet();
     @Nullable
@@ -38,7 +43,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void onUpdate() {
         super.onUpdate();
         float scale = computeContentScale();
-        if (scale != currentScale) {
+        if (!Mth.equal(scale, currentScale)) {
             currentScale = scale;
             needsUpdate = true;
         }
@@ -58,8 +63,11 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         super.addTransmitterFromCommit(transmitter);
         chunks.add(ChunkPos.pack(transmitter.getBlockPos()));
         //Update the capacity here, to make sure that we can actually absorb the buffer properly
-        updateCapacity(transmitter);
-        absorbBuffer(transmitter);
+        capacity = MathUtils.addClamped(capacity, transmitter.getCapacity());
+        try (Transaction transaction = Transaction.openRoot()) {
+            absorbBuffer(transmitter, transaction);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -90,7 +98,15 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         //Clamp the new buffer
         clampBuffer();
         //Update all shares
-        updateSaveShares(triggerTransmitter);
+        try (Transaction transaction = Transaction.openRoot()) {
+            updateSaveShares(triggerTransmitter, transaction);
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public void onContentsChanged() {
+        markDirty();
     }
 
     @Override
@@ -105,25 +121,12 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     @NotNull
     public abstract BUFFER getBuffer();
 
-    public abstract void absorbBuffer(TRANSMITTER transmitter);
+    public abstract void absorbBuffer(TRANSMITTER transmitter, TransactionContext transaction);
 
     public abstract void clampBuffer();
 
     public boolean isCompatibleWith(NETWORK other) {
         return true;
-    }
-
-    /**
-     * @param transmitter The transmitter that was added
-     */
-    protected synchronized void updateCapacity(TRANSMITTER transmitter) {
-        long transmitterCapacity = transmitter.getCapacity();
-        if (transmitterCapacity > Long.MAX_VALUE - capacity) {
-            //Ensure we don't overflow
-            capacity = Long.MAX_VALUE;
-        } else {
-            capacity += transmitterCapacity;
-        }
     }
 
     public synchronized void updateCapacity() {
@@ -152,10 +155,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         return getCapacity();
     }
 
-    protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter, TransactionContext transaction) {
     }
 
-    public final void validateSaveShares(@NotNull TRANSMITTER triggerTransmitter) {
+    public final void validateSaveShares(@NotNull TRANSMITTER triggerTransmitter, @Nullable TransactionContext transaction) {
         if (world == null) {
             //If the world is null, try falling back to the trigger transmitter's world.
             // Note: This also in theory could be null, so we double-check it is not before grabbing the game time
@@ -163,7 +166,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         }
         if (world != null && world.getGameTime() != lastSaveShareWriteTime) {
             lastSaveShareWriteTime = world.getGameTime();
-            updateSaveShares(triggerTransmitter);
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                updateSaveShares(triggerTransmitter, subTransaction);
+                subTransaction.commit();
+            }
         }
     }
 

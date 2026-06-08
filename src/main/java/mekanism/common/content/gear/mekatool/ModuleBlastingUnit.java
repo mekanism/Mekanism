@@ -22,17 +22,21 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Util;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,13 +70,14 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
     }
 
     @Override
-    public void addRadialModes(IModule<ModuleBlastingUnit> module, @NotNull ItemStack stack, Consumer<NestedRadialMode> adder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addRadialModes(IModule<ModuleBlastingUnit> module, ITEM instance, Consumer<NestedRadialMode> adder) {
         adder.accept(getNestedData(module));
     }
 
     @Nullable
     @Override
-    public <MODE extends IRadialMode> MODE getMode(IModule<ModuleBlastingUnit> module, ItemStack stack, RadialData<MODE> radialData) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter, MODE extends IRadialMode> MODE getMode(IModule<ModuleBlastingUnit> module, ITEM instance,
+          RadialData<MODE> radialData) {
         if (radialData == getRadialData(module)) {
             return (MODE) blastRadius;
         }
@@ -80,11 +85,12 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
     }
 
     @Override
-    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleBlastingUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
+    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleBlastingUnit> module, Player player, ItemAccess itemAccess, RadialData<MODE> radialData, MODE mode,
+          @Nullable TransactionContext transaction) {
         if (radialData == getRadialData(module)) {
             BlastRadius newMode = (BlastRadius) mode;
             if (blastRadius != newMode) {
-                moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getDataHolder(), module.<BlastRadius>getConfigOrThrow(BLAST_RADIUS).with(newMode));
+                module.replaceModuleConfig(player.registryAccess(), itemAccess, transaction, module.<BlastRadius>getConfigOrThrow(BLAST_RADIUS).with(newMode));
             }
         }
         return false;
@@ -95,7 +101,8 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleBlastingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<Component> hudStringAdder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(IModule<ModuleBlastingUnit> module, IModuleContainer moduleContainer, ITEM instance,
+          Player player, Consumer<Component> hudStringAdder) {
         //Only add hud string if enabled in config
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.MODULE_BLASTING_ENABLED.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, blastRadius));

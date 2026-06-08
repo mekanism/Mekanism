@@ -28,7 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -55,18 +55,18 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (network == null) {//TODO - 26.1: Does this race condition still exist?
             return;//race conditions, yay
         }
-        FluidStack fluidStack = network.lastFluid;
-        if (fluidStack.isEmpty()) {
+        FluidResource fluidType = network.getLastType();
+        if (fluidType.isEmpty()) {
             return;//Shouldn't be the case but validate it
         }
         state.currentScale = network.currentScale;
-        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL));
-        state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
+        state.fluidTint = MekanismRenderer.getColorARGB(fluidType, state.currentScale);
 
-        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, STAGES, state.currentScale));
+        int stage = Math.max(3, ModelRenderer.getStage(fluidType, STAGES, state.currentScale));
         state.stage = stage;
         //TODO - 26.1: Should we overwrite lightCoords with glow?
-        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
+        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidType);
 
 
         List<String> connectionContents = new ArrayList<>();
@@ -209,7 +209,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             MechanicalPipe pipe = tile.getTransmitter();
             if (pipe.hasTransmitterNetwork()) {
                 FluidNetwork network = pipe.getTransmitterNetwork();
-                return !network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0;
+                return !network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.currentScale > 0;
             }
         }
         return false;

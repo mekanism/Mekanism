@@ -20,13 +20,13 @@ import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.scroll.GuiScrollableElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Util;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -37,7 +37,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private static final int ELEMENT_SPACER = 4;
 
     final Consumer<ModuleConfig<?>> saveCallback;
-    private final Supplier<ItemStack> itemSupplier;
+    private final Supplier<ItemResource> itemSupplier;
     private final ArmorPreview armorPreview;
 
     @Nullable
@@ -45,11 +45,11 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private Map<Identifier, MiniElement<?>> miniElements = new LinkedHashMap<>();
     private int maxElements;
 
-    public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
+    public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemResource> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
         this(gui, x, y, 108, 134, itemSupplier, saveCallback, armorPreview);
     }
 
-    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
+    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemResource> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
         super(GuiScrollList.SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.itemSupplier = itemSupplier;
         this.saveCallback = saveCallback;
@@ -141,7 +141,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         return currentModule;
     }
 
-    public ItemStack getContainerStack() {
+    public ItemResource getContainerType() {
         return itemSupplier.get();
     }
 

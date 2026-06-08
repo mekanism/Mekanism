@@ -1,8 +1,10 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -20,8 +22,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        //If we are currently stacked, don't display the bar as it will overlap the stack count
-        return stack.count() == 1;
+        return StorageUtils.isEnergyBarVisible(stack);
     }
 
     @Override
@@ -38,12 +39,12 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+        StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
+        tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
     }
 
     @Override

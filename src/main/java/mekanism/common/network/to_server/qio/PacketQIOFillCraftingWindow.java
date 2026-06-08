@@ -7,11 +7,10 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
-import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
+import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSource;
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
@@ -21,7 +20,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -34,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
 @NothingNullByDefault
 public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boolean transferMultiple, boolean rejectToInventory,
-                                          Byte2ObjectMap<List<SingularHashedItemSource>> sources) implements IMekanismPacket {
+                                          Byte2ObjectMap<List<SingularItemTypeSource>> sources) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketQIOFillCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fill_qio"));
     private static final StreamCodec<ByteBuf, ResourceKey<Recipe<?>>> RECIPE_ID_CODEC = ResourceKey.streamCodec(Registries.RECIPE);
@@ -54,9 +52,9 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<RecipeHolder<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
-                if (optionalRecipe.isPresent()) {
-                    Recipe<?> recipe = optionalRecipe.get().value();
+                RecipeHolder<?> recipeHolder = MekanismRecipeType.byKey(player.level(), recipeID);
+                if (recipeHolder != null) {
+                    Recipe<?> recipe = recipeHolder.value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
                         QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
                     } else {
@@ -76,18 +74,18 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
         buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
         buffer.writeByte((byte) sources.size());
-        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
-            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularItemTypeSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularItemTypeSource>> entry = iterator.next();
             //Target Slot
             buffer.writeByte(entry.getByteKey());
             //Source slot
-            List<SingularHashedItemSource> slotSources = entry.getValue();
+            List<SingularItemTypeSource> slotSources = entry.getValue();
             if (transferMultiple) {
                 //We "cheat" by only writing the list size if we are transferring as many items as possible as
                 // the list will always be of size one
                 ByteBufCodecs.VAR_INT.encode(buffer, slotSources.size());
             }
-            for (SingularHashedItemSource source : slotSources) {
+            for (SingularItemTypeSource source : slotSources) {
                 byte sourceSlot = source.getSlot();
                 //We "cheat" here by just writing the source slot regardless of if we are in the crafting window, main inventory, or QIO
                 // as then we can use the not a valid value as indication that we have a UUID following for QIO source, and otherwise we
@@ -116,19 +114,19 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
         boolean transferMultiple = buffer.readBoolean();
         boolean rejectToInventory = buffer.readBoolean();
         byte slotCount = buffer.readByte();
-        Byte2ObjectMap<List<SingularHashedItemSource>> sources = new Byte2ObjectArrayMap<>(slotCount);
+        Byte2ObjectMap<List<SingularItemTypeSource>> sources = new Byte2ObjectArrayMap<>(slotCount);
         for (byte slot = 0; slot < slotCount; slot++) {
             byte targetSlot = buffer.readByte();
             int subSourceCount = transferMultiple ? ByteBufCodecs.VAR_INT.decode(buffer) : 1;
-            List<SingularHashedItemSource> slotSources = new ArrayList<>(subSourceCount);
+            List<SingularItemTypeSource> slotSources = new ArrayList<>(subSourceCount);
             sources.put(targetSlot, slotSources);
             for (int i = 0; i < subSourceCount; i++) {
                 byte sourceSlot = buffer.readByte();
                 int count = transferMultiple ? ByteBufCodecs.VAR_INT.decode(buffer) : 1;
                 if (sourceSlot == -1) {
-                    slotSources.add(new SingularHashedItemSource(UUIDUtil.STREAM_CODEC.decode(buffer), count));
+                    slotSources.add(new SingularItemTypeSource(UUIDUtil.STREAM_CODEC.decode(buffer), count));
                 } else {
-                    slotSources.add(new SingularHashedItemSource(sourceSlot, count));
+                    slotSources.add(new SingularItemTypeSource(sourceSlot, count));
                 }
             }
         }

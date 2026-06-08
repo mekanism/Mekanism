@@ -4,6 +4,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
@@ -16,9 +17,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -56,7 +55,7 @@ public class MekanismCreativeTabs {
                       .filterElements(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()))
                       .listElements()
                       .filter(holder -> !holder.is(Tags.Fluids.HIDDEN_FROM_RECIPE_VIEWERS))
-                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), holder)));
+                      .forEach(holder -> output.accept(ContainerType.FLUID.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), holder, null)));
             }
             if (chemical) {
                 //Chemical Tanks
@@ -64,7 +63,7 @@ public class MekanismCreativeTabs {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder)));
+                          .forEach(holder -> output.accept(ContainerType.CHEMICAL.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder, null)));
                 }
             }
         }
@@ -142,7 +141,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.ARMORED_FREE_RUNNERS, MekanismItems.ARMORED_JETPACK);
         } else if (tabKey == CreativeModeTabs.FOOD_AND_DRINKS) {
             //Only add the filled canteen
-            event.accept(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+            event.accept(ContainerType.FLUID.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE, null), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
         } else if (tabKey == CreativeModeTabs.INGREDIENTS) {
             CreativeTabDeferredRegister.addToDisplay(event,
                   MekanismItems.MODULE_BASE, MekanismItems.INFUSED_ALLOY, MekanismItems.REINFORCED_ALLOY, MekanismItems.ATOMIC_ALLOY,

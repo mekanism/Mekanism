@@ -13,7 +13,6 @@ import mekanism.api.MekanismItemAbilities;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -24,6 +23,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -44,6 +44,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -67,6 +69,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,27 +99,27 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemInstance stack, @NotNull ItemAbility action) {
+    public boolean canPerformAction(@NotNull ItemInstance instance, @NotNull ItemAbility action) {
         if (action == MekanismItemAbilities.WRENCH_CONFIGURE) {
-            return getMode(stack).isConfigurating();
+            return getMode(instance).isConfigurating();
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_CHEMICALS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ENERGY) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ENERGY;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_ENERGY;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_FLUIDS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_FLUIDS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_FLUIDS;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_HEAT) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_HEAT;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_HEAT;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ITEMS) {
-            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ITEMS;
+            return getMode(instance) == ConfiguratorMode.CONFIGURATE_ITEMS;
         } else if (action == MekanismItemAbilities.WRENCH_DISMANTLE) {
-            return getMode(stack) == ConfiguratorMode.WRENCH;
+            return getMode(instance) == ConfiguratorMode.WRENCH;
         } else if (action == MekanismItemAbilities.WRENCH_EMPTY) {
-            return getMode(stack) == ConfiguratorMode.EMPTY;
+            return getMode(instance) == ConfiguratorMode.EMPTY;
         } else if (action == MekanismItemAbilities.WRENCH_ROTATE) {
-            return getMode(stack) == ConfiguratorMode.ROTATE;
+            return getMode(instance) == ConfiguratorMode.ROTATE;
         }
-        return super.canPerformAction(stack, action);
+        return super.canPerformAction(instance, action);
     }
 
     @NotNull
@@ -126,9 +130,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         if (!world.isClientSide() && player != null) {
             BlockPos pos = context.getClickedPos();
             Direction side = context.getClickedFace();
-            ItemStack stack = context.getItemInHand();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            ConfiguratorMode mode = getMode(stack);
+            ConfiguratorMode mode = getMode(context.getItemInHand());
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
@@ -164,7 +167,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     return config.onRightClick(player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
+                if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
                     if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
                     }
@@ -173,16 +176,16 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         //If the tile is a creative bin only allow clearing it if the player is in creative
                         // and don't bother popping the stack out
                         if (creative) {
-                            bin.getBinSlot().setEmpty();
+                            ContainerType.ITEM.clearContents(bin.getBinSlot(), null);
                             return InteractionResult.SUCCESS;
                         }
                         return InteractionResult.FAIL;
                     }
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                    for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
+                    for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
-                            InventoryUtils.dropStack(world, pos, side, inventorySlot.getStack().copy(), Block::popResourceFromFace);
-                            inventorySlot.setEmpty();
+                            InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), Block::popResourceFromFace);
+                            ContainerType.ITEM.clearContents(inventorySlot, null);
                         }
                     }
                     return InteractionResult.SUCCESS;
@@ -211,29 +214,28 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(instance)));
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        ConfiguratorMode mode = getMode(stack);
+    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        ConfiguratorMode mode = getMode(itemAccess);
         ConfiguratorMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, player, newMode);
+        if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
             displayChange.sendMessage(player, newMode, MekanismLang.CONFIGURE_STATE::translate);
         }
     }
 
     @NotNull
     @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getMode(stack).getTextComponent();
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        return getMode(instance).getTextComponent();
     }
 
     @NotNull
     @Override
-    public RadialData<ConfiguratorMode> getRadialData(ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> RadialData<ConfiguratorMode> getRadialData(ITEM instance) {
         return LAZY_RADIAL_DATA.get();
     }
 

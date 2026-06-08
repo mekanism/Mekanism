@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 import mekanism.common.content.filter.FilterManager;
@@ -33,11 +33,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
@@ -54,7 +55,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
-        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.RIGHT);
+        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
@@ -62,11 +63,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         //Only allow inserting items with tags that match filters, but mark all items that have any filterable tags as valid
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> hasResult(filterManager.getEnabledFilters(), item), this::hasFilterableTags, listener, 56, 115));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 164, 115));
+        builder.addContainer(inputSlot = InputInventorySlot.at((itemType, _) -> hasResult(filterManager.getEnabledFilters(), itemType), this::hasFilterableTags, listener, 56, 115));
+        builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 164, 115));
         return builder.build();
     }
 
@@ -80,17 +81,18 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }
         didProcess = false;
         if (canFunction() && !inputSlot.isEmpty()) {
-            ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getStack());
+            ItemResource inputType = inputSlot.resource();
+            ItemResource result = getResult(filterManager.getEnabledFilters(), inputType);
             if (!result.isEmpty()) {
-                ItemStack outputStack = outputSlot.getStack();
-                if (outputStack.isEmpty()) {
-                    inputSlot.shrinkStack(1, Action.EXECUTE);
-                    outputSlot.setStack(result);
-                    didProcess = true;
-                } else if (ItemStack.isSameItemSameComponents(outputStack, result) && outputStack.count() < outputSlot.getLimit(outputStack)) {
-                    inputSlot.shrinkStack(1, Action.EXECUTE);
-                    outputSlot.growStack(1, Action.EXECUTE);
-                    didProcess = true;
+                int outputNeeded = outputSlot.getNeededAsInt(result);
+                if (outputNeeded > 0) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int available = inputSlot.extract(inputType, outputNeeded, transaction, AutomationType.INTERNAL);
+                        if (available > 0 && outputSlot.insert(result, available, transaction, AutomationType.INTERNAL) == available) {
+                            transaction.commit();
+                            didProcess = true;
+                        }
+                    }
                 }
             }
         }
@@ -109,16 +111,16 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
     }
 
-    private static List<Identifier> getFilterableTags(ItemStack stack) {
+    private static List<Identifier> getFilterableTags(ItemResource itemType) {
         //TODO: Cache this and hasFilterableTags?
         //For each tag that matches a tag that is filterable, add it to the resulting list
-        return stack.typeHolder().tags()
+        return itemType.typeHolder().tags()
               .map(TagKey::location)
               .filter(TileEntityOredictionificator::isPossibleFilter)
               .toList();
     }
 
-    private boolean hasFilterableTags(ItemStack stack) {
+    private boolean hasFilterableTags(ItemResource stack) {
         return stack.tags().anyMatch(tag -> isPossibleFilter(tag.location()));
     }
 
@@ -145,16 +147,16 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return false;
     }
 
-    public static boolean hasResult(List<OredictionificatorItemFilter> enabledFilters, ItemStack stack) {
-        return !getResult(enabledFilters, stack).isEmpty();
+    public static boolean hasResult(List<OredictionificatorItemFilter> enabledFilters, ItemResource itemType) {
+        return !getResult(enabledFilters, itemType).isEmpty();
     }
 
-    private static ItemStack getResult(List<OredictionificatorItemFilter> enabledFilters, ItemStack stack) {
+    private static ItemResource getResult(List<OredictionificatorItemFilter> enabledFilters, ItemResource itemType) {
         if (!enabledFilters.isEmpty()) {
-            for (Identifier filterableTag : getFilterableTags(stack)) {
+            for (Identifier filterableTag : getFilterableTags(itemType)) {
                 for (OredictionificatorItemFilter filter : enabledFilters) {
                     if (filter.filterMatches(filterableTag)) {
-                        ItemStack result = filter.getResult();
+                        ItemResource result = filter.getResult();
                         if (!result.isEmpty()) {
                             //If the result is empty, continue to try and find matches for other filters that are valid for the item
                             return result;
@@ -163,7 +165,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 }
             }
         }
-        return ItemStack.EMPTY;
+        return ItemResource.EMPTY;
     }
 
     @Override

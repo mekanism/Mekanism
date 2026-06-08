@@ -1,27 +1,24 @@
 package mekanism.client.gui.element.gauge;
 
 import com.google.common.primitives.Ints;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {
+public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTank> {
 
     public static GuiChemicalGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiChemicalGauge gauge = new GuiChemicalGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -29,12 +26,8 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
         return gauge;
     }
 
-    protected Component label;
-
-    public GuiChemicalGauge(ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK);
-        //Ensure it isn't null
-        setDummyType(ChemicalStack.EMPTY);
+    public GuiChemicalGauge(@Nullable ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK, ChemicalResource.EMPTY);
     }
 
     public GuiChemicalGauge(Supplier<IChemicalTank> tankSupplier, Supplier<List<IChemicalTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -42,88 +35,35 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
     }
 
     public GuiChemicalGauge(Supplier<IChemicalTank> tankSupplier, Supplier<List<IChemicalTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        this(new ITankInfoHandler<>() {
-            @Override
-            public IChemicalTank getTank() {
-                return tankSupplier.get();
-            }
-
-            @Override
-            public int getTankIndex() {
-                IChemicalTank tank = getTank();
-                return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
-            }
-        }, type, gui, x, y, sizeX, sizeY);
-    }
-
-    public GuiChemicalGauge setLabel(Component label) {
-        this.label = label;
-        return this;
-    }
-
-    @Override
-    public int getScaledLevel() {
-        if (dummy) {
-            return height - 2;
-        }
-        IChemicalTank tank = getTank();
-        if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
-            return 0;
-        }
-        double scale = tank.getStored() / (double) tank.getCapacity();
-        return Ints.saturatedCast(Math.max(1, Math.round(scale * (height - 2))));
+        this(getInfoHandler(tankSupplier, tanksSupplier), type, gui, x, y, sizeX, sizeY);
     }
 
     @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
-        ChemicalStack stack = getStackOrDummy();
-        return stack.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stack);
+        ChemicalResource type = getTypeOrDummy();
+        return type.isEmpty() ? null : MekanismRenderer.getChemicalTexture(type);
     }
 
     @Override
-    public Component getLabel() {
-        return label;
-    }
-
-    private ChemicalStack getStackOrDummy() {
-        if (dummy) {
-            return dummyType;
+    protected List<Component> getContentsTooltips(ChemicalResource resource, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        List<Component> tooltip = super.getContentsTooltips(resource, amount, context, player, tooltipFlag);
+        ChemicalStack stack = resource.toStack(Ints.saturatedCast(amount));
+        if (!stack.isEmpty()) {
+            stack.appendHoverText(context, tooltip, tooltipFlag);
         }
-        IChemicalTank tank = getTank();
-        return tank == null ? dummyType : tank.getStack();
-    }
-
-    @Override
-    public List<Component> getTooltipText() {
-        ChemicalStack stack = getStackOrDummy();
-        if (stack.isEmpty()) {
-            return Collections.singletonList(MekanismLang.EMPTY.translate());
-        }
-        List<Component> list = new ArrayList<>();
-        long amount = stack.amount();
-        if (amount == Long.MAX_VALUE) {
-            list.add(MekanismLang.GENERIC_STORED.translate(stack, MekanismLang.INFINITE));
-        } else {
-            list.add(MekanismLang.GENERIC_STORED_MB.translate(stack, TextUtils.format(amount)));
-        }
-        stack.appendHoverText(TooltipContext.of(minecraft.level), list, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-        return list;
+        return tooltip;
     }
 
     @Override
     protected int getRenderColor() {
-        return MekanismRenderer.color(getStackOrDummy());
+        return MekanismRenderer.color(getTypeOrDummy());
     }
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
-        return getTank().isEmpty() ? Optional.empty() : Optional.of(getTank().getStack());
-    }
-
-    @Override
-    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
-        return new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2);
+        IChemicalTank tank = getContainer();
+        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
     }
 
     @Override

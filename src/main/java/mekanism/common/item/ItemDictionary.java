@@ -15,7 +15,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -99,22 +98,20 @@ public class ItemDictionary extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
+                MekanismContainerTypes.DICTIONARY.tryOpenGui(player, hand);
             }
             return InteractionResult.SUCCESS_SERVER;
-        } else {
-            BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
-            if (result.getType() != Type.MISS) {
-                FluidState fluidState = world.getFluidState(result.getBlockPos());
-                if (!fluidState.isEmpty()) {
-                    if (!world.isClientSide()) {
-                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags());
-                    }
-                    return InteractionResult.SUCCESS_SERVER;
+        }
+        BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
+        if (result.getType() != Type.MISS) {
+            FluidState fluidState = world.getFluidState(result.getBlockPos());
+            if (!fluidState.isEmpty()) {
+                if (!world.isClientSide()) {
+                    sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags());
                 }
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
         return InteractionResult.PASS;

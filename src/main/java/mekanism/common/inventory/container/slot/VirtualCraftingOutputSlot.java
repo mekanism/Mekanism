@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.Action;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -10,6 +10,8 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,9 +25,8 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     private boolean canCraft;
     private int amountCrafted;
 
-    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter,
-          @NotNull QIOCraftingWindow craftingWindow) {
-        super(slot, craftingWindow.getWindowData(), slotOverlay, uncheckedSetter);
+    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, @NotNull QIOCraftingWindow craftingWindow) {
+        super(slot, craftingWindow.getWindowData(), slotOverlay);
         this.craftingWindow = craftingWindow;
     }
 
@@ -46,11 +47,24 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return false;
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
+    public int insert(ItemResource itemType, int amount, TransactionContext transaction) {
         //Short circuit don't allow inserting into the output slot
-        return stack;
+        return 0;
+    }
+
+    @Override
+    public int extract(Player player, ItemResource itemType, int amount, TransactionContext transaction) {
+        IInventorySlot slot = getInventorySlot();
+        if (mayPickup(player) && itemType.equals(slot.resource())) {
+            int amountPerRecipe = slot.amountAsInt();
+            //Return how many full recipe extractions we would be able to do. We don't modify the
+            // actual slot as we want it to maintain its contents
+            //TODO - 26.1: Do we need to add a snapshot listener for the transaction being committed to increment amountCrafted?
+            // I suspect it doesn't matter as we don't actually ever call this method except for vanilla slots that we wrap into ITransactionalSlot
+            return (amount / amountPerRecipe) * amountPerRecipe;
+        }
+        return 0;
     }
 
     @NotNull
@@ -70,9 +84,11 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        ItemStack extracted = getInventorySlot().getStack().copy();
+        ItemStack extracted = getStackCopy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.count();
+        //TODO - 26.1: Do we want to scale this up by how many times the full stack could be extracted while still being under amount
+        // Unlike #extract, we do need to make sure that it is at least one recipe's worth, even if we don't have to round up for other cases
         return extracted;
     }
 
@@ -95,6 +111,11 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         //Note: This method is only called if mayPickup returns true
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
+        if (!result.isEmpty()) {
+            //As vanilla likely called getItem before calling onTake, we need to make sure to reset what StackCopySlot#cachedReturnedStack points at
+            // so that when we vanilla calls Slot#setChanged it doesn't then get reverted to the previous stack
+            clearCachedReturnStack();
+        }
         amountCrafted = 0;
     }
 
@@ -108,17 +129,10 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @NotNull
     @Override
-    public ItemStack getItem() {
+    public ItemStack getStackCopy() {
         //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
         // we can just hackily update the canCraft variable while syncing it to the client
-        return canCraft ? super.getItem() : ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean hasItem() {
-        //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
-        // we can just hackily update the canCraft variable while syncing it to the client
-        return canCraft && super.hasItem();
+        return canCraft ? super.getStackCopy() : ItemStack.EMPTY;
     }
 
     @NotNull
@@ -132,7 +146,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         // Note: This method is only called if mayPickup returns true
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
-        // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
+        // afterward we want to "stop" crafting as our window determines how much a shift click should produce
         // so even though we may still have an output in the slot, we return empty here so that vanilla's loop
         // it performs for shift clicking, doesn't cause us to craft as much as we are able to.
         return ItemStack.EMPTY;

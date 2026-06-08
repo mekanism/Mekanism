@@ -2,9 +2,9 @@ package mekanism.api.chemical.attribute;
 
 import java.util.Set;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 
 public interface ChemicalAttributeValidator {//TODO - 26.1: Re-evaluate how this class functions
 
@@ -74,16 +74,16 @@ public interface ChemicalAttributeValidator {//TODO - 26.1: Re-evaluate how this
     }
 
     /**
-     * Determines if a ChemicalStack is considered valid for this validator.
+     * Determines if an instanced of a chemical is considered valid for this validator.
      *
-     * @param stack stack to test
+     * @param instance instance to test
      *
-     * @return if the stack is valid
+     * @return if the instance is valid
      *
      * @since 10.2.3
      */
-    default boolean process(ChemicalStack stack) {
-        return process(stack.typeHolder());
+    default boolean process(TypedInstance<Chemical> instance) {
+        return process(instance.typeHolder());
     }
 
     /**

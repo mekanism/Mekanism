@@ -2,24 +2,22 @@ package mekanism.common.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -31,6 +29,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemNetworkReader extends ItemEnergized {
@@ -58,12 +59,20 @@ public class ItemNetworkReader extends ItemEnergized {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
                 if (!player.isCreative()) {
-                    long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItemInHand(), 0);
-                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL) < energyPerUse) {
-                        return InteractionResult.FAIL;
+                    int energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
+                    if (energyPerUse > 0) {
+                        EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand())));
+                        if (energyHandler == null) {
+                            return InteractionResult.FAIL;
+                        }
+                        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+                        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                            if (energyHandler.extract(energyPerUse, transaction) < energyPerUse) {
+                                return InteractionResult.FAIL;
+                            }
+                            transaction.commit();
+                        }
                     }
-                    energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
                 }
                 Direction opposite = context.getClickedFace().getOpposite();
                 if (tile instanceof TileEntityTransmitter transmitterTile) {

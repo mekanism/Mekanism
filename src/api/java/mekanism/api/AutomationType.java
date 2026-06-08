@@ -25,4 +25,25 @@ public enum AutomationType {
     public static AutomationType handler(@Nullable Direction side) {
         return side == null ? INTERNAL : EXTERNAL;
     }
+
+    /// {@return `true` if this automation type represents an internal interaction}
+    ///
+    /// @since 10.8.0
+    public boolean isInternal() {
+        return this == INTERNAL;
+    }
+
+    /// {@return `true` if this automation type represents an external interaction}
+    ///
+    /// @since 10.8.0
+    public boolean isExternal() {
+        return this == EXTERNAL;
+    }
+
+    /// {@return `true` if this automation type represents a manual interaction}
+    ///
+    /// @since 10.8.0
+    public boolean isManual() {
+        return this == MANUAL;
+    }
 }

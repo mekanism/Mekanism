@@ -16,14 +16,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeSlot;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -33,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -58,13 +57,13 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
-        return recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE) == null;
+        return recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, false) == null;
     }
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
-        if (recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.EXECUTE) == null) {
+        if (recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, true) == null) {
             //Note: We are expected to handle switching back to the backing screen
             Minecraft.getInstance().setScreen(context.getScreen());
             return true;
@@ -76,7 +75,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {
-            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE);
+            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, false);
             if (transferResult != null && transferResult.tooltip() != null) {
                 return List.of(EmiTooltipComponents.of(transferResult.tooltip()));
             }
@@ -89,7 +88,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         //Based on StandardRecipeHandler#renderMissing, except with our own logic for determining what ingredients are missing
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {
-            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE);
+            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, false);
             if (transferResult != null && transferResult.missingSlots() != null) {
                 RenderSystem.enableDepthTest();
                 Object2IntMap<EmiIngredient> missingIngredients = new Object2IntOpenHashMap<>(transferResult.missingSlots().size());
@@ -164,11 +163,9 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         }
 
         @Override
-        public EmiStack itemUUID(HashedItem hashed) {
+        public EmiStack itemUUID(ItemResource itemType) {
             //TODO - 1.20.4: Evaluate this
-            //Note: ItemEmiStack copies the passed in stack before doing anything to it, so we can safely just pass the internal stack
-            // and let it get copied
-            return EmiStack.of(hashed.getInternalStack(), 1);
+            return EmiStack.of(itemType.toStack(), 1);
         }
     }
 

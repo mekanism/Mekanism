@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -26,7 +25,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,18 +69,18 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations(slotDisplayContext));
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations(slotDisplayContext));
         initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations(slotDisplayContext));
-        List<ItemStack> itemOutputs = new ArrayList<>();
+        List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         List<ChemicalStack> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             if (output.item() != null) {
-                itemOutputs.add(output.item().create());
+                itemOutputs.add(output.item());
             }
             chemicalOutputs.add(output.chemical());
         }
-        if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
-            initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
+        if (!itemOutputs.isEmpty()) {
+            initItem(builder, outputItem, itemOutputs);
         }
-        if (!chemicalOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
+        if (!chemicalOutputs.stream().allMatch(ChemicalStack::isEmpty)) {
             initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, chemicalOutputs)
                   .setSlotName(OUTPUT_CHEMICAL);
         }

@@ -1,177 +1,170 @@
 package mekanism.common.capabilities.energy;
 
-import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
 import java.util.Objects;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public class BasicEnergyContainer implements IEnergyContainer {
+public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEnergyContainer {
 
-    public static final Predicate<@NotNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
-    public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
-    public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
+    public static final Predicate<@NotNull AutomationType> internalOnly = AutomationType::isInternal;
+    public static final Predicate<@NotNull AutomationType> manualOnly = AutomationType::isManual;
+    public static final Predicate<@NotNull AutomationType> notExternal = automationType -> !automationType.isExternal();
 
     public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
+        return create(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
+        return create(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
+        return create(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
     }
 
     public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, listener);
+        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, null, null, listener);
     }
 
     private long stored = 0L;
-    protected final Predicate<@NotNull AutomationType> canExtract;
-    protected final Predicate<@NotNull AutomationType> canInsert;
+    private final Predicate<@NotNull AutomationType> canExtract;
+    private final Predicate<@NotNull AutomationType> canInsert;
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     private final long maxEnergy;
     @Nullable
     private final IContentsListener listener;
 
     protected BasicEnergyContainer(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
-          @Nullable IContentsListener listener) {
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
         this.listener = listener;
     }
 
-    @Override
-    public void onContentsChanged() {
+    public void onContentsChanged(long originalState) {
         if (listener != null) {
             listener.onContentsChanged();
         }
     }
 
     @Override
-    public long getEnergy() {
+    public final long getAmountAsLong() {
         return stored;
     }
 
-    protected long clampEnergy(long energy) {
-        return Math.min(energy, getMaxEnergy());
-    }
-
     @Override
-    public void setEnergy(long energy) {
-        Preconditions.checkArgument(energy >= 0, "Energy cannot be negative");
-        energy = clampEnergy(energy);
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
+        MekanismPreconditions.checkNonNegative(energy);
         if (stored != energy) {
-            stored = energy;
-            onContentsChanged();
+            if (transaction == null) {
+                long originalState = stored;
+                stored = energy;
+                onContentsChanged(originalState);
+            } else {
+                updateSnapshots(transaction);
+                stored = energy;
+            }
         }
     }
 
-    /**
-     * Helper method to allow easily setting a rate at which energy can be inserted into this {@link BasicEnergyContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
-     * stack/stack size
-     */
+    @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0 || !isValidForInsertion(automationType)) {
+            //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
+            return 0;
+        }
+        //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
+        int needed = Ints.saturatedCast(getCapacityAsLong() - stored);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
+        //Limit how much we can add at once to the insertion rate the container sets
+        needed = Math.min(needed, insertionRate);
+        if (needed <= 0) {
+            //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
+            return 0;
+        }
+        int toAdd = Math.min(amount, needed);
+        //Note: We know toAdd is greater than zero, so we can just always call setEnergy
+        setEnergy(stored + toAdd, transaction);
+        insertionRateLimiter.consumeLimit(toAdd, automationType, transaction);
+        return toAdd;
+    }
+
+    @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (isEmpty() || amount == 0 || !isValidForExtraction(automationType)) {
+            //"Fail quick" if we are empty, nothing is being extracted, or if we can never extract from this slot
+            return 0;
+        }
+        //If we are trying to extract more than we have, just change it so that we are extracting it all
+        int toRemove = Math.min(amount, Ints.saturatedCast(stored));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
+        //Limit how much we can remove at once to the extraction rate the container sets
+        toRemove = Math.min(toRemove, extractionRate);
+        if (toRemove > 0) {
+            setEnergy(stored - toRemove, transaction);
+            extractionRateLimiter.consumeLimit(toRemove, automationType, transaction);
+        }
+        return toRemove;
+    }
+
+    @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertRate(@Nullable AutomationType automationType) {
-        return Long.MAX_VALUE;
-    }
-
-    /**
-     * Helper method to allow easily setting a rate at which energy can be extracted from this {@link BasicEnergyContainer}.
-     *
-     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
-     *
-     * @return The rate this tank can insert/extract at.
-     *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
-     * stack/stack size
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractRate(@Nullable AutomationType automationType) {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        if (amount <= 0L || !canInsert.test(automationType)) {
-            return amount;
-        }
-        long needed = Math.min(getInsertRate(automationType), getNeeded());
-        if (needed == 0L) {
-            //Fail if we are a full container or our rate is zero
-            return amount;
-        }
-        long toAdd = Math.min(amount, needed);
-        if (action.execute()) {
-            //If we want to actually insert the energy, then update the current energy
-            // Note: this also will mark that the contents changed
-            stored += toAdd;
-            onContentsChanged();
-        }
-        return amount - toAdd;
-    }
-
-    @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0L || !canExtract.test(automationType)) {
-            return 0L;
-        }
-        long ret = Math.min(Math.min(getExtractRate(automationType), getEnergy()), amount);
-        if (ret > 0L && action.execute()) {
-            //Note: this also will mark that the contents changed
-            stored -= ret;
-            onContentsChanged();
-        }
-        return ret;
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isEmpty() {
-        return stored == 0L;
-    }
-
-    @Override
-    public long getMaxEnergy() {
+    public long getCapacityAsLong() {
         return maxEnergy;
     }
 
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
-     */
     @Override
-    public void serialize(ValueOutput output) {
-        if (!isEmpty()) {
-            output.putLong(SerializationConstants.STORED, stored);
-        }
+    public final boolean isValidForExtraction(AutomationType automationType) {
+        return canExtract.test(automationType);
     }
 
     @Override
-    public void deserialize(ValueInput input) {
-        input.getInt(SerializationConstants.STORED).ifPresent(this::setEnergy);
+    public final boolean isValidForInsertion(AutomationType automationType) {
+        return canInsert.test(automationType);
+    }
+
+    @Override
+    protected Long createSnapshot() {
+        return stored;
+    }
+
+    @Override
+    protected void revertToSnapshot(Long snapshot) {
+        //Bypass contents change check
+        stored = snapshot;
+    }
+
+    @Override
+    protected void onRootCommit(Long originalState) {
+        super.onRootCommit(originalState);
+        if (stored != originalState) {
+            //Fire content change listeners during root commit if the final state is different from the original one
+            onContentsChanged(originalState);
+        }
     }
 }

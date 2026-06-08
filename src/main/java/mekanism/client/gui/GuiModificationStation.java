@@ -35,12 +35,12 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 156, 40))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 156, 40))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityModificationStation> energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                  MachineEnergyContainer<TileEntityModificationStation> energyContainer = tile.energyContainer();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, isDoubleClick) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
@@ -48,7 +48,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
-        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
+        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.resource(), this::onModuleSelected));
     }
 
     private void onModuleSelected(@Nullable IModule<?> module) {

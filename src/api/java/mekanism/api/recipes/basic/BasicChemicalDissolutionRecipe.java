@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
@@ -53,13 +55,8 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
+    public ChemicalStack getOutput(TypedInstance<Item> inputItem, TypedInstance<Chemical> inputChemical) {
         return output.copy();
-    }
-
-    @Override
-    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
     }
 
     @Override

@@ -53,15 +53,15 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @Range(from = 1, to = Long.MAX_VALUE)
-    public abstract long getOutput(ItemStack input);
+    @Range(from = 1, to = Integer.MAX_VALUE)
+    public abstract int getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract long[] getOutputDefinition();
+    public abstract int[] getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {

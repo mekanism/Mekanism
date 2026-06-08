@@ -1,11 +1,11 @@
 package mekanism.generators.common.registries;
 
 import java.util.function.Function;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.block.prefab.BlockTile;
@@ -69,7 +69,7 @@ public class GeneratorsBlocks {
                             .addBasic(TileEntityHeatGenerator.HEAT_CAPACITY, TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT)
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                            .addBasic(1)//todo - 26.1: is this really needed? .addFluidFuelSlot(0, s -> s.getBurnTime(null) != 0)
+                            .addBasic(1)//todo - 26.1: is this really needed? .addFluidFuelSlot(0, itemType -> itemType.toStack().getBurnTime(null) != 0)
                             .addEnergy()
                             .build()
                       )
@@ -96,7 +96,7 @@ public class GeneratorsBlocks {
                             .addBasic(MekanismGeneratorsConfig.generators.bioTankCapacity, fluid -> fluid.is(GeneratorTags.Fluids.BIOETHANOL))
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                            .addFluidFuelSlot(0, s -> s.is(MekanismTags.Items.FUELS_BIO) || s.is(MekanismTags.Items.FUELS_BLOCK_BIO))
+                            .addFluidFuelSlot(0, itemType -> itemType.is(MekanismTags.Items.FUELS_BIO) || itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO))
                             .addEnergy()
                             .build()
                       )

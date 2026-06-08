@@ -44,6 +44,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -51,11 +53,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
@@ -76,7 +79,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     }
 
     @Override
-    public void addRadialModes(IModule<ModuleVeinMiningUnit> module, @NotNull ItemStack stack, Consumer<NestedRadialMode> adder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addRadialModes(IModule<ModuleVeinMiningUnit> module, ITEM instance, Consumer<NestedRadialMode> adder) {
         if (MekanismConfig.gear.mekaToolExtendedMining.get()) {
             adder.accept(NESTED_RADIAL_MODE);
         }
@@ -84,7 +87,8 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
 
     @Nullable
     @Override
-    public <MODE extends IRadialMode> MODE getMode(IModule<ModuleVeinMiningUnit> module, ItemStack stack, RadialData<MODE> radialData) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter, MODE extends IRadialMode> MODE getMode(IModule<ModuleVeinMiningUnit> module, ITEM instance,
+          RadialData<MODE> radialData) {
         if (radialData == RADIAL_DATA && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             return (MODE) RADIAL_MODES.get(extended);
         }
@@ -92,21 +96,22 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     }
 
     @Override
-    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleVeinMiningUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
+    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleVeinMiningUnit> module, Player player, ItemAccess itemAccess, RadialData<MODE> radialData, MODE mode,
+          @Nullable TransactionContext transaction) {
         if (radialData == RADIAL_DATA && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             if (extended == (mode != RADIAL_MODES.trueMode())) {
-                toggleExtended(module, moduleContainer, stack, player.registryAccess());
+                toggleExtended(module, itemAccess, transaction, player.registryAccess());
             }
         }
         return false;
     }
 
-    private void toggleExtended(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ItemStack stack, HolderLookup.Provider provider) {
-        moduleContainer.replaceModuleConfig(provider, stack, module.getDataHolder(), module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
+    private void toggleExtended(IModule<ModuleVeinMiningUnit> module, ItemAccess itemAccess, @Nullable TransactionContext transaction, HolderLookup.Provider provider) {
+        module.replaceModuleConfig(provider, itemAccess, transaction, module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
     }
 
     @Override
-    public Component getModeScrollComponent(IModule<ModuleVeinMiningUnit> module, ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getModeScrollComponent(IModule<ModuleVeinMiningUnit> module, ITEM instance) {
         if (extended()) {
             return MekanismLang.RADIAL_VEIN_EXTENDED.translateColored(EnumColor.PINK);
         }
@@ -114,13 +119,14 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     }
 
     @Override
-    public void changeMode(IModule<ModuleVeinMiningUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleVeinMiningUnit> module, Player player, ItemAccess itemAccess, int shift, boolean displayChangeMessage,
+          @Nullable TransactionContext transaction) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             if (displayChangeMessage) {
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(MekanismLang.MODULE_EXTENDED_MODE, EnumColor.INDIGO, !extended)));
             }
-            toggleExtended(module, moduleContainer, stack, player.registryAccess());
+            toggleExtended(module, itemAccess, transaction, player.registryAccess());
         }
     }
 
@@ -177,7 +183,8 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<Component> hudStringAdder) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ITEM instance,
+          Player player, Consumer<Component> hudStringAdder) {
         //Only add hud string for extended vein mining if enabled in config
         if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             hudStringAdder.accept(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,

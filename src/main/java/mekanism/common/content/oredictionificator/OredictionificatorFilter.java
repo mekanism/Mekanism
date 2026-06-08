@@ -25,12 +25,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> extends BaseFilter<FILTER> {
+public abstract class OredictionificatorFilter<TYPE, RESOURCE extends RegisteredResource<TYPE>, FILTER extends OredictionificatorFilter<TYPE, RESOURCE, FILTER>> extends BaseFilter<FILTER> {
 
-    protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> P3<Mu<FILTER>, Boolean, Optional<TagKey<TYPE>>, Holder<TYPE>> baseOredictionificatorCodec(
+    protected static <TYPE, RESOURCE extends RegisteredResource<TYPE>, FILTER extends OredictionificatorFilter<TYPE, RESOURCE, FILTER>>
+    P3<Mu<FILTER>, Boolean, Optional<TagKey<TYPE>>, Holder<TYPE>> baseOredictionificatorCodec(
           Instance<FILTER> instance, ResourceKey<? extends Registry<TYPE>> registryName, Registry<TYPE> registry) {
         return baseCodec(instance)
               .and(TagKey.codec(registryName).optionalFieldOf(SerializationConstants.FILTER).forGetter(filter -> Optional.ofNullable(filter.filterLocation)))
@@ -38,8 +40,8 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
               ;
     }
 
-    protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> StreamCodec<RegistryFriendlyByteBuf, FILTER>
-    baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
+    protected static <TYPE, RESOURCE extends RegisteredResource<TYPE>, FILTER extends OredictionificatorFilter<TYPE, RESOURCE, FILTER>>
+    StreamCodec<RegistryFriendlyByteBuf, FILTER> baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
         return StreamCodec.composite(
               baseStreamCodec(constructor), Function.identity(),
               //Realistically the filter location shouldn't be null except when the filter is first being created
@@ -63,7 +65,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     @NotNull
     Holder<TYPE> selectedOutput = getFallbackElement();
     @Nullable
-    private STACK cachedSelectedStack;
+    private RESOURCE cachedSelectedType;
     boolean isValid;
 
     protected OredictionificatorFilter() {
@@ -81,11 +83,11 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     protected OredictionificatorFilter(FILTER other) {
         super(other);
         //Local variable needed so that it can reference the private fields on it
-        OredictionificatorFilter<TYPE, STACK, FILTER> filter = other;
+        OredictionificatorFilter<TYPE, RESOURCE, FILTER> filter = other;
         filterLocation = filter.filterLocation;
         filterTag = filter.filterTag;
         selectedOutput = filter.selectedOutput;
-        cachedSelectedStack = filter.cachedSelectedStack;
+        cachedSelectedType = filter.cachedSelectedType;
         isValid = filter.isValid;
     }
 
@@ -151,7 +153,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     public final void setSelectedOutput(@NotNull Holder<TYPE> output) {
         this.selectedOutput = output;
         //Invalidate cached stack
-        cachedSelectedStack = null;
+        cachedSelectedType = null;
     }
 
     public boolean filterMatches(Identifier location) {
@@ -168,20 +170,20 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
               .ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
     }
 
-    public STACK getResult() {
+    public RESOURCE getResult() {
         //If we don't currently have a result stack cached, calculate what the result stack is
-        if (cachedSelectedStack == null) {
+        if (cachedSelectedType == null) {
             if (filterTag == null || filterTag.size() == 0) {
-                cachedSelectedStack = getEmptyStack();
+                cachedSelectedType = getEmptyType();
             } else {
                 if (selectedOutput == getFallbackElement() || !filterTag.contains(selectedOutput)) {
                     //Fallback to the first element if we don't have an output selected/it isn't in our possible outputs
                     selectedOutput = filterTag.get(0);
                 }
-                cachedSelectedStack = createResultStack(selectedOutput.value());
+                cachedSelectedType = createResult(selectedOutput.value());
             }
         }
-        return cachedSelectedStack;
+        return cachedSelectedType;
     }
 
     public final void next() {
@@ -247,9 +249,9 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     protected abstract Holder<TYPE> getFallbackElement();
 
-    protected abstract STACK getEmptyStack();
+    protected abstract RESOURCE getEmptyType();
 
-    protected abstract STACK createResultStack(TYPE type);
+    protected abstract RESOURCE createResult(TYPE type);
 
     protected abstract CachedOredictionificatorConfigValue getValidValuesConfig();
 

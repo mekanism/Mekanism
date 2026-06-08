@@ -3,11 +3,10 @@ package mekanism.client.gui.element.gauge;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;
+import mekanism.common.lib.multiblock.IMultiblockContents;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
@@ -16,30 +15,30 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
+public class GuiMergedTankGauge extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
 
     private final Supplier<MergedTank> mergedTankSupplier;
-    private final Supplier<HANDLER> handlerSupplier;
+    private final Supplier<IMultiblockContents> handlerSupplier;
 
     private final GuiFluidGauge fluidGauge;
     private final GuiChemicalGauge chemicalGauge;
 
     private Component label;
 
-    public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+    public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<IMultiblockContents> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(mergedTankSupplier, handlerSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
     }
 
-    public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int width,
+    public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<IMultiblockContents> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int width,
           int height) {
         super(type, gui, x, y, width, height);
         this.mergedTankSupplier = mergedTankSupplier;
         this.handlerSupplier = handlerSupplier;
-        fluidGauge = addPositionOnlyChild(new GuiFluidGauge(() -> this.mergedTankSupplier.get().getFluidTank(), () -> this.handlerSupplier.get().getFluidTanks(null), type, gui, x, y, width, height));
-        chemicalGauge = addPositionOnlyChild(new GuiChemicalGauge(() -> this.mergedTankSupplier.get().getChemicalTank(), () -> this.handlerSupplier.get().getChemicalTanks(null), type, gui, x, y, width, height));
+        fluidGauge = addPositionOnlyChild(new GuiFluidGauge(() -> this.mergedTankSupplier.get().getFluidTank(), () -> this.handlerSupplier.get().getFluidTanks(), type, gui, x, y, width, height));
+        chemicalGauge = addPositionOnlyChild(new GuiChemicalGauge(() -> this.mergedTankSupplier.get().getChemicalTank(), () -> this.handlerSupplier.get().getChemicalTanks(), type, gui, x, y, width, height));
     }
 
-    public GuiMergedTankGauge<HANDLER> setLabel(Component label) {
+    public GuiMergedTankGauge setLabel(Component label) {
         this.label = label;
         return this;
     }

@@ -13,7 +13,7 @@ import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -26,7 +26,7 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
         //Note: We take advantage of the fact that if we have a recipe we have at least one output and that we can skip parameters
         // as if they were optional
         boolean hasSecondary = recipe.getSecondaryChance() > 0;
-        List<ItemStack> mainOutputDefinition = recipe.getMainOutputDefinition();
+        List<ItemStackTemplate> mainOutputDefinition = recipe.getMainOutputDefinition();
         return buildCommandString(manager, recipeHolder, recipe.getInput(),
               mainOutputDefinition.isEmpty() ? SKIP_OPTIONAL_PARAM : mainOutputDefinition,
               hasSecondary ? recipe.getSecondaryOutputDefinition() : SKIP_OPTIONAL_PARAM,
@@ -43,11 +43,11 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super SawmillRecipe> manager, RegistryAccess registryAccess, SawmillRecipe recipe) {
-        List<ItemStack> mainOutputDefinition = recipe.getMainOutputDefinition();
+        List<ItemStackTemplate> mainOutputDefinition = recipe.getMainOutputDefinition();
         if (mainOutputDefinition.size() > 1) {
             return Optional.empty();
         }
-        List<ItemStack> secondaryOutputDefinition = recipe.getSecondaryOutputDefinition();
+        List<ItemStackTemplate> secondaryOutputDefinition = recipe.getSecondaryOutputDefinition();
         if (secondaryOutputDefinition.size() > 1 || secondaryOutputDefinition.isEmpty() == recipe.getSecondaryChance() > 0) {
             //Multiple secondary outputs, or
             // invalid recipe:

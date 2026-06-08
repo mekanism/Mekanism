@@ -1,29 +1,24 @@
 
 package mekanism.common.tests.codec;
 
-import java.util.Optional;
-import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.OverflowAware;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
-import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.helpers.MissingObjectTestHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
@@ -34,71 +29,26 @@ public class MissingObjectSerializationTest {
 
     @GameTest
     @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidItemSerializationCycle(SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC, MissingObjectTestHelper::failureItem, ItemStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional fluid stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalFluidStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidFluidSerializationCycle(SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC, MissingObjectTestHelper::failureFluid, FluidStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional chemical stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalChemicalStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidChemicalSerializationCycle(ChemicalStack.LENIENT_OPTIONAL_CODEC, MissingObjectTestHelper::failureChemical, ChemicalStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached items load as best as they can when an item is missing.")
     public static void testAttachedItems(final MissingObjectTestHelper helper) {
-        ItemStack initialStick = new ItemStack(Items.STICK, 10);
-        ItemStack initialStone = new ItemStack(Items.STONE, 5);
-        helper.succeedIfInvalidItemSerializationCycle(AttachedItems.CODEC, help -> new AttachedItems(NonNullList.of(ItemStack.EMPTY,
-              initialStick.copy(),
-              help.failureItem(3),
-              initialStone.copy()
-        )), attached -> attached.size() == 3 &&
-                        ItemStack.matches(attached.get(0), initialStick) &&
-                        attached.get(1).isEmpty() &&
-                        ItemStack.matches(attached.get(2), initialStone));
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_ITEMS.get(), LargeResourceStack.ITEM_HELPER, helper.failureItemType(),
+              ItemResource.of(Items.STICK), ItemResource.of(Items.STONE));
     }
 
     @GameTest
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached fluids load as best as they can when a fluid is missing.")
     public static void testAttachedFluids(final MissingObjectTestHelper helper) {
-        FluidStack initialWater = new FluidStack(Fluids.WATER, 10);
-        FluidStack initialLava = new FluidStack(Fluids.LAVA, 5);
-        helper.succeedIfInvalidFluidSerializationCycle(AttachedFluids.CODEC, help -> new AttachedFluids(NonNullList.of(FluidStack.EMPTY,
-              initialWater.copy(),
-              help.failureFluid(3),
-              initialLava.copy()
-        )), attached -> attached.size() == 3 &&
-                        FluidStack.matches(attached.get(0), initialWater) &&
-                        attached.get(1).isEmpty() &&
-                        FluidStack.matches(attached.get(2), initialLava));
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_FLUIDS.get(), LargeResourceStack.FLUID_HELPER, helper.failureFluidType(),
+              FluidResource.of(Fluids.WATER), FluidResource.of(Fluids.LAVA));
     }
 
     @GameTest
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached chemicals load as best as they can when a chemical is missing.")
     public static void testAttachedChemicals(final MissingObjectTestHelper helper) {
-        ChemicalStack initialAntimatter = MekanismChemicals.ANTIMATTER.asStack(10);
-        ChemicalStack initialGold = MekanismChemicals.GOLD.asStack(5);
-        helper.succeedIfInvalidChemicalSerializationCycle(AttachedChemicals.CODEC, help -> new AttachedChemicals(NonNullList.of(ChemicalStack.EMPTY,
-              initialAntimatter.copy(),
-              help.failureChemical(3),
-              initialGold.copy()
-        )), attached -> attached.size() == 3 &&
-                        attached.get(0).equals(initialAntimatter) &&
-                        attached.get(1).isEmpty() &&
-                        attached.get(2).equals(initialGold));
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_CHEMICALS.get(), LargeResourceStack.CHEMICAL_HELPER, helper.failureChemicalType(),
+              MekanismChemicals.ANTIMATTER.asResource(), MekanismChemicals.GOLD.asResource());
     }
 
     @GameTest
@@ -130,7 +80,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that lock data that contain invalid items fall back to no lock data.")
     public static void testLockData(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidItemSerializationCycle(LockData.CODEC, help -> LockData.create(help.failureItem()), LockData.EMPTY::equals);
+        helper.succeedIfInvalidItemSerializationCycle(LockData.CODEC, help -> LockData.create(help.failureItemType()), LockData.EMPTY::equals);
     }
 
     @GameTest
@@ -140,7 +90,7 @@ public class MissingObjectSerializationTest {
     public static void testLockDataOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
             ItemStack binItem = new ItemStack(MekanismBlocks.BASIC_BIN);
-            binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
+            binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItemType()));
             return binItem;
         }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
                       binItem.getComponentsPatch().getPatch(MekanismDataComponents.LOCK.get()) == null);
@@ -153,12 +103,12 @@ public class MissingObjectSerializationTest {
     public static void testItemTarget(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
             ItemStack adapter = new ItemStack(MekanismBlocks.QIO_REDSTONE_ADAPTER);
-            adapter.set(MekanismDataComponents.ITEM_TARGET, Optional.of(help.failureHashedItem()));
+            adapter.set(MekanismDataComponents.ITEM_TARGET, help.failureItemType());
             adapter.set(MekanismDataComponents.LONG_AMOUNT, 5L);
             return adapter;
         }, adapter -> {
             if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
-                Optional<HashedItem> itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
+                ItemResource itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
                 return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().getPatch(MekanismDataComponents.ITEM_TARGET.get()) == null &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
             }
@@ -294,18 +244,18 @@ public class MissingObjectSerializationTest {
     public static void testInventoryFrequency(final MissingObjectTestHelper helper) {
         helper.succeedIfSerializationCycle(InventoryFrequency.CODEC, help -> {
                   InventoryFrequency frequency = new InventoryFrequency("test", null, SecurityMode.PUBLIC);
-                  frequency.getEnergyContainers(null).getFirst().setEnergy(100);
-                  frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
-                  frequency.getChemicalTanks(null).getFirst().setStack(help.failureChemical());
-                  frequency.getFluidTanks(null).getFirst().setStack(help.failureFluid());
-                  frequency.getInventorySlots(null).getFirst().setStack(help.failureItem());
+                  frequency.getEnergyContainer().setEnergy(100, null);
+                  frequency.getHeatCapacitors().getFirst().setHeat(1_000);
+                  frequency.getChemicalTanks().getFirst().setContents(help.failureChemicalType(), 1, null);
+                  frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME, null);
+                  frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1, null);
                   return frequency;
               }, frequency -> frequency.getName().equals("test") && frequency.getSecurity() == SecurityMode.PUBLIC &&
-                              frequency.getEnergyContainers(null).getFirst().getEnergy() == 100 &&
-                              frequency.getHeatCapacitors(null).getFirst().getHeat() == 1_000 &&
-                              frequency.getChemicalTanks(null).getFirst().isEmpty() &&
-                              frequency.getFluidTanks(null).getFirst().isEmpty() &&
-                              frequency.getInventorySlots(null).getFirst().isEmpty(),
+                              frequency.getEnergyContainer().getAmountAsLong() == 100 &&
+                              frequency.getHeatCapacitors().getFirst().getHeat() == 1_000 &&
+                              frequency.getChemicalTanks().getFirst().isEmpty() &&
+                              frequency.getFluidTanks().getFirst().isEmpty() &&
+                              frequency.getInventorySlots().getFirst().isEmpty(),
               MissingObjectTestHelper.REPLACE_TO_INVALID_ITEM
                     .andThen(MissingObjectTestHelper.REPLACE_TO_INVALID_FLUID)
                     .andThen(MissingObjectTestHelper.REPLACE_TO_INVALID_CHEMICAL)

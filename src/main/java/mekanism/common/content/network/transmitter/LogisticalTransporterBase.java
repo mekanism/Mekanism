@@ -3,16 +3,18 @@ package mekanism.common.content.network.transmitter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceRBTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.PrimitiveIterator.OfInt;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
@@ -26,7 +28,6 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
@@ -34,6 +35,8 @@ import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.InventoryUtils.ItemDropper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -41,27 +44,37 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.RootCommitJournal;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
+public abstract class LogisticalTransporterBase extends Transmitter<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
 
     protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
+    private final DroppedItems droppedItems = new DroppedItems();
     public final TransporterTier tier;
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
-    private final Map<Direction, BlockCapabilityCache<IItemHandler, Direction>> capabilityCache = new EnumMap<>(Direction.class);
-    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
+    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> capabilityCache = new EnumMap<>(Direction.class);
+    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
@@ -69,8 +82,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Nullable
-    private IItemHandler getCapForSide(Direction logisticalSide) {
-        BlockCapabilityCache<IItemHandler, Direction> cache = capabilityCache.get(logisticalSide);
+    private ResourceHandler<ItemResource> getCapForSide(Direction logisticalSide) {
+        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
             cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
             capabilityCache.put(logisticalSide, cache);
@@ -79,9 +92,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Nullable
-    private IItemHandler getFallbackCapForSide(long pos, Direction handlerSide) {
-        EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
-        BlockCapabilityCache<IItemHandler, Direction> cache = sideCache.get(handlerSide);
+    private ResourceHandler<ItemResource> getFallbackCapForSide(long pos, Direction handlerSide) {
+        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, _ -> new EnumMap<>(Direction.class));
+        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
             cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
             sideCache.put(handlerSide, cache);
@@ -91,14 +104,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
 
     @Override
-    protected AbstractAcceptorCache<IItemHandler, ?> createAcceptorCache() {
+    protected AcceptorCache<ResourceHandler<ItemResource>> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM.block());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public AcceptorCache<IItemHandler> getAcceptorCache() {
-        return (AcceptorCache<IItemHandler>) super.getAcceptorCache();
     }
 
     @Override
@@ -140,7 +147,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public void onUpdateServer() {
-        if (getTransmitterNetwork() != null) {
+        InventoryNetwork network = getTransmitterNetwork();
+        if (network != null) {
             //Pull items into the transporter
             if (delay > 0) {
                 //If a delay has been imposed, wait a bit
@@ -149,149 +157,23 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again in 3 ticks
                 delay = 3;
                 //Attempt to pull
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (!isConnectionType(side, ConnectionType.PULL)) {
-                        continue;
-                    }
-                    IItemHandler inventory = getCapForSide(side);
-                    if (inventory != null) {
-                        TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
-                        //There's a stack available to insert into the network...
-                        if (!request.isEmpty()) {
-                            TransitResponse response = insert(null, getBlockPos().relative(side), request, getColor(), true, 0);
-                            if (response.isEmpty()) {
-                                //Insert failed; increment the backoff and calculate delay. Note that we cap retries
-                                // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
-                                delayCount++;
-                                delay = Math.min(2 * SharedConstants.TICKS_PER_SECOND, (int) Math.exp(delayCount));
-                            } else {
-                                //If the insert succeeded, remove the inserted count and try again for another 10 ticks
-                                response.useAll();
-                                delay = MekanismUtils.TICKS_PER_HALF_SECOND;
-                            }
-                        }
-                    }
-                }
+                tryPull();
             }
             if (!transit.isEmpty()) {
                 long pos = getWorldPositionLong();
-                InventoryNetwork network = getTransmitterNetwork();
-                //Update stack positions
-                IntSet deletes = new IntOpenHashSet();
-                //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
-                // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
-                // collection to occur actually causing the tick time to go up slightly.
-                for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
-                    Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();//don't store it anywhere
-                    int stackId = entry.getIntKey();
-                    TransporterStack stack = entry.getValue();
-                    if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
-                        if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE)) {
-                            deletes.add(stackId);
-                            continue;
-                        }
-                    }
-
-                    int prevProgress = stack.progress;
-                    stack.progress += tier.getSpeed();
-                    if (stack.progress >= 100) {
-                        long prevSet = Long.MAX_VALUE;
-                        if (stack.hasPath()) {
-                            if (stack.getPath().getLong(0) == pos) { //Necessary for transition reasons, not sure why
-                                deletes.add(stackId);
-                                continue;
-                            }
-                            int currentIndex = stack.getPath().indexOf(pos);
-                            long next = stack.getPath().getLong(currentIndex - 1);
-                            if (next != Long.MAX_VALUE) {
-                                if (!stack.isFinal(this)) {
-                                    //If this is not the final transporter try transferring it to the next one
-                                    LogisticalTransporterBase transmitter = network.getTransmitter(next);
-                                    if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
-                                        transmitter.entityEntering(stack, stack.progress % 100);
-                                        deletes.add(stackId);
-                                        continue;
-                                    }
-                                    prevSet = next;
-                                } else if (stack.getPathType().hasTarget()) {
-                                    //Otherwise, try to insert it into the destination inventory
-                                    //Get the handler we are trying to insert into from the network's acceptor cache
-                                    Direction side = stack.getSide(this).getOpposite();
-                                    IItemHandler acceptor = network.getCachedAcceptor(next, side);
-                                    if (acceptor == null && stack.getPathType().isHome()) {
-                                        acceptor = getFallbackCapForSide(next, side);
-                                    }
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), BlockPos.of(next), acceptor, 0,
-                                          stack.getPathType().isHome());
-                                    if (!response.isEmpty()) {
-                                        //We were able to add at least part of the stack to the inventory
-                                        ItemStack rejected = response.getRejected();
-                                        if (rejected.isEmpty()) {
-                                            //Nothing was rejected (it was all accepted); remove the stack from the prediction
-                                            // tracker and schedule this stack for deletion. Continue the loop thereafter
-                                            TransporterManager.remove(getLevel(), stack);
-                                            deletes.add(stackId);
-                                            continue;
-                                        }
-                                        //Some portion of the stack got rejected; save the remainder and
-                                        // recalculate below to sort out what to do next
-                                        stack.itemStack = rejected;
-                                    }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
-                                    prevSet = next;
-                                }
-                            }
-                        }
-                        if (!recalculate(stackId, stack, prevSet)) {
-                            deletes.add(stackId);
-                        } else if (prevSet == Long.MAX_VALUE) {
-                            stack.progress = 50;
-                        } else {
-                            stack.progress = 0;
-                        }
-                    } else if (prevProgress < 50 && stack.progress >= 50) {
-                        boolean tryRecalculate;
-                        if (stack.isFinal(this)) {
-                            Path pathType = stack.getPathType();
-                            if (pathType.hasTarget()) {
-                                Direction side = stack.getSide(this);
-                                ConnectionType connectionType = getConnectionType(side);
-                                tryRecalculate = !connectionType.canSendTo() ||
-                                                 !TransporterUtils.canInsert(getLevel(), BlockPos.of(stack.getDest()), stack.color, stack.itemStack, side, pathType.isHome());
-                            } else {
-                                //Try to recalculate idles once they reach their destination
-                                tryRecalculate = true;
-                            }
-                        } else {
-                            long nextPos = stack.getNext(this);
-                            if (nextPos == Long.MAX_VALUE) {
-                                tryRecalculate = true;
-                            } else {
-                                Direction nextSide = stack.getSide(getWorldPositionLong(), nextPos);
-                                LogisticalTransporterBase nextTransmitter = network.getTransmitter(nextPos);
-                                if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
-                                    //If there is no next transmitter, and it was an idle path, assume that we are idling
-                                    // in a single length transmitter, in which case we only recalculate it at 50 if it won't
-                                    // be able to go into that connection type
-                                    tryRecalculate = !getConnectionType(nextSide).canSendTo();
-                                } else {
-                                    tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, nextSide, this);
-                                }
-                            }
-                        }
-                        if (tryRecalculate && !recalculate(stackId, stack, Long.MAX_VALUE)) {
-                            deletes.add(stackId);
-                        }
-                    }
+                IntSet deletes;
+                try (Transaction transaction = Transaction.openRoot()) {
+                    deletes = tickTransit(getLevel(), pos, network, transaction);
+                    transaction.commit();
                 }
-
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
                     //Note: We have to copy needsSync so that it still has values when we clear the pending sync packets
                     PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, new Int2ObjectOpenHashMap<>(needsSync)), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
-                    OfInt ofInt = deletes.iterator();
-                    while (ofInt.hasNext()) {
-                        deleteStack(ofInt.nextInt());
+                    IntIterator deleteIterator = deletes.iterator();
+                    while (deleteIterator.hasNext()) {
+                        deleteStack(deleteIterator.nextInt());
                     }
 
                     // Clear the pending sync packets
@@ -304,13 +186,154 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         }
     }
 
+    private void tryPull() {
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            if (!isConnectionType(side, ConnectionType.PULL)) {
+                continue;
+            }
+            ResourceHandler<ItemResource> inventory = getCapForSide(side);
+            if (inventory != null) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //Note: While this might extract at more than a single stack at a time, that is fine as we can split the item into multiple stacks when the transporter
+                    // is destroyed if necessary, and our response will be based on what the output allows accepting.
+                    TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount(), transaction);
+                    //There's a stack available to insert into the network...
+                    if (!request.isEmpty()) {
+                        TransitResponse response = insert(null, getBlockPos().relative(side), request, getColor(), 0, transaction);
+                        if (response.useAll(transaction)) {
+                            //If the insert succeeded, remove the inserted count and try again in another 10 ticks
+                            transaction.commit();
+                            delay = MekanismUtils.TICKS_PER_HALF_SECOND;
+                        } else {
+                            //Either the insertion or extraction failed; increment the backoff and calculate delay. Note that we cap retries
+                            // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
+                            delayCount++;
+                            delay = Math.min(2 * SharedConstants.TICKS_PER_SECOND, (int) Math.exp(delayCount));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private IntSet tickTransit(Level level, final long pos, InventoryNetwork network, TransactionContext transaction) {
+        //Update stack positions
+        IntSet deletes = new IntOpenHashSet();
+        //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
+        // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
+        // collection to occur actually causing the tick time to go up slightly.
+        for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();//don't store it anywhere
+            int stackId = entry.getIntKey();
+            TransporterStack stack = entry.getValue();
+            if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
+                if (stack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE, transaction)) {
+                    deletes.add(stackId);
+                    continue;
+                }
+            }
+
+            int prevProgress = stack.progress;
+            stack.progress += tier.getSpeed();
+            if (stack.progress >= 100) {
+                long prevSet = Long.MAX_VALUE;
+                if (stack.hasPath()) {
+                    if (stack.getPath().getLong(0) == pos) { //Necessary for transition reasons, not sure why
+                        deletes.add(stackId);
+                        continue;
+                    }
+                    int currentIndex = stack.getPath().indexOf(pos);
+                    long next = stack.getPath().getLong(currentIndex - 1);
+                    if (next != Long.MAX_VALUE) {
+                        if (!stack.isFinal(this)) {
+                            //If this is not the final transporter try transferring it to the next one
+                            LogisticalTransporterBase transmitter = network.getTransmitter(next);
+                            if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
+                                transmitter.entityEntering(stack, stack.progress % 100);
+                                deletes.add(stackId);
+                                continue;
+                            }
+                            prevSet = next;
+                        } else if (stack.getPathType().hasTarget()) {
+                            //Otherwise, try to insert it into the destination inventory
+                            //Get the handler we are trying to insert into from the network's acceptor cache
+                            Direction side = stack.getSide(this).getOpposite();
+                            ResourceHandler<ItemResource> acceptor = network.getCachedAcceptor(next, side);
+                            if (acceptor == null && stack.getPathType().isHome()) {
+                                acceptor = getFallbackCapForSide(next, side);
+                            }
+                            TransitResponse response = TransitRequest.simple(stack).addToInventory(level, BlockPos.of(next), acceptor, 0,
+                                  stack.getPathType().isHome(), transaction);
+                            if (!response.isEmpty()) {
+                                //We were able to add at least part of the stack to the inventory
+                                int rejected = response.getRejected();
+                                if (rejected == 0) {
+                                    //Nothing was rejected (it was all accepted); remove the stack from the prediction
+                                    // tracker and schedule this stack for deletion. Continue the loop thereafter
+                                    TransporterManager.remove(level, stack, transaction);
+                                    deletes.add(stackId);
+                                    continue;
+                                }
+                                //Some portion of the stack got rejected; save the remainder and
+                                // recalculate below to sort out what to do next
+                                stack.setStack(response.slotData().getItemType(), rejected);
+                            }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
+                            prevSet = next;
+                        }
+                    }
+                }
+                if (!recalculate(stackId, stack, prevSet, transaction)) {
+                    deletes.add(stackId);
+                } else if (prevSet == Long.MAX_VALUE) {
+                    stack.progress = 50;
+                } else {
+                    stack.progress = 0;
+                }
+            } else if (prevProgress < 50 && stack.progress >= 50) {
+                boolean tryRecalculate;
+                if (stack.isFinal(this)) {
+                    Path pathType = stack.getPathType();
+                    if (pathType.hasTarget()) {
+                        Direction side = stack.getSide(this);
+                        ConnectionType connectionType = getConnectionType(side);
+                        tryRecalculate = !connectionType.canSendTo() || !TransporterUtils.canInsert(level, BlockPos.of(stack.getDest()), stack.color,
+                              stack.getItemType(), stack.size(), side, pathType.isHome(), transaction);
+                    } else {
+                        //Try to recalculate idles once they reach their destination
+                        tryRecalculate = true;
+                    }
+                } else {
+                    long nextPos = stack.getNext(this);
+                    if (nextPos == Long.MAX_VALUE) {
+                        tryRecalculate = true;
+                    } else {
+                        Direction nextSide = stack.getSide(getWorldPositionLong(), nextPos);
+                        LogisticalTransporterBase nextTransmitter = network.getTransmitter(nextPos);
+                        if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
+                            //If there is no next transmitter, and it was an idle path, assume that we are idling
+                            // in a single length transmitter, in which case we only recalculate it at 50 if it won't
+                            // be able to go into that connection type
+                            tryRecalculate = !getConnectionType(nextSide).canSendTo();
+                        } else {
+                            tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, nextSide, this);
+                        }
+                    }
+                }
+                if (tryRecalculate && !recalculate(stackId, stack, Long.MAX_VALUE, transaction)) {
+                    deletes.add(stackId);
+                }
+            }
+        }
+        return deletes;
+    }
+
     @Override
     public void remove() {
         super.remove();
         clearCapabilityCaches();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
-                TransporterManager.remove(getLevel(), stack);
+                TransporterManager.remove(getLevel(), stack, null);
             }
         }
     }
@@ -390,7 +413,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void takeShare() {
+    public void takeShare(@Nullable TransactionContext transaction) {
     }
 
     public double getCost() {
@@ -409,11 +432,30 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         transit.put(id, s);
     }
 
-    private boolean recalculate(int stackId, TransporterStack stack, long from) {
+    public void drop(TransporterStack stack, @Nullable TransactionContext transaction) {
+        if (stack.isEmpty()) {
+            //Skip any stacks that for some reason get passed to this with an empty method
+            return;
+        }
+        int xOffset = 0, yOffset = 0, zOffset = 0;
+        if (stack.hasPath()) {
+            Vector3f pos = TransporterUtils.getStackPosition(this, stack, 0);
+            xOffset = Mth.floor(pos.x());
+            yOffset = Mth.floor(pos.y());
+            zOffset = Mth.floor(pos.z());
+        }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            TransporterManager.remove(getLevel(), stack, subTransaction);
+            droppedItems.addDrop(stack.getItemType(), stack.size(), xOffset, yOffset, zOffset, subTransaction);
+            subTransaction.commit();
+        }
+    }
+
+    private boolean recalculate(int stackId, TransporterStack stack, long from, @Nullable TransactionContext transaction) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
-        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
-        if (noPath && !stack.calculateIdle(this)) {
-            TransporterUtils.drop(this, stack);
+        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack), this, 0, transaction).isEmpty();
+        if (noPath && !stack.calculateIdle(this, transaction)) {
+            drop(stack, transaction);
             return false;
         }
 
@@ -425,40 +467,33 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse insertMaybeRR(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        if (outputter != null && outputter.getRoundRobin()) {
-            return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculateRRPath);
-        }
-        return insert(outputter, outputterPos, request, color, doEmit, min);
-    }
-
-    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculatePath);
-    }
-
-    private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,
-          int min, boolean doEmit, PathCalculator<BE> pathCalculator) {
+    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, int min, @Nullable TransactionContext transaction) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
             TransporterStack stack = createInsertStack(outputterPos.asLong(), color);
-            if (stack.canInsertToTransporterNN(this, from, outputter)) {
-                return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
+            if (stack.canInsertToTransporter(this, from, outputter)) {
+                if (outputter instanceof IAdvancedTransportEjector ejector && ejector.getRoundRobin()) {
+                    return insertUnchecked((BlockEntity & IAdvancedTransportEjector) outputter, request, stack, min, transaction, TransporterStack::recalculateRRPath);
+                }
+                return insertUnchecked(outputter, request, stack, min, transaction, TransporterStack::recalculatePath);
             }
         }
-        return request.getEmptyResponse();
+        return TransitResponse.EMPTY;
     }
 
-    public TransitResponse insertUnchecked(long outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        TransporterStack stack = createInsertStack(outputterPos, color);
-        return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min, doEmit));
+    public <BE extends BlockEntity> int insertUnchecked(BE outputter, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
+        TransitRequest request = TransitRequest.simple(type, amountToInsert);
+        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), getColor());
+        return insertUnchecked(outputter, request, stack, 1, transaction, pathCalculator).sendingAmount();
     }
 
-    public <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min, PathCalculator<BE> pathCalculator) {
-        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), color);
-        return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
+    public int insertUnchecked(long outputterPos, ItemResource type, int amountToInsert, @Nullable TransactionContext transaction) {
+        TransitRequest request = TransitRequest.simple(type, amountToInsert);
+        TransporterStack stack = createInsertStack(outputterPos, getColor());
+        return insertUnchecked(null, request, stack, 1, transaction, TransporterStack::recalculatePath).sendingAmount();
     }
 
-    public TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
+    private TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;
@@ -466,18 +501,31 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return stack;
     }
 
-    @NotNull
-    private TransitResponse updateTransit(boolean doEmit, TransporterStack stack, TransitResponse response) {
+    private <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, TransporterStack stack, int min,
+          @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
+        //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
+        // destinations, which this doesn't do as it only checks once, rather than trying to check all destinations we can send to
+        // if the amount would be split between multiple destinations
+        TransitResponse response = pathCalculator.calculate(stack, request, outputter, this, min, transaction);
         if (!response.isEmpty()) {
-            stack.itemStack = response.getStack();
-            if (doEmit) {
-                int stackId = nextId++;
-                addStack(stackId, stack);
-                PacketUtils.sendToAllTracking(PacketTransporterSync.create(getWorldPositionLong(), stackId, stack), getTransmitterTile());
-                getTransmitterTile().markForSave();
+            stack.setStack(response.itemType(), response.sendingAmount());
+            if (transaction == null) {
+                //If there is no current transaction context, just directly emit the stack
+                emitStack(stack);
+            } else {
+                //Otherwise, queue it to emit when the transaction chain finishes
+                RootCommitJournal onRootCommit = new RootCommitJournal(() -> emitStack(stack));
+                onRootCommit.updateSnapshots(transaction);
             }
         }
         return response;
+    }
+
+    private void emitStack(TransporterStack stack) {
+        int stackId = nextId++;
+        addStack(stackId, stack);
+        PacketUtils.sendToAllTracking(PacketTransporterSync.create(getWorldPositionLong(), stackId, stack), getTransmitterTile());
+        getTransmitterTile().markForSave();
     }
 
     private void entityEntering(TransporterStack stack, int progress) {
@@ -501,6 +549,49 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @FunctionalInterface
     public interface PathCalculator<BE extends BlockEntity> {
 
-        TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean doEmit);
+        TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction);
+    }
+
+    /// Based on [PlayerInventoryWrapper.DroppedItems]
+    private class DroppedItems extends SnapshotJournal<Integer> {
+
+        private static final ItemDropper<BlockPos> DROPPER = (lvl, pos, ignored, item) -> Block.popResource(lvl, pos, item);
+
+        final Deque<DroppedItems.DropInfo> entries = new ArrayDeque<>();
+
+        void addDrop(ItemResource resource, int amount, int xOffset, int yOffset, int zOffset, TransactionContext transaction) {
+            updateSnapshots(transaction);
+            entries.add(new DroppedItems.DropInfo(resource, amount, xOffset, yOffset, zOffset));
+        }
+
+        @Override
+        protected Integer createSnapshot() {
+            return entries.size();
+        }
+
+        @Override
+        protected void revertToSnapshot(Integer snapshot) {
+            // effectively cancel dropping the stacks
+            int previousSize = snapshot;
+            while (entries.size() > previousSize) {
+                entries.removeLast();
+            }
+        }
+
+        @Override
+        protected void onRootCommit(Integer originalState) {
+            // actually drop the stacks
+            // process elements of the queue one by one to avoid a CME if dropping the entity triggers more additions to the queue
+            BlockPos blockPos = getBlockPos();
+            Level level = getLevel();
+            while (!entries.isEmpty()) {
+                DroppedItems.DropInfo dropInfo = entries.removeFirst();
+                BlockPos adjustedPos = blockPos.offset(dropInfo.xOffset(), dropInfo.yOffset(), dropInfo.zOffset());
+                InventoryUtils.dropStack(level, adjustedPos, null, dropInfo.resource(), dropInfo.amount(), DROPPER);
+            }
+        }
+
+        private record DropInfo(ItemResource resource, int amount, int xOffset, int yOffset, int zOffset) {
+        }
     }
 }

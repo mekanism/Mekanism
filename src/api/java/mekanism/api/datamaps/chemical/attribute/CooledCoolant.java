@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 
@@ -40,14 +40,8 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
     }
 
-    /**
-     * Produce the given amount of the hot variant of this coolant.
-     *
-     * @param amountHeated Amount of coolant to heat.
-     *
-     * @return Chemical stack representing the heated coolant.
-     */
-    public ChemicalStack heat(long amountHeated) {
-        return new ChemicalStack(otherVariant, amountHeated);
+    /// {@return a chemical resource representing the type of the heated coolant}
+    public ChemicalResource heat() {
+        return ChemicalResource.of(otherVariant);
     }
 }

@@ -38,7 +38,7 @@ public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) imp
                 Mekanism.logger.warn("Received clear request from: {}, but they currently have a different crafting window open.", player);
             } else {
                 QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
-                craftingWindow.emptyTo(toPlayerInv, container.getHotBarSlots(), container.getMainInventorySlots());
+                craftingWindow.emptyTo(toPlayerInv, container.getPlayerSlots(), null);
             }
         }
     }

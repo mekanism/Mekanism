@@ -28,5 +28,5 @@ public interface ChemicalInstance extends TypedInstance<Chemical> {
     /// Gets the size of this chemical instance.
     ///
     /// @return The size of this chemical instance or zero if it is empty
-    long amount();
+    int amount();
 }

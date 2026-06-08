@@ -262,7 +262,6 @@ public class ComputerHelpProvider implements DataProvider {
           Map.entry(OredictionificatorItemFilter.class, "Filter Wrapper (Oredictionificator Item)"),
           Map.entry(QIOFilter.class, "Filter Wrapper (QIO)"),
           Map.entry(SorterFilter.class, "Filter Wrapper (Logistical Sorter)"),
-          Map.entry(ComputerEnergyHelper.class, "API Global: computerEnergyHelper"),
           Map.entry(ComputerFilterHelper.class, "API Global: computerFilterHelper"),
           Map.entry(MultiblockData.class, "Multiblock (formed)"),
           Map.entry(TileEntityMekanism.class, "Generic Mekanism Machine"),

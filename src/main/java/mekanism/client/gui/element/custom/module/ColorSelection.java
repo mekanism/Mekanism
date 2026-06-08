@@ -2,7 +2,6 @@ package mekanism.client.gui.element.custom.module;
 
 import java.util.function.Consumer;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.config.ModuleColorConfig;
 import mekanism.client.gui.GuiModuleTweaker;
@@ -24,6 +23,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 class ColorSelection extends MiniElement<Integer> {
@@ -84,20 +85,21 @@ class ColorSelection extends MiniElement<Integer> {
             Runnable previewReset = null;
             IModule<?> currentModule = parent.getCurrentModule();
             if (armorPreview != null && data.name().equals(ModuleColorModulationUnit.COLOR) && currentModule != null) {
-                ItemStack stack = parent.getContainerStack().copy();
-                Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+                ItemResource containerType = parent.getContainerType();
+                Equippable equippable = containerType.get(DataComponents.EQUIPPABLE);
                 if (StackUtils.isRenderableArmor(equippable)) {
                     //Ensure the preview has been initialized
                     armorPreview.get();
                     EquipmentSlot slot = equippable.slot();
+                    ItemStack stack = containerType.toStack();
                     //Replace the current preview with our copy
                     armorPreview.updatePreview(slot, stack);
                     updatePreviewColor = c -> {
-                        IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
-                        if (moduleContainer != null) {//Note: Should always be present
+                        ItemAccess itemAccess = ItemAccess.forStack(stack);
+                        IModule<ModuleColorModulationUnit> module = IModuleHelper.INSTANCE.getModule(itemAccess.getResource(), MekanismModules.COLOR_MODULATION_UNIT);
+                        if (module != null) {//Note: Should always be present
                             //Note: We can use the source data to ensure we have the correct config option, as with does not mutate it
-                            moduleContainer.replaceModuleConfig(Minecraft.getInstance().level.registryAccess(), stack, MekanismModules.COLOR_MODULATION_UNIT,
-                                  data.with(c.argb()));
+                            module.replaceModuleConfig(Minecraft.getInstance().level.registryAccess(), itemAccess, null, data.with(c.argb()));
                         }
                     };
                     previewReset = () -> armorPreview.resetToDefault(slot);

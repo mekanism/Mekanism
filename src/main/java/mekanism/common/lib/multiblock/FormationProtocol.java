@@ -2,6 +2,9 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,7 +12,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -18,16 +21,18 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.RejectContents;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.InventoryUtils.ItemDropper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -43,7 +48,7 @@ public class FormationProtocol<T extends MultiblockData> {
 
     public final Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public final Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public final Map<BlockPos, ValveData> valves = new HashMap<>();
     public final Map<UUID, MultiblockCache<T>> idsFound = new HashMap<>();
 
     public FormationProtocol(IMultiblock<T> tile, Structure structure) {
@@ -115,17 +120,20 @@ public class FormationProtocol<T extends MultiblockData> {
                         //If there is one drop at the player instead of at the block that triggered the formation
                         dropPosition = nearestPlayer.position();
                     }
-                    for (ItemStack rejectedItem : rejectContents.rejectedItems) {
-                        world.addFreshEntity(new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, rejectedItem));
+                    ItemDropper<Vec3> dropper = (level, pos, _, stack) -> level.addFreshEntity(new ItemEntity(level, pos.x(), pos.y(), pos.z(), stack));
+                    for (ObjectIterator<Object2LongMap.Entry<ItemResource>> iter = Object2LongMaps.fastIterator(rejectContents.rejectedItems); iter.hasNext(); ) {
+                        Object2LongMap.Entry<ItemResource> rejectedItem = iter.next();
+                        InventoryUtils.dropStack(world, dropPosition, null, rejectedItem.getKey(), rejectedItem.getLongValue(), dropper);
                     }
                 }
                 if (!rejectContents.rejectedChemicals.isEmpty() && RadiationManager.isGlobalRadiationEnabled()) {
                     //Dump any rejected gases, if they are radioactive vent them into the atmosphere
                     // we are able to skip this if radiation is disabled as it will just NO-OP further down the line
                     double radiation = 0;
-                    for (ChemicalStack rejectedChemical : rejectContents.rejectedChemicals) {
-                        //If we have a radioactive substance, then we need to set the tank to empty
-                        radiation += rejectedChemical.getRadioactivity();
+                    for (ObjectIterator<Object2LongMap.Entry<ChemicalResource>> iter = Object2LongMaps.fastIterator(rejectContents.rejectedChemicals); iter.hasNext(); ) {
+                        Object2LongMap.Entry<ChemicalResource> rejectedChemical = iter.next();
+                        //If we have a radioactive substance, we need to calculate how much radiation got vented
+                        radiation += rejectedChemical.getKey().getRadioactivity() * rejectedChemical.getLongValue();
                     }
                     if (radiation > 0) {
                         IRadiationManager.INSTANCE.radiate(world, structureFound.getBounds().getCenter(), radiation);

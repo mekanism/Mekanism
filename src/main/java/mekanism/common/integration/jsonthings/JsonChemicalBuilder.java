@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
         for (Consumer<ChemicalBuilder> base : baseData) {
             base.accept(internal);
         }
-        return ChemicalUtil.chemical(internal, colorRepresentation);
+        return ChemicalUtils.chemical(internal, colorRepresentation);
     }
 
     @Override

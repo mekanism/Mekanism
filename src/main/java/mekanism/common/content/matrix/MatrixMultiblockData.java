@@ -2,6 +2,7 @@ package mekanism.common.content.matrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -9,6 +10,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
@@ -16,18 +18,20 @@ import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class MatrixMultiblockData extends MultiblockData {
 
     public static final String STATS_TAB = "stats";
 
-    private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<EnergyHandler>> energyOutputTargets = new ArrayList<>();
     @NotNull
     private final MatrixEnergyContainer energyContainer;
 
@@ -59,7 +63,7 @@ public class MatrixMultiblockData extends MultiblockData {
 
     public MatrixMultiblockData(TileEntityInductionCasing tile) {
         super(tile);
-        energyContainers.add(energyContainer = new MatrixEnergyContainer(this));
+        energyContainer = new MatrixEnergyContainer(this);
         inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 21));
         inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getLevel, this, 146, 51));
         energyInputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -72,8 +76,8 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    protected boolean shouldCap(CacheSubstance<?, ?> type) {
-        return type != CacheSubstance.ENERGY;
+    protected boolean shouldCache(CacheSubstance<?> type) {
+        return type != MultiblockCache.ENERGY;
     }
 
     public void addCell(TileEntityInductionCell cell) {
@@ -84,28 +88,20 @@ public class MatrixMultiblockData extends MultiblockData {
         energyContainer.addProvider(provider.getBlockPos(), provider);
     }
 
-    @NotNull
-    public MatrixEnergyContainer getEnergyContainer() {
+    @NonNull
+    @Override
+    public MatrixEnergyContainer energyContainer() {
         return energyContainer;
     }
 
     public long getEnergy() {
-        return isRemote() ? clientEnergy : energyContainer.getEnergy();
+        return isRemote() ? clientEnergy : energyContainer.getAmountAsLong();
     }
 
     @Override
     public boolean tick(ServerLevel world) {
         boolean ret = super.tick(world);
-        energyContainer.tick();
-        // We tick the main energy container before adding/draining from the slots, so that we make sure
-        // they get first "pickings" at attempting to get or give power, without having to worry about the
-        // rate limit of the structure being used up by the ports
-        energyInputSlot.drainContainer();
-        energyOutputSlot.fillContainerOrConvert();
-        if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
-            CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer());
-        }
-        if (getLastInput() != 0L || getLastOutput() != 0L) {
+        if (energyContainer.tick(getActiveOutputs(energyOutputTargets), energyInputSlot, energyOutputSlot, null)) {
             // If the stored energy changed, update the comparator
             markDirtyComparator(world);
         }
@@ -121,16 +117,16 @@ public class MatrixMultiblockData extends MultiblockData {
     @Override
     protected void updateEjectors(Level world) {
         energyOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+                tile.addEnergyTargetCapability(energyOutputTargets, entry.getValue().side);
             }
         }
     }
 
     public long getStorageCap() {
-        return isRemote() ? clientMaxEnergy : energyContainer.getMaxEnergy();
+        return isRemote() ? clientMaxEnergy : energyContainer.getCapacityAsLong();
     }
 
     @ComputerMethod

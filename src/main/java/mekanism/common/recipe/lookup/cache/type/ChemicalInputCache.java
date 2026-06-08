@@ -29,7 +29,7 @@ public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseIn
             case ChemicalStack stack -> stack.isEmpty();
             case ChemicalResource resource -> resource.isEmpty();
             case null -> true;
-            default -> false;
+            default -> input.typeHolder().is(MekanismAPI.EMPTY_CHEMICAL_KEY);
         };
     }
 }

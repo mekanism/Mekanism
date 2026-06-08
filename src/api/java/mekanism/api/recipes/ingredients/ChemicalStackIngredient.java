@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -16,6 +15,7 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
      */
     public static final Codec<ChemicalStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.chemical().mapCodecNonEmpty().forGetter(ChemicalStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
+          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
     ).apply(instance, ChemicalStackIngredient::new));
 
     /**
@@ -69,14 +69,14 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStackIngredient> STREAM_CODEC = StreamCodec.composite(
           IngredientCreatorAccess.chemical().streamCodec(), ChemicalStackIngredient::ingredient,
-          ByteBufCodecs.VAR_LONG, ChemicalStackIngredient::amount,
+          ByteBufCodecs.VAR_INT, ChemicalStackIngredient::amount,
           ChemicalStackIngredient::new
     );
 
     /**
      * Creates a Chemical Stack Ingredient that matches a given ingredient and amount. Prefer calling via
      * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} and
-     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(ChemicalIngredient, long)}.
+     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(ChemicalIngredient, int)}.
      *
      * @param ingredient Ingredient to match.
      * @param amount     Amount to match.
@@ -85,21 +85,20 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
      * @throws IllegalArgumentException if the given instance is empty.
      * @since 10.6.0
      */
-    public static ChemicalStackIngredient of(ChemicalIngredient ingredient, long amount) {
+    public static ChemicalStackIngredient of(ChemicalIngredient ingredient, int amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         if (ingredient.isEmpty()) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created using the empty ingredient.");
+        } else if (amount <= 0) {
+            throw new IllegalArgumentException("Size must be positive");
         }
         return new ChemicalStackIngredient(ingredient, amount);
     }
 
     private final ChemicalIngredient ingredient;
-    private final long amount;
+    private final int amount;
 
-    public ChemicalStackIngredient(ChemicalIngredient ingredient, long amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Size must be positive");
-        }
+    private ChemicalStackIngredient(ChemicalIngredient ingredient, int amount) {
         this.ingredient = ingredient;
         this.amount = amount;
     }
@@ -138,7 +137,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     }
 
     @Override
-    public long getNeededAmount(TypedInstance<Chemical> stack) {
+    public int getNeededAmount(TypedInstance<Chemical> stack) {
         return testType(stack) ? amount : 0;
     }
 
@@ -177,7 +176,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
      *
      * @since 10.6.0
      */
-    public long amount() {
+    public int amount() {
         return amount;
     }
 
@@ -194,7 +193,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
 
     @Override
     public int hashCode() {
-        return 31 * ingredient.hashCode() + Long.hashCode(amount);
+        return 31 * ingredient.hashCode() + amount;
     }
 
     @Override

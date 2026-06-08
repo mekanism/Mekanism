@@ -3,11 +3,11 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
@@ -25,13 +25,7 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStackTemplate output, RecipeType<ItemStackToItemStackRecipe> recipeType) {
         super(recipeType);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        this.output = output;
-    }
-
-    @Override
-    public boolean test(ItemStack input) {
-        return this.input.test(input);
+        this.output = Objects.requireNonNull(output, "Output cannot be null.");
     }
 
     @Override
@@ -41,13 +35,13 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
 
     @Override
     @Contract(pure = true)
-    public ItemStackTemplate getOutput(ItemStack input) {
+    public ItemStackTemplate getOutput(TypedInstance<Item> input) {
         return output;
     }
 
     @Override
-    public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output.create());
+    public List<ItemStackTemplate> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     public ItemStackTemplate getOutputRaw() {
@@ -62,14 +56,13 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
             return false;
         }
         BasicItemStackToItemStackRecipe other = (BasicItemStackToItemStackRecipe) o;
-        return input.equals(other.input) && ItemStackTemplateHelper.matches(output, other.output);
+        return input.equals(other.input) && output.equals(other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = input.hashCode();
-        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(output);
-        hash = 31 * hash + output.count();
+        hash = 31 * hash + output.hashCode();
         return hash;
     }
 }

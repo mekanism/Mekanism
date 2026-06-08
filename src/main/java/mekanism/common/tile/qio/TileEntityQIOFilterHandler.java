@@ -20,6 +20,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<QIOFilter<?>> filterManager = new SortableFilterManager<QIOFilter<?>>((Class) QIOFilter.class, this::markForSave, this::getLevel);
+    //TODO - 26.1: Do we want to up this to Item.ABSOLUTE_MAX_STACK_SIZE? Even if not, should we switch this to Item.DEFAULT_MAX_STACK_SIZE?
     private int maxTransitCount = 64;
     private int maxTransitTypes = 1;
 

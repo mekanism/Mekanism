@@ -10,10 +10,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -45,14 +45,14 @@ class PersonalStorageData extends SavedData {
     }
 
     @CanIgnoreReturnValue
-    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
+    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents, TransactionContext transaction) {
         PersonalStorageItemInventory inventory = inventoriesById.get(id);
         if (inventory == null) {
             inventory = createInventory();
             inventoriesById.put(id, inventory);
-            List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
+            List<IInventorySlot> inventorySlots = inventory.getContainers();
             for (int i = 0, slots = contents.size(); i < slots; i++) {
-                ContainerType.ITEM.copy(contents.get(i), inventorySlots.get(i));
+                inventorySlots.get(i).copyContents(contents.get(i), transaction);
             }
             setDirty();
         }

@@ -4,7 +4,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -30,16 +29,15 @@ public class CachedRecipeHelper {
      * @param outputHandler   Output handler.
      * @param outputGetter    Gets the recipe's output when given the corresponding input.
      * @param outputSetter    Consumer to set the cached value of the output to not have to recalculate it again.
-     * @param emptyCheck      Checks if the input is empty.
      */
-    public static <INPUT_HOLDER, INPUT extends TypedInstance<INPUT_HOLDER>, OUTPUT> void oneInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<INPUT_HOLDER, INPUT> inputHandler,
-          Supplier<? extends InputIngredient<INPUT_HOLDER, INPUT>> inputIngredient, Consumer<INPUT> inputSetter, IOutputHandler<OUTPUT> outputHandler,
-          Function<INPUT, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT> emptyCheck) {
+    public static <INPUT_HOLDER, INPUT extends TypedInstance<INPUT_HOLDER>, OUTPUT> void oneInputCalculateOperationsThisTick(OperationTracker tracker,
+          IInputHandler<INPUT_HOLDER, INPUT> inputHandler, Supplier<? extends InputIngredient<INPUT_HOLDER, INPUT>> inputIngredient, Consumer<INPUT> inputSetter,
+          IOutputHandler<OUTPUT> outputHandler, Function<INPUT, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter) {
         if (tracker.shouldContinueChecking()) {
             INPUT input = inputHandler.getRecipeInput(inputIngredient.get());
             inputSetter.accept(input);
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(input)
-            if (emptyCheck.test(input)) {
+            if (inputHandler.isEmpty(input)) {
                 //No input, we don't know if the recipe matches or not so treat it as not matching
                 tracker.mismatchedRecipe();
             } else {
@@ -67,23 +65,21 @@ public class CachedRecipeHelper {
      * @param outputHandler    Output handler.
      * @param outputGetter     Gets the recipe's output when given the corresponding inputs.
      * @param outputSetter     Consumer to set the cached value of the output to not have to recalculate it again.
-     * @param emptyCheckA      Checks if the primary input is empty.
-     * @param emptyCheckB      Checks if the secondary input is empty.
      */
-    public static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> void twoInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<HOLDER_A, INPUT_A> inputAHandler,
-          Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputAIngredient, IInputHandler<HOLDER_B, INPUT_B> inputBHandler,
-          Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter, IOutputHandler<OUTPUT> outputHandler,
-          BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT_A> emptyCheckA, Predicate<INPUT_B> emptyCheckB) {
+    public static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> void twoInputCalculateOperationsThisTick(
+          OperationTracker tracker, IInputHandler<HOLDER_A, INPUT_A> inputAHandler, Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputAIngredient,
+          IInputHandler<HOLDER_B, INPUT_B> inputBHandler, Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter,
+          IOutputHandler<OUTPUT> outputHandler, BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter) {
         if (tracker.shouldContinueChecking()) {
             INPUT_A inputA = inputAHandler.getRecipeInput(inputAIngredient.get());
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputA)
-            if (emptyCheckA.test(inputA)) {
+            if (inputAHandler.isEmpty(inputA)) {
                 //No input, we don't know if the recipe matches or not so treat it as not matching
                 tracker.mismatchedRecipe();
             } else {
                 INPUT_B inputB = inputBHandler.getRecipeInput(inputBIngredient.get());
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputB)
-                if (emptyCheckB.test(inputB)) {
+                if (inputBHandler.isEmpty(inputB)) {
                     //No input, we don't know if the recipe matches or not so treat it as not matching
                     tracker.mismatchedRecipe();
                 } else {

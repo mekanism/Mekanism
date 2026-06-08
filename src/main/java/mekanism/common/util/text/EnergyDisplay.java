@@ -1,11 +1,11 @@
 package mekanism.common.util.text;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UnitDisplayUtils;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 @NothingNullByDefault
 public class EnergyDisplay implements IHasTextComponent {
@@ -20,8 +20,8 @@ public class EnergyDisplay implements IHasTextComponent {
         this.max = Math.max(0, max);
     }
 
-    public static EnergyDisplay of(IEnergyContainer container) {
-        return of(container.getEnergy(), container.getMaxEnergy());
+    public static EnergyDisplay of(EnergyHandler energyHandler) {
+        return of(energyHandler.getAmountAsLong(), energyHandler.getCapacityAsLong());
     }
 
     public static EnergyDisplay of(long energy, long max) {
@@ -37,9 +37,9 @@ public class EnergyDisplay implements IHasTextComponent {
         if (energy == Long.MAX_VALUE) {
             return MekanismLang.INFINITE.translate();
         } else if (max == 0L) {
-            return MekanismUtils.getEnergyDisplayShort(energy);
+            return UnitDisplayUtils.getEnergyDisplayShort(energy);
         }
         //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling
-        return MekanismLang.GENERIC_FRACTION.translate(MekanismUtils.getEnergyDisplayShort(energy), of(max));
+        return MekanismLang.GENERIC_FRACTION.translate(UnitDisplayUtils.getEnergyDisplayShort(energy), of(max));
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class UpgradeUtils {
 
@@ -25,6 +26,10 @@ public class UpgradeUtils {
 
     public static ItemStack getStack(Upgrade upgrade, int count) {
         return new ItemStack(getItem(upgrade), count);
+    }
+
+    public static ItemResource getResource(Upgrade upgrade) {
+        return ItemResource.of(getItem(upgrade));
     }
 
     public static Holder<Item> getItem(Upgrade upgrade) {

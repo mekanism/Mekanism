@@ -1,16 +1,15 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
@@ -21,42 +20,23 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     @NotNull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
+        return _ -> getMultiblock().getValveFluidTanks(getBlockPos());
     }
 
     @NotNull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.HEAT) {
             return false;
         }
         return super.persists(type);
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }
-
-    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (action.execute() && remainder.amount() < stack.amount()) {
-            getMultiblock().triggerValveTransfer(this);
-        }
-        return remainder;
     }
 
     @Override

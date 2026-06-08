@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
@@ -105,7 +104,6 @@ public final class MekanismHooks {
     }
 
     public void hookCapabilityRegistration(RegisterCapabilitiesEvent event) {
-        EnergyCompatUtils.initLoadedCache();
         if (genderMod.isLoaded()) {
             MekanismGenderArmor.HAZMAT.register(event, MekanismItems.HAZMAT_GOWN);
             MekanismGenderArmor.OPEN_FRONT.register(event, MekanismItems.JETPACK, MekanismItems.SCUBA_TANK);

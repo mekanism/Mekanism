@@ -26,16 +26,16 @@ import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
 
-    public static final long DYE_RATE = 256;
-    private static final long BANNER_RATE = DYE_RATE / 4;//64
-    private static final long CONCRETE_POWDER_RATE = DYE_RATE / 8;//32
-    private static final long CANDLE_RATE = DYE_RATE * 7 / 8;//224
+    public static final int DYE_RATE = 256;
+    private static final int BANNER_RATE = DYE_RATE / 4;//64
+    private static final int CONCRETE_POWDER_RATE = DYE_RATE / 8;//32
+    private static final int CANDLE_RATE = DYE_RATE * 7 / 8;//224
     //Concrete shares a rate with terracotta
-    private static final long CONCRETE_RATE = CONCRETE_POWDER_RATE * 3 / 4;//24
-    private static final long STAINED_GLASS_RATE = DYE_RATE / 16;//16
-    private static final long STAINED_GLASS_PANE_RATE = STAINED_GLASS_RATE * 3 / 8;//6
-    private static final long WOOL_RATE = DYE_RATE * 3 / 4;//192
-    private static final long CARPET_RATE = WOOL_RATE * 2 / 3;//128
+    private static final int CONCRETE_RATE = CONCRETE_POWDER_RATE * 3 / 4;//24
+    private static final int STAINED_GLASS_RATE = DYE_RATE / 16;//16
+    private static final int STAINED_GLASS_PANE_RATE = STAINED_GLASS_RATE * 3 / 8;//6
+    private static final int WOOL_RATE = DYE_RATE * 3 / 4;//192
+    private static final int CARPET_RATE = WOOL_RATE * 2 / 3;//128
 
     private static final Map<EnumColor, TagKey<Item>> DYED_TAGS = new EnumMap<>(EnumColor.class);
 
@@ -68,8 +68,8 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         // pigments from the base materials. This is equivalent to the rate you would get for mixing
         // if using an enrichment chamber and then a combiner, but allows the same increased rate for
         // base types. Technically this then allows a round about way of getting to 8x for intermediate rates.
-        long flowerRate = 3 * DYE_RATE;
-        long largeFlowerRate = 2 * flowerRate;
+        int flowerRate = 3 * DYE_RATE;
+        int largeFlowerRate = 2 * flowerRate;
         //Red
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.ROSE_BUSH),
@@ -205,7 +205,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, Holder<Chemical> pigment, long rate, String basePath) {
+    private void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, Holder<Chemical> pigment, int rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(IntersectionIngredient.of(
                     Ingredient.of(this.items.getOrThrow(input)),

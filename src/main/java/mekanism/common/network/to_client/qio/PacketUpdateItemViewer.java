@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
+import mekanism.common.lib.inventory.UUIDItemResource;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 public class PacketUpdateItemViewer implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketUpdateItemViewer> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("update_qio"));
-    private static final StreamCodec<RegistryFriendlyByteBuf, Object2LongMap<UUIDAwareHashedItem>> ITEM_MAP_CODEC = ByteBufCodecs.map(Object2LongOpenHashMap::new,
-          UUIDAwareHashedItem.STREAM_CODEC, ByteBufCodecs.VAR_LONG
+    public static final StreamCodec<RegistryFriendlyByteBuf, Object2LongMap<UUIDItemResource>> ITEM_MAP_CODEC = ByteBufCodecs.map(Object2LongOpenHashMap::new,
+          UUIDItemResource.STREAM_CODEC, ByteBufCodecs.VAR_LONG
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketUpdateItemViewer> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.VAR_LONG, pkt -> pkt.countCapacity,
@@ -26,11 +26,11 @@ public class PacketUpdateItemViewer implements IMekanismPacket {
           PacketUpdateItemViewer::new
     );
 
-    private final Object2LongMap<UUIDAwareHashedItem> itemMap;
+    private final Object2LongMap<UUIDItemResource> itemMap;
     private final long countCapacity;
     private final int typeCapacity;
 
-    public PacketUpdateItemViewer(long countCapacity, int typeCapacity, Object2LongMap<UUIDAwareHashedItem> itemMap) {
+    public PacketUpdateItemViewer(long countCapacity, int typeCapacity, Object2LongMap<UUIDItemResource> itemMap) {
         this.itemMap = itemMap;
         this.countCapacity = countCapacity;
         this.typeCapacity = typeCapacity;

@@ -1,17 +1,16 @@
 package mekanism.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
@@ -31,11 +30,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
@@ -56,54 +59,62 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         super(MekanismBlocks.MODIFICATION_STATION, pos, state);
     }
 
-    @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
-    public MachineEnergyContainer<TileEntityModificationStation> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityModificationStation> energyContainer() {
         return energyContainer;
     }
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
-        builder.addSlot(containerSlot = InputInventorySlot.at(IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
+        builder.addContainer(containerSlot = InputInventorySlot.at(1, IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 151, 21));
+        builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 151, 21));
         return builder.build();
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
-        long clientEnergyUsed = 0L;
+        energySlot.fillContainerOrConvert(null);
+        int clientEnergyUsed = 0;
         if (canFunction()) {
             boolean operated = false;
-            if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                Holder<ModuleData<?>> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
-                ItemStack stack = containerSlot.getStack();
-                ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
-                if (container != null) {
-                    // make sure the container supports this module and that we can still install more of this module
-                    if (container.canInstall(stack, data)) {
-                        operated = true;
-                        operatingTicks++;
-                        clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
-                        if (operatingTicks == ticksRequired) {
-                            operatingTicks = 0;
-                            int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.getCount());
-                            if (added > 0) {
-                                containerSlot.setStack(stack);
-                                MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
+            if (!moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
+                int energyPerTick = energyContainer.getEnergyPerTick();
+                try (Transaction transaction = Transaction.openRoot()) {
+                    if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                        ItemResource moduleResource = moduleSlot.resource();
+                        ItemAccess containerAccess = containerSlot.asItemAccess();
+                        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerAccess.getResource());
+                        if (container != null) {
+                            // make sure the container supports this module and that we can still install more of this module
+                            Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
+                            if (container.canInstall(containerAccess, data)) {
+                                operatingTicks++;
+                                if (operatingTicks == ticksRequired) {
+                                    operatingTicks = 0;
+                                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                                        int added = container.addModule(level.registryAccess(), containerAccess, data, moduleSlot.amountAsInt(), subTransaction);
+                                        //If the module could be added to the container, and we were able to extract it from the module slot (which we should always be able to do)
+                                        if (added > 0 && moduleSlot.extract(moduleResource, added, subTransaction, AutomationType.INTERNAL) == added) {
+                                            //Commit to update the stored item type, and the removal of the module from the module slot
+                                            subTransaction.commit();
+                                        }
+                                    }
+                                }
+                                operated = true;
+                                clientEnergyUsed = energyPerTick;
+                                transaction.commit();
                             }
                         }
                     }
@@ -113,7 +124,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 operatingTicks = 0;
             }
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 
@@ -121,16 +132,21 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         return usedEnergy;
     }
 
-    public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
-        ItemStack stack = containerSlot.getStack();
-        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+    public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
+        ItemAccess containerAccess = containerSlot.asItemAccess();
+        ModuleContainer container = ModuleHelper.get().getModuleContainer(containerAccess.getResource());
         if (container != null) {
             int installed = container.installedCount(type);
             if (installed > 0) {
-                int toRemove = removeAll ? installed : 1;
-                if (player.getInventory().add(new ItemStack(type.value().getItemHolder(), toRemove))) {
-                    container.removeModule(player.registryAccess(), stack, type, toRemove);
-                    containerSlot.setStack(stack);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+                    int toRemove = playerInv.insert(ItemResource.of(type.value().getItemHolder()), removeAll ? installed : 1, transaction);
+                    //If we were able to add at least some of the modules to the player's inventory,
+                    // and we are able to remove the corresponding number of modules from the item
+                    if (toRemove > 0 && container.removeModule(player.registryAccess(), containerAccess, type, toRemove, transaction)) {
+                        //Commit to update the stored item type, and the addition of the module item to the player's inventory
+                        transaction.commit();
+                    }
                 }
             }
         }

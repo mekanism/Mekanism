@@ -1,18 +1,19 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
+import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -24,14 +25,15 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
-    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.BOTTOM};
+    private static final Set<RelativeSide> ENERGY_SIDES = Set.of(RelativeSide.BOTTOM);
     private boolean seesSun;
-    private long lastProductionAmount = 0;
+    private int lastProductionAmount = 0;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
     @Nullable
@@ -47,9 +49,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35));
         return builder.build();
     }
 
@@ -64,19 +66,20 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (solarCheck == null) {
             recheckSettings();
         }
-        energySlot.drainContainer();
+        energySlot.drainContainerIntoSlot(null);
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
         seesSun = checkCanSeeSun();
-        if (seesSun && canFunction() && getEnergyContainer().getNeeded() > 0L) {
-            setActive(true);
-            long production = getProduction();
-            lastProductionAmount = production - getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL);
+        if (seesSun && canFunction()) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                lastProductionAmount = energyContainer().insert(getProduction(), transaction, AutomationType.INTERNAL);
+                transaction.commit();
+            }
         } else {
-            setActive(false);
-            lastProductionAmount = 0L;
+            lastProductionAmount = 0;
         }
+        setActive(lastProductionAmount > 0);
         return sendUpdatePacket;
     }
 
@@ -95,13 +98,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return solarCheck.canSeeSun();
     }
 
-    public long getProduction() {
+    public int getProduction() {
         if (level == null || solarCheck == null) {
-            return 0L;
+            return 0;
         }
         float brightness = getBrightnessMultiplier(level);
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return MathUtils.clampToLong(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
+        return MathUtils.clampToInt(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
     }
 
     protected float getBrightnessMultiplier(@NotNull Level world) {
@@ -110,16 +113,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected RelativeSide[] getEnergySides() {
+    protected Set<RelativeSide> getEnergySides() {
         return ENERGY_SIDES;
     }
 
-    protected long getConfiguredMax() {
+    protected int getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override
-    public long getProductionRate() {
+    public int getProductionRate() {
         return lastProductionAmount;
     }
 
@@ -127,7 +130,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
-        container.track(SyncableLong.create(this::getProductionRate, value -> lastProductionAmount = value));
+        container.track(SyncableInt.create(this::getProductionRate, value -> lastProductionAmount = value));
     }
 
     protected static class SolarCheck {

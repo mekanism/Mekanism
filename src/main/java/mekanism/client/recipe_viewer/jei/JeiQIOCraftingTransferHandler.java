@@ -2,13 +2,11 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.Action;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeSlot;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.inventory.HashedItem;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
@@ -25,6 +23,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, RecipeHolder<CraftingRecipe>> {
@@ -61,7 +60,7 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
         return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
-              Action.get(doTransfer));
+              doTransfer);
     }
 
     private record JeiRecipeInfo(
@@ -85,8 +84,8 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         }
 
         @Override
-        public Object itemUUID(HashedItem hashed) {
-            return stackHelper.getUidForStack(hashed.getInternalStack(), UidContext.Recipe);
+        public Object itemUUID(ItemResource itemType) {
+            return stackHelper.getUidForStack(itemType.toStack(), UidContext.Recipe);
         }
 
         @Override

@@ -3,29 +3,28 @@ package mekanism.generators.common.content.gear.mekasuit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
@@ -39,15 +38,15 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
             //Scale the amount absorbed by how many modules are installed out of the possible number installed
             float ratio = count / (float) maxSize;
             map.put(count, new ModuleDamageAbsorbInfo(new ConfigBasedCachedFloatSupplier(() -> MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * ratio,
-                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), ConstantPredicates.ZERO_LONG));
+                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), ConstantPredicates.ZERO));
         }
         return map;
     });
 
     @Override
-    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeeded() > 0L) {
+    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
+        EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, true);
+        if (energyHandler != null && !EnergyHandlerUtil.isFull(energyHandler)) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
             Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
@@ -86,8 +85,8 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     highestScaledDegrees = 200;
                 }
                 //Insert energy
-                long rate = MathUtils.clampToLong(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
-                energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
+                int rate = MathUtils.clampToInt(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
+                energyHandler.insert(rate, transaction);
             }
         }
     }

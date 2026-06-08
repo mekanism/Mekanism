@@ -6,7 +6,8 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -30,18 +31,13 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
-    }
-
-    @Override
     public ItemStackIngredient getInput() {
         return input;
     }
 
     @Override
-    @Contract(value = "_ -> new", pure = true)
-    public FluidOptionalItemOutput getOutput(ItemStack input) {
+    @Contract(pure = true)
+    public FluidOptionalItemOutput getOutput(TypedInstance<Item> input) {
         return output;
     }
 

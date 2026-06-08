@@ -7,7 +7,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
 
@@ -28,10 +28,10 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     @Override
     public FrequencyIdentity getFrequency() {
-        ItemStack stack = menu.getStack();
-        if (stack.isEmpty()) {//Note: This shouldn't be empty, but we validate it just in case
+        ItemResource itemType = menu.getItemType();
+        if (itemType.isEmpty()) {//Note: This shouldn't be empty, but we validate it just in case
             return null;
         }
-        return stack.getOrDefault(MekanismDataComponents.QIO_FREQUENCY, FrequencyAware.none()).identity().orElse(null);
+        return itemType.getOrDefault(MekanismDataComponents.QIO_FREQUENCY, FrequencyAware.none()).identity().orElse(null);
     }
 }

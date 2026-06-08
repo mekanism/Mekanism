@@ -156,7 +156,7 @@ public abstract class BlockMekanism extends Block {
             tile.onAdded();
             if (tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
                 //There was no stored owner that got set, use the placer's id
-                securityTile.setOwnerUUID(placer.getUUID());
+                securityTile.setOwnerUUID(placer.getUUID(), null);
                 if (!world.isClientSide()) {
                     //If the machine doesn't already have an owner, make sure we portray this
                     PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(placer.getUUID()));

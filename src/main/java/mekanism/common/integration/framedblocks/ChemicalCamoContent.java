@@ -1,13 +1,15 @@
 package mekanism.common.integration.framedblocks;
 
+import io.github.xfacthd.framedblocks.api.camo.CamoContent;
+import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
+import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContent;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.TriState;
@@ -22,23 +24,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
-import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
-import io.github.xfacthd.framedblocks.api.camo.CamoContent;
 
 @ParametersAreNotNullByDefault
 @MethodsAreNotNullByDefault
-final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
+final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, ChemicalCamoContent> {
 
-    private final Holder<Chemical> chemicalHolder;
     private final MapColor mapColor;
 
-    ChemicalCamoContent(Holder<Chemical> chemicalHolder) {
-        this.chemicalHolder = chemicalHolder;
-        this.mapColor = FluidDeferredRegister.getClosestColor(this.chemicalHolder.value().getColorRepresentation());
-    }
-
-    Holder<Chemical> getChemicalHolder() {
-        return chemicalHolder;
+    ChemicalCamoContent(ChemicalResource chemicalType) {
+        super(chemicalType);
+        this.mapColor = FluidDeferredRegister.getClosestColor(resource.getChemicalColorRepresentation());
     }
 
     @Override
@@ -118,14 +113,9 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
         return mapColor;
     }
 
-    //TODO - 26.1 @Override
-    public int getTintColor(BlockAndLightGetter blockAndTintGetter, BlockPos pos, int tintIdx) {
-        return chemicalHolder.value().getTint();
-    }
-
     @Override
     public Integer getBeaconColorMultiplier(LevelReader levelReader, BlockPos pos, BlockPos beaconPos) {
-        return chemicalHolder.value().getColorRepresentation();
+        return getResource().getChemicalColorRepresentation();
     }
 
     @Override
@@ -165,17 +155,17 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public ParticleOptions makeRunningLandingParticles(BlockPos pos) {
-        return new ChemicalParticleOptions(chemicalHolder);
+        return new ChemicalParticleOptions(resource);
     }
 
     @Override
     public String getCamoId() {
-        return chemicalHolder.getRegisteredName();
+        return resource.typeHolder().getRegisteredName();
     }
 
     @Override
     public MutableComponent getCamoName() {
-        return TextComponentUtil.build(chemicalHolder);
+        return TextComponentUtil.build(resource);
     }
 
     @Override
@@ -185,14 +175,14 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public int hashCode() {
-        return chemicalHolder.hashCode();
+        return resource.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != ChemicalCamoContent.class) return false;
-        return chemicalHolder.is(((ChemicalCamoContent) obj).chemicalHolder.getKey());
+        return resource.equals(((ChemicalCamoContent) obj).resource);
     }
 
     @Override

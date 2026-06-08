@@ -9,7 +9,7 @@ public class CrTMutableChemicalStack extends BaseCrTChemicalStack {
     }
 
     @Override
-    public ICrTChemicalStack setAmount(long amount) {
+    public ICrTChemicalStack setAmount(int amount) {
         stack.setAmount(amount);
         return asMutable();
     }

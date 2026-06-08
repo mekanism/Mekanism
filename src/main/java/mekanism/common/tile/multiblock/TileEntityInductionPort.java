@@ -6,12 +6,13 @@ import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
-import mekanism.common.lib.multiblock.MultiblockData.EnergyOutputTarget;
+import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
@@ -20,26 +21,27 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing {
 
-    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyCapabilityCaches = new EnumMap<>(Direction.class);
 
     public TileEntityInductionPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.INDUCTION_PORT, pos, state);
         delaySupplier = NO_DELAY;
     }
 
-    @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
-        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(), side -> getMultiblock().getEnergyContainers(side));
+        return ProxiedEnergyContainerHolder.create(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getEnergyContainer());
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle energy when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.ENERGY) {
             return false;
@@ -47,13 +49,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
         return super.persists(type);
     }
 
-    public void addEnergyTargetCapability(List<EnergyOutputTarget> outputTargets, Direction side) {
-        BlockEnergyCapabilityCache cache = energyCapabilityCaches.get(side);
+    public void addEnergyTargetCapability(List<CapabilityOutputTarget<EnergyHandler>> outputTargets, Direction side) {
+        BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache = energyCapabilityCaches.get(side);
         if (cache == null) {
-            cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.ENERGY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             energyCapabilityCaches.put(side, cache);
         }
-        outputTargets.add(new EnergyOutputTarget(cache, this::getActive));
+        outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
     @Override

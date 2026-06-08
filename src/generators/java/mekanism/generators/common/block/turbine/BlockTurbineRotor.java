@@ -44,13 +44,14 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (tile.addBlade(true)) {
                     stack.consume(1, player);
-                    return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         } else if (stack.isEmpty()) {
             if (tile.removeBlade()) {
                 if (!player.isCreative()) {
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
+                    //TODO - 26.1: I don't think this setChanged call or the one lower down are necessary anymore?
                     player.getInventory().setChanged();
                 }
                 return InteractionResult.SUCCESS_SERVER;
@@ -62,7 +63,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                         stack.grow(1);
                         player.getInventory().setChanged();
                     }
-                    return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }

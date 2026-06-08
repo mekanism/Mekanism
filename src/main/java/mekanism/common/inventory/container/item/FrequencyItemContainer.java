@@ -13,7 +13,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class FrequencyItemContainer<FREQ extends Frequency> extends MekanismItemContainer {
@@ -23,8 +23,8 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     private List<FREQ> trustedCache = Collections.emptyList();
     private FREQ freq;
 
-    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemStack stack) {
-        super(type, id, inv, hand, stack);
+    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess) {
+        super(type, id, inv, hand, itemAccess);
     }
 
     public InteractionHand getHand() {
@@ -43,10 +43,10 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(getFrequencyType());
         if (frequencyComponent != null) {
             //Note: It should never be null, but we check just in case
-            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+            FrequencyAware<FREQ> frequencyAware = itemAccess.getResource().get(frequencyComponent);
             if (frequencyAware != null) {
                 //Start it out at what the value on the stack is
-                return frequencyAware.getFrequency(stack, frequencyComponent);
+                return frequencyAware.frequency().orElse(null);
             }
         }
         return null;

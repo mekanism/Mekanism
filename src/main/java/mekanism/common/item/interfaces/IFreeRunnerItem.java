@@ -7,13 +7,16 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.util.ItemAccessUtils;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,16 +24,16 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IFreeRunnerItem {
 
-    FreeRunnerMode getFreeRunnerMode(ItemStack stack);
-
-    @Nullable
-    IEnergyContainer getRunnerEnergyContainer(ItemStack stack);
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> FreeRunnerMode getFreeRunnerMode(ITEM instance);
 
     @NothingNullByDefault
     enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasEnumNameTextComponent, StringRepresentable {
@@ -89,12 +92,12 @@ public interface IFreeRunnerItem {
      *
      * @return the free runners stack if present, otherwise an empty stack
      */
-    @NotNull
-    static ItemStack getActiveFreeRunners(LivingEntity entity) {
-        return getFreeRunners(entity, stack -> {
-            if (stack.getItem() instanceof IFreeRunnerItem freeRunners) {
-                IEnergyContainer energyContainer = freeRunners.getRunnerEnergyContainer(stack);
-                return energyContainer != null && !energyContainer.isEmpty();
+    @Nullable
+    static ItemAccess getActiveFreeRunners(LivingEntity entity) {
+        return getFreeRunners(entity, itemAccess -> {
+            if (itemAccess.getResource().getItem() instanceof IFreeRunnerItem) {
+                EnergyHandler energyHandler = Capabilities.ENERGY.getCapability(itemAccess);
+                return energyHandler != null && energyHandler.getAmountAsLong() > 0;
             }
             return false;
         });
@@ -110,17 +113,19 @@ public interface IFreeRunnerItem {
      * @return the free runners stack if present, otherwise an empty stack
      */
     @NotNull
-    static ItemStack getPrimaryFreeRunners(LivingEntity entity) {
-        return getFreeRunners(entity, stack -> stack.getItem() instanceof IFreeRunnerItem);
+    static ItemResource getPrimaryFreeRunners(LivingEntity entity) {
+        ItemAccess freeRunners = getFreeRunners(entity, itemAccess -> itemAccess.getResource().getItem() instanceof IFreeRunnerItem);
+        return freeRunners == null ? ItemResource.EMPTY : freeRunners.getResource();
     }
 
-    private static ItemStack getFreeRunners(LivingEntity entity, Predicate<ItemStack> matcher) {
-        ItemStack feet = entity.getItemBySlot(EquipmentSlot.FEET);
+    @Nullable
+    private static ItemAccess getFreeRunners(LivingEntity entity, Predicate<ItemAccess> matcher) {
+        ItemAccess feet = ItemAccessUtils.forEntitySlot(entity, EquipmentSlot.FEET);
         if (matcher.test(feet)) {
             return feet;
         } else if (Mekanism.hooks.curios.isLoaded()) {
             return CuriosIntegration.findFirstCurio(entity, matcher);
         }
-        return ItemStack.EMPTY;
+        return null;
     }
 }

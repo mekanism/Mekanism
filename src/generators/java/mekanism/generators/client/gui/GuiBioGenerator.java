@@ -6,6 +6,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiFluidBar;
+import mekanism.client.gui.element.bar.GuiTankBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -32,15 +33,15 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 40, () -> List.of(
-              EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
-              GeneratorsLang.STORED_BIO_FUEL.translate(TextUtils.format(tile.bioFuelTank.getFluidAmount())),
+              EnergyDisplay.of(tile.energyContainer().getAmountAsLong()).getTextComponent(),
+              GeneratorsLang.STORED_BIO_FUEL.translate(TextUtils.format(tile.bioFuelTank.amountAsLong())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.bioGeneration.get()) : EnergyDisplay.ZERO)
         )));
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
               GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.bioGeneration.get()) : EnergyDisplay.ZERO)
         )));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addRenderableWidget(new GuiFluidBar(this, GuiFluidBar.getProvider(tile.bioFuelTank, tile.getFluidTanks(null)), 7, 15, 4, 52, false));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15));
+        addRenderableWidget(new GuiFluidBar(this, GuiTankBar.getProvider(tile.bioFuelTank, tile.getFluidTanks()), 7, 15, 4, 52, false));
     }
 
     @Override

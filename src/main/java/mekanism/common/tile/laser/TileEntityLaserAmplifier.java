@@ -1,5 +1,6 @@
 package mekanism.common.tile.laser;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
@@ -12,17 +13,17 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IHasMode;
@@ -40,11 +41,12 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
-    private long minThreshold = 0L;
-    private long maxThreshold = MekanismConfig.storage.laserAmplifier.get();
+    private int minThreshold = 0;
+    private int maxThreshold = Ints.saturatedCast(MekanismConfig.storage.laserAmplifier.get());
     private int ticks = 0;
     private int delay = 0;
     private boolean emittingRedstone;
@@ -55,8 +57,9 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener) {
-        builder.addContainer(energyContainer = LaserEnergyContainer.create(ConstantPredicates.alwaysTrue(), BasicEnergyContainer.internalOnly, this, listener));
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = LaserEnergyContainer.create(ConstantPredicates.alwaysTrue(), BasicEnergyContainer.internalOnly, this, listener);
+        return _ -> energyContainer;
     }
 
     @Override
@@ -79,25 +82,24 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         emittingRedstone = foundEntity;
     }
 
-    private boolean shouldFire() {
-        return ticks >= delay && energyContainer.getEnergy() >= minThreshold && canFunction();
-    }
-
     @Override
-    protected long toFire() {
-        return shouldFire() ? Math.min(super.toFire(), maxThreshold) : 0L;
+    protected int toFire() {
+        if (ticks >= delay && canFunction()) {
+            return Math.clamp(super.toFire(), minThreshold, maxThreshold);
+        }
+        return 0;
     }
 
     @Override
     public int getRedstoneLevel() {
         if (outputMode == RedstoneOutput.ENERGY_CONTENTS) {
-            return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
+            return MekanismUtils.redstoneLevelFromContents(energyContainer.getAmountAsLong(), energyContainer.getCapacityAsLong());
         }
         return emittingRedstone ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.ENERGY;
     }
 
@@ -127,20 +129,20 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         setChanged();
     }
 
-    public void setMinThresholdFromPacket(long target) {
+    public void setMinThresholdFromPacket(int target) {
         if (updateMinThreshold(target)) {
             markForSave();
         }
     }
 
-    public void setMaxThresholdFromPacket(long target) {
+    public void setMaxThresholdFromPacket(int target) {
         if (updateMaxThreshold(target)) {
             markForSave();
         }
     }
 
-    private boolean updateMinThreshold(long target) {
-        long threshold = getThreshold(target);
+    private boolean updateMinThreshold(int target) {
+        int threshold = getThreshold(target);
         if (minThreshold != threshold) {
             minThreshold = threshold;
             //If the min threshold is greater than the max threshold, update max threshold
@@ -152,9 +154,9 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         return false;
     }
 
-    private boolean updateMaxThreshold(long target) {
+    private boolean updateMaxThreshold(int target) {
         //Cap threshold at max energy capacity
-        long threshold = getThreshold(target);
+        int threshold = getThreshold(target);
         if (maxThreshold != threshold) {
             maxThreshold = threshold;
             //If the max threshold is smaller than the min threshold, update min threshold
@@ -166,15 +168,15 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         return false;
     }
 
-    private long getThreshold(long target) {
-        return Math.min(target, energyContainer.getMaxEnergy());
+    private int getThreshold(int target) {
+        return Math.min(target, energyContainer.getCapacityAsInt());
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        input.getLong(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
-        input.getLong(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
+        input.getInt(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
+        input.getInt(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
         //TODO - 26.1: Re-evaluate all the cases we have an or that support optional if we should just use the optional
         delay = input.getIntOr(SerializationConstants.TIME, delay);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
@@ -183,8 +185,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        output.putLong(SerializationConstants.MIN, minThreshold);
-        output.putLong(SerializationConstants.MAX, maxThreshold);
+        output.putInt(SerializationConstants.MIN, minThreshold);
+        output.putInt(SerializationConstants.MAX, maxThreshold);
         output.putInt(SerializationConstants.TIME, delay);
         NBTUtils.writeEnum(output, SerializationConstants.OUTPUT_MODE, outputMode);
     }
@@ -223,20 +225,20 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @ComputerMethod
-    public long getMinThreshold() {
+    public int getMinThreshold() {
         return minThreshold;
     }
 
     @ComputerMethod
-    public long getMaxThreshold() {
+    public int getMaxThreshold() {
         return maxThreshold;
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableLong.create(this::getMinThreshold, value -> minThreshold = value));
-        container.track(SyncableLong.create(this::getMaxThreshold, value -> maxThreshold = value));
+        container.track(SyncableInt.create(this::getMinThreshold, value -> minThreshold = value));
+        container.track(SyncableInt.create(this::getMaxThreshold, value -> maxThreshold = value));
         container.track(SyncableInt.create(this::getDelay, value -> delay = value));
         container.track(SyncableEnum.create(RedstoneOutput.BY_ID, RedstoneOutput.OFF, this::getOutputMode, value -> outputMode = value));
     }
@@ -261,13 +263,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMinThreshold(long threshold) throws ComputerException {
+    void setMinThreshold(int threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMinThresholdFromPacket(threshold);
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMaxThreshold(long threshold) throws ComputerException {
+    void setMaxThreshold(int threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMaxThresholdFromPacket(threshold);
     }

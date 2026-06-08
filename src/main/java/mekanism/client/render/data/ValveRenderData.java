@@ -31,7 +31,7 @@ public class ValveRenderData {
     }
 
     // mainFluidHeight is the model height, from getModel(renderdata)
-    public static ValveRenderData get(ValveData valveData, float mainFluidHeight, BlockPos renderLocation, int multiblockHeight) {
+    public static ValveRenderData get(ValveData valveData, BlockPos valveLocation, float mainFluidHeight, BlockPos renderLocation, int multiblockHeight) {
         float minX, minY, minZ;
         float maxX, maxY, maxZ;
         byte renderCheck = RenderResizableCuboid.SideRender.ALL_FACES;
@@ -39,7 +39,6 @@ public class ValveRenderData {
             renderCheck = RenderResizableCuboid.SideRender.NOT_DOWN;
         }
 
-        BlockPos valveLocation = valveData.location;
         int valveFluidHeight = valveLocation.getY() - renderLocation.getY();
 
         minX = 0.3F;
@@ -75,7 +74,7 @@ public class ValveRenderData {
                 maxX = -0.03F;
             }
         }
-        return new ValveRenderData(valveData.side, valveData.location, minX, minY, minZ, maxX, maxY, maxZ, renderCheck, renderLocation);
+        return new ValveRenderData(valveData.side, valveLocation, minX, minY, minZ, maxX, maxY, maxZ, renderCheck, renderLocation);
     }
 
     public int getValveFluidHeight() {

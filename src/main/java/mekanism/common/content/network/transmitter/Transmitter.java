@@ -14,7 +14,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +72,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                 ConnectionType.NORMAL};
-    private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
+    private final AcceptorCache<ACCEPTOR> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
     protected boolean hasPullSide = false;
 
@@ -91,9 +92,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         Collections.addAll(supportedTransmissionTypes, transmissionTypes);
     }
 
-    protected abstract AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache();
+    protected abstract AcceptorCache<ACCEPTOR> createAcceptorCache();
 
-    public AbstractAcceptorCache<ACCEPTOR, ?> getAcceptorCache() {
+    public AcceptorCache<ACCEPTOR> getAcceptorCache() {
         return acceptorCache;
     }
 
@@ -723,15 +724,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getBlockPos());
     }
 
-    public abstract void takeShare();
+    public abstract void takeShare(@Nullable TransactionContext transaction);
 
-    public void validateAndTakeShare() {
-        takeShare();
+    public void validateAndTakeShare(@Nullable TransactionContext transaction) {
+        takeShare(transaction);
     }
 
     public void startUpgrading() {
         isUpgrading = true;
-        takeShare();
+        takeShare(null);
         setTransmitterNetwork(null);
     }
 }

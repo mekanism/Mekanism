@@ -6,14 +6,17 @@ import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +25,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -38,7 +40,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     public static final int DRIVE_SLOTS = 12;
     private static final int BITS_PER_DRIVE_STATUS = 4;//max 15 ordinals
     private static final int DRIVE_STATUS_MASK = 0xF;
-    private static final int MAX_DRIVE_STATUS = DriveStatus.values().length - 1;
 
     private List<QIODriveSlot> driveSlots;
     private long driveStatus = 0;
@@ -50,15 +51,15 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         final int xSize = 176;
         driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 6; x++) {
                 QIODriveSlot slot = new QIODriveSlot(this, y * 6 + x, this::getLevel, listener, xSize / 2 - (6 * 18 / 2) + x * 18, 70 + y * 18);
                 driveSlots.add(slot);
-                builder.addSlot(slot);
+                builder.addContainer(slot);
             }
         }
         return builder.build();
@@ -152,11 +153,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void onDataUpdate() {
-        markForSave();
-    }
-
-    @Override
     public List<QIODriveSlot> getDriveSlots() {
         return driveSlots;
     }
@@ -174,10 +170,10 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         }
     }
 
-    @ComputerMethod
-    ItemStack getDrive(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrive", docPlaceholder = "drive slot")
+    IInventorySlot getDriveSlot(int slot) throws ComputerException {
         validateSlot(slot);
-        return driveSlots.get(slot).getStack();
+        return driveSlots.get(slot);
     }
 
     @ComputerMethod

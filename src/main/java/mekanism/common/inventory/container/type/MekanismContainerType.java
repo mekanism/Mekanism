@@ -20,7 +20,7 @@ import net.neoforged.neoforge.network.IContainerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<T, CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
+public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
 
     public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismContainerFactory<TILE, CONTAINER> constructor) {
@@ -49,8 +49,11 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(buf, type), true));
     }
 
+    protected final Class<T> type;
+
     protected MekanismContainerType(Class<T> type, IMekanismContainerFactory<T, CONTAINER> mekanismConstructor, IContainerFactory<CONTAINER> constructor) {
-        super(type, mekanismConstructor, constructor);
+        super(mekanismConstructor, constructor);
+        this.type = type;
     }
 
     @Nullable

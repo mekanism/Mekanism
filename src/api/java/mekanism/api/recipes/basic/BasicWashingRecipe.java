@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -12,13 +13,14 @@ import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
@@ -57,11 +59,6 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     }
 
     @Override
-    public boolean test(FluidStack fluidStack, ChemicalStack chemicalStack) {
-        return fluidInput.test(fluidStack) && chemicalInput.test(chemicalStack);
-    }
-
-    @Override
     public FluidStackIngredient getFluidInput() {
         return fluidInput;
     }
@@ -78,7 +75,7 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ChemicalStack getOutput(FluidStack fluidStack, ChemicalStack chemicalStack) {
+    public ChemicalStack getOutput(TypedInstance<Fluid> fluidStack, TypedInstance<Chemical> chemicalStack) {
         return output.copy();
     }
 

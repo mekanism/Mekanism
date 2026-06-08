@@ -23,17 +23,22 @@ import mekanism.api.gear.config.ModuleConfig;
 import mekanism.common.lib.codec.SequencedCollectionCodec;
 import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -94,88 +99,80 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Override
-    public List<IHUDElement> getHUDElements(Player player, ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> List<IHUDElement> getHUDElements(Player player, ITEM instance) {
         if (typedModules.isEmpty()) {
             return Collections.emptyList();
         }
         List<IHUDElement> ret = new ArrayList<>();
         for (Module<?> module : modules()) {
-            module.addHUDElements(player, this, stack, ret);
+            module.addHUDElements(player, this, instance, ret);
         }
         return ret;
     }
 
     @Override
-    public List<Component> getHUDStrings(Player player, ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> List<Component> getHUDStrings(Player player, ITEM instance) {
         if (typedModules.isEmpty()) {
             return Collections.emptyList();
         }
         List<Component> ret = new ArrayList<>();
         for (Module<?> module : modules()) {
-            module.addHUDStrings(player, this, stack, ret);
+            module.addHUDStrings(player, this, instance, ret);
         }
         return ret;
     }
 
-    @Override
-    public ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, ModuleConfig<?> config) {
-        return replaceModuleConfig(provider, stack, type, config, false);
-    }
-
-    /**
-     * Helper to replace the given config for the installed module of the given type.
-     *
-     * @param stack  The stack the container is stored on.
-     * @param type   Module type to replace the config for.
-     * @param config Config to replace.
-     *
-     * @return New immutable module container with the config using the replaced value.
-     *
-     * @throws IllegalStateException    If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
-     *                                  given type.
-     * @throws IllegalArgumentException If fromPacket is true, and the config does not represent a value that is valid for the module.
-     */
-    public ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, ModuleConfig<?> config, boolean fromPacket) {
+    /// Helper to replace the given config for the installed module of the given type.
+    ///
+    /// @param provider    Holder lookup provider so that we can look up enchantments if applicable.
+    /// @param itemAccess  The item access representing the item the module is installed on.
+    /// @param transaction The transaction that this operation is part of. May be `null`
+    /// @param type        Module type to replace the config for.
+    /// @param config      Config to replace.
+    ///
+    /// @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
+    /// given type.
+    /// @throws IllegalArgumentException If fromPacket is true, and the config does not represent a value that is valid for the module.
+    /// @since 10.8.0
+    public void replaceModuleConfig(HolderLookup.Provider provider, ItemAccess itemAccess, @Nullable TransactionContext transaction, Holder<ModuleData<?>> type,
+          ModuleConfig<?> config, boolean fromPacket) {
         Module<?> module = get(type);
         if (module == null) {
             throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
-        }
-        if (config.name().equals(ModuleConfig.ENABLED_KEY)) {
-            if (module.isEnabled() == (boolean) config.get()) {
-                return this;//State matches no change needed
+        } else if (config.name().equals(ModuleConfig.ENABLED_KEY)) {
+            if (module.isEnabled() != (boolean) config.get()) {
+                //Toggle the enabled state including any side effects changing that config may have
+                toggleEnabled(provider, itemAccess, type, module, transaction);
             }
-            //Toggle the enabled state including any side effects changing that config may have
-            return toggleEnabled(provider, stack, type, module);
         } else if (config.name().equals(ModuleConfig.HANDLES_MODE_CHANGE_KEY)) {
             if (module.handlesModeChangeRaw() == (boolean) config.get()) {
-                return this;//State matches no change needed
+                //State matches no change needed
             } else if (fromPacket && module.getConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY) == null) {
                 //Illegal state, got a packet for mode change key, but it doesn't support mode changes
-                return this;
+            } else {
+                //Toggle the handle mode state including any side effects changing that config may have
+                toggleHandlesModeChange(itemAccess, type.value(), module, transaction);
             }
-            //Toggle the handle mode state including any side effects changing that config may have
-            return toggleHandlesModeChange(stack, type.value(), module);
+        } else {
+            Module<?> replacedModule = module.withReplacedConfig(config, fromPacket);
+            //Only bother updating the instance if something changed
+            if (module != replacedModule) {
+                SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+                copiedModules.put(type.value(), replacedModule);
+                updateContainer(itemAccess, copiedModules, null, transaction);
+            }
         }
-
-        Module<?> replacedModule = module.withReplacedConfig(config, fromPacket);
-        if (module == replacedModule) {
-            //If nothing actually changed we don't need to bother updating the instance on the stack
-            return this;
-        }
-        SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
-        copiedModules.put(type.value(), replacedModule);
-        return updateContainer(stack, copiedModules, null);
     }
 
-    ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type) {
+    void toggleEnabled(HolderLookup.Provider provider, ItemAccess itemAccess, Holder<ModuleData<?>> type, @Nullable TransactionContext transaction) {
         Module<?> module = get(type);
         if (module == null) {
             throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
         }
-        return toggleEnabled(provider, stack, type, module);
+        toggleEnabled(provider, itemAccess, type, module, transaction);
     }
 
-    private ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, Module<?> module) {
+    private void toggleEnabled(HolderLookup.Provider provider, ItemAccess itemAccess, Holder<ModuleData<?>> type, Module<?> module, @Nullable TransactionContext transaction) {
         boolean setEnabled = !module.isEnabled();
         module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(setEnabled));
 
@@ -188,8 +185,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         if (setEnabled) {
             adjustedEnchantments = disableOtherExclusives(provider, type, module, copiedModules, adjustedEnchantments);
         }
-
-        return updateContainer(stack, copiedModules, adjustedEnchantments);
+        updateContainer(itemAccess, copiedModules, adjustedEnchantments, transaction);
     }
 
     @Nullable
@@ -249,7 +245,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return enchantBased.getCustomInstance().getLevelFor(enchantBased);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleHandlesModeChange(ItemStack stack, ModuleData<?> type, Module<MODULE> module) {
+    private <MODULE extends ICustomModule<MODULE>> void toggleHandlesModeChange(ItemAccess itemAccess, ModuleData<?> type, Module<MODULE> module,
+          @Nullable TransactionContext transaction) {
         boolean setHandles = !module.handlesModeChange();
         module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(setHandles));
 
@@ -270,7 +267,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
             }
         }
 
-        return updateContainer(stack, copiedModules, null);
+        updateContainer(itemAccess, copiedModules, null, transaction);
     }
 
     public int installedCount(ModuleData<?> type) {
@@ -278,8 +275,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return module == null ? 0 : module.getInstalledCount();
     }
 
-    public boolean canInstall(ItemStack stack, Holder<ModuleData<?>> type) {
-        if (IModuleHelper.INSTANCE.supports(stack.typeHolder(), type)) {
+    public boolean canInstall(ItemAccess itemAccess, Holder<ModuleData<?>> type) {
+        if (IModuleHelper.INSTANCE.supports(itemAccess.getResource().typeHolder(), type)) {
             IModule<?> module = get(type);
             return module == null || module.getInstalledCount() < type.value().getMaxStackSize();
         }
@@ -291,7 +288,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
      *
      * @return number installed
      */
-    public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> typeProvider, int toInstall) {
+    public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemAccess itemAccess, Holder<ModuleData<?>> typeProvider, int toInstall,
+          TransactionContext transaction) {
         ModuleData<?> type = typeProvider.value();
         Module<MODULE> module = getUnchecked(typeProvider);
         boolean wasFirst = module == null;
@@ -315,14 +313,17 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         //Disable any other modules that are exclusive in regard to the newly installed module
         adjustedEnchantments = disableOtherExclusives(provider, typeProvider, module, copiedModules, adjustedEnchantments);
 
-        ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
-        //Call the added method on the new module instance with the new container
-        module.getCustomInstance().onAdded(module, replacedContainer, stack, wasFirst);
-        return toInstall;
+        if (updateContainer(itemAccess, copiedModules, adjustedEnchantments, transaction)) {
+            //Call the added method on the new module instance with the new container
+            module.getCustomInstance().onAdded(module, itemAccess, wasFirst, transaction);
+            return toInstall;
+        }
+        //Failed to install anything, bail and return zero so that the transaction gets rolled back
+        return 0;
     }
 
-    public <MODULE extends ICustomModule<MODULE>> void removeModule(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> typeProvider,
-          @Range(from = 1, to = Integer.MAX_VALUE) int toRemove) {
+    public <MODULE extends ICustomModule<MODULE>> boolean removeModule(HolderLookup.Provider provider, ItemAccess itemAccess, Holder<ModuleData<?>> typeProvider,
+          @Range(from = 1, to = Integer.MAX_VALUE) int toRemove, TransactionContext transaction) {
         ModuleData<?> type = typeProvider.value();
         Module<MODULE> module = getUnchecked(typeProvider);
         if (module != null) {
@@ -350,14 +351,17 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 //Update the level of any corresponding enchantment
                 adjustedEnchantments = updateEnchantment(provider, module, null);
             }
-            ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
-            module.getCustomInstance().onRemoved(module, replacedContainer, stack, wasLast);
+            if (updateContainer(itemAccess, copiedModules, adjustedEnchantments, transaction)) {
+                module.getCustomInstance().onRemoved(module, itemAccess, wasLast, transaction);
+                return true;
+            }
         }
+        return false;
     }
 
-    private ModuleContainer updateContainer(ItemStack stack, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private boolean updateContainer(ItemAccess itemAccess, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments,
+          @Nullable TransactionContext transaction) {
         ModuleContainer replacedContainer = new ModuleContainer(copiedModules, adjustedEnchantments == null ? enchantments : adjustedEnchantments.toImmutable());
-        stack.set(MekanismDataComponents.MODULE_CONTAINER, replacedContainer);
-        return replacedContainer;
+        return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(MekanismDataComponents.MODULE_CONTAINER, replacedContainer), transaction);
     }
 }

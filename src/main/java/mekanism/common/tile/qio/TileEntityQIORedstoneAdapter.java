@@ -8,9 +8,8 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +37,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public static final ModelProperty<Boolean> EMITTING = new ModelProperty<>();
 
-    @Nullable
-    private HashedItem itemType = null;
+    private ItemResource itemType = ItemResource.EMPTY;
     private boolean fuzzy;
     private boolean inverted;
     private long count = 0;
@@ -58,16 +57,16 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     private long getStored(@Nullable QIOFrequency freq) {
-        if (freq == null || itemType == null) {
+        if (freq == null || itemType.isEmpty()) {
             return 0;
         } else if (fuzzy) {
-            return freq.getTypesForItem(itemType.getItem()).stream().mapToLong(freq::getStoredByHash).sum();
+            return freq.getTypesForItem(itemType.getItem()).stream().mapToLong(freq::getStored).sum();
         }
-        return freq.getStoredByHash(itemType);
+        return freq.getStored(itemType);
     }
 
     public void handleStackChange(ItemStack stack) {
-        itemType = stack.isEmpty() ? null : HashedItem.create(stack);
+        itemType = ItemResource.of(stack);
         markForSave();
     }
 
@@ -120,7 +119,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        output.storeNullable(SerializationConstants.SINGLE_ITEM, HashedItem.CODEC, itemType);
+        if (!itemType.isEmpty()) {
+            output.store(SerializationConstants.SINGLE_ITEM, ItemResource.CODEC, itemType);
+        }
         output.putLong(SerializationConstants.AMOUNT, count);
         output.putBoolean(SerializationConstants.FUZZY, fuzzy);
         output.putBoolean(SerializationConstants.INVERSE, inverted);
@@ -129,7 +130,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        input.read(SerializationConstants.SINGLE_ITEM, HashedItem.CODEC).ifPresent(item -> itemType = item);
+        itemType = input.read(SerializationConstants.SINGLE_ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
         count = input.getLongOr(SerializationConstants.AMOUNT, count);
         fuzzy = input.getBooleanOr(SerializationConstants.FUZZY, fuzzy);
         inverted = input.getBooleanOr(SerializationConstants.INVERSE, inverted);
@@ -160,7 +161,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(MekanismDataComponents.ITEM_TARGET, Optional.ofNullable(itemType));
+        builder.set(MekanismDataComponents.ITEM_TARGET, itemType);
         builder.set(MekanismDataComponents.LONG_AMOUNT, count);
         builder.set(MekanismDataComponents.FUZZY, fuzzy);
         builder.set(MekanismDataComponents.INVERSE, inverted);
@@ -169,15 +170,15 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, Optional.<HashedItem>empty()).orElse(null);
+        itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY);
         count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
         fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
         inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")
-    public ItemStack getItemType() {
-        return itemType == null ? ItemStack.EMPTY : itemType.getInternalStack();
+    public ItemResource getItemType() {
+        return itemType;
     }
 
     @ComputerMethod(nameOverride = "getTriggerAmount")
@@ -202,13 +203,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableItemStack.create(this::getItemType, value -> {
-            if (value.isEmpty()) {
-                itemType = null;
-            } else {
-                itemType = HashedItem.create(value);
-            }
-        }));
+        container.track(SyncableResource.createItem(this::getItemType, value -> itemType = value));
         container.track(SyncableLong.create(this::getCount, value -> count = value));
         container.track(SyncableBoolean.create(this::getFuzzyMode, value -> fuzzy = value));
         container.track(SyncableBoolean.create(this::isInverted, value -> inverted = value));

@@ -2,8 +2,8 @@ package mekanism.client.render;
 
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public final class ModelRenderer {
 
@@ -12,8 +12,8 @@ public final class ModelRenderer {
 
     private static final int BLOCK_STAGES = FluidType.BUCKET_VOLUME;
 
-    public static int getStage(FluidStack stack, int stages, double scale) {
-        return getStage(MekanismUtils.lighterThanAirGas(stack), stages, scale);
+    public static int getStage(FluidResource fluidType, int stages, double scale) {
+        return getStage(MekanismUtils.lighterThanAirGas(fluidType), stages, scale);
     }
 
     public static int getStage(boolean gaseous, int stages, double scale) {

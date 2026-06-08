@@ -5,37 +5,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.LongSupplier;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
+import java.util.function.IntSupplier;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
+import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -44,16 +40,19 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
@@ -77,21 +76,28 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware, ICapabilityAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final List<ChemicalTankSpec> chemicalTankSpecs = new ArrayList<>();
-    private final List<ChemicalTankSpec> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
-    private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
-    private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
+    private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
+    private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
+    private final List<GenericTankSpec<FluidResource>> fluidTankSpecs = new ArrayList<>();
+    private final List<GenericTankSpec<FluidResource>> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
-    private final double laserDissipation;
-    private final double laserRefraction;
+    private final float laserDissipation;
+    private final float laserRefraction;
     private final ArmorType armorType;
 
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
@@ -101,31 +107,35 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         this.armorType = armorType;
         switch (armorType) {
             case HELMET -> {
-                fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
+                fluidTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), itemType -> hasModule(itemType, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
-                laserDissipation = 0.15;
-                laserRefraction = 0.2;
+                laserDissipation = 0.15F;
+                laserRefraction = 0.2F;
             }
             case CHESTPLATE -> {
-                chemicalTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
+                chemicalTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, itemAccess -> {
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
-                    IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
+                    ItemResource itemType = itemAccess.getResource();
+                    if (itemType.isEmpty()) {
+                        return 0;
+                    }
+                    IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
-                laserDissipation = 0.3;
-                laserRefraction = 0.4;
+                laserDissipation = 0.3F;
+                laserRefraction = 0.4F;
             }
             case LEGGINGS -> {
                 absorption = 0.3F;
-                laserDissipation = 0.1875;
-                laserRefraction = 0.25;
+                laserDissipation = 0.1875F;
+                laserRefraction = 0.25F;
             }
             case BOOTS -> {
                 absorption = 0.15F;
-                laserDissipation = 0.1125;
-                laserRefraction = 0.15;
+                laserDissipation = 0.1125F;
+                laserRefraction = 0.15F;
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
@@ -149,12 +159,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltipAdder);
         } else {
-            StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+            StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, true);
             if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredChemical(stack, tooltipAdder);
+                StorageUtils.addStoredChemical(itemAccess, tooltipAdder);
             }
             if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(stack, tooltipAdder);
+                StorageUtils.addStoredFluid(itemAccess, tooltipAdder);
             }
             tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
@@ -177,7 +188,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        return StorageUtils.isEnergyBarVisible(stack);
     }
 
     @Override
@@ -197,11 +208,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         //Enchantments in our data
-        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(stack);
+        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(instance);
         int moduleLevel = container.getModuleEnchantmentLevel(enchantment);
-        return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
+        return Math.max(moduleLevel, super.getEnchantmentLevel(instance, enchantment));
     }
 
     @NotNull
@@ -227,7 +238,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
+        tabOutput.accept(ContainerType.ENERGY.getFilledVariant(item, null));
     }
 
     @Override
@@ -236,8 +247,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (slot != null && slot.getType() == Type.HUMANOID_ARMOR && entity instanceof Player player) {
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
-                for (Module<?> module : container.modules()) {
-                    module.tick(container, stack, player);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Re-evaluate this item access
+                    ItemAccess itemAccess = ItemAccess.forStack(stack);
+                    for (Module<?> module : container.modules()) {
+                        module.tick(itemAccess, player, transaction);
+                    }
+                    transaction.commit();
                 }
             }
         }
@@ -248,7 +264,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!chemicalTankSpecs.isEmpty()) {
             ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
                 ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();
-                for (ChemicalTankSpec spec : chemicalTankSpecs) {
+                for (GenericTankSpec<ChemicalResource> spec : chemicalTankSpecs) {
                     spec.addTank(builder, ComponentBackedChemicalTank::new);
                 }
                 return builder.build();
@@ -257,7 +273,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!fluidTankSpecs.isEmpty()) {
             ContainerType.FLUID.addDefaultCreators(eventBus, this, () -> {
                 FluidTanksBuilder builder = FluidTanksBuilder.builder();
-                for (FluidTankSpec spec : fluidTankSpecs) {
+                for (GenericTankSpec<FluidResource> spec : fluidTankSpecs) {
                     spec.addTank(builder, ComponentBackedFluidTank::new);
                 }
                 return builder.build();
@@ -268,31 +284,31 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         //Note: The all our providers only expose the capabilities (both those via attachments and those here) if the required configs for initializing that capability are loaded
-        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
+        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, _) -> {
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
             }
             return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(armorType));
         }, this);
 
-        event.registerItem(Capabilities.LASER_DISSIPATION, (stack, ctx) -> {
+        event.registerItem(Capabilities.LASER_DISSIPATION, (stack, _) -> {
             //Note: This doesn't rely on configs, so we can skip the gear loaded check
             return isModuleEnabled(stack, MekanismModules.LASER_DISSIPATION_UNIT) ? LaserDissipationHandler.create(laserDissipation, laserRefraction) : null;
         }, this);
     }
 
-    public List<ChemicalTankSpec> getChemicalTankSpecs() {
+    public List<GenericTankSpec<ChemicalResource>> getChemicalTankSpecs() {
         return chemicalTankSpecsView;
     }
 
-    public List<FluidTankSpec> getFluidTankSpecs() {
+    public List<GenericTankSpec<FluidResource>> getFluidTankSpecs() {
         return fluidTankSpecsView;
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
-        return slotType == armorType.getSlot() && getModules(stack).stream().anyMatch(IModule::handlesModeChange);
+        return slotType == armorType.getSlot() && getModules(instance).stream().anyMatch(IModule::handlesModeChange);
     }
 
     //TODO - 26.1 Elytra unit
@@ -335,19 +351,20 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }*/
 
     @Override
-    public boolean canUseJetpack(ItemStack stack) {
+    public boolean canUseJetpack(ItemAccess itemAccess) {
         if (armorType == ArmorType.CHESTPLATE) {
-            if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
-                return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
+            ItemResource armor = itemAccess.getResource();
+            if (isModuleEnabled(armor, MekanismModules.JETPACK_UNIT)) {
+                return ChemicalUtils.hasChemicalOfType(itemAccess, MekanismChemicals.HYDROGEN);
             }
-            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+            return getModules(armor).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
         return false;
     }
 
     @Override
-    public JetpackMode getJetpackMode(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> JetpackMode getJetpackMode(ITEM instance) {
+        IModule<ModuleJetpackUnit> module = getEnabledModule(instance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
             return module.getCustomInstance().mode();
         }
@@ -355,36 +372,19 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public double getJetpackThrust(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction) {
+        //Use the primary jetpack for calculating the thrust
+        IModule<ModuleJetpackUnit> module = getEnabledModule(primaryInstance, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
-            int neededGas = Mth.ceil(thrustMultiplier);
-            //Note: We verified we have at least one mB of gas before we get to the point of getting the thrust,
-            // so we only need to do extra validation if we need more than a single mB of hydrogen
-            if (neededGas > 1) {
-                ChemicalStack containedGas = StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN);
-                if (neededGas > containedGas.amount()) {
-                    //If we don't have enough gas stored to go at the set thrust, scale down the thrust
-                    // to be whatever gas we have remaining
-                    thrustMultiplier = containedGas.amount();
-                }
+            ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(itemAccess));
+            if (handler != null) {
+                float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
+                //If we don't have enough gas stored to go at the set thrust, scale down the thrust
+                // to be whatever gas we have remaining (this might be zero)
+                return 0.15 * handler.extract(MekanismChemicals.HYDROGEN.asResource(), Mth.ceil(thrustMultiplier), transaction);
             }
-            return 0.15 * thrustMultiplier;
         }
         return 0;
-    }
-
-    @Override
-    public void useJetpackFuel(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
-        if (module != null) {
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-            if (gasHandlerItem != null) {
-                int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);
-            }
-        }
     }
 
     /*TODO - 26.1: check that thse are handled by the item props
@@ -416,67 +416,71 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
         float ratioAbsorbed = 0;
         List<FoundArmorDetails> armorDetails = new ArrayList<>();
-        //Start by looping the armor, allowing modules to absorb damage if they can
-        for (ItemStack stack : MekanismUtils.getArmorSlots(player)) {
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor armor) {
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer != null) {
-                    FoundArmorDetails details = new FoundArmorDetails(energyContainer, armor);
-                    armorDetails.add(details);
-                    for (IModule<?> module : details.armor.getModules(stack)) {
-                        if (module.isEnabled()) {
-                            ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
-                            if (damageAbsorbInfo != null) {
-                                float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
-                                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost());
-                                if (ratioAbsorbed >= 1) {
-                                    //If we have fully absorbed the damage, stop checking/trying to absorb more
-                                    break;
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+            //Start by looping the armor, allowing modules to absorb damage if they can
+            ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
+            for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
+                ItemResource itemType = armorSlots.getResource(slot);
+                if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
+                    ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
+                    EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(itemAccess));
+                    if (energyHandler != null) {
+                        FoundArmorDetails details = new FoundArmorDetails(energyHandler, armor.absorption);
+                        armorDetails.add(details);
+                        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(itemType)) {
+                            if (module.isEnabled()) {
+                                ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
+                                if (damageAbsorbInfo != null) {
+                                    float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
+                                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost(), transaction);
+                                    if (ratioAbsorbed >= 1) {
+                                        //If we have fully absorbed the damage, stop checking/trying to absorb more
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        if (ratioAbsorbed >= 1) {
+                            //If we have fully absorbed the damage, stop checking/trying to absorb more
+                            break;
+                        }
                     }
+                }
+            }
+            if (ratioAbsorbed < 1) {
+                //If we haven't fully absorbed it check the individual pieces of armor for if they can absorb any
+                Float absorbRatio = null;
+                for (FoundArmorDetails details : armorDetails) {
+                    if (absorbRatio == null) {
+                        //If we haven't looked up yet if we can absorb the damage type and if we can't
+                        // stop checking if the armor is able to
+                        if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
+                            break;
+                        }
+                        // Next lookup the ratio at which we can absorb the given damage type from the data map
+                        MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(player.registryAccess(), source.typeHolder());
+                        if (absorptionData == null) {
+                            absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
+                        } else {
+                            absorbRatio = absorptionData.absorption();
+                        }
+                        if (absorbRatio == 0) {
+                            //If the config or the data map specifies that the damage type shouldn't be blocked at all
+                            // stop checking if the armor is able to
+                            break;
+                        }
+                    }
+                    float absorption = details.armorAbsorption * absorbRatio;
+                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage, transaction);
                     if (ratioAbsorbed >= 1) {
                         //If we have fully absorbed the damage, stop checking/trying to absorb more
                         break;
                     }
                 }
             }
-        }
-        if (ratioAbsorbed < 1) {
-            //If we haven't fully absorbed it check the individual pieces of armor for if they can absorb any
-            Float absorbRatio = null;
-            for (FoundArmorDetails details : armorDetails) {
-                if (absorbRatio == null) {
-                    //If we haven't looked up yet if we can absorb the damage type and if we can't
-                    // stop checking if the armor is able to
-                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
-                        break;
-                    }
-                    // Next lookup the ratio at which we can absorb the given damage type from the data map
-                    MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(player.registryAccess(), source.typeHolder());
-                    if (absorptionData == null) {
-                        absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
-                    } else {
-                        absorbRatio = absorptionData.absorption();
-                    }
-                    if (absorbRatio == 0) {
-                        //If the config or the data map specifies that the damage type shouldn't be blocked at all
-                        // stop checking if the armor is able to
-                        break;
-                    }
-                }
-                float absorption = details.armor.absorption * absorbRatio;
-                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage);
-                if (ratioAbsorbed >= 1) {
-                    //If we have fully absorbed the damage, stop checking/trying to absorb more
-                    break;
-                }
-            }
-        }
-        for (FoundArmorDetails details : armorDetails) {
             //Use energy/or enqueue usage for each piece as needed
-            details.drainEnergy();
+            transaction.commit();
         }
         return Math.min(ratioAbsorbed, 1);
     }
@@ -486,58 +490,31 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
     }
 
-    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost) {
+    private static float absorbDamage(EnergyHandler energyHandler, float amount, float absorption, float currentAbsorbed, IntSupplier energyCost, TransactionContext transaction) {
         //Cap the amount that we can absorb to how much we have left to absorb
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            long usage = MathUtils.ceilToLong(energyCost.getAsLong() * toAbsorb);
-            if (usage == 0L) {
+            int usage = Mth.ceil(energyCost.getAsInt() * toAbsorb);
+            if (usage == 0) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 return absorption;
-            } else if (usageInfo.energyAvailable >= usage) {
-                //If we have more energy available than we need, increase how much energy we "used"
-                // and decrease how much we have available.
-                usageInfo.energyUsed += usage;
-                usageInfo.energyAvailable -= usage;
+            }
+            int energyUsed = energyHandler.extract(usage, transaction);
+            if (energyUsed == usage) {
+                //If we have more energy available than we need, return that we can absorb it all
                 return absorption;
-            } else if (usageInfo.energyAvailable > 0L) {
+            } else if (energyUsed > 0) {
                 //Otherwise, if we have energy available but not as much as needed to fully absorb it
                 // then we calculate what ratio we are able to block
-                float absorbedPercent = (float) (usageInfo.energyAvailable / (double) usage);
-                usageInfo.energyUsed += usageInfo.energyAvailable;
-                usageInfo.energyAvailable = 0L;
+                float absorbedPercent = energyUsed / (float) usage;
                 return absorption * absorbedPercent;
             }
         }
         return 0;
     }
 
-    private static class FoundArmorDetails {
-
-        private final IEnergyContainer energyContainer;
-        private final EnergyUsageInfo usageInfo;
-        private final ItemMekaSuitArmor armor;
-
-        public FoundArmorDetails(IEnergyContainer energyContainer, ItemMekaSuitArmor armor) {
-            this.energyContainer = energyContainer;
-            this.usageInfo = new EnergyUsageInfo(energyContainer.getEnergy());
-            this.armor = armor;
-        }
-
-        public void drainEnergy() {
-            energyContainer.extract(usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-        }
-    }
-
-    private static class EnergyUsageInfo {
-
-        private long energyAvailable;
-        private long energyUsed = 0;
-
-        public EnergyUsageInfo(long energyAvailable) {
-            this.energyAvailable = energyAvailable;
-        }
+    private record FoundArmorDetails(EnergyHandler energyHandler, float armorAbsorption) {
     }
 }

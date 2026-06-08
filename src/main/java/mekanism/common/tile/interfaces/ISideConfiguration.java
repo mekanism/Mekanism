@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -47,7 +47,7 @@ public interface ISideConfiguration {
         TileComponentConfig config = getConfig();
         if (container instanceof IChemicalTank && config.supports(TransmissionType.CHEMICAL)) {
             info = config.getConfig(TransmissionType.CHEMICAL);
-        } else if (container instanceof IExtendedFluidTank && config.supports(TransmissionType.FLUID)) {
+        } else if (container instanceof IFluidTank && config.supports(TransmissionType.FLUID)) {
             info = config.getConfig(TransmissionType.FLUID);
         } else if (container instanceof IInventorySlot && config.supports(TransmissionType.ITEM)) {
             info = config.getConfig(TransmissionType.ITEM);

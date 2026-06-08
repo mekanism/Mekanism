@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -63,15 +63,9 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         }
     }
 
-    /**
-     * Produce the given amount of the cold variant of this coolant.
-     *
-     * @param amountCooled Amount of heated coolant to cool.
-     *
-     * @return Chemical stack representing the cooled coolant.
-     */
-    public ChemicalStack cool(long amountCooled) {
-        return new ChemicalStack(otherVariant, amountCooled);
+    /// {@return a chemical resource representing the type of the cooled coolant}
+    public ChemicalResource cool() {//TODO - 26.1: Update docs
+        return ChemicalResource.of(otherVariant);
     }
 
     @Override

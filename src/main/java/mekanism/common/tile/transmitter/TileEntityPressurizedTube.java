@@ -1,54 +1,28 @@
 package mekanism.common.tile.transmitter;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Predicate;
-import mekanism.api.MekanismAPI;
-import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import com.mojang.serialization.Codec;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.DynamicChemicalHandler;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
-import mekanism.common.integration.computer.IComputerTile;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
-
-    private final ChemicalHandlerManager chemicalHandlerManager;
+public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<ChemicalResource, IChemicalTank, ChemicalNetwork, PressurizedTube> implements ITileRadioactive {
 
     public TileEntityPressurizedTube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
-        Predicate<@Nullable Direction> canExtract = getExtractPredicate();
-        Predicate<@Nullable Direction> canInsert = getInsertPredicate();
-        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(direction -> {
-            PressurizedTube tube = getTransmitter();
-            if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
-                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
-                // then return that we have no tanks
-                return Collections.emptyList();
-            }
-            return tube.getChemicalTanks(direction);
-        }, new DynamicChemicalHandler(this::getChemicalTanks, canExtract, canInsert, null)));
+        super(blockProvider, pos, state, Capabilities.CHEMICAL);
     }
 
     @Override
@@ -57,19 +31,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @Override
-    public PressurizedTube getTransmitter() {
-        return (PressurizedTube) super.getTransmitter();
-    }
-
-    @Override
-    protected void onUpdateServer() {
-        getTransmitter().pullFromAcceptors();
-        super.onUpdateServer();
-    }
-
-    @Override
     public TransmitterType getTransmitterType() {
         return TransmitterType.PRESSURIZED_TUBE;
+    }
+
+    @Override
+    protected Codec<ChemicalResource> resourceCodec() {
+        return ChemicalResource.CODEC;
     }
 
     @NotNull
@@ -85,19 +53,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @Override
-    protected void writeUpdatedTag(@NotNull ValueOutput output) {
-        //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        super.writeUpdatedTag(output);
-        if (getTransmitter().hasTransmitterNetwork()) {
-            ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                output.store(SerializationConstants.CHEMICAL, Chemical.CODEC, network.lastChemical);
-            }
-            output.putFloat(SerializationConstants.SCALE, network.currentScale);
-        }
-    }
-
-    @Override
     public float getRadiationScale() {
         if (!RadiationManager.isGlobalRadiationEnabled()) {
             return 0;
@@ -106,19 +61,15 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         if (isRemote()) {
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
+                if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().isRadioactive()) {
                     //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                     // going through it, but it shouldn't matter too much
                     return network.currentScale;
                 }
             }
-        } else {
-            IChemicalTank gasTank = tube.getChemicalTank();
-            if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
-                return gasTank.getStored() / (float) gasTank.getCapacity();
-            }
+            return 0;
         }
-        return 0;
+        return tube.getRadiationScale();
     }
 
     @Override
@@ -126,63 +77,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         return MathUtils.clampToInt(3 * getRadiationScale());
     }
 
-    private List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return chemicalHandlerManager.getContainers(side);
-    }
-
-    @Override
-    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
-        super.sideChanged(side, old, type);
-        if (type == ConnectionType.NONE) {
-            //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.CHEMICAL.block(), side);
-        } else if (old == ConnectionType.NONE) {
-            //Notify any listeners to our position that we now do have a capability
-            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
-            invalidateCapabilities();
-        }
-    }
-
-    @Override
-    public void redstoneChanged(boolean powered) {
-        super.redstoneChanged(powered);
-        if (powered) {
-            //The transmitter now is powered by redstone and previously was not
-            //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
-            // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilityAll(Capabilities.CHEMICAL.block());
-        } else {
-            //Notify any listeners to our position that we now do have a capability
-            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
-            invalidateCapabilities();
-        }
-    }
-
     //Methods relating to IComputerTile
     @Override
     public String getComputerName() {
         return getTransmitter().getTier().getBaseTier().getLowerName() + "PressurizedTube";
-    }
-
-    @ComputerMethod
-    ChemicalStack getBuffer() {
-        return getTransmitter().getBufferWithFallback();
-    }
-
-    @ComputerMethod
-    long getCapacity() {
-        PressurizedTube tube = getTransmitter();
-        return tube.hasTransmitterNetwork() ? tube.getTransmitterNetwork().getCapacity() : tube.getCapacity();
-    }
-
-    @ComputerMethod
-    long getNeeded() {
-        return getCapacity() - getBuffer().amount();
-    }
-
-    @ComputerMethod
-    double getFilledPercentage() {
-        return getBuffer().amount() / (double) getCapacity();
     }
     //End methods IComputerTile
 }

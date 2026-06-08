@@ -114,7 +114,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               .addCondition(tagNotEmpty)
               .save(consumer, Mekanism.rl(basePath + "dye/" + name));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
-        long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
+        int flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
                     MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(large ? 2 * flowerRate : flowerRate)

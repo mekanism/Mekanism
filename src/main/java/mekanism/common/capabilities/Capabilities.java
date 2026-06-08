@@ -4,8 +4,7 @@ import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
@@ -16,7 +15,6 @@ import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -27,15 +25,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities.Energy;
+import net.neoforged.neoforge.capabilities.Capabilities.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities.Item;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class Capabilities {
@@ -45,25 +44,14 @@ public class Capabilities {
 
     public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
 
-    private record FluidCapability(BlockCapability<IFluidHandler, @Nullable Direction> block,
-                                   ItemCapability<IFluidHandlerItem, ItemAccess> item,
-                                   EntityCapability<IFluidHandler, @Nullable Direction> entity) implements IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> {
-    }
-
     public static final MultiTypeCapability<EnergyHandler> ENERGY = new MultiTypeCapability<>(Energy.BLOCK, Energy.ITEM, Energy.ENTITY);
-    //TODO - 26.1: Replace these with using the actual types that Neo has
-    public static final IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> FLUID = new FluidCapability(
-          BlockCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class),
-          ItemCapability.create(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class, ItemAccess.class),
-          EntityCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class));//new FluidCapability(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
+    public static final MultiTypeCapability<ResourceHandler<FluidResource>> FLUID = new MultiTypeCapability<>(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
-    public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(Mekanism.rl("legacy_item"), IItemHandler.class);//new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);
+    public static final MultiTypeCapability<ResourceHandler<ItemResource>> ITEM = new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);
 
-    public static final MultiTypeCapability<IChemicalHandler> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), IChemicalHandler.class);
+    public static final MultiTypeCapability<ResourceHandler<ChemicalResource>> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), ResourceHandler.asClass());
 
     public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
-
-    public static final MultiTypeCapability<IStrictEnergyHandler> STRICT_ENERGY = new MultiTypeCapability<>(Mekanism.rl("strict_energy_handler"), IStrictEnergyHandler.class);
 
     public static final BlockCapability<IConfigurable, @Nullable Direction> CONFIGURABLE = BlockCapability.createSided(Mekanism.rl("configurable"), IConfigurable.class);
 
@@ -86,7 +74,6 @@ public class Capabilities {
 
     public static void registerProxyableCapabilities(RegisterCapabilitiesEvent event) {
         event.setProxyable(CHEMICAL.block());
-        event.setProxyable(STRICT_ENERGY.block());
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -95,7 +82,7 @@ public class Capabilities {
         EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
         event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, ctx) -> robit);
         event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, ctx) -> robit);
-        EnergyCompatUtils.registerEntityCapabilities(event, robitEntityType, (robit, ctx) -> robit);
+        event.registerEntity(ENERGY.entity(), robitEntityType, (robit, ctx) -> robit.getEnergyContainer());
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //Note: The jvm will reuse the lambda between types
@@ -109,9 +96,7 @@ public class Capabilities {
         //Capabilities we need to proxy because some sub implementations use them
         ComputerCapabilityHelper.addBoundingComputerCapabilities(event);
         TileEntityBoundingBlock.proxyCapability(event, ITEM.block());
-        for (BlockCapability<?, @Nullable Direction> capability : EnergyCompatUtils.getLoadedEnergyCapabilities()) {
-            TileEntityBoundingBlock.proxyCapability(event, capability);
-        }
+        TileEntityBoundingBlock.proxyCapability(event, ENERGY.block());
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
         TileEntityBoundingBlock.proxyCapability(event, FLUID.block());
         TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());

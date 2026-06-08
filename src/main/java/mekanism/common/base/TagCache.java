@@ -25,6 +25,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.Registry;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -60,7 +61,7 @@ public final class TagCache {
         modIDBlacklistedElements.clear();
     }
 
-    public static List<String> getItemTags(@NotNull ItemStack check) {
+    public static List<String> getItemTags(@NotNull TypedInstance<Item> check) {
         return getTagsAsStrings(check.tags());
     }
 

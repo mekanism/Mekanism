@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
@@ -18,12 +17,14 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.IHolder;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
@@ -51,13 +52,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
+public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction, IHolder {
 
-    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER =
-          capabilityProvider(Capabilities.CONFIGURABLE, (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
+    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER = capabilityProvider(Capabilities.CONFIGURABLE,
+          (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -152,7 +155,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void onChunkUnloaded() {
         if (!isRemote()) {
             //Only take the transmitter's share if it was unloaded and not if we are being removed
-            getTransmitter().validateAndTakeShare();
+            getTransmitter().validateAndTakeShare(null);
         }
         super.onChunkUnloaded();
     }
@@ -208,7 +211,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             onWorldJoin(true);
         } else {
             //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
-            getTransmitter().validateAndTakeShare();
+            getTransmitter().validateAndTakeShare(null);
             onWorldSeparate(true);
         }
     }
@@ -347,7 +350,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     if (!sharesSet) {
                         if (transmitterNetwork instanceof DynamicBufferedNetwork dynamicNetwork) {
                             //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
-                            dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
+                            dynamicNetwork.validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter, null);
                         }
                         sharesSet = true;
                     }
@@ -366,7 +369,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         } else {
                             Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
                             if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
-                                transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData);
+                                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                                    transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData, transaction);
+                                    transaction.commit();
+                                }
                             } else {
                                 Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
                             }
@@ -390,9 +396,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
-    private <DATA extends TransmitterUpgradeData> void transferUpgradeData(IUpgradeableTransmitter<DATA> upgradeableTransmitter, TransmitterUpgradeData data) {
+    private <DATA extends TransmitterUpgradeData> void transferUpgradeData(IUpgradeableTransmitter<DATA> upgradeableTransmitter, TransmitterUpgradeData data, TransactionContext transaction) {
         if (upgradeableTransmitter.dataTypeMatches(data)) {
-            upgradeableTransmitter.parseUpgradeData((DATA) data);
+            upgradeableTransmitter.parseUpgradeData((DATA) data, transaction);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
         }
@@ -421,25 +427,23 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void redstoneChanged(boolean powered) {
     }
 
-    protected Predicate<@Nullable Direction> getExtractPredicate() {
-        return side -> {
-            if (side == null) {
-                //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
-                return true;
-            }
-            //If we have a side only allow extracting if our connection allows it
-            return getTransmitter().getConnectionType(side).canSendTo();
-        };
+    @Override
+    public boolean canExtract(@Nullable Direction side) {
+        if (side == null) {
+            //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
+            return true;
+        }
+        //If we have a side only allow extracting if our connection allows it
+        return getTransmitter().getConnectionType(side).canSendTo();
     }
 
-    protected Predicate<@Nullable Direction> getInsertPredicate() {
-        return side -> {
-            if (side == null) {
-                //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
-                return true;
-            }
-            //If we have a side only allow inserting if our connection allows it
-            return getTransmitter().getConnectionType(side).canAccept();
-        };
+    @Override
+    public boolean canInsert(@Nullable Direction side) {
+        if (side == null) {
+            //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
+            return true;
+        }
+        //If we have a side only allow inserting if our connection allows it
+        return getTransmitter().getConnectionType(side).canAccept();
     }
 }

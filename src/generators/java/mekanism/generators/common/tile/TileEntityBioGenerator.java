@@ -1,17 +1,17 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -24,10 +24,11 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -45,10 +46,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         super(GeneratorsBlocks.BIO_GENERATOR, pos, state);
     }
 
-    private static int biofuelFromItem(@NotNull ItemStack stack) {
-        if (stack.is(MekanismTags.Items.FUELS_BIO)) {
+    private static int biofuelFromItem(@NotNull ItemResource itemType) {
+        if (itemType.is(MekanismTags.Items.FUELS_BIO)) {
             return MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
-        } else if (stack.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
+        } else if (itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
             return 9 * MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
         }
         return 0;
@@ -56,9 +57,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @NotNull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
-        builder.addTank(bioFuelTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.bioTankCapacity,
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
+        MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(bioFuelTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.bioTankCapacity,
                     fluidStack -> fluidStack.is(GeneratorTags.Fluids.BIOETHANOL), listener), RelativeSide.LEFT, RelativeSide.RIGHT,
               RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
@@ -66,33 +67,39 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem,
-                    GeneratorsFluids.BIOETHANOL::asStack, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem, GeneratorsFluids.BIOETHANOL,
+                    listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
+        builder.addContainer(energySlot = EnergyInventorySlot.drain(energyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.drainContainer();
-        fuelSlot.fillOrBurn();
-        if (canFunction() && !bioFuelTank.isEmpty() &&
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
-            setActive(true);
-            MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.EXECUTE, AutomationType.INTERNAL);
-            float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
-            if (MekanismUtils.scaleChanged(fluidScale, lastFluidScale)) {
-                lastFluidScale = fluidScale;
-                sendUpdatePacket = true;
+        energySlot.drainContainerIntoSlot(null);
+        fuelSlot.fillOrBurn(null);
+        boolean isActive = false;
+        if (canFunction() && !bioFuelTank.isEmpty()) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                int toGenerate = MekanismGeneratorsConfig.generators.bioGeneration.get();
+                //If we can insert all the energy we would generate, and can extract 1 mB of fuel
+                if (energyContainer().insert(toGenerate, transaction, AutomationType.INTERNAL) == toGenerate &&
+                    bioFuelTank.extract(bioFuelTank.resource(), 1, transaction, AutomationType.INTERNAL) == 1) {
+                    //Then mark the generator as active and commit the changes
+                    isActive = true;
+                    transaction.commit();
+                    float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
+                    if (MekanismUtils.scaleChanged(fluidScale, lastFluidScale)) {
+                        lastFluidScale = fluidScale;
+                        sendUpdatePacket = true;
+                    }
+                }
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
         return sendUpdatePacket;
     }
 
@@ -111,18 +118,18 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(bioFuelTank.getFluidAmount(), bioFuelTank.getCapacity());
+        return ContainerType.FLUID.getRedstoneSignalFromContainer(bioFuelTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
     }
 
     //Methods relating to IComputerTile
     @Override
-    long getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0L;
+    int getProductionRate() {
+        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0;
     }
     //End methods IComputerTile
 }

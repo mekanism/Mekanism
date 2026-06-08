@@ -4,12 +4,14 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.resource.IResourceContainer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public class NBTUtils {
+public class NBTUtils {//TODO - 26.1: Should we rename this class?
 
     private NBTUtils() {
     }
@@ -34,5 +36,15 @@ public class NBTUtils {
 
     public static void writeEnum(ValueOutput output, String key, Enum<?> e) {
         output.putInt(key, e.ordinal());
+    }
+
+    public static <RESOURCE extends Resource> void storeNonEmpty(ValueOutput output, String key, IResourceContainer<RESOURCE> container) {
+        if (!container.isEmpty()) {
+            container.stackHelper().storeNonEmpty(output, key, container.asStack());
+        }
+    }
+
+    public static <RESOURCE extends Resource> void readOrEmpty(ValueInput input, String key, IResourceContainer<RESOURCE> container) {
+        container.setContents(container.stackHelper().readOrEmpty(input, key), null);
     }
 }

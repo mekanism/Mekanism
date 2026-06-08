@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -45,7 +45,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
-        FluidStack fluid = tank.fluidTank.getFluid();
+        FluidResource fluid = tank.fluidTank.resource();
         state.fluidTint = MekanismRenderer.getColorARGB(fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluid);
         state.fluidScale = fluid.isEmpty() ? 0 : tank.prevScale;
@@ -53,9 +53,9 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         state.contentsMaxY = state.fluidScale > 0 ? contentsMaxY(state.fluidScale, gaseous) : 0;
         state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
 
-        if (!tank.valveFluid.isEmpty() && !gaseous) {
-            //If it is lighter than air we don't need to render the valve
-            FluidStack valveFluid = tank.valveFluid;
+        FluidResource valveFluid = tank.getValveFluid();
+        //If it is lighter than air we don't need to render the valve
+        if (!valveFluid.isEmpty() && !gaseous) {
             state.valveMinY = valveMinY(state.fluidScale);
             state.valveTint = MekanismRenderer.getColorARGB(valveFluid);
             state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, valveFluid);

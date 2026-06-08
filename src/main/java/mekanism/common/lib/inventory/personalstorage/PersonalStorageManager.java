@@ -16,14 +16,16 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.world.item.ItemStack;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.storage.SavedDataStorage;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsAreNotNullByDefault
@@ -53,31 +55,31 @@ public class PersonalStorageManager {
     /**
      * Only call on the server. Gets or creates an inventory for the supplied stack
      *
-     * @param stack Personal storage ItemStack (type not checked) - will be modified if it didn't have an inventory id
+     * @param itemAccess Personal storage Item Access (type not checked) - will be modified if it didn't have an inventory id
      *
      * @return the existing or new inventory
      */
     @Nullable
-    public static AbstractPersonalStorageItemInventory getInventoryFor(ItemStack stack) {
-        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+    public static AbstractPersonalStorageItemInventory getInventoryFor(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
         if (owner == null) {
-            Mekanism.logger.error("Storage inventory asked for but stack has no owner! {}", stack, new Exception());
+            Mekanism.logger.error("Storage inventory asked for but item type has no owner! {}", itemAccess.getResource(), new Exception());
             return null;
         }
-        return getInventoryFor(stack, owner);
+        return getInventoryFor(itemAccess, owner, transaction);
     }
 
     /**
      * Only call on the server. Gets or creates an inventory for the supplied stack
      *
-     * @param stack Personal storage ItemStack (type not checked) - will be modified if it didn't have an inventory id
-     * @param owner The owner of the stack
+     * @param itemAccess Personal storage Item Access (type not checked) - will be modified if it didn't have an inventory id
+     * @param owner      The owner of the stack
      *
      * @return the existing or new inventory
      */
     @Nullable
-    public static AbstractPersonalStorageItemInventory getInventoryFor(ItemStack stack, @NotNull UUID owner) {
-        UUID invId = getInventoryId(stack);
+    public static AbstractPersonalStorageItemInventory getInventoryFor(ItemAccess itemAccess, UUID owner, @Nullable TransactionContext transaction) {
+        UUID invId = getInventoryId(itemAccess, transaction);
         return getInventoryForUnchecked(invId, owner);
     }
 
@@ -85,12 +87,12 @@ public class PersonalStorageManager {
      * Only call on the server. Gets an inventory for the supplied stack
      *
      * @param inventoryId Personal storage inventory id
-     * @param owner The owner of the stack
+     * @param owner       The owner of the stack
      *
      * @return the existing or new inventory
      */
     @Nullable
-    public static AbstractPersonalStorageItemInventory getInventoryForUnchecked(@Nullable UUID inventoryId, @NotNull UUID owner) {
+    public static AbstractPersonalStorageItemInventory getInventoryForUnchecked(@Nullable UUID inventoryId, UUID owner) {
         if (inventoryId == null) {
             return null;
         }
@@ -101,8 +103,8 @@ public class PersonalStorageManager {
         return null;
     }
 
-    public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
-        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+    public static boolean createInventoryFor(ItemAccess itemAccess, List<IInventorySlot> contents, TransactionContext transaction) {
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
         if (owner == null || contents.size() != 54) {
             //No owner or wrong number of slots, something went wrong
             return false;
@@ -110,7 +112,7 @@ public class PersonalStorageManager {
         //Get a new inventory id
         PersonalStorageData data = forOwner(owner);
         if (data != null) {
-            data.addInventory(getInventoryId(stack), contents);
+            data.addInventory(getInventoryId(itemAccess, transaction), contents, transaction);
             return true;
         }
         return false;
@@ -119,24 +121,27 @@ public class PersonalStorageManager {
     /**
      * Only call on the server
      * <p>
-     * Version of {@link #getInventoryFor(ItemStack)} which will NOT create an inventory if none exists already. The stack will only be modified if it contained a legacy
-     * inventory
+     * Version of {@link #getInventoryFor(ItemAccess, TransactionContext)} which will NOT create an inventory if none exists already. The stack will only be modified if
+     * it contained a legacy inventory
      *
-     * @param stack Personal storage ItemStack
+     * @param itemAccess Personal storage Item Access
      *
      * @return the existing or converted inventory, or null if none exists in saved data nor legacy data
      */
     @Nullable
-    public static AbstractPersonalStorageItemInventory getInventoryIfPresent(ItemStack stack) {
-        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-        return owner != null && stack.has(MekanismDataComponents.PERSONAL_STORAGE_ID) ? getInventoryFor(stack, owner) : null;
+    public static AbstractPersonalStorageItemInventory getInventoryIfPresent(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
+        return owner != null && itemAccess.getResource().has(MekanismDataComponents.PERSONAL_STORAGE_ID) ? getInventoryFor(itemAccess, owner, transaction) : null;
     }
 
-    public static void deleteInventory(ItemStack stack) {
-        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+    public static void deleteInventory(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
         if (owner != null) {
-            UUID storageId = stack.remove(MekanismDataComponents.PERSONAL_STORAGE_ID);
+            ItemResource resource = itemAccess.getResource();
+            UUID storageId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
             if (storageId != null) {
+                //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason?
+                ItemAccessUtils.exchange(itemAccess, resource.without(MekanismDataComponents.PERSONAL_STORAGE_ID), transaction);
                 //If there actually was an id stored then remove the corresponding inventory
                 PersonalStorageData data = forOwner(owner);
                 if (data != null) {
@@ -146,12 +151,13 @@ public class PersonalStorageManager {
         }
     }
 
-    @NotNull
-    private static UUID getInventoryId(ItemStack stack) {
-        UUID invId = stack.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
+    private static UUID getInventoryId(ItemAccess itemAccess, @Nullable TransactionContext transaction) {
+        ItemResource resource = itemAccess.getResource();
+        UUID invId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
         if (invId == null) {
             invId = UUID.randomUUID();
-            stack.set(MekanismDataComponents.PERSONAL_STORAGE_ID, invId);
+            //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason?
+            ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.PERSONAL_STORAGE_ID, invId), transaction);
         }
         return invId;
     }
@@ -160,8 +166,7 @@ public class PersonalStorageManager {
         STORAGE_BY_PLAYER_UUID.clear();
     }
 
-    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract,
-          @Nullable IContentsListener listener) {
+    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<ItemResource, AutomationType> canInteract, @Nullable IContentsListener listener) {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 slotConsumer.accept(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));

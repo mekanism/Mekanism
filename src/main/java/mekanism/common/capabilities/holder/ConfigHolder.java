@@ -1,9 +1,6 @@
 package mekanism.common.capabilities.holder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,7 +22,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     /**
      * Dummy ISlotInfo used for representing we have no config
      */
-    private static final ISlotInfo NO_CONFIG = new ISlotInfo() {
+    protected static final ISlotInfo NO_CONFIG = new ISlotInfo() {
         @Override
         public boolean canInput() {
             return true;
@@ -48,8 +45,9 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     };
 
     private final Map<Direction, ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
+    private final Function<ISlotInfo, TYPE> slotInfoParser;
     private final ISideConfiguration sideConfiguration;
-    protected final List<TYPE> slots = new ArrayList<>();
+    private final TransmissionType transmissionType;
     @Nullable
     private Direction lastDirection;
 
@@ -57,11 +55,15 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     private ConfigInfo lazyConfig;
     private boolean retrievedConfig;
 
-    protected ConfigHolder(ISideConfiguration sideConfiguration) {
+    public ConfigHolder(ISideConfiguration sideConfiguration, TransmissionType transmissionType, Function<ISlotInfo, TYPE> slotInfoParser) {
         this.sideConfiguration = sideConfiguration;
+        this.transmissionType = transmissionType;
+        this.slotInfoParser = slotInfoParser;
     }
 
-    protected abstract TransmissionType getTransmissionType();
+    protected abstract TYPE defaultValue();
+
+    protected abstract TYPE allData();
 
     @Override
     public boolean canInsert(@Nullable Direction side) {
@@ -85,18 +87,17 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         return slotInfo != null && interactPredicate.test(slotInfo);
     }
 
-    @NotNull
-    protected List<TYPE> getSlots(@Nullable Direction side, @NotNull Function<ISlotInfo, List<TYPE>> slotInfoParser) {
+    protected TYPE getData(@org.jspecify.annotations.Nullable Direction side) {
         if (side == null) {
             //If we want the internal, give all of our slots
-            return slots;
+            return allData();
         }
         ISlotInfo slotInfo = getSlotInfo(side);
         if (slotInfo == NO_CONFIG) {
             //If we don't have a config (most likely case is it hasn't been set up yet, or we don't support this type of data in our configuration), just return all
-            return slots;
+            return allData();
         } else if (slotInfo == null) {
-            return Collections.emptyList();
+            return defaultValue();
         }
         return slotInfoParser.apply(slotInfo);
     }
@@ -116,7 +117,6 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
             retrievedConfig = true;
             TileComponentConfig config = sideConfiguration.getConfig();
             if (config != null) {
-                TransmissionType transmissionType = getTransmissionType();
                 lazyConfig = config.getConfig(transmissionType);
                 if (lazyConfig != null) {
                     //If we haven't added a listener to our config yet add one to remove the cached info we have for that side

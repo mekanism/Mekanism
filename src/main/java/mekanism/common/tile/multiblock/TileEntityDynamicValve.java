@@ -1,15 +1,14 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank {
@@ -20,42 +19,23 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
     @NotNull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
+        return _ -> getMultiblock().getValveFluidTanks(getBlockPos());
     }
 
     @NotNull
     @Override
-    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        return side -> getMultiblock().getChemicalTanks(side);
+    public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
+        return _ -> getMultiblock().getChemicalTanks();
     }
     
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.CHEMICAL) {
             return false;
         }
         return super.persists(type);
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }
-
-    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (action.execute() && remainder.amount() < stack.amount()) {
-            getMultiblock().triggerValveTransfer(this);
-        }
-        return remainder;
     }
 
     @Override

@@ -22,11 +22,11 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -111,7 +111,7 @@ public class RecipeViewerUtils {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         for (Holder<Chemical> type : supportedTypes) {
-            stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
+            stacks.add(ContainerType.CHEMICAL.getFilledVariant(MekanismBlocks.BASIC_CHEMICAL_TANK.getItemHolder(), type, null));
         }
         ContextMap slotDisplayContext = getSlotDisplayContext();
         //See if there are any chemical to item mappings

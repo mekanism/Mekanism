@@ -41,6 +41,6 @@ public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe>
         ContextMap slotDisplayContext = getSlotDisplayContext();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations(slotDisplayContext));
         initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations(slotDisplayContext));
-        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe.getOutputDefinition());
     }
 }

@@ -11,14 +11,16 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketSetItemFrequency(boolean set, TypedIdentity data, InteractionHand currentHand) implements IMekanismPacket {
@@ -44,23 +46,24 @@ public record PacketSetItemFrequency(boolean set, TypedIdentity data, Interactio
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getItemInHand(currentHand);
-        if (stack.getItem() instanceof IFrequencyItem frequencyItem && IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
-            updateFrequency(player, stack, frequencyItem.getFrequencyType());
+        ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, currentHand);
+        if (itemAccess.getResource().getItem() instanceof IFrequencyItem frequencyItem && IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess)) {
+            updateFrequency(player, itemAccess, frequencyItem.getFrequencyType());
         }
     }
 
-    private <FREQ extends Frequency> void updateFrequency(Player player, ItemStack stack, FrequencyType<FREQ> frequencyType) {
+    private <FREQ extends Frequency> void updateFrequency(Player player, ItemAccess itemAccess, FrequencyType<FREQ> frequencyType) {
         DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyType);
         if (frequencyComponent != null) {
+            ItemResource resource = itemAccess.getResource();
             if (set) {
-                stack.set(frequencyComponent, FrequencyAware.create(frequencyType, data.data(), player.getUUID()));
+                ItemAccessUtils.exchange(itemAccess, resource.with(frequencyComponent, FrequencyAware.create(frequencyType, data.data(), player.getUUID())), null);
             } else {
-                FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+                FrequencyAware<FREQ> frequencyAware = resource.get(frequencyComponent);
                 FrequencyLookup<?> manager = frequencyType.getLookup(data.data(), data.data().ownerUUID() == null ? player.getUUID() : data.data().ownerUUID());
                 if (manager.remove(data.data().key(), player.getUUID()) && frequencyAware != null && frequencyAware.identity().filter(data.data()::equals).isPresent()) {
                     //If the frequency we are removing matches the stored frequency, remove it
-                    stack.remove(frequencyComponent);
+                    ItemAccessUtils.exchange(itemAccess, resource.without(frequencyComponent), null);
                 }
             }
         }

@@ -13,49 +13,40 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
-import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
-import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
-import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import mekanism.common.content.network.distribution.EnergyHandlerTarget;
+import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
+import mekanism.common.lib.distribution.Target;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -65,50 +56,49 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
+public class InventoryFrequency extends Frequency implements ITileHeatHandler, IContentsListener {
 
-    @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
-          SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
-          ChemicalStack.LENIENT_OPTIONAL_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.getStack()),
-          SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
+          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getAmountAsLong()),
+          LargeResourceStack.FLUID_HELPER.orEmptyCodec().fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.asStack()),
+          LargeResourceStack.CHEMICAL_HELPER.orEmptyCodec().fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.asStack()),
+          LargeResourceStack.ITEM_HELPER.orEmptyCodec().fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.asStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
-        frequency.storedEnergy.setEnergy(energy);
-        frequency.storedFluid.setStackUnchecked(fluid);
-        frequency.storedChemical.setStackUnchecked(chemical);
-        frequency.storedItem.setStackUnchecked(item);
+        frequency.storedEnergy.setEnergy(energy, null);
+        frequency.storedFluid.setContents(fluid, null);
+        frequency.storedChemical.setContents(chemical, null);
+        frequency.storedItem.setContents(item, null);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
-          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
-          FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
-          ChemicalStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedChemical.getStack(),
-          ItemStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedItem.getStack(),
+          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getAmountAsLong(),
+          LargeResourceStack.FLUID_HELPER.streamCodec(), freq -> freq.storedFluid.asStack(),
+          LargeResourceStack.CHEMICAL_HELPER.streamCodec(), freq -> freq.storedChemical.asStack(),
+          LargeResourceStack.ITEM_HELPER.streamCodec(), freq -> freq.storedItem.asStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
-              frequency.storedEnergy.setEnergy(energy);
-              frequency.storedFluid.setStack(fluid);
-              frequency.storedChemical.setStack(chemical);
-              frequency.storedItem.setStack(item);
+              frequency.storedEnergy.setEnergy(energy, null);
+              frequency.storedFluid.setContents(fluid, null);
+              frequency.storedChemical.setContents(chemical, null);
+              frequency.storedItem.setContents(item, null);
               frequency.storedHeat.setHeat(heat);
               return frequency;
           }
@@ -126,8 +116,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private List<IInventorySlot> inventorySlots;
     private List<IChemicalTank> chemicalTanks;
-    private List<IExtendedFluidTank> fluidTanks;
-    private List<IEnergyContainer> energyContainers;
+    private List<IFluidTank> fluidTanks;
     private List<IHeatCapacitor> heatCapacitors;
 
     /**
@@ -147,33 +136,33 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
         chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
-        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
+        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this);
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
               1_000, null, this));
     }
 
     @NotNull
-    @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
     @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
     }
 
     @NotNull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 
+    public IEnergyContainer getEnergyContainer() {
+        return storedEnergy;
+    }
+
     @NotNull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return energyContainers;
+    public List<IHeatCapacitor> getHeatCapacitors() {
+        return heatCapacitors;
     }
 
     @NotNull
@@ -209,13 +198,15 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public void handleEject(long gameTime) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
-            Map<TransmissionType, Consumer<?>> typesToEject = new EnumMap<>(TransmissionType.class);
+            Map<TransmissionType, Target<?, ?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
-            List<Runnable> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
+            List<TargetExecution> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
-            addEnergyTransferHandler(typesToEject, transferHandlers, expected);
-            addFluidTransferHandler(typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(typesToEject, transferHandlers, expected);
+            try (Transaction simulation = Transaction.openRoot()) {
+                addEnergyTransferHandler(typesToEject, transferHandlers, expected, simulation);
+                addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.FLUID, storedFluid, simulation);
+                addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.CHEMICAL, storedChemical, simulation);
+            }
             if (!typesToEject.isEmpty()) {
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
@@ -230,7 +221,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                         continue;
                     }
                     Direction facing = qe.getDirection();
-                    for (Map.Entry<TransmissionType, Consumer<?>> entry : typesToEject.entrySet()) {
+                    for (Map.Entry<TransmissionType, Target<?, ?>> entry : typesToEject.entrySet()) {
                         TransmissionType transmissionType = entry.getKey();
                         ConfigInfo config = qe.getConfig().getConfig(transmissionType);
                         //Validate the ejector for the config allows ejecting this transmission type. In theory, we already check all
@@ -246,120 +237,92 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     }
                 }
                 //Run all our transfer handlers that we have
-                for (Runnable transferHandler : transferHandlers) {
-                    transferHandler.run();
+                for (TargetExecution transferHandler : transferHandlers) {
+                    if (transferHandler.getHandlerCount() > 0) {
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            if (transferHandler.extract(transaction)) {
+                                //If we were able to extract everything we thought we would be able to and had tried to send
+                                // then commit all the changes
+                                transaction.commit();
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    private static <TYPE> void accept(Consumer<TYPE> consumer, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
+    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
         TYPE cachedCapability = qe.getCachedCapability(side, transmissionType);
         if (cachedCapability != null) {
-            consumer.accept(cachedCapability);
+            target.addHandler(cachedCapability);
         }
     }
 
-    private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (toSend > 0L) {
-            SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
+    private void addEnergyTransferHandler(Map<TransmissionType, Target<?, ?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
+        int toSend = storedEnergy.extract(storedEnergy.getAmountAsInt(), simulation, AutomationType.INTERNAL);
+        if (toSend > 0) {
+            SendingEnergyHandlerTarget target = new SendingEnergyHandlerTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);
         }
     }
 
-    private void addFluidTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        FluidStack fluidToSend = storedFluid.extract(storedFluid.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!fluidToSend.isEmpty()) {
-            SendingFluidHandlerTarget target = new SendingFluidHandlerTarget(fluidToSend, expected, storedFluid);
-            typesToEject.put(TransmissionType.FLUID, target);
-            transferHandlers.add(target);
+    private <RESOURCE extends Resource> void addResourceTransferHandler(Map<TransmissionType, Target<?, ?>> typesToEject, List<TargetExecution> transferHandlers,
+          int expected, TransmissionType transmissionType, IResourceContainer<RESOURCE> container, TransactionContext simulation) {
+        RESOURCE type = container.resource();
+        if (!type.isEmpty()) {
+            int amountToSend = container.extract(type, container.amountAsInt(), simulation, AutomationType.INTERNAL);
+            if (amountToSend > 0) {
+                SendingResourceHandlerTarget<RESOURCE> target = new SendingResourceHandlerTarget<>(type, amountToSend, expected, container);
+                typesToEject.put(transmissionType, target);
+                transferHandlers.add(target);
+            }
         }
     }
 
-    private void addChemicalTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        ChemicalStack toSend = storedChemical.extract(storedChemical.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!toSend.isEmpty()) {
-            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, storedChemical);
-            typesToEject.put(TransmissionType.CHEMICAL, target);
-            transferHandlers.add(target);
-        }
+    private interface TargetExecution {
+
+        int getHandlerCount();
+
+        boolean extract(TransactionContext subTransaction);
     }
 
-    private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements Runnable, Consumer<IStrictEnergyHandler> {
+    private static class SendingEnergyHandlerTarget extends EnergyHandlerTarget implements TargetExecution {
 
-        private final IEnergyContainer storedEnergy;
-        private final long toSend;
+        private final IEnergyContainer container;
+        private final int toSend;
 
-        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, long toSend) {
+        public SendingEnergyHandlerTarget(int expectedSize, IEnergyContainer container, int toSend) {
             super(expectedSize);
-            this.storedEnergy = storedEnergy;
+            this.container = container;
             this.toSend = toSend;
         }
 
         @Override
-        public void run() {
-            if (getHandlerCount() > 0) {
-                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY), Action.EXECUTE, AutomationType.INTERNAL);
-            }
-        }
-
-        @Override
-        public void accept(IStrictEnergyHandler handler) {
-            addHandler(handler);
+        public boolean extract(TransactionContext subTransaction) {
+            int sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
+            return sent > 0 && container.extract(sent, subTransaction, AutomationType.INTERNAL) == sent;
         }
     }
 
-    private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<IFluidHandler> {
+    private static class SendingResourceHandlerTarget<RESOURCE extends Resource> extends ResourceHandlerTarget<RESOURCE> implements TargetExecution {
 
-        private final FluidStack toSend;
-        private final IExtendedFluidTank storedFluid;
+        private final RESOURCE type;
+        private final int toSend;
+        private final IResourceContainer<RESOURCE> container;
 
-        public SendingFluidHandlerTarget(@NotNull FluidStack toSend, int expectedSize, IExtendedFluidTank storedFluid) {
+        public SendingResourceHandlerTarget(RESOURCE type, int toSend, int expectedSize, IResourceContainer<RESOURCE> container) {
             super(expectedSize);
+            this.type = type;
             this.toSend = toSend;
-            this.storedFluid = storedFluid;
+            this.container = container;
         }
 
         @Override
-        public void run() {
-            if (getHandlerCount() > 0) {
-                storedFluid.extract(EmitUtils.sendToAcceptors(this, toSend.amount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
-            }
-        }
-
-        @Override
-        public void accept(IFluidHandler handler) {
-            if (FluidUtils.canFill(handler, toSend)) {
-                addHandler(handler);
-            }
-        }
-    }
-
-    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
-
-        private final ChemicalStack toSend;
-        private final IChemicalTank storedChemical;
-
-        public SendingChemicalHandlerTarget(ChemicalStack toSend, int expectedSize, IChemicalTank storedChemical) {
-            super(expectedSize);
-            this.toSend = toSend;
-            this.storedChemical = storedChemical;
-        }
-
-        @Override
-        public void run() {
-            if (getHandlerCount() > 0) {
-                storedChemical.extract(EmitUtils.sendToAcceptors(this, toSend.amount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
-            }
-        }
-
-        @Override
-        public void accept(IChemicalHandler handler) {
-            if (ChemicalUtil.canInsert(handler, toSend)) {
-                addHandler(handler);
-            }
+        public boolean extract(TransactionContext subTransaction) {
+            int sent = EmitUtils.sendToAcceptors(this, toSend, type, subTransaction);
+            return sent > 0 && container.extract(type, sent, subTransaction, AutomationType.INTERNAL) == sent;
         }
     }
 }

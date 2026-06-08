@@ -1,50 +1,57 @@
 package mekanism.common.attachments.containers.fluid;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank {
 
     private final boolean isCreative;
 
-    public static ComponentBackedFluidTankFluidTank create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int tankIndex) {
-        if (!(attachedTo.getItem() instanceof ItemBlockFluidTank item)) {
+    public static ComponentBackedFluidTankFluidTank create(ItemAccess attachedAccess, int tankIndex) {
+        if (!(attachedAccess.getResource().getItem() instanceof ItemBlockFluidTank item)) {
             throw new IllegalStateException("Attached to should always be a fluid tank item");
         }
-        return new ComponentBackedFluidTankFluidTank(attachedTo, tankIndex, item.getTier());
+        return new ComponentBackedFluidTankFluidTank(attachedAccess, tankIndex, item.getTier());
     }
 
-    private ComponentBackedFluidTankFluidTank(ItemStack attachedTo, int tankIndex, FluidTankTier tier) {
-        super(attachedTo, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getStorage);
+    private ComponentBackedFluidTankFluidTank(ItemAccess attachedAccess, int tankIndex, FluidTankTier tier) {
+        super(attachedAccess, tankIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), tier::getCapacity, tier::getTransferRate);
         isCreative = tier == FluidTankTier.CREATIVE;
     }
 
     @Override
-    public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        return super.insert(stack, action.combine(!isCreative), automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int insert(AttachedResources<FluidResource> attached, FluidResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, long capacity,
+          FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes)
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(attached, currentType, currentAmount, capacity, resource, amount, simulation, automationType);
+            }
+        }
+        return super.insert(attached, currentType, currentAmount, capacity, resource, amount, transaction, automationType);
     }
 
     @Override
-    public FluidStack extract(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action, AutomationType automationType) {
-        return super.extract(attachedFluids, stored, amount, action.combine(!isCreative), automationType);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(AttachedFluids, FluidStack, int, Action)}, as both {@link #growStack(int, Action)} and
-     * {@link #shrinkStack(int, Action)} are wrapped through this method.
-     */
-    @Override
-    public int setStackSize(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action) {
-        return super.setStackSize(attachedFluids, stored, amount, action.combine(!isCreative));
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int extract(AttachedResources<FluidResource> attached, FluidResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount,
+          FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.extract(attached, currentType, currentAmount, resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(attached, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 }

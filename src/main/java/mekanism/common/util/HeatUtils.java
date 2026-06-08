@@ -17,7 +17,7 @@ public class HeatUtils {
 
     public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
-    public static double getWaterThermalEnthalpy() {
+    public static long getWaterThermalEnthalpy() {
         return MekanismConfig.general.maxEnergyPerSteam.get();
     }
 

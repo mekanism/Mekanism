@@ -33,7 +33,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     public void apply(FusionReactorMultiblockData data) {
         super.apply(data);
         if (plasmaTemperature >= 0) {
-            data.plasmaTemperature = plasmaTemperature;
+            data.setPlasmaTemp(plasmaTemperature);
         }
         data.setInjectionRate(getInjectionRate());
         data.setBurning(burning);
@@ -43,7 +43,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     @Override
     public void sync(FusionReactorMultiblockData data) {
         super.sync(data);
-        plasmaTemperature = data.plasmaTemperature;
+        plasmaTemperature = data.getPlasmaTemp();
         injectionRate = data.getInjectionRate();
         burning = data.isBurning();
     }

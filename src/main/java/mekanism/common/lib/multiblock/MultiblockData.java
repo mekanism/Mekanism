@@ -2,9 +2,10 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -12,23 +13,18 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -53,7 +49,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler {
+public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IContentsListener {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
@@ -64,7 +60,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
      */
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public Map<BlockPos, ValveData> valves = new HashMap<>();
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
@@ -89,13 +85,12 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     private final Supplier<Level> worldSupplier;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
-    protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
+    protected final List<IFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
-    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (t, automationType) -> isFormed();
-    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (t, automationType) -> automationType != AutomationType.EXTERNAL && isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (_, _) -> isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (_, automationType) -> !automationType.isExternal() && isFormed();
 
     private boolean dirty;
 
@@ -154,12 +149,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      */
     public boolean tick(ServerLevel world) {
         boolean needsPacket = false;
-        for (ValveData data : valves) {
-            data.activeTicks = Math.max(0, data.activeTicks - 1);
-            if (data.activeTicks > 0 != data.prevActive) {
-                needsPacket = true;
-            }
-            data.prevActive = data.activeTicks > 0;
+        for (ValveData data : valves.values()) {
+            needsPacket |= data.tick();
         }
         return needsPacket;
     }
@@ -216,19 +207,20 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             }
         }
 
-        if (shouldCap(CacheSubstance.FLUID)) {
-            for (IExtendedFluidTank tank : getFluidTanks(null)) {
-                tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
+        if (shouldCache(MultiblockCache.FLUID)) {
+            for (IFluidTank tank : getFluidTanks()) {
+                ContainerType.FLUID.clampContents(tank, null);
             }
         }
-        if (shouldCap(CacheSubstance.CHEMICAL)) {
-            for (IChemicalTank tank : getChemicalTanks(null)) {
-                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+        if (shouldCache(MultiblockCache.CHEMICAL)) {
+            for (IChemicalTank tank : getChemicalTanks()) {
+                ContainerType.CHEMICAL.clampContents(tank, null);
             }
         }
-        if (shouldCap(CacheSubstance.ENERGY)) {
-            for (IEnergyContainer container : getEnergyContainers(null)) {
-                container.setEnergy(Math.min(container.getEnergy(), container.getMaxEnergy()));
+        if (shouldCache(MultiblockCache.ENERGY)) {
+            IEnergyContainer container = getEnergyContainer();
+            if (container != null) {
+                ContainerType.ENERGY.clampContents(container, null);
             }
         }
         updateEjectors(world);
@@ -246,7 +238,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return worldSupplier.get();
     }
 
-    protected boolean shouldCap(CacheSubstance<?, ?> type) {
+    protected boolean shouldCache(CacheSubstance<?> type) {
         return true;
     }
 
@@ -369,26 +361,50 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return isFormed() || isRemote() ? inventorySlots : Collections.emptyList();
     }
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
     }
 
-    @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
+    protected boolean hasFluidValveHandling() {
+        return false;
+    }
+
+    public List<IFluidTank> getValveFluidTanks(BlockPos pos) {
+        if (!hasFluidValveHandling() || isRemote()) {
+            //Note: The client doesn't need to do any handling relating to valves, so just bypass valve handling for it
+            return getFluidTanks();
+        } else if (isFormed()) {
+            ValveData valve = valves.get(pos);
+            if (valve == null) {
+                //Just return all as we don't have any specific valve wrapping
+                return fluidTanks;
+            }
+            return valve.getValveTanks();
+        }
+        return Collections.emptyList();
     }
 
     @NotNull
     @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return isFormed() || isRemote() ? energyContainers : Collections.emptyList();
+    public List<IChemicalTank> getChemicalTanks() {
+        return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
+    }
+
+    @Nullable
+    protected IEnergyContainer energyContainer() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public IEnergyContainer getEnergyContainer() {
+        return isFormed() || isRemote() ? energyContainer() : null;
     }
 
     @NotNull
@@ -401,7 +417,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return locations.contains(pos) || internalLocations.contains(pos);
     }
 
-    public Collection<ValveData> getValveData() {
+    public Map<BlockPos, ValveData> getValveData() {
         return valves;
     }
 
@@ -465,8 +481,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public void notifyAllUpdateComparator(Level world) {
-        for (ValveData valve : valves) {
-            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
+        for (BlockPos valvePos: valves.keySet()) {
+            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valvePos);
             if (tile != null) {
                 tile.markDirtyComparator();
             }
@@ -490,6 +506,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     protected <CACHE, DATA> List<CACHE> getActiveOutputs(List<? extends OutputTarget<CACHE, DATA>> outputs, DATA data) {
+        if (outputs.isEmpty()) {
+            return Collections.emptyList();
+        }
         //TODO: Try to somehow cache which ones can currently output?
         List<CACHE> targets = new ArrayList<>(outputs.size());
         for (OutputTarget<CACHE, DATA> target : outputs) {
@@ -498,14 +517,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             }
         }
         return targets;
-    }
-
-    public record EnergyOutputTarget(BlockEnergyCapabilityCache cache, BooleanSupplier isActive) implements OutputTarget<BlockEnergyCapabilityCache, Void> {
-
-        @Override
-        public boolean canOutput(Void unused) {
-            return isActive.getAsBoolean();
-        }
     }
 
     public record CapabilityOutputTarget<TYPE>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, BooleanSupplier isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, Void> {

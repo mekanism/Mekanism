@@ -17,9 +17,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @NothingNullByDefault
 public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> target) implements IMekanismPacket {
@@ -35,7 +34,6 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         return new PacketUpdateModuleSettings(slotId, new ModuleConfigTarget<>(moduleType, installed, config));
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketUpdateModuleSettings> type() {
         return TYPE;
@@ -44,12 +42,12 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
     @Override
     public void handle(IPayloadContext context) {
         Player player = context.player();
-        ItemStack stack = player.getInventory().getItem(slotId);
-        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+        ItemAccess itemAccess = ItemAccess.forPlayerSlot(player, slotId);
+        ModuleContainer container = ModuleHelper.get().getModuleContainer(itemAccess.getResource());
         //Validate the container still has the container, and it didn't end up somehow getting removed by the time the server received the packet
         if (container != null && container.has(target.moduleType())) {
             try {
-                container.replaceModuleConfig(player.registryAccess(), stack, target.moduleType(), target.config(), true);
+                container.replaceModuleConfig(player.registryAccess(), itemAccess, null, target.moduleType(), target.config(), true);
             } catch (IllegalArgumentException | IllegalStateException e) {
                 //If the packet is invalid, for example if a config got sent setting to an enum value that is not in range
                 // or if a module config with the given name couldn't be found

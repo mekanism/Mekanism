@@ -7,6 +7,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
@@ -47,7 +48,7 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
 
             @Override
             public void accept(Object ingredient) {
-                setFilterStackWithSound(((ItemStack) ingredient).copyWithCount(1));
+                setFilterStackWithSound(ItemResource.of((ItemStack) ingredient));
             }
         };
     }

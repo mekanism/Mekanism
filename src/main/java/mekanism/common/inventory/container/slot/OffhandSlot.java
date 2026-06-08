@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class OffhandSlot extends InsertableSlot {
+public class OffhandSlot extends TransactionalSlot {
 
     private final Player owner;
 

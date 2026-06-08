@@ -10,13 +10,6 @@ import org.jetbrains.annotations.Nullable;
 public interface ICapabilityHandlerManager<CONTAINER> extends ICapabilityResolver<@Nullable Direction> {
 
     /**
-     * Checks if the capability handler manager can handle this substance type.
-     *
-     * @return {@code true} if it can handle the substance type, {@code false} otherwise.
-     */
-    boolean canHandle();
-
-    /**
      * Gets the containers for a given side.
      *
      * @param side The side

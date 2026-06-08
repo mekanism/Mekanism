@@ -19,7 +19,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, MekanismTileContainer<TileEntityElectricPump>> {
@@ -36,30 +36,29 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 42, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
-            FluidStack fluidStack = tile.fluidTank.getFluid();
-            if (fluidStack.isEmpty()) {
-                FluidStack fallBack = tile.getActiveType();
+            list.add(EnergyDisplay.of(tile.energyContainer()).getTextComponent());
+            if (tile.fluidTank.isEmpty()) {
+                FluidResource fallBack = tile.getActiveType();
                 if (fallBack.isEmpty()) {
                     list.add(MekanismLang.NO_FLUID.translate());
                 } else {
                     list.add(fallBack.getHoverName());
                 }
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(fluidStack.amount())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.resource(), TextUtils.format(tile.fluidTank.amountAsLong())));
             }
             return list;
         }));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
-                  MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                  MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.energyContainer();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
               });
-        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13))
-              .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeeded() < tile.estimateIncrementAmount());
+        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 6, 13))
+              .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeededAsInt(FluidResource.EMPTY) < tile.estimateIncrementAmount());
         //TODO: Eventually we may want to consider showing a warning if the block under the pump is of the wrong type or there wasn't a valid spot to suck
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
     }
 
     @Override

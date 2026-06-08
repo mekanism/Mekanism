@@ -10,25 +10,19 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
-import java.util.function.ToLongFunction;
-import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
+import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -36,13 +30,8 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
-import mekanism.common.attachments.containers.energy.AttachedEnergy;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
-import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.heat.HeatCapacitorData;
-import mekanism.common.attachments.containers.item.AttachedItems;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -61,17 +50,12 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
-import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ResourceHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.integration.computer.BoundMethodHolder;
@@ -85,14 +69,13 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLargeResourceStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.lib.LastEnergyTracker;
+import mekanism.common.lib.transaction.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
@@ -120,13 +103,12 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -137,6 +119,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -150,14 +133,19 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, IMekanismInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
-      IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
+      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable,
+      IContentsListener {
+
+    protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
 
     /**
      * The players currently using this block.
@@ -226,27 +214,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final TileComponentFrequency frequencyComponent;
     //End variables IFrequencyHandler
 
-    //Variables for handling ITileContainer
     @Nullable
-    protected final ItemHandlerManager itemHandlerManager;
-    //End variables ITileContainer
-
-    //Variables for handling IMekanismChemicalHandler
+    protected final ResourceHandlerManager<ItemResource, IInventorySlot> itemHandlerManager;
     @Nullable
-    protected final ChemicalHandlerManager chemicalHandlerManager;
-    private float radiationScale;
-    //End variables IMekanismChemicalHandler
-
-    //Variables for handling IMekanismFluidHandler
+    protected final ResourceHandlerManager<FluidResource, IFluidTank> fluidHandlerManager;
     @Nullable
-    protected final FluidHandlerManager fluidHandlerManager;
-    //End variables IMekanismFluidHandler
-
-    //Variables for handling IMekanismStrictEnergyHandler
+    protected final ResourceHandlerManager<ChemicalResource, IChemicalTank> chemicalHandlerManager;
     @Nullable
     protected final EnergyHandlerManager energyHandlerManager;
-    private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
-    //End variables IMekanismStrictEnergyHandler
+
+    //Variables for handling IMekanismChemicalHandler
+    private float radiationScale;
+    //End variables IMekanismChemicalHandler
 
     //Variables for handling IMekanismHeatHandler
     protected final Map<Direction, BlockCapabilityCache<IHeatHandler, @Nullable Direction>> adjacentHeatCaps;
@@ -285,38 +264,38 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
 
-        List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
+        List<ICapabilityResolver<@Nullable Direction>> capabilityHandlerManagers = new ArrayList<>();
 
-        IChemicalTankHolder initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
+        IContainerHolder<IChemicalTank> initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
         if (initialChemicalTanks != null) {
-            capabilityHandlerManagers.add(chemicalHandlerManager = new ChemicalHandlerManager(initialChemicalTanks, this));
+            capabilityHandlerManagers.add(chemicalHandlerManager = new ResourceHandlerManager<>(Capabilities.CHEMICAL, initialChemicalTanks));
         } else {
             chemicalHandlerManager = null;
         }
 
-        IFluidTankHolder initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
+        IContainerHolder<IFluidTank> initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
         if (initialFluidTanks != null) {
-            capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(initialFluidTanks, this));
+            capabilityHandlerManagers.add(fluidHandlerManager = new ResourceHandlerManager<>(Capabilities.FLUID, initialFluidTanks));
         } else {
             fluidHandlerManager = null;
         }
 
-        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
+        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
-            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this));
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, MekanismUtils.getGameTimeSupplier(this)));
         } else {
             energyHandlerManager = null;
         }
 
-        IInventorySlotHolder initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
+        IContainerHolder<IInventorySlot> initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
         if (initialInventory != null) {
-            capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(initialInventory, this));
+            capabilityHandlerManagers.add(itemHandlerManager = new ResourceHandlerManager<>(Capabilities.ITEM, initialInventory));
         } else {
             itemHandlerManager = null;
         }
 
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        IHeatCapacitorHolder initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
+        IContainerHolder<IHeatCapacitor> initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
         if (initialHeatCapacitors != null) {
             capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(initialHeatCapacitors, this));
         } else {
@@ -375,21 +354,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Should data related to the given type be persisted in this tile save
      */
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(@UnknownNullability IContainerType<?, ?> type) {
         return type.canHandle(this);
     }
 
     /**
      * Should data related to the given type be transferred to the item
      */
-    public boolean persistsToItem(ContainerType<?, ?, ?> type) {
+    public boolean persistsToItem(IContainerType<?, ?> type) {
         return persists(type);
     }
 
     /**
      * Should data related to the given type be synced to the client in the GUI
      */
-    public boolean syncs(ContainerType<?, ?, ?> type) {
+    public boolean syncs(IContainerType<?, ?> type) {
         return persists(type);
     }
 
@@ -442,29 +421,32 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsComputers;
     }
 
-    @Override
+    /**
+     * Used to check if this tile actually has an inventory.
+     *
+     * @return True if we are actually an inventory.
+     *
+     * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
+     */
     public final boolean hasInventory() {
-        return itemHandlerManager != null && itemHandlerManager.canHandle();
+        return itemHandlerManager != null;
     }
 
-    @Override
     public boolean canHandleChemicals() {
-        return chemicalHandlerManager != null && chemicalHandlerManager.canHandle();
+        return chemicalHandlerManager != null;
     }
 
-    @Override
     public final boolean canHandleFluid() {
-        return fluidHandlerManager != null && fluidHandlerManager.canHandle();
+        return fluidHandlerManager != null;
     }
 
-    @Override
     public final boolean canHandleEnergy() {
-        return energyHandlerManager != null && energyHandlerManager.canHandle();
+        return energyHandlerManager != null;
     }
 
     @Override
     public final boolean canHandleHeat() {
-        return heatHandlerManager != null && heatHandlerManager.canHandle();
+        return heatHandlerManager != null;
     }
 
     public void addComponent(ITileComponent component) {
@@ -642,7 +624,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
-            tile.upgradeComponent.tickServer();
+            tile.upgradeComponent.tickServer(null);
         }
         if (tile.hasChunkloader) {
             ((IChunkLoader) tile).getChunkLoader().tickServer();
@@ -668,7 +650,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         //Set that we received zero energy so if it is a different tick than we last had,
         // and we don't actually receive anything then we will properly update it to zero
-        tile.lastEnergyTracker.received(level.getGameTime(), 0L);
+        LastEnergyTracker lastEnergyTracker = tile.getLastEnergyTracker();
+        if (lastEnergyTracker != null) {
+            //Note: This should always be the case that the tick is considered changed
+            lastEnergyTracker.checkTickChanged();
+        }
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
             int newRedstoneLevel = tile.getRedstoneLevel();
@@ -715,7 +701,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (!isRemote() && RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(null), false);
+            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(), false, null);
         }
     }
 
@@ -765,7 +751,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             recalculateUpgrades(Upgrade.SPEED);//force buffer to update
         }
         readSustainedData(input);
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.readFrom(input, this);
             }
@@ -791,7 +777,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         writeSustainedData(output);
 
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.saveTo(output, this);
             }
@@ -844,7 +830,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
 
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (persistsToItem(type)) {
                 type.copyToTile(this, input);
             }
@@ -867,10 +853,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.addRemapEntries(remapEntries);
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (persistsToItem(type) && !remapEntries.contains(type.getComponentType().get())) {
-                //Ensure we add any container types that we only conditionally added
-                remapEntries.add(type.getComponentType().get());
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
+            if (persistsToItem(type)) {
+                DataComponentType<?> componentType = type.getComponentType().get();
+                if (!remapEntries.contains(componentType)) {
+                    //Ensure we add any container types that we only conditionally added
+                    remapEntries.add(componentType);
+                }
             }
         }
         if (this instanceof ITileFilterHolder<?> && !remapEntries.contains(MekanismDataComponents.FILTER_AWARE.get())) {
@@ -907,7 +896,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.collectImplicitComponents(builder);
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+        for (IContainerType<?, ?> type : ContainerType.TYPES) {
             if (persistsToItem(type)) {
                 type.copyFromTile(this, builder);
             }
@@ -936,22 +925,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableBoolean.create(this::isPowered, value -> redstone = value));
             container.track(SyncableBoolean.create(this::wasPowered, value -> redstoneLastTick = value));
         }
-        boolean isClient = isRemote();
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
-            List<IChemicalTank> chemicalTanks = getChemicalTanks(null);
-            for (IChemicalTank chemicalTank : chemicalTanks) {
-                container.track(SyncableChemicalStack.create(chemicalTank, isClient));
+            for (IChemicalTank chemicalTank : getChemicalTanks()) {
+                container.track(SyncableLargeResourceStack.create(chemicalTank));
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
-            List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
-            for (IExtendedFluidTank fluidTank : fluidTanks) {
-                container.track(SyncableFluidStack.create(fluidTank, isClient));
+            for (IFluidTank fluidTank : getFluidTanks()) {
+                container.track(SyncableLargeResourceStack.create(fluidTank));
             }
         }
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {
-            List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
-            for (IHeatCapacitor capacitor : heatCapacitors) {
+            for (IHeatCapacitor capacitor : getHeatCapacitors()) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
                     container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
@@ -960,22 +945,25 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
             trackLastEnergy(container);
-            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
-            for (IEnergyContainer energyContainer : energyContainers) {
+            IEnergyContainer energyContainer = getEnergyContainer();
+            if (energyContainer != null) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
-                        container.track(SyncableLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                        container.track(SyncableLong.create(machineEnergy::getCapacityAsLong, machineEnergy::setMaxEnergy));
+                        container.track(SyncableInt.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
                 //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
-                container.track(SyncableLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+                container.track(SyncableLong.create(energyContainer));
             }
         }
     }
 
     protected void trackLastEnergy(MekanismContainer container) {
-        container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
+        if (lastEnergyTracker != null) {
+            container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        }
     }
 
     @Override
@@ -1018,7 +1006,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     //Methods pertaining to IUpgradeableTile
-    public void parseUpgradeData(@NotNull IUpgradeData data, Provider provider) {
+    public void parseUpgradeData(@NotNull IUpgradeData data, Provider provider, TransactionContext transaction) {
         Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
     }
     //End methods IUpgradeableTile
@@ -1141,7 +1129,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return MekanismUtils.redstoneLevelFromContents(getInventorySlots(null));
+                return ContainerType.ITEM.getRedstoneSignalFromContainers(getInventorySlots());
             }
             //TODO: Do we want some other defaults as well?
         }
@@ -1153,7 +1141,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      *
      * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
      */
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         //Assume that items make it dirty unless otherwise overridden, as we use this before we can call hasInventory
         // and if we aren't using an inventory as our comparator thing we will be overriding this method anyway
         // and if we don't have an inventory we can't assign this listener to anything as adding slots and assigning it
@@ -1161,7 +1149,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return type == ContainerType.ITEM;
     }
 
-    protected final IContentsListener getListener(ContainerType<?, ?, ?> type, IContentsListener saveOnlyListener) {
+    private IContentsListener getListener(IContainerType<?, ?> type, IContentsListener saveOnlyListener) {
         //If we don't support comparators we can just skip having a special one that only marks for save as our
         // setChanged won't actually do anything so there is no reason to bother creating a save only listener
         return !supportsComparator() || makesComparatorDirty(type) ? this : saveOnlyListener;
@@ -1192,18 +1180,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
-            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
-                    machineEnergy.updateEnergyPerTick();
-                    machineEnergy.updateMaxEnergy();
-                }
+            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
+                machineEnergy.updateEnergyPerTick();
+                machineEnergy.updateMaxEnergy();
             }
         } else if (upgrade == Upgrade.ENERGY) {
-            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
-                    machineEnergy.updateEnergyPerTick();
-                    machineEnergy.updateMaxEnergy();
-                }
+            if (getEnergyContainer() instanceof MachineEnergyContainer<?> machineEnergy) {
+                machineEnergy.updateEnergyPerTick();
+                machineEnergy.updateMaxEnergy();
             }
         }
     }
@@ -1211,48 +1195,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing ITileContainer
     @Nullable
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         return null;
     }
 
     @NotNull
-    @Override
-    public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return itemHandlerManager != null ? itemHandlerManager.getContainers(side) : Collections.emptyList();
+    public final List<IInventorySlot> getInventorySlots() {
+        return itemHandlerManager == null ? Collections.emptyList() : itemHandlerManager.getContainers(null);
     }
 
     @Override
     public void onContentsChanged() {
         setChanged();
-    }
-
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
-        List<ItemStack> stacks = attachedItems.containers();
-        int size = stacks.size();
-        if (size == slots.size()) {
-            for (int i = 0; i < size; i++) {
-                ItemStack stack = stacks.get(i).copy();
-                IInventorySlot slot = slots.get(i);
-                if (slot instanceof BasicInventorySlot basicSlot) {
-                    basicSlot.setStackUnchecked(stack);
-                } else {
-                    slot.setStack(stack);
-                }
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedItems collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
-        boolean hasNonEmpty = false;
-        List<ItemStack> stacks = new ArrayList<>(slots.size());
-        for (IInventorySlot slot : slots) {
-            stacks.add(slot.getStack().copy());
-            if (!slot.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedItems(stacks) : null;
     }
     //End methods ITileContainer
 
@@ -1266,7 +1220,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      */
     private boolean updateRadiationScale() {
         if (shouldDumpRadiation()) {
-            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks(null));
+            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks());
             if (Math.abs(scale - radiationScale) > 0.05F) {
                 radiationScale = scale;
                 return true;
@@ -1281,143 +1235,52 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nullable
-    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+    public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return null;
     }
 
     @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
-    }
-
-    public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {
-        List<ChemicalStack> stacks = attachedChemicals.containers();
-        int size = stacks.size();
-        if (size == tanks.size()) {
-            for (int i = 0; i < size; i++) {
-                tanks.get(i).setStackUnchecked(stacks.get(i).copy());
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedChemicals collectChemicalTanks(DataComponentMap.Builder builder, List<IChemicalTank> tanks) {
-        //Skip tiles that have no gas tanks and skip the creative chemical tank
-        boolean hasNonEmpty = false;
-        List<ChemicalStack> stacks = new ArrayList<>(tanks.size());
-        boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation();
-        for (IChemicalTank tank : tanks) {
-            if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
-                //If the tank is empty or has a radioactive gas, treat it as empty
-                stacks.add(ChemicalStack.EMPTY);
-            } else {
-                hasNonEmpty = true;
-                stacks.add(tank.getStack().copy());
-            }
-        }
-        return hasNonEmpty ? new AttachedChemicals(stacks) : null;
+    public final List<IChemicalTank> getChemicalTanks() {
+        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(null);
     }
     //End methods IMekanismChemicalHandler
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return null;
     }
 
     @NotNull
-    @Override
-    public final List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
-    }
-
-    public void applyFluidTanks(DataComponentGetter input, List<IExtendedFluidTank> tanks, AttachedFluids attachedFluids) {
-        List<FluidStack> stacks = attachedFluids.containers();
-        int size = stacks.size();
-        if (size == tanks.size()) {
-            for (int i = 0; i < size; i++) {
-                tanks.get(i).setStackUnchecked(stacks.get(i).copy());
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedFluids collectFluidTanks(DataComponentMap.Builder builder, List<IExtendedFluidTank> tanks) {
-        boolean hasNonEmpty = false;
-        List<FluidStack> stacks = new ArrayList<>(tanks.size());
-        for (IExtendedFluidTank tank : tanks) {
-            stacks.add(tank.getFluid().copy());
-            if (!tank.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedFluids(stacks) : null;
+    public final List<IFluidTank> getFluidTanks() {
+        return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(null);
     }
     //End methods IMekanismFluidHandler
 
     //Methods for implementing IMekanismStrictEnergyHandler
-    @Nullable
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         return null;
     }
 
-    @NotNull
-    @Override
-    public final List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
-    }
-
-    @Override
-    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
-        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
-    }
-
-    @Override
-    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
-        //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
-        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
-    }
-
-    private long trackLastEnergy(long amount, @NotNull Action action, long remainder) {
-        if (action.execute()) {
-            //If for some reason we don't have a level fall back to zero
-            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount - remainder);
-        }
-        return remainder;
-    }
-
-    public final long getInputRate() {
-        return lastEnergyTracker.getLastEnergyReceived();
-    }
-
-    public void applyEnergyContainers(DataComponentGetter input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
-        List<Long> stored = attachedEnergy.containers();
-        int size = stored.size();
-        if (size == containers.size()) {
-            for (int i = 0; i < size; i++) {
-                containers.get(i).setEnergy(stored.get(i));
-            }
-        }
+    @Nullable
+    public final IEnergyContainer getEnergyContainer() {
+        return energyHandlerManager == null ? null : energyHandlerManager.getContainer(null);
     }
 
     @Nullable
-    public AttachedEnergy collectEnergyContainers(DataComponentMap.Builder builder, List<IEnergyContainer> containers) {
-        boolean hasNonEmpty = false;
-        List<Long> stored = new ArrayList<>(containers.size());
-        for (IEnergyContainer container : containers) {
-            stored.add(container.getEnergy());
-            if (!container.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedEnergy(stored) : null;
+    private LastEnergyTracker getLastEnergyTracker() {
+        return energyHandlerManager == null ? null : energyHandlerManager.getLastEnergyTracker();
+    }
+
+    public final long getInputRate() {
+        LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
+        return lastEnergyTracker == null ? 0 : lastEnergyTracker.getLastEnergyReceived();
     }
     //End methods IMekanismStrictEnergyHandler
 
     //Methods for implementing IInWorldHeatHandler
     @Nullable
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return null;
     }
 
@@ -1449,39 +1312,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @NotNull
+    public final List<IHeatCapacitor> getHeatCapacitors() {
+        return getHeatCapacitors(null);
+    }
+
+    @NotNull
     @Override
     public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatHandlerManager != null ? heatHandlerManager.getContainers(side) : Collections.emptyList();
-    }
-
-    public void applyHeatCapacitors(DataComponentGetter input, List<IHeatCapacitor> capacitors, AttachedHeat attachedHeat) {
-        List<HeatCapacitorData> stored = attachedHeat.containers();
-        int size = stored.size();
-        if (size == capacitors.size()) {
-            for (int i = 0; i < size; i++) {
-                IHeatCapacitor capacitor = capacitors.get(i);
-                HeatCapacitorData data = stored.get(i);
-                if (data.heat().isPresent()) {
-                    capacitor.setHeat(data.heat().getAsDouble());
-                }
-                if (capacitor instanceof BasicHeatCapacitor basic) {
-                    basic.setHeatCapacity(data.capacity(), false);
-                }
-            }
-        }
-    }
-
-    @Nullable
-    public AttachedHeat collectHeatCapacitors(DataComponentMap.Builder builder, List<IHeatCapacitor> capacitors) {
-        List<HeatCapacitorData> stored = new ArrayList<>(capacitors.size());
-        for (IHeatCapacitor capacitor : capacitors) {
-            if (capacitor.isAmbientTemperature()) {
-                stored.add(new HeatCapacitorData(capacitor.getHeatCapacity()));
-            } else {
-                stored.add(new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity()));
-            }
-        }
-        return new AttachedHeat(stored);
     }
     //End methods for IInWorldHeatHandler
 
@@ -1648,40 +1486,31 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // where being able to get a specific container's stored energy would be useful to their program. Alternatively we could
     // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
-    @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
-    long getTotalEnergy() {
-        return getTotalEnergy(IEnergyContainer::getEnergy);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getEnergy() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.getAmountAsLong();
     }
 
-    @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
-    long getTotalMaxEnergy() {
-        return getTotalEnergy(IEnergyContainer::getMaxEnergy);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getMaxEnergy() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.getCapacityAsLong();
     }
 
-    @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
-    long getTotalEnergyNeeded() {
-        return getTotalEnergy(IEnergyContainer::getNeeded);
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    long getEnergyNeeded() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        return energyContainer == null ? 0 : energyContainer.getNeededAsLong();
     }
 
-    private long getTotalEnergy(ToLongFunction<IEnergyContainer> getter) {
-        long total = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
-        for (IEnergyContainer energyContainer : energyContainers) {
-            total = MathUtils.addClamped(total, getter.applyAsLong(energyContainer));
+    @ComputerMethod(restriction = MethodRestriction.ENERGY)
+    double getEnergyFilledPercentage() {
+        IEnergyContainer energyContainer = getEnergyContainer();
+        if (energyContainer == null) {
+            return 1;
         }
-        return total;
-    }
-
-    @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
-    double getTotalEnergyFilledPercentage() {
-        long stored = 0;
-        long max = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
-        for (IEnergyContainer energyContainer : energyContainers) {
-            stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
-            max = MathUtils.addClamped(max, energyContainer.getMaxEnergy());
-        }
-        return MathUtils.divideToLevel(stored, max);
+        return ContainerType.ENERGY.divideToLevel(energyContainer);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

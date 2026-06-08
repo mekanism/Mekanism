@@ -21,11 +21,6 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
-import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemPortableQIODashboard;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemSeismicReader;
-import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -95,10 +90,10 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<ModuleTweakerContainer> MODULE_TWEAKER = CONTAINER_TYPES.register("module_tweaker", ModuleTweakerContainer::new);
 
     //Items
-    public static final ContainerTypeRegistryObject<DictionaryContainer> DICTIONARY = CONTAINER_TYPES.register(MekanismItems.DICTIONARY, ItemDictionary.class, DictionaryContainer::new);
-    public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, ItemPortableTeleporter.class, PortableTeleporterContainer::new);
-    public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, ItemSeismicReader.class, SeismicReaderContainer::new);
-    public static final ContainerTypeRegistryObject<QIOFrequencySelectItemContainer> QIO_FREQUENCY_SELECT_ITEM = CONTAINER_TYPES.register("qio_frequency_select_item", ItemPortableQIODashboard.class, QIOFrequencySelectItemContainer::new);
+    public static final ContainerTypeRegistryObject<DictionaryContainer> DICTIONARY = CONTAINER_TYPES.register(MekanismItems.DICTIONARY, DictionaryContainer::new);
+    public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
+    public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, SeismicReaderContainer::new);
+    public static final ContainerTypeRegistryObject<QIOFrequencySelectItemContainer> QIO_FREQUENCY_SELECT_ITEM = CONTAINER_TYPES.register("qio_frequency_select_item", MekanismItems.PORTABLE_QIO_DASHBOARD::is, QIOFrequencySelectItemContainer::new);
     public static final ContainerTypeRegistryObject<PortableQIODashboardContainer> PORTABLE_QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItemContainerType::qioDashboard);
 
     //Entity
@@ -164,7 +159,8 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityEnergyCube>> ENERGY_CUBE = CONTAINER_TYPES.custom("energy_cube", TileEntityEnergyCube.class).armorSideBar(180, 41, 0).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> INDUCTION_MATRIX = CONTAINER_TYPES.custom("induction_matrix", TileEntityInductionCasing.class).armorSideBar(-20, 41, 0).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> THERMOELECTRIC_BOILER = CONTAINER_TYPES.custom("thermoelectric_boiler", TileEntityBoilerCasing.class).offset(21, 0).build();
-    public static final ContainerTypeRegistryObject<PersonalStorageItemContainer> PERSONAL_STORAGE_ITEM = CONTAINER_TYPES.registerMenu("personal_storage_item", () -> MekanismItemContainerType.item(ItemBlockPersonalStorage.class, PersonalStorageItemContainer::new));
+    public static final ContainerTypeRegistryObject<PersonalStorageItemContainer> PERSONAL_STORAGE_ITEM = CONTAINER_TYPES.registerMenu("personal_storage_item",
+          () -> MekanismItemContainerType.item(item -> MekanismBlocks.PERSONAL_BARREL.isSecondary(item) || MekanismBlocks.PERSONAL_CHEST.isSecondary(item), PersonalStorageItemContainer::new));
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalStorage>> PERSONAL_STORAGE_BLOCK = CONTAINER_TYPES.custom("personal_storage_block", TileEntityPersonalStorage.class).offset(0, 56).build();
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityQIOComponent>> QIO_FREQUENCY_SELECT_TILE = CONTAINER_TYPES.registerEmpty("qio_frequency_select_tile", TileEntityQIOComponent.class);
 

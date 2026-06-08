@@ -4,38 +4,40 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import org.jspecify.annotations.Nullable;
 
 public interface IProxiedSlotInfo extends ISlotInfo {
 
     class EnergyProxy extends EnergySlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IEnergyContainer>> containerSupplier;
+        private final Supplier<@Nullable IEnergyContainer> containerSupplier;
 
-        public EnergyProxy(boolean canInput, boolean canOutput, Supplier<List<IEnergyContainer>> containerSupplier) {
-            super(canInput, canOutput);
+        public EnergyProxy(boolean canInput, boolean canOutput, Supplier<@Nullable IEnergyContainer> containerSupplier) {
+            super(canInput, canOutput, null);
             this.containerSupplier = containerSupplier;
         }
 
+        @Nullable
         @Override
-        public List<IEnergyContainer> getContainers() {
+        public IEnergyContainer getContainer() {
             return containerSupplier.get();
         }
     }
 
     class FluidProxy extends FluidSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IExtendedFluidTank>> tankSupplier;
+        private final Supplier<List<IFluidTank>> tankSupplier;
 
-        public FluidProxy(boolean canInput, boolean canOutput, Supplier<List<IExtendedFluidTank>> tankSupplier) {
+        public FluidProxy(boolean canInput, boolean canOutput, Supplier<List<IFluidTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<IExtendedFluidTank> getTanks() {
+        public List<IFluidTank> getTanks() {
             return tankSupplier.get();
         }
     }
@@ -88,6 +90,6 @@ public interface IProxiedSlotInfo extends ISlotInfo {
     @FunctionalInterface
     interface ProxySlotInfoCreator<T> {
 
-        IProxiedSlotInfo create(boolean canInput, boolean canOutput, Supplier<List<T>> supplier);
+        IProxiedSlotInfo create(boolean canInput, boolean canOutput, Supplier<T> supplier);
     }
 }

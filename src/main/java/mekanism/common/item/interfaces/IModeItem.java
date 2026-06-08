@@ -4,13 +4,17 @@ import java.util.function.Function;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
+import mekanism.common.util.ItemAccessUtils;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,18 +24,18 @@ public interface IModeItem {
      * Changes the current mode of the item
      *
      * @param player        The player who made the mode change.
-     * @param stack         The stack to change the mode of
+     * @param itemAccess    The item access representing the item to change the mode of.
      * @param shift         The amount to shift the mode by, may be negative for indicating the mode should decrease.
      * @param displayChange {@code true} if a message should be displayed when the mode changes
      */
-    void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange);
+    void changeMode(@NotNull Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction);
 
-    default boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
         return slotType == EquipmentSlot.MAINHAND || slotType == EquipmentSlot.OFFHAND;
     }
 
     @Nullable
-    default Component getScrollTextComponent(@NotNull ItemStack stack) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
         return null;
     }
 
@@ -43,13 +47,13 @@ public interface IModeItem {
         return isModeItem(player.getItemBySlot(slotType), slotType, allowRadial);
     }
 
-    static boolean isModeItem(@NotNull ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return isModeItem(stack, slotType, true);
+    static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isModeItem(@NotNull ITEM instance, @NotNull EquipmentSlot slotType) {
+        return isModeItem(instance, slotType, true);
     }
 
-    static boolean isModeItem(@NotNull ItemStack stack, @NotNull EquipmentSlot slotType, boolean allowRadial) {
-        if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && modeItem.supportsSlotType(stack, slotType)) {
-            return allowRadial || !(modeItem instanceof IGenericRadialModeItem radialModeItem) || radialModeItem.getRadialData(stack) == null;
+    static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isModeItem(@NotNull ITEM instance, @NotNull EquipmentSlot slotType, boolean allowRadial) {
+        if (instance.typeHolder().value() instanceof IModeItem modeItem && modeItem.supportsSlotType(instance, slotType)) {
+            return allowRadial || !(modeItem instanceof IGenericRadialModeItem radialModeItem) || radialModeItem.getRadialData(instance) == null;
         }
         return false;
     }
@@ -83,12 +87,16 @@ public interface IModeItem {
 
         MODE getDefaultMode();
 
-        default MODE getMode(ItemInstance stack) {
-            return stack.getOrDefault(getModeDataType(), getDefaultMode());
+        default MODE getMode(ItemAccess itemAccess) {
+            return getMode(itemAccess.getResource());
         }
 
-        default void setMode(ItemStack stack, Player player, MODE mode) {
-            stack.set(getModeDataType(), mode);
+        default <ITEM extends TypedInstance<Item> & DataComponentGetter> MODE getMode(ITEM instance) {
+            return instance.getOrDefault(getModeDataType(), getDefaultMode());
+        }
+
+        default boolean setMode(ItemAccess itemAccess, Player player, MODE mode, @Nullable TransactionContext transaction) {
+            return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(getModeDataType(), mode), transaction);
         }
     }
 }

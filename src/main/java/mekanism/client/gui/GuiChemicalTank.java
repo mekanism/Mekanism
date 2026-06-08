@@ -2,10 +2,12 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
+import mekanism.client.gui.element.bar.GuiTankBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.common.MekanismLang;
@@ -31,21 +33,22 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.armorHolder(this));
         super.addGuiElements();
-        addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(tile.getChemicalTank(), tile.getChemicalTanks(null)), 42, 16, 116, 10, true));
+        addRenderableWidget(new GuiChemicalBar(this, GuiTankBar.getProvider(tile.getChemicalTank(), tile.getChemicalTanks()), 42, 16, 116, 10, true));
         addRenderableWidget(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<Component> ret = new ArrayList<>();
             IChemicalTank tank = tile.getChemicalTank();
             if (tank.isEmpty()) {
                 ret.add(MekanismLang.CHEMICAL.translate(MekanismLang.NONE));
                 ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE :
-                                                                   TextUtils.format(tile.getTier().getStorage())));
+                                                                   TextUtils.format(tile.getTier().getCapacity())));
             } else {
-                ret.add(MekanismLang.CHEMICAL.translate(tank.getStack()));
+                ChemicalResource resource = tank.resource();
+                ret.add(MekanismLang.CHEMICAL.translate(resource));
                 if (tile.getTier() == ChemicalTankTier.CREATIVE) {
                     ret.add(MekanismLang.INFINITE.translate());
                 } else {
-                    ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.getStored()),
-                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.getCapacity())));
+                    ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.amountAsLong()),
+                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.capacityAsLong(resource))));
                 }
             }
             return ret;

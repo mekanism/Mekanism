@@ -7,7 +7,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
@@ -33,18 +34,13 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
-    }
-
-    @Override
     public ItemStackIngredient getInput() {
         return input;
     }
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public ChemicalStack getOutput(ItemStack input) {
+    public ChemicalStack getOutput(TypedInstance<Item> input) {
         return output.copy();
     }
 

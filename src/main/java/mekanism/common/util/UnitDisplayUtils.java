@@ -1,20 +1,13 @@
 package mekanism.common.util;
 
 import io.netty.buffer.ByteBuf;
-import java.util.function.BooleanSupplier;
 import java.util.function.IntFunction;
-import java.util.function.Supplier;
-import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyConversion;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,7 +15,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -48,9 +40,22 @@ public class UnitDisplayUtils {
             return null;
         }
     };
+    private static final Unit FORGE_ENERGY = new Unit() {
 
-    public static Component getDisplayShort(double value, EnergyUnit unit) {
-        return getDisplayBase(value, unit, 2, true, true);
+        @Override
+        public Object getSymbol(boolean singular) {
+            return MekanismLang.ENERGY_FORGE_SHORT;
+        }
+
+        @Override
+        public ILangEntry getLabel(boolean singular) {
+            return MekanismLang.ENERGY_FORGE;
+        }
+    };
+
+    public static Component getEnergyDisplayShort(long value) {
+        //TODO - 26.1: Re-evaluate this, getDisplayBase takes a double, can we make it more accurate for higher values by creating a variant for longs?
+        return getDisplayBase(value, FORGE_ENERGY, 2, true, true);
     }
 
     public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
@@ -130,105 +135,6 @@ public class UnitDisplayUtils {
         Object getSymbol(boolean singular);
 
         ILangEntry getLabel(boolean singular);
-    }
-
-    @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit, IHasTranslationKey, TranslatableEnum {
-        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
-            @Override
-            public double getConversion() {
-                //Unused but override it anyway
-                return 1D;
-            }
-
-            @Override
-            public boolean isOneToOne() {
-                return true;
-            }
-
-            @Override
-            public long convertFrom(long joules) {
-                return joules;
-            }
-
-            @Override
-            public long convertTo(long joules) {
-                return joules;
-            }
-        },
-        FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> MekanismConfig.general.forgeConversionRate,
-              //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
-              () -> !MekanismConfig.general.blacklistForge.getOrDefault());
-
-        public static final IntFunction<EnergyUnit> BY_ID = ByIdMap.continuous(EnergyUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-        public static final StreamCodec<ByteBuf, EnergyUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnergyUnit::ordinal);
-
-        private final Supplier<CachedDoubleValue> conversion;
-        private final BooleanSupplier checkEnabled;
-        private final ILangEntry singularLangEntry;
-        private final ILangEntry pluralLangEntry;
-        private final ILangEntry shortLangEntry;
-        private final String tabName;
-
-        //Note: We ignore improper nulls as they only are null for joules which overrides the various use places
-        @SuppressWarnings("ConstantConditions")
-        EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName,
-              @Nullable Supplier<CachedDoubleValue> conversionRate, BooleanSupplier checkEnabled) {
-            this.singularLangEntry = singularLangEntry;
-            this.pluralLangEntry = pluralLangEntry;
-            this.shortLangEntry = shortLangEntry;
-            this.checkEnabled = checkEnabled;
-            this.tabName = tabName;
-            this.conversion = conversionRate;
-        }
-
-        @Override
-        public ILangEntry getSymbol(boolean singular) {
-            return shortLangEntry;
-        }
-
-        @Override
-        public ILangEntry getLabel(boolean singular) {
-            return singular ? singularLangEntry : pluralLangEntry;
-        }
-
-        @Override
-        public double getConversion() {
-            //Note: Use default value if called before configs are loaded. In general this should never happen,
-            // but third party mods may just call it regardless
-            return conversion.get().getOrDefault();
-        }
-
-        @Override
-        public String getTranslationKey() {
-            return shortLangEntry.getTranslationKey();
-        }
-
-        @NotNull
-        @Override
-        public Component getTranslatedName() {
-            return getLabel(false).translate();
-        }
-
-        @NotNull
-        @Override
-        public EnergyUnit byIndex(int index) {
-            return BY_ID.apply(index);
-        }
-
-        public String getTabName() {
-            return tabName;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return checkEnabled.getAsBoolean();
-        }
-
-        public static EnergyUnit getConfigured() {
-            EnergyUnit type = MekanismConfig.common.energyUnit.get();
-            return type.isEnabled() ? type : JOULES;
-        }
     }
 
     @NothingNullByDefault

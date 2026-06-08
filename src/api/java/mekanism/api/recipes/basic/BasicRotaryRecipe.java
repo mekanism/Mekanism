@@ -149,9 +149,9 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
-    public List<FluidStack> getFluidOutputDefinition() {
+    public List<FluidStackTemplate> getFluidOutputDefinition() {
         assertHasChemicalToFluid();
-        return Collections.singletonList(fluidOutput.create());
+        return Collections.singletonList(fluidOutput);
     }
 
     @Override

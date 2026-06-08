@@ -6,10 +6,13 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,8 +66,8 @@ public class ModuleTweakerContainer extends MekanismContainer {
         });
     }
 
-    public static boolean isTweakableItem(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack) != null;
+    public static <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isTweakableItem(ITEM instance) {
+        return IModuleHelper.INSTANCE.getModuleContainer(instance) != null;
     }
 
     public static boolean hasTweakableItem(Player player) {

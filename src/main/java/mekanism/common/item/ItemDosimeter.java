@@ -33,27 +33,24 @@ public class ItemDosimeter extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (!player.isShiftKeyDown()) {
-            if (!world.isClientSide()) {
-                sendDosimeterLevel(player, player, MekanismLang.RADIATION_EXPOSURE);
-                CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
-            }
-            return InteractionResult.SUCCESS_SERVER;
+        if (player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        } else if (!world.isClientSide()) {
+            sendDosimeterLevel(player, player, MekanismLang.RADIATION_EXPOSURE);
+            CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, player.getItemInHand(hand));
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @NotNull
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
-        if (!player.isShiftKeyDown()) {
-            if (!player.level().isClientSide()) {
-                sendDosimeterLevel(entity, player, MekanismLang.RADIATION_EXPOSURE_ENTITY);
-            }
-            return InteractionResult.SUCCESS;
+        if (player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        } else if (!player.level().isClientSide()) {
+            sendDosimeterLevel(entity, player, MekanismLang.RADIATION_EXPOSURE_ENTITY);
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     private void sendDosimeterLevel(LivingEntity entity, Player player, ILangEntry doseLangEntry) {

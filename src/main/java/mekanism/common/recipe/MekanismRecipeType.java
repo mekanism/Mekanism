@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
@@ -192,36 +191,11 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return inputCache;
     }
 
-    @Nullable
-    private static RegistryAccess tryGetRegistryAccess() {
-        //Try to get a fallback world if we are in a context that may not have one
-        //If we are on the client get the client's world, if we are on the server get the current server's world
-        if (FMLEnvironment.getDist().isClient()) {
-            Level clientWorld = MekanismClient.tryGetClientWorld();
-            return clientWorld != null ? clientWorld.registryAccess() : null;
-        }
-        return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer(), "Server not running?").registryAccess();
-    }
-
     @NotNull
     @Override
     public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
-        RecipeMap recipeMap = null;
-        if (!(world instanceof ServerLevel serverLevel)) {
-            //Try to get a fallback world if we are in a context that may not have one
-            //If we are on the client get the client's world, if we are on the server get the current server's world
-            if (FMLEnvironment.getDist().isClient()) {
-                recipeMap = MekanismClient.clientRecipes();
-            } else {
-                MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-                if (currentServer != null) {
-                    recipeMap = currentServer.getRecipeManager().recipeMap();
-                }
-            }
-        } else {
-            recipeMap = serverLevel.recipeAccess().recipeMap();
-        }
-        if (recipeMap == null) {
+        RecipeMap recipeMap = getRecipeMap(world);
+        if (recipeMap == RecipeMap.EMPTY) {
             //If we failed, then return no recipes
             return Collections.emptyList();
         }
@@ -290,32 +264,45 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return incomplete;
     }
 
+    private static RecipeMap getRecipeMap(@Nullable Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            return serverLevel.recipeAccess().recipeMap();
+        } else if (level != null) {
+            if (level.isClientSide()) {
+                return MekanismClient.clientRecipes();
+            }
+        }
+        //No level, try to look it up
+        else if (FMLEnvironment.getDist().isClient()) {
+            return MekanismClient.clientRecipes();
+        } else {
+            MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+            if (currentServer != null) {
+                return currentServer.getRecipeManager().recipeMap();
+            }
+        }
+        return RecipeMap.EMPTY;
+    }
+
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input,
           Level level) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            //TODO - 26.1: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
-            return Optional.empty();
-        }
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return serverLevel.recipeAccess().getRecipeFor(recipeType, input, level)
+        return getRecipeMap(level).getRecipesFor(recipeType, input, level).findFirst()
               /*.filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete())*/;
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static Optional<RecipeHolder<?>> byKey(Level level, ResourceKey<Recipe<?>> id) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            //TODO - 26.1: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
-            return Optional.empty();
-        }
+    @Nullable
+    public static RecipeHolder<?> byKey(Level level, ResourceKey<Recipe<?>> id) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return serverLevel.recipeAccess().byKey(id)
+        return getRecipeMap(level).byKey(id)
               /*.filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete())*/;
     }
 }

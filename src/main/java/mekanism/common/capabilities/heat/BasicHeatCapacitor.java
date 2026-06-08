@@ -9,6 +9,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -83,8 +84,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         return heatCapacity;
     }
 
-    @Override
-    public void onContentsChanged() {
+    public void onContentsChanged(double originalState) {
         if (listener != null) {
             listener.onContentsChanged();
         }
@@ -102,10 +102,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     public void update() {
         if (heatToHandle != 0 && Math.abs(heatToHandle) > HeatAPI.EPSILON) {
-            initStoredHeat();
+            double originalState = getHeat();
             storedHeat += heatToHandle;
             //notify listeners
-            onContentsChanged();
+            onContentsChanged(originalState);
             // reset our handling heat
             heatToHandle = 0;
         }
@@ -119,6 +119,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void serialize(ValueOutput output) {
+        IHeatCapacitor.super.serialize(output);
         output.putDouble(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
     }
 
@@ -130,10 +131,18 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void setHeat(double heat) {
-        if (getHeat() != heat) {
+        double originalState = getHeat();
+        if (!Mth.equal(heat, originalState)) {
             storedHeat = heat;
-            onContentsChanged();
+            onContentsChanged(originalState);
         }
+    }
+
+    @Override
+    public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
+        IHeatCapacitor.super.copyContents(other, transaction);
+        //TODO - 26.1: Should heat capacity be copied before or after?
+        setHeatCapacity(other.getHeatCapacity(), false);
     }
 
     public void setHeatCapacity(double newCapacity, boolean updateHeat) {

@@ -31,10 +31,6 @@ public final class SerializationConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String ITEM = "item";
-    /**
-     * @since 10.6.9
-     */
-    public static final String ITEM_OVERSIZED = "item_oversized";
     public static final String SUBTRACTED = "subtracted";
     public static final String TAG = "tag";
 
@@ -129,8 +125,6 @@ public final class SerializationConstants {
     public static final String BLADES = "blades";
     public static final String BLOCK = "block";
     public static final String BLOCK_ENTITY_TAG = "block_entity_tag";
-    //TODO - 26.1: Do we want to just remove this and only use chemical as there is no longer separate types?
-    public static final String BOXED_CHEMICAL = "boxed_chemical";
     public static final String BUILT_IN_TABLES = "built_in_tables";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burn_time";
@@ -159,6 +153,8 @@ public final class SerializationConstants {
     public static final String CONFIG = "config";
     public static final String CONNECTION = "connection";
     public static final String CONTAINER = "container";
+    ///@since 10.8.0
+    public static final String CONTAINERS = "containers";
     public static final String CONTROL_TYPE = "control_type";
     /**
      * @since 10.7.11
@@ -176,7 +172,6 @@ public final class SerializationConstants {
     public static final String DIRECTION = "direction";
     public static final String DISABLED = "disabled";
     public static final String DISTANCE = "distance";
-    public static final String DRAINING = "draining";
     public static final String DRIVES = "drives";
     public static final String DUMP_LEFT = "dump_left";
     public static final String DUMP_MODE = "dumping";
@@ -192,7 +187,6 @@ public final class SerializationConstants {
     public static final String ENUMS = "enums";
     public static final String EXTENDS = "extends";
     public static final String FIELDS = "fields";
-    public static final String FILLING = "filling";
     public static final String FILTER = "filter";
     public static final String FILTERS = "filters";
     public static final String FINISHED = "finished";
@@ -235,9 +229,12 @@ public final class SerializationConstants {
     public static final String KEY = "key";
     public static final String LAST_FIRED = "last_fired";
     public static final String LAST_PROCESSED = "last_processed";
+    /// @since 10.8.0
+    public static final String LAST_TRANSFER_DIRECTION = "last_transfer_direction";
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
-    public static final String LOCK_STACK = "lock_stack";
+    /// @since 10.8.0
+    public static final String LOCK_TYPE = "lock_type";
     public static final String LOGIC_TYPE = "logic_type";
     public static final String MAGNITUDE = "magnitude";
     public static final String MAIN = "main";
@@ -312,7 +309,6 @@ public final class SerializationConstants {
     public static final String STOCK_CONTROL = "stock_control";
     public static final String STORED = "stored";
     public static final String STRICT_INPUT = "strict_input";
-    public static final String TANK = "tank";
     public static final String TARGET = "target";
     public static final String TARGET_STACK = "target_stack";
     public static final String TARGETS = "targets";

@@ -1,31 +1,32 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.ints.IntArraySet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -42,25 +43,24 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -69,12 +69,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
-    public static final Predicate<@NotNull ItemStack> FORMULA_SLOT_VALIDATOR = stack -> stack.getItem() instanceof ItemCraftingFormula;
+    public static final Predicate<ItemResource> FORMULA_SLOT_VALIDATOR = MekanismItems.CRAFTING_FORMULA::is;
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
     private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
@@ -87,7 +89,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private boolean stockControl = false;
     private boolean needsOrganize = true; //organize on load
     private boolean canTryToMove = true; //allow trying to move on load
-    private final HashedItem[] stockControlMap = new HashedItem[18];
+    private final ItemResource[] stockControlMap = Util.make(new ItemResource[18], map -> Arrays.fill(map, ItemResource.EMPTY));
 
     private int pulseOperations;
 
@@ -98,13 +100,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
-    private ItemStack lastFormulaStack = ItemStack.EMPTY;
+    private ItemResource lastFormulaStack = ItemResource.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
+    /// For in inserting to input slots and stacking before going to empty slots
+    private IMekanismResourceHandler<ItemResource, IInventorySlot> directInputHandler;
+    /// For in inserting to output slots and stacking before going to empty slots
+    private IMekanismResourceHandler<ItemResource, IInventorySlot> directOutputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
     BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
@@ -123,17 +129,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
-    @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
-        return builder.build();
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new EnergyConfigHolder(energyContainer, this);
     }
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         craftingGridSlots = new ArrayList<>();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
@@ -149,45 +153,44 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             recalculateRecipe();
         };
 
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         //If the formula slot changes we want to make sure to recheck the recipe
-        builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26, 1))
+        builder.addContainer(formulaSlot = BasicInventorySlot.at(1, FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26))
               .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
-                InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
+                inputSlots.add(builder.addContainer(InputInventorySlot.at((itemType, _) -> {
                     //Is item valid
                     if (formula.isEmpty()) {
                         return true;
                     } else if (!formula.valid()) {
                         return false;
                     } else if (stockControl) {
-                        HashedItem stockItem = stockControlMap[index];
-                        if (stockItem != null) {
-                            return stockItem.isSameItemSameComponents(stack);
+                        ItemResource stockItem = stockControlMap[index];
+                        if (!stockItem.isEmpty()) {
+                            return stockItem.equals(itemType);
                         }
                     }
-                    return formula.isValidIngredient(level, stack);
-                }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
-                inputSlots.add(builder.addSlot(inputSlot));
+                    return formula.isValidIngredient(level, itemType);
+                }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18)));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
                 //If a crafting slot changes then we want to make sure that we recheck the recipe
-                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, listenAndRecheckRecipe, 26 + slotX * 18, 17 + slotY * 18);
-                craftingGridSlots.add(builder.addSlot(craftingSlot));
+                craftingGridSlots.add(builder.addContainer(FormulaicCraftingSlot.at(this::getAutoMode, listenAndRecheckRecipe, 26 + slotX * 18, 17 + slotY * 18)));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                OutputInventorySlot outputSlot = OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18);
-                outputSlots.add(builder.addSlot(outputSlot));
+                outputSlots.add(builder.addContainer(OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18)));
             }
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
+        builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
+        directInputHandler = () -> inputSlots;
+        directOutputHandler = () -> outputSlots;
         return builder.build();
     }
 
@@ -223,7 +226,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             //Mark as no longer needing to organize after organizing it so that it rearranging things doesn't cause it to organize again
             needsOrganize = false;
         }
-        energySlot.fillContainerOrConvert();
+        energySlot.fillContainerOrConvert(null);
         if (getControlType() != RedstoneControl.PULSE) {
             pulseOperations = 0;
         } else if (canFunction()) {
@@ -234,7 +237,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
-        long clientEnergyUsed = 0L;
+        int clientEnergyUsed = 0;
         if (autoMode && !formula.isEmpty() && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -250,10 +253,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                 } else {
-                    long energyPerTick = energyContainer.getEnergyPerTick();
-                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                        clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                        operatingTicks++;
+                    int energyPerTick = energyContainer.getEnergyPerTick();
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                            clientEnergyUsed = energyPerTick;
+                            transaction.commit();
+                            operatingTicks++;
+                        }
                     }
                 }
             } else {
@@ -262,15 +268,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 
     private void checkFormula() {
-        ItemStack formulaStack = formulaSlot.getStack();
+        ItemResource formulaStack = formulaSlot.resource();
         FormulaAttachment attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (!attachment.isEmpty() && !attachment.invalid()) {
-            if (formula.isEmpty() || lastFormulaStack != formulaStack) {
+            if (formula.isEmpty() || !lastFormulaStack.equals(formulaStack)) {
                 formula = loadFormula(formulaStack, attachment);
             }
         } else {
@@ -278,11 +284,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         //Note: Because loading ends up overriding the set stack, we can't just use our stored variable
         // and have to look it back up instead
-        lastFormulaStack = formulaSlot.getStack();
+        lastFormulaStack = formulaSlot.resource();
     }
 
     //Note: Assumes attachment is not invalid
-    private RecipeFormula loadFormula(ItemStack formulaStack, FormulaAttachment attachment) {
+    private RecipeFormula loadFormula(ItemResource formulaStack, FormulaAttachment attachment) {
         RecipeFormula recipe = RecipeFormula.create(level, attachment);
         if (recipe.valid()) {
             if (!formula.isEmpty() && !formula.equals(recipe)) {
@@ -293,9 +299,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             return recipe;
         }
-        formulaStack = formulaStack.copy();
-        formulaStack.set(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid());
-        formulaSlot.setStack(formulaStack);
+        formulaSlot.setContents(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.amountAsLong(), null);
         return RecipeFormula.EMPTY;
     }
 
@@ -356,43 +360,42 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private boolean canMoveLastRemaining() {
-        for (ItemStack it : lastRemainingItems) {
-            if (!it.isEmpty() && !tryMoveToOutput(it, Action.SIMULATE)) {
+    private boolean doSingleCraft() {
+        if (lastOutputStack.isEmpty()) {
+            return false;
+        }
+        ItemResource output = ItemResource.of(lastOutputStack);
+        int outputAmount = lastOutputStack.count();
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (directOutputHandler.insert(output, outputAmount, transaction) < outputAmount) {
+                //Can't fit it all, bail and revert changes
                 return false;
             }
-        }
-        return true;
-    }
-
-    private boolean doSingleCraft() {
-        ItemStack output = lastOutputStack;
-        if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) && canMoveLastRemaining()) {
-            tryMoveToOutput(output, Action.EXECUTE);
-            //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
-            // For example if there are multiple stacks of dirt, or even just different item types, in remaining and we have room for one stack,
-            // but given we only check one stack at a time...)
-            // Basically simulating fitting the last remaining items doesn't do enough validation about intermediary state
             for (ItemStack remainingItem : lastRemainingItems) {
-                if (!remainingItem.isEmpty()) {
-                    //TODO: Check if it matters that we are not actually updating the list of remaining items?
-                    // The better solution would be to not allow continuing until we moved output AND all remaining items
-                    // instead of trying to move all at once??
-                    tryMoveToOutput(remainingItem, Action.EXECUTE);
+                //TODO: Check if it matters that we are not actually updating the list of remaining items?
+                // The better solution would be to not allow continuing until we moved output AND all remaining items
+                // instead of trying to move all at once??
+                //TODO - 26.1: validate we don't have to clear the list anywhere
+                int remainingAmount = remainingItem.count();
+                if (remainingAmount > 0 && directOutputHandler.insert(ItemResource.of(remainingItem), remainingAmount, transaction) < remainingAmount) {
+                    //Can't fit it all, bail and revert changes
+                    return false;
                 }
             }
-
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
-                    MekanismUtils.logMismatchedStackSize(craftingSlot.shrinkStack(1, Action.EXECUTE), 1);
+                    if (craftingSlot.extract(craftingSlot.resource(), 1, transaction, AutomationType.INTERNAL) == 0) {
+                        //Something went horribly wrong when removing the inputs from the input slots, bail and revert changes
+                        return false;
+                    }
                 }
             }
-            if (!formula.isEmpty()) {
-                moveItemsToGrid();
-            }
-            return true;
+            transaction.commit();
         }
-        return false;
+        if (!formula.isEmpty()) {
+            moveItemsToGrid();
+        }
+        return true;
     }
 
     public boolean craftSingle() {
@@ -407,55 +410,85 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (!canTryToMove) {
             return false;
         }
-        boolean ret = true;
+        boolean canOperate = true;
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            ItemStack recipeStack = recipeSlot.getStack();
-            if (formula.isIngredientInPos(level, recipeStack, i)) {
-                continue;
-            }
-            if (recipeStack.isEmpty()) {
-                Set<HashedItem> checkedTypes = null;
-                for (int j = inputSlots.size() - 1; j >= 0; j--) {
-                    //The stack stored in the stock inventory
-                    IInventorySlot stockSlot = inputSlots.get(j);
-                    if (!stockSlot.isEmpty()) {
-                        ItemStack stockStack = stockSlot.getStack();
-                        //Note: As we don't mutate it (except potentially when we found it as a match, at which point we don't need it anymore),
-                        // we can just use a raw view rather than having to copy the stack
-                        HashedItem stockStackType = HashedItem.raw(stockStack);
-                        //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
-                        if (checkedTypes == null || checkedTypes.add(stockStackType)) {
-                            if (formula.isIngredientInPos(level, stockStack, i)) {
-                                recipeSlot.setStack(stockStack.copyWithCount(1));
-                                MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
-                                break;
-                            } else if (checkedTypes == null) {
-                                checkedTypes = new HashSet<>();
-                                //Note: If the types set was not null, then we will have added it above when checking if we already checked the type
-                                checkedTypes.add(stockStackType);
-                            }
-                        }
-                    }
-                }
-                if (recipeSlot.isEmpty()) {
-                    //We didn't find a stack to replace it with, that means we won't be able to operate on our recipe
-                    ret = false;
-                }
-            } else {
-                //Update recipeStack as well, so we can check if it is empty without having to get it again
-                recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                if (!recipeStack.isEmpty()) {
-                    ret = false;
+            if (!formula.isIngredientInPos(level, recipeSlot.resource(), i)) {
+                if (!tryMoveToGrid(recipeSlot, i)) {
+                    canOperate = false;
                 }
             }
         }
-        if (!ret) {
+        if (!canOperate) {
             //If we failed to move items, then we know none of the currently stored items are valid for the recipe,
             // so we can skip trying to move them until something changes
             canTryToMove = false;
         }
-        return ret;
+        return canOperate;
+    }
+
+    private boolean tryMoveToGrid(IInventorySlot recipeSlot, int i) {
+        ItemResource resource = recipeSlot.resource();
+        int stored = recipeSlot.amountAsInt();
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (!resource.isEmpty()) {
+                //If the current input doesn't match, start by moving it to the input slots
+                int extracted = recipeSlot.extract(resource, stored, transaction, AutomationType.INTERNAL);
+                if (extracted < stored) {
+                    //Cannot extract from the slot, mark that we failed to handle at least one of the slots, and continue onto the next one
+                    // Theoretically this if statement should never be true as it always returns true for if extracting is allowed
+                    return false;
+                }
+                int inserted = directInputHandler.insert(resource, stored, transaction, AutomationType.INTERNAL);
+                if (inserted < stored) {
+                    //Failed to insert the removed contents into the input slots, so mark that we failed to handle at least one of the slots,
+                    // and continue onto the next one
+                    return false;
+                }
+            }
+            //Commit being able to move the item out of the crafting grid so that even if we are unable to find a replacement stack,
+            // then the UI is able to display the expected type instead of it being covered by the invalid one
+            transaction.commit();
+        }
+        //Note: If we haven't returned and thus rolled back our transaction due to failure, that means the recipe slot should be empty here
+        Object2BooleanMap<ItemResource> checkedTypes = new Object2BooleanOpenHashMap<>();
+        for (IInventorySlot stockSlot : inputSlots) {
+            //The stack stored in the stock inventory
+            if (!stockSlot.isEmpty()) {
+                ItemResource stockType = stockSlot.resource();
+                //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
+                boolean isValidIngredient;
+                if (checkedTypes.containsKey(stockType)) {
+                    isValidIngredient = checkedTypes.getBoolean(stockType);
+                } else {
+                    isValidIngredient = formula.isIngredientInPos(level, stockType, i);
+                    //Mark whether that type of item is valid for the ingredient
+                    checkedTypes.put(stockType, isValidIngredient);
+                }
+                if (isValidIngredient) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int extracted = stockSlot.extract(stockType, 1, transaction, AutomationType.INTERNAL);
+                        if (extracted == 0) {
+                            //Continue to next slot if for some reason we were unable to extract the contents from it
+                            // (theoretically this should not be possible with the predicates we define on the stock slots)
+                            continue;
+                        } else if (recipeSlot.insert(stockType, 1, transaction, AutomationType.INTERNAL) == 1) {
+                            //If we were able to extract from the stock slot and insert into the recipe slot, commit our transaction
+                            // and return true for being able to operate
+                            transaction.commit();
+                            return true;
+                        }
+                        //Otherwise we continue to try and see if any of our other types work
+                        //Note: We also mark the type as false, as we aren't actually able to insert it into the slot
+                        // so then even if it would be valid for the recipe, it isn't actually valid
+                        // (Due to the predicates for our slots, I don't think this should ever be the case)
+                        checkedTypes.put(stockType, false);
+                    }
+                }
+            }
+        }
+        //We didn't find a stack to replace it with, that means we won't be able to operate on our recipe
+        return false;
     }
 
     public void craftAll() {
@@ -479,9 +512,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private void moveItemsToInput(boolean forcePush) {
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            ItemStack recipeStack = recipeSlot.getStack();
-            if (!recipeStack.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeStack, i)))) {
-                recipeSlot.setStack(tryMoveToInput(recipeStack));
+            if (recipeSlot.isEmpty()) {
+                continue;
+            }
+            ItemResource resource = recipeSlot.resource();
+            if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int inserted = directInputHandler.insert(resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
+                    if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
+                        //If we are able to fully extract from the recipe slot the amount that we inserted into the input slots
+                        // then commit the change. We rely on the fact that our recipe slot should always be able to extract
+                        // so the limiting factor of this should be what can be inserted into the input slots
+                        transaction.commit();
+                    }
+                }
             }
         }
     }
@@ -544,143 +588,105 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formula.isEmpty()) {
             return;
         }
-        // build map of what items we have to organize
-        // Note: We keep track of the order so that it is more consistent
-        Object2IntMap<HashedItem> storedMap = new Object2IntLinkedOpenHashMap<>();
-        for (IInventorySlot inputSlot : inputSlots) {
-            if (!inputSlot.isEmpty()) {
-                ItemStack stack = inputSlot.getStack();
-                HashedItem hashed = HashedItem.create(stack);
-                storedMap.mergeInt(hashed, stack.count(), Integer::sum);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int slotCount = inputSlots.size();
+            // build map of what items we have to organize
+            // Note: We keep track of the order so that it is more consistent
+            Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
+            for (IInventorySlot inputSlot : inputSlots) {
+                if (!inputSlot.isEmpty()) {
+                    //Track how much of the item is stored
+                    storedMap.mergeInt(inputSlot.resource(), inputSlot.amountAsInt(), Integer::sum);
+                    // and then clear the contents from the slot, as we will just roll this back if something goes wrong
+                    // and change listeners won't be fired if the slot ends up in the same state as it started
+                    ContainerType.ITEM.clearContents(inputSlot, transaction);
+                }
             }
-        }
-        // place items into respective controlled slots
-        IntSet unused = new IntArraySet(stockControlMap.length);
-        for (int i = 0; i < inputSlots.size(); i++) {
-            HashedItem hashedItem = stockControlMap[i];
-            if (hashedItem == null) {
-                unused.add(i);
-            } else {
+            List<IInventorySlot> emptySlots = new ArrayList<>(slotCount);
+            // place items into respective controlled slots
+            for (int i = 0; i < slotCount; i++) {
                 IInventorySlot slot = inputSlots.get(i);
-                int stored = storedMap.getInt(hashedItem);
-                if (stored > 0) {
-                    int count = Math.min(hashedItem.getMaxStackSize(), stored);
-                    if (count == stored) {
-                        storedMap.removeInt(hashedItem);
+                //TODO: Can we make use of the fact the stock control map is now sorted to optimize out having to add it to a map unless it is in the wrong slot?
+                ItemResource itemType = stockControlMap[i];
+                if (itemType.isEmpty()) {
+                    //If this slot is uncontrolled, add it at the start of the list of empty slots
+                    emptySlots.addFirst(slot);
+                } else {
+                    int stored = storedMap.getInt(itemType);
+                    if (stored > 0) {
+                        int count = Math.min(slot.capacityAsInt(itemType), stored);
+                        if (count == stored) {
+                            //The item has been fully handled, remove it from the map
+                            storedMap.removeInt(itemType);
+                        } else {
+                            //Decrease how much is in the map by the amount we could take
+                            storedMap.put(itemType, stored - count);
+                        }
+                        slot.setContents(itemType, count, transaction);
                     } else {
-                        storedMap.put(hashedItem, stored - count);
+                        emptySlots.addLast(slot);
                     }
-                    setSlotIfChanged(slot, hashedItem, count);
-                } else if (!slot.isEmpty()) {
-                    //If we don't have the item stored anymore (already filled all previous slots with it),
-                    // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
-                    //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
-                    // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
-                    // but this is not an API contract
-                    slot.setEmpty();
                 }
             }
-        }
-        // if we still have items, first try to add remaining items to known unused (non-controlled) slots
-        boolean empty = storedMap.isEmpty();
-        for (int i : unused) {
-            IInventorySlot slot = inputSlots.get(i);
-            if (empty) {
-                //If we don't have any more items to sort, clear all the other slots that we haven't set something in
-                //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
-                // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
-                // but this is not an API contract
-                if (!slot.isEmpty()) {
-                    slot.setEmpty();
+            for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(storedMap); iterator.hasNext(); ) {
+                Object2IntMap.Entry<ItemResource> entry = iterator.next();
+                ItemResource itemType = entry.getKey();
+                int stored = entry.getIntValue();
+                //Iterate until we are out of empty slots or there is nothing still stored and pending
+                for (Iterator<IInventorySlot> slotIterator = emptySlots.iterator(); stored > 0 && slotIterator.hasNext(); ) {
+                    IInventorySlot slot = slotIterator.next();
+                    int count = Math.min(slot.capacityAsInt(itemType), stored);
+                    slot.setContents(itemType, count, transaction);
+                    //Decrease how much is left by the amount the slot could accept
+                    stored -= count;
+                    //Remove the slot from the empty slots as it is no longer empty
+                    slotIterator.remove();
                 }
-            } else {
-                empty = setSlotIfChanged(storedMap, slot);
-            }
-        }
-        if (empty) {
-            //If we are empty exit
-            return;
-        }
-        // if we still have items, just add them to any slots that are still empty
-        for (IInventorySlot inputSlot : inputSlots) {
-            if (inputSlot.isEmpty()) {
-                if (setSlotIfChanged(storedMap, inputSlot)) {
-                    //Exit all items accounted for
+                if (stored > 0) {
+                    Mekanism.logger.warn("Unable to organize stock, could not fit all of the current contents!?");
+                    //Exit without committing
                     return;
                 }
             }
-        }
-        if (!storedMap.isEmpty()) {
-            Mekanism.logger.error("Critical error: Formulaic Assemblicator had items left over after organizing stock. Impossible!");
+            transaction.commit();
         }
     }
 
-    private boolean setSlotIfChanged(Object2IntMap<HashedItem> storedMap, IInventorySlot inputSlot) {
-        boolean empty = false;
-        ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(storedMap);
-        Object2IntMap.Entry<HashedItem> next = iterator.next();
-        HashedItem item = next.getKey();
-        int stored = next.getIntValue();
-        int count = Math.min(item.getMaxStackSize(), stored);
-        if (count == stored) {
-            iterator.remove();
-            empty = storedMap.isEmpty();
-        } else {
-            next.setValue(stored - count);
-        }
-        setSlotIfChanged(inputSlot, item, count);
-        return empty;
-    }
-
-    private static void setSlotIfChanged(IInventorySlot slot, HashedItem item, int count) {
-        ItemStack stack = item.createStack(count);
-        if (!ItemStack.matches(slot.getStack(), stack)) {
-            slot.setStack(stack);
-        }
-    }
-
+    //TODO - 26.1: Fix the placing into wrong slot briefly on the client side by ensuring the stock control map is synced to the client?
     private void buildStockControlMap() {
         if (formula.isEmpty()) {
             return;
         }
-        for (int i = 0; i < 9; i++) {
-            int j = i * 2;
-            ItemStack stack = formula.getInputStack(i);
-            if (stack.isEmpty()) {
-                stockControlMap[j] = null;
-                stockControlMap[j + 1] = null;
-            } else {
-                HashedItem hashedItem = HashedItem.create(stack);
-                stockControlMap[j] = hashedItem;
-                stockControlMap[j + 1] = hashedItem;
+        int i = 0;
+        Object2IntMap<ItemResource> inputs = formula.getInputs();
+        for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(inputs); iterator.hasNext(); ) {
+            Object2IntMap.Entry<ItemResource> entry = iterator.next();
+            ItemResource itemType = entry.getKey();
+            int stored = entry.getIntValue();
+            //If the item appears multiple times in the recipe, add slots for each time it appears
+            while (stored > 0) {
+                //Add two slots per item type
+                stockControlMap[i++] = itemType;
+                stockControlMap[i++] = itemType;
+                stored--;
             }
         }
-    }
-
-    private ItemStack tryMoveToInput(ItemStack stack) {
-        return InventoryUtils.insertItem(inputSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
-    }
-
-    private boolean tryMoveToOutput(ItemStack stack, Action action) {
-        //Try to insert the item (simulating as needed), and overwrite our local reference to point to the remainder
-        // We can then continue on to the next slot if we did not fit it all and try to insert it.
-        // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
-        // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-        stack = InventoryUtils.insertItem(outputSlots, stack, action, AutomationType.INTERNAL);
-        return stack.isEmpty();
+        //Fill the remaining slots' type as empty to treat them as unmanaged
+        for (; i < stockControlMap.length; i++) {
+            stockControlMap[i] = ItemResource.EMPTY;
+        }
     }
 
     public void encodeFormula() {
         if (formulaSlot.isEmpty()) {
             return;
         }
-        FormulaAttachment formulaAttachment = formulaSlot.getStack().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        ItemResource currentResource = formulaSlot.resource();
+        FormulaAttachment formulaAttachment = currentResource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
-                ItemStack stack = formulaSlot.getStack().copy();
-                stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula));
-                formulaSlot.setStack(stack);
+                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.amountAsLong(), null);
             }
         }
     }
@@ -722,7 +728,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer() {
         return energyContainer;
     }
 
@@ -751,12 +757,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    ItemStack getCraftingInputSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInputSlot", docPlaceholder = "crafting input slot")
+    IInventorySlot getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
         }
-        return craftingGridSlots.get(slot).getStack();
+        return craftingGridSlots.get(slot);
     }
 
     @ComputerMethod
@@ -764,13 +770,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return outputSlots.size();
     }
 
-    @ComputerMethod
-    ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutputSlot", docPlaceholder = "crafting output slot")
+    IInventorySlot getCraftingOutputSlot(int slot) throws ComputerException {
         int size = getCraftingOutputSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
         }
-        return outputSlots.get(slot).getStack();
+        return outputSlots.get(slot);
     }
 
     @ComputerMethod(nameOverride = "getSlots")
@@ -778,19 +784,19 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.size();
     }
 
-    @ComputerMethod
-    ItemStack getItemInSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "input slot")
+    IInventorySlot getCorrespondingSlot(int slot) throws ComputerException {
         int size = computerGetSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
         }
-        return inputSlots.get(slot).getStack();
+        return inputSlots.get(slot);
     }
 
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
-        FormulaAttachment formulaAttachment = formulaSlot.getStack().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaAttachment formulaAttachment = formulaSlot.resource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             throw new ComputerException("No formula found.");
         } else if (hasValidFormula() || formulaAttachment.hasItems()) {

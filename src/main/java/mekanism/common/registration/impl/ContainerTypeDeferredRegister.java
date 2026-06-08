@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.IEntityContainer;
@@ -79,14 +80,14 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
         return registryObject;
     }
 
-    public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<ITEM> itemClass,
-          IMekanismItemContainerFactory<ITEM, CONTAINER> factory) {
-        return register(nameProvider.getName(), itemClass, factory);
+    public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(ItemRegistryObject<?> itemType,
+          IMekanismItemContainerFactory<CONTAINER> factory) {
+        return register(itemType.getName(), itemType::is, factory);
     }
 
-    public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, Class<ITEM> itemClass,
-          IMekanismItemContainerFactory<ITEM, CONTAINER> factory) {
-        return registerMenu(name, () -> MekanismItemContainerType.item(itemClass, factory));
+    public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, Predicate<Item> typeValidator,
+          IMekanismItemContainerFactory<CONTAINER> factory) {
+        return registerMenu(name, () -> MekanismItemContainerType.item(typeValidator, factory));
     }
 
     public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, MenuSupplier<CONTAINER> factory) {

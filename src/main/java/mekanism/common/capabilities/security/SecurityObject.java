@@ -4,38 +4,37 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import mekanism.common.util.ItemAccessUtils;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class SecurityObject extends OwnerObject implements ISecurityObject {
 
-    public SecurityObject(ItemStack stack) {
-        super(stack);
+    public SecurityObject(ItemAccess itemAccess) {
+        super(itemAccess);
     }
 
     @Override
     public SecurityMode getSecurityMode() {
-        return stack.getOrDefault(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
+        return itemAccess.getResource().getOrDefault(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
     }
 
     @Override
-    public void setSecurityMode(SecurityMode mode) {
-        SecurityMode securityMode = getSecurityMode();
+    public void setSecurityMode(SecurityMode mode, @Nullable TransactionContext transaction) {
+        ItemResource resource = itemAccess.getResource();
+        SecurityMode securityMode = resource.getOrDefault(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
         if (securityMode != mode) {
             if (mode == SecurityMode.PUBLIC) {
-                stack.remove(MekanismDataComponents.SECURITY);
+                ItemAccessUtils.exchange(itemAccess, resource.without(MekanismDataComponents.SECURITY), transaction);
             } else {
-                stack.set(MekanismDataComponents.SECURITY, mode);
+                ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.SECURITY, mode), transaction);
             }
-            onSecurityChanged(securityMode, mode);
+            //Note: For now we don't bother booting players out of item containers if the security mode on the item itself changed
+            // as that requires the player that can change the security mode to be holding the item, so they are the only one who
+            // could have it open. When override settings change we properly recheck if players should be kicked out
         }
-    }
-
-    @Override
-    public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        //Note: For now we don't bother booting players out of item containers if the security mode on the item itself changed
-        // as that requires the player that can change the security mode to be holding the item, so they are the only one who
-        // could have it open. When override settings change we properly recheck if players should be kicked out
     }
 }

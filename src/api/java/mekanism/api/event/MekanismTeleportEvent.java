@@ -15,6 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,20 +52,20 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
     public static class MekaTool extends MekanismTeleportEvent {
 
         private final BlockHitResult targetBlock;
-        private final ItemStack mekaTool;
+        private final ItemAccess mekaToolAccess;
 
 
         /**
-         * @param player      Player teleporting using the Meka-Tool.
-         * @param targetX     Destination x position.
-         * @param targetY     Destination y position.
-         * @param targetZ     Destination z position.
-         * @param mekaTool    Meka-Tool used for teleportation.
-         * @param targetBlock The hit result representing the target block.
+         * @param player         Player teleporting using the Meka-Tool.
+         * @param targetX        Destination x position.
+         * @param targetY        Destination y position.
+         * @param targetZ        Destination z position.
+         * @param mekaToolAccess Meka-Tool used for teleportation.
+         * @param targetBlock    The hit result representing the target block.
          */
-        public MekaTool(Player player, ServerLevel targetLevel, double targetX, double targetY, double targetZ, ItemStack mekaTool, BlockHitResult targetBlock) {
+        public MekaTool(Player player, ServerLevel targetLevel, double targetX, double targetY, double targetZ, ItemAccess mekaToolAccess, BlockHitResult targetBlock) {
             super(player, targetLevel, targetX, targetY, targetZ);
-            this.mekaTool = mekaTool;
+            this.mekaToolAccess = mekaToolAccess;
             this.targetBlock = targetBlock;
         }
 
@@ -73,11 +74,11 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
             return (Player) super.getEntity();
         }
 
-        /**
-         * @return The ItemStack for the Meka-Tool the player is using to teleport.
-         */
-        public ItemStack getMekaTool() {
-            return mekaTool;
+        /// @return The Item Access for the Meka-Tool the player is using to teleport.
+        ///
+        /// @since 10.8.0
+        public ItemAccess getMekaToolAccess() {
+            return mekaToolAccess;
         }
 
         /**
@@ -100,11 +101,11 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
         private final @Nullable Exception creationStack;
 
         /**
-         * @param entity          The entity that is teleporting.
-         * @param targetX         Destination x position.
-         * @param targetY         Destination y position.
-         * @param targetZ         Destination z position.
-         * @param targetLevel     Destination dimension.
+         * @param entity      The entity that is teleporting.
+         * @param targetX     Destination x position.
+         * @param targetY     Destination y position.
+         * @param targetZ     Destination z position.
+         * @param targetLevel Destination dimension.
          */
         public GlobalTeleport(Entity entity, double targetX, double targetY, double targetZ, ResourceKey<Level> targetDimension, @Nullable ServerLevel targetLevel) {
             //noinspection DataFlowIssue - null checked in getter
@@ -160,7 +161,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
     public static class Robit extends GlobalTeleport {
 
         /**
-         * @param robit        The robit that is teleporting home.
+         * @param robit The robit that is teleporting home.
          */
         public <ROBIT extends Entity & IRobit> Robit(ROBIT robit) {
             this(robit, Objects.requireNonNull(robit.getHome(), "Robit teleport event cannot be fired for invalid Robits"));

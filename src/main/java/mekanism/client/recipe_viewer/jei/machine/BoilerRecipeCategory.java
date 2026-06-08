@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +51,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
                 boilRate = 0;
             } else {
                 temperature = recipe.temperature();
-                boilRate = Ints.saturatedCast(recipe.steam().amount());
+                boilRate = recipe.steam().amount();
             }
             return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));

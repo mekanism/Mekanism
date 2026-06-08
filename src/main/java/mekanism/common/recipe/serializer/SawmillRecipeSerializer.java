@@ -6,7 +6,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -41,8 +40,8 @@ public class SawmillRecipeSerializer {
         ));
         StreamCodec<RegistryFriendlyByteBuf, BasicSawmillRecipe> streamCodec = StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, SawmillRecipe::getInput,
-              ItemStackTemplateHelper.OPTIONAL_STREAM_CODEC, BasicSawmillRecipe::getMainOutputRaw,
-              ItemStackTemplateHelper.OPTIONAL_STREAM_CODEC, BasicSawmillRecipe::getSecondaryOutputRaw,
+              ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), BasicSawmillRecipe::getMainOutputRaw,
+              ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), BasicSawmillRecipe::getSecondaryOutputRaw,
               ByteBufCodecs.DOUBLE, SawmillRecipe::getSecondaryChance,
               (input, mainOutput, secondaryOutput, secondChance) ->
                     factory.apply(input, mainOutput.orElse(null), secondaryOutput.orElse(null), secondChance)

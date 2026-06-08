@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -15,11 +16,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -254,5 +257,17 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      */
     default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
+    }
+
+    @Override
+    default ItemStack createStack(TypedInstance<Item> instance) {
+        Objects.requireNonNull(instance, "Instance cannot be null.");
+        return switch (instance) {
+            case ItemStack stackIn -> stackIn;
+            case ItemStackTemplate template -> template.create();
+            case ItemResource resource -> resource.toStack();
+            //TODO: Is there a decent way to grab any potential components patch?
+            default -> new ItemStack(instance.typeHolder());
+        };
     }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.inventory.IHashedItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -86,7 +85,6 @@ public class TextComponentUtil {
                 case ItemStack stack -> current = stack.getHoverName().copy();
                 case ItemStackTemplate template -> current = template.create().getHoverName().copy();
                 case ItemResource resource -> current = resource.getHoverName().copy();
-                case IHashedItem item -> current = item.getInternalStack().getHoverName().copy();
                 case FluidStack stack -> current = stack.getHoverName().copy();
                 case FluidStackTemplate template -> current = template.create().getHoverName().copy();
                 case FluidResource resource -> current = resource.getHoverName().copy();
@@ -226,8 +224,6 @@ public class TextComponentUtil {
                 current = template.create().getHoverName().copy();
             } else if (component instanceof ItemResource resource) {
                 current = resource.getHoverName().copy();
-            } else if (component instanceof IHashedItem item) {
-                current = item.getInternalStack().getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof FluidStackTemplate template) {

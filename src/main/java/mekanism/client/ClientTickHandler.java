@@ -37,6 +37,7 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -62,6 +63,10 @@ import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -82,9 +87,13 @@ public class ClientTickHandler {
         visionEnhancement = false;
     }
 
-    public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
-        if (!player.isSpectator() && !jetpack.isEmpty()) {
-            JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
+    public static boolean isJetpackInUse(Player player, @Nullable ItemAccess jetpack) {
+        if (!player.isSpectator() && jetpack != null) {
+            ItemResource jetpackType = jetpack.getResource();
+            if (jetpackType.isEmpty()) {
+                return false;
+            }
+            JetpackMode mode = ((IJetpackItem) jetpackType.getItem()).getJetpackMode(jetpackType);
             boolean guiOpen = minecraft.screen != null;
             boolean ascending = minecraft.player.input.keyPresses.jump();
             boolean rising = ascending && !guiOpen;
@@ -105,7 +114,7 @@ public class ClientTickHandler {
         if (player != minecraft.player) {
             return Mekanism.playerState.isScubaMaskOn(player);
         }
-        return CommonPlayerTickHandler.isScubaMaskOn(player, player.getItemBySlot(EquipmentSlot.CHEST));
+        return CommonPlayerTickHandler.isScubaMaskOn(player, ItemAccessUtils.forEntitySlot(player, EquipmentSlot.CHEST));
     }
 
     public static boolean isGravitationalModulationOn(Player player) {
@@ -116,12 +125,13 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-        if (!player.getCooldowns().isOnCooldown(head)) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(head);
+        ItemAccess head = ItemAccessUtils.forEntitySlot(player, EquipmentSlot.HEAD);
+        ItemResource headResource = head.getResource();
+        if (!player.getCooldowns().isOnCooldown(headResource.toStack())) {
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(headResource);
             if (container != null) {
                 IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
-                return module != null && module.hasEnoughEnergy(head, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
+                return module != null && module.hasEnoughEnergy(player, head, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get(), null);
             }
         }
         return false;
@@ -162,7 +172,7 @@ public class ClientTickHandler {
         UUID playerUUID = minecraft.player.getUUID();
         // Update player's state for various items; this also automatically notifies server if something changed and
         // kicks off sounds as necessary
-        ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
+        ItemAccess jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
         boolean jetpackInUse = isJetpackInUse(minecraft.player, jetpack);
         Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
         Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
@@ -187,15 +197,17 @@ public class ClientTickHandler {
             }
         }
 
-        if (!jetpack.isEmpty()) {
-            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
+        if (jetpack != null) {
+            ItemResource primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
             if (!primaryJetpack.isEmpty()) {
                 JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
                 MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
-                double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
-                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
-                    minecraft.player.resetFallDistance();
+                try (Transaction simulation = Transaction.openRoot()) {
+                    double jetpackThrust = ((IJetpackItem) jetpack.getResource().getItem()).useJetpackFuel(jetpack, primaryJetpack, simulation);
+                    if (jetpackThrust > 0 && jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
+                        minecraft.player.resetFallDistance();
+                    }
                 }
             }
         }

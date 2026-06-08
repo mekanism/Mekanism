@@ -17,11 +17,11 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -30,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFormulaicAssemblicator, FormulaicAssemblicatorContainer> {
@@ -50,17 +51,17 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
             if (tile.getAutoMode() && tile.hasRecipe()) {
-                MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.getEnergyContainer();
-                return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.energyContainer();
+                return energyContainer.getEnergyPerTick() > energyContainer.getAmountAsLong();
             }
             return false;
         });
         //Overwrite the output slots with a "combined" slot
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         encodeFormulaButton = addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile))))
               .setTooltip(MekanismLang.ENCODE_FORMULA);
@@ -115,7 +116,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
             if (!stack.isEmpty()) {
                 Slot slot = menu.slots.get(slotIndex);
                 //Only render the "correct" item in the gui slot if we don't already have that item there
-                if (slot.getItem().isEmpty() || !tile.formula.isIngredientInPos(tile.getLevel(), slot.getItem(), i)) {
+                if (slot.getItem().isEmpty() || !tile.formula.isIngredientInPos(tile.getLevel(), ItemResource.of(slot.getItem()), i)) {
                     return stack;
                 }
             }
@@ -134,9 +135,9 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     private boolean canEncode() {
         if (!tile.hasValidFormula()) {
-            ItemStack stack = tile.getFormulaSlot().getStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
-                return stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
+            ItemResource resource = tile.getFormulaSlot().resource();
+            if (!resource.isEmpty() && MekanismItems.CRAFTING_FORMULA.is(resource)) {
+                return resource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
             }
         }
         return false;

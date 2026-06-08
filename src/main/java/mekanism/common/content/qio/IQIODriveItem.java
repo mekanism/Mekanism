@@ -1,10 +1,8 @@
 package mekanism.common.content.qio;
 
-import net.minecraft.world.item.ItemStack;
+public interface IQIODriveItem {//TODO - 26.1: Make this be defined via a data component?
 
-public interface IQIODriveItem {
+    long getCountCapacity();
 
-    long getCountCapacity(ItemStack stack);
-
-    int getTypeCapacity(ItemStack stack);
+    int getTypeCapacity();
 }

@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container.slot;
 
-import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
@@ -22,8 +21,8 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     @Nullable
     private IGUIWindow window;
 
-    public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter) {
-        super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, null, uncheckedSetter);
+    public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay) {
+        super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, null);
         this.windowData = windowData;
     }
 

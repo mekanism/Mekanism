@@ -51,6 +51,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.ItemAccessUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -80,6 +81,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -135,11 +137,10 @@ public class MekanismJEI implements IModPlugin {
 
     public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
-            //Handle items
-            ItemStack stack = new ItemStack(item);
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
-                registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_DATA_INTERPRETER);
+            ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(ItemResource.of(item));
+            if (Capabilities.ENERGY.getCapability(itemAccess) != null || Capabilities.CHEMICAL.getCapability(itemAccess) != null ||
+                Capabilities.FLUID.getCapability(itemAccess) != null) {
+                registry.registerSubtypeInterpreter(item.value(), MEKANISM_DATA_INTERPRETER);
             }
         }
     }

@@ -121,16 +121,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return "Unimplemented: " + param;
     }
 
-    private static String convertChemicalIngredient(ChemicalIngredient ingredient, long amount) {
+    private static String convertChemicalIngredient(ChemicalIngredient ingredient, int amount) {
         if (ingredient instanceof TagChemicalIngredient tagIngredient) {
             KnownTag<Chemical> tag = CrTUtils.chemicalTags().tag(tagIngredient.tag());
             if (amount == 1) {
                 return tag.getCommandString();
-            } else if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                return tag.withAmount((int) amount).getCommandString();
             }
-            //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
-            return CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT + ".from(" + tag.getCommandString() + ", " + amount + ")";
+            return tag.withAmount(amount).getCommandString();
         }
         List<ICrTChemicalStack> list = new ArrayList<>();
         for (Holder<Chemical> chemical : ingredient.getChemicalHolders()) {

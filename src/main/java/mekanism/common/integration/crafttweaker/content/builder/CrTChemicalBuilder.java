@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
@@ -62,7 +62,7 @@ public class CrTChemicalBuilder {
      * @param registryName Registry name for the chemical.
      */
     protected void build(Identifier registryName) {
-        Chemical chemical = ChemicalUtil.chemical(builder, colorRepresentation);
+        Chemical chemical = ChemicalUtils.chemical(builder, colorRepresentation);
         CrTContentUtils.queueChemicalForRegistration(registryName, chemical);
     }
 

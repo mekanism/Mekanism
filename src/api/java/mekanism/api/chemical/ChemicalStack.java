@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -31,9 +30,10 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault
+@NothingNullByDefault//TODO - 26.1: Look at FluidStack and cleanup what extra things we might be defining
 public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey {
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
@@ -50,7 +50,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      */
     public static final MapCodec<ChemicalStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
           CHEMICAL_HOLDER_CODEC.fieldOf(FIELD_ID).forGetter(ChemicalStack::typeHolder),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(FIELD_AMOUNT).forGetter(ChemicalStack::amount)
+          ExtraCodecs.POSITIVE_INT.fieldOf(FIELD_AMOUNT).forGetter(ChemicalStack::amount)
     ).apply(instance, ChemicalStack::new));
     /**
      * A standard codec for Chemical stacks that does not accept empty stacks.
@@ -66,12 +66,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     public static final Codec<ChemicalStack> OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(CODEC)
           .xmap(optional -> optional.orElse(EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
     /**
-     * A standard codec for Chemical stacks that accepts empty stacks, serializing them as {@code {}}.
-     *
-     * @since 10.7.9
-     */
-    public static final Codec<ChemicalStack> LENIENT_OPTIONAL_CODEC = OPTIONAL_CODEC.promotePartial(ON_STACK_LOAD_ERROR).orElse(EMPTY);
-    /**
      * A stream codec for Chemical stacks that accepts empty stacks.
      *
      * @since 10.6.0
@@ -79,7 +73,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> OPTIONAL_STREAM_CODEC = new StreamCodec<>() {
         @Override
         public ChemicalStack decode(RegistryFriendlyByteBuf buffer) {
-            long amount = buffer.readVarLong();
+            int amount = buffer.readVarInt();
             if (amount <= 0) {
                 return EMPTY;
             }
@@ -88,7 +82,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
 
         @Override
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
-            buffer.writeVarLong(stack.amount());
+            buffer.writeVarInt(stack.amount());
             if (!stack.isEmpty()) {
                 Chemical.STREAM_CODEC.encode(buffer, stack.typeHolder());
             }
@@ -125,7 +119,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      *
      * @since 10.6.0
      */
-    public static Codec<ChemicalStack> fixedAmountCodec(long amount) {
+    public static Codec<ChemicalStack> fixedAmountCodec(int amount) {
         return RecordCodecBuilder.create(instance -> instance.group(
               CHEMICAL_HOLDER_CODEC.fieldOf(FIELD_ID).forGetter(ChemicalStack::typeHolder)
         ).apply(instance, holder -> new ChemicalStack(holder, amount)));
@@ -133,7 +127,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
 
     @Nullable
     private final Holder<Chemical> chemical;
-    private long amount;
+    private int amount;
 
     /**
      * Creates a chemical stack from a holder and a given amount.
@@ -147,7 +141,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      * @throws IllegalArgumentException If the chemical holder is a direct holder that is either: not bound, the value it is bound to doesn't have a registered reference
      *                                  in the chemical registry.
      */
-    public ChemicalStack(Holder<Chemical> chemical, long amount) {
+    public ChemicalStack(Holder<Chemical> chemical, int amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
         if (chemical.kind() == Holder.Kind.DIRECT) {
             if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
@@ -184,7 +178,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      *
      * @since 10.6.0
      */
-    public ChemicalStack copyWithAmount(long amount) {
+    public ChemicalStack copyWithAmount(int amount) {
         if (isEmpty() || amount == 0) {
             return EMPTY;
         }
@@ -196,8 +190,8 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      *
      * @since 10.6.0
      */
-    public ChemicalStack split(long amount) {
-        long i = Math.min(amount, amount());
+    public ChemicalStack split(int amount) {
+        int i = Math.min(amount, amount());
         ChemicalStack stack = copyWithAmount(i);
         this.shrink(i);
         return stack;
@@ -313,7 +307,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      * @return The size of this chemical stack or zero if it is empty
      */
     @Override
-    public long amount() {
+    public int amount() {
         return isEmpty() ? 0 : amount;
     }
 
@@ -322,7 +316,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      *
      * @param amount The amount to set this stack's amount to.
      */
-    public void setAmount(long amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
@@ -333,7 +327,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      *
      * @since 10.6.0
      */
-    public void limitSize(long amount) {
+    public void limitSize(int amount) {
         if (!isEmpty() && amount() > amount) {
             setAmount(amount);
         }
@@ -345,9 +339,9 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      * @param amount The amount to grow this stack by.
      *
      * @apiNote Negative values are valid and will instead shrink the stack.
-     * @implNote No checks are made to ensure that the long does not overflow.
+     * @implNote No checks are made to ensure that the int does not overflow.
      */
-    public void grow(long amount) {
+    public void grow(int amount) {
         setAmount(this.amount + amount);
     }
 
@@ -357,9 +351,9 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
      * @param amount The amount to shrink this stack by.
      *
      * @apiNote Negative values are valid and will instead grow the stack.
-     * @implNote No checks are made to ensure that the long does not underflow.
+     * @implNote No checks are made to ensure that the int does not underflow.
      */
-    public void shrink(long amount) {
+    public void shrink(int amount) {
         setAmount(this.amount - amount);
     }
 
@@ -416,7 +410,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
         //Note: chemical is not null here, and we know it isn't empty so we can just directly reference it
         // rather than having to check if it is empty again
         int hash = chemical.hashCode();
-        return 31 * hash + Long.hashCode(amount);
+        return 31 * hash + amount;
     }
 
     @Override

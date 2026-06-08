@@ -1,9 +1,11 @@
 package mekanism.common.registries;
 
-import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -18,11 +20,8 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
-import mekanism.common.attachments.containers.energy.AttachedEnergy;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.item.AttachedItems;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.attachments.qio.PortableDashboardContents;
@@ -38,7 +37,6 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.FrequencyTypes;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.DataComponentDeferredRegister;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -52,8 +50,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -70,27 +69,13 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergy>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy",
-          builder -> builder.persistent(AttachedEnergy.CODEC)
-                .networkSynchronized(AttachedEnergy.STREAM_CODEC)
-                .cacheEncoding()
-    );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedItems>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
-          builder -> builder.persistent(AttachedItems.CODEC)
-                .networkSynchronized(AttachedItems.STREAM_CODEC)
-                .cacheEncoding()
-    );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluids>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
-          builder -> builder.persistent(AttachedFluids.CODEC)
-                .networkSynchronized(AttachedFluids.STREAM_CODEC)
-                .cacheEncoding()
-    );
-
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
-          builder -> builder.persistent(AttachedChemicals.CODEC)
-                .networkSynchronized(AttachedChemicals.STREAM_CODEC)
-                .cacheEncoding()
-    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ATTACHED_ENERGY = DATA_COMPONENTS.registerNonNegativeLong("energy");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS
+          .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS
+          .registerAttachedContents("fluids", LargeResourceStack.FLUID_HELPER);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS
+          .registerAttachedContents("chemicals", LargeResourceStack.CHEMICAL_HELPER);
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)
@@ -172,19 +157,17 @@ public class MekanismDataComponents {
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DELAY = DATA_COMPONENTS.registerInt("delay");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MIN_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("min_threshold");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MAX_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("max_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MIN_THRESHOLD = DATA_COMPONENTS.registerNonNegativeInt("min_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MAX_THRESHOLD = DATA_COMPONENTS.registerNonNegativeInt("max_threshold");
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeLong("energy_usage");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeInt("energy_usage");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
-    //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
-    // We don't add this by default to the redstone adapter, so that the default state is there is no target set
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Optional<HashedItem>>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
-          builder -> builder.persistent(ExtraCodecs.optionalEmptyMap(HashedItem.CODEC)
-                .promotePartial(error -> Mekanism.logger.error("Failed to load item target: {}", error))
-                .orElse(Optional.empty())
-          ).networkSynchronized(ByteBufCodecs.optional(HashedItem.STREAM_CODEC))
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ItemResource>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
+          builder -> builder.persistent(ItemResource.OPTIONAL_CODEC.orElse(
+                (Consumer<String>) error -> Mekanism.logger.error("Failed to load item target: {}", error),
+                ItemResource.EMPTY
+          )).networkSynchronized(ItemResource.STREAM_CODEC)
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DriveMetadata>> DRIVE_METADATA = DATA_COMPONENTS.simple("drive_metadata",
           builder -> builder.persistent(DriveMetadata.CODEC)

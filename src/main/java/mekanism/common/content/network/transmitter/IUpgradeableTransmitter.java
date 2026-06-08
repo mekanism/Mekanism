@@ -3,6 +3,7 @@ package mekanism.common.content.network.transmitter;
 import mekanism.api.tier.IAlloyTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public interface IUpgradeableTransmitter<DATA extends TransmitterUpgradeData> {
@@ -11,7 +12,7 @@ public interface IUpgradeableTransmitter<DATA extends TransmitterUpgradeData> {
 
     boolean dataTypeMatches(@NotNull TransmitterUpgradeData data);
 
-    void parseUpgradeData(@NotNull DATA data);
+    void parseUpgradeData(@NotNull DATA data, TransactionContext transaction);
 
     ITier getTier();
 

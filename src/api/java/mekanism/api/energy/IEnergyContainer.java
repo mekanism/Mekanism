@@ -1,135 +1,160 @@
 package mekanism.api.energy;
 
-import mekanism.api.Action;
+import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
+/// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
 @NothingNullByDefault
-public interface IEnergyContainer extends ValueIOSerializable, IContentsListener {
+public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {
 
-    /**
-     * Returns the energy in this container.
-     *
-     * @return Energy in this container.
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    long getEnergy();
+    /// Overrides the amount of energy in this [IEnergyContainer].
+    ///
+    /// @param energy      Energy to set this container's contents to. Must be greater than or equal to 0.
+    /// @param transaction The transaction that this operation is part of if any.
+    ///
+    /// @since 10.8.0
+    void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction);
 
-    /**
-     * Overrides the amount of energy in this {@link IEnergyContainer}.
-     *
-     * @param energy Energy to set this container's contents to. Must be greater than or equal to 0.
-     *
-     * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
-     */
-    void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
+    /// Inserts up to the given amount of energy into this container.
+    ///
+    /// Changes to this container are made in the context of a [transaction][Transaction].
+    ///
+    /// @param amount         The maximum amount of energy to insert. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
+    ///
+    /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// energy container.
+    /// @since 10.8.0
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
-    /**
-     * <p>
-     * Inserts energy into this {@link IEnergyContainer} and return the remainder.
-     * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
-     *
-     * @param amount         Energy to insert. Must be positive.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this container is being interacted from.
-     *
-     * @return The remaining energy that was not inserted (if the entire amount is accepted, then return 0).
-     *
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
-        if (amount <= 0) {
-            //"Fail quick" if the given amount is empty
-            return amount;
-        }
-        long needed = getNeeded();
-        if (needed == 0) {
-            //Fail if we are a full container
-            return amount;
-        }
-        long toAdd = Math.min(amount, needed);
-        if (action.execute()) {
-            //If we want to actually insert the energy, then update the current energy
-            // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() + toAdd);
-        }
-        return amount - toAdd;
+    @Override
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
+        return insert(amount, transaction, defaultAutomationType());
     }
 
-    /**
-     * Extracts energy from this {@link IEnergyContainer}.
-     * <p>
-     * The returned value must be 0 if nothing is extracted, otherwise its must be less than or equal to {@code amount}.
-     * </p>
-     *
-     * @param amount         Amount of energy to extract (may be greater than the current stored amount or the container's capacity). Must be positive or 0.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this container is being interacted from.
-     *
-     * @return Energy extracted from the container, must be 0 if no energy can be extracted.
-     *
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0) {
-            return 0;
-        }
-        long ret = Math.min(getEnergy(), amount);
-        if (ret > 0 && action.execute()) {
-            // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() - ret);
-        }
-        return ret;
+    /// Tries to extract up to the given amount of energy from this container.
+    ///
+    /// Changes to this container are made in the context of a [transaction][Transaction].
+    ///
+    /// @param amount         The maximum amount of energy to extract. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
+    ///
+    /// @throws IllegalArgumentException If the amount is negative. See also [MekanismPreconditions#checkNonNegative] to help perform this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// energy container.
+    /// @since 10.8.0
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
+
+    @Override
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
+        return extract(amount, transaction, defaultAutomationType());
     }
 
-    /**
-     * Retrieves the maximum amount of energy allowed to exist in this {@link IEnergyContainer}.
-     *
-     * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
-     */
-    long getMaxEnergy();
+    /// {@return whether it is generally allowed for energy to be extracted from this container using the given automation type}
+    ///
+    /// This function serves as a hint on whether energy can be extracted from this container or not. The only way to know if a container will allow the energy to be
+    /// extracted, is to try to [`extract`][#extract] it.
+    ///
+    /// @param automationType The automation type to check.
+    ///
+    /// @since 10.8.0
+    default boolean isValidForExtraction(AutomationType automationType) {
+        return true;
+    }
 
-    /**
-     * Convenience method for checking if this container is empty.
-     *
-     * @return True if the container is empty, false otherwise.
-     */
+    /// {@return whether it is generally allowed for energy to be inserted into this container using the given automation type}
+    ///
+    /// This function serves as a hint on whether energy can be inserted into this container or not. The only way to know if a container will accept energy, is to try to
+    /// [`insert`][#insert] it.
+    ///
+    /// @param automationType The automation type to check.
+    ///
+    /// @since 10.8.0
+    default boolean isValidForInsertion(AutomationType automationType) {
+        return true;
+    }
+
+    /// Convenience method for checking if this container is empty.
+    ///
+    /// @return `true` if the container is empty, `false` otherwise.
+    @NonExtendable
     default boolean isEmpty() {
-        return getEnergy() == 0L;
+        return getAmountAsLong() == 0L;
     }
 
-    /**
-     * Convenience method for emptying this {@link IEnergyContainer}.
-     */
-    default void setEmpty() {
-        setEnergy(0L);
-    }
-
-    /**
-     * Gets the amount of energy needed by this {@link IEnergyContainer} to reach a filled state.
-     *
-     * @return Amount of energy needed
-     */
+    /// {@return the amount of energy needed by this energy container to reach a filled state as a `long`}
+    ///
+    /// @see #getNeededAsInt()
+    /// @since 10.8.0
+    @NonExtendable
     @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeeded() {
-        return Math.max(0L, getMaxEnergy() - getEnergy());
+    default long getNeededAsLong() {
+        return Math.max(0, getCapacityAsLong() - getAmountAsLong());
+    }
+
+    /// {@return the amount of energy needed by this energy container to reach a filled state as an `int`}
+    ///
+    /// @see #getNeededAsLong()
+    /// @since 10.8.0
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int getNeededAsInt() {
+        return Ints.saturatedCast(getNeededAsLong());
     }
 
     @Override
     default void serialize(ValueOutput output) {
-        if (!isEmpty()) {
-            output.putLong(SerializationConstants.STORED, getEnergy());
+        long energy = getAmountAsLong();
+        if (energy > 0) {
+            output.putLong(SerializationConstants.STORED, energy);
         }
+    }
+
+    @Override
+    default void deserialize(ValueInput input) {
+        setEnergy(input.getLongOr(SerializationConstants.STORED, 0), null);
+    }
+
+    /// Helper method to copy all pertinent data from another [`energy container`][IEnergyContainer] to this one without requiring a serialization, deserialization
+    /// cycle.
+    ///
+    /// @param other       Container to copy data from.
+    /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
+    ///
+    /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @since 10.8.0
+    default void copyContents(IEnergyContainer other, @Nullable TransactionContext transaction) {
+        setEnergy(other.getAmountAsLong(), transaction);
+    }
+
+    /// Determines which automation type methods defined via [EnergyHandler] methods will use.
+    private AutomationType defaultAutomationType() {
+        return AutomationType.EXTERNAL;
     }
 }

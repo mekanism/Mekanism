@@ -1,6 +1,7 @@
 package mekanism.common.item.block.machine;
 
-import mekanism.common.attachments.containers.energy.ComponentBackedResistiveEnergyContainer;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -19,7 +20,7 @@ public class ItemBlockResistiveHeater extends ItemBlockTooltip<BlockTile<?, ?>> 
 
     @Nullable
     @Override
-    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        return builder.addContainer(ComponentBackedResistiveEnergyContainer::create);
+    protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
+        return EnergyContainersBuilder.RESISTIVE_HEATER;
     }
 }

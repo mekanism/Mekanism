@@ -15,8 +15,11 @@ import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,19 +29,22 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IJetpackItem {
 
-    boolean canUseJetpack(ItemStack stack);
+    boolean canUseJetpack(ItemAccess itemAccess);
 
-    JetpackMode getJetpackMode(ItemStack stack);
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> JetpackMode getJetpackMode(ITEM instance);
 
-    double getJetpackThrust(ItemStack stack);
-
-    void useJetpackFuel(ItemStack stack);
+    ///@return thrust that fuel was consumed for
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> double useJetpackFuel(ItemAccess itemAccess, ITEM primaryInstance, TransactionContext transaction);
 
     @NothingNullByDefault
     enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable, IHasEnumNameTextComponent {
@@ -99,14 +105,14 @@ public interface IJetpackItem {
      *
      * @return the jetpack stack if present, otherwise an empty stack
      */
-    @NotNull
-    static ItemStack getActiveJetpack(LivingEntity entity) {
+    @Nullable
+    static ItemAccess getActiveJetpack(LivingEntity entity) {
         if (entity.isPassenger()) {
-            return ItemStack.EMPTY;
+            return null;
         }
-        ItemStack jetpack = getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
-        if (entity instanceof Player player && player.getCooldowns().isOnCooldown(jetpack)) {
-            return ItemStack.EMPTY;
+        ItemAccess jetpack = getJetpack(entity, itemAccess -> itemAccess.getResource().getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(itemAccess));
+        if (jetpack != null && entity instanceof Player player && player.getCooldowns().isOnCooldown(ItemAccessUtils.asStack(jetpack))) {
+            return null;
         }
         return jetpack;
     }
@@ -121,18 +127,20 @@ public interface IJetpackItem {
      * @return the jetpack stack if present, otherwise an empty stack
      */
     @NotNull
-    static ItemStack getPrimaryJetpack(LivingEntity entity) {
-        return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem);
+    static ItemResource getPrimaryJetpack(LivingEntity entity) {
+        ItemAccess jetpack = getJetpack(entity, itemAccess -> itemAccess.getResource().getItem() instanceof IJetpackItem);
+        return jetpack == null ? ItemResource.EMPTY : jetpack.getResource();
     }
 
-    private static ItemStack getJetpack(LivingEntity entity, Predicate<ItemStack> matcher) {
-        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+    @Nullable
+    private static ItemAccess getJetpack(LivingEntity entity, Predicate<ItemAccess> matcher) {
+        ItemAccess chest = ItemAccessUtils.forEntitySlot(entity, EquipmentSlot.CHEST);
         if (matcher.test(chest)) {
             return chest;
         } else if (Mekanism.hooks.curios.isLoaded()) {
             return CuriosIntegration.findFirstCurio(entity, matcher);
         }
-        return ItemStack.EMPTY;
+        return null;
     }
 
     /**

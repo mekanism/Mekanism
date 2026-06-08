@@ -2,7 +2,6 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
@@ -62,8 +61,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public abstract long getEnergyRequired();
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public abstract int getEnergyRequired();
 
     /**
      * Gets the base duration in ticks that this recipe takes to complete.
@@ -144,15 +143,14 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
                 return false;
             }
             PressurizedReactionRecipeOutput other = (PressurizedReactionRecipeOutput) o;
-            return ItemStackTemplateHelper.matches(item, other.item) && chemical.equals(other.chemical);
+            return Objects.equals(item, other.item) && chemical.equals(other.chemical);
         }
 
         @Override
         public int hashCode() {
             int hash = chemical.hashCode();
             if (item != null) {
-                hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(item);
-                hash = 31 * hash + item.count();
+                hash = 31 * hash + item.hashCode();
             }
             return hash;
         }

@@ -18,7 +18,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<PressurizedReactionRecipe> {
@@ -28,18 +28,20 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
         addInputDefinition(recipe.getInputSolid());
         addInputDefinition(recipe.getInputFluid());
         addInputDefinition(recipe.getInputChemical());
-        List<ItemStack> itemOutputs = new ArrayList<>();
+        List<ItemStackTemplate> itemOutputs = new ArrayList<>();
         List<ChemicalStack> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
-            itemOutputs.add(output.item());
+            if (output.item() != null) {
+                itemOutputs.add(output.item());
+            }
             chemicalOutputs.add(output.chemical());
         }
-        if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
+        if (!itemOutputs.isEmpty()) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addItemOutputDefinition(itemOutputs);
         }
-        if (chemicalOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
+        if (chemicalOutputs.stream().allMatch(ChemicalStack::isEmpty)) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addChemicalOutputDefinition(chemicalOutputs);

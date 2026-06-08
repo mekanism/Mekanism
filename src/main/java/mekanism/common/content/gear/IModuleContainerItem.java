@@ -15,35 +15,33 @@ import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasConditionalAttributes {
 
     @Nullable
-    default IModuleContainer moduleContainer(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack);
+    default IModuleContainer moduleContainer(ItemAccess itemAccess) {
+        return moduleContainer(itemAccess.getResource());
     }
 
     @Nullable
-    default IModuleContainer moduleContainer(ItemInstance instance) {
-        if (instance instanceof ItemStack stack) {
-            return moduleContainer(stack);
-        } else if (IModuleHelper.INSTANCE.isModuleContainer(instance)) {
-            return ModuleHelper.get().getModuleContainerUnsafe(instance);
-        }
-        return null;
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer moduleContainer(ITEM instance) {
+        return IModuleHelper.INSTANCE.getModuleContainer(instance);
     }
 
-    default Collection<? extends IModule<?>> getModules(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getAllModules(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Collection<? extends IModule<?>> getModules(ITEM instance) {
+        return IModuleHelper.INSTANCE.getAllModules(instance);
     }
 
     @Override
@@ -59,18 +57,19 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         module.getCustomInstance().adjustAttributes(module, event);
     }
 
-    default boolean hasInstalledModules(ItemStack stack) {
-        IModuleContainer container = moduleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasInstalledModules(ITEM instance) {
+        IModuleContainer container = moduleContainer(instance);
         return container != null && container.installedCount() > 0;
     }
 
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        return IModuleHelper.INSTANCE.getIfEnabled(stack, type);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ITEM instance,
+          DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        return IModuleHelper.INSTANCE.getIfEnabled(instance, type);
     }
 
-    default void addModuleDetails(ItemStack stack, Consumer<Component> tooltipAdder) {
-        for (IModule<?> module : getModules(stack)) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> void addModuleDetails(ITEM instance, Consumer<Component> tooltipAdder) {
+        for (IModule<?> module : getModules(instance)) {
             ModuleData<?> data = module.getUntypedData();
             if (module.getInstalledCount() > 1) {
                 Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
@@ -81,30 +80,30 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         }
     }
 
-    default boolean hasModule(ItemStack stack, Holder<ModuleData<?>> type) {
-        IModuleContainer container = moduleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasModule(ITEM instance, Holder<ModuleData<?>> type) {
+        IModuleContainer container = moduleContainer(instance);
         return container != null && container.has(type);
     }
 
-    default boolean isModuleEnabled(ItemStack stack, Holder<ModuleData<?>> type) {
-        return IModuleHelper.INSTANCE.isEnabled(stack, type);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isModuleEnabled(ITEM instance, Holder<ModuleData<?>> type) {
+        return IModuleHelper.INSTANCE.isEnabled(instance, type);
     }
 
     @Override
-    default void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        IModuleContainer moduleContainer = moduleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, ITEM instance, EquipmentSlot slotType) {
+        IModuleContainer moduleContainer = moduleContainer(instance);
         if (moduleContainer != null) {
-            list.addAll(moduleContainer.getHUDStrings(player, stack));
+            list.addAll(moduleContainer.getHUDStrings(player, instance));
         }
     }
 
     @Override
-    default void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        IModuleContainer moduleContainer = moduleContainer(stack);
+    default void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+        IModuleContainer moduleContainer = moduleContainer(itemAccess);
         if (moduleContainer != null) {
             for (IModule<?> module : moduleContainer.modules()) {
                 if (module.handlesModeChange()) {
-                    changeMode(module, player, moduleContainer, stack, shift, displayChange);
+                    changeMode(module, player, itemAccess, shift, displayChange, transaction);
                     return;
                 }
             }
@@ -112,11 +111,11 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     }
 
     @Override
-    default boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        if (!IModeItem.super.supportsSlotType(stack, slotType)) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
+        if (!IModeItem.super.supportsSlotType(instance, slotType)) {
             return false;
         }
-        for (IModule<?> iModule : getModules(stack)) {
+        for (IModule<?> iModule : getModules(instance)) {
             if (iModule.handlesAnyModeChange()) {
                 return true;
             }
@@ -126,22 +125,23 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
 
     @Nullable
     @Override
-    default Component getScrollTextComponent(@NotNull ItemStack stack) {
-        for (IModule<?> module : getModules(stack)) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+        for (IModule<?> module : getModules(instance)) {
             if (module.handlesModeChange()) {
-                return getModeScrollComponent(module, stack);
+                return getModeScrollComponent(module, instance);
             }
         }
         return null;
     }
 
-    private static <MODULE extends ICustomModule<MODULE>> void changeMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer, ItemStack stack,
-          int shift, DisplayChange displayChange) {
-        module.getCustomInstance().changeMode(module, player, moduleContainer, stack, shift, displayChange != DisplayChange.NONE);
+    private static <MODULE extends ICustomModule<MODULE>> void changeMode(IModule<MODULE> module, Player player, ItemAccess itemAccess, int shift,
+          DisplayChange displayChange, TransactionContext transaction) {
+        module.getCustomInstance().changeMode(module, player, itemAccess, shift, displayChange != DisplayChange.NONE, transaction);
     }
 
     @Nullable
-    private static <MODULE extends ICustomModule<MODULE>> Component getModeScrollComponent(IModule<MODULE> module, ItemStack stack) {
-        return module.getCustomInstance().getModeScrollComponent(module, stack);
+    private static <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> Component getModeScrollComponent(IModule<MODULE> module,
+          ITEM instance) {
+        return module.getCustomInstance().getModeScrollComponent(module, instance);
     }
 }

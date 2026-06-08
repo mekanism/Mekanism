@@ -30,9 +30,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 public class CrTUtils {
 
@@ -154,7 +154,7 @@ public class CrTUtils {
     /**
      * Helper method for describing the outputs of a recipe that may have multiple outputs.
      */
-    public static String describeOutputs(long[] outputs) {
+    public static String describeOutputs(int[] outputs) {
         int size = outputs.length;
         if (size == 0) {
             return "";
@@ -202,15 +202,15 @@ public class CrTUtils {
     /**
      * Helper to convert a list of items to a list of crafttweaker items.
      */
-    public static List<IItemStack> convertItems(List<ItemStack> elements) {
-        return convert(elements, IItemStack::of);
+    public static List<IItemStack> convertItems(List<ItemStackTemplate> elements) {
+        return convert(elements, stack -> IItemStack.of(stack.create()));
     }
 
     /**
      * Helper to convert a list of items to a list of crafttweaker items.
      */
-    public static List<IFluidStack> convertFluids(List<FluidStack> elements) {
-        return convert(elements, IFluidStack::of);
+    public static List<IFluidStack> convertFluids(List<FluidStackTemplate> elements) {
+        return convert(elements, stack -> IFluidStack.of(stack.create()));
     }
 
     /**

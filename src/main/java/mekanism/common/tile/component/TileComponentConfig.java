@@ -14,7 +14,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.component.AttachedSideConfig;
@@ -22,7 +22,6 @@ import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -81,7 +80,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
-            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
+            case ENERGY -> tile.invalidateCapability(Capabilities.ENERGY.block(), direction);
             case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
             case CHEMICAL -> tile.invalidateCapability(Capabilities.CHEMICAL.block(), direction);
             case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
@@ -113,7 +112,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.HEAT;
         } else if (Capabilities.FLUID.is(capability)) {
             type = TransmissionType.FLUID;
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
+        } else if (Capabilities.ENERGY.is(capability)) {
             type = TransmissionType.ENERGY;
         }
         if (type != null) {
@@ -141,7 +140,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    public ConfigInfo setupInputConfig(TransmissionType type, Object container) {
+    public <CONTAINER> ConfigInfo setupInputConfig(TransmissionType type, CONTAINER container) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
@@ -150,7 +149,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return config;
     }
 
-    public ConfigInfo setupOutputConfig(TransmissionType type, Object container, RelativeSide... sides) {
+    public <CONTAINER> ConfigInfo setupOutputConfig(TransmissionType type, CONTAINER container) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
@@ -158,16 +157,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return config;
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, Object inputInfo, Object outputInfo, RelativeSide outputSide) {
-        return setupIOConfig(type, inputInfo, outputInfo, outputSide, false);
+    public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER inputInfo, CONTAINER outputInfo) {
+        return setupIOConfig(type, inputInfo, outputInfo, false);
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
-        return setupIOConfig(type, inputContainer, outputContainer, outputSide, alwaysAllow, alwaysAllow);
+    public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER inputContainer, CONTAINER outputContainer, boolean alwaysAllow) {
+        return setupIOConfig(type, inputContainer, outputContainer, alwaysAllow, alwaysAllow);
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllowInput,
-          boolean alwaysAllowOutput) {
+    public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER inputContainer, CONTAINER outputContainer, boolean alwaysAllowInput, boolean alwaysAllowOutput) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
@@ -177,11 +175,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return config;
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide) {
-        return setupIOConfig(type, info, outputSide, false);
+    public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER info) {
+        return setupIOConfig(type, info, false);
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide, boolean alwaysAllow) {
+    public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER info, boolean alwaysAllow) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
@@ -365,18 +363,21 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return list;
     }
 
-    public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, Object... containers) {
-        return createInfo(type, input, output, List.of(containers));
+    private static <CONTAINER> BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, CONTAINER container) {
+        if (type == TransmissionType.ENERGY) {
+            return new EnergySlotInfo(input, output, (IEnergyContainer) container);
+        }
+        return createInfo(type, input, output, List.of(container));
     }
 
     @SuppressWarnings("unchecked")
-    public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<?> containers) {
+    private static <CONTAINER> BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<CONTAINER> containers) {
         return switch (type) {
             case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
-            case FLUID -> new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
+            case FLUID -> new FluidSlotInfo(input, output, (List<IFluidTank>) containers);
             case CHEMICAL -> new ChemicalSlotInfo(input, output, (List<IChemicalTank>) containers);
-            case ENERGY -> new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
             case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
+            case ENERGY -> throw new UnsupportedOperationException("Energy Configs do not support multiple energy containers");
         };
     }
 

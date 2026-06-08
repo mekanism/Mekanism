@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,27 +10,23 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
+import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -42,7 +39,6 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -54,17 +50,16 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -92,11 +87,14 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,29 +110,22 @@ public final class MekanismUtils {
     // and in fact the first pass was spent just trying to convert use cases to referencing constants rather than also figuring out if they should
     // be transitioned over to the level's tickrate
     public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;
+    public static final LongSupplier GAME_TIME_SUPPLIER = () -> {
+        //TODO - 26.1: Re-evaluate If this is a reasonable enough implementation for rate limits on items, or if there is some other way we want to do it.
+        // We could theoretically reset the limit when the root transaction is committed, and then just not care about the game time at all
+        // Yes it wouldn't stop multiple calls from different transactions from being limitted, but in general if multiple calls do happen,
+        // odds are they will be within a single overall transaction (except? maybe for cases like multiple mods wireless charging a player's inventory)
+        Level level;
+        if (FMLEnvironment.getDist().isClient()) {
+            level = MekanismClient.tryGetClientWorld();
+        } else {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            level = server == null ? null : server.overworld();
+        }
+        return level == null ? 0 : level.getGameTime();
+    };
 
     private static final List<UUID> warnedFails = new ArrayList<>();
-
-    //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
-    // Deciding on how to implement it into the API will need more thought as we want to keep overriding implementations as simple as
-    // possible, and also ideally would use our normal logger instead of the API logger
-    public static void logMismatchedStackSize(long actual, long expected) {
-        if (expected != actual) {
-            Mekanism.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected);
-            if (MekanismAPI.debug) {
-                Mekanism.logger.error("Location ", new Exception());
-            }
-        }
-    }
-
-    public static void logExpectedZero(long actual) {
-        if (actual != 0L) {
-            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual);
-            if (MekanismAPI.debug) {
-                Mekanism.logger.error("Location ", new Exception());
-            }
-        }
-    }
 
     public static Component logFormat(Object message) {
         return logFormat(EnumColor.GRAY, message);
@@ -147,6 +138,14 @@ public final class MekanismUtils {
     public static boolean isTickingNormally(@Nullable Level level) {
         //Same as Minecraft#isLevelRunningNormally
         return level == null || level.tickRateManager().runsNormally();
+    }
+
+    public static LongSupplier getGameTimeSupplier(BlockEntity blockEntity) {
+        Objects.requireNonNull(blockEntity);
+        return () -> {
+            Level level = blockEntity.getLevel();
+            return level == null ? 0 : level.getGameTime();
+        };
     }
 
     @Nullable
@@ -222,16 +221,8 @@ public final class MekanismUtils {
         return 0;
     }
 
-    public static float getScale(float prevScale, IExtendedFluidTank tank) {
-        return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
-    }
-
-    public static float getScale(float prevScale, IChemicalTank tank) {
-        return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
-    }
-
-    public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : stored / (float) capacity, empty, stored == capacity);
+    public static <RESOURCE extends Resource> float getScale(float prevScale, IResourceContainer<RESOURCE> container) {
+        return getScale(prevScale, container.amountAsLong(), container.capacityAsLong(container.resource()), container.isEmpty());
     }
 
     public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
@@ -240,8 +231,8 @@ public final class MekanismUtils {
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        long stored = container.getEnergy();
-        long capacity = container.getMaxEnergy();
+        long stored = container.getAmountAsLong();
+        long capacity = container.getCapacityAsLong();
         if (capacity == 0L) {
             targetScale = 0;
         } else {
@@ -278,7 +269,7 @@ public final class MekanismUtils {
         return true;
     }
 
-    public static long getBaseUsage(IUpgradeTile tile, int def) {
+    public static int getBaseUsage(IUpgradeTile tile, int def) {
         if (tile.supportsUpgrades()) {
             //getGasPerTickMean * required ticks (not rounded)
             if (tile.supportsUpgrade(Upgrade.CHEMICAL)) {
@@ -286,8 +277,9 @@ public final class MekanismUtils {
                 // def * upgradeMultiplier ^ ((speed - gas) / 8)
                 //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
                 // that use this that are not statistical and have gas upgrades so would go through this code path
-                return Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
-                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL)));
+                //TODO - 26.1: Re-evaluate this cast
+                return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
+                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL))));
             }
             //If it doesn't support gas upgrades, we can fall through to the default value as the math would be:
             // def * (upgradeMultiplier ^ (speed / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
@@ -348,9 +340,9 @@ public final class MekanismUtils {
      *
      * @return required energy per tick
      */
-    public static long getEnergyPerTick(IUpgradeTile tile, long def) {
+    public static int getEnergyPerTick(IUpgradeTile tile, int def) {
         if (tile.supportsUpgrades()) {
-            return MathUtils.ceilToLong(def * Math.pow(
+            return Mth.ceil(def * Math.pow(
                   MekanismConfig.general.maxUpgradeMultiplier.get(),
                   2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)
             ));
@@ -414,8 +406,8 @@ public final class MekanismUtils {
         return Mekanism.rl(type.getPrefix() + name);
     }
 
-    public static boolean lighterThanAirGas(FluidStack stack) {
-        return stack.is(Tags.Fluids.GASEOUS) && stack.getFluidType().getDensity(stack) <= 0;
+    public static boolean lighterThanAirGas(FluidResource resource) {
+        return resource.is(Tags.Fluids.GASEOUS) && resource.getFluidType().isLighterThanAir();
     }
 
     public static boolean isLiquidBlock(Block block) {
@@ -477,24 +469,8 @@ public final class MekanismUtils {
         }
     }
 
-    public static long calculateUsage(long capacity) {
-        return Math.max((long) (0.005 * capacity), 1);
-    }
-
-    public static Component getEnergyDisplayShort(long energy) {
-        EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertToDouble(energy), configured);
-    }
-
-    /**
-     * Convert from the unit defined in the configuration to joules.
-     *
-     * @param energy - energy to convert
-     *
-     * @return energy converted to joules
-     */
-    public static long convertToJoules(long energy) {
-        return EnergyUnit.getConfigured().convertFrom(energy);
+    public static int calculateUsage(long capacity) {
+        return Math.max(1, MathUtils.clampToInt(0.005 * capacity));
     }
 
     /**
@@ -514,18 +490,13 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemResource> slots) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
         List<ItemStack> stacks = new ArrayList<>(slots.size());
-        for (ItemStack slot : slots) {
-            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
-            if (resize) {
-                stacks.add(slot.copyWithCount(1));
-            } else {
-                stacks.add(slot.copy());
-            }
+        for (ItemResource slot : slots) {
+            stacks.add(slot.toStack());
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }
@@ -541,13 +512,8 @@ public final class MekanismUtils {
         }
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            ItemStack stack = slot.getStack();
-            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
-            if (resize) {
-                stacks.add(stack.copyWithCount(1));
-            } else {
-                stacks.add(stack.copy());
-            }
+            //Note: copyWithCount which is used by ItemResource#toStack returns EMPTY if the stack is empty, so we can skip checking
+            stacks.add(slot.resource().toStack(resize ? 1 : slot.amountAsInt()));
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }
@@ -641,33 +607,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Performs a set of actions, until we find a success or run out of actions.
-     *
-     * @implNote Only returns that we failed if all the tested actions failed.
-     */
-    @SafeVarargs
-    public static InteractionResult performActions(InteractionResult firstAction, Supplier<InteractionResult>... secondaryActions) {
-        if (firstAction.consumesAction()) {
-            return firstAction;
-        }
-        InteractionResult result = firstAction;
-        boolean hasFailed = result == InteractionResult.FAIL;
-        for (Supplier<InteractionResult> secondaryAction : secondaryActions) {
-            result = secondaryAction.get();
-            if (result.consumesAction()) {
-                //If we were successful
-                return result;
-            }
-            hasFailed &= result == InteractionResult.FAIL;
-        }
-        if (hasFailed) {
-            //If at least one step failed, consider ourselves unsuccessful
-            return InteractionResult.FAIL;
-        }
-        return InteractionResult.PASS;
-    }
-
-    /**
      * @param amount   Amount currently stored
      * @param capacity Total amount that can be stored.
      *
@@ -679,26 +618,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Calculates the redstone level based on the percentage of amount stored. Like {@link ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without
-     * limiting slots to the max stack size of the item to allow for better support for bins
-     *
-     * @return A redstone level based on the percentage of the amount stored.
-     */
-    public static int redstoneLevelFromContents(List<IInventorySlot> slots) {
-        long totalCount = 0;
-        long totalLimit = 0;
-        for (IInventorySlot slot : slots) {
-            if (slot.isEmpty()) {
-                totalLimit += slot.getLimit(ItemStack.EMPTY);
-            } else {
-                totalCount += slot.getCount();
-                totalLimit += slot.getLimit(slot.getStack());
-            }
-        }
-        return redstoneLevelFromContents(totalCount, totalLimit);
-    }
-
-    /**
      * Checks whether the player is in creative or spectator mode.
      *
      * @param player the player to check.
@@ -706,6 +625,7 @@ public final class MekanismUtils {
      * @return true if the player is neither in creative mode, nor in spectator mode.
      */
     public static boolean isPlayingMode(Player player) {
+        //TODO - 26.1: Look at calls to Player#isCreative, and see what should potentially be going through here
         return !player.isCreative() && !player.isSpectator();
     }
 
@@ -731,16 +651,6 @@ public final class MekanismUtils {
             }
         }
         return Collections.emptyList();
-    }
-
-    public static Iterable<ItemStack> getArmorSlots(LivingEntity livingEntity) {
-        return Arrays.asList(
-              livingEntity.getItemBySlot(EquipmentSlot.HEAD),
-              livingEntity.getItemBySlot(EquipmentSlot.BODY),//animals
-              livingEntity.getItemBySlot(EquipmentSlot.CHEST),
-              livingEntity.getItemBySlot(EquipmentSlot.LEGS),
-              livingEntity.getItemBySlot(EquipmentSlot.FEET)
-        );
     }
 
     @FunctionalInterface
@@ -798,13 +708,8 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, long energyRequired, long baseBlastEnergy, long baseVeinEnergy,
-          Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy,
-          VeinEnergyFunction veinEnergy) {
-        long energyUsed = 0L;
-        long energyAvailable = energyContainer.getEnergy();
-        //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable - energyRequired;
+    public static void veinMineArea(EnergyHandler energyHandler, int baseBlastEnergy, int baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
+          ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
             Object2IntMap.Entry<BlockPos> foundEntry = iterator.next();
@@ -821,39 +726,40 @@ public final class MekanismUtils {
                 continue;
             }
             int distance = foundEntry.getIntValue();
-            long destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
-            if (energyUsed + destroyEnergy >= energyAvailable) {
-                //If we don't have energy to break the block continue
-                //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
-                // Given we validate the blocks are the same but their block states may be different thus making them have different
-                // block hardness values in a modded context
-                continue;
-            }
-            //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
-            BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
-            if (event.isCanceled()) {
-                //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
-                continue;
-            }
-            //Otherwise, break the block
-            FluidState fluidState = targetState.getFluidState();
-            //Get the tile now so that we have it for when we try to harvest the block
-            BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
-            //Update what the state will be if the player is destroying it, so that things like angering piglins, and firing block destroy game events occur
-            // This also ensures that things like decorated pots are able to properly update to cracked and drop sherds rather than the pot block itself
-            targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
-            Block block = targetState.getBlock();
-            //Remove the block
-            if (targetState.onDestroyedByPlayer(world, foundPos, player, stack, true, fluidState)) {
-                block.destroy(world, foundPos, targetState);
-                //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-                block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
-                player.awardStat(itemStat);
-                //Mark that we used that portion of the energy
-                energyUsed += destroyEnergy;
+            int destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                if (energyHandler.extract(destroyEnergy, subTransaction) < destroyEnergy) {
+                    //If we don't have energy to break the block continue
+                    //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
+                    // Given we validate the blocks are the same but their block states may be different thus making them have different
+                    // block hardness values in a modded context
+                    continue;
+                }
+                //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+                BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
+                if (event.isCanceled()) {
+                    //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
+                    continue;
+                }
+                //Otherwise, break the block
+                FluidState fluidState = targetState.getFluidState();
+                //Get the tile now so that we have it for when we try to harvest the block
+                BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
+                //Update what the state will be if the player is destroying it, so that things like angering piglins, and firing block destroy game events occur
+                // This also ensures that things like decorated pots are able to properly update to cracked and drop sherds rather than the pot block itself
+                targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
+                Block block = targetState.getBlock();
+                //Remove the block
+                if (targetState.onDestroyedByPlayer(world, foundPos, player, stack, true, fluidState)) {
+                    block.destroy(world, foundPos, targetState);
+                    //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
+                    block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
+                    player.awardStat(itemStat);
+                    //Mark that we used that portion of the energy
+                    subTransaction.commit();
+                }
             }
         }
-        energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
     }
 
     public enum ResourceType {
@@ -905,12 +811,12 @@ public final class MekanismUtils {
     @FunctionalInterface
     public interface BlastEnergyFunction {
 
-        long calc(long baseBlastEnergy, float hardness);
+        int calc(int baseBlastEnergy, float hardness);
     }
 
     @FunctionalInterface
     public interface VeinEnergyFunction {
 
-        long calc(long baseVeinEnergy, float hardness, int distance, BlockState state);
+        int calc(int baseVeinEnergy, float hardness, int distance, BlockState state);
     }
 }

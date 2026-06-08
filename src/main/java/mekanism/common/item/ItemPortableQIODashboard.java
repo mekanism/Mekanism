@@ -21,6 +21,7 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.SharedConstants;
@@ -42,6 +43,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,9 +65,10 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
-        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
@@ -80,9 +84,9 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public void encodeContainerData(RegistryFriendlyByteBuf buf, ItemStack stack) {
-        FrequencyAware<QIOFrequency> frequencyAware = stack.get(getFrequencyComponent());
-        BulkQIOData.encodeToPacket(buf, frequencyAware == null ? null : frequencyAware.getFrequency(stack, getFrequencyComponent()));
+    public void encodeContainerData(RegistryFriendlyByteBuf buf, ItemResource itemType) {
+        FrequencyAware<QIOFrequency> frequencyAware = itemType.get(getFrequencyComponent());
+        BulkQIOData.encodeToPacket(buf, frequencyAware == null ? null : frequencyAware.frequency().orElse(null));
     }
 
     @Override
@@ -105,7 +109,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new OwnerObject(stack), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (_, itemAccess) -> new OwnerObject(itemAccess), this);
     }
 
     @NotNull

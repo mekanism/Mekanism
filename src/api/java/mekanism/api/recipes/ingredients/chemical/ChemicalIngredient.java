@@ -25,7 +25,7 @@ import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chemical>> permits CompoundChemicalIngredient, DifferenceChemicalIngredient,
       EmptyChemicalIngredient, IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient {
 
-    //TODO - 26.1: Refactor this to make sure it is like FluidIngredient
+    //TODO - 26.1: Refactor this to make sure it is like FluidIngredient, and maybe switch from Holder<Chemical> to ChemicalResource in case we at some point let chemicals have data components
 
     @Nullable
     private List<Holder<Chemical>> chemicalHolders;

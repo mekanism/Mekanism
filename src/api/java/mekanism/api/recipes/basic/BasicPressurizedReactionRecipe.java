@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -26,7 +25,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     protected final ItemStackIngredient inputSolid;
     protected final FluidStackIngredient inputFluid;
     protected final ChemicalStackIngredient inputChemical;
-    protected final long energyRequired;
+    protected final int energyRequired;
     protected final int duration;
     @Nullable
     protected final ItemStackTemplate outputItem;
@@ -44,7 +43,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
      * @apiNote At least one output must not be empty.
      */
     public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          long energyRequired, int duration, @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
+          int energyRequired, int duration, @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputChemical = Objects.requireNonNull(inputChemical, "Chemical input cannot be null.");
@@ -64,7 +63,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          long energyRequired, int duration, Optional<ItemStackTemplate> outputItem, ChemicalStack outputChemical) {
+          int energyRequired, int duration, Optional<ItemStackTemplate> outputItem, ChemicalStack outputChemical) {
         this(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputItem.orElse(null), outputChemical);
     }
 
@@ -84,7 +83,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public long getEnergyRequired() {
+    public int getEnergyRequired() {
         return energyRequired;
     }
 
@@ -136,7 +135,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         }
         BasicPressurizedReactionRecipe other = (BasicPressurizedReactionRecipe) o;
         return energyRequired == other.energyRequired && duration == other.duration && inputSolid.equals(other.inputSolid) && inputFluid.equals(other.inputFluid) &&
-               inputChemical.equals(other.inputChemical) && ItemStackTemplateHelper.matches(outputItem, other.outputItem) && outputChemical.equals(other.outputChemical);
+               inputChemical.equals(other.inputChemical) && Objects.equals(outputItem, other.outputItem) && outputChemical.equals(other.outputChemical);
     }
 
     @Override
@@ -144,12 +143,11 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         int result = inputSolid.hashCode();
         result = 31 * result + inputFluid.hashCode();
         result = 31 * result + inputChemical.hashCode();
-        result = 31 * result + Long.hashCode(energyRequired);
+        result = 31 * result + energyRequired;
         result = 31 * result + duration;
         result = 31 * result + outputChemical.hashCode();
         if (outputItem != null) {
-            result = 31 * result + ItemStackTemplateHelper.hashItemAndComponents(outputItem);
-            result = 31 * result + outputItem.count();
+            result = 31 * result + outputItem.hashCode();
         }
         return result;
     }

@@ -1,23 +1,19 @@
 package mekanism.common.tile.qio;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.attachments.containers.item.AttachedItems;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
@@ -25,7 +21,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -59,58 +54,17 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         //TODO - 1.18: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
         // that is for read only slots instead of actually exposing slots to various sides
-        InventorySlotHelper builder = InventorySlotHelper.readOnly();
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.readOnly();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
-            for (int slot = 0; slot < 9; slot++) {
-                builder.addSlot(craftingWindow.getInputSlot(slot));
+            for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
+                builder.addContainer(craftingWindow.getInputSlot(slot));
             }
-            builder.addSlot(craftingWindow.getOutputSlot());
+            builder.addContainer(craftingWindow.getOutputSlot());
         }
         return builder.build();
-    }
-
-    @Override
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
-        List<ItemStack> stacks = attachedItems.containers();
-        int size = stacks.size();
-        if (size == slots.size()) {
-            for (int i = 0; i < size; i++) {
-                IInventorySlot slot = slots.get(i);
-                if (slot instanceof CraftingWindowOutputInventorySlot) {
-                    slot.setEmpty();
-                } else {
-                    ItemStack stack = stacks.get(i).copy();
-                    if (slot instanceof BasicInventorySlot basicSlot) {
-                        basicSlot.setStackUnchecked(stack);
-                    } else {
-                        slot.setStack(stack);
-                    }
-                }
-            }
-        }
-    }
-
-    @Nullable
-    @Override
-    public AttachedItems collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
-        boolean hasNonEmpty = false;
-        List<ItemStack> stacks = new ArrayList<>(slots.size());
-        for (IInventorySlot slot : slots) {
-            ItemStack stack;
-            if (slot instanceof CraftingWindowOutputInventorySlot) {
-                stack = ItemStack.EMPTY;
-            } else {
-                stack = slot.getStack().copy();
-            }
-            stacks.add(stack);
-            if (!stack.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedItems(stacks) : null;
     }
 
     @Override
@@ -190,19 +144,19 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         }
     }
 
-    @ComputerMethod
-    ItemStack getCraftingInput(int window, int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInput", docPlaceholder = "crafting input slot")
+    IInventorySlot getCraftingInputSlot(int window, int slot) throws ComputerException {
         validateWindow(window);
         if (slot < 0 || slot >= 9) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and 9.", slot);
         }
-        return craftingWindows[window].getInputSlot(slot).getStack();
+        return craftingWindows[window].getInputSlot(slot);
     }
 
-    @ComputerMethod
-    ItemStack getCraftingOutput(int window) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutput", docPlaceholder = "crafting output slot")
+    IInventorySlot getCraftingOutputSlot(int window) throws ComputerException {
         validateWindow(window);
-        return craftingWindows[window].getOutputSlot().getStack();
+        return craftingWindows[window].getOutputSlot();
     }
     //End methods IComputerTile
 }

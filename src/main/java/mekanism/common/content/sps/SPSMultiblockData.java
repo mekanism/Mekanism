@@ -1,20 +1,18 @@
 package mekanism.common.content.sps;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -28,15 +26,15 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
-import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,6 +46,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
@@ -62,7 +62,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public IChemicalTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
-    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> chemicalOutputTargets = new ArrayList<>();
 
     @ContainerSync
     public double progress;
@@ -102,10 +102,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         boolean needsPacket = super.tick(world);
         double processed = 0;
         couldOperate = canOperate();
-        if (couldOperate && receivedEnergy > 0L) {
+        if (couldOperate && receivedEnergy > 0) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-            long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
+            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(ChemicalResource.EMPTY) - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);
@@ -113,29 +113,29 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             } else {
                 processed = processable;
                 progress += processable;
-                long toProcess = MathUtils.clampToLong(progress);
-                long actualProcessed = process(toProcess);
+                int toProcess = MathUtils.clampToInt(progress);
+                int actualProcessed = process(toProcess);
                 if (actualProcessed < toProcess) {
                     //If we processed less than we intended to we need to adjust how much our values actually changed by
-                    long processedDif = toProcess - actualProcessed;
+                    int processedDif = toProcess - actualProcessed;
                     progress -= processedDif;
                     processed -= processedDif;
                 }
                 progress %= 1;
             }
-            if (lastProgress != progress) {
+            if (!Mth.equal(lastProgress, progress)) {
                 markDirty();
             }
         }
 
-        if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
+        if (receivedEnergy != lastReceivedEnergy || !Mth.equal(processed, lastProcessed)) {
             needsPacket = true;
         }
         if (!chemicalOutputTargets.isEmpty() && !outputTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), outputTank);
+            ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), outputTank, null);
         }
         lastReceivedEnergy = receivedEnergy;
-        receivedEnergy = 0L;
+        receivedEnergy = 0;
         lastProcessed = processed;
 
         kill(world);
@@ -147,10 +147,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @Override
     protected void updateEjectors(Level world) {
         chemicalOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, entry.getKey());
             if (tile != null) {
-                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, entry.getValue().side);
             }
         }
     }
@@ -173,63 +173,66 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+        return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(inputTank);
     }
 
-    private long process(long operations) {
-        if (operations == 0) {
+    private int process(int operations) {
+        ChemicalResource inputResource = inputTank.resource();
+        if (operations == 0 || inputResource.isEmpty()) {
             return 0;
         }
-        long processed = inputTank.shrinkStack(operations, Action.EXECUTE);
-        int lastInputProcessed = inputProcessed;
-        //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
-        inputProcessed += Ints.saturatedCast(processed);
-        final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-        if (inputProcessed >= inputPerAntimatter) {
-            ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.asStack(inputProcessed / inputPerAntimatter);
-            outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            inputProcessed %= inputPerAntimatter;
+        try (Transaction transaction = Transaction.openRoot()) {
+            int processed = inputTank.extract(inputResource, operations, transaction, AutomationType.INTERNAL);
+            //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
+            int totalProcessed = inputProcessed + processed;
+            final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
+            if (totalProcessed >= inputPerAntimatter) {
+                int toAdd = totalProcessed / inputPerAntimatter;
+                if (toAdd == 0 || outputTank.insert(MekanismChemicals.ANTIMATTER.asResource(), toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
+                    return 0;
+                }
+                totalProcessed %= inputPerAntimatter;
+            }
+            if (totalProcessed != inputProcessed) {
+                inputProcessed = totalProcessed;
+                markDirty();
+            }
+            transaction.commit();
+            return processed;
         }
-        if (lastInputProcessed != inputProcessed) {
-            markDirty();
-        }
-        return processed;
     }
 
     private void kill(ServerLevel world) {
-        if (lastReceivedEnergy > 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
-            List<Entity> entitiesToDie = world.getEntitiesOfClass(Entity.class, deathZone);
-            if (!entitiesToDie.isEmpty()) {
-                DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
-                LightningBolt lightningBolt = null;
-                List<ServerPlayer> nearbyPlayers = null;
-                for (Entity entity : entitiesToDie) {
-                    if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
-                        //If the entity is still alive, see if there is any special handling we want to do
-                        if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
-                            if (lightningBolt == null) {
-                                lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
-                                //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
-                                lightningBolt.setDamage(0);
-                                lightningBolt.setVisualOnly(true);
-                            }
-                            if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt)) {
-                                //Keep track of the remaining fire ticks so that we can skip lighting it on fire as we are not actual lightning
-                                int remainingFireTicks = entity.getRemainingFireTicks();
-                                entity.thunderHit(world, lightningBolt);
-                                entity.setRemainingFireTicks(remainingFireTicks);
-                                //Trigger advancements for nearby players
-                                if (nearbyPlayers == null) {
-                                    nearbyPlayers = new ArrayList<>();
-                                    for (ServerPlayer player : world.players()) {
-                                        if (advancementArea.contains(player.position())) {
-                                            nearbyPlayers.add(player);
-                                        }
+        if (lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+            DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
+            LightningBolt lightningBolt = null;
+            List<ServerPlayer> nearbyPlayers = null;
+            for (Entity entity : world.getEntitiesOfClass(Entity.class, deathZone)) {
+                if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
+                    //If the entity is still alive, see if there is any special handling we want to do
+                    if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
+                        if (lightningBolt == null) {
+                            lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
+                            //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
+                            lightningBolt.setDamage(0);
+                            lightningBolt.setVisualOnly(true);
+                        }
+                        if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt)) {
+                            //Keep track of the remaining fire ticks so that we can skip lighting it on fire as we are not actual lightning
+                            int remainingFireTicks = entity.getRemainingFireTicks();
+                            entity.thunderHit(world, lightningBolt);
+                            entity.setRemainingFireTicks(remainingFireTicks);
+                            //Trigger advancements for nearby players
+                            if (nearbyPlayers == null) {
+                                nearbyPlayers = new ArrayList<>();
+                                for (ServerPlayer player : world.players()) {
+                                    if (advancementArea.contains(player.position())) {
+                                        nearbyPlayers.add(player);
                                     }
                                 }
-                                for (ServerPlayer player : nearbyPlayers) {
-                                    MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, entity.typeHolder());
-                                }
+                            }
+                            for (ServerPlayer player : nearbyPlayers) {
+                                MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, entity.typeHolder());
                             }
                         }
                     }
@@ -248,20 +251,13 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         coilData.coilMap.put(portPos, new CoilData(portPos, side));
     }
 
-    public void supplyCoilEnergy(TileEntitySPSPort tile, long energy) {
+    public void supplyCoilEnergy(TileEntitySPSPort tile, int energy) {
         receivedEnergy = MathUtils.addClamped(receivedEnergy, energy);
         coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
 
     private boolean canOperate() {
-        return !inputTank.isEmpty() && outputTank.getNeeded() > 0;
-    }
-
-    private static int getCoilLevel(long energy) {
-        if (energy == 0L) {
-            return 0;
-        }
-        return 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
+        return !inputTank.isEmpty() && !outputTank.isFull();
     }
 
     @ComputerMethod
@@ -342,8 +338,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             this.side = side;
         }
 
-        private void receiveEnergy(long energy) {
-            laserLevel += getCoilLevel(energy);
+        private void receiveEnergy(int energy) {
+            if (energy > 0) {
+                laserLevel += 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
+            }
         }
 
         @Override

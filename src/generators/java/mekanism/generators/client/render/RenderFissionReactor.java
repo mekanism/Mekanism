@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.MultiblockContentsRenderState;
@@ -28,7 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -61,26 +61,26 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         state.heatedCoolantTexture = null;
         boolean isGaseous = false;
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
-            FluidStack fluid = multiblock.coolantTank.getFluidTank().getFluid();
+            FluidResource fluid = multiblock.coolantTank.getFluidTank().resource();
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             isGaseous = MekanismUtils.lighterThanAirGas(fluid);
             state.coolantGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
             state.coolantColor = MekanismRenderer.getColorARGB(fluid, coolantScale);
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            ChemicalStack chemicalStack = multiblock.coolantTank.getChemicalTank().getStack();
-            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
-            isGaseous = chemicalStack.is(MekanismAPITags.Chemicals.GASEOUS);
+            ChemicalResource chemical = multiblock.coolantTank.getChemicalTank().resource();
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemical));
+            isGaseous = chemical.is(MekanismAPITags.Chemicals.GASEOUS);
             state.coolantGlow = LightCoordsUtil.FULL_SKY;//todo not fullbright chemicals?
-            state.coolantColor = MekanismRenderer.getColorARGB(chemicalStack, coolantScale);
+            state.coolantColor = MekanismRenderer.getColorARGB(chemical, coolantScale);
         }
         if (state.coolantTexture != null) {
             state.coolantMaxY = ModelRenderer.getMaxY(state.height, coolantScale, isGaseous);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
-            ChemicalStack chemicalStack = multiblock.heatedCoolantTank.getStack();
-            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
-            state.heatedCoolantMaxY = ModelRenderer.getMaxY(state.height, heatedCoolantScale, chemicalStack.is(MekanismAPITags.Chemicals.GASEOUS));
-            state.heatedCoolantColor = MekanismRenderer.getColorARGB(chemicalStack, heatedCoolantScale);
+            ChemicalResource chemical = multiblock.heatedCoolantTank.resource();
+            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemical));
+            state.heatedCoolantMaxY = ModelRenderer.getMaxY(state.height, heatedCoolantScale, chemical.is(MekanismAPITags.Chemicals.GASEOUS));
+            state.heatedCoolantColor = MekanismRenderer.getColorARGB(chemical, heatedCoolantScale);
         }
 
         if (multiblock.isBurning()) {

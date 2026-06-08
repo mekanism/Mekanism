@@ -3,9 +3,10 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.MultiblockContentsRenderState;
@@ -27,7 +28,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -58,7 +59,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
         int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
         if (height > 0) {
-            FluidStack fluid = multiblock.waterTank.getFluid();
+            FluidResource fluid = multiblock.waterTank.resource();
             state.height = height;
             state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             state.valveTexture = MekanismRenderer.getValveTexture(fluid);
@@ -67,8 +68,8 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
             state.waterMaxY = ModelRenderer.getMaxY(state.height, waterScale, MekanismUtils.lighterThanAirGas(fluid));
             state.valves.clear();
             if (waterScale > 0) {
-                for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
-                    state.valves.add(ValveRenderData.get(valve, state.waterMaxY - 0.01F, state.renderLocation, state.height));
+                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                    state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.waterMaxY - 0.01F, state.renderLocation, state.height));
                 }
             }
         } else {
@@ -80,10 +81,10 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         state.steamHeight = steamHeight;
         if (steamHeight > 0) {
             state.upperRenderLocation = multiblock.upperRenderLocation.offset(1, 0, 1);
-            ChemicalStack chemicalStack = multiblock.steamTank.getStack();
-            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
-            state.steamColor = MekanismRenderer.getColorARGB(chemicalStack, steamScale);
-            state.steamMaxY = ModelRenderer.getMaxY(steamHeight, steamScale, chemicalStack.is(MekanismAPITags.Chemicals.GASEOUS));
+            ChemicalResource chemicalType = multiblock.steamTank.resource();
+            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
+            state.steamColor = MekanismRenderer.getColorARGB(chemicalType, steamScale);
+            state.steamMaxY = ModelRenderer.getMaxY(steamHeight, steamScale, chemicalType.is(MekanismAPITags.Chemicals.GASEOUS));
         } else {
             state.steamTexture = null;
         }

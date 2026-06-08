@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -22,9 +23,10 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -46,7 +48,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         state.gather(multiblock);
 
         float scale = Math.min(1, multiblock.prevScale);
-        FluidStack fluid = multiblock.inputTank.getFluid();
+        FluidResource fluid = multiblock.inputTank.resource();
 
         state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
         state.valveTexture = fluid.isEmpty() ? null : MekanismRenderer.getValveTexture(fluid);
@@ -54,8 +56,8 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
         state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
         state.valves.clear();
-        for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
-            state.valves.add(ValveRenderData.get(valve, state.tankMaxY - 0.01F, state.renderLocation, state.height));
+        for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+            state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.tankMaxY - 0.01F, state.renderLocation, state.height));
         }
     }
 
@@ -81,7 +83,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
     }
 
     public static class TEPRenderState extends MultiblockContentsRenderState {
-        
+
         public int tankColor;
         public int tankGlow;
         public float tankMaxY;

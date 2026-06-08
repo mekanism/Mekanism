@@ -3,14 +3,14 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.ModelUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.TexturePicker;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
@@ -21,7 +21,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -58,17 +59,17 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
     @Nullable
     @Override
     public TankRenderState extractArgument(ItemStack stack) {
-        IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(stack);
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack));
         int fluidLight = 0;
         int fluidColor = 0;
         float contentsMaxY = 0;
         TexturePicker fluidTexture = null;
-        if (attachment != null) {
-            FluidStack fluid = attachment.getFluidInTank(0);
+        if (handler != null) {
+            FluidResource fluid = handler.getResource(0);
             if (!fluid.isEmpty()) {
-                float fluidScale = (float) fluid.amount() / attachment.getTankCapacity(0);
+                float fluidScale = (float) handler.getAmountAsLong(0) / handler.getCapacityAsLong(0, fluid);
                 contentsMaxY = fluidScale > 0 ? RenderFluidTank.contentsMaxY(fluidScale, MekanismUtils.lighterThanAirGas(fluid)) : 0;
-                fluidLight = fluid.getFluidType().getLightLevel(fluid);
+                fluidLight = fluid.getFluidType().getLightLevel();//todo - 26.1: used to be stack, is that important anywhere?
                 fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
                 fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             }

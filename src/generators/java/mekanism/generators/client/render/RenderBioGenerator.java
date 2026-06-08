@@ -21,12 +21,12 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator, BioGeneratorRenderState> {
-    
+
     private static final int stages = 40;
     public static final float MODEL_MIN_Y_PAD = 0.4385F;
     public static final float MODEL_Y_STAGE_FRACTION = 0.4375F;
@@ -52,8 +52,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public void extractRenderState(TileEntityBioGenerator generator, BioGeneratorRenderState state, float partialTick, Vec3 cameraPosition,
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
-        FluidStack fluid = generator.bioFuelTank.getFluid();
-        float fluidScale = fluid.amount() / (float) generator.bioFuelTank.getCapacity();
+        FluidResource fluid = generator.bioFuelTank.resource();
+        float fluidScale = generator.bioFuelTank.amountAsLong() / (float) generator.bioFuelTank.capacityAsLong(fluid);
         state.maxY = MODEL_MIN_Y_PAD + MODEL_Y_STAGE_FRACTION * getFluidStagePercent(fluidScale, MekanismUtils.lighterThanAirGas(fluid));
         switch (generator.getDirection()) {
             case NORTH -> {

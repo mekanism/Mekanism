@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.gear.config.ModuleConfig;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an item that can contain modules. Do not implement this interface directly, register new containers via
@@ -42,23 +42,6 @@ public interface IModuleContainer {
     default Set<ModuleData<?>> moduleTypes() {
         return typedModules().keySet();
     }
-
-    /**
-     * Helper to replace the given config for the installed module of the given type.
-     *
-     * @param provider Holder lookup provider so that we can lookup enchantments if applicable.
-     * @param stack    The stack the container is stored on.
-     * @param type     Module type to replace the config for.
-     * @param config   Config to replace.
-     *
-     * @return New immutable module container with the config using the replaced value.
-     *
-     * @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
-     *                               given type.
-     *
-     * @since 10.7.11
-     */
-    IModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, ModuleConfig<?> config);
 
     /**
      * {@return all the enchantments provided by installed modules}
@@ -171,21 +154,17 @@ public interface IModuleContainer {
         return getIfEnabled(typeProvider) != null;
     }
 
-    /**
-     * Gets all the HUD elements that should be displayed when the MekaSuit is rendering the HUD.
-     *
-     * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
-     * @param stack  The stack the container is stored on.
-     */
-    List<IHUDElement> getHUDElements(Player player, ItemStack stack);
+    /// Gets all the HUD elements that should be displayed when the MekaSuit is rendering the HUD.
+    ///
+    /// @param player   Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
+    /// @param instance The item instance the container is stored on.
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> List<IHUDElement> getHUDElements(Player player, ITEM instance);
 
-    /**
-     * Gets all the text that should be displayed on the HUD.
-     *
-     * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
-     * @param stack  The stack the container is stored on.
-     *
-     * @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike {@link #getHUDElements(Player, ItemStack)}.
-     */
-    List<Component> getHUDStrings(Player player, ItemStack stack);
+    /// Gets all the text that should be displayed on the HUD.
+    ///
+    /// @param player   Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
+    /// @param instance The item instance the container is stored on.
+    ///
+    /// @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike [#getHUDElements(Player, TypedInstance)].
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> List<Component> getHUDStrings(Player player, ITEM instance);
 }

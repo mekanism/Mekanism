@@ -16,6 +16,7 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,8 +129,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
-        ItemStack result = filter.getResult();
-        return result.isEmpty() ? Collections.emptyList() : Collections.singletonList(result);
+        ItemResource result = filter.getResult();
+        return result.isEmpty() ? Collections.emptyList() : Collections.singletonList(result.toStack());
     }
 
     @Nullable

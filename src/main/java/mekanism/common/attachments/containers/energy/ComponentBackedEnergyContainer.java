@@ -1,41 +1,63 @@
 package mekanism.common.attachments.containers.energy;
 
+import com.google.common.primitives.Ints;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
+import java.util.function.LongToIntFunction;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.transaction.ITransactionHelper;
+import mekanism.api.transaction.RateLimitTracker;
+import mekanism.common.attachments.containers.SimpleComponentBackedContainer;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.EnergyContainerType;
+import mekanism.common.util.MekanismUtils;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+/// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
+/// on the backing item access' size.
 @NothingNullByDefault
-public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Long, AttachedEnergy> implements IEnergyContainer {
+public class ComponentBackedEnergyContainer extends SimpleComponentBackedContainer<Long> implements IEnergyContainer {
 
-    private final Predicate<@NotNull AutomationType> canExtract;
-    private final Predicate<@NotNull AutomationType> canInsert;
+    private final Predicate<AutomationType> canExtract;
+    private final Predicate<AutomationType> canInsert;
+    private final RateLimitTracker insertionRateLimiter;
+    private final RateLimitTracker extractionRateLimiter;
     private final LongSupplier maxEnergy;
-    private final LongSupplier rate;
 
-    public ComponentBackedEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
-        super(attachedTo, containerIndex);
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
+          IntSupplier rate) {
+        //Allow manual interaction to bypass rate limit for the item
+        this(attachedAccess, canExtract, canInsert, maxEnergy, ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate),
+              ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate));
+    }
+
+    public ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongSupplier maxEnergy,
+          @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter) {
+        super(attachedAccess);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.maxEnergy = maxEnergy;
-        this.rate = rate;
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(insertionRateLimiter);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.orInfinite(extractionRateLimiter);
     }
 
-    @Override
-    protected Long copy(Long toCopy) {
-        return toCopy;
+    //For the resistive heater
+    protected ComponentBackedEnergyContainer(ItemAccess attachedAccess, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, LongToIntFunction capacityToRateLimit) {
+        super(attachedAccess);
+        this.canExtract = canExtract;
+        this.canInsert = canInsert;
+        this.maxEnergy = ConstantPredicates.ZERO_LONG;
+        IntSupplier rate = () -> capacityToRateLimit.applyAsInt(getCapacityAsLong());
+        this.insertionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
+        this.extractionRateLimiter = ITransactionHelper.INSTANCE.createManualBypassRateLimit(MekanismUtils.GAME_TIME_SUPPLIER, rate);
     }
 
     @Override
@@ -44,7 +66,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    protected ContainerType<?, AttachedEnergy, ?> containerType() {
+    protected EnergyContainerType containerType() {
         return ContainerType.ENERGY;
     }
 
@@ -52,95 +74,85 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override
-    public long getEnergy() {
-        return getContents(getAttached());
+    public long getAmountAsLong() {
+        return getAttached();
     }
 
     @Override
-    public void setEnergy(long energy) {
-        setContents(getAttached(), energy);
-    }
-
-    protected long clampEnergy(long energy) {
-        return Math.min(energy, getMaxEnergy());
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy, @Nullable TransactionContext transaction) {
+        if (getAmountAsLong() != energy) {
+            setContents(energy, transaction);
+        }
     }
 
     @Override
-    protected void setContents(AttachedEnergy attachedEnergy, Long energy) {
-        super.setContents(attachedEnergy, clampEnergy(energy));
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0 || !isValidForInsertion(automationType)) {
+            //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
+            return 0;
+        }
+        long currentStored = getAmountAsLong();
+        //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
+        int needed = Ints.saturatedCast(getCapacityAsLong() - currentStored);
+        int insertionRate = insertionRateLimiter.getRemainingLimit(automationType);
+        //Limit how much we can add at once to the insertion rate the container sets
+        needed = Math.min(needed, insertionRate);
+        if (needed <= 0) {
+            //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
+            return 0;
+        }
+        int toAdd = Math.min(amount, needed);
+        // Note: We just set it as unchecked as we have already validated it
+        if (setContents(currentStored + toAdd, transaction)) {
+            insertionRateLimiter.consumeLimit(toAdd, automationType,  transaction);
+            return toAdd;
+        }
+        //If we couldn't update the backing item access, return that we didn't actually insert anything
+        return 0;
     }
 
+    @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(@Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0 || !isValidForExtraction(automationType)) {
+            //"Fail quick" nothing is being extracted, or if we can never extract from this slot
+            return 0;
+        }
+        long currentStored = getAmountAsLong();
+        if (currentStored == 0) {
+            //"Fail quick" if we are empty
+            return 0;
+        }
+        //If we are trying to extract more than we have, just change it so that we are extracting it all
+        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
+        int extractionRate = extractionRateLimiter.getRemainingLimit(automationType);
+        //Limit how much we can remove at once to the extraction rate the container sets
+        toRemove = Math.min(toRemove, extractionRate);
+        //Shrink the stack by the amount removed
+        if (toRemove > 0 && setContents(currentStored - toRemove, transaction)) {
+            extractionRateLimiter.consumeLimit(toRemove, automationType,  transaction);
+            return toRemove;
+        }
+        //If we couldn't update the backing item access, return that we didn't actually extract anything
+        return 0;
+    }
+
+    @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
-    }
-
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
-    }
-
-    @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        if (amount <= 0L || !canInsert.test(automationType)) {
-            return amount;
-        }
-        AttachedEnergy attachedEnergy = getAttached();
-        long stored = getContents(attachedEnergy);
-        long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
-        if (needed == 0L) {
-            //Fail if we are a full container or our rate is zero
-            return amount;
-        }
-        long toAdd = Math.min(amount, needed);
-        if (action.execute()) {
-            //If we want to actually insert the energy, then update the current energy
-            // Note: this also will mark that the contents changed
-            setContents(attachedEnergy, stored + toAdd);
-        }
-        return amount - toAdd;
-    }
-
-    @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        if (amount <= 0) {
-            return 0L;
-        }
-        AttachedEnergy attachedEnergy = getAttached();
-        long stored = getContents(attachedEnergy);
-        if (stored == 0L || !canExtract.test(automationType)) {
-            return 0L;
-        }
-        long ret = Math.min(Math.min(getExtractRate(automationType), stored), amount);
-        if (ret > 0L && action.execute()) {
-            //Note: this also will mark that the contents changed
-            setContents(attachedEnergy, stored - ret);
-        }
-        return ret;
-    }
-
-    @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getNeeded(@Range(from = 0, to = Long.MAX_VALUE) long stored) {
-        return getMaxEnergy() - stored;
-    }
-
-    @Override
-    public long getMaxEnergy() {
+    public long getCapacityAsLong() {
         return maxEnergy.getAsLong();
     }
 
     @Override
-    public void serialize(ValueOutput output) {
-        long stored = getEnergy();
-        if (stored > 0L) {
-            output.putLong(SerializationConstants.STORED, stored);
-        }
+    public boolean isValidForExtraction(AutomationType automationType) {
+        return canExtract.test(automationType);
     }
 
     @Override
-    public void deserialize(ValueInput input) {
-        input.getLong(SerializationConstants.STORED).ifPresent(this::setEnergy);
+    public boolean isValidForInsertion(AutomationType automationType) {
+        return canInsert.test(automationType);
     }
 }

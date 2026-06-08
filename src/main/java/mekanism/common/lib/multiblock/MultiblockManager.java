@@ -171,7 +171,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
             //Note: We can just store the inventory id in the same compound tag as the rest of the cache data
             // as none of the caches save anything to this tag
             cacheOutput.store(SerializationConstants.INVENTORY_ID, UUIDUtil.LENIENT_CODEC, entry.getKey());
-            entry.getValue().save(output);
+            entry.getValue().save(cacheOutput);
         }
     }
 }

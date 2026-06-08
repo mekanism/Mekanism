@@ -28,14 +28,14 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.inputFluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 15)
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
+        addRenderableWidget(new GuiFluidGauge(() -> tile.inputFluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 5, 15)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_FLUID_INPUT_ERROR)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.inputGasTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 28, 15)
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.inputGasTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 28, 15)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_CHEMICAL_INPUT_ERROR)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.outputGasTank, () -> tile.getChemicalTanks(null), GaugeType.SMALL, this, 140, 45)
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.outputGasTank, tile::getChemicalTanks, GaugeType.SMALL, this, 140, 45)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR)));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 163, 21)
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 163, 21)
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY)));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 77, 43).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

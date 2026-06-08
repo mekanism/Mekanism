@@ -7,13 +7,17 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
 public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, FluidStack, FluidStackIngredient> {
@@ -93,5 +97,17 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      */
     default FluidStackIngredient from(SizedFluidIngredient ingredient) {
         return FluidStackIngredient.of(ingredient);
+    }
+
+    @Override
+    default FluidStack createStack(TypedInstance<Fluid> instance) {
+        Objects.requireNonNull(instance, "Instance cannot be null.");
+        return switch (instance) {
+            case FluidStack stackIn -> stackIn;
+            case FluidStackTemplate template -> template.create();
+            case FluidResource resource -> resource.toStack(FluidType.BUCKET_VOLUME);
+            //TODO: Is there a decent way to grab any potential components patch?
+            default -> new FluidStack(instance.typeHolder(), FluidType.BUCKET_VOLUME);
+        };
     }
 }

@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -17,6 +16,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +87,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
                 } else {
                     //Handle fluid to chemical conversion
                     CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, fluidInputHandler, fluidInputGetter, fluidInputSetter,
-                          chemicalOutputHandler, chemicalOutputGetter, chemicalOutputSetter, ConstantPredicates.FLUID_EMPTY);
+                          chemicalOutputHandler, chemicalOutputGetter, chemicalOutputSetter);
                 }
             } else if (!recipe.hasChemicalToFluid()) {
                 //If our recipe doesn't have a chemical to fluid version, return that we cannot operate
@@ -95,7 +95,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
             } else {
                 //Handle chemical to fluid conversion
                 CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, chemicalInputHandler, chemicalInputGetter, chemicalInputSetter,
-                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter, ConstantPredicates.CHEMICAL_EMPTY);
+                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter);
             }
         }
     }
@@ -119,18 +119,19 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     }
 
     @Override
-    protected void finishProcessing(int operations) {
+    protected boolean finishProcessing(int operations, TransactionContext transaction) {
         //Mode == true if fluid to chemical
         if (modeSupplier.getAsBoolean()) {
             //Validate something didn't go horribly wrong and the fluid is somehow empty
-            if (recipe.hasFluidToChemical() && !recipeFluid.isEmpty() && !chemicalOutput.isEmpty()) {
-                fluidInputHandler.use(recipeFluid, operations);
-                chemicalOutputHandler.handleOutput(chemicalOutput, operations);
+            if (recipe.hasFluidToChemical()) {
+                return fluidInputHandler.use(recipeFluid, operations, transaction) &&
+                       chemicalOutputHandler.handleOutput(chemicalOutput, operations, transaction);
             }
-        } else if (recipe.hasChemicalToFluid() && !recipeChemical.isEmpty() && fluidOutput != null) {
+        } else if (recipe.hasChemicalToFluid() && fluidOutput != null) {
             //Validate something didn't go horribly wrong and the chemical is somehow empty
-            chemicalInputHandler.use(recipeChemical, operations);
-            fluidOutputHandler.handleOutput(fluidOutput, operations);
+            return chemicalInputHandler.use(recipeChemical, operations, transaction) &&
+                   fluidOutputHandler.handleOutput(fluidOutput, operations, transaction);
         }
+        return false;
     }
 }

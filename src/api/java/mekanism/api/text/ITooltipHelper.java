@@ -23,7 +23,7 @@ public interface ITooltipHelper {
 
     Component getPercent(double ratio);
 
-    Component getEnergyDisplay(long joules, boolean perTick);
+    Component getEnergyDisplay(long energy, boolean perTick);
 
-    Component getFluidDisplay(long joules, boolean perTick);
+    Component getFluidDisplay(long mb, boolean perTick);
 }

@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.gear.IModuleContainer;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.tags.MekanismTags;
@@ -44,17 +44,20 @@ public class MekanismHUD implements GuiLayer {
     }
 
     @Nullable
-    private <T extends TypedInstance<Item> & DataComponentGetter> IItemHUDProvider getHudProvider(T itemInstance) {
-        if (itemInstance.typeHolder().value() instanceof IItemHUDProvider hudProvider) {
+    private <ITEM extends TypedInstance<Item> & DataComponentGetter> IItemHUDProvider getHudProvider(ITEM instance) {
+        if (instance.typeHolder().value() instanceof IItemHUDProvider hudProvider) {
             //mekanism does this
             return hudProvider;
         }
-        if (!ModuleHelper.get().isModuleContainer(itemInstance)) {
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(instance);
+        if (container == null) {
             return null;
         }
-        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(itemInstance);
-        return (list, player, s, slotType) -> {
-            list.addAll(container.getHUDStrings(player, s));
+        return new IItemHUDProvider() {
+            @Override
+            public <I extends TypedInstance<Item> & DataComponentGetter> void addHUDStrings(List<Component> list, Player player, I s, EquipmentSlot slotType) {
+                list.addAll(container.getHUDStrings(player, s));
+            }
         };
     }
 

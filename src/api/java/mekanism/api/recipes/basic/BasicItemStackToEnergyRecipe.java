@@ -6,21 +6,19 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
 public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     protected final ItemStackIngredient input;
-    protected final long output;
+    protected final int output;
 
     /**
      * @param input  Input.
      * @param output Output, must be greater than zero.
      */
-    public BasicItemStackToEnergyRecipe(ItemStackIngredient input, long output) {
+    public BasicItemStackToEnergyRecipe(ItemStackIngredient input, int output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         if (output <= 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");
@@ -39,7 +37,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public long getOutput(ItemStack input) {
+    public int getOutput(ItemStack input) {
         return output;
     }
 
@@ -50,13 +48,13 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
      *
      * @since 10.6.0
      */
-    public long getOutputRaw() {
+    public int getOutputRaw() {
         return output;
     }
 
     @Override
-    public long[] getOutputDefinition() {
-        return new long[]{output};
+    public int[] getOutputDefinition() {
+        return new int[]{output};
     }
 
     @Override
@@ -78,7 +76,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     @Override
     public int hashCode() {
         int result = input.hashCode();
-        result = 31 * result + Long.hashCode(output);
+        result = 31 * result + output;
         return result;
     }
 }

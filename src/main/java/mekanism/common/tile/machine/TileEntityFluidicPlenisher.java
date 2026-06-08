@@ -5,23 +5,23 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -52,9 +52,13 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
@@ -63,7 +67,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks it takes to run an operation.
      */
     public static final int BASE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
 
     private final Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
@@ -92,72 +96,73 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @NotNull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
-        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, this::isValidFluid, listener), RelativeSide.TOP);
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
+        MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(fluidTank = BasicFluidTank.input(MAX_FLUID, this::isValidFluid, listener), RelativeSide.TOP);
         return builder.build();
+    }
+
+    @Override
+    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+        energyContainer = MachineEnergyContainer.input(this, listener);
+        return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(inputSlot = FluidInventorySlot.fill(fluidTank, listener, 28, 20), RelativeSide.TOP);
+        builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 28, 51), RelativeSide.BOTTOM);
+        builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 
-    @NotNull
-    @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, listener, 28, 20), RelativeSide.TOP);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35), RelativeSide.BACK);
-        return builder.build();
-    }
-
-    private boolean isValidFluid(@NotNull FluidStack stack) {
-        return stack.getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), stack);
+    private boolean isValidFluid(@NotNull FluidResource fluidType) {
+        return fluidType.getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), fluidType.toStack(FluidType.BUCKET_VOLUME));
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
-        inputSlot.fillTank(outputSlot);
-        long clientEnergyUsed = 0L;
-        if (canFunction() && !fluidTank.isEmpty()) {
-            long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                if (!finishedCalc) {
-                    clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                }
-                operatingTicks++;
-                if (operatingTicks >= ticksRequired) {
-                    operatingTicks = 0;
-                    if (finishedCalc) {
-                        BlockPos below = getBlockPos().below();
-                        if (canReplace(below, false, false) && canExtractBucket() &&
-                            WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
-                            level.gameEvent(null, GameEvent.FLUID_PLACE, below);
-                            clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                            fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+        energySlot.fillContainerOrConvert(null);
+        inputSlot.fillTankFromSlot(outputSlot, null);
+        int clientEnergyUsed = 0;
+        if (canFunction() && fluidTank.amountAsLong() >= FluidType.BUCKET_VOLUME) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                int energyPerTick = energyContainer.getEnergyPerTick();
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    operatingTicks++;
+                    if (operatingTicks >= ticksRequired) {
+                        operatingTicks = 0;
+                        FluidResource fluidType = fluidTank.resource();
+                        if (finishedCalc) {
+                            BlockPos below = getBlockPos().below();
+                            //Note: We already validated that the fluid tank is not empty so our resource doesn't represent the empty resource
+                            if (canReplace(below, false, false) &&
+                                fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, transaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
+                                FluidUtil.tryPlaceFluid(fluidType, null, level, below, true)) {
+                                level.gameEvent(null, GameEvent.FLUID_PLACE, below);
+                                clientEnergyUsed = energyPerTick;
+                                transaction.commit();
+                            }
+                        } else {
+                            doPlenish(fluidType, transaction);
+                            clientEnergyUsed = energyPerTick;
+                            transaction.commit();
                         }
-                    } else {
-                        doPlenish();
+                    } else if (!finishedCalc) {
+                        clientEnergyUsed = energyPerTick;
+                        transaction.commit();
                     }
                 }
             }
         }
-        usedEnergy = clientEnergyUsed > 0L;
+        usedEnergy = clientEnergyUsed > 0;
         return sendUpdatePacket;
     }
 
-    private boolean canExtractBucket() {
-        return fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).amount() == FluidType.BUCKET_VOLUME;
-    }
-
-    private void doPlenish() {
+    private void doPlenish(FluidResource fluidType, TransactionContext transaction) {
         if (usedNodes.size() >= MekanismConfig.general.maxPlenisherNodes.get()) {
             finishedCalc = true;
             return;
@@ -179,10 +184,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
         for (BlockPos nodePos : activeNodes) {
             if (WorldUtils.isBlockLoaded(level, nodePos)) {
-                if (canReplace(nodePos, true, false) && canExtractBucket() &&
-                    WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
-                    level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
-                    fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    if (canReplace(nodePos, true, false) &&
+                        fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, subTransaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
+                        FluidUtil.tryPlaceFluid(fluidType, null, level, nodePos, true)) {
+                        subTransaction.commit();
+                    }
                 }
                 for (Direction dir : dirs) {
                     mutable.setWithOffset(nodePos, dir);
@@ -218,12 +225,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             //Always return true if it is not a source block
             return true;
         }
-        FluidStack stack = fluidTank.getFluid();
-        if (stack.isEmpty()) {
+        FluidResource fluidType = fluidTank.resource();
+        if (fluidType.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
             return state.canBeReplaced() || state.getBlock() instanceof LiquidBlockContainer;
         }
-        Fluid fluid = stack.getFluid();
+        Fluid fluid = fluidType.getFluid();
         if (state.canBeReplaced(fluid)) {
             //If we can replace the block then return so
             return true;
@@ -307,11 +314,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+        return ContainerType.FLUID.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override
-    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
+    protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         return type == ContainerType.FLUID;
     }
 
@@ -326,7 +333,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return usedEnergy;
     }
 
-    public MachineEnergyContainer<TileEntityFluidicPlenisher> getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer() {
         return energyContainer;
     }
 

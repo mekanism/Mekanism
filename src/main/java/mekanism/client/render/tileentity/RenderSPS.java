@@ -78,7 +78,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
                     bolts.update(data.coilPos.hashCode(), getBoltFromData(data, pos, renderCenter), partialTick);
                 }
             }
-            if (multiblock.lastReceivedEnergy > 0L) {
+            if (multiblock.lastReceivedEnergy > 0) {
                 if (rand.nextDouble() < state.lerpEnergy(0.01F, 0.4F)) {
                     CuboidSide side = Util.getRandom(CuboidSide.SIDES, rand);
                     Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Interface describing the base methods common to all inputs of our recipes.
  */
 @MethodsAreNotNullByDefault
-public interface InputIngredient<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> extends Predicate<STACK> {
+public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -20,7 +20,7 @@ public interface InputIngredient<HOLDERTYPE, STACK extends TypedInstance<HOLDERT
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@NotNull TypedInstance<HOLDERTYPE> type);
+    boolean testType(@NotNull TypedInstance<HOLDER_TYPE> type);
 
     /**
      * Gets a copy of the internal instance that matches the given argument.
@@ -38,7 +38,7 @@ public interface InputIngredient<HOLDERTYPE, STACK extends TypedInstance<HOLDERT
      *
      * @return Amount of the given argument that is needed.
      */
-    long getNeededAmount(TypedInstance<HOLDERTYPE> type);
+    int getNeededAmount(TypedInstance<HOLDER_TYPE> type);
 
     /**
      * Checks if this ingredient has any matching instances, in most cases this should be {@code false}, but for cases like tags this may not always be the case.

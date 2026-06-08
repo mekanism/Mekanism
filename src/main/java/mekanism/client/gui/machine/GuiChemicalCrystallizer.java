@@ -1,7 +1,7 @@
 package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -37,10 +37,10 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 157, 23))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        inputGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.inputTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 7, 4))
+        addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
+        inputGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.inputTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 7, 4))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
@@ -59,14 +59,14 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
         @NotNull
         @Override
-        public ChemicalStack getInputChemical() {
-            return tile.inputTank.getStack();
+        public ChemicalResource getInputChemical() {
+            return tile.inputTank.resource();
         }
 
         @Nullable
         @Override
         public ChemicalCrystallizerRecipe getRecipe() {
-            ChemicalStack input = getInputChemical();
+            ChemicalResource input = getInputChemical();
             if (input.isEmpty()) {
                 return null;
             }

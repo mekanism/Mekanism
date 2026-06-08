@@ -1,6 +1,6 @@
 package mekanism.common.integration.framedblocks;
 
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -9,7 +9,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
@@ -17,12 +16,13 @@ import org.jetbrains.annotations.NotNull;
 
 final class ChemicalSpriteParticle extends SingleQuadParticle {
 
+    private final SingleQuadParticle.Layer layer;
     private final BlockPos pos;
     private final float uo;
     private final float vo;
     private final int brightness;
 
-    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, Holder<Chemical> chemical) {
+    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, ChemicalResource chemical) {
         super(level, x, y, z, sx, sy, sz, MekanismRenderer.getChemicalTexture(chemical));
         this.pos = BlockPos.containing(x, y, z);
         this.gravity = 1F;
@@ -31,17 +31,17 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.vo = random.nextFloat() * 3F;
         this.brightness = 0;
 
-        int tint = MekanismRenderer.getTint(chemical);
+        int tint = chemical.getChemicalTint();
         this.rCol = 0.6F * ARGB.redFloat(tint);
         this.gCol = 0.6F * ARGB.greenFloat(tint);
         this.bCol = 0.6F * ARGB.blueFloat(tint);
+        this.layer = Layer.bySprite(sprite);
     }
 
     @NotNull
     @Override
     protected SingleQuadParticle.Layer getLayer() {
-        //TODO - 26.1: Validate this
-        return SingleQuadParticle.Layer.TRANSLUCENT_TERRAIN;
+        return layer;
     }
 
     @Override
@@ -75,7 +75,10 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz, @NotNull RandomSource random) {
-            return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
+            if (!type.chemical().isEmpty()) {
+                return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
+            }
+            return null;
         }
     }
 }

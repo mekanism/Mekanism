@@ -2,12 +2,12 @@ package mekanism.common.block.basic;
 
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,11 +40,11 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         //Note: Check ItemHandler instead of acceptor as the back face cannot connect to transporters
-        if (!InventoryUtils.isItemHandler(level, pos.relative(oppositeDirection), facing)) {
+        if (Capabilities.ITEM.getCapabilityIfLoaded(level, pos.relative(oppositeDirection), facing) == null) {
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 //Skip the side we already know is not a valid acceptor
                 Direction opposite = dir.getOpposite();
-                if (dir != oppositeDirection && InventoryUtils.isItemHandler(level, pos.relative(dir), opposite)) {
+                if (dir != oppositeDirection && Capabilities.ITEM.getCapabilityIfLoaded(level, pos.relative(dir), opposite) != null) {
                     state = Attribute.setFacing(state, opposite);
                     break;
                 }
@@ -60,7 +60,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         if (!level.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, level, currentPos);
             Direction opposite = facing.getOpposite();
-            if (sorter != null && !sorter.hasConnectedInventory() && InventoryUtils.isItemHandler(sorter.getLevel(), facingPos, opposite)) {
+            if (sorter != null && !sorter.hasConnectedInventory() && Capabilities.ITEM.getCapabilityIfLoaded(sorter.getLevel(), facingPos, opposite) != null) {
                 sorter.setFacing(opposite);
                 state = sorter.getBlockState();
             }

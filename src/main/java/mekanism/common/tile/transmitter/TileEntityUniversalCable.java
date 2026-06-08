@@ -1,22 +1,21 @@
 package mekanism.common.tile.transmitter;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -24,23 +23,35 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
-    private final EnergyHandlerManager energyHandlerManager;
-
     public TileEntityUniversalCable(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
-            UniversalCable cable = getTransmitter();
-            if (direction != null && (cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) || cable.isRedstoneActivated()) {
-                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
-                // then return that we have no containers
-                return Collections.emptyList();
+        addCapabilityResolver(new EnergyHandlerManager(new IEnergyContainerHolder() {
+            @Nullable
+            @Override
+            public IEnergyContainer getContainer(@Nullable Direction direction) {
+                UniversalCable cable = TileEntityUniversalCable.this.getTransmitter();
+                if (direction != null && (cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) || cable.isRedstoneActivated()) {
+                    //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                    // then return that we have no containers
+                    return null;
+                }
+                return cable.getContainer();
             }
-            return cable.getEnergyContainers(direction);
-        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
+
+            @Override
+            public boolean canInsert(@Nullable Direction direction) {
+                return TileEntityUniversalCable.this.canInsert(direction);
+            }
+
+            @Override
+            public boolean canExtract(@Nullable Direction direction) {
+                return TileEntityUniversalCable.this.canExtract(direction);
+            }
+        }, MekanismUtils.getGameTimeSupplier(this)));
     }
 
     @Override
@@ -82,13 +93,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            output.putLong(SerializationConstants.ENERGY, network.energyContainer.getEnergy());
+            output.putLong(SerializationConstants.ENERGY, network.energyContainer.getAmountAsLong());
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
-    }
-
-    private List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return energyHandlerManager.getContainers(side);
     }
 
     @Override
@@ -96,7 +103,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), side);
+            invalidateCapability(Capabilities.ENERGY.block(), side);
         } else if (old == ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -111,7 +118,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilitiesAll(EnergyCompatUtils.getLoadedEnergyCapabilities());
+            invalidateCapabilityAll(Capabilities.ENERGY.block());
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

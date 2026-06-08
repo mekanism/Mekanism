@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismDataMapsProvider extends DataMapProvider {
 
-    public static final long HYDROGEN_ENERGY_DENSITY = 2;
+    public static final int HYDROGEN_ENERGY_DENSITY = 2;
 
     public MekanismDataMapsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);

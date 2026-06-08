@@ -10,10 +10,10 @@ import net.minecraft.world.phys.AABB;
 
 public class RobitAIPickup extends RobitAIBase {
 
+    public static final Predicate<Entity> ITEM_PREDICATE = entity -> !entity.isSpectator() && entity instanceof ItemEntity item && EntityRobit.isItemValid(item);
     private static final int SEARCH_RADIUS = 10;
     private static final int SEARCH_RADIUS_SQ = SEARCH_RADIUS * SEARCH_RADIUS;
 
-    private final Predicate<Entity> itemPredicate = entity -> !entity.isSpectator() && entity instanceof ItemEntity item && theRobit.isItemValid(item);
     private ItemEntity closest;
 
     public RobitAIPickup(EntityRobit entityRobit, float speed) {
@@ -36,7 +36,7 @@ public class RobitAIPickup extends RobitAIBase {
         //TODO: Look at and potentially mimic the way piglins search for items to pickup once their AI has mappings
         List<ItemEntity> items = theRobit.level().getEntitiesOfClass(ItemEntity.class,
               new AABB(theRobit.getX() - SEARCH_RADIUS, theRobit.getY() - SEARCH_RADIUS, theRobit.getZ() - SEARCH_RADIUS,
-                    theRobit.getX() + SEARCH_RADIUS, theRobit.getY() + SEARCH_RADIUS, theRobit.getZ() + SEARCH_RADIUS), itemPredicate);
+                    theRobit.getX() + SEARCH_RADIUS, theRobit.getY() + SEARCH_RADIUS, theRobit.getZ() + SEARCH_RADIUS), ITEM_PREDICATE);
         for (ItemEntity entity : items) {
             double distance = theRobit.distanceToSqr(entity);
             if (distance <= SEARCH_RADIUS_SQ) {

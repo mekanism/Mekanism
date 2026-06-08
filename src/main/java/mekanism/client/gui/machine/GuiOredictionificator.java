@@ -60,7 +60,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
             addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 202, 22, i, scrollBar::getCurrentSelection, filterManager, this::onClick,
                   index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
-                    return Collections.singletonList(oredictionificatorFilter.getResult());
+                    return Collections.singletonList(oredictionificatorFilter.getResult().toStack());
                 }
                 return Collections.emptyList();
             })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter != null && filter.isEnabled() && !filter.hasFilter());

@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
@@ -79,7 +80,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
                 throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
             }
         }
-        return of(chemical);
+        return new ChemicalResource(chemical);
     }
 
     private final Holder<Chemical> chemicalType;
@@ -125,11 +126,8 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
      *
      * @throws IllegalArgumentException when amount is negative.
      */
-    public ChemicalStack toStack(long amount) {
-        //TransferPreconditions.checkNonNegative(amount);
-        if (amount < 0) {
-            throw new IllegalArgumentException("Expected value to be non-negative: " + amount);
-        }
+    public ChemicalStack toStack(int amount) {
+        MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0) {
             return ChemicalStack.EMPTY;
         }
@@ -170,12 +168,49 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     @Override
     public Component getTextComponent() {
         //Wrapper to get display name of the chemical type easier
-        return getChemical().getTextComponent();
+        return value().getTextComponent();
     }
 
     @Override
     public String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier
-        return getChemical().getTranslationKey();
+        return value().getTranslationKey();
+    }
+
+    /**
+     * Helper to check if this chemical is radioactive without having to look it up from the attributes.
+     *
+     * @return {@code true} if this chemical is radioactive.
+     */
+    public boolean isRadioactive() {
+        return value().isRadioactive();
+    }
+
+    /**
+     * {@return radiation level of this chemical, or zero if it is not radioactive}.
+     */
+    public double getRadioactivity() {
+        return value().getRadioactivity();
+    }
+
+    /**
+     * Helper to get the tint of the stored chemical. This is equivalent to calling {@code value().getTint()}
+     *
+     * @return The tint of the stored chemical.
+     */
+    public int getChemicalTint() {
+        return value().getTint();
+    }
+
+    /**
+     * Helper to get the color representation of the stored chemical. This is equivalent to calling {@code value().getColorRepresentation()} and is used for things like
+     * durability bars of chemical tanks.
+     *
+     * @return The color representation of the stored chemical.
+     *
+     * @apiNote Does not have any special handling for when the stack is empty.
+     */
+    public int getChemicalColorRepresentation() {
+        return value().getColorRepresentation();
     }
 }

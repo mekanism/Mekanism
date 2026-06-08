@@ -33,7 +33,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     protected void addGuiElements() {
         super.addGuiElements();
         status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, () -> tile.status));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26))
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 158, 26))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> tile.status == TeleporterStatus.NOT_ENOUGH_ENERGY);
         addRenderableWidget(new GuiFrequencySelector<>(this, 14));
     }

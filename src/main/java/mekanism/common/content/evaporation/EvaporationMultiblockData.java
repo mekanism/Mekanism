@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
@@ -20,6 +21,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -43,9 +45,12 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLooku
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -83,7 +88,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private double biomeAmbientTemp;
     private double tempMultiplier;
 
-    private int inputTankCapacity;
+    private long inputTankCapacity;
     public float prevScale;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getProductionAmount")
@@ -117,7 +122,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         recheckAllRecipeErrors = TileEntityRecipeMachine.shouldRecheckAllErrors(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, this::getMaxFluid, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
+        fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, () -> inputTankCapacity, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
         fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, ConstantPredicates.alwaysTrue(), this));
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
@@ -158,8 +163,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
         tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
                          ((double) height() / MAX_HEIGHT);
-        inputOutputSlot.drainTank(outputOutputSlot);
-        inputInputSlot.fillTank(outputInputSlot);
+        inputOutputSlot.drainTankIntoSlot(outputOutputSlot, null);
+        inputInputSlot.fillTankFromSlot(outputInputSlot, null);
         recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (!Mth.equal(scale, prevScale)) {
@@ -170,6 +175,27 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
+    protected void updateEjectors(Level world) {
+        if (!world.isClientSide()) {
+            //Note: We don't need to wrap valve tanks on the client side
+            for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+                TileEntityThermalEvaporationValve tile = WorldUtils.getTileEntity(TileEntityThermalEvaporationValve.class, world, entry.getKey());
+                if (tile != null) {
+                    ValveData valve = entry.getValue();
+                    valve.resetTanks();
+                    valve.addTank(inputTank, true);
+                    valve.addTank(outputTank, false);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
+    }
+
+    @Override
     public boolean allowsStructuralGuiAccess(TileEntityStructuralMultiblock multiblock) {
         return false;
     }
@@ -177,8 +203,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(inputTank::setStack);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         readValves(input);
     }
@@ -186,7 +211,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void writeUpdateTag(@NotNull ValueOutput output) {
         super.writeUpdateTag(output);
-        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, inputTank.getFluid());
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, inputTank);
         output.putFloat(SerializationConstants.SCALE, prevScale);
         writeValves(output);
     }
@@ -225,10 +250,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
-    public int getMaxFluid() {
-        return inputTankCapacity;
-    }
-
     @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
@@ -254,7 +275,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @NotNull
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@NotNull FluidToFluidRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.fluidToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+        return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {
                       trackedErrors[i] = errors.contains(TRACKED_ERROR_TYPES.get(i));
@@ -315,7 +336,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
+        return ContainerType.FLUID.getRedstoneSignalFromContainer(inputTank);
     }
 
     @Override

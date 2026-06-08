@@ -1,9 +1,11 @@
 package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.common.attachments.containers.type.ContainerType;
+import mekanism.common.attachments.containers.type.IContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.multiblock.MultiblockType;
@@ -38,12 +40,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
 
     @NotNull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         //Do not handle heat when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.HEAT) {
             return false;

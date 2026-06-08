@@ -2,6 +2,8 @@ package mekanism.api.security;
 
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Expose this as a capability on items, entities, or block entities to represent it is an object that have "security". It is <strong>IMPORTANT</strong> to make sure that
@@ -29,25 +31,14 @@ public interface ISecurityObject extends IOwnerObject {
      */
     SecurityMode getSecurityMode();
 
-    /**
-     * Sets the security mode of this object.
-     *
-     * @param mode Security mode.
-     *
-     * @apiNote This method should not be called by addons unless it is on one of your own objects; for example to transfer the set security mode from an item stack to an
-     * entity when placing an entity.
-     * @implNote If the new security mode is different from the old one, {@link #onSecurityChanged(SecurityMode, SecurityMode)} should be called.
-     */
-    void setSecurityMode(SecurityMode mode);
-
-    /**
-     * Called from {@link #setSecurityMode(SecurityMode)} when the security mode changes.
-     *
-     * @param old  The old security mode.
-     * @param mode The new security mode.
-     *
-     * @apiNote It is on the implementer to call this method if it is useful to them.
-     */
-    default void onSecurityChanged(SecurityMode old, SecurityMode mode) {
-    }
+    /// Sets the security mode of this object.
+    ///
+    /// @param mode        Security mode.
+    /// @param transaction The current transaction context if any that this operation is part of.
+    ///
+    /// @implNote Only implementations for items currently support rolling back via the passed in transaction.
+    /// @apiNote This method should not be called by addons unless it is on one of your own objects; for example to transfer the set security mode from an item stack to
+    /// an entity when placing an entity.
+    /// @since 10.8.0
+    void setSecurityMode(SecurityMode mode, @Nullable TransactionContext transaction);
 }

@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -70,7 +71,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
         initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations(getSlotDisplayContext()))
               .setSlotName(CHEMICAL_INPUT);
@@ -90,11 +91,11 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
 
         @NotNull
         @Override
-        public ChemicalStack getInputChemical() {
+        public ChemicalResource getInputChemical() {
             if (ingredient == null || ingredient.isEmpty()) {
-                return ChemicalStack.EMPTY;
+                return ChemicalResource.EMPTY;
             }
-            return ingredient;
+            return ChemicalResource.of(ingredient);
         }
 
         @Nullable

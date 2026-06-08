@@ -1,25 +1,31 @@
 package mekanism.common.content.gear.mekasuit;
 
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
-import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
-import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.content.network.distribution.EnergySaveTarget.SaveHandler;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
+import mekanism.common.util.EnergyUtils;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
@@ -32,86 +38,77 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     @Override
-    public void tickServer(IModule<ModuleChargeDistributionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+    public void tickServer(IModule<ModuleChargeDistributionUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
         // charge inventory first
         if (chargeInventory) {
-            IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-            if (energyContainer != null) {
-                chargeInventory(energyContainer, player);
+            EnergyHandler energyHandler = module.getEnergyHandler(itemAccess, false);
+            if (energyHandler != null) {
+                chargeInventory(energyHandler, player, transaction);
             }
         }
         // distribute suit charge next, so that if we used power from the suit to charge an item, then we can balance across the suit properly
         if (chargeSuit) {
-            chargeSuit(player);
+            chargeSuit(player, transaction);
         }
     }
 
-    private void chargeSuit(Player player) {
-        EnergySaveTarget<DelegateSaveHandler> saveTarget = new EnergySaveTarget<>(4);
-        for (ItemStack stack : MekanismUtils.getArmorSlots(player)) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+    private void chargeSuit(Player player, TransactionContext transaction) {
+        ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
+        int size = armorSlots.size();
+        long availableEnergy = 0;
+        List<IEnergyContainer> energyContainers = new ArrayList<>(size);
+        for (int slot = 0; slot < size; slot++) {
+            IEnergyContainer energyContainer = EnergyUtils.getEnergyContainer(Capabilities.ENERGY.getCapability(ItemAccess.forHandlerIndexStrict(armorSlots, slot)));
             if (energyContainer != null) {
-                saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
+                energyContainers.add(energyContainer);
+                availableEnergy += energyContainer.getAmountAsLong();
+                if (availableEnergy < 0) {//TODO: Is there any way we can cleanly support this case? Maybe doing multiple distributions?
+                    Mekanism.logger.warn("Failed to distribute energy across worn armor due to having more than max long energy.");
+                    return;
+                }
             }
         }
-        if (saveTarget.getHandlerCount() > 1) {
-            //If we only have one handler we can skip charging as it will all just go back into the chest piece
-            long stored = saveTarget.getStored();
-            EmitUtils.sendToAcceptors(saveTarget, stored, EnergyNetwork.ENERGY);
-            saveTarget.save();
+        //If we only have one handler we can skip charging as it will all just go back into the chest piece
+        if (energyContainers.size() > 1 && availableEnergy > 0) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                EnergySaveTarget saveTarget = new EnergySaveTarget(energyContainers.size());
+                for (IEnergyContainer energyContainer : energyContainers) {
+                    saveTarget.addHandler(SaveHandler.startSaveHandling(energyContainer, subTransaction));
+                }
+                long distributed = EmitUtils.sendToAcceptors(saveTarget, availableEnergy, EnergyNetwork.ENERGY, subTransaction);
+                if (distributed == availableEnergy) {
+                    subTransaction.commit();
+                } else {
+                    Mekanism.logger.warn("Failed to distribute {} energy across {} pieces of armor. {} energy remaining afterward.", availableEnergy,
+                          saveTarget.getHandlerCount(), availableEnergy - distributed);
+                }
+            }
         }
     }
 
-    private void chargeInventory(IEnergyContainer energyContainer, Player player) {
+    private void chargeInventory(EnergyHandler energyHandler, Player player, TransactionContext transaction) {
         //Only try to charge up to how much energy we actually have stored
-        long toCharge = Math.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
-        if (toCharge == 0L) {
-            return;
+        int availableEnergy = Math.min(energyHandler.getAmountAsInt(), MekanismConfig.gear.mekaSuitInventoryChargeRate.get());
+        if (availableEnergy > 0) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Validate against any potential rate limit of the item
+                availableEnergy = energyHandler.extract(availableEnergy, simulation);
+            }
         }
-        // first try to charge mainhand/offhand item
-        ItemStack mainHand = player.getMainHandItem();
-        ItemStack offHand = player.getOffhandItem();
-        toCharge = charge(energyContainer, mainHand, toCharge);
-        toCharge = charge(energyContainer, offHand, toCharge);
-        if (toCharge > 0L) {
-            for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
-                if (stack != mainHand && stack != offHand) {
-                    toCharge = charge(energyContainer, stack, toCharge);
-                    if (toCharge == 0L) {
-                        return;
+        if (availableEnergy > 0) {
+            PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+            int selectedSlot = player.getInventory().getSelectedSlot();
+            // first try to charge mainhand/offhand item
+            availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getHandSlots(), availableEnergy, transaction);
+            if (availableEnergy > 0) {
+                availableEnergy -= EnergyUtils.chargeContents(energyHandler, playerInv.getMainSlots(), availableEnergy, transaction, selectedSlot);
+                if (availableEnergy > 0 && Mekanism.hooks.curios.isLoaded()) {
+                    ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
+                    if (handler != null) {
+                        EnergyUtils.chargeContents(energyHandler, handler, availableEnergy, transaction);
                     }
                 }
             }
-            //todo - 26.1: resources
-            /*if (Mekanism.hooks.curios.isLoaded()) {
-                IItemHandler handler = CuriosIntegration.getCuriosInventory(player);
-                if (handler != null) {
-                    for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
-                        toCharge = charge(energyContainer, handler.getStackInSlot(slot), toCharge);
-                        if (toCharge == 0L) {
-                            return;
-                        }
-                    }
-                }
-            }*/
         }
-    }
-
-    /** return rejects */
-    private long charge(IEnergyContainer energyContainer, ItemStack stack, long amount) {
-        if (!stack.isEmpty() && amount > 0L) {
-            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
-            if (handler != null) {
-                long remaining = handler.insertEnergy(amount, Action.SIMULATE);
-                if (remaining < amount) {
-                    //If we can actually insert any energy into
-                    long toExtract = amount - remaining;
-                    long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
-                    long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
-                    return inserted + remaining;
-                }
-            }
-        }
-        return amount;
     }
 }

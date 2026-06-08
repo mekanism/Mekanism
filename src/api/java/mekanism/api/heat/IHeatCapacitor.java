@@ -1,14 +1,16 @@
 package mekanism.api.heat;
 
-import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
+public interface IHeatCapacitor extends ValueIOSerializable {
 
     /**
      * Returns the temperature of this capacitor.
@@ -56,7 +58,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      * @param heat Heat to set this capacitor's storage to (may be {@code 0}).
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void setHeat(double heat);
 
@@ -64,8 +65,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      * Handles a change of heat in this capacitor. Can be positive or negative.
      *
      * @param transfer The amount being transferred.
-     *
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void handleHeat(double transfer);
 
@@ -84,5 +83,21 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
     @Override
     default void serialize(ValueOutput output) {
         output.putDouble(SerializationConstants.STORED, getHeat());
+    }
+
+    @Override
+    default void deserialize(ValueInput input) {
+        setHeat(input.getDoubleOr(SerializationConstants.STORED, getHeat()));
+    }
+
+    /// Helper method to copy all pertinent data from another [`heat capacitor`][IHeatCapacitor] to this one without requiring a serialization, deserialization cycle.
+    ///
+    /// @param other Capacitor to copy data from.
+    /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
+    ///
+    /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @since 10.8.0
+    default void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
+        setHeat(other.getHeat());
     }
 }

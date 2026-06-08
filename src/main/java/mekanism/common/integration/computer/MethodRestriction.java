@@ -1,14 +1,13 @@
 package mekanism.common.integration.computer;
 
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import java.util.function.Predicate;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 public enum MethodRestriction implements Predicate<Object> {
     /**
@@ -22,7 +21,7 @@ public enum MethodRestriction implements Predicate<Object> {
     /**
      * Handler is an energy handler that can handle energy.
      */
-    ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler energyHandler && energyHandler.canHandleEnergy()),
+    ENERGY(handler -> handler instanceof TileEntityMekanism energyHandler && energyHandler.canHandleEnergy()),
     /**
      * Handler is a multiblock that can expose the multiblock.
      */

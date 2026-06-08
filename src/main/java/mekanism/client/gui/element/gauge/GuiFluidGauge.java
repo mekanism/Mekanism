@@ -1,58 +1,25 @@
 package mekanism.client.gui.element.gauge;
 
-import java.util.Collections;
+import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.text.TextComponentUtil;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
-import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
-
-    private Component label;
-
-    public GuiFluidGauge(ITankInfoHandler<IExtendedFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK);
-        //Ensure it isn't null
-        setDummyType(FluidStack.EMPTY);
-    }
-
-    public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
-        this(tankSupplier, tanksSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
-    }
-
-    public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        this(new ITankInfoHandler<>() {
-            @Nullable
-            @Override
-            public IExtendedFluidTank getTank() {
-                return tankSupplier.get();
-            }
-
-            @Override
-            public int getTankIndex() {
-                IExtendedFluidTank tank = getTank();
-                return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
-            }
-        }, type, gui, x, y, sizeX, sizeY);
-    }
-
-    public GuiFluidGauge setLabel(Component label) {
-        this.label = label;
-        return this;
-    }
+public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
 
     public static GuiFluidGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -60,70 +27,50 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         return gauge;
     }
 
+    public GuiFluidGauge(@Nullable ITankInfoHandler<IFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK, FluidResource.EMPTY);
+    }
+
+    public GuiFluidGauge(Supplier<IFluidTank> tankSupplier, Supplier<List<IFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(tankSupplier, tanksSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
+
+    public GuiFluidGauge(Supplier<IFluidTank> tankSupplier, Supplier<List<IFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        this(getInfoHandler(tankSupplier, tanksSupplier), type, gui, x, y, sizeX, sizeY);
+    }
+
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.FLUID;
     }
 
-    @Override
-    public int getScaledLevel() {
-        if (dummy) {
-            return height - 2;
-        }
-        IExtendedFluidTank tank = getTank();
-        if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
-            return 0;
-        } else if (tank.getFluidAmount() == Integer.MAX_VALUE) {
-            return height - 2;
-        }
-        float scale = tank.getFluidAmount() / (float) tank.getCapacity();
-        return Math.max(1, Math.round(scale * (height - 2)));
-    }
-
     @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
-        if (dummy) {
-            return MekanismRenderer.getFluidTexture(dummyType, FluidTextureType.STILL);
-        }
-        IExtendedFluidTank tank = getTank();
-        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getFluidTexture(tank.getFluid(), FluidTextureType.STILL);
+        FluidResource type = getTypeOrDummy();
+        return type.isEmpty() ? null : MekanismRenderer.getFluidTexture(type, FluidTextureType.STILL);
     }
 
     @Override
-    public Component getLabel() {
-        return label;
-    }
-
-    @Override
-    public List<Component> getTooltipText() {
-        if (dummy) {
-            return Collections.singletonList(TextComponentUtil.build(dummyType));
+    protected List<Component> getContentsTooltips(FluidResource type, long amount, TooltipContext context, @Nullable Player player, TooltipFlag tooltipFlag) {
+        List<Component> tooltip = super.getContentsTooltips(type, amount, context, player, tooltipFlag);
+        FluidStack stack = type.toStack(Ints.saturatedCast(amount));
+        if (!stack.isEmpty()) {
+            //TODO - 26.1: Re-evaluate how tooltips are done for fluids and see if this is correct (especially in relation to it potentially showing the name twice)
+            // We might also want to update chemicals to be similar to this in that there is a getter on the stack rather than a method that appends to list on the stack
+            tooltip.addAll(stack.getTooltipLines(context, player, tooltipFlag));
         }
-        IExtendedFluidTank tank = getTank();
-        if (tank == null || tank.isEmpty()) {
-            return Collections.singletonList(MekanismLang.EMPTY.translate());
-        }
-        int amount = tank.getFluidAmount();
-        FluidStack fluidStack = tank.getFluid();
-        if (amount == Integer.MAX_VALUE) {
-            return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));
-        }
-        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(amount)));
+        return tooltip;
     }
 
     @Override
     protected int getRenderColor() {
-        return MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
+        return MekanismRenderer.color(getTypeOrDummy());
     }
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
-        return getTank().isEmpty() ? Optional.empty() : Optional.of(getTank().getFluid());
-    }
-
-    @Override
-    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
-        return new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2);
+        IFluidTank tank = getContainer();
+        return tank == null || tank.isEmpty() ? Optional.empty() : Optional.of(tank.resource().toStack(tank.amountAsInt()));
     }
 }

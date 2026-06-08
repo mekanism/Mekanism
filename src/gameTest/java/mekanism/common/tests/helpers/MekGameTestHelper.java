@@ -9,7 +9,6 @@ import com.mojang.serialization.JsonOps;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -39,7 +38,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @NothingNullByDefault
@@ -55,10 +56,6 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public GameTestAssertException assertionException(String description) {
         //TODO - 26.1: Do we want to make any of our assertions translatable so that they can replace parameters instead of using string concat?
         return assertionException(Component.literal(description));
-    }
-
-    public static HashedItem hashedStack(Item item) {
-        return HashedItem.raw(new ItemStack(item));
     }
 
     public ChunkMap getChunkMap() {
@@ -116,27 +113,26 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         //TODO: Do we want to make a PR to Neo that adds this overload, even if it is as simple as only checking the count
         // and doesn't also add support for checking item handlers?
         BlockEntity blockentity = getLevel().getBlockEntity(absolutePos(relativePos));
-        boolean sameCount;
+        int found;
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
-            sameCount = containerBE.countItem(item) == count;
+            found = containerBE.countItem(item);
         } else {
-            IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
+            ResourceHandler<ItemResource> handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
                 throw assertionException(relativePos, "Expected a container or item handler, found " +
                                                       (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
                                                                            : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
             }
-            int found = 0;
-            for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                if (stack.is(item)) {
-                    found += stack.count();
+            found = 0;
+            for (int i = 0, slots = handler.size(); i < slots; i++) {
+                ItemResource resource = handler.getResource(i);
+                if (resource.is(item)) {
+                    found += handler.getAmountAsInt(i);
                 }
             }
-            sameCount = found == count;
         }
-        if (!sameCount) {
-            throw assertionException(relativePos, "test.error.expected_container_contents", count + " " + getItemName(item));
+        if (found != count) {
+            throw assertionException(relativePos, "test.error.expected_container_contents", count + " " + getItemName(item) + " but contained " + found);
         }
     }
 
@@ -151,13 +147,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
                 throw assertionException(relativePos, "test.error.expected_empty_container");
             }
         } else {
-            IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
-            if (handler != null) {
-                for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                    if (!handler.getStackInSlot(i).isEmpty()) {
-                        throw assertionException(relativePos, "test.error.expected_empty_container");
-                    }
-                }
+            ResourceHandler<ItemResource> handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
+            if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
+                throw assertionException(relativePos, "test.error.expected_empty_container");
             }
         }
     }

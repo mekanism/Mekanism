@@ -15,7 +15,7 @@ import mekanism.common.lib.inventory.Finder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
 
@@ -48,9 +48,9 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     }
 
     @Override
-    public boolean test(ItemStack stack) {
+    public boolean test(ItemResource toCheck) {
         Provider registries = Objects.requireNonNull(this.registryAccess.get(), "Registry access not supplied");
-        return Finder.modID(modID, registries, stack);
+        return Finder.modID(modID, registries, toCheck);
     }
 
     @Override

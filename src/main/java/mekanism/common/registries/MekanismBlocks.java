@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,7 +17,6 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTankTank;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTankFluidTank;
@@ -26,6 +24,7 @@ import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -184,7 +183,6 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
@@ -193,6 +191,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismBlocks {
@@ -365,7 +364,7 @@ public class MekanismBlocks {
                       .addBasic(TileEntityMetallurgicInfuser.MAX_INFUSE, MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputB)
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInfusionFillOrConvertSlot(0)
+                      .addChemicalFillOrConvertSlot(0)
                       .addInput(MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputA)
                       .addOutput()
                       .addEnergy()
@@ -442,8 +441,8 @@ public class MekanismBlocks {
                       .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInputChemical)
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addChemicalRotaryDrainSlot(0)
-                      .addChemicalRotaryFillSlot(0)
+                      .addChemicalRotarySlot(0)
+                      .addOutput()
                       .addFluidRotarySlot(0)
                       .addOutput()
                       .addEnergy()
@@ -753,7 +752,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.registerDetails("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInput(s -> s.getItem() instanceof IModuleItem)
+                      .addInput(itemType -> itemType.getItem() instanceof IModuleItem)
                       .addInput(IModuleHelper.INSTANCE::isModuleContainer)
                       .addEnergy()
                       .build()
@@ -877,7 +876,7 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.FUZZY, false)
                 .component(MekanismDataComponents.INVERSE, false)
                 .component(MekanismDataComponents.LONG_AMOUNT, 0L)
-                .component(MekanismDataComponents.ITEM_TARGET, Optional.empty())
+                .component(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY)
           ));
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);
@@ -956,7 +955,7 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_fluid_tank", properties -> new BlockFluidTank(type, properties), ItemBlockFluidTank::new)
               .forItemHolder(holder -> holder
                     .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
-                          .addTank(ComponentBackedFluidTankFluidTank::create)
+                          .addContainer(ComponentBackedFluidTankFluidTank::create)
                           .build()
                     ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                           .addFluidInputSlot(0)
@@ -1005,7 +1004,8 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_chemical_tank", (properties, color) -> new BlockTileModel<>(type, BlockTile.defaultProperties(properties).mapColor(color)), ItemBlockChemicalTank::new)
               .forItemHolder(holder -> holder
                     .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                          .addTank(ComponentBackedChemicalTankTank::create).build()
+                          .addContainer(ComponentBackedChemicalTankTank::create)
+                          .build()
                     ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                           .addChemicalDrainSlot(0)
                           .addChemicalFillSlot(0)
@@ -1019,16 +1019,16 @@ public class MekanismBlocks {
         BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> factory = registerTieredBlock(tier, "_" + type.getFactoryType().getRegistryNameComponent() + "_factory", properties -> new BlockFactory<>(type, properties), ItemBlockFactory::new);
         factory.forItemHolder(holder -> {
             int processes = tier.processes;
-            Predicate<ItemStack> recipeInputPredicate = switch (type.getFactoryType()) {
-                case SMELTING -> s -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, s);
-                case ENRICHING -> s -> MekanismRecipeType.ENRICHING.getInputCache().containsInput(null, s);
-                case CRUSHING -> s -> MekanismRecipeType.CRUSHING.getInputCache().containsInput(null, s);
-                case COMPRESSING -> s -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputA(null, s);
-                case COMBINING -> s -> MekanismRecipeType.COMBINING.getInputCache().containsInputA(null, s);
-                case PURIFYING -> s -> MekanismRecipeType.PURIFYING.getInputCache().containsInputA(null, s);
-                case INJECTING -> s -> MekanismRecipeType.INJECTING.getInputCache().containsInputA(null, s);
-                case INFUSING -> s -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputA(null, s);
-                case SAWING -> s -> MekanismRecipeType.SAWING.getInputCache().containsInput(null, s);
+            Predicate<ItemResource> recipeInputPredicate = switch (type.getFactoryType()) {
+                case SMELTING -> itemType -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemType);
+                case ENRICHING -> itemType -> MekanismRecipeType.ENRICHING.getInputCache().containsInput(null, itemType);
+                case CRUSHING -> itemType -> MekanismRecipeType.CRUSHING.getInputCache().containsInput(null, itemType);
+                case COMPRESSING -> itemType -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputA(null, itemType);
+                case COMBINING -> itemType -> MekanismRecipeType.COMBINING.getInputCache().containsInputA(null, itemType);
+                case PURIFYING -> itemType -> MekanismRecipeType.PURIFYING.getInputCache().containsInputA(null, itemType);
+                case INJECTING -> itemType -> MekanismRecipeType.INJECTING.getInputCache().containsInputA(null, itemType);
+                case INFUSING -> itemType -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputA(null, itemType);
+                case SAWING -> itemType -> MekanismRecipeType.SAWING.getInputCache().containsInput(null, itemType);
             };
             switch (type.getFactoryType()) {
                 case SMELTING, ENRICHING, CRUSHING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
@@ -1063,7 +1063,7 @@ public class MekanismBlocks {
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addBasicFactorySlots(processes, recipeInputPredicate)
-                            .addInfusionFillOrConvertSlot(0)
+                            .addChemicalFillOrConvertSlot(0)
                             .addEnergy()
                             .build()
                       );

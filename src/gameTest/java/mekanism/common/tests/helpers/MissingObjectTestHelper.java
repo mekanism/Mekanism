@@ -11,12 +11,14 @@ import java.util.function.UnaryOperator;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.attachments.containers.resource.AttachedResources;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
@@ -24,7 +26,6 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
@@ -32,13 +33,15 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 @NothingNullByDefault
 public class MissingObjectTestHelper extends MekGameTestHelper {
@@ -58,32 +61,34 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         super(info);
     }
 
-    public HashedItem failureHashedItem() {
-        return HashedItem.raw(failureItem());
+    public ItemResource failureItemType() {
+        return ItemResource.of(ITEM_TO_REPLACE);
     }
 
-    public ItemStack failureItem() {
-        return failureItem(1);
+    public FluidResource failureFluidType() {
+        return FluidResource.of(FLUID_TO_REPLACE);
     }
 
-    public ItemStack failureItem(int count) {
-        return new ItemStack(ITEM_TO_REPLACE, count);
+    public ChemicalResource failureChemicalType() {
+        return ChemicalResource.of(CHEMICAL_TO_REPLACE);
     }
 
-    public FluidStack failureFluid() {
-        return failureFluid(FluidType.BUCKET_VOLUME);
-    }
-
-    public FluidStack failureFluid(int amount) {
-        return new FluidStack(FLUID_TO_REPLACE, amount);
-    }
-
-    public ChemicalStack failureChemical() {
-        return failureChemical(FluidType.BUCKET_VOLUME);
-    }
-
-    public ChemicalStack failureChemical(long amount) {
-        return new ChemicalStack(CHEMICAL_TO_REPLACE, amount);
+    public <RESOURCE extends RegisteredResource<?>> void succeedIfAttachedCycle(DataComponentType<AttachedResources<RESOURCE>> dataComponentType,
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper, RESOURCE failureType, RESOURCE a, RESOURCE b) {
+        LargeResourceStack<RESOURCE> initialA = stackHelper.createStack(a, 10);
+        LargeResourceStack<RESOURCE> initialB = stackHelper.createStack(b, 5);
+        succeedIfSerializationCycle(dataComponentType.codecOrThrow(), _ -> new AttachedResources<>(NonNullList.of(stackHelper.empty(),
+                    stackHelper.empty(),
+                    initialA,
+                    stackHelper.createStack(failureType, 3),
+                    initialB
+              )), attached -> attached.size() == 4 &&
+                              attached.get(0).isEmpty() &&
+                              attached.get(1).equals(initialA) &&
+                              attached.get(2).isEmpty() &&
+                              attached.get(3).equals(initialB),
+              replaceInvalid(failureType.typeHolder())
+        );
     }
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
@@ -103,7 +108,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         succeedIf(() -> {
             TYPE val = cycleSerialization(codec, sourceSupplier.apply(this), rawJsonReplacer);
             if (!resultValidator.test(val)) {//TODO: Allow for custom messages?
-                throw assertionException( "Resulting value after cycling serialization was not what was expected");
+                throw assertionException("Resulting value after cycling serialization was not what was expected");
             }
         });
     }
@@ -119,54 +124,58 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public FormulaAttachment makeFormula() {
-        List<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
-        ItemStack planks = new ItemStack(Items.OAK_PLANKS);
-        stacks.set(0, planks.copy());
-        stacks.set(2, planks.copy());
-        stacks.set(3, planks.copy());
-        stacks.set(4, failureItem());
-        stacks.set(5, planks.copy());
+        List<ItemResource> stacks = NonNullList.withSize(9, ItemResource.EMPTY);
+        ItemResource planks = ItemResource.of(Items.OAK_PLANKS);
+        stacks.set(0, planks);
+        stacks.set(2, planks);
+        stacks.set(3, planks);
+        stacks.set(4, failureItemType());
+        stacks.set(5, planks);
         return new FormulaAttachment(stacks, false);
     }
 
     public OverflowAware makeOverflow() {
-        Object2IntSortedMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
-        overflow.put(hashedStack(Items.DIAMOND), 10);
-        overflow.put(hashedStack(Items.STICK), 4);
-        overflow.put(failureHashedItem(), 7);
-        overflow.put(hashedStack(Items.STONE), 2);
+        Object2IntSortedMap<ItemResource> overflow = new Object2IntLinkedOpenHashMap<>();
+        overflow.put(ItemResource.of(Items.DIAMOND), 10);
+        overflow.put(ItemResource.of(Items.STICK), 4);
+        overflow.put(failureItemType(), 7);
+        overflow.put(ItemResource.of(Items.STONE), 2);
         return new OverflowAware(overflow);
     }
 
     public boolean validateOverflow(OverflowAware overflowAware) {
-        Object2IntSortedMap<HashedItem> overflow = overflowAware.overflow();
+        Object2IntSortedMap<ItemResource> overflow = overflowAware.overflow();
         return overflow.size() == 3 &&
-               overflow.getInt(hashedStack(Items.DIAMOND)) == 10 &&
-               overflow.getInt(hashedStack(Items.STICK)) == 4 &&
-               overflow.getInt(hashedStack(Items.STONE)) == 2;
+               overflow.getInt(ItemResource.of(Items.DIAMOND)) == 10 &&
+               overflow.getInt(ItemResource.of(Items.STICK)) == 4 &&
+               overflow.getInt(ItemResource.of(Items.STONE)) == 2;
     }
 
     public PortableDashboardContents makeDashboard() {
         return PortableDashboardContents.EMPTY
               //First crafting window has a recipe for sticks stored
-              .with(0, 1, new ItemStack(Items.OAK_PLANKS, 4))
-              .with(0, 4, new ItemStack(Items.OAK_PLANKS, 5))
+              .with(0, 1, ItemResource.of(Items.OAK_PLANKS), 4)
+              .with(0, 4, ItemResource.of(Items.OAK_PLANKS), 5)
               //Second has some contents, recipe doesn't matter as one of the things will be invalid
-              .with(1, 0, new ItemStack(Items.STONE))
-              .with(1, 4, failureItem())
+              .with(1, 0, ItemResource.of(Items.STONE), 1)
+              .with(1, 4, failureItemType(), 1)
               //Third window has a recipe for planks
-              .with(2, 8, new ItemStack(Items.OAK_LOG, 64));
+              .with(2, 8, ItemResource.of(Items.OAK_LOG), 64);
     }
 
     public boolean validateDashboard(PortableDashboardContents contents) {
         return contents.contents().size() == PortableDashboardContents.TOTAL_SLOTS &&
                //First window
-               ItemStack.matches(contents.getSlotContents(0, 1), new ItemStack(Items.OAK_PLANKS, 4)) &&
-               ItemStack.matches(contents.getSlotContents(0, 4), new ItemStack(Items.OAK_PLANKS, 5)) &&
+               matches(contents.getSlotContents(0, 1), Items.OAK_PLANKS, 4) &&
+               matches(contents.getSlotContents(0, 4), Items.OAK_PLANKS, 5) &&
                //Second window
-               ItemStack.matches(contents.getSlotContents(1, 0), new ItemStack(Items.STONE)) &&
+               matches(contents.getSlotContents(1, 0), Items.STONE, 1) &&
                //Third window
-               ItemStack.matches(contents.getSlotContents(2, 8), new ItemStack(Items.OAK_LOG, 64));
+               matches(contents.getSlotContents(2, 8), Items.OAK_LOG, 64);
+    }
+
+    private static boolean matches(LargeResourceStack<ItemResource> stack, Item item, long amount) {
+        return stack.amount() == amount && stack.resource().is(item);
     }
 
     private Map<Upgrade, Integer> getUpgrades() {
@@ -178,15 +187,15 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
         return new UpgradeAware(getUpgrades(),
-              validFirstSlot ? MekanismItems.SPEED_UPGRADE.asStack(3) : failureItem(3),
-              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asStack(5) : failureItem(5)
+              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3),
+              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5)
         );
     }
 
     private boolean validateUpgrades(UpgradeAware upgradeAware, boolean validFirstSlot, boolean validSecondSlot) {
         if (upgradeAware.upgrades().equals(getUpgrades())) {
-            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.asStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot().isEmpty();
-            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.asStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot().isEmpty();
+            boolean firstSlot = validFirstSlot ? MekanismItems.SPEED_UPGRADE.is(upgradeAware.inputSlot().resource()) && upgradeAware.inputSlot().amount() == 3 : upgradeAware.inputSlot().isEmpty();
+            boolean secondSlot = validSecondSlot ? MekanismItems.ENERGY_UPGRADE.is(upgradeAware.outputSlot().resource()) && upgradeAware.outputSlot().amount() == 5 : upgradeAware.outputSlot().isEmpty();
             return firstSlot && secondSlot;
         }
         return false;
@@ -224,7 +233,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         SorterItemStackFilter filter = new SorterItemStackFilter();
         filter.setItem(item);
         filter.min = 2;
-        filter.max  = 3;
+        filter.max = 3;
         filter.color = EnumColor.AQUA;
         filter.sizeMode = true;
         if (item == Items.STONE) {
@@ -247,7 +256,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     private boolean isStone(IItemStackFilter<?> filter) {
-        return filter.getItemStack().is(Items.STONE);
+        return filter.getItemType().is(Items.STONE);
     }
 
     public boolean testFilter(QIOItemStackFilter filter) {
@@ -268,7 +277,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         if (filters.size() == 2) {
             FILTER stickFilter = (FILTER) filters.getFirst();
             FILTER stoneFilter = (FILTER) filters.getLast();
-            return stickFilter.getItemStack().is(Items.STICK) && filterTester.test(stickFilter) &&
+            return stickFilter.getItemType().is(Items.STICK) && filterTester.test(stickFilter) &&
                    isStone(stoneFilter) && filterTester.test(stoneFilter);
         }
         return false;

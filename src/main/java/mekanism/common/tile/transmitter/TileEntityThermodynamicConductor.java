@@ -40,10 +40,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
                 return heatHandlerManager.getContainers(side);
             }
-
-            @Override
-            public void onContentsChanged() {
-            }
         }));
     }
 

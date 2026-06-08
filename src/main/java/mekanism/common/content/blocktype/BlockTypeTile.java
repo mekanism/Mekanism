@@ -1,5 +1,6 @@
 package mekanism.common.content.blocktype;
 
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
@@ -54,12 +55,16 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
             return with(new AttributeGui(containerRegistrar, customName));
         }
 
-        public T withEnergyConfig(LongSupplier energyUsage, LongSupplier energyStorage) {
+        public T withEnergyConfig(@Nullable IntSupplier energyUsage, @Nullable LongSupplier energyStorage) {
             return with(new AttributeEnergy(energyUsage, energyStorage));
         }
 
-        public T withEnergyConfig(LongSupplier energyStorage) {
-            return with(new AttributeEnergy(null, energyStorage));
+        public T withEnergyUsage(IntSupplier energyUsage) {
+            return withEnergyConfig(energyUsage, null);
+        }
+
+        public T withEnergyStorage(LongSupplier energyStorage) {
+            return withEnergyConfig(null, energyStorage);
         }
 
         @SafeVarargs

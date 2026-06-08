@@ -1,38 +1,43 @@
 package mekanism.common.inventory.container.item;
 
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableTeleporterContainer extends FrequencyItemContainer<TeleporterFrequency> implements IEmptyContainer {
 
     private TeleporterStatus status = TeleporterStatus.NO_FREQUENCY;
 
-    public PortableTeleporterContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
-        super(MekanismContainerTypes.PORTABLE_TELEPORTER, id, inv, hand, stack);
+    public PortableTeleporterContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess) {
+        super(MekanismContainerTypes.PORTABLE_TELEPORTER, id, inv, hand, itemAccess);
     }
 
     @Nullable
-    public IEnergyContainer getEnergyContainer() {
-        return StorageUtils.getEnergyContainer(stack, 0);
+    public EnergyHandler getEnergyHandler() {
+        return Capabilities.ENERGY.getCapability(itemAccess);
     }
 
     public TeleporterStatus getStatus() {
         return status;
+    }
+
+    @Override
+    protected boolean isValidType(ItemResource itemType) {
+        return super.isValidType(itemType) && MekanismItems.PORTABLE_TELEPORTER.is(itemType);
     }
 
     @Override
@@ -59,14 +64,15 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                     return TeleporterStatus.NO_DESTINATION;
                 }
                 if (!inv.player.isCreative()) {
-                    IEnergyContainer energyContainer = getEnergyContainer();
-                    if (energyContainer == null) {
+                    EnergyHandler energyHandler = getEnergyHandler();
+                    if (energyHandler == null) {
                         return TeleporterStatus.NOT_ENOUGH_ENERGY;
                     }
                     GlobalPos coords = freq.getClosestCoords(getLevel().dimension(), inv.player.blockPosition());
                     if (coords != null) {
-                        long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                        if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                        int energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
+                        //Note: We just use a rough estimate for if there is enough energy, so that we can skip retreiving the transactional state for sync checking
+                        if (energyNeeded != -1 && energyHandler.getAmountAsLong() < energyNeeded) {
                             return TeleporterStatus.NOT_ENOUGH_ENERGY;
                         }
                     }

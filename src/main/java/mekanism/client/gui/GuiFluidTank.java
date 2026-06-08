@@ -24,7 +24,7 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
         addRenderableWidget(GuiSideHolder.armorHolder(this));
         super.addGuiElements();
         addRenderableWidget(new GuiContainerEditModeTab<>(this, tile));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
+        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.WIDE, this, 48, 18));
     }
 
     @Override

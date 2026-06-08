@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.common.attachments.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -32,7 +32,10 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -198,31 +201,31 @@ public final class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void dumpRadiation(Level level, BlockPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
-        for (int tank = 0, gasTanks = chemicalHandler.getChemicalTanks(); tank < gasTanks; tank++) {
-            if (dumpRadiation(level, pos, chemicalHandler.getChemicalInTank(tank)) && clearRadioactive) {
-                chemicalHandler.setChemicalInTank(tank, ChemicalStack.EMPTY);
+    public void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, @Nullable TransactionContext transaction, HandlerRadiationClearer radioactiveClearer) {
+        for (int tank = 0, gasTanks = chemicalHandler.size(); tank < gasTanks; tank++) {
+            if (dumpRadiation(level, pos, chemicalHandler.getResource(tank), chemicalHandler.getAmountAsLong(tank))) {
+                radioactiveClearer.clear(chemicalHandler, tank, transaction);
             }
         }
     }
 
     @Override
-    public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
-        for (IChemicalTank gasTank : chemicalTanks) {
-            if (dumpRadiation(level, pos, gasTank.getStack()) && clearRadioactive) {
-                gasTank.setEmpty();
+    public void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive, @Nullable TransactionContext transaction) {
+        for (IChemicalTank chemicalTank : chemicalTanks) {
+            if (dumpRadiation(level, pos, chemicalTank.resource(), chemicalTank.amountAsLong()) && clearRadioactive) {
+                ContainerType.CHEMICAL.clearContents(chemicalTank, transaction);
             }
         }
     }
 
     @Override
-    public boolean dumpRadiation(Level level, BlockPos pos, ChemicalStack stack) {
+    public boolean dumpRadiation(Level level, BlockPos pos, ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
-        if (isGlobalRadiationEnabled() && !stack.isEmpty()) {
-            double radioactivity = stack.getRadioactivity();
+        if (isGlobalRadiationEnabled() && !type.isEmpty() && amount > 0) {
+            double radioactivity = type.getRadioactivity();
             if (radioactivity > 0) {
-                radiate(level, pos, radioactivity);
+                radiate(level, pos, radioactivity * amount);
                 return true;
             }
         }
