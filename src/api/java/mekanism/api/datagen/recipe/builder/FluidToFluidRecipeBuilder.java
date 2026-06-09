@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
@@ -9,7 +8,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
-@NothingNullByDefault
 public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFluidRecipeBuilder> {
 
     private final FluidStackIngredient input;

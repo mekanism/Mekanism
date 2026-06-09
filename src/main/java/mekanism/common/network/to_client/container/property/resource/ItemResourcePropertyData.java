@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemResourcePropertyData extends ResourcePropertyData<ItemResource> {
 
@@ -16,7 +15,7 @@ public class ItemResourcePropertyData extends ResourcePropertyData<ItemResource>
           ItemResourcePropertyData::new
     );
 
-    public ItemResourcePropertyData(short property, @NotNull ItemResource value) {
+    public ItemResourcePropertyData(short property, ItemResource value) {
         super(PropertyType.ITEM_TYPE, property, value);
     }
 }

@@ -3,11 +3,10 @@ package mekanism.client.gui.element.button;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.Color;
-import org.jetbrains.annotations.NotNull;
 
 public class DigitalButton extends TranslationButton {
 
-    public DigitalButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress) {
+    public DigitalButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, IClickable onPress) {
         super(gui, x, y, width, height, translationHelper, onPress, null);
         setButtonBackground(ButtonBackground.DIGITAL);
     }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import net.minecraft.core.Holder;
@@ -23,14 +22,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class for interacting with and creating custom modules.
  *
  * @see IModuleHelper#INSTANCE
  */
-@NothingNullByDefault
 public interface IModuleHelper {
 
     /**

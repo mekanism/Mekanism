@@ -1,17 +1,16 @@
 package mekanism.common.item.block.machine;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
@@ -69,29 +68,27 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implements IAttachmentBasedModeItem<Boolean> {
 
     private final FluidTankTier tier;
 
     public ItemBlockFluidTank(BlockFluidTank block, Item.Properties properties) {
-        tier = Objects.requireNonNull(Attribute.getTier(block, FluidTankTier.class));
+        tier = Attribute.getTierNN(block, FluidTankTier.class);
         super(block, true, properties.component(MekanismDataComponents.BUCKET_MODE, false)
               .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH)
         );
     }
 
-    @NotNull
     @Override
     public FluidTankTier getTier() {
         return tier;
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         if (fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
@@ -108,15 +105,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(itemAccess), true)));
         super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
     }
 
-    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
             //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
@@ -163,7 +159,6 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         return null;
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         //Note: We don't need to check the stack size here, as we only want to allow placing it if it isn't in bucket mode
@@ -175,9 +170,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         return super.useOn(context);
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
         if (!getMode(itemAccess.getResource())) {
             return InteractionResult.PASS;
@@ -243,7 +237,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+    public void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getMode(itemAccess);
@@ -253,9 +247,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         }
     }
 
-    @NotNull
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(ITEM instance) {
         return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getMode(instance), true));
     }
 
@@ -266,9 +259,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         private FluidTankItemDispenseBehavior() {
         }
 
-        @NotNull
         @Override
-        public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+        public ItemStack execute(BlockSource source, ItemStack stack) {
             //If the fluid tank is in bucket mode allow for it to act as a bucket
             if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to act as a bucket that is emptying its contents
@@ -322,10 +314,9 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         private FluidTankCauldronInteraction() {
         }
 
-        @NotNull
         @Override
-        public final InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-              @NotNull InteractionHand hand, @NotNull ItemStack stack) {
+        public final InteractionResult interact(BlockState state, Level level, BlockPos pos, Player player,
+              InteractionHand hand, ItemStack stack) {
             if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: To behave similar to buckets, we specifically use a side effect free item access for when the player is in creative

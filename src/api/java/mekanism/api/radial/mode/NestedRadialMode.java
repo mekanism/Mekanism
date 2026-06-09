@@ -6,15 +6,14 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Record providing a basic implementation for nested radial types.
  *
  * @since 10.3.2
  */
-public record NestedRadialMode(@NotNull RadialData<?> nestedData, @NotNull Component sliceName, @NotNull Identifier icon, @Nullable EnumColor color)
+public record NestedRadialMode(RadialData<?> nestedData, Component sliceName, Identifier icon, @Nullable EnumColor color)
       implements INestedRadialMode {
 
     /**
@@ -22,7 +21,7 @@ public record NestedRadialMode(@NotNull RadialData<?> nestedData, @NotNull Compo
      * @param sliceName  Name to display in this mode's slice of the radial menu.
      * @param icon       Asset location of the icon to draw in this mode's slice of the radial menu.
      */
-    public NestedRadialMode(@NotNull RadialData<?> nestedData, @NotNull Component sliceName, @NotNull Identifier icon) {
+    public NestedRadialMode(RadialData<?> nestedData, Component sliceName, Identifier icon) {
         this(nestedData, sliceName, icon, null);
     }
 
@@ -34,7 +33,7 @@ public record NestedRadialMode(@NotNull RadialData<?> nestedData, @NotNull Compo
      *
      * @implNote {@code sliceName} is colored using the given color.
      */
-    public NestedRadialMode(@NotNull RadialData<?> nestedData, @NotNull ILangEntry sliceName, @NotNull Identifier icon, @NotNull EnumColor color) {
+    public NestedRadialMode(RadialData<?> nestedData, ILangEntry sliceName, Identifier icon, EnumColor color) {
         this(nestedData, sliceName.translateColored(color), icon, color);
     }
 

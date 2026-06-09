@@ -4,6 +4,7 @@ import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Wrapper type for a method which may return a different static type at runtime. Ensures that the result can still be converted.
@@ -11,18 +12,19 @@ import java.util.function.BiFunction;
 public final class Convertable<RAW> {
 
     private final RAW value;
-    private final BiFunction<BaseComputerHelper, RAW, Object> converter;
+    private final BiFunction<BaseComputerHelper, RAW, @Nullable Object> converter;
 
-    private Convertable(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
+    private Convertable(RAW value, BiFunction<BaseComputerHelper, RAW, @Nullable Object> converter) {
         this.value = value;
         this.converter = converter;
     }
 
+    @Nullable
     public Object convert(BaseComputerHelper helper) {
         return converter.apply(helper, value);
     }
 
-    public static <RAW> Convertable<RAW> of(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
+    public static <RAW> Convertable<RAW> of(RAW value, BiFunction<BaseComputerHelper, RAW, @Nullable Object> converter) {
         return new Convertable<>(value, converter);
     }
 

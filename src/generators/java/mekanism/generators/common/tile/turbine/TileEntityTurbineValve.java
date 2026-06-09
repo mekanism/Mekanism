@@ -17,8 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
@@ -28,7 +27,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
         super(GeneratorsBlocks.TURBINE_VALVE, pos, state);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return _ -> getMultiblock().getChemicalTanks();

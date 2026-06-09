@@ -22,14 +22,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> {
 
     public final PipeTier tier;
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
-        this.tier = Attribute.getTier(blockProvider, PipeTier.class);
+        this.tier = Attribute.getTierNN(blockProvider, PipeTier.class);
         super(tile, BasicFluidTank::create, TransmissionType.FLUID);
     }
 
@@ -49,7 +48,7 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     }
 
     @Override
-    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(TransmitterUpgradeData data) {
         return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.FLUID_HELPER;
     }
 

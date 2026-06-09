@@ -33,9 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class ToolsModelProvider extends BaseModelProvider {
 
     public ToolsModelProvider(PackOutput output, ResourceManager clientResources) {

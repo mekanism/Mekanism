@@ -3,7 +3,6 @@ package mekanism.common.inventory.slot;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
@@ -13,9 +12,8 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class QIODriveSlot extends BasicInventorySlot {
 
     public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.getItem() instanceof IQIODriveItem;

@@ -78,7 +78,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
 
     private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> cell, BlockRegistryObject<?, ?> previousCell,
           BlockRegistryObject<?, ?> energyCube) {
-        String tierName = Attribute.getBaseTier(cell).getLowerName();
+        String tierName = Attribute.getBaseTierNN(cell).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
@@ -105,7 +105,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
 
     private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> provider, BlockRegistryObject<?, ?> previousProvider,
           BlockRegistryObject<?, ?> energyCube, TagKey<Item> circuitTag) {
-        String tierName = Attribute.getBaseTier(provider).getLowerName();
+        String tierName = Attribute.getBaseTierNN(provider).getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
               .key(Pattern.PREVIOUS, previousProvider)

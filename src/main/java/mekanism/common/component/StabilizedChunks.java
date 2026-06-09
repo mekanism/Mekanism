@@ -4,12 +4,11 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record StabilizedChunks(byte[] chunks) {
 
     public static final StabilizedChunks NONE = new StabilizedChunks(new byte[TileEntityDimensionalStabilizer.ARRAY_SIZE]);
@@ -45,7 +44,7 @@ public record StabilizedChunks(byte[] chunks) {
 
     //Note: We have to override equals and hashCode as the default implementation for records doesn't handle arrays properly
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

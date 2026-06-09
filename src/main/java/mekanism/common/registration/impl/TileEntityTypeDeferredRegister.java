@@ -33,8 +33,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<BlockEntityType<?>> {
 
@@ -70,7 +69,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     @Override
-    public void register(@NotNull IEventBus bus) {
+    public void register(IEventBus bus) {
         super.register(bus);
         bus.addListener(this::registerCapabilities);
     }
@@ -101,21 +100,21 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             this.factory = factory;
         }
 
-        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability) {
+        public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability) {
             return withSimple(capability, ConstantPredicates.ALWAYS_TRUE);
         }
 
         @SuppressWarnings("unchecked")
-        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
+        public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
             return with(capability, (ICapabilityProvider<? super BE, CONTEXT, CAP>) Capabilities.SIMPLE_PROVIDER, shouldApply);
         }
 
-        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability,
+        public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability,
               Function<BlockCapability<CAP, CONTEXT>, ICapabilityProvider<? super BE, CONTEXT, CAP>> provider) {
             return with(capability, provider.apply(capability));
         }
 
-        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider) {
+        public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider) {
             return with(capability, provider, ConstantPredicates.ALWAYS_TRUE);
         }
 
@@ -123,7 +122,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
          * @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it
          *                    based on loaded mods or a block's attributes.
          */
-        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
+        public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
               BooleanSupplier shouldApply) {
             capabilityProviders.add(new CapabilityData<>(capability, provider, shouldApply));
             return this;

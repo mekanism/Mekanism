@@ -40,8 +40,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
@@ -53,10 +52,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     public static final float OFFSET = -0.275F;
 
     private EnumColor color = EnumColor.DARK_BLUE;
+    @Nullable
     private BlockPos latched;
+    @Nullable
     public LivingEntity latchedEntity;
-    /* server-only */
-    private boolean hasCachedEntity;
+    @Nullable
     private UUID cachedEntityUUID;
 
     public EntityBalloon(EntityType<EntityBalloon> type, Level world) {
@@ -138,7 +138,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                 latchedEntity = null;
             }
         } else {
-            if (hasCachedEntity) {
+            if (cachedEntityUUID != null) {
                 if (level() instanceof ServerLevel serverLevel) {
                     Entity entity = serverLevel.getEntity(cachedEntityUUID);
                     if (entity instanceof LivingEntity) {
@@ -146,7 +146,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                     }
                 }
                 cachedEntityUUID = null;
-                hasCachedEntity = false;
             }
             if (tickCount == 1) {
                 byte isLatched;
@@ -217,7 +216,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                     latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
                 }
             }
-            setPos(latchedEntity.getX(), latchedEntity.getY() + getAddedHeight(), latchedEntity.getZ());
+            setPos(latchedEntity.getX(), latchedEntity.getY() + getAddedHeight(latchedEntity), latchedEntity.getZ());
         }
     }
 
@@ -225,7 +224,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return entity instanceof Player player && player.getAbilities().flying;
     }
 
-    public double getAddedHeight() {
+    public double getAddedHeight(LivingEntity latchedEntity) {
         return latchedEntity.getBbHeight() + 0.8;
     }
 
@@ -275,14 +274,13 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return isAlive();
     }
 
-    @NotNull
     @Override
     protected MovementEmission getMovementEmission() {
         return MovementEmission.NONE;
     }
 
     @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(IS_LATCHED, (byte) 0);
         builder.define(LATCHED_X, 0);
         builder.define(LATCHED_Y, 0);
@@ -291,17 +289,14 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull ValueInput input) {
+    public void readAdditionalSaveData(ValueInput input) {
         NBTUtils.setEnumIfPresent(input, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
         input.read(SerializationConstants.LATCHED, BlockPos.CODEC).ifPresent(pos -> latched = pos);
-        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> {
-            hasCachedEntity = true;
-            cachedEntityUUID = uuid;
-        });
+        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> cachedEntityUUID = uuid);
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+    protected void addAdditionalSaveData(ValueOutput output) {
         NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latched);
         if (latchedEntity != null) {
@@ -310,7 +305,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public boolean skipAttackInteraction(@NotNull Entity entity) {
+    public boolean skipAttackInteraction(Entity entity) {
         pop();
         if (entity instanceof ServerPlayer player) {
             CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, damageSources().playerAttack(player));
@@ -346,7 +341,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void remove(@NotNull RemovalReason reason) {
+    public void remove(RemovalReason reason) {
         super.remove(reason);
         if (latchedEntity != null) {
             latchedEntity.needsSync = false;
@@ -363,7 +358,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return true;
     }
 
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
+    public boolean isInvulnerableTo(DamageSource source) {
         return source.is(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE) || super.isInvulnerableToBase(source);
     }
 
@@ -373,7 +368,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, @NotNull DamageSource dmgSource, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource dmgSource, float damage) {
         if (isInvulnerableTo(dmgSource)) {
             return false;
         }
@@ -396,9 +391,8 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return entityData.get(IS_LATCHED) == 2 && latchedEntity != null;
     }
 
-    @NotNull
     @Override
-    protected AABB makeBoundingBox(@NotNull Vec3 position) {
+    protected AABB makeBoundingBox(Vec3 position) {
         AABB boundingBox = super.makeBoundingBox(position);
         return boundingBox.setMinY(boundingBox.minY - OFFSET)
               .setMaxY(boundingBox.maxY - OFFSET);

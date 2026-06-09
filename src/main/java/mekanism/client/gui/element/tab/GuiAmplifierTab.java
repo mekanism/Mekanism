@@ -21,7 +21,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
@@ -50,12 +49,12 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         PacketUtils.sendToServer(new PacketGuiInteract(event.button() == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_MODE : GuiInteraction.PREVIOUS_MODE, dataSource));
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 

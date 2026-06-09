@@ -2,7 +2,6 @@ package mekanism.api.gear;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface representing the needed information for rendering elements on the MekaSuit HUD. It is recommended to use one of the following helper methods to build this,
@@ -20,7 +19,6 @@ public interface IHUDElement {
      *
      * @return Icon.
      */
-    @NotNull
     Identifier getIcon();
 
     /**
@@ -28,7 +26,6 @@ public interface IHUDElement {
      *
      * @return Text to render.
      */
-    @NotNull
     Component getText();
 
     /**

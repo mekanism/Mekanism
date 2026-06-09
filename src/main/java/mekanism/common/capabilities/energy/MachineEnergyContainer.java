@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.component.containers.type.ContainerType;
@@ -16,11 +15,9 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
@@ -35,11 +32,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
-        AttributeEnergy attributeEnergy = Attribute.get(tile.getBlockHolder(), AttributeEnergy.class);
-        if (attributeEnergy == null) {
-            throw new IllegalArgumentException("Block provider must be an electric block");
-        }
-        return attributeEnergy;
+        return Attribute.getOrThrow(tile.getBlockHolder(), AttributeEnergy.class);
     }
 
     protected final TILE tile;
@@ -47,12 +40,12 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     private long currentMaxEnergy;
     protected int currentEnergyPerTick;
 
-    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           TILE tile, @Nullable IContentsListener listener) {
         this(maxEnergy, energyPerTick, canExtract, canInsert, tile, null, null, listener);
     }
 
-    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected MachineEnergyContainer(long maxEnergy, int energyPerTick, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           TILE tile, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener);
         this.baseEnergyPerTick = energyPerTick;

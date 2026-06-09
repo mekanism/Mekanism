@@ -63,8 +63,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
 
@@ -94,7 +93,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     /**
      * Only used on the server
      */
-    private Map<UUID, SelectedWindowData> selectedWindows;
+    private final Map<UUID, SelectedWindowData> selectedWindows;
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv) {
         super(type.get(), id);
@@ -102,6 +101,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (!getLevel().isClientSide()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
             selectedWindows = new HashMap<>(1);
+        } else {
+            selectedWindows = Collections.emptyMap();
         }
     }
 
@@ -113,9 +114,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return inv.player.level();
     }
 
-    @NotNull
     @Override
-    protected Slot addSlot(@NotNull Slot slot) {
+    protected Slot addSlot(Slot slot) {
         super.addSlot(slot);
         if (slot instanceof IHasExtraData hasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
@@ -168,7 +168,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
         if (slot instanceof ITransactionalSlot transactionalSlot) {
             if (!transactionalSlot.canMergeWith(stack)) {
                 return false;
@@ -180,18 +180,18 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public void removed(@NotNull Player player) {
+    public void removed(Player player) {
         super.removed(player);
         closeInventory(player);
     }
 
-    protected void closeInventory(@NotNull Player player) {
+    protected void closeInventory(Player player) {
         if (!player.level().isClientSide()) {
             clearSelectedWindow(player.getUUID());
         }
     }
 
-    protected void openInventory(@NotNull Inventory inv) {
+    protected void openInventory(Inventory inv) {
     }
 
     protected int getInventoryYOffset() {
@@ -202,7 +202,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return 8;
     }
 
-    protected void addInventorySlots(@NotNull Inventory inv) {
+    protected void addInventorySlots(Inventory inv) {
         if (this instanceof IEmptyContainer) {
             //Don't include the player's inventory slots
             return;
@@ -220,7 +220,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    protected void addArmorSlots(@NotNull Inventory inv, int x, int y, int offhandOffset) {
+    protected void addArmorSlots(Inventory inv, int x, int y, int offhandOffset) {
         int armorSlots = 4;
         for (int index = 0; index < armorSlots; index++) {
             final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + armorSlots - index - 1];
@@ -232,7 +232,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(Inventory inv, int index, int x, int y) {
         return new HotBarSlot(inv, index, x, y);
     }
 
@@ -261,9 +261,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     /**
      * @return The contents in this slot AFTER transferring items away.
      */
-    @NotNull
     @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
+    public ItemStack quickMoveStack(Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
@@ -373,8 +372,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return inserted;
     }
 
-    @NotNull
-    protected ItemStack transferSuccess(@NotNull Slot currentSlot, @NotNull Player player, int amountInserted) {
+    protected ItemStack transferSuccess(Slot currentSlot, Player player, int amountInserted) {
         //TODO - 26.1: This remove call has the potential to break the contract that mayPickup is called first?
         // Though all of our callers are from within #quickMoveStack which vanilla checks mayPickup before calling
         ItemStack newStack = currentSlot.remove(amountInserted);
@@ -431,9 +429,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         trackedData.add(data);
     }
 
-    @NotNull
     @Override
-    protected DataSlot addDataSlot(@NotNull DataSlot referenceHolder) {
+    protected DataSlot addDataSlot(DataSlot referenceHolder) {
         //Override vanilla's int tracking so that if for some reason this method gets called for our container
         // it properly adds it to our tracking
         track(SyncableInt.create(referenceHolder::get, referenceHolder::set));
@@ -558,21 +555,21 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public void handleWindowProperty(short property, @NotNull ItemStack value) {
+    public void handleWindowProperty(short property, ItemStack value) {
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableItemStack syncable) {
             syncable.set(value);
         }
     }
 
-    public <RESOURCE extends Resource> void handleWindowProperty(short property, @NotNull RESOURCE value) {
+    public <RESOURCE extends Resource> void handleWindowProperty(short property, RESOURCE value) {
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableResource) {
             ((SyncableResource<RESOURCE>) data).set(value);
         }
     }
 
-    public <RESOURCE extends Resource> void handleWindowProperty(short property, @NotNull LargeResourceStack<RESOURCE> value) {
+    public <RESOURCE extends Resource> void handleWindowProperty(short property, LargeResourceStack<RESOURCE> value) {
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableLargeResourceStack) {
             ((SyncableLargeResourceStack<RESOURCE>) data).set(value);

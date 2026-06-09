@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.jetbrains.annotations.NotNull;
 
 public class AttributeStateBoilerValveMode implements AttributeState {
 
@@ -33,7 +31,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
     }
 
     @Override
-    public BlockState getDefaultState(@NotNull BlockState state) {
+    public BlockState getDefaultState(BlockState state) {
         return state.setValue(modeProperty, BoilerValveMode.INPUT);
     }
 
@@ -42,7 +40,6 @@ public class AttributeStateBoilerValveMode implements AttributeState {
         properties.add(modeProperty);
     }
 
-    @NothingNullByDefault
     public enum BoilerValveMode implements StringRepresentable, IHasEnumNameTextComponent, IIncrementalEnum<BoilerValveMode> {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.RED),

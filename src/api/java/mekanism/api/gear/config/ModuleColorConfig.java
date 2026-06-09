@@ -5,19 +5,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable class representing a color based module config (name and int value).
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public class ModuleColorConfig extends ModuleConfig<Integer> {
 
     /**
@@ -138,7 +137,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (!super.equals(o)) {

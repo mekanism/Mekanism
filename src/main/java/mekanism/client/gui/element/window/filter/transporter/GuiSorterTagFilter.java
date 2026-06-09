@@ -6,7 +6,7 @@ import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 

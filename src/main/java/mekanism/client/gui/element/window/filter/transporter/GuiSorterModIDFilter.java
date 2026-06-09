@@ -6,7 +6,7 @@ import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 

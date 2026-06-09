@@ -38,7 +38,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "control_circuit/";
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM)),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.REDSTONE, 20),
               MekanismItems.BASIC_CONTROL_CIRCUIT.asTemplate(),
               false

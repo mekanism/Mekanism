@@ -51,10 +51,10 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
 
@@ -77,8 +77,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -103,7 +103,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -120,7 +119,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -135,8 +133,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
@@ -149,7 +147,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         return clientEnergyUsed;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
@@ -166,9 +163,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         return findFirstRecipe(inputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull ChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalToChemicalRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

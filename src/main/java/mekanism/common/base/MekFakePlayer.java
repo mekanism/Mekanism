@@ -11,8 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Global, shared FakePlayer for Mekanism-specific uses
@@ -29,13 +28,15 @@ import org.jspecify.annotations.NonNull;
  */
 public class MekFakePlayer extends FakePlayer {
 
+    @Nullable
     private static WeakReference<MekFakePlayer> INSTANCE;
 
     /**
      * UUID of a player we are pretending to be, null to use the default Mek one
      */
+    @Nullable
     private UUID emulatingUUID = null;
-
+    @Nullable
     private String emulatingName = null;
 
     private MekFakePlayer(ServerLevel world) {
@@ -43,7 +44,8 @@ public class MekFakePlayer extends FakePlayer {
     }
 
     @Override
-    public boolean canBeAffected(@NotNull MobEffectInstance effect) {
+    @Deprecated
+    public boolean canBeAffected(MobEffectInstance effect) {
         return false;
     }
 
@@ -52,38 +54,37 @@ public class MekFakePlayer extends FakePlayer {
         this.emulatingName = Mekanism.gameProfile.name() + " " + securityTile.getOwnerName();
     }
 
-    @NotNull
     @Override
     public UUID getUUID() {
         return this.emulatingUUID == null ? super.getUUID() : this.emulatingUUID;
     }
 
     @Override
-    public @NonNull GameProfile getGameProfile() {
-        if (emulatingUUID == null) {
+    public GameProfile getGameProfile() {
+        if (emulatingUUID == null || emulatingName == null) {
             return super.getGameProfile();
         }
         return new GameProfile(emulatingUUID, emulatingName);
     }
 
     @Override
-    public @NonNull NameAndId nameAndId() {
-        if (emulatingUUID == null) {
+    public NameAndId nameAndId() {
+        if (emulatingUUID == null || emulatingName == null) {
             return super.nameAndId();
         }
         return new NameAndId(emulatingUUID, emulatingName);
     }
 
     @Override
-    public @NonNull Component getName() {
-        if (emulatingUUID == null) {
+    public Component getName() {
+        if (emulatingUUID == null || emulatingName == null) {
             return super.getName();
         }
         return Component.literal(emulatingName);
     }
 
     @Override
-    public @NonNull String getPlainTextName() {
+    public String getPlainTextName() {
         return emulatingName == null ? super.getPlainTextName() : emulatingName;
     }
 

@@ -10,7 +10,6 @@ import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> extends GuiInnerScreen {
 
@@ -29,14 +28,14 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, type.getIcon(), relativeX + 3, relativeY + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         TYPE nextType = MathUtils.getByIndexMod(options, typeSupplier.get().ordinal() + 1);
         typeSetter.accept(nextType);
     }

@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> implements IItemStackFilter<MinerItemStackFilter> {
 
@@ -65,7 +65,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
@@ -84,14 +84,13 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         return FilterType.MINER_ITEMSTACK_FILTER;
     }
 
-    @NotNull
     @Override
     public ItemResource getItemType() {
         return itemType;
     }
 
     @Override
-    public void setItemType(@NotNull ItemResource itemType) {
+    public void setItemType(ItemResource itemType) {
         this.itemType = itemType;
     }
 }

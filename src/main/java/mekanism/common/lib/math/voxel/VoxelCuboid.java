@@ -7,6 +7,7 @@ import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
+import org.jspecify.annotations.Nullable;
 
 public class VoxelCuboid implements IShape {
 
@@ -65,6 +66,7 @@ public class VoxelCuboid implements IShape {
               (minPos.getZ() + maxPos.getZ()) / 2);
     }
 
+    @Nullable
     public Direction getSide(BlockPos pos) {
         if (pos.getX() == minPos.getX()) {
             return Direction.WEST;
@@ -157,7 +159,7 @@ public class VoxelCuboid implements IShape {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof VoxelCuboid other && minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
     }
 

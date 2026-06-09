@@ -43,11 +43,11 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<ChemicalCrystallizerRecipe> implements ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler<ChemicalCrystallizerRecipe> {
 
@@ -64,8 +64,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public IChemicalTank inputTank;
 
-    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
+    private final IOutputHandler<ItemStackTemplate> outputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
@@ -87,7 +87,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -101,7 +100,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -114,8 +112,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         inputSlot.fillTankFromSlot(null);
         recipeCacheLookupMonitor.updateAndProcess();
@@ -127,7 +125,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     }
 
     @Override
-    public @NotNull IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;
     }
 
@@ -142,7 +140,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     }
 
     @Override
-    public @NotNull CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@NotNull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(ChemicalCrystallizerRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

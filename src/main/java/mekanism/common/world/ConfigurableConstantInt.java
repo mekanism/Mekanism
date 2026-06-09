@@ -9,9 +9,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ConfigurableConstantInt implements IntProvider {
 
@@ -42,7 +40,7 @@ public class ConfigurableConstantInt implements IntProvider {
     }
 
     @Override
-    public int sample(@NotNull RandomSource random) {
+    public int sample(RandomSource random) {
         return getValue();
     }
 
@@ -57,7 +55,7 @@ public class ConfigurableConstantInt implements IntProvider {
     }
 
     @Override
-    public @NonNull MapCodec<? extends IntProvider> codec() {
+    public MapCodec<? extends IntProvider> codec() {
         return CODEC;
     }
 

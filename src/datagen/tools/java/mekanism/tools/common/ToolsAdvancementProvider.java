@@ -15,12 +15,11 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 public class ToolsAdvancementProvider extends BaseAdvancementProvider {
 
     @Override
-    public void generate(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         HolderGetter<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
 
         advancement(ToolsAdvancements.PAXEL)

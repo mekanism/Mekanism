@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
@@ -23,8 +22,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
 
     private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
@@ -85,7 +84,7 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

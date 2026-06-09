@@ -51,10 +51,10 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChemicalToChemicalRecipe> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<ChemicalChemicalToChemicalRecipe> {
@@ -84,9 +84,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> leftInputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> rightInputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> leftInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityPigmentMixer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem", docPlaceholder = "left input slot")
@@ -130,7 +130,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -148,7 +147,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -166,8 +164,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         leftInputSlot.fillTankFromSlot(null);
         rightInputSlot.fillTankFromSlot(null);
@@ -181,7 +179,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         return clientEnergyUsed;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, EitherSideChemical<ChemicalChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_MIXING;
@@ -198,9 +195,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ChemicalChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull ChemicalChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalChemicalToChemicalRecipe recipe, int cacheIndex) {
         return new OrderlessTwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

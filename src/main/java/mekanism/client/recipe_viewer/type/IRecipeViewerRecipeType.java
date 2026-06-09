@@ -5,7 +5,7 @@ import mekanism.api.text.IHasTextComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
 

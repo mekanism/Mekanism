@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import mekanism.common.upgrade.IUpgradeData;
 import net.minecraft.core.HolderLookup;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface ITierUpgradable {
 

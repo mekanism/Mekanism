@@ -2,7 +2,6 @@ package mekanism.common.recipe.bin;
 
 import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
@@ -18,7 +17,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-@NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
 
     public static final BinExtractRecipe INSTANCE = new BinExtractRecipe();

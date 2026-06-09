@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -27,7 +26,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@ParametersAreNotNullByDefault
 public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutritionalInjectionUnit> {
 
     private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "nutritional_injection_unit.png");

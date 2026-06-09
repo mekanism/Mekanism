@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -20,7 +19,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEnhancementUnit> {
 
     private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");

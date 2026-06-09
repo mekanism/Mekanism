@@ -20,7 +20,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 
 public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack> {
 
@@ -49,7 +48,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
-    public void render(@NotNull GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
+    public void render(GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
         if (!stack.isEmpty()) {
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.amount() / capacityMb);
             if (desiredHeight < MIN_CHEMICAL_HEIGHT) {

@@ -27,8 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 //TODO: Eventually try to add support for defining ways to render custom config types
@@ -158,7 +157,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         //Shift the mouse y by the proper amount so that we click the correct spots
         double mouseY = event.y() + getCurrentSelection();
@@ -168,7 +167,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void onRelease(@NotNull MouseButtonEvent event) {
+    public void onRelease(MouseButtonEvent event) {
         super.onRelease(event);
         //Shift the mouse y by the proper amount so that we click the correct spots
         double mouseY = event.y() + getCurrentSelection();
@@ -178,7 +177,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+    protected void onDrag(MouseButtonEvent event, double deltaX, double deltaY) {
         super.onDrag(event, deltaX, deltaY);
         double mouseX = event.x();
         //Shift the mouse y by the proper amount so that we click the correct spots
@@ -189,7 +188,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
         super.drawBackground(guiGraphics, mx, my, partialTicks);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);

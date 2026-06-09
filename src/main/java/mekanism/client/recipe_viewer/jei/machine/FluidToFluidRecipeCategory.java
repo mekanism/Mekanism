@@ -22,7 +22,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFluidRecipe> {
 
@@ -49,7 +48,7 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe> recipeHolder, IFocusGroup focusGroup) {
         FluidToFluidRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         initFluid(builder, output, recipe.getOutputDefinition());

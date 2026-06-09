@@ -17,7 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRenderState> {
 
@@ -57,7 +56,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
     }
 
     @Override
-    public void collect(IndustrialAlarmRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(IndustrialAlarmRenderState state, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim(state);
         collectParts(allParts, poseStack, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, hasFoil);
     }

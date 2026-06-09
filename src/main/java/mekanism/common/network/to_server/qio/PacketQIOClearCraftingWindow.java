@@ -10,7 +10,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) implements IMekanismPacket {
 
@@ -21,7 +20,6 @@ public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) imp
           PacketQIOClearCraftingWindow::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketQIOClearCraftingWindow> type() {
         return TYPE;

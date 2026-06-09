@@ -16,8 +16,7 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ConfigInfo implements IPersistentConfigInfo {
 
@@ -62,7 +61,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
         this.ejecting = ejecting;
     }
 
-    public void addDisabledSides(@NotNull RelativeSide... sides) {
+    public void addDisabledSides(RelativeSide... sides) {
         if (disabledSides == null) {
             disabledSides = EnumSet.noneOf(RelativeSide.class);
         }
@@ -72,16 +71,15 @@ public class ConfigInfo implements IPersistentConfigInfo {
         }
     }
 
-    public boolean isSideEnabled(@NotNull RelativeSide side) {
+    public boolean isSideEnabled(RelativeSide side) {
         if (disabledSides == null) {
             return true;
         }
         return !disabledSides.contains(side);
     }
 
-    @NotNull
     @Override
-    public DataType getDataType(@NotNull RelativeSide side) {
+    public DataType getDataType(RelativeSide side) {
         return sideConfig.get(side);
     }
 
@@ -89,11 +87,10 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return sideConfig.entrySet();
     }
 
-    public boolean setDataType(@NotNull DataType dataType, @NotNull RelativeSide side) {
+    public boolean setDataType(DataType dataType, RelativeSide side) {
         return isSideEnabled(side) && sideConfig.put(side, dataType) != dataType;
     }
 
-    @NotNull
     public Set<DataType> getSupportedDataTypes() {
         if (supportedDataTypes == null) {
             supportedDataTypes = EnumSet.of(DataType.NONE);
@@ -107,16 +104,16 @@ public class ConfigInfo implements IPersistentConfigInfo {
     }
 
     @Nullable
-    public ISlotInfo getSlotInfo(@NotNull RelativeSide side) {
+    public ISlotInfo getSlotInfo(RelativeSide side) {
         return getSlotInfo(getDataType(side));
     }
 
     @Nullable
-    public ISlotInfo getSlotInfo(@NotNull DataType dataType) {
+    public ISlotInfo getSlotInfo(DataType dataType) {
         return slotInfo.get(dataType);
     }
 
-    public void addSlotInfo(@NotNull DataType dataType, @NotNull ISlotInfo info) {
+    public void addSlotInfo(DataType dataType, ISlotInfo info) {
         slotInfo.put(dataType, info);
         if (supportedDataTypes != null) {
             supportedDataTypes.add(dataType);
@@ -150,8 +147,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     /**
      * @return The new data type
      */
-    @NotNull
-    public DataType incrementDataType(@NotNull RelativeSide relativeSide) {
+    public DataType incrementDataType(RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             DataType newType = current.getNext(this::supports);
@@ -164,8 +160,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     /**
      * @return The new data type
      */
-    @NotNull
-    public DataType decrementDataType(@NotNull RelativeSide relativeSide) {
+    public DataType decrementDataType(RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             DataType newType = current.getPrevious(this::supports);

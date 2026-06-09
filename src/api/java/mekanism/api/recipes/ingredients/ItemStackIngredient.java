@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,8 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base implementation for how Mekanism handle's ItemStack Ingredients.
@@ -29,8 +27,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @implNote This is a wrapper around {@link SizedIngredient}
  */
-@NothingNullByDefault
-public final class ItemStackIngredient implements InputIngredient<Item, @NotNull ItemStack> {
+public final class ItemStackIngredient implements InputIngredient<Item, ItemStack> {
 
     /**
      * A codec which can (de)encode item stack ingredients.
@@ -122,7 +119,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
     }
 
     @Override
-    public List<@NotNull ItemStack> getRepresentations(ContextMap context) {
+    public List<ItemStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
             this.representations = ingredient.ingredient().display().resolve(context, (ForStacks<ItemStack>) stack -> stack.copyWithCount(ingredient.count())).toList();
         }
@@ -140,7 +137,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

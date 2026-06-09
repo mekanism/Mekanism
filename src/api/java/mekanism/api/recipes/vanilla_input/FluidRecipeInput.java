@@ -1,6 +1,5 @@
 package mekanism.api.recipes.vanilla_input;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -10,7 +9,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public interface FluidRecipeInput extends RecipeInput {
 
     @Override

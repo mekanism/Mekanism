@@ -1,14 +1,13 @@
 package mekanism.api.recipes.basic;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     protected final ItemStackIngredient input;
@@ -63,7 +62,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

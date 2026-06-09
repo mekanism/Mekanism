@@ -29,8 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler, IContentsListener,
       IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
@@ -43,8 +42,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public final VariableHeatCapacitor buffer;
 
     public ThermodynamicConductor(Holder<Block> blockProvider, TileEntityTransmitter tile) {
+        this.tier = Attribute.getTierNN(blockProvider, ConductorTier.class);
         super(tile, TransmissionType.HEAT);
-        this.tier = Attribute.getTier(blockProvider, ConductorTier.class);
         buffer = VariableHeatCapacitor.create(tier.getHeatCapacity(), tier::getInverseConduction, tier::getInverseConductionInsulation, ambientTemperature, this);
         capacitors = Collections.singletonList(buffer);
     }
@@ -79,44 +78,43 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         return getAcceptorCache().getConnectedAcceptor(side) != null;
     }
 
-    @Nullable
     @Override
     public ThermodynamicConductorUpgradeData getUpgradeData() {
         return new ThermodynamicConductorUpgradeData(redstoneReactive, getConnectionTypesRaw(), buffer.getHeat());
     }
 
     @Override
-    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(TransmitterUpgradeData data) {
         return data instanceof ThermodynamicConductorUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@NotNull ThermodynamicConductorUpgradeData data, TransactionContext transaction) {
+    public void parseUpgradeData(ThermodynamicConductorUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         buffer.setHeat(data.heat);
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         ContainerType.HEAT.saveTo(output, getHeatCapacitors(null));
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         ContainerType.HEAT.readFrom(input, getHeatCapacitors(null));
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putDouble(SerializationConstants.TEMPERATURE, buffer.getHeat());
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull ValueInput input) {
+    public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         buffer.setHeat(input.getDoubleOr(SerializationConstants.TEMPERATURE, buffer.getHeat()));
         return refreshModelData;
@@ -126,9 +124,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         return tier.getBaseColor();
     }
 
-    @NotNull
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return capacitors;
     }
 
@@ -147,13 +144,13 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public double getAmbientTemperature(@NotNull Direction side) {
+    public double getAmbientTemperature(Direction side) {
         return ambientTemperature.getTemperature(side);
     }
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors, which means we don't have to differentiate between acceptors and other transmitters here
@@ -163,9 +160,9 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @NotNull Direction side) {
+    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, Direction side) {
         if (tempToTransfer > 0 && hasTransmitterNetwork()) {
-            HeatNetwork transmitterNetwork = getTransmitterNetwork();
+            HeatNetwork transmitterNetwork = getTransmitterNetworkNN();
             ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getBlockPos().relative(side));
             if (adjacent != null) {
                 //Heat transmitter to heat transmitter, don't count as "adjacent transfer"

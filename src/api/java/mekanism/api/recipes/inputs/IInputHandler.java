@@ -1,6 +1,5 @@
 package mekanism.api.recipes.inputs;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
@@ -15,7 +14,6 @@ import org.jspecify.annotations.Nullable;
  * @param <HOLDER_TYPE> Type of input handled by this handler.
  * @param <STACK>       Stack Type of HOLDERTYPE.
  */
-@NothingNullByDefault
 public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> {
 
     /**

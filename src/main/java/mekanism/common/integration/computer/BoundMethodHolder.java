@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BoundMethodHolder {
 
@@ -88,7 +88,7 @@ public abstract class BoundMethodHolder {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) {
                 return true;
             }
@@ -113,7 +113,7 @@ public abstract class BoundMethodHolder {
         }
     }
 
-    public static Object generateHelp(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) {
+    public static Object generateHelp(@Nullable ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) {
         if (methods == null) {
             return helper.voidResult();
         }
@@ -123,7 +123,7 @@ public abstract class BoundMethodHolder {
         return helper.convert(helpItems, helper::convert, helper::convert);
     }
 
-    public static Object generateHelpSpecific(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) throws ComputerException {
+    public static Object generateHelpSpecific(@Nullable ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) throws ComputerException {
         if (methods == null) {
             return helper.voidResult();
         }

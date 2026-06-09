@@ -15,7 +15,7 @@ import net.neoforged.neoforge.common.world.StructureModifier;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegistryBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
 

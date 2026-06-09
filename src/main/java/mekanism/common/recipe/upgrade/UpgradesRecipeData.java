@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
@@ -19,9 +18,8 @@ import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData> {
 
     private final Map<Upgrade, Integer> upgrades;

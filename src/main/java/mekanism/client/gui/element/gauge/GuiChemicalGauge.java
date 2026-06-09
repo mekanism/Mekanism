@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTank> {
 
@@ -26,7 +26,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalResource, IChemicalTa
         return gauge;
     }
 
-    public GuiChemicalGauge(@Nullable ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+    private GuiChemicalGauge(@Nullable ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK, ChemicalResource.EMPTY);
     }
 

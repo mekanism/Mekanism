@@ -3,7 +3,6 @@ package mekanism.api.radiation;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.core.BlockPos;
@@ -45,7 +44,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @see IRadiationManager#INSTANCE
  */
-@NothingNullByDefault
 public interface IRadiationManager {
 
     /**

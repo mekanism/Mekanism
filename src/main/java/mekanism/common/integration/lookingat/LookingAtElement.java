@@ -6,8 +6,7 @@ import mekanism.client.render.IFancyFontRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract sealed class LookingAtElement implements ILookingAtElement, IFancyFontRenderer permits EnergyElement, ResourceElement {
 
@@ -19,7 +18,7 @@ public abstract sealed class LookingAtElement implements ILookingAtElement, IFan
         this.textColor = textColor;
     }
 
-    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int x, int y) {
+    public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
         int width = getWidth();
         int height = getHeight();
         guiGraphics.fill(x, y, x + width - 1, y + 1, borderColor);

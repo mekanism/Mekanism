@@ -2,7 +2,6 @@ package mekanism.common.network.to_client.container.property.resource;
 
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -16,7 +15,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-@NothingNullByDefault
 public final class ResourceStackPropertyData extends PropertyData {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ResourceStackPropertyData> STREAM_CODEC = StreamCodec.composite(

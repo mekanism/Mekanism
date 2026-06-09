@@ -3,7 +3,6 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -13,9 +12,8 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgradeData<ResourceRecipeData<RESOURCE>> {
 
     protected final ResourceContainerType<RESOURCE, ?> containerType;

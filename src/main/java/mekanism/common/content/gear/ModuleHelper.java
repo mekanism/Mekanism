@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModuleHelper;
@@ -37,12 +36,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IModuleHelper#INSTANCE}
  */
-@NothingNullByDefault
 public class ModuleHelper implements IModuleHelper {//TODO - 26.1: Evaluate moving at least some of this stuff to being defined via datamaps or at least datapack
 
     public static ModuleHelper get() {

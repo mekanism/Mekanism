@@ -12,13 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
 public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
 
-    @NotNull
     @Override
-    protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+    protected ItemStack execute(BlockSource source, ItemStack stack) {
         //Note: We don't check if the stack is empty as it is never checked in vanilla's ones, and we also
         // don't check if the stack is a module container as we only register this dispense behavior on stacks that are
         setSuccess(true);
@@ -57,7 +55,7 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
         return module.getCustomInstance().onDispense(module, itemAccess, source, transaction);
     }
 
-    protected ModuleDispenseResult performBuiltin(@NotNull BlockSource source, @NotNull ItemStack stack) {
+    protected ModuleDispenseResult performBuiltin(BlockSource source, ItemStack stack) {
         return ModuleDispenseResult.DEFAULT;
     }
 }

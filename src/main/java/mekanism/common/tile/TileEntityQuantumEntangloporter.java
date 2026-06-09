@@ -59,8 +59,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
@@ -96,7 +95,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         cacheCoord();
     }
 
-    private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<T> supplier) {
+    private <T extends @Nullable Object> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<T> supplier) {
         ConfigInfo config = configComponent.getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, proxyCreator.create(true, false, supplier));
@@ -105,13 +104,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         }
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return new QEContainerHolder<>(this, TransmissionType.CHEMICAL, MekContainerHelper.CHEMICAL_SLOT_PARSER, InventoryFrequency::getChemicalTanks);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return new QEContainerHolder<>(this, TransmissionType.FLUID, MekContainerHelper.FLUID_SLOT_PARSER, InventoryFrequency::getFluidTanks);
@@ -122,21 +119,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return new QEEnergyHolder(this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return new QEContainerHolder<>(this, TransmissionType.HEAT, MekContainerHelper.HEAT_SLOT_PARSER, InventoryFrequency::getHeatCapacitors);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         return new QEContainerHolder<>(this, TransmissionType.ITEM, MekContainerHelper.ITEM_SLOT_PARSER, InventoryFrequency::getInventorySlots);
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         InventoryFrequency freq = getFreq();
         if (freq != null && freq.isValid() && !freq.isRemoved()) {
             freq.handleEject(level.getGameTime());
@@ -171,7 +166,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
@@ -183,7 +178,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public <HANDLER> HANDLER getCachedCapability(@NotNull Direction side, TransmissionType transmissionType) {
+    public <HANDLER> HANDLER getCachedCapability(Direction side, TransmissionType transmissionType) {
         if (transmissionType == TransmissionType.HEAT) {
             return (HANDLER) getAdjacentUnchecked(side);
         } else if (transmissionType == TransmissionType.ITEM) {
@@ -217,6 +212,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return Collections.singleton(ChunkPos.containing(getBlockPos()));
     }
 
+    @Nullable
     public InventoryFrequency getFreq() {
         return getFrequency(FrequencyTypes.INVENTORY);
     }

@@ -14,13 +14,14 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class FrequencyItemContainer<FREQ extends Frequency> extends MekanismItemContainer {
 
     private List<FREQ> publicCache = Collections.emptyList();
     private List<FREQ> privateCache = Collections.emptyList();
     private List<FREQ> trustedCache = Collections.emptyList();
+    @Nullable
     private FREQ freq;
 
     protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess) {
@@ -64,7 +65,7 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         return trustedCache;
     }
 
-    private void setFrequency(FREQ frequency) {
+    private void setFrequency(@Nullable FREQ frequency) {
         this.freq = frequency;
     }
 

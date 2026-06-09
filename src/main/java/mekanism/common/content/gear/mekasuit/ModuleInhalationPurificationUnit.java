@@ -2,7 +2,6 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.common.Mekanism;
@@ -15,9 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects, boolean harmfulEffects)
       implements ICustomModule<ModuleInhalationPurificationUnit> {
 
@@ -66,9 +64,8 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
         }
     }
 
-    @Nullable
     @Override
-    public ICustomModule.ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
+    public ICustomModule.@Nullable ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
         return damageSource.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
     }
 

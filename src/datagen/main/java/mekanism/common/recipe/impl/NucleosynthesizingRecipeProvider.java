@@ -161,7 +161,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "echo_shard"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN)),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 1),
               new ItemStackTemplate(Items.IRON_INGOT),
               200,

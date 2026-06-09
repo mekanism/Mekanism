@@ -32,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ITileFilterHolder<OredictionificatorItemFilter> {
@@ -61,7 +61,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -72,8 +71,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
             for (OredictionificatorFilter<?, ?, ?> filter : filterManager.getFilters()) {
                 filter.flushCachedTag();
@@ -169,13 +168,13 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         filterManager.serialize(output);
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         filterManager.deserialize(input);
     }

@@ -4,6 +4,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.util.EnumUtils;
+import org.jspecify.annotations.Nullable;
 
 public enum TransporterTier implements ITier {
     BASIC(BaseTier.BASIC, 1, 5),
@@ -14,7 +15,9 @@ public enum TransporterTier implements ITier {
     private final int basePull;
     private final int baseSpeed;
     private final BaseTier baseTier;
+    @Nullable
     private CachedIntValue pullReference;
+    @Nullable
     private CachedIntValue speedReference;
 
     TransporterTier(BaseTier tier, int pull, int s) {

@@ -6,7 +6,7 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class to reduce having to create duplicate objects for constant predicates.
@@ -43,35 +43,35 @@ public class ConstantPredicates {
     private static final Predicate<Object> alwaysFalse = _ -> false;
     private static final BiPredicate<Object, Object> alwaysFalseBi = (_, _) -> false;
 
-    private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (_, automationType) -> automationType.isInternal();
-    private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (_, automationType) -> !automationType.isExternal();
-    private static final BiPredicate<Object, @NotNull AutomationType> manualOnly = (_, automationType) -> automationType.isManual();
+    private static final BiPredicate<Object, AutomationType> internalOnly = (_, automationType) -> automationType.isInternal();
+    private static final BiPredicate<Object, AutomationType> notExternal = (_, automationType) -> !automationType.isExternal();
+    private static final BiPredicate<Object, AutomationType> manualOnly = (_, automationType) -> automationType.isManual();
 
     /**
      * Returns a predicate that returns {@code true} for any input.
      */
-    public static <T> Predicate<T> alwaysTrue() {
+    public static <T extends @Nullable Object> Predicate<T> alwaysTrue() {
         return (Predicate<T>) alwaysTrue;
     }
 
     /**
      * Returns a bi predicate that returns {@code true} for any input.
      */
-    public static <T, U> BiPredicate<T, U> alwaysTrueBi() {
+    public static <T extends @Nullable Object, U extends @Nullable Object> BiPredicate<T, U> alwaysTrueBi() {
         return (BiPredicate<T, U>) alwaysTrueBi;
     }
 
     /**
      * Returns a predicate that returns {@code false} for any input.
      */
-    public static <T> Predicate<T> alwaysFalse() {
+    public static <T extends @Nullable Object> Predicate<T> alwaysFalse() {
         return (Predicate<T>) alwaysFalse;
     }
 
     /**
      * Returns a bi predicate that returns {@code false} for any input.
      */
-    public static <T, V> BiPredicate<T, V> alwaysFalseBi() {
+    public static <T extends @Nullable Object, V extends @Nullable Object> BiPredicate<T, V> alwaysFalseBi() {
         return (BiPredicate<T, V>) alwaysFalseBi;
     }
 
@@ -80,8 +80,8 @@ public class ConstantPredicates {
      *
      * @since 10.3.3
      */
-    public static <T> BiPredicate<T, @NotNull AutomationType> internalOnly() {
-        return (BiPredicate<T, @NotNull AutomationType>) internalOnly;
+    public static <T extends @Nullable Object> BiPredicate<T, AutomationType> internalOnly() {
+        return (BiPredicate<T, AutomationType>) internalOnly;
     }
 
     /**
@@ -89,8 +89,8 @@ public class ConstantPredicates {
      *
      * @since 10.3.3
      */
-    public static <T> BiPredicate<T, @NotNull AutomationType> notExternal() {
-        return (BiPredicate<T, @NotNull AutomationType>) notExternal;
+    public static <T extends @Nullable Object> BiPredicate<T, AutomationType> notExternal() {
+        return (BiPredicate<T, AutomationType>) notExternal;
     }
 
     /**
@@ -98,8 +98,8 @@ public class ConstantPredicates {
      *
      * @since 10.7.0
      */
-    public static <T> BiPredicate<T, @NotNull AutomationType> manualOnly() {
-        return (BiPredicate<T, @NotNull AutomationType>) manualOnly;
+    public static <T extends @Nullable Object> BiPredicate<T, AutomationType> manualOnly() {
+        return (BiPredicate<T, AutomationType>) manualOnly;
     }
 
 }

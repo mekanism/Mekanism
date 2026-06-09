@@ -6,20 +6,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockResource extends BlockMekanism {
 
-    @NotNull
     private final BlockResourceInfo resource;
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
-    public BlockResource(BlockBehaviour.Properties properties, @NotNull BlockResourceInfo resource) {
+    public BlockResource(BlockBehaviour.Properties properties, BlockResourceInfo resource) {
         super(resource.modifyProperties(properties.requiresCorrectToolForDrops()));
         this.resource = resource;
     }
 
-    @NotNull
     public BlockResourceInfo getResourceInfo() {
         return resource;
     }

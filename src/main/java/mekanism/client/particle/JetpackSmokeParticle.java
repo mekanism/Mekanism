@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
-import org.jetbrains.annotations.NotNull;
 
 public class JetpackSmokeParticle extends SmokeParticle {
 
@@ -41,7 +40,7 @@ public class JetpackSmokeParticle extends SmokeParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             return new JetpackSmokeParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

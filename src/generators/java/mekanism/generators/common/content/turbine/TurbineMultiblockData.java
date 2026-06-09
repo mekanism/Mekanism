@@ -13,9 +13,9 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.math.MathUtils;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -51,9 +51,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class TurbineMultiblockData extends MultiblockData {
 
@@ -91,6 +89,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     public int lowerVolume;
 
+    @Nullable
     public BlockPos complex;
 
     @ContainerSync
@@ -113,7 +112,6 @@ public class TurbineMultiblockData extends MultiblockData {
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, _ -> isFormed(), automationType -> automationType.isInternal() && isFormed(), this);
     }
 
-    @NonNull
     @Override
     public IEnergyContainer energyContainer() {
         return energyContainer;
@@ -216,7 +214,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
@@ -229,14 +227,16 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         output.putFloat(SerializationConstants.SCALE, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
         output.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
         NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
         NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, ventTank);
-        output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
+        if (complex != null) {
+            output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
+        }
         output.putFloat(SerializationConstants.ROTATION, clientRotation);
     }
 

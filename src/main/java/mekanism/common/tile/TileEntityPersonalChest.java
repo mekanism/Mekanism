@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityPersonalChest extends TileEntityPersonalStorage implements LidBlockEntity {
 
@@ -24,13 +23,13 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
     }
 
     @Override
-    protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
+    protected void onOpen(Level level, BlockPos pos, BlockState state) {
         level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F,
               level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
-    protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
+    protected void onClose(Level level, BlockPos pos, BlockState state) {
         level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F,
               level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
@@ -41,8 +40,8 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
+    protected void onUpdateClient(Level level) {
+        super.onUpdateClient(level);
         chestLidController.tickLid();
     }
 

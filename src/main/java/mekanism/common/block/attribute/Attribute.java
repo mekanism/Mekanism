@@ -13,8 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface Attribute {
 
@@ -55,9 +54,13 @@ public interface Attribute {
     }
 
     static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Holder<Block> block, Class<ATTRIBUTE> type) {
+        return getOrThrow(block.value(), type);
+    }
+
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Block block, Class<ATTRIBUTE> type) {
         ATTRIBUTE attribute = get(block, type);
         if (attribute == null) {
-            throw new IllegalStateException("Expected " + block.value() + " to have an attribute of type " + type.getSimpleName());
+            throw new IllegalStateException("Expected " + block + " to have an attribute of type " + type.getSimpleName());
         }
         return attribute;
     }
@@ -99,26 +102,26 @@ public interface Attribute {
         return attr != null && attr.isActive(state);
     }
 
-    @NotNull
     static BlockState setActive(BlockState state, boolean active) {
         AttributeStateActive attr = get(state, AttributeStateActive.class);
         return attr == null ? state : attr.setActive(state, active);
     }
 
-    @Nullable
-    static <TIER extends ITier> TIER getTier(Holder<Block> block, Class<TIER> tierClass) {
-        return getTier(block.value(), tierClass);
+    static <TIER extends ITier> TIER getTierNN(Holder<Block> block, Class<TIER> tierClass) {
+        return getTierNN(block.value(), tierClass);
     }
 
-    @Nullable
-    static <TIER extends ITier> TIER getTier(Block block, Class<TIER> tierClass) {
-        AttributeTier<?> attr = get(block, AttributeTier.class);
-        return attr == null ? null : tierClass.cast(attr.tier());
+    static <TIER extends ITier> TIER getTierNN(Block block, Class<TIER> tierClass) {
+        return tierClass.cast(getOrThrow(block, AttributeTier.class).tier());
     }
 
     @Nullable
     static BaseTier getBaseTier(Holder<Block> block) {
         AttributeTier<?> attr = get(block, AttributeTier.class);
         return attr == null ? null : attr.tier().getBaseTier();
+    }
+
+    static BaseTier getBaseTierNN(Holder<Block> block) {
+        return getOrThrow(block, AttributeTier.class).tier().getBaseTier();
     }
 }

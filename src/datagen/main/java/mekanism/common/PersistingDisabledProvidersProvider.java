@@ -30,13 +30,14 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Used for helping to persist specific integrations we have that aren't updated yet.
  */
 public class PersistingDisabledProvidersProvider implements DataProvider {
 
+    @Nullable
     private static HashCache globalCache;
 
     //Called by a core mod
@@ -110,9 +111,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         this.fakeProviders = fakeProviders;
     }
 
-    @NotNull
     @Override
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache) {
         if (globalCache == null) {
             throw new RuntimeException("Failed to retrieve global cache");
         }
@@ -128,7 +128,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         }
 
         //NeoForge added field so we can't just AT it
-        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", () -> null);
+        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", Collections::emptyMap);
         Map<String, ProviderCache> originalCaches = originalCachesField.getValue(cache);
 
         int additionalWrites = 0;
@@ -186,7 +186,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         return false;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return "Persisting disabled provider";

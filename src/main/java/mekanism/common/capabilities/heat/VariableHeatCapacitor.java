@@ -2,11 +2,9 @@ package mekanism.common.capabilities.heat;
 
 import java.util.function.DoubleSupplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     private final DoubleSupplier conductionCoefficientSupplier;

@@ -26,7 +26,6 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
 
@@ -35,7 +34,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     }
 
     @Override
-    protected void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
+    protected void attack(BlockState state, Level world, BlockPos pos, Player player) {
         if (!world.isClientSide()) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin != null) {
@@ -71,10 +70,9 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         }
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
-          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player,
+          InteractionHand hand, BlockHitResult hit) {
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             //No tile, we can just skip trying to use without an item

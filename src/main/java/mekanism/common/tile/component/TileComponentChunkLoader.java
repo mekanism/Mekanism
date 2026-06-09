@@ -30,8 +30,7 @@ import net.neoforged.neoforge.common.world.chunk.LoadingValidationCallback;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import net.neoforged.neoforge.common.world.chunk.TicketHelper;
 import net.neoforged.neoforge.common.world.chunk.TicketSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
@@ -65,7 +64,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().isUpgradeInstalled(Upgrade.ANCHOR);
     }
 
-    private void releaseChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos) {
+    private void releaseChunkTickets(ServerLevel world, BlockPos pos) {
         int tickets = chunkSet.size();
         LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().identifier());
         if (tickets > 0) {
@@ -82,7 +81,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         prevWorld = null;
     }
 
-    private void registerChunkTickets(@NotNull ServerLevel world) {
+    private void registerChunkTickets(ServerLevel world) {
         prevPos = tile.getBlockPos();
         prevWorld = world;
         Set<ChunkPos> chunks = tile.getChunkSet();
@@ -115,7 +114,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      *
      * @apiNote Only call server side
      */
-    private void refreshChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos, boolean ticketsChanged) {
+    private void refreshChunkTickets(ServerLevel world, BlockPos pos, boolean ticketsChanged) {
         boolean canOperate = canOperate();
         if (MekanismAPI.debug) {
             LOGGER.debug("refreshChunkTickets called for {}. Can operate = {}", pos, canOperate);
@@ -213,15 +212,15 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput chunkLoaderInput) {
+    public void deserialize(ValueInput chunkLoaderInput) {
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput chunkLoaderOutput) {
+    public void serialize(ValueOutput chunkLoaderOutput) {
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
             if (tile.hasLevel() && !tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
@@ -241,7 +240,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         if (!chunkSet.isEmpty()) {
             output.store(SerializationConstants.CHUNK_SET, Codec.LONG_STREAM, chunkSet.longStream());
         }
@@ -281,7 +280,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
 
         @Override
-        public void validateTickets(@NotNull ServerLevel world, @NotNull TicketHelper ticketHelper) {
+        public void validateTickets(ServerLevel world, TicketHelper ticketHelper) {
             Identifier worldName = world.dimension().identifier();
             LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(),
                   ticketHelper.getEntityTickets().size());

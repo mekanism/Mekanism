@@ -21,11 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQIOCraftingWindowHolder {
 
@@ -42,23 +42,15 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
-            //Note: We don't bother passing a special listener as:
-            // a. We don't support comparators
-            // b. If we did it would be of items which this would already be
-            craftingWindows[tableIndex] = new QIOCraftingWindow(this, tableIndex);
-        }
-    }
-
-    @NotNull
-    @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         //TODO - 1.18: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
         // that is for read only slots instead of actually exposing slots to various sides
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.readOnly();
-        for (QIOCraftingWindow craftingWindow : craftingWindows) {
+        for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
+            //Note: We don't bother passing a special listener as:
+            // a. We don't support comparators
+            // b. If we did it would be of items which this would already be
+            QIOCraftingWindow craftingWindow = craftingWindows[tableIndex] = new QIOCraftingWindow(this, tableIndex);
             for (int slot = 0; slot < QIOCraftingWindow.SLOTS_PER_WINDOW; slot++) {
                 builder.addContainer(craftingWindow.getInputSlot(slot));
             }
@@ -68,14 +60,14 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
-        boolean needsUpdate = super.onUpdateServer(frequency);
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(level, frequency);
         if (CommonWorldTickHandler.flushTagAndRecipeCaches || !recipesChecked) {
             //If we need to update the recipes because of a reload or if we just haven't checked the recipes yet
             // after loading, as there was no world set yet, refresh the recipes
             recipesChecked = true;
             for (QIOCraftingWindow craftingWindow : craftingWindows) {
-                craftingWindow.invalidateRecipe();
+                craftingWindow.invalidateRecipe(level);
             }
         }
         return needsUpdate;
@@ -99,25 +91,25 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.putBoolean(SerializationConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         insertIntoFrequency = input.getBooleanOr(SerializationConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         insertIntoFrequency = input.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }

@@ -22,7 +22,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemUpgrade extends Item implements IUpgradeItem {
 
@@ -35,7 +34,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             Upgrade upgradeType = getUpgradeType();
             tooltipAdder.accept(upgradeType.getDescription());
@@ -50,7 +49,6 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         return upgrade;
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();

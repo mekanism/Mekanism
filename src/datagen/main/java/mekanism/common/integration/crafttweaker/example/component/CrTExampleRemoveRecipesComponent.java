@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeComponent {
 
@@ -31,7 +30,6 @@ public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeCompon
         }
     }
 
-    @NotNull
     @Override
     public String asString() {
         StringBuilder stringBuilder = new StringBuilder();

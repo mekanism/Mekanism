@@ -66,13 +66,13 @@ import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;
+    @Nullable
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
     private int diggingProgress = 0;
@@ -86,8 +86,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected abstract @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         int energyFired = fireLaser();
         if (energyFired > 0) {
             if (energyFired != lastFired || !getActive()) {
@@ -426,11 +426,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     private void sendLaserDataToPlayers(ServerLevel level, LaserParticleData data, Vec3 from) {
-        if (!isRemote()) {
-            for (ServerPlayer player : level.players()) {
-                //Note: We render laser particles regardless of the particle limit to avoid players accidentally killing themselves on them
-                level.sendParticles(player, data, true, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-            }
+        for (ServerPlayer player : level.players()) {
+            //Note: We render laser particles regardless of the particle limit to avoid players accidentally killing themselves on them
+            level.sendParticles(player, data, true, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
         }
     }
 
@@ -463,32 +461,32 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+    public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard(SerializationConstants.LAST_FIRED);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putInt(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
     }

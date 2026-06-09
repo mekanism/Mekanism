@@ -5,9 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 
-@NothingNullByDefault
 public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends Iterable<TYPE> {
 
     List<TYPE> containers();

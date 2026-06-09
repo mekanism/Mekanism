@@ -3,7 +3,7 @@ package mekanism.common.block.attribute;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.functions.ConstantPredicates;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Eventually we may want to make these suppliers be used more like suppliers in that:
 // if the config updates it doesn't require a server restart (or chunk reload to take effect

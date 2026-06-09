@@ -3,6 +3,7 @@ package mekanism.common.content.network.transmitter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -31,8 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper {
@@ -81,6 +81,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     protected boolean redstoneReactive;
     private boolean redstonePowered;
     private boolean redstoneSet;
+    @Nullable
     private NETWORK theNetwork = null;
     private boolean orphaned = true;
     private boolean isUpgrading;
@@ -113,7 +114,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return connectionTypes;
     }
 
-    public void setConnectionTypesRaw(@NotNull ConnectionType[] connectionTypes) {
+    public void setConnectionTypesRaw(ConnectionType[] connectionTypes) {
         if (this.connectionTypes.length != connectionTypes.length) {
             throw new IllegalArgumentException("Mismatched connection types length");
         }
@@ -121,8 +122,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         this.hasPullSide = recalculateHasPull(connectionTypes);
     }
 
-    private boolean recalculateHasPull(@NotNull ConnectionType @NotNull [] connectionTypes) {
-        for (@NotNull ConnectionType connectionType : connectionTypes) {
+    private boolean recalculateHasPull(ConnectionType [] connectionTypes) {
+        for (ConnectionType connectionType : connectionTypes) {
             if (connectionType == ConnectionType.PULL) {
                 return true;
             }
@@ -130,11 +131,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return false;
     }
 
-    public ConnectionType getConnectionTypeRaw(@NotNull Direction side) {
+    public ConnectionType getConnectionTypeRaw(Direction side) {
         return connectionTypes[side.ordinal()];
     }
 
-    public void setConnectionTypeRaw(@NotNull Direction side, @NotNull ConnectionType type) {
+    public void setConnectionTypeRaw(Direction side, ConnectionType type) {
         int index = side.ordinal();
         ConnectionType old = connectionTypes[index];
         if (old != type) {
@@ -157,6 +158,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return transmitterTile.getWorldPositionLong();
     }
 
+    @Nullable
     @Override
     public Level getLevel() {
         return transmitterTile.getLevel();
@@ -180,8 +182,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      *
      * @return network this transmitter is using
      */
+    @Nullable
     public NETWORK getTransmitterNetwork() {
         return theNetwork;
+    }
+
+    /**
+     * Gets the network currently in use by this transmitter segment.
+     *
+     * @return network this transmitter is using
+     */
+    public NETWORK getTransmitterNetworkNN() {
+        return Objects.requireNonNull(getTransmitterNetwork());
     }
 
     /**
@@ -189,7 +201,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      *
      * @param network - network to set to
      */
-    public void setTransmitterNetwork(NETWORK network) {
+    public void setTransmitterNetwork(@Nullable NETWORK network) {
         setTransmitterNetwork(network, true);
     }
 
@@ -199,7 +211,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * @param network    - network to set to
      * @param requestNow - Force a request now if not the return value will be if a request is needed
      */
-    public boolean setTransmitterNetwork(NETWORK network, boolean requestNow) {
+    public boolean setTransmitterNetwork(@Nullable NETWORK network, boolean requestNow) {
         if (theNetwork == network) {
             return false;
         }
@@ -429,20 +441,20 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         getTransmitterTile().sendUpdatePacket();
     }
 
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         output.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         output.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         output.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
         //Transmitter
         if (hasTransmitterNetwork()) {
-            output.store(SerializationConstants.NETWORK, UUIDUtil.CODEC, getTransmitterNetwork().getUUID());
+            output.store(SerializationConstants.NETWORK, UUIDUtil.CODEC, getTransmitterNetworkNN().getUUID());
         }
     }
 
     /**
      * @return true if the model data was changed by this update
      */
-    public boolean handleUpdateTag(@NotNull ValueInput input) {
+    public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = false;
         ConnectionType[] oldConnectionData = new ConnectionType[EnumUtils.DIRECTIONS.length];
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -465,7 +477,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         Optional<UUID> optionalNetworkID = input.read(SerializationConstants.NETWORK, UUIDUtil.CODEC);
         if (optionalNetworkID.isPresent()) {
             UUID networkID = optionalNetworkID.get();
-            if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
+            if (hasTransmitterNetwork() && getTransmitterNetworkNN().getUUID().equals(networkID)) {
                 //Nothing needs to be done to update the client network
                 return refreshModelData;
             }
@@ -485,22 +497,22 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return refreshModelData;
     }
 
-    protected void updateClientNetwork(@NotNull NETWORK network) {
+    protected void updateClientNetwork(NETWORK network) {
         network.register();
         setTransmitterNetwork(network);
     }
 
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
+    protected void handleContentsUpdateTag(NETWORK network, ValueInput input) {
     }
 
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         redstoneReactive = input.getBooleanOr(SerializationConstants.REDSTONE, redstoneReactive);
         currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         readRawConnections(input);
     }
 
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         output.putBoolean(SerializationConstants.REDSTONE, redstoneReactive);
         output.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         output.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
@@ -515,7 +527,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return raw;
     }
 
-    private void readRawConnections(@NotNull ValueInput input) {
+    private void readRawConnections(ValueInput input) {
         Optional<int[]> optionalRaw = input.getIntArray(SerializationConstants.CONNECTION);
         if (optionalRaw.isPresent()) {
             int[] raw = optionalRaw.get();
@@ -686,7 +698,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public void markDirtyAcceptor(Direction side) {
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
+            getTransmitterNetworkNN().acceptorChanged(getTransmitter(), side);
         }
     }
 

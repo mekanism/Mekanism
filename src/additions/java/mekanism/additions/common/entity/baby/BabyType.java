@@ -7,7 +7,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import org.jetbrains.annotations.NotNull;
 
 public enum BabyType implements StringRepresentable {
     BOGGED(MekanismAPITags.Biomes.BLACKLIST_BABY_BOGGED, MekanismAPITags.Structures.BLACKLIST_BABY_BOGGED),
@@ -30,7 +29,6 @@ public enum BabyType implements StringRepresentable {
 
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return serializedName;

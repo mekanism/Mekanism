@@ -19,7 +19,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
-import org.jetbrains.annotations.NotNull;
 
 public class MekaSuitEnergyLevel implements GuiLayer {
 
@@ -30,7 +29,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.gameMode.canHurtPlayer() || minecraft.options.hideGui || !MekanismConfig.client.hudRenderMekaSuitEnergyBar.get()) {
             //canHurtPlayer is a copy of vanilla check for if the armor level can render

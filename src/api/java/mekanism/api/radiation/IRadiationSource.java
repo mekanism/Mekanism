@@ -1,7 +1,6 @@
 package mekanism.api.radiation;
 
 import net.minecraft.core.BlockPos;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface used for defining radiation sources.
@@ -13,7 +12,6 @@ public interface IRadiationSource {
      *
      * @since 10.7.15
      */
-    @NotNull
     BlockPos getPosition();
 
     /**

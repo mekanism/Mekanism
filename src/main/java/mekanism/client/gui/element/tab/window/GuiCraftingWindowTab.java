@@ -19,11 +19,12 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.util.Util;
+import org.jspecify.annotations.Nullable;
 
-public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
+public class GuiCraftingWindowTab extends GuiWindowCreatorTab<@Nullable Void, GuiCraftingWindowTab> {
 
     private static final List<SelectedWindowData> VALID_WINDOWS = Util.make(() -> {
         List<SelectedWindowData> valid = new ArrayList<>(IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS);

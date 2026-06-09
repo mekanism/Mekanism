@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
+import org.jspecify.annotations.Nullable;
 
 public class RobitAIPickup extends RobitAIBase {
 
@@ -14,6 +15,7 @@ public class RobitAIPickup extends RobitAIBase {
     private static final int SEARCH_RADIUS = 10;
     private static final int SEARCH_RADIUS_SQ = SEARCH_RADIUS * SEARCH_RADIUS;
 
+    @Nullable
     private ItemEntity closest;
 
     public RobitAIPickup(EntityRobit entityRobit, float speed) {
@@ -26,7 +28,7 @@ public class RobitAIPickup extends RobitAIBase {
             return false;
         }
         PathNavigation navigator = getNavigator();
-        if (validateClosest() && navigator.createPath(closest, 0) != null) {
+        if (validateClosest() && closest != null && navigator.createPath(closest, 0) != null) {
             return true;
         }
         //Ensure we don't have the closest one set
@@ -64,7 +66,7 @@ public class RobitAIPickup extends RobitAIBase {
 
     @Override
     public void tick() {
-        if (theRobit.getDropPickup()) {
+        if (closest != null && theRobit.getDropPickup()) {
             updateTask(closest);
         }
     }

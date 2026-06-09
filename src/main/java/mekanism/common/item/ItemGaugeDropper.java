@@ -23,7 +23,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemGaugeDropper extends Item {
 
@@ -41,17 +40,17 @@ public class ItemGaugeDropper extends Item {
     }
 
     @Override
-    public boolean isBarVisible(@NotNull ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return StorageUtils.isBarVisible(stack);
     }
 
     @Override
-    public int getBarWidth(@NotNull ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return StorageUtils.getBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@NotNull ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         FluidResource fluid = ContainerType.FLUID.getFirstResourceFromAttachment(itemAccess);
         if (!fluid.isEmpty()) {
@@ -60,9 +59,8 @@ public class ItemGaugeDropper extends Item {
         return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(itemAccess);
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (level.isClientSide()) {
@@ -77,7 +75,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, false);
     }

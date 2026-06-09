@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -42,13 +41,13 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToChemicalRecipe> implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe> {
 
@@ -66,8 +65,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IChemicalTank pigmentTank;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Item, ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityPigmentExtractor> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -90,7 +89,6 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         outputHandler = OutputHelper.getOutputHandler(pigmentTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -104,7 +102,6 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -117,8 +114,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
         recipeCacheLookupMonitor.updateAndProcess();
@@ -129,7 +126,6 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         return inputSlot;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_EXTRACTING;
@@ -146,9 +142,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         return findFirstRecipe(inputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackToChemicalRecipe> createNewCachedRecipe(@NotNull ItemStackToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToChemicalRecipe> createNewCachedRecipe(ItemStackToChemicalRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

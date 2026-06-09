@@ -1,7 +1,6 @@
 package mekanism.api.recipes.cache;
 
 import java.util.function.BooleanSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.OrderlessTwoInputRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -13,7 +12,6 @@ import net.minecraft.core.TypedInstance;
  *
  * @since 10.8.0
  */
-@NothingNullByDefault
 public class OrderlessTwoInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, INGREDIENT extends InputIngredient<HOLDER, INPUT>, OUTPUT,
       RECIPE extends OrderlessTwoInputRecipe<HOLDER, INPUT, INGREDIENT, ?, OUTPUT>> extends TwoInputCachedRecipe<HOLDER, INPUT, INGREDIENT, HOLDER, INPUT, INGREDIENT, OUTPUT, RECIPE> {
 

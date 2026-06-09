@@ -33,13 +33,13 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
@@ -51,8 +51,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     );
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
-    protected final IInputHandler<Item, @NotNull ItemStack> inputHandler;
-    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
+    protected final IInputHandler<Item, ItemStack> inputHandler;
+    protected final IOutputHandler<ItemStackTemplate> outputHandler;
 
     private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -80,7 +80,6 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -93,8 +92,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
@@ -106,9 +105,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         return findFirstRecipe(inputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -119,7 +117,6 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @NotNull
     @Override
     public MachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents(), problemPath());

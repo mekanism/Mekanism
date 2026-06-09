@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBlockModelProvider /*extends BlockModelProvider */ {
 
@@ -10,7 +9,6 @@ public abstract class BaseBlockModelProvider /*extends BlockModelProvider */ {
         //super(output, modid, existingFileHelper);
     }
 
-    @NotNull
     //@Override
     public String getName() {
         return "Block model provider: ";// + modid;

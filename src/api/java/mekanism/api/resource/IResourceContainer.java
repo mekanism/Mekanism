@@ -3,7 +3,6 @@ package mekanism.api.resource;
 import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -22,7 +21,6 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @see BasicResourceContainer A functional implementation of this interface
 /// @since 10.8.0
-@NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable {
 
     /// {@return the resource in this container, including how much is stored, which may be empty}

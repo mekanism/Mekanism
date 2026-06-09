@@ -15,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemQIODrive extends Item implements IQIODriveItem {
 
@@ -30,7 +29,7 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         DriveMetadata meta = stack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
         tooltipAdder.accept(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
@@ -39,9 +38,8 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
               TextUtils.format(meta.types()), TextUtils.format(getTypeCapacity())));
     }
 
-    @NotNull
     @Override
-    public Component getName(@NotNull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         return TextComponentUtil.build(tier.getBaseTier().getColor(), super.getName(stack));
     }
 

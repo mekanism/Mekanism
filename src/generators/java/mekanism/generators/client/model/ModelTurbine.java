@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
@@ -104,7 +103,7 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
     }
 
     @Override
-    public void collect(TurbineBladeRenderState turbineBladeRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+    public void collect(TurbineBladeRenderState turbineBladeRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
         setupAnim(turbineBladeRenderState);
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }

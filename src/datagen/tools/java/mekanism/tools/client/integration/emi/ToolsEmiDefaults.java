@@ -1,7 +1,6 @@
 package mekanism.tools.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
@@ -9,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-@NothingNullByDefault
 public class ToolsEmiDefaults extends BaseEmiDefaults {
 
     public ToolsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {

@@ -2,12 +2,14 @@ package mekanism.common.entity.ai;
 
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 public class RobitAIFollow extends RobitAIBase {
 
     /**
      * The Robit's owner.
      */
+    @Nullable
     private Player theOwner;
     /**
      * The distance between the owner the robit must be at in order for the protocol to begin.
@@ -46,7 +48,7 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public boolean canContinueToUse() {
-        return !getNavigator().isDone() && theRobit.distanceToSqr(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
+        return theOwner != null && !getNavigator().isDone() && theRobit.distanceToSqr(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
                !theRobit.getEnergyContainer().isEmpty() && theOwner.level().dimension() == theRobit.level().dimension();
     }
 
@@ -58,7 +60,7 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public void tick() {
-        if (theRobit.getFollowing()) {
+        if (theOwner != null && theRobit.getFollowing()) {
             updateTask(theOwner);
         }
     }

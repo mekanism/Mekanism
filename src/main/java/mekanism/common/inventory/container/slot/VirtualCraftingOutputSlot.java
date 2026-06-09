@@ -12,12 +12,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
-    @NotNull
     private final QIOCraftingWindow craftingWindow;
     /**
      * @apiNote For use on client side to store if we can craft or not. On the server side we check it directly
@@ -25,19 +23,19 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     private boolean canCraft;
     private int amountCrafted;
 
-    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, @NotNull QIOCraftingWindow craftingWindow) {
+    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, QIOCraftingWindow craftingWindow) {
         super(slot, craftingWindow.getWindowData(), slotOverlay);
         this.craftingWindow = craftingWindow;
     }
 
     @Override
-    public boolean canMergeWith(@NotNull ItemStack stack) {
+    public boolean canMergeWith(ItemStack stack) {
         //Don't allow double-clicking to pickup stacks from the output slot
         return false;
     }
 
     @Override
-    public boolean mayPlace(@NotNull ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         //Short circuit to avoid looking through the various predicates
         return false;
     }
@@ -67,7 +65,6 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return 0;
     }
 
-    @NotNull
     @Override
     public ItemStack remove(int amount) {
         //Note: This method is only called if mayPickup returns true
@@ -96,7 +93,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
      * @implNote We override this similar to how {@link net.minecraft.world.inventory.ResultSlot} does, but this never actually ends up getting called for our slots.
      */
     @Override
-    protected void onQuickCraft(@NotNull ItemStack stack, int amount) {
+    protected void onQuickCraft(ItemStack stack, int amount) {
         amountCrafted += amount;
         checkTakeAchievements(stack);
     }
@@ -108,7 +105,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
+    public void onTake(Player player, ItemStack stack) {
         //Note: This method is only called if mayPickup returns true
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         if (!result.isEmpty()) {
@@ -120,14 +117,13 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public boolean mayPickup(@NotNull Player player) {
+    public boolean mayPickup(Player player) {
         if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
             return canCraft && super.mayPickup(player);
         }
         return craftingWindow.canViewRecipe(serverPlayer) && super.mayPickup(player);
     }
 
-    @NotNull
     @Override
     public ItemStack getStackCopy() {
         //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
@@ -135,14 +131,12 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return canCraft ? super.getStackCopy() : ItemStack.EMPTY;
     }
 
-    @NotNull
     @Override
     public ItemStack getStackToRender() {
         return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
     }
 
-    @NotNull
-    public ItemStack shiftClickSlot(@NotNull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+    public ItemStack shiftClickSlot(Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         // Note: This method is only called if mayPickup returns true
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);

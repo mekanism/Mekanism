@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -26,7 +25,7 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
     }
 
     @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         if (armored) {
             model = new ModelArmoredJetpack(Minecraft.getInstance().getEntityModels());
         } else {

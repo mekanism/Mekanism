@@ -48,7 +48,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for informing the server that an action happened in a GUI
@@ -134,7 +133,6 @@ public class PacketGuiInteract implements IMekanismPacket {
         this.extraItem = stack;
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketGuiInteract> type() {
         return TYPE;
@@ -386,22 +384,22 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
         CRAFT_SINGLE((tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.craftSingle();
+                assemblicator.craftSingle(tile.getLevel());
             }
         }),
         CRAFT_ALL((tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.craftAll();
+                assemblicator.craftAll(tile.getLevel());
             }
         }),
         EMPTY_GRID((tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.emptyGrid();
+                assemblicator.emptyGrid(tile.getLevel());
             }
         }),
         FILL_GRID((tile, _, _) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.fillGrid();
+                assemblicator.fillGrid(tile.getLevel());
             }
         }),
 

@@ -1,9 +1,9 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
-import com.google.common.primitives.Ints;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -23,12 +23,13 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
         super(category, id, recipe);
         addInputDefinition(recipe.water());
         addChemicalOutputDefinition(List.of(recipe.steam()));
-        if (recipe.superHeatedCoolant() == null) {
+        ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
+        if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
             addEmptyInput();
             addOutputDefinition(Collections.emptyList());
         } else {
             addInputDefinition(recipe.superHeatedCoolant());
-            addChemicalOutputDefinition(List.of(recipe.cooledCoolant()));
+            addChemicalOutputDefinition(List.of(cooledCoolant));
         }
     }
 

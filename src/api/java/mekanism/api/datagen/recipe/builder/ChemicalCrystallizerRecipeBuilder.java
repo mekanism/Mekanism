@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 
-@NothingNullByDefault
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
     private final ChemicalStackIngredient input;

@@ -9,12 +9,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IRadialModeItem<MODE extends IRadialMode> extends IGenericRadialModeItem, IAttachmentBasedModeItem<MODE> {
 
-    @NotNull
     @Override
     <ITEM extends TypedInstance<Item> & DataComponentGetter> RadialData<MODE> getRadialData(ITEM instance);
 

@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -25,7 +24,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 //TODO - 26.1 models
-@NothingNullByDefault
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter, STATE extends TransmitterRenderState> extends MekanismTileEntityRenderer<TRANSMITTER, STATE> {
 
     public static final Identifier MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");

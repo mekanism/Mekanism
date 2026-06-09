@@ -17,15 +17,14 @@ import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> implements IContentsListener {
 
     protected final LongSet chunks = new LongOpenHashSet();
     @Nullable
-    protected Range3D packetRange;
+    private Range3D packetRange;
     protected long capacity;
     protected boolean needsUpdate;
     private boolean forceScaleUpdate;
@@ -118,7 +117,6 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
 
     protected abstract void forceScaleUpdate();
 
-    @NotNull
     public abstract BUFFER getBuffer();
 
     public abstract void absorbBuffer(TRANSMITTER transmitter, TransactionContext transaction);
@@ -158,7 +156,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter, TransactionContext transaction) {
     }
 
-    public final void validateSaveShares(@NotNull TRANSMITTER triggerTransmitter, @Nullable TransactionContext transaction) {
+    public final void validateSaveShares(TRANSMITTER triggerTransmitter, @Nullable TransactionContext transaction) {
         if (world == null) {
             //If the world is null, try falling back to the trigger transmitter's world.
             // Note: This also in theory could be null, so we double-check it is not before grabbing the game time
@@ -183,6 +181,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         }
     }
 
+    @Nullable
     public Range3D getPacketRange() {
         if (packetRange == null) {
             packetRange = genPacketRange();
@@ -190,6 +189,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         return packetRange;
     }
 
+    @Nullable
     private Range3D genPacketRange() {
         if (isEmpty()) {
             deregister();

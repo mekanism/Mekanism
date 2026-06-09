@@ -9,14 +9,13 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 public class WarningTracker implements IWarningTracker {
 
     private final Map<WarningType, List<BooleanSupplier>> warnings = new EnumMap<>(WarningType.class);
 
     @Override
-    public BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public BooleanSupplier trackWarning(WarningType type, BooleanSupplier warningSupplier) {
         Objects.requireNonNull(type, "Warning type cannot be null.");
         Objects.requireNonNull(warningSupplier, "Warning check cannot be null.");
         warnings.computeIfAbsent(type, t -> new ArrayList<>(t.expectedWarnings)).add(warningSupplier);

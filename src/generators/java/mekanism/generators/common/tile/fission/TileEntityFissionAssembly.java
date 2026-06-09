@@ -45,7 +45,6 @@ public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {
         }
     }
 
-    @NotNull
     @Override
     public ModelData getModelData() {
         UUID multiblockUUID = getMultiblockUUID();

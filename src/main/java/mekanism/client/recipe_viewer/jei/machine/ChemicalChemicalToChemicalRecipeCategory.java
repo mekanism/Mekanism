@@ -19,7 +19,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCategory<ChemicalChemicalToChemicalRecipe> {
 
@@ -48,7 +47,7 @@ public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCatego
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
         builder.setShapeless();
         ContextMap slotDisplayContext = getSlotDisplayContext();

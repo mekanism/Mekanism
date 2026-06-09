@@ -4,7 +4,6 @@ import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.Widget;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,7 +14,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import org.joml.Matrix3x2fStack;
 
-@NothingNullByDefault
 public class MekanismEmiWidget extends Widget {
 
     private final boolean forwardClicks;

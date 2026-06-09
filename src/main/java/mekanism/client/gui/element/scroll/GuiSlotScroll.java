@@ -27,7 +27,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredientHelper {
 
@@ -38,10 +38,10 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     private final GuiScrollBar scrollBar;
 
     private final int xSlots, ySlots;
-    private final Supplier<@NotNull List<IScrollableSlot>> slotList;
+    private final Supplier<List<IScrollableSlot>> slotList;
     private final ISlotClickHandler clickHandler;
 
-    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<@NotNull List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
+    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
         super(gui, x, y, xSlots * 18 + 18, ySlots * 18);
         this.xSlots = xSlots;
         this.ySlots = ySlots;
@@ -52,7 +52,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
@@ -83,7 +83,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         IScrollableSlot slot = getSlot(mouseX, mouseY);
         if (slot != null) {
@@ -97,7 +97,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         if (gui().currentlyQuickCrafting()) {
             //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
             return super.mouseReleased(event);
@@ -108,6 +108,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         return true;
     }
 
+    @Nullable
     private IScrollableSlot getSlot(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
         if (list.isEmpty()) {
@@ -188,7 +189,6 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         //pose.popPose();
     }
 
-    @NotNull
     private List<IScrollableSlot> getSlotList() {
         return slotList.get();
     }

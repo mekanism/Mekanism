@@ -45,8 +45,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
@@ -62,12 +61,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     BinInventorySlot binSlot;
 
     public TileEntityBin(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, BinTier.class));
+        tier = Objects.requireNonNull(Attribute.getTierNN(blockProvider, BinTier.class));
         super(blockProvider, pos, state);
         delaySupplier = NO_DELAY;
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -84,8 +82,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         addTicks = Math.max(0, addTicks - 1);
         removeTicks = Math.max(0, removeTicks - 1);
         delayTicks = Math.max(0, delayTicks - 1);
@@ -100,7 +98,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 //Limit how much we allow sending at once to a single stack of the stored item
                 request.addItem(storedType, Math.min(binSlot.amountAsInt(), storedType.getMaxStackSize()), 0);
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
+                    targetInventory = Capabilities.ITEM.createCache(level, getBlockPos().below(), Direction.UP);
                 }
                 try (Transaction transaction = Transaction.openRoot()) {
                     TransitResponse response = request.eject(this, targetInventory.getCapability(), 1, null, transaction);
@@ -141,10 +139,10 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public boolean setLocked(boolean isLocked) {
         if (binSlot.setLocked(isLocked)) {
-            if (getLevel() != null && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 needsSync = true;
                 markForSave();
-                getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
+                level.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
             }
             return true;
         }
@@ -152,7 +150,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
+    public void parseUpgradeData(IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof BinUpgradeData(boolean redstoneData, BinInventorySlot slot)) {
             redstone = redstoneData;
             binSlot.copyContents(slot, transaction);
@@ -161,7 +159,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @NotNull
     @Override
     public BinUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new BinUpgradeData(redstone, getBinSlot());
@@ -170,25 +167,25 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (level != null && !isRemote()) {
+        if (level != null && !level.isClientSide()) {
             needsSync = true;
         }
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putChild(SerializationConstants.ITEM, binSlot);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.ITEM, binSlot);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         //Note: In theory doing this before super doesn't matter, but we want to make sure that the lock is set before
         // setting the data on the item just for good measure
         builder.set(MekanismDataComponents.LOCK, LockData.create(binSlot.getLockType()));
@@ -196,7 +193,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         //Apply the lock before processing the stored data
         binSlot.setLockType(input.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock(), null);
         super.applyImplicitComponents(input);

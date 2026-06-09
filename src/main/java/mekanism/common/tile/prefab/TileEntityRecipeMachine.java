@@ -24,7 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -129,7 +129,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = ThreadLocalRandom.current().nextInt(RECIPE_CHECK_FREQUENCY);
-        return () -> !tile.playersUsing.isEmpty() && tile.hasLevel() && tile.getLevel().getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
+        return () -> !tile.playersUsing.isEmpty() && tile.hasLevel() && tile.getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
     }
 
     @Nullable

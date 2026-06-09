@@ -5,8 +5,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IRecipeViewerRecipeArea<ELEMENT extends GuiElement> extends GuiEventListener {
 
@@ -20,7 +19,7 @@ public interface IRecipeViewerRecipeArea<ELEMENT extends GuiElement> extends Gui
         return true;
     }
 
-    ELEMENT recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories);
+    ELEMENT recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories);
 
     default ELEMENT recipeViewerCategory(IRecipeLookupHandler<?> recipeLookup) {
         IRecipeViewerRecipeType<?> recipeType = recipeLookup.recipeViewerType();

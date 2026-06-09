@@ -1,7 +1,6 @@
 package mekanism.generators.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.common.util.RegistryUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -12,7 +11,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-@NothingNullByDefault
 public class GeneratorsEmiDefaults extends BaseEmiDefaults {
 
     public GeneratorsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {

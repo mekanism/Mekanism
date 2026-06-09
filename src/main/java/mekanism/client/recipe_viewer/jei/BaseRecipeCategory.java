@@ -55,8 +55,7 @@ import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 //TODO: Re-evaluate this extending AbstractContainerEventHandler
@@ -113,13 +112,11 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return element;
     }
 
-    @NotNull
     @Override
     public List<GuiElement> children() {
         return guiElements;
     }
 
-    @NotNull
     @Override
     public ScreenRectangle getRectangle() {
         return new ScreenRectangle(getGuiLeft(), getGuiTop(), getXSize(), getYSize());

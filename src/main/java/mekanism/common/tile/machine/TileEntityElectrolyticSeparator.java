@@ -68,14 +68,14 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe> {
 
@@ -125,8 +125,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private int baselineMaxOperations = 1;
     private int dumpRate = BASE_DUMP_RATE;
 
-    private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
-    private final IInputHandler<Fluid, @NotNull FluidStack> inputHandler;
+    private final IOutputHandler<ElectrolysisRecipeOutput> outputHandler;
+    private final IInputHandler<Fluid, FluidStack> inputHandler;
 
     private ElectroSeparatorEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
@@ -174,7 +174,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         outputHandler = OutputHelper.getOutputHandler(leftTank, NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR, rightTank, NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
@@ -182,7 +181,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return builder.build();
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -197,7 +195,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -220,7 +217,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         energyContainer.updateMaxEnergy();
     }
 
-    private static boolean isHydrogenElectrolysis(@NotNull ElectrolysisRecipe recipe) {
+    private static boolean isHydrogenElectrolysis(ElectrolysisRecipe recipe) {
         if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
             return basicRecipe.getLeftChemicalOutput().is(MekanismChemicals.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(MekanismChemicals.HYDROGEN);
         }
@@ -234,8 +231,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         fluidSlot.fillTankFromSlot(null);
 
@@ -282,7 +279,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return clientEnergyUsed;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> getRecipeType() {
         return MekanismRecipeType.SEPARATING;
@@ -299,9 +295,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return findFirstRecipe(inputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@NotNull ElectrolysisRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(ElectrolysisRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -338,28 +333,28 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         NBTUtils.writeEnum(output, SerializationConstants.DUMP_LEFT, dumpLeft);
         NBTUtils.writeEnum(output, SerializationConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.DUMP_MODE, dumpLeft);
         builder.set(MekanismDataComponents.SECONDARY_DUMP_MODE, dumpRight);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         dumpLeft = input.getOrDefault(MekanismDataComponents.DUMP_MODE, dumpLeft);
         dumpRight = input.getOrDefault(MekanismDataComponents.SECONDARY_DUMP_MODE, dumpRight);

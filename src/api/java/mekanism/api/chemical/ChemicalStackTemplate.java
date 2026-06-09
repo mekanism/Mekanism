@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Range;
 /// @param amount   Amount of the chemical.
 ///
 /// @since 10.8.0
-@NothingNullByDefault
 public record ChemicalStackTemplate(Holder<Chemical> chemical, @Range(from = 1, to = Integer.MAX_VALUE) int amount) implements ChemicalInstance {
 
     /// A standard map codec for chemical stack templates.

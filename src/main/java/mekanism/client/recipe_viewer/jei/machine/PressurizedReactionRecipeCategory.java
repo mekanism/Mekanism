@@ -27,7 +27,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<PressurizedReactionRecipe> {
 
@@ -63,7 +62,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, IFocusGroup focusGroup) {
         PressurizedReactionRecipe recipe = recipeHolder.value();
         ContextMap slotDisplayContext = getSlotDisplayContext();
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations(slotDisplayContext));

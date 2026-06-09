@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.transmitter.TransmitterRenderState.TubeRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -13,9 +12,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPressurizedTube, TubeRenderState> {
 
     public RenderPressurizedTube(BlockEntityRendererProvider.Context context) {
@@ -28,7 +26,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     }
 
     @Override
-    public void extractRenderState(TileEntityPressurizedTube tube, TubeRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityPressurizedTube tube, TubeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(tube, state, partialTick, cameraPosition, breakProgress);
         ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
         if (network == null) {//TODO - 26.1: Does this race condition still exist?
@@ -62,7 +60,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         if (super.shouldRenderTransmitter(tile, camera)) {
             PressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
-                ChemicalNetwork network = tube.getTransmitterNetwork();
+                ChemicalNetwork network = tube.getTransmitterNetworkNN();
                 return !network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.currentScale > 0;
             }
         }

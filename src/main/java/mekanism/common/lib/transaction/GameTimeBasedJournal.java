@@ -1,12 +1,10 @@
 package mekanism.common.lib.transaction;
 
 import java.util.function.LongSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class GameTimeBasedJournal<TYPE extends @Nullable Object> extends SnapshotJournal<TYPE> {
 
     private final LongSupplier gameTimeSupplier;

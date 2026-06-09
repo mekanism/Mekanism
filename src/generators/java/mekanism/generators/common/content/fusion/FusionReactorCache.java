@@ -4,7 +4,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 
@@ -49,7 +48,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         super.load(input);
         //TODO - 26.1: These used to just get instead of only getting if present, should the fallback be zero or the existing value?
         plasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, plasmaTemperature);
@@ -58,7 +57,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         super.save(output);
         output.putDouble(SerializationConstants.PLASMA_TEMP, plasmaTemperature);
         output.putInt(SerializationConstants.INJECTION_RATE, getInjectionRate());

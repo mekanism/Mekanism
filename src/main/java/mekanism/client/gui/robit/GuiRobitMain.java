@@ -30,14 +30,19 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
+    @Nullable
     static final Tooltip ROBIT = TooltipUtils.create(MekanismLang.ROBIT);
+    @Nullable
     static final Tooltip ROBIT_CRAFTING = TooltipUtils.create(MekanismLang.ROBIT_CRAFTING);
+    @Nullable
     static final Tooltip ROBIT_INVENTORY = TooltipUtils.create(MekanismLang.ROBIT_INVENTORY);
+    @Nullable
     static final Tooltip ROBIT_SMELTING = TooltipUtils.create(MekanismLang.ROBIT_SMELTING);
+    @Nullable
     static final Tooltip ROBIT_REPAIR = TooltipUtils.create(MekanismLang.ROBIT_REPAIR);
 
     private final EntityRobit robit;
@@ -110,7 +115,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

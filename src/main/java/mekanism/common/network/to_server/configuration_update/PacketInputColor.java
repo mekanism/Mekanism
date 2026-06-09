@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketInputColor(BlockPos pos, MekClickType clickType, RelativeSide inputSide) implements IMekanismPacket {
 
@@ -24,7 +23,6 @@ public record PacketInputColor(BlockPos pos, MekClickType clickType, RelativeSid
           PacketInputColor::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketInputColor> type() {
         return TYPE;

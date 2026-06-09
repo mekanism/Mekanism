@@ -5,8 +5,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.RenderTypeGroup;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class WrapperModelConfiguration implements IGeometryBakingContext {
 
@@ -16,20 +15,18 @@ public class WrapperModelConfiguration implements IGeometryBakingContext {
         this.internal = internal;
     }
 
-    @NotNull
     @Override
     public String getModelName() {
         return internal.getModelName();
     }
 
     @Override
-    public boolean hasMaterial(@NotNull String name) {
+    public boolean hasMaterial(String name) {
         return internal.hasMaterial(name);
     }
 
-    @NotNull
     @Override
-    public Material getMaterial(@NotNull String name) {
+    public Material getMaterial(String name) {
         return internal.getMaterial(name);
     }
 
@@ -48,7 +45,6 @@ public class WrapperModelConfiguration implements IGeometryBakingContext {
         return internal.useAmbientOcclusion();
     }
 
-    @NotNull
     @Override
     public ItemTransforms getTransforms() {
         return internal.getTransforms();

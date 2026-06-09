@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -53,7 +52,7 @@ public interface IOwnerObject {
      *
      * @return {@code true} if the player is the owner, {@code false} if the player isn't the owner or there is no owner currently set.
      */
-    default boolean ownerMatches(@NonNull Player player) {
+    default boolean ownerMatches(Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
         return player.getUUID().equals(getOwnerUUID());
     }

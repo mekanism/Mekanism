@@ -6,7 +6,6 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.common.component.containers.resource.ResourceContainersBuilder;
@@ -14,9 +13,8 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class GenericTankSpec<RESOURCE extends Resource> {
 
     protected final Predicate<RESOURCE> isValid;

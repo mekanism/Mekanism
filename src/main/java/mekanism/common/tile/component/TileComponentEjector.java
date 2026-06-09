@@ -63,8 +63,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
@@ -73,7 +72,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
 
-    private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
+    private final @Nullable EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
@@ -83,6 +82,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Nullable//TODO: At some point it would be nice to be able to generify this further
     private Predicate<IChemicalTank> canTankEject;
     private boolean strictInput;
+    @Nullable
     private EnumColor outputColor;
     private int tickDelay = 0;
 
@@ -316,7 +316,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tickDelay = MekanismUtils.TICKS_PER_HALF_SECOND;
     }
 
-    private Set<Direction> getSidesForData(ConfigInfo info, @NotNull Direction facing, @NotNull DataType dataType) {
+    private Set<Direction> getSidesForData(ConfigInfo info, Direction facing, DataType dataType) {
         Set<Direction> directions = null;
         for (Map.Entry<RelativeSide, DataType> entry : info.getSideConfig()) {
             if (entry.getValue() == dataType) {
@@ -331,6 +331,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return directions == null ? Collections.emptySet() : directions;
     }
 
+    @Nullable
     private ResourceHandler<ItemResource> getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
         // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
@@ -349,24 +350,25 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    @Nullable
     @ComputerMethod
     public EnumColor getOutputColor() {
         return outputColor;
     }
 
-    public void setOutputColor(EnumColor color) {
+    public void setOutputColor(@Nullable EnumColor color) {
         if (outputColor != color) {
             outputColor = color;
             tile.markForSave();
         }
     }
 
-    public boolean isInputSideEnabled(@NotNull RelativeSide side) {
+    public boolean isInputSideEnabled(RelativeSide side) {
         ConfigInfo info = configInfo.get(TransmissionType.ITEM);
         return info == null || info.isSideEnabled(side);
     }
 
-    public void setInputColor(RelativeSide side, EnumColor color) {
+    public void setInputColor(RelativeSide side, @Nullable EnumColor color) {
         if (isInputSideEnabled(side)) {
             int ordinal = side.ordinal();
             if (inputColors[ordinal] != color) {
@@ -376,6 +378,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    @Nullable
     @ComputerMethod
     public EnumColor getInputColor(RelativeSide side) {
         return inputColors[side.ordinal()];
@@ -387,7 +390,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    public void applyImplicitComponents(DataComponentGetter input) {
         AttachedEjector ejector = input.get(MekanismDataComponents.EJECTOR);
         if (ejector != null) {
             for (int i = 0; i < inputColors.length; i++) {
@@ -404,7 +407,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput ejectorInput) {
+    public void deserialize(ValueInput ejectorInput) {
         strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
         outputColor = NBTUtils.getEnum(ejectorInput, SerializationConstants.COLOR, EnumColor.BY_ID);
         //Input colors
@@ -420,7 +423,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput ejectorOutput) {
+    public void serialize(ValueOutput ejectorOutput) {
         if (strictInput) {
             ejectorOutput.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
@@ -528,11 +531,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public EjectTransitRequest(ResourceHandler<ItemResource> handler) {
+        public EjectTransitRequest(@Nullable ResourceHandler<ItemResource> handler) {
             super(handler);
         }
 
-        protected void setHandler(ResourceHandler<ItemResource> handler) {
+        protected void setHandler(@Nullable ResourceHandler<ItemResource> handler) {
             this.handler = handler;
         }
     }

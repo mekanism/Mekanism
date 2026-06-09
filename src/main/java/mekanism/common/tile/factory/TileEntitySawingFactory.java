@@ -16,6 +16,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -45,8 +46,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
@@ -72,18 +72,18 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     );
     private static final Set<RecipeError> GLOBAL_ERROR_TYPES = Set.of(RecipeError.NOT_ENOUGH_ENERGY);
 
-    protected IInputHandler<Item, @NotNull ItemStack>[] inputHandlers;
-    protected IOutputHandler<@NotNull ChanceOutput>[] outputHandlers;
+    protected final IInputHandler<Item, ItemStack>[] inputHandlers;
+    protected final IOutputHandler<ChanceOutput>[] outputHandlers;
 
     public TileEntitySawingFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
+        inputHandlers = new IInputHandler[tier.processes];
+        outputHandlers = new IOutputHandler[tier.processes];
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
     }
 
     @Override
     protected void addSlots(MekContainerHelper<IInventorySlot> builder, IContentsListener listener, IContentsListener updateSortingListener) {
-        inputHandlers = new IInputHandler[tier.processes];
-        outputHandlers = new IOutputHandler[tier.processes];
-        processInfoSlots = new ProcessInfo[tier.processes];
         int baseX = tier == FactoryTier.BASIC ? 55 : tier == FactoryTier.ADVANCED ? 35 : tier == FactoryTier.ELITE ? 29 : 27;
         int baseXMult = tier == FactoryTier.BASIC ? 38 : tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tier.processes; i++) {
@@ -110,13 +110,13 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
+    public boolean isItemValidForSlot(ItemResource itemType) {
         //contains recipe in general already validated by isValidInputItem
         return true;
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+    public boolean isValidInputItem(ItemResource itemType) {
         return containsRecipe(itemType);
     }
 
@@ -126,17 +126,17 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<SawmillRecipe> cached, @NotNull ItemResource itemType) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<SawmillRecipe> cached, ItemResource itemType) {
         return cached != null && cached.getRecipe().getInput().testType(itemType);
     }
 
+    @Nullable
     @Override
-    protected SawmillRecipe findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected SawmillRecipe findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemResource extra = secondaryOutputSlot == null ? ItemResource.EMPTY : secondaryOutputSlot.resource();
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), extra, CAN_OUTPUTS_STACK);
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleRecipeInput, SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
@@ -153,9 +153,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
         return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@NotNull SawmillRecipe recipe, int cacheIndex) {
+    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(this::canFunction)
@@ -168,7 +167,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
+    public void parseUpgradeData(IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof SawmillUpgradeData) {
             //Validate we have the correct type of data before passing it upwards
             super.parseUpgradeData(upgradeData, provider, transaction);
@@ -177,7 +176,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
         }
     }
 
-    @NotNull
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());

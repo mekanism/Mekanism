@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class BabyEndermanEyesLayer extends EyesLayer<EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
@@ -17,7 +16,6 @@ public class BabyEndermanEyesLayer extends EyesLayer<EndermanRenderState, Enderm
         super(renderer);
     }
 
-    @NotNull
     @Override
     public RenderType renderType() {
         return RENDER_TYPE;

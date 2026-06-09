@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
@@ -32,8 +33,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
       implements GuiFilterHelper<TILE> {
@@ -71,7 +71,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, event, isDoubleClick) -> {
                     //Add the window for the filter select dialog to the parent gui
                     IGuiWrapper wrapper = element.gui();
-                    wrapper.addWindow(getFilterSelect(wrapper, this.tile));
+                    GuiFilterSelect<TILE> filterSelect = Objects.requireNonNull(getFilterSelect(wrapper, this.tile),
+                          "Returned that there was a filter select from hasFilterSelect, but didn't provide a selection window.");
+                    wrapper.addWindow(filterSelect);
                     //And close the filter
                     return close(element, event, isDoubleClick);
                 })).setTooltip(TooltipUtils.BACK);
@@ -212,7 +214,6 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract ILangEntry getNoFilterSaveError();
 
-    @NotNull
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override

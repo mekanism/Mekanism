@@ -1,7 +1,6 @@
 package mekanism.common.recipe.compat;
 
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -9,7 +8,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
@@ -31,10 +29,7 @@ import net.potionstudios.biomeswevegone.world.level.block.sand.BWGSandSet;
 import net.potionstudios.biomeswevegone.world.level.block.set.BWGBlockSet;
 import net.potionstudios.biomeswevegone.world.level.block.wood.BWGWoodSet;
 
-@ParametersAreNotNullByDefault
 public class BWGRecipeProvider extends CompatRecipeProvider {
-
-    private static final FieldReflectionHelper<BWGWoodSet, String> WOOD_SET_NAME = new FieldReflectionHelper<>(BWGWoodSet.class, "name", () -> null);
 
     public BWGRecipeProvider(HolderLookup.Provider registries, String modid) {
         super(registries, modid);
@@ -55,7 +50,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         for (BWGWoodSet woodType : BWGWoodSet.woodsets()) {
             RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, woodType.planks().asItem(), woodType.boatItem().get(),
                   woodType.chestBoatItem().get(), woodType.door().asItem(), woodType.fenceGate().asItem(), woodType.logItemTag(), woodType.pressurePlate().asItem(),
-                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), WOOD_SET_NAME.getValue(woodType), modLoaded);
+                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), woodType.name(), modLoaded);
         }
     }
 

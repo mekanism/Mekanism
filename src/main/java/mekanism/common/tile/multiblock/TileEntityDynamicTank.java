@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
 
@@ -55,7 +54,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
-    @NotNull
     @Override
     public TankMultiblockData createMultiblock() {
         return new TankMultiblockData(this);

@@ -18,14 +18,14 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
@@ -36,7 +36,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         super(MekanismBlocks.SECURITY_DESK, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -46,8 +45,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         SecurityFrequency frequency = getFreq();
         UUID ownerUUID = getOwnerUUID();
         if (ownerUUID != null && frequency != null) {
@@ -141,6 +140,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
+    @Nullable
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyTypes.SECURITY);
     }

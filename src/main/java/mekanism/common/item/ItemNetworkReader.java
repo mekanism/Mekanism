@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ItemNetworkReader extends ItemEnergized {
 
@@ -49,7 +49,6 @@ public class ItemNetworkReader extends ItemEnergized {
         displayBorder(player, "[=======]", false);
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -103,7 +102,7 @@ public class ItemNetworkReader extends ItemEnergized {
         displayBorder(player, MekanismLang.MEKANISM, true);
         Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
-            DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
+            DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetworkNN();
             player.sendSystemMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()));
             player.sendSystemMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()));
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_NEEDED, transmitterNetwork.getNeededInfo());
@@ -146,7 +145,7 @@ public class ItemNetworkReader extends ItemEnergized {
         player.sendSystemMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp));
     }
 
-    private void sendMessageIfNonNull(Player player, ILangEntry langEntry, Object toSend) {
+    private void sendMessageIfNonNull(Player player, ILangEntry langEntry, @Nullable Object toSend) {
         if (toSend != null) {
             player.sendSystemMessage(langEntry.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, toSend));
         }

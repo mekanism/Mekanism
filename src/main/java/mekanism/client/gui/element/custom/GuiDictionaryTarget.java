@@ -46,8 +46,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhostTarget {
 
@@ -77,7 +76,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
             gui().renderItem(guiGraphics, stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
@@ -90,7 +89,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
             //TODO - 26.1: Validate this (and all other places we now use setTooltipForNextFrame) is an acceptable replacement for the old setTooltip,
@@ -105,7 +104,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (event.hasShiftDown()) {
             if (target != null) {
                 setTargetSlot(null);
@@ -233,21 +232,18 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         tags.putAll(old.tags);
     }
 
-    @Nullable
     @Override
-    public IRecipeViewerGhostTarget.IGhostIngredientConsumer getGhostHandler() {
+    public IRecipeViewerGhostTarget.@Nullable IGhostIngredientConsumer getGhostHandler() {
         return new IGhostIngredientConsumer() {
             @Nullable
             @Override
-            public Object supportedTarget(Object ingredient) {
-                if (ingredient instanceof ItemStack stack) {
-                    return stack.isEmpty() ? null : stack;
-                } else if (ingredient instanceof FluidStack stack) {
-                    return stack.isEmpty() ? null : stack;
-                } else if (ingredient instanceof ChemicalStack stack) {
-                    return stack.isEmpty() ? null : stack;
-                }
-                return null;
+            public Object supportedTarget(@Nullable Object ingredient) {
+                return switch (ingredient) {
+                    case ItemStack stack -> stack.isEmpty() ? null : stack;
+                    case FluidStack stack -> stack.isEmpty() ? null : stack;
+                    case ChemicalStack stack -> stack.isEmpty() ? null : stack;
+                    case null, default -> null;
+                };
             }
 
             @Override

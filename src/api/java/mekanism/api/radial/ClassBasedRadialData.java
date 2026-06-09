@@ -1,11 +1,10 @@
 package mekanism.api.radial;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base implementation for radial data that knows the type of modes it can handle.
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.3.2
  */
-@NothingNullByDefault
 public abstract class ClassBasedRadialData<MODE extends IRadialMode> extends RadialData<MODE> {
 
     protected final Class<MODE> clazz;

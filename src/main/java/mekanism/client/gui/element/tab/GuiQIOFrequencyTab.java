@@ -17,7 +17,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
 
@@ -44,7 +43,7 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         if (isItem) {
             PacketUtils.sendToServer(new PacketItemButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));
         } else {

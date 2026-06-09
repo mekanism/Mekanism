@@ -1,7 +1,6 @@
 package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -19,7 +18,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  *
  * @apiNote Nucleosynthesizers can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> ANTIPROTONIC_NUCLEOSYNTHESIZER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "antiprotonic_nucleosynthesizer"));

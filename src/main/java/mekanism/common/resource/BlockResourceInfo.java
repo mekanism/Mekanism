@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum BlockResourceInfo implements IResource {
     OSMIUM("osmium", 7.5F, 12, MapColor.COLOR_CYAN),
@@ -28,6 +28,7 @@ public enum BlockResourceInfo implements IResource {
     private final PushReaction pushReaction;
     private final boolean portalFrame;
     private final boolean burnsInFire;
+    @Nullable
     private final NoteBlockInstrument instrument;
     private final float resistance;
     private final float hardness;

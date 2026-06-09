@@ -18,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
@@ -54,7 +53,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void setInitialFocus(@NotNull GuiEventListener listener) {
+    protected void setInitialFocus(GuiEventListener listener) {
         //Always capture even when leaving JEI
         initialFocusSet = false;
         super.setInitialFocus(listener);
@@ -79,7 +78,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeRight() + 4, 0, TextAlignment.CENTER);
         renderInventoryText(guiGraphics, 60);
         int maximumCost = menu.getCost();
@@ -130,7 +129,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    public void slotChanged(@NotNull AbstractContainerMenu container, int slotID, @NotNull ItemStack stack) {
+    public void slotChanged(AbstractContainerMenu container, int slotID, ItemStack stack) {
         if (slotID == 0) {
             itemNameField.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
             itemNameField.setEditable(!stack.isEmpty());
@@ -139,6 +138,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    public void dataChanged(@NotNull AbstractContainerMenu container, int slotID, int value) {
+    public void dataChanged(AbstractContainerMenu container, int slotID, int value) {
     }
 }

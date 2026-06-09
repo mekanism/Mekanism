@@ -4,7 +4,6 @@ import mekanism.common.block.states.IFluidLogType;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.NotNull;
 
 public enum ExtendedFluidLogType implements IFluidLogType, StringRepresentable {
     EMPTY("empty", Fluids.EMPTY),
@@ -23,7 +22,6 @@ public enum ExtendedFluidLogType implements IFluidLogType, StringRepresentable {
         return fluid;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return name;

@@ -19,7 +19,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.NonNull;
 
 /// Creates a large resource stack from a given [`resource`][Resource] and a `long amount`.
 ///
@@ -28,7 +27,7 @@ import org.jspecify.annotations.NonNull;
 ///
 /// @see net.neoforged.neoforge.transfer.resource.ResourceStack
 /// @since 10.8.0
-public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE resource, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
+public record LargeResourceStack<RESOURCE extends Resource>(RESOURCE resource, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
 
     /// Stack helper for interacting with large chemical resource stacks.
     public static final StackHelper<ChemicalResource> CHEMICAL_HELPER = StackHelper.create(ChemicalResource.EMPTY, ChemicalResource.CODEC, ChemicalResource.STREAM_CODEC);
@@ -92,7 +91,6 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
         return new LargeResourceStack<>(resource, Math.addExact(amount, amountToGrow));
     }
 
-    @NonNull
     @Override
     public String toString() {
         return amount + "x " + resource;
@@ -111,7 +109,7 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
     /// @see #CHEMICAL_HELPER Helper for chemical resources
     /// @see #FLUID_HELPER Helper for fluid resources
     /// @see #ITEM_HELPER Helper for item resources
-    public record StackHelper<RESOURCE extends @NonNull Resource>(
+    public record StackHelper<RESOURCE extends Resource>(
           LargeResourceStack<RESOURCE> empty,
           Codec<LargeResourceStack<RESOURCE>> codec,
           Codec<LargeResourceStack<RESOURCE>> optionalCodec,
@@ -164,7 +162,7 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
         /// @param <RESOURCE>          Resource type that this helper helps with.
         ///
         /// @return Resource stack helper.
-        public static <RESOURCE extends @NonNull Resource> StackHelper<RESOURCE> create(RESOURCE emptyResource, Codec<RESOURCE> resourceCodec,
+        public static <RESOURCE extends Resource> StackHelper<RESOURCE> create(RESOURCE emptyResource, Codec<RESOURCE> resourceCodec,
               StreamCodec<RegistryFriendlyByteBuf, RESOURCE> resourceStreamCodec) {
             LargeResourceStack<RESOURCE> emptyStack = new LargeResourceStack<>(emptyResource, 0);
             Codec<LargeResourceStack<RESOURCE>> codec = RecordCodecBuilder.create(instance -> instance.group(
@@ -183,9 +181,8 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
                   emptyStack
             );
             return new StackHelper<>(emptyStack, codec, optionalCodec, orEmptyCodec, new StreamCodec<>() {
-                @NonNull
                 @Override
-                public LargeResourceStack<RESOURCE> decode(@NonNull RegistryFriendlyByteBuf buf) {
+                public LargeResourceStack<RESOURCE> decode(RegistryFriendlyByteBuf buf) {
                     long amount = buf.readVarLong();
                     if (amount <= 0) {
                         return emptyStack;
@@ -200,7 +197,7 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
                 }
 
                 @Override
-                public void encode(@NonNull RegistryFriendlyByteBuf buf, @NonNull LargeResourceStack<RESOURCE> stack) {
+                public void encode(RegistryFriendlyByteBuf buf, LargeResourceStack<RESOURCE> stack) {
                     if (stack.isEmpty()) {
                         buf.writeVarLong(0);
                     } else {

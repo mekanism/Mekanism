@@ -6,18 +6,17 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.CommonComponents;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BasicColorButton extends MekanismButton {
 
-    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull IClickable onLeftClick) {
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, IClickable onLeftClick) {
         return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick);
     }
 
-    private final Supplier<EnumColor> colorSupplier;
+    private final Supplier<@Nullable EnumColor> colorSupplier;
 
-    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick) {
+    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<@Nullable EnumColor> color, IClickable onLeftClick, @Nullable IClickable onRightClick) {
         super(gui, x, y, size, size, CommonComponents.EMPTY, onLeftClick, onRightClick);
         this.colorSupplier = color;
     }
@@ -36,6 +35,7 @@ public class BasicColorButton extends MekanismButton {
         return super.getButtonBlitColor();
     }
 
+    @Nullable
     public EnumColor getColor() {
         return this.colorSupplier.get();
     }

@@ -22,14 +22,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResource, IChemicalTank, ChemicalNetwork, PressurizedTube> {
 
     public final TubeTier tier;
 
     public PressurizedTube(Holder<Block> blockProvider, TileEntityTransmitter tile) {
-        this.tier = Attribute.getTier(blockProvider, TubeTier.class);
+        this.tier = Attribute.getTierNN(blockProvider, TubeTier.class);
         super(tile, BasicChemicalTank::createAllValid, TransmissionType.CHEMICAL);
     }
 
@@ -49,7 +48,7 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     }
 
     @Override
-    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(TransmitterUpgradeData data) {
         return data instanceof ResourceTransmitterUpgradeData<?> upgradeData && upgradeData.buffer.stackHelper() == LargeResourceStack.CHEMICAL_HELPER;
     }
 

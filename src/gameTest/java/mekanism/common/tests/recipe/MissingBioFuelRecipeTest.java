@@ -23,7 +23,6 @@ import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
 import net.neoforged.testframework.gametest.GameTest;
 import net.neoforged.testframework.registration.RegistrationHelper;
-import org.jetbrains.annotations.NotNull;
 
 @ForEachTest(groups = "recipe.bio_fuel")
 public class MissingBioFuelRecipeTest {
@@ -40,7 +39,7 @@ public class MissingBioFuelRecipeTest {
         reg.addClientProvider(event -> new ItemTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), reg.modId()) {
             @Override
             @SuppressWarnings("unchecked")
-            protected void addTags(@NotNull HolderLookup.Provider provider) {
+            protected void addTags(HolderLookup.Provider provider) {
                 tag(VALID_OUTPUT).addTags(
                       MekanismTags.Items.FUELS_BIO,
                       MekanismTags.Items.FUELS_BLOCK_BIO

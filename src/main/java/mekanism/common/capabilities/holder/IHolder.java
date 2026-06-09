@@ -1,7 +1,7 @@
 package mekanism.common.capabilities.holder;
 
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IHolder {
 

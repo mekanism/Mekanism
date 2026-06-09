@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketSetItemFrequency(boolean set, TypedIdentity data, InteractionHand currentHand) implements IMekanismPacket {
 
@@ -37,7 +36,6 @@ public record PacketSetItemFrequency(boolean set, TypedIdentity data, Interactio
         this(set, new TypedIdentity(frequencyType, data), currentHand);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketSetItemFrequency> type() {
         return TYPE;

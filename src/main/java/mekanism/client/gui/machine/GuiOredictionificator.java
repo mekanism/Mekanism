@@ -22,7 +22,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
@@ -73,14 +73,14 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         trackWarning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, () -> filterManager.anyEnabledMatch(filter -> !filter.hasFilter()));
     }
 
-    protected void onClick(IFilter<?> filter, int index) {
+    protected void onClick(@Nullable IFilter<?> filter, int index) {
         if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
             addWindow(GuiOredictionificatorFilter.edit(this, tile, oredictionificatorFilter));
         }
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

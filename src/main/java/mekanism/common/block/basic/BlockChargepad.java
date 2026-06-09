@@ -13,7 +13,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockChargepad extends BlockTileModel<TileEntityChargepad, BlockTypeTile<TileEntityChargepad>> {
 
@@ -23,9 +22,8 @@ public class BlockChargepad extends BlockTileModel<TileEntityChargepad, BlockTyp
         super(MekanismBlockTypes.CHARGEPAD, defaultProperties(properties).mapColor(MapColor.COLOR_GRAY));
     }
 
-    @NotNull
     @Override
-    protected VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityCollisionContext) || !(entityCollisionContext.getEntity() instanceof Projectile)) {
             return BASE;
         }

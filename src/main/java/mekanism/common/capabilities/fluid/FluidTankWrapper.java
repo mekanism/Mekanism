@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.fluid;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.ResourceContainerWrapper;
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.Range;
 /**
  * Like {@link ChemicalTankWrapper}
  */
-@NothingNullByDefault
 public class FluidTankWrapper extends ResourceContainerWrapper<FluidResource, IFluidTank> implements IFluidTank {
 
     private final IChemicalTank chemicalTank;

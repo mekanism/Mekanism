@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.chemical;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.Range;
 /**
  * Special handling for the Chemical Tank block item.
  */
-@NothingNullByDefault
 public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank {
 
     private final boolean isCreative;

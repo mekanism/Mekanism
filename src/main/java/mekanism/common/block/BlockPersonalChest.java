@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -12,7 +11,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockPersonalChest extends BlockPersonalStorage<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>> implements IStateFluidLoggable {
 
@@ -21,7 +19,7 @@ public class BlockPersonalChest extends BlockPersonalStorage<TileEntityPersonalC
     }
 
     @Override
-    protected void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.tick(state, level, pos, random);
         TileEntityPersonalChest chest = WorldUtils.getTileEntity(TileEntityPersonalChest.class, level, pos);
         if (chest != null) {

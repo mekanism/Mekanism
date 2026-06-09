@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> extends BlockTileGlass<TILE, BlockTypeTile<TILE>> {
 
@@ -22,10 +21,9 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         super(type, properties);
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
-          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player,
+          InteractionHand hand, BlockHitResult hit) {
         TileEntityStructuralMultiblock tile = WorldUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile == null) {
             return InteractionResult.FAIL;
@@ -44,9 +42,8 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         return tile.onActivate(player, hand);
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         //We handle opening the gui via useItemOn
         return InteractionResult.PASS;
     }

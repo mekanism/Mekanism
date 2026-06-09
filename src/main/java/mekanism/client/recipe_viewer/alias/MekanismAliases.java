@@ -1,10 +1,8 @@
 package mekanism.client.recipe_viewer.alias;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import net.minecraft.util.Util;
 
-@NothingNullByDefault
 public enum MekanismAliases implements IAliasedTranslation {
     BIN_DRAWER("bin.drawer", "Drawer"),
     CHUNK_LOADER("chunk_loader", "Chunk Loader"),

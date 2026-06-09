@@ -9,21 +9,20 @@ import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindowCreatorTab<DATA_SOURCE, ELEMENT>> extends GuiInsetElement<DATA_SOURCE> {
+public abstract class GuiWindowCreatorTab<DATA_SOURCE extends @Nullable Object, ELEMENT extends GuiWindowCreatorTab<DATA_SOURCE, ELEMENT>> extends GuiInsetElement<DATA_SOURCE> {
 
-    @NotNull
     private final Supplier<ELEMENT> elementSupplier;
 
     public GuiWindowCreatorTab(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left,
-          @NotNull Supplier<ELEMENT> elementSupplier) {
+          Supplier<ELEMENT> elementSupplier) {
         super(overlay, gui, dataSource, x, y, height, innerSize, left);
         this.elementSupplier = elementSupplier;
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         openWindow(getNextWindowData());
     }
 
@@ -34,7 +33,6 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         gui().addWindow(window);
     }
 
-    @NotNull
     protected final Supplier<ELEMENT> getElementSupplier() {
         return elementSupplier;
     }
@@ -50,11 +48,11 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
     }
 
     protected Consumer<GuiWindow> getCloseListener() {
-        return window -> elementSupplier.get().active = true;
+        return _ -> elementSupplier.get().active = true;
     }
 
     protected Consumer<GuiWindow> getReAttachListener() {
-        return window -> elementSupplier.get().disableTab();
+        return _ -> elementSupplier.get().disableTab();
     }
 
     protected abstract GuiWindow createWindow(SelectedWindowData windowData);

@@ -33,8 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
@@ -52,7 +51,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT))
@@ -63,19 +62,16 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return null;
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return _ -> getMultiblock().getChemicalTanks(getMode());
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return _ -> getMode() == FissionPortMode.INPUT ? getMultiblock().getValveFluidTanks(getBlockPos()) : Collections.emptyList();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return _ -> getMultiblock().getHeatCapacitors();

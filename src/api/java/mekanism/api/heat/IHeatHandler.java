@@ -1,8 +1,5 @@
 package mekanism.api.heat;
 
-import mekanism.api.annotations.NothingNullByDefault;
-
-@NothingNullByDefault
 public interface IHeatHandler {
 
     /**

@@ -28,7 +28,6 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
@@ -52,13 +51,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     }
 
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
             type.readFrom(input, this);
         }
     }
 
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
             type.saveTo(output, this);
         }
@@ -85,19 +84,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     }
 
-    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
-    @NotNull
     @Override
     public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 
-    @NotNull
     @Override
     public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
@@ -109,9 +105,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         return energyContainer;
     }
 
-    @NotNull
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;
     }
 

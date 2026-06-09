@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>> {
 
@@ -23,8 +22,8 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    protected void addDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         //Note: We manually override this as we don't want to display the security mode for the security desk as while it technically
         // has one in reality it is always private
         IItemSecurityUtils.INSTANCE.addOwnerTooltip(itemAccess, tooltipAdder);

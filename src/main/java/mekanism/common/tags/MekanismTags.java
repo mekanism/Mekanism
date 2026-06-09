@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
@@ -46,11 +47,8 @@ public class MekanismTags {
                 for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
                     if (type.usedByPrimary(resource)) {
                         String name = type.getBaseTagPath() + "/" + resource.getRegistrySuffix();
-                        if (type.isVanilla() || type == ResourceType.DUST) {
-                            PROCESSED_RESOURCES.put(type, resource, commonTag(name));
-                        } else {
-                            PROCESSED_RESOURCES.put(type, resource, tag(name));
-                        }
+                        TagKey<Item> tagKey = type.isVanilla() || type == ResourceType.DUST ? commonTag(name) : tag(name);
+                        PROCESSED_RESOURCES.put(type, resource, tagKey);
                     }
                 }
                 if (!resource.isVanilla()) {
@@ -64,6 +62,10 @@ public class MekanismTags {
             for (OreType ore : EnumUtils.ORE_TYPES) {
                 ORES.put(ore, commonTag("ores/" + ore.getResource().getRegistrySuffix()));
             }
+        }
+
+        public static TagKey<Item> getProcessedResource(ResourceType resourceType, PrimaryResource resource) {
+            return Objects.requireNonNull(PROCESSED_RESOURCES.get(resourceType, resource));
         }
 
         public static final TagKey<Item> CONFIGURATORS = tag("configurators");

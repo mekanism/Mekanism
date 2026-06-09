@@ -6,14 +6,13 @@ import mekanism.api.heat.ISidedHeatHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper class to make reading instead of having as messy generics
  */
 public class HeatHandlerManager extends CapabilityHandlerManager<IContainerHolder<IHeatCapacitor>, IHeatCapacitor, IHeatHandler> {
 
-    public HeatHandlerManager(@NotNull IContainerHolder<IHeatCapacitor> holder, @NotNull ISidedHeatHandler baseHandler) {
+    public HeatHandlerManager(IContainerHolder<IHeatCapacitor> holder, ISidedHeatHandler baseHandler) {
         //TODO - 26.1: Evaluate if we want to change this to be more like the other things where the handler isn't implemented by the tile itself
         super(holder, Capabilities.HEAT, IContainerHolder::getContainers, (side, h) -> new ProxyHeatHandler(baseHandler, side, h));
     }

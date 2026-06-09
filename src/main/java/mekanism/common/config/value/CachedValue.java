@@ -7,11 +7,13 @@ import java.util.function.BiPredicate;
 import mekanism.common.Mekanism;
 import mekanism.common.config.IMekanismConfig;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
+import org.jspecify.annotations.Nullable;
 
 public abstract class CachedValue<T> {
 
     private final IMekanismConfig config;
     protected final ConfigValue<T> internal;
+    @Nullable
     private Set<IConfigValueInvalidationListener> invalidationListeners;
 
     protected CachedValue(IMekanismConfig config, ConfigValue<T> internal) {
@@ -20,7 +22,7 @@ public abstract class CachedValue<T> {
         this.config.addCachedValue(this);
     }
 
-    public boolean hasInvalidationListeners() {
+    public final boolean hasInvalidationListeners() {
         return invalidationListeners != null && !invalidationListeners.isEmpty();
     }
 
@@ -56,7 +58,7 @@ public abstract class CachedValue<T> {
     protected abstract boolean clearCachedValue(boolean checkChanged);
 
     public final void clearCache(boolean unloading) {
-        if (hasInvalidationListeners()) {
+        if (invalidationListeners != null && !invalidationListeners.isEmpty()) {
             //Only clear cached values that have invalidation listeners if the config is loaded, as if it isn't loaded then
             // we will fail to clear the cache when we check for if the values have changed. Having a few config values using
             // slightly extra memory, and invalid values shouldn't matter as the config should only be used if it is loaded

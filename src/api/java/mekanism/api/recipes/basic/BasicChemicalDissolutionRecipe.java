@@ -3,7 +3,6 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -13,8 +12,8 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
 
     protected final ItemStackIngredient itemInput;
@@ -75,7 +74,7 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

@@ -15,12 +15,10 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Repairable;
-import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class ToolsJEI implements IModPlugin {
 
-    @NotNull
     @Override
     public Identifier getPluginUid() {
         //Note: Can't use MekanismTools.rl, as JEI needs this in the constructor and the class may not be loaded yet.
@@ -29,12 +27,12 @@ public class ToolsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerIngredientAliases(@NotNull IIngredientAliasRegistration registration) {
+    public void registerIngredientAliases(IIngredientAliasRegistration registration) {
         new ToolsAliasMapping().addAliases(new JEIAliasHelper(registration));
     }
 
     @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registry) {
+    public void registerRecipes(IRecipeRegistration registry) {
         if (MekanismJEI.shouldLoad()) {
             //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
             //TODO - 26.1: check that we need to still do this - JEI doesn't seem to have a reference to Repairable (yet?)

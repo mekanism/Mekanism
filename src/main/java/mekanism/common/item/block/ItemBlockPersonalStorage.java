@@ -32,7 +32,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
 
@@ -43,9 +42,8 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         this.openStat = openStat;
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, itemAccess, transaction) -> {
             if (PersonalStorageManager.getInventoryFor(itemAccess, transaction) == null) {
                 //TODO - 26.1 make translated
@@ -56,9 +54,8 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         });
     }
 
-    @NotNull
     @Override
-    public InteractionResult useOn(@NotNull UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         //TODO - 26.1: Theoretically a datapack could make it food by adding a component, so we may want to check if it is?
         //Like super.onItemUse, except we validate the player is not null, and pass the onItemRightClick regardless of if
         // we are consumable or not (as we know the personal chest is never food). This allows us to open the personal chest's
@@ -69,7 +66,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     }
 
     @Override
-    protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
+    protected boolean canPlace(BlockPlaceContext context, BlockState state) {
         Player player = context.getPlayer();
         //Only allow placing if there is no player, it is a fake player, or the player is sneaking
         return (player == null || player.isFakePlayer() || player.isShiftKeyDown()) && super.canPlace(context, state);
@@ -81,7 +78,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     }
 
     @Override
-    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+    public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();

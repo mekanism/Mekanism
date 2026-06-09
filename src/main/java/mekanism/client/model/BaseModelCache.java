@@ -128,7 +128,7 @@ public class BaseModelCache {
     public static class BlockStateModelPartHelper extends MekanismModelData {
 
         //this is a list due to SubmitNodeCollector wanting a list
-        private List<BlockStateModelPart> bakedModel;
+        private List<BlockStateModelPart> bakedModel = Collections.emptyList();
         private final StandaloneModelKey<BlockStateModelPart> key;
 
         private BlockStateModelPartHelper(Identifier rl) {

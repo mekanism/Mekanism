@@ -15,7 +15,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackToItemStackRecipe> {
 
@@ -33,7 +32,7 @@ public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<Ite
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder, IFocusGroup focusGroup) {
         ItemStackToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         initItem(builder, output, recipe.getOutputDefinition());

@@ -5,7 +5,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorType;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
 
@@ -14,7 +13,7 @@ public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
     }
 
     @Override
-    public boolean makesPiglinsNeutral(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
+    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
         return true;
     }
 }

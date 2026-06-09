@@ -2,14 +2,12 @@ package mekanism.common.lib.radial.data;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.IRadialDataHelper.BooleanRadialModes;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BooleanRadialData extends RadialData<IRadialMode> {
 
     private final List<IRadialMode> modes;

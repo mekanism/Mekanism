@@ -3,7 +3,6 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.MekanismRecipeSerializers;
@@ -14,9 +13,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BasicRotaryRecipe extends RotaryRecipe {
 
     protected final ChemicalStackIngredient chemicalInput;
@@ -93,7 +91,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     /**
      * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      */
-    protected void assertHasChemicalToFluid() {
+    private void assertHasChemicalToFluid() {
         if (!hasChemicalToFluid()) {
             throw new IllegalStateException("This recipe has no chemical to fluid conversion.");
         }
@@ -102,7 +100,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     /**
      * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
-    protected void assertHasFluidToChemical() {
+    private void assertHasFluidToChemical() {
         if (!hasFluidToChemical()) {
             throw new IllegalStateException("This recipe has no fluid to chemical conversion.");
         }
@@ -202,7 +200,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

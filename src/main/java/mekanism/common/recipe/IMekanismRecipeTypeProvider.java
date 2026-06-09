@@ -10,8 +10,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> {
 
@@ -31,17 +30,14 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
     }
 
     /** Use only when you have no way of getting a Level or RecipeManager */
-    @NotNull
     default List<RecipeHolder<RECIPE>> getRecipes() {
         return getRecipeType().getRecipes((Level) null);
     }
 
-    @NotNull
     default List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         return getRecipeType().getRecipes(world);
     }
 
-    @NotNull
     default List<RecipeHolder<RECIPE>> getRecipes(RecipeMap recipeMap) {
         return getRecipeType().getRecipes(recipeMap);
     }

@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
@@ -59,14 +58,14 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
         renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - dropdown.getRelativeX() - 5);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && event.hasShiftDown() && !target.hasTarget()) {
             Slot slot = getHoveredSlot();
             if (slot != null) {

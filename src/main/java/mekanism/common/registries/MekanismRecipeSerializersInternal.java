@@ -1,7 +1,6 @@
 package mekanism.common.registries;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;

@@ -5,13 +5,11 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.Identifier;
 
-@NothingNullByDefault
 public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<ChemicalEmiStack> {
 
     @Override

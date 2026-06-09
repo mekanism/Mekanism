@@ -5,7 +5,6 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.resources.ResourceKey;
-import org.jetbrains.annotations.NotNull;
 
 public class ModuleRegistryObject<MODULE extends ICustomModule<MODULE>> extends MekanismDeferredHolder<ModuleData<?>, ModuleData<MODULE>> implements IHasTranslationKey {
 
@@ -13,7 +12,6 @@ public class ModuleRegistryObject<MODULE extends ICustomModule<MODULE>> extends 
         super(key);
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return get().getTranslationKey();

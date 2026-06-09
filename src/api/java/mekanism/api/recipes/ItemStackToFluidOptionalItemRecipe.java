@@ -5,12 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base class for defining ItemStack to fluid recipes with an optional item output.
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * @since 10.6.3
  */
-@NothingNullByDefault
 public abstract class ItemStackToFluidOptionalItemRecipe extends ItemInputRecipe<FluidOptionalItemOutput> {
 
     /**

@@ -1,13 +1,11 @@
 package mekanism.common.integration.projecte.mappers;
 
 import com.mojang.datafixers.util.Function3;
-import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import java.util.ArrayList;
@@ -22,6 +20,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -52,7 +51,7 @@ import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>> implements IRecipeTypeMapper {
 
@@ -139,10 +138,15 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
     }
 
     protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDERTYPE, STACK> inputs,
-          Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
-          @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
+          Function<STACK, OUTPUT> recipe, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
-        Map<OUTPUT, List<STACK>> reverseLookup = hashStrategy == null ? new HashMap<>() : new Object2ObjectOpenCustomHashMap<>(hashStrategy);
+        return addConversions(mapper, inputs, recipe, ConstantPredicates.alwaysFalse(), toIngredient, conversionAdder);
+    }
+
+    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDERTYPE, STACK> inputs,
+          Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
+          TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
+        Map<OUTPUT, List<STACK>> reverseLookup = new HashMap<>();
         for (STACK representation : inputs.getRepresentations(ContextMap.EMPTY)) {
             OUTPUT output = recipe.apply(representation);
             if (!emptyChecker.test(output)) {
@@ -156,20 +160,19 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return handled;
     }
 
-    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
-          InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
-          Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(
+          IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA, InputIngredient<HOLDER_B, INPUT_B> inputB,
+          BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
-          @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, ContextMap contextMap) {
-        return addConversions(mapper, inputA, inputB, recipe, emptyChecker, toIngredientA, toIngredientB, hashStrategy, conversionAdder, 1, contextMap);
+        return addConversions(mapper, inputA, inputB, recipe, toIngredientA, toIngredientB, conversionAdder, 1, contextMap);
     }
 
-    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
-          InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(
+          IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
+          InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe,
           Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
-          @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, int secondaryInputScale, ContextMap contextMap) {
         record InputDetails<INPUT_A, INPUT_B>(SequencedCollection<INPUT_A> aInputs, SequencedCollection<INPUT_B> bInputs) {
 
@@ -177,17 +180,15 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
                 this(new ReferenceLinkedOpenHashSet<>(), new ReferenceLinkedOpenHashSet<>());
             }
         }
-        Map<OUTPUT, InputDetails<INPUT_A, INPUT_B>> reverseLookup = hashStrategy == null ? new HashMap<>() : new Object2ObjectOpenCustomHashMap<>(hashStrategy);
+        Map<OUTPUT, InputDetails<INPUT_A, INPUT_B>> reverseLookup = new HashMap<>();
         List<INPUT_A> aRepresentations = inputA.getRepresentations(contextMap);
         List<INPUT_B> bRepresentations = inputB.getRepresentations(contextMap);
         for (INPUT_A aRepresentation : aRepresentations) {
             for (INPUT_B bRepresentation : bRepresentations) {
                 OUTPUT output = recipe.apply(aRepresentation, bRepresentation);
-                if (!emptyChecker.test(output)) {
-                    InputDetails<INPUT_A, INPUT_B> details = reverseLookup.computeIfAbsent(output, k -> new InputDetails<>());
-                    details.aInputs.add(aRepresentation);
-                    details.bInputs.add(bRepresentation);
-                }
+                InputDetails<INPUT_A, INPUT_B> details = reverseLookup.computeIfAbsent(output, _ -> new InputDetails<>());
+                details.aInputs.add(aRepresentation);
+                details.bInputs.add(bRepresentation);
             }
         }
         boolean handled = false;
@@ -202,11 +203,12 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return handled;
     }
 
-    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
-          InputIngredient<HOLDER_B, INPUT_B> inputB, InputIngredient<HOLDER_C, INPUT_C> inputC, Function3<INPUT_A, INPUT_B, INPUT_C, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, OUTPUT> boolean addConversions(
+          IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
+          InputIngredient<HOLDER_B, INPUT_B> inputB, InputIngredient<HOLDER_C, INPUT_C> inputC, Function3<INPUT_A, INPUT_B, INPUT_C, OUTPUT> recipe,
           Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
-          Function<SequencedCollection<INPUT_C>, Object2IntMap<NormalizedSimpleStack>> toIngredientC, @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
+          Function<SequencedCollection<INPUT_C>, Object2IntMap<NormalizedSimpleStack>> toIngredientC,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder, ContextMap contextMap) {
         record InputDetails<INPUT_A, INPUT_B, INPUT_C>(SequencedCollection<INPUT_A> aInputs, SequencedCollection<INPUT_B> bInputs, SequencedCollection<INPUT_C> cInputs) {
 
@@ -214,7 +216,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
                 this(new ReferenceLinkedOpenHashSet<>(), new ReferenceLinkedOpenHashSet<>(), new ReferenceLinkedOpenHashSet<>());
             }
         }
-        Map<OUTPUT, InputDetails<INPUT_A, INPUT_B, INPUT_C>> reverseLookup = hashStrategy == null ? new HashMap<>() : new Object2ObjectOpenCustomHashMap<>(hashStrategy);
+        Map<OUTPUT, InputDetails<INPUT_A, INPUT_B, INPUT_C>> reverseLookup = new HashMap<>();
         List<INPUT_A> aRepresentations = inputA.getRepresentations(contextMap);
         List<INPUT_B> bRepresentations = inputB.getRepresentations(contextMap);
         List<INPUT_C> cRepresentations = inputC.getRepresentations(contextMap);
@@ -222,12 +224,10 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
             for (INPUT_B bRepresentation : bRepresentations) {
                 for (INPUT_C cRepresentation : cRepresentations) {
                     OUTPUT output = recipe.apply(aRepresentation, bRepresentation, cRepresentation);
-                    if (!emptyChecker.test(output)) {
-                        InputDetails<INPUT_A, INPUT_B, INPUT_C> details = reverseLookup.computeIfAbsent(output, k -> new InputDetails<>());
-                        details.aInputs.add(aRepresentation);
-                        details.bInputs.add(bRepresentation);
-                        details.cInputs.add(cRepresentation);
-                    }
+                    InputDetails<INPUT_A, INPUT_B, INPUT_C> details = reverseLookup.computeIfAbsent(output, _ -> new InputDetails<>());
+                    details.aInputs.add(aRepresentation);
+                    details.bInputs.add(bRepresentation);
+                    details.cInputs.add(cRepresentation);
                 }
             }
         }
@@ -296,7 +296,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
                     case ItemStackIngredient itemIngredient -> forIngredient(itemIngredient, contextMap);
                     case FluidStackIngredient fluidIngredient -> forIngredient(fluidIngredient, contextMap);
                     case ChemicalStackIngredient chemicalIngredient -> forIngredient(chemicalIngredient, contextMap);
-                    case null, default -> Object2IntMaps.emptyMap();
+                    default -> Object2IntMaps.emptyMap();
                 };
                 if (representations.isEmpty()) {
                     return Object2IntMaps.emptyMap();

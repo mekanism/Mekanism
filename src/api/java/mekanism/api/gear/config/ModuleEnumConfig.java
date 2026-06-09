@@ -7,13 +7,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable class representing an enum based module config (name and enum value).
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> extends ModuleConfig<TYPE> {
 
     /**
@@ -217,7 +215,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (!super.equals(o)) {

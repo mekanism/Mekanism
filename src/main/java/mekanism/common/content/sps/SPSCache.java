@@ -5,7 +5,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
 
@@ -47,7 +46,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         super.load(input);
         progress = input.getDoubleOr(SerializationConstants.PROGRESS, progress);
         inputProcessed = input.getIntOr(SerializationConstants.PROCESSED, inputProcessed);
@@ -57,7 +56,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         super.save(output);
         output.putDouble(SerializationConstants.PROGRESS, progress);
         output.putInt(SerializationConstants.PROCESSED, inputProcessed);

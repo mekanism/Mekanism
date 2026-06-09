@@ -48,6 +48,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -55,8 +56,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements ConstantUsageRecipeLookupHandler,
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
@@ -79,9 +79,9 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
     private int usedSoFar;
 
-    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> pigmentInputHandler;
+    private final IOutputHandler<ItemStackTemplate> outputHandler;
+    private final IInputHandler<Item, ItemStack> itemInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem", docPlaceholder = "pigment slot")
@@ -107,7 +107,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -122,7 +121,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -137,15 +135,14 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         pigmentInputSlot.fillTankOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
@@ -162,9 +159,8 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         return findFirstRecipe(itemInputHandler, pigmentInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
@@ -193,13 +189,13 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }

@@ -11,6 +11,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 public class BoltEffect {
 
@@ -169,7 +170,7 @@ public class BoltEffect {
         return vec.cross(newVec).normalize();
     }
 
-    private BoltQuadData createQuads(QuadCache cache, Vec3 startPos, Vec3 end, float size) {
+    private BoltQuadData createQuads(@Nullable QuadCache cache, Vec3 startPos, Vec3 end, float size) {
         Vec3 diff = end.subtract(startPos);
         Vec3 rightAdd = diff.cross(new Vec3(0.5, 0.5, 0.5)).normalize().scale(size);
         Vec3 backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
@@ -195,7 +196,7 @@ public class BoltEffect {
     private record BoltQuadData(BoltQuads quads, QuadCache cache) {
     }
 
-    private record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
+    private record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, @Nullable QuadCache cache, boolean isBranch) {
     }
 
     public static class BoltQuads {

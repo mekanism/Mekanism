@@ -53,12 +53,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe> implements
       FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe> {
@@ -87,9 +87,9 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     private int clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> slurryInputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> slurryInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput", docPlaceholder = "fluid item input slot")
@@ -117,7 +117,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -127,7 +126,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
@@ -141,7 +139,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -156,8 +153,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         fluidSlot.fillTankFromSlot(fluidOutputSlot, null);
         slurryOutputSlot.drainTankIntoSlot(null);
@@ -170,7 +167,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return clientEnergyUsed;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, FluidChemical<FluidChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.WASHING;
@@ -187,9 +183,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return getRecipeType().getInputCache().findFirstRecipe(level, fluidInputHandler.getInput(), slurryInputHandler.getInput(), false);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<FluidChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull FluidChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidChemicalToChemicalRecipe> createNewCachedRecipe(FluidChemicalToChemicalRecipe recipe, int cacheIndex) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

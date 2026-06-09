@@ -9,28 +9,25 @@ import mekanism.common.network.to_client.container.property.ByteArrayPropertyDat
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling Collections
  */
 public abstract class SyncableCollection<TYPE, COLLECTION extends Collection<TYPE>> implements ISyncableData {
 
-    private final Supplier<? extends @NotNull Collection<TYPE>> getter;
-    private final Consumer<@NotNull COLLECTION> setter;
+    private final Supplier<? extends Collection<TYPE>> getter;
+    private final Consumer<COLLECTION> setter;
     private int lastKnownHashCode;
 
-    protected SyncableCollection(Supplier<? extends @NotNull Collection<TYPE>> getter, Consumer<@NotNull COLLECTION> setter) {
+    protected SyncableCollection(Supplier<? extends Collection<TYPE>> getter, Consumer<COLLECTION> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @NotNull
     public Collection<TYPE> get() {
         return getRaw();
     }
 
-    @NotNull
     protected Collection<TYPE> getRaw() {
         return getter.get();
     }

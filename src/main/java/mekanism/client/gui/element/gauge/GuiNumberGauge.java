@@ -6,8 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
-public class GuiNumberGauge extends GuiGauge<Void> {
+public class GuiNumberGauge extends GuiGauge<@Nullable Void> {
 
     private final INumberInfoHandler infoHandler;
 
@@ -16,6 +17,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
         infoHandler = handler;
     }
 
+    @Nullable
     @Override
     public TransmissionType getTransmission() {
         return null;
@@ -31,6 +33,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
         return infoHandler.getIcon();
     }
 
+    @Nullable
     @Override
     public Component getLabel() {
         return null;

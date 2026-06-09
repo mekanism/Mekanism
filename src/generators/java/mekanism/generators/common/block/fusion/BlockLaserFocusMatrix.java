@@ -18,7 +18,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
 
@@ -29,12 +28,12 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
     }
     
     @Override
-    public boolean shouldDisplayFluidOverlay(@NotNull BlockState state, @NotNull BlockAndLightGetter world, @NotNull BlockPos pos, @NotNull FluidState fluidState) {
+    public boolean shouldDisplayFluidOverlay(BlockState state, BlockAndLightGetter world, BlockPos pos, FluidState fluidState) {
         return true;
     }
 
     @Override
-    protected boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+    protected boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
         Block blockOffset = adjacentBlockState.getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return true;
@@ -43,18 +42,17 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
     }
 
     @Override
-    protected float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
+    protected float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@NotNull BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
-    @NotNull
     @Override
-    protected VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos, @NotNull CollisionContext ctx) {
+    protected VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext ctx) {
         return Shapes.empty();
     }
 }

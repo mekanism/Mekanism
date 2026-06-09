@@ -7,7 +7,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
 
@@ -18,7 +17,6 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
         this.modid = modid;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + modid;

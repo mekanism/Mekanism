@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class CollectionTransitRequest extends TransitRequest {
 
@@ -15,7 +14,6 @@ public abstract class CollectionTransitRequest extends TransitRequest {
         return getItemData().isEmpty();
     }
 
-    @NotNull
     @Override
     public Iterator<ItemData> iterator() {
         return (Iterator<ItemData>) getItemData().iterator();

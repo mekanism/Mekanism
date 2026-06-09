@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColoredBlock {
 
@@ -42,10 +41,9 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
         return color;
     }
 
-    @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
-          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
+          Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(level, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -53,8 +51,12 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     }
 
     @Override
-    protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
+    protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         Direction side = Attribute.getFacing(state);
+        if (side == null) {
+            //Something went wrong, and we were passed an invalid state, return that we can't survive
+            return false;
+        }
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
         VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);

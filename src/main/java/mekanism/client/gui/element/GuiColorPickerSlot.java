@@ -13,8 +13,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiColorPickerSlot extends GuiElement {
 
@@ -53,7 +52,7 @@ public class GuiColorPickerSlot extends GuiElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         gui().addWindow(new GuiColorWindow(gui(), (getGuiWidth() - 160) / 2, (getGuiHeight() - 120) / 2, handlesAlpha, supplier.get(), consumer));
     }
 }

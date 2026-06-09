@@ -11,7 +11,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper> {
 
@@ -38,7 +37,7 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         config.set(!config.get());
         MekanismConfig.client.save();
     }

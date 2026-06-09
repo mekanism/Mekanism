@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.type;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -12,9 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
       Identifier id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<ItemLike> workstations
 ) implements IRecipeViewerRecipeType<RECIPE> {

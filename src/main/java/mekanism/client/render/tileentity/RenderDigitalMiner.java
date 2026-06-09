@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -20,9 +19,8 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner, DigitalMinerRenderState> {
 
     private static final int UP_DOWN_COLOR = ARGB.white(0.82F);
@@ -39,7 +37,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     }
 
     @Override
-    public void extractRenderState(TileEntityDigitalMiner miner, DigitalMinerRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityDigitalMiner miner, DigitalMinerRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(miner, state, partialTick, cameraPosition, breakProgress);
         state.minY = miner.getMinY();
         state.maxY = miner.getMaxY();

@@ -21,9 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class Structure {
 
@@ -39,7 +41,9 @@ public class Structure {
     private long updateTimestamp;
     private boolean didUpdate;
 
+    @Nullable
     private MultiblockData multiblockData;
+    @Nullable
     private IMultiblock<?> controller;
     @Nullable
     private MultiblockType<?> multiblockType;
@@ -66,6 +70,7 @@ public class Structure {
         }
     }
 
+    @Nullable
     public MultiblockData getMultiblockData() {
         return multiblockData;
     }
@@ -81,6 +86,7 @@ public class Structure {
         }
     }
 
+    @Nullable
     public IMultiblock<?> getController() {
         return controller;
     }
@@ -107,7 +113,7 @@ public class Structure {
         return planeMap.computeIfAbsent(axis, k -> new Int2ObjectRBTreeMap<>());
     }
 
-    public void markForUpdate(Level world, boolean invalidate) {
+    public void markForUpdate(LevelAccessor world, boolean invalidate) {
         updateTimestamp = world.getGameTime();
         didUpdate = false;
         if (invalidate) {
@@ -117,29 +123,29 @@ public class Structure {
         }
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> void doImmediateUpdate(TILE tile, boolean tryValidate) {
+    public <TILE extends BlockEntity & IMultiblockBase> void doImmediateUpdate(Level level, TILE tile, boolean tryValidate) {
         //Pretend it got marked for update last tick so that when we call tick it will update
-        updateTimestamp = tile.getLevel().getGameTime() - 1;
+        updateTimestamp = level.getGameTime() - 1;
         didUpdate = false;
-        invalidate(tile.getLevel());
-        tick(tile, tryValidate);
+        invalidate(level);
+        tick(level, tile, tryValidate);
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
-        if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
+    public <TILE extends BlockEntity & IMultiblockBase> void tick(Level level, TILE tile, boolean tryValidate) {
+        if (!didUpdate && updateTimestamp == level.getGameTime() - 1) {
             didUpdate = true;
-            runUpdate(tile);
+            runUpdate(level);
         }
         if (tryValidate && !isValid()) {
             validate(tile, new Long2ObjectOpenHashMap<>());
         }
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
+    public FormationResult runUpdate(LevelReader level) {
         if (getController() != null && multiblockData == null) {
             return getController().createFormationProtocol().doUpdate();
         }
-        removeMultiblock(tile.getLevel());
+        removeMultiblock(level);
         return FormationResult.FAIL;
     }
 
@@ -225,12 +231,12 @@ public class Structure {
         return valid;
     }
 
-    public void invalidate(Level world) {
+    public void invalidate(LevelReader world) {
         removeMultiblock(world);
         valid = false;
     }
 
-    public void removeMultiblock(Level world) {
+    public void removeMultiblock(LevelReader world) {
         if (multiblockData != null) {
             multiblockData.remove(world, this);
             multiblockData = null;
@@ -346,10 +352,12 @@ public class Structure {
         return false;
     }
 
+    @Nullable
     private static MultiblockManager<?> getManager(IMultiblockBase node) {
         return node instanceof IMultiblock<?> multiblock ? multiblock.getManager() : null;
     }
 
+    @Nullable
     private static MultiblockType<?> getMultiblockType(IMultiblockBase node) {
         return node instanceof IMultiblock<?> multiblock ? multiblock.getMultiblockType() : null;
     }

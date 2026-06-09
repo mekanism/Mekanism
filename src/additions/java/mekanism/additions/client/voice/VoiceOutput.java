@@ -5,11 +5,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceOutput extends Thread {
 
     private final VoiceClient voiceClient;
     private final DataLine.Info speaker;
+    @Nullable
     private SourceDataLine sourceLine;
 
     public VoiceOutput(VoiceClient client) {
@@ -65,7 +67,9 @@ public class VoiceOutput extends Thread {
     }
 
     public void close() {
-        sourceLine.flush();
-        sourceLine.close();
+        if (sourceLine != null) {
+            sourceLine.flush();
+            sourceLine.close();
+        }
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.component.containers;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -8,7 +7,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class SimpleComponentBackedContainer<ATTACHED> {
 
     protected final ItemAccess attachedAccess;

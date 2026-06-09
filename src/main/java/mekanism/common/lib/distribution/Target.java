@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Keeps track of a target for emitting from various networks.
 ///
 /// @param <HANDLER>  The Handler this target keeps track of.
 /// @param <RESOURCE> The resource being sent. Any amount field in this should be ignored.
-public abstract class Target<HANDLER, RESOURCE> {
+public abstract class Target<HANDLER, RESOURCE extends @Nullable Object> {
 
     /// Collection of handlers
     protected final Collection<HANDLER> handlers;

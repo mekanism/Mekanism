@@ -14,9 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record AttributeStateFacing(EnumProperty<Direction> facingProperty, FacePlacementType placementType, boolean canRotate) implements AttributeState {
 
@@ -44,7 +42,7 @@ public record AttributeStateFacing(EnumProperty<Direction> facingProperty, FaceP
         return state.getValue(facingProperty());
     }
 
-    public BlockState setDirection(@NotNull BlockState state, Direction newDirection) {
+    public BlockState setDirection(BlockState state, Direction newDirection) {
         return supportsDirection(newDirection) ? state.setValue(facingProperty(), newDirection) : state;
     }
 
@@ -72,13 +70,8 @@ public record AttributeStateFacing(EnumProperty<Direction> facingProperty, FaceP
     }
 
     @Override
-    @Contract("null, _, _, _, _ -> null")
-    public BlockState getStateForPlacement(@Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player,
-          @NotNull Direction face) {
-        if (state == null) {
-            return null;
-        }
-        AttributeStateFacing blockFacing = Attribute.get(state, AttributeStateFacing.class);
+    public BlockState getStateForPlacement(BlockState state, LevelAccessor world, BlockPos pos, @Nullable Player player, Direction face) {
+        AttributeStateFacing blockFacing = Attribute.getOrThrow(state, AttributeStateFacing.class);
         Direction newDirection = Direction.SOUTH;
         if (blockFacing.placementType() == FacePlacementType.PLAYER_LOCATION) {
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
@@ -108,8 +101,7 @@ public record AttributeStateFacing(EnumProperty<Direction> facingProperty, FaceP
             newDirection = blockFacing.supportsDirection(face) ? face : Direction.NORTH;
         }
 
-        state = blockFacing.setDirection(state, newDirection);
-        return state;
+        return blockFacing.setDirection(state, newDirection);
     }
 
     public static BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {

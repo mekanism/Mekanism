@@ -3,7 +3,6 @@ package mekanism.api.robit;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.util.Util;
@@ -12,13 +11,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Represents a skin for a robit. Register these during datagen using [DatapackBuiltinEntriesProvider].
 ///
 /// See also the <a href="https://github.com/mekanism/Mekanism/wiki/Robit-Skins">Mekanism GitHub wiki</a> for the syntax of creating these manually.
-@NothingNullByDefault
 public interface RobitSkin {
 
     /// @return the codec which serializes and deserializes this [RobitSkin].
@@ -69,7 +66,7 @@ public interface RobitSkin {
     /// @return `true` if the player has access.
     ///
     /// @apiNote Only called on the server
-    default boolean isUnlocked(@NotNull Player player) {
+    default boolean isUnlocked(Player player) {
         //TODO: Have some skins that are potentially locked as patreon rewards?
         return true;
     }

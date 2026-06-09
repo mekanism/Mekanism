@@ -16,12 +16,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -127,10 +128,10 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void onAdded() {
-        super.onAdded();
+    public void onAdded(Level level) {
+        super.onAdded(level);
         //Ensure placing a structural multiblock tries to form the connected multiblock
-        invalidStructure.tick(this, true);
+        invalidStructure.tick(level, this, true);
     }
 
     @Override
@@ -160,9 +161,9 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void onNeighborChange(BlockPos neighborPos) {
-        super.onNeighborChange(neighborPos);
-        if (!isRemote()) {
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+        super.onNeighborChange(level, neighborPos);
+        if (!level.isClientSide()) {
             //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
@@ -174,7 +175,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                             // then we mark the structure as needing to be re-validated
                             //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
                             // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
-                            s.markForUpdate(level, true);
+                            s.markForUpdate(this.level, true);
                         }
                     }
                 }
@@ -184,14 +185,15 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public InteractionResult onRightClick(Player player) {
-        if (isRemote()) {
+        Level level = getWorldNN();
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         for (Structure structure : structures.values()) {
             if (structure.getController() != null) {
                 MultiblockData multiblock = getMultiblockData(structure);
                 if (multiblock == null || !multiblock.isFormed()) {
-                    FormationResult result = structure.runUpdate(this);
+                    FormationResult result = structure.runUpdate(level);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendSystemMessage(result.getResultText());
                         return InteractionResult.SUCCESS_SERVER;
@@ -208,14 +210,14 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.FORMED, hasFormedMultiblock);
         output.putBoolean(SerializationConstants.GUI, canAccessGui);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         hasFormedMultiblock = input.getBooleanOr(SerializationConstants.FORMED, hasFormedMultiblock);
         canAccessGui = input.getBooleanOr(SerializationConstants.GUI, canAccessGui);
@@ -224,7 +226,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (!isRemote()) {
+        Level level = getWorldNN();
+        if (!level.isClientSide()) {
             removing = true;
             for (Structure s : structures.values()) {
                 s.invalidate(level);

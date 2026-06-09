@@ -16,8 +16,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -164,7 +163,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
         return code;
     }
 
-    @NotNull
     @Override
     public EnumColor byIndex(int index) {
         return BY_ID.apply(index);
@@ -193,7 +191,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
         return rgbCode;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return registryPrefix;

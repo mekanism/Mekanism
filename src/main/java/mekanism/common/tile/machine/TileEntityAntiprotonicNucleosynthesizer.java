@@ -52,6 +52,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -59,8 +60,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements ConstantUsageRecipeLookupHandler,
       ItemChemicalRecipeLookupHandler<NucleosynthesizingRecipe> {
@@ -82,9 +82,9 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
     private int usedSoFar;
 
-    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    protected final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
+    protected final IOutputHandler<ItemStackTemplate> outputHandler;
+    protected final IInputHandler<Item, ItemStack> itemInputHandler;
+    protected final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")
@@ -117,7 +117,6 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return new NucleosynthesizerRecipeCacheLookupMonitor(this);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -131,7 +130,6 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -162,8 +160,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
@@ -176,9 +174,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(@NotNull NucleosynthesizingRecipe recipe, int cacheIndex) {
+    public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(NucleosynthesizingRecipe recipe, int cacheIndex) {
         CachedRecipe<NucleosynthesizingRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
@@ -207,18 +204,17 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;

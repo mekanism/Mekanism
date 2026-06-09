@@ -10,7 +10,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<Block, BLOCK, Item, ITEM> implements ItemLike,
       IHasTextComponent, IHasTranslationKey {
@@ -19,12 +18,10 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
         super(blockRegistryObject, itemRegistryObject);
     }
 
-    @NotNull
     public BlockState defaultState() {
         return value().defaultBlockState();
     }
 
-    @NotNull
     @Override
     public ITEM asItem() {
         return getSecondary();
@@ -38,18 +35,15 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
         throw new IllegalStateException("Called method requires an ItemRegistryObject");
     }
 
-    @NotNull
     public DeferredHolder<Item, ITEM> getItemHolder() {
         return secondaryRO;
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return value().getDescriptionId();
     }
 
-    @NotNull
     @Override
     public Component getTextComponent() {
         return value().getName();

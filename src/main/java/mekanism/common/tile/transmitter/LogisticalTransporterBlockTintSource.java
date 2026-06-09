@@ -6,9 +6,7 @@ import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class LogisticalTransporterBlockTintSource implements BlockTintSource {
 
     public static final BlockTintSource INSTANCE = new LogisticalTransporterBlockTintSource();

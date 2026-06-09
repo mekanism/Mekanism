@@ -4,13 +4,11 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-@NothingNullByDefault
 public record AttachedHeat(List<HeatCapacitorData> containers) implements IAttachedContainers<HeatCapacitorData, AttachedHeat> {
 
     public static final AttachedHeat EMPTY = new AttachedHeat(Collections.emptyList());

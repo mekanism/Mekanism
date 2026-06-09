@@ -27,13 +27,15 @@ public class EnergyConfigHolder extends ConfigHolder<@Nullable IEnergyContainer>
         return getData(side);
     }
 
+    @Nullable
     @Override
-    protected @Nullable IEnergyContainer defaultValue() {
+    protected IEnergyContainer defaultValue() {
         return null;
     }
 
+    @Nullable
     @Override
-    protected @Nullable IEnergyContainer allData() {
+    protected IEnergyContainer allData() {
         return container;
     }
 }

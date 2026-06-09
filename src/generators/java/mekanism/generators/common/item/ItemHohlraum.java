@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
@@ -27,7 +26,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getQueryOnlyCapability(stack);
         if (handler != null && handler.size() > 0) {
@@ -49,17 +48,17 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public boolean isBarVisible(@NotNull ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return StorageUtils.isBarVisible(stack);
     }
 
     @Override
-    public int getBarWidth(@NotNull ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return StorageUtils.getBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@NotNull ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         return ContainerType.CHEMICAL.getRGBDurabilityForDisplay(stack);
     }
 

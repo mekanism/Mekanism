@@ -5,7 +5,6 @@ import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -63,7 +62,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         super.load(input);
         //TODO - 26.1: These (except injection rate) used to just get instead of only getting if present, should the fallback be zero or the existing value?
         reactorDamage = input.getDoubleOr(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
@@ -75,7 +74,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         super.save(output);
         output.putDouble(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
         output.putDouble(SerializationConstants.INJECTION_RATE, getRateLimit());

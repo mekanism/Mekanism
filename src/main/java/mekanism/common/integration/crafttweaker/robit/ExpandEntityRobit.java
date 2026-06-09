@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -52,7 +53,7 @@ public class ExpandEntityRobit {
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
     @ZenCodeType.Method
-    public static boolean setSkin(EntityRobit internal, RobitSkin skin, @ZenCodeType.Nullable Player player) {
+    public static boolean setSkin(EntityRobit internal, RobitSkin skin, @Nullable @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
         Identifier skinName = internal.level().registryAccess().lookupOrThrow(registryName).getKeyOrNull(skin);
         if (skinName == null) {
@@ -73,7 +74,7 @@ public class ExpandEntityRobit {
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
     @ZenCodeType.Method
-    public static boolean setSkin(EntityRobit internal, Identifier skin, @ZenCodeType.Nullable Player player) {
+    public static boolean setSkin(EntityRobit internal, Identifier skin, @Nullable @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
         ResourceKey<RobitSkin> skinKey = ResourceKey.create(registryName, skin);
         if (!internal.level().registryAccess().lookupOrThrow(registryName).containsKey(skinKey)) {

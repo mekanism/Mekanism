@@ -42,7 +42,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
@@ -104,7 +103,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (super.keyPressed(event)) {
             return true;
         }
@@ -140,14 +139,14 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         // make sure we get the release event
         moduleScreen.onRelease(event);
         return super.mouseReleased(event);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 24);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

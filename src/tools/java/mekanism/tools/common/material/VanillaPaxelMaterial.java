@@ -1,9 +1,7 @@
 package mekanism.tools.common.material;
 
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.world.item.ToolMaterial;
 
-@MethodsAreNotNullByDefault
 public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
 
     private final String vanillaMaterialName;

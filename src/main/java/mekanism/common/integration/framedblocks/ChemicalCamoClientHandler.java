@@ -3,8 +3,6 @@ package mekanism.common.integration.framedblocks;
 import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
 import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContentClientHandler;
 import it.unimi.dsi.fastutil.ints.IntList;
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -15,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNotNullByDefault
-@MethodsAreNotNullByDefault
 final class ChemicalCamoClientHandler extends ResourceCamoContentClientHandler<ChemicalResource, ChemicalCamoContent> {
 
     static final CamoContentClientHandler<ChemicalCamoContent> INSTANCE = new ChemicalCamoClientHandler();

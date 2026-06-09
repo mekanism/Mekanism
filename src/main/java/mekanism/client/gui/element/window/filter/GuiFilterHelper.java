@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface GuiFilterHelper<TILE extends TileEntityMekanism & ITileFilterHolder<?>> {
 

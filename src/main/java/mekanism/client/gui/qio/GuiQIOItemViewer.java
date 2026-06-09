@@ -37,7 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> implements ResizeController {
 
@@ -119,7 +119,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdown.getRelativeX() - 5);
         drawScrollingString(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 4, 31, TextAlignment.RIGHT, titleTextColor(), searchField.getRelativeX() - 4, 3, false);
@@ -149,6 +149,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         return (Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c)) || Character.isDigit(c) || Character.isAlphabetic(c);
     }
 
+    @Nullable
     public abstract FrequencyIdentity getFrequency();
 
     @Override
@@ -214,7 +215,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (event.hasShiftDown()) {
             menu.pauseSorting(true);
         }
@@ -222,7 +223,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public boolean keyReleased(@NotNull KeyEvent event) {
+    public boolean keyReleased(KeyEvent event) {
         if (!event.hasShiftDown()) {
             menu.pauseSorting(false);
         }

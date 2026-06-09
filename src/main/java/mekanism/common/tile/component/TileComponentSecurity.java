@@ -21,7 +21,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -30,6 +30,7 @@ public class TileComponentSecurity implements ITileComponent {
      */
     public final TileEntityMekanism tile;
 
+    @Nullable
     private UUID ownerUUID;
     private String ownerName;
 
@@ -41,16 +42,18 @@ public class TileComponentSecurity implements ITileComponent {
         tile.getFrequencyComponent().track(FrequencyTypes.SECURITY, true, false, true);
     }
 
+    @Nullable
     public SecurityFrequency getFrequency() {
         return tile.getFrequency(FrequencyTypes.SECURITY);
     }
 
+    @Nullable
     @ComputerMethod
     public UUID getOwnerUUID() {
         return ownerUUID;
     }
 
-    public void setOwnerUUID(UUID uuid) {
+    public void setOwnerUUID(@Nullable UUID uuid) {
         ownerUUID = uuid;
         if (ownerUUID == null) {
             tile.getFrequencyComponent().unsetFrequency(FrequencyTypes.SECURITY);
@@ -85,7 +88,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    public void applyImplicitComponents(DataComponentGetter input) {
         securityMode = input.getOrDefault(MekanismDataComponents.SECURITY, securityMode);
         setOwnerUUID(input.getOrDefault(MekanismDataComponents.OWNER, ownerUUID));
     }
@@ -106,7 +109,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput securityInput) {
+    public void deserialize(ValueInput securityInput) {
         NBTUtils.setEnumIfPresent(securityInput, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
         //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
         // Or if it was cleared due to changing owner data as an item, the block place should update it properly
@@ -115,7 +118,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput securityOutput) {
+    public void serialize(ValueOutput securityOutput) {
         if (securityMode != SecurityMode.PUBLIC) {
             NBTUtils.writeEnum(securityOutput, SerializationConstants.SECURITY_MODE, securityMode);
         }
@@ -128,7 +131,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void addToUpdateTag(@NotNull ValueOutput output) {
+    public void addToUpdateTag(ValueOutput output) {
         if (ownerUUID != null) {
             output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, ownerUUID);
             output.putString(SerializationConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
@@ -136,7 +139,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void readFromUpdateTag(@NotNull ValueInput input) {
+    public void readFromUpdateTag(ValueInput input) {
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> ownerUUID = uuid);
         ownerName = input.getStringOr(SerializationConstants.OWNER_NAME, ownerName);
     }

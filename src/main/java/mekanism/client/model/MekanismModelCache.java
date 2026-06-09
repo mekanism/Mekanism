@@ -37,8 +37,9 @@ public class MekanismModelCache extends BaseModelCache {
     private MekanismModelCache() {
         super(Mekanism.MODID);
         for (DriveStatus status : EnumUtils.DRIVE_STATUSES) {
-            if (status != DriveStatus.NONE) {
-                QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());
+            Identifier model = status.getModel();
+            if (model != null) {
+                QIO_DRIVES[status.ordinal()] = registerJSON(model);
             }
         }
     }

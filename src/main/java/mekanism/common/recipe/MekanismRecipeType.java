@@ -64,8 +64,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
       implements RecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> {
@@ -191,7 +190,6 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return inputCache;
     }
 
-    @NotNull
     @Override
     public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         RecipeMap recipeMap = getRecipeMap(world);
@@ -202,7 +200,6 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return getRecipes(recipeMap);
     }
 
-    @NotNull
     @Override
     public List<RecipeHolder<RECIPE>> getRecipes(RecipeMap recipeMap) {
         if (cachedRecipes.isEmpty()) {
@@ -223,7 +220,6 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      *
      * @param recipeMap The recipes map
      */
-    @NotNull
     private Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
         Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {

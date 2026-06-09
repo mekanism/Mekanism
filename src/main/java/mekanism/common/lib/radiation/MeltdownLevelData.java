@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -20,8 +18,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
-@MethodsAreNotNullByDefault
-@ParametersAreNonnullByDefault
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MeltdownLevelData implements ValueIOSerializable {
 

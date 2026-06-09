@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -30,7 +29,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
 
     private final Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();

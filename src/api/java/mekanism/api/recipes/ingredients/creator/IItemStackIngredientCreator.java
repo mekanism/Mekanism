@@ -2,7 +2,6 @@ package mekanism.api.recipes.ingredients.creator;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -24,7 +23,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-@NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
     /**

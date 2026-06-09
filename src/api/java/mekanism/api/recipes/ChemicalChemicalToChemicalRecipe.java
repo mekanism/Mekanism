@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.Level;
  *     <li>Pigment Mixing: Can be processed in a Pigment Mixer.</li>
  * </ul>
  */
-@NothingNullByDefault
 public abstract class ChemicalChemicalToChemicalRecipe extends OrderlessTwoInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, BiChemicalRecipeInput, ChemicalStackTemplate> {
 
     @Override

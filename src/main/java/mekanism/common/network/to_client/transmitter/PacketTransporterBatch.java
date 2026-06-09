@@ -17,7 +17,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketTransporterBatch(long pos, IntSet deletes, Int2ObjectMap<TransporterStack> updates) implements IMekanismPacket {
 
@@ -36,7 +35,6 @@ public record PacketTransporterBatch(long pos, IntSet deletes, Int2ObjectMap<Tra
         return new PacketTransporterBatch(pos, deletes, updates);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketTransporterBatch> type() {
         return TYPE;

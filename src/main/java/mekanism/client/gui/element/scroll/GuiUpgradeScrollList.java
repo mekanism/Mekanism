@@ -19,7 +19,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
 
@@ -41,7 +41,7 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
     }
 
     @Override
-    protected void setSelected(Upgrade newSelection) {
+    protected void setSelected(@Nullable Upgrade newSelection) {
         if (selectedType != newSelection) {
             selectedType = newSelection;
             onSelectionChange.run();

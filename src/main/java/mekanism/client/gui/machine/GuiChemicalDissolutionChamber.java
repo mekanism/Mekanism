@@ -15,7 +15,6 @@ import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntityChemicalDissolutionChamber, MekanismTileContainer<TileEntityChemicalDissolutionChamber>> {
 
@@ -43,7 +42,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

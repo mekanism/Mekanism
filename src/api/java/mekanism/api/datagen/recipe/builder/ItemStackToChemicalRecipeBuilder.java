@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
@@ -11,7 +10,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-@NothingNullByDefault
 public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder> {
 
     private final ItemStackToChemicalRecipeBuilder.Factory factory;

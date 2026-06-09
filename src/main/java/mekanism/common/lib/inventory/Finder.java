@@ -4,7 +4,6 @@ import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Finder {
@@ -23,7 +22,7 @@ public interface Finder {
         return !toCheck.isEmpty() && toCheck.tags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }
 
-    static boolean modID(String modID, @NotNull HolderLookup.Provider registries, ItemResource toCheck) {
+    static boolean modID(String modID, HolderLookup.Provider registries, ItemResource toCheck) {
         return !toCheck.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(registries, toCheck.toStack()));
     }
 }

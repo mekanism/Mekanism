@@ -32,8 +32,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -121,7 +120,6 @@ public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResourc
         return "[InventoryNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
-    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmittersSize(), getAcceptorCount());

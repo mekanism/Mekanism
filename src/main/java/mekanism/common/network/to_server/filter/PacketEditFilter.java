@@ -14,8 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FILTER filter, @Nullable FILTER edited) implements IMekanismPacket {
 
@@ -34,7 +33,6 @@ public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FIL
         return new PacketEditFilter<>(pos, (FILTER) filter, (FILTER) edited);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketEditFilter<?>> type() {
         return TYPE;

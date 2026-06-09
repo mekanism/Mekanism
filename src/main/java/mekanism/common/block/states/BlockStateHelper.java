@@ -21,8 +21,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockStateHelper {
 
@@ -37,7 +36,7 @@ public class BlockStateHelper {
     public static final BlockBehaviour.StatePredicate NEVER_PREDICATE = (_, _, _) -> false;
     public static final BlockBehaviour.StatePredicate ALWAYS_PREDICATE = (_, _, _) -> true;
 
-    public static BlockState getDefaultState(@NotNull BlockState state) {
+    public static BlockState getDefaultState(BlockState state) {
         for (Attribute attr : Attribute.getAll(state.typeHolder())) {
             if (attr instanceof AttributeState atr) {
                 state = atr.getDefaultState(state);
@@ -91,16 +90,17 @@ public class BlockStateHelper {
         return properties.lightLevel(state -> Math.max(existingLightLevelFunction.applyAsInt(state), toApply.applyAsInt(state)));
     }
 
+    @Nullable
     @Contract("null, _ -> null")
     public static BlockState getStateForPlacement(@Nullable BlockState state, BlockPlaceContext context) {
+        return state == null ? null : getStateForPlacementNN(state, context);
+    }
+
+    public static BlockState getStateForPlacementNN(BlockState state, BlockPlaceContext context) {
         return getStateForPlacement(state, context.getLevel(), context.getClickedPos(), context.getPlayer(), context.getClickedFace());
     }
 
-    @Contract("null, _, _, _, _ -> null")
-    public static BlockState getStateForPlacement(@Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player, @NotNull Direction face) {
-        if (state == null) {
-            return null;
-        }
+    public static BlockState getStateForPlacement(BlockState state, LevelAccessor world, BlockPos pos, @Nullable Player player, Direction face) {
         for (Attribute attr : Attribute.getAll(state.typeHolder())) {
             if (attr instanceof AttributeState atr) {
                 state = atr.getStateForPlacement(state, world, pos, player, face);

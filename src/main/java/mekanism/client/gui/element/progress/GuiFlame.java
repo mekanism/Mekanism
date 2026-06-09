@@ -3,7 +3,6 @@ package mekanism.client.gui.element.progress;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiFlame extends GuiProgress {
 
@@ -12,7 +11,7 @@ public class GuiFlame extends GuiProgress {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
         if (handler.isActive()) {

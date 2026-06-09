@@ -3,7 +3,6 @@ package mekanism.common.util;
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -14,7 +13,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.TranslatableEnum;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -30,11 +29,13 @@ public class UnitDisplayUtils {
             return TextComponentUtil.build(existing);
         }
 
+        @Nullable
         @Override
         public Object getSymbol(boolean singular) {
             return null;
         }
 
+        @Nullable
         @Override
         public ILangEntry getLabel(boolean singular) {
             return null;
@@ -132,12 +133,13 @@ public class UnitDisplayUtils {
             return TextComponentUtil.build(existing, getLabel(singular));
         }
 
+        @Nullable
         Object getSymbol(boolean singular);
 
+        @Nullable
         ILangEntry getLabel(boolean singular);
     }
 
-    @NothingNullByDefault
     public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit, TranslatableEnum {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, MekanismLang.TEMPERATURE_KELVIN_SHORT, "K", "k", 0, 1),
         CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "°C", "c", 273.15, 1),
@@ -182,7 +184,6 @@ public class UnitDisplayUtils {
             return langEntry;
         }
 
-        @NotNull
         @Override
         public Component getTranslatedName() {
             return getLabel(false).translate();

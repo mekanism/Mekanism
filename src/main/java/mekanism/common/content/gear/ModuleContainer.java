@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.SequencedCollection;
 import java.util.SequencedMap;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
@@ -39,10 +38,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModules, ItemEnchantments enchantments) implements IModuleContainer {
 
     public static final ModuleContainer EMPTY = new ModuleContainer(EmptySequencedMap.emptyMap(), ItemEnchantments.EMPTY);
@@ -188,9 +186,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         updateContainer(itemAccess, copiedModules, adjustedEnchantments, transaction);
     }
 
-    @Nullable
-    private ItemEnchantments.Mutable disableOtherExclusives(HolderLookup.Provider provider, Holder<ModuleData<?>> type, Module<?> module,
-          SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private ItemEnchantments.@Nullable Mutable disableOtherExclusives(HolderLookup.Provider provider, Holder<ModuleData<?>> type, Module<?> module,
+          SequencedMap<ModuleData<?>, Module<?>> copiedModules, ItemEnchantments.@Nullable Mutable adjustedEnchantments) {
         boolean handlesModeChange = module.handlesModeChange();
         ModuleData<?> moduleType = type.value();
         int exclusiveFlags = moduleType.getExclusiveFlags();
@@ -224,8 +221,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return adjustedEnchantments;
     }
 
-    @Nullable
-    private ItemEnchantments.Mutable updateEnchantment(HolderLookup.Provider provider, Module<?> module, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private ItemEnchantments.@Nullable Mutable updateEnchantment(HolderLookup.Provider provider, Module<?> module, ItemEnchantments.@Nullable Mutable adjustedEnchantments) {
         if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
             Optional<Reference<Enchantment>> enchantment = provider.holder(enchantmentBased.enchantment());
             int level = getEnchantmentLevel(module);
@@ -359,7 +355,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return false;
     }
 
-    private boolean updateContainer(ItemAccess itemAccess, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments,
+    private boolean updateContainer(ItemAccess itemAccess, SequencedMap<ModuleData<?>, Module<?>> copiedModules, ItemEnchantments.@Nullable Mutable adjustedEnchantments,
           @Nullable TransactionContext transaction) {
         ModuleContainer replacedContainer = new ModuleContainer(copiedModules, adjustedEnchantments == null ? enchantments : adjustedEnchantments.toImmutable());
         return ItemAccessUtils.exchange(itemAccess, itemAccess.getResource().with(MekanismDataComponents.MODULE_CONTAINER, replacedContainer), transaction);

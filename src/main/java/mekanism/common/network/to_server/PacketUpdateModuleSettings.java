@@ -2,7 +2,6 @@ package mekanism.common.network.to_server;
 
 import io.netty.handler.codec.DecoderException;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.common.Mekanism;
@@ -20,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
-@NothingNullByDefault
 public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> target) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketUpdateModuleSettings> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("update_module"));

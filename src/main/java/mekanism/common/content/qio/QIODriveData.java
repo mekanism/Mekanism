@@ -2,7 +2,6 @@ package mekanism.common.content.qio;
 
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -12,7 +11,6 @@ import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.VisibleForTesting;
 
-@NothingNullByDefault
 public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
 
     private final QIODriveKey key;

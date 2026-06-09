@@ -18,12 +18,10 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Direction> block,
-                                           ItemCapability<HANDLER, @NonNull ItemAccess> item,
+                                           ItemCapability<HANDLER, ItemAccess> item,
                                            EntityCapability<HANDLER, ?> entity) {
 
     public MultiTypeCapability(Identifier name, Class<HANDLER> handlerClass) {
@@ -55,12 +53,12 @@ public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Di
     }
 
     @Nullable
-    public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable Direction side) {
+    public HANDLER getCapabilityIfLoaded(@Nullable Level level, BlockPos pos, @Nullable Direction side) {
         return getCapabilityIfLoaded(level, pos, null, null, side);
     }
 
     @Nullable
-    public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity,
+    public HANDLER getCapabilityIfLoaded(@Nullable Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity,
           @Nullable Direction side) {
         return WorldUtils.getCapability(level, block(), pos, state, blockEntity, side);
     }

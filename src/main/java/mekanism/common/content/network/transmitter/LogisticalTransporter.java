@@ -19,8 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class LogisticalTransporter extends LogisticalTransporterBase implements IUpgradeableTransmitter<LogisticalTransporterUpgradeData> {
 
@@ -28,7 +27,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     private EnumColor color;
 
     public LogisticalTransporter(Holder<Block> blockProvider, TileEntityTransmitter tile) {
-        super(tile, Attribute.getTier(blockProvider, TransporterTier.class));
+        super(tile, Attribute.getTierNN(blockProvider, TransporterTier.class));
     }
 
     @Override
@@ -63,19 +62,18 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         return super.onRightClick(player, side);
     }
 
-    @Nullable
     @Override
     public LogisticalTransporterUpgradeData getUpgradeData() {
         return new LogisticalTransporterUpgradeData(redstoneReactive, getConnectionTypesRaw(), getColor(), transit, needsSync, nextId, delay, delayCount);
     }
 
     @Override
-    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(TransmitterUpgradeData data) {
         return data instanceof LogisticalTransporterUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@NotNull LogisticalTransporterUpgradeData data, TransactionContext transaction) {
+    public void parseUpgradeData(LogisticalTransporterUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         setColor(data.color);
@@ -87,13 +85,13 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         setColor(NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID));
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         if (getColor() != null) {
             NBTUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
@@ -101,7 +99,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (getColor() != null) {
             NBTUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
@@ -109,7 +107,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull ValueInput input) {
+    public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (this.color != color) {

@@ -16,15 +16,14 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 //todo - 26.1: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
-public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
+public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extends Model<STATE>*/ {
 
     protected final ModelPart root;
     protected final List<ModelPart> allParts;
@@ -35,7 +34,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
     }
 
     //TODO - 26.1 outlines??
-    public abstract void collect(STATE state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
+    public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
 
     public void setupAnim(STATE state) {
         this.resetPose();
@@ -51,13 +50,13 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         return root;
     }
 
-    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
+    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
         for (ModelPart part : parts) {
             part.render(poseStack, vertexConsumer, light, overlayLight, argb);
         }
     }
 
-    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, @NotNull SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite, boolean hasFoil) {
+    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite, boolean hasFoil) {
         for (ModelPart part : parts) {
             collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, false, hasFoil, argb, null, 0);
         }
@@ -80,7 +79,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
-    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, boolean isHighContrast) {
+    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, boolean isHighContrast) {
         //tmp variables to avoid allocating for each model part
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();
@@ -135,7 +134,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         vector.set(vertex.worldX(), vertex.worldY(), vertex.worldZ());
     }
 
-    public abstract static class NoState extends MekanismJavaModel<Void> {
+    public abstract static class NoState extends MekanismJavaModel<@Nullable Void> {
 
         public NoState(ModelPart root) {
             super(root);
@@ -146,10 +145,10 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         }
 
         @Override
-        public final void collect(Void unused, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        public final void collect(@Nullable Void unused, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
             collect(poseStack, submitNodeCollector, light, overlayLight, hasEffect);
         }
 
-        public abstract void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil);
+        public abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil);
     }
 }

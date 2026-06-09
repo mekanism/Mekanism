@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
  *
  * @since 10.6.2
  */
-@NothingNullByDefault
 public class MekanismAPITags {
 
     private static final Identifier HIDDEN_RL = Identifier.fromNamespaceAndPath("c", "hidden_from_recipe_viewers");

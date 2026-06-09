@@ -5,8 +5,7 @@ import mekanism.api.MekanismAPI;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system when applied to items.
@@ -26,7 +25,7 @@ public interface IItemSecurityUtils extends ITypedSecurityUtils<ItemAccess> {
     /**
      * {@return the item capability representing security objects}
      */
-    ItemCapability<ISecurityObject, @NonNull ItemAccess> securityCapability();
+    ItemCapability<ISecurityObject, ItemAccess> securityCapability();
 
     @Nullable
     @Override
@@ -37,7 +36,7 @@ public interface IItemSecurityUtils extends ITypedSecurityUtils<ItemAccess> {
     /**
      * {@return the item capability representing owner objects}
      */
-    ItemCapability<IOwnerObject, @NonNull ItemAccess> ownerCapability();
+    ItemCapability<IOwnerObject, ItemAccess> ownerCapability();
 
     @Nullable
     @Override

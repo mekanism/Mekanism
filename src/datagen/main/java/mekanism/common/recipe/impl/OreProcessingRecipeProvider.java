@@ -44,7 +44,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
@@ -79,7 +79,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               false
         ).save(consumer, Mekanism.rl(basePath + "iron/enriched"));
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON)),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
               MekanismItems.ENRICHED_IRON.asTemplate(),
               false
@@ -157,13 +157,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                 toOre = 20;//8 * 2.5
             }
             default -> {
-                ingot = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource));
-                ingotTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource));
-                nugget = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource));
-                nuggetTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource));
+                ingot = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.INGOT, resource));
+                ingotTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, resource));
+                nugget = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.NUGGET, resource));
+                nuggetTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.NUGGET, resource));
                 block = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource)).getItemHolder();
-                raw = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource));
-                rawTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource));
+                raw = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.RAW, resource));
+                rawTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.RAW, resource));
                 rawBlock = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo())).getItemHolder();
                 rawBlockTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo()));
                 OreBlockType oreBlockType = Objects.requireNonNull(MekanismBlocks.ORES.get(OreType.get(resource)));
@@ -172,16 +172,16 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             }
         }
 
-        Holder<Item> dust = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, resource));
-        Holder<Item> dirtyDust = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource));
-        Holder<Item> clump = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource));
-        Holder<Item> crystal = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource));
-        Holder<Item> shard = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource));
-        TagKey<Item> dustTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource));
-        TagKey<Item> dirtyDustTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource));
-        TagKey<Item> clumpTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource));
-        TagKey<Item> shardTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource));
-        TagKey<Item> crystalTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource));
+        Holder<Item> dust = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.DUST, resource));
+        Holder<Item> dirtyDust = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.DIRTY_DUST, resource));
+        Holder<Item> clump = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.CLUMP, resource));
+        Holder<Item> crystal = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.CRYSTAL, resource));
+        Holder<Item> shard = Objects.requireNonNull(MekanismItems.getProcessedResource(ResourceType.SHARD, resource));
+        TagKey<Item> dustTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.DUST, resource));
+        TagKey<Item> dirtyDustTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.DIRTY_DUST, resource));
+        TagKey<Item> clumpTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.CLUMP, resource));
+        TagKey<Item> shardTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.SHARD, resource));
+        TagKey<Item> crystalTag = Objects.requireNonNull(MekanismTags.Items.getProcessedResource(ResourceType.CRYSTAL, resource));
 
         SlurryRegistryObject<?, ?> slurry = MekanismChemicals.PROCESSED_RESOURCES.get(resource);
 
@@ -471,7 +471,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Dust
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.COPPER), 3),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.COPPER), 3),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.TIN, 10),
               MekanismItems.BRONZE_DUST.asTemplate(4),
               false
@@ -628,7 +628,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addUraniumRecipes(RecipeOutput consumer, String basePath) {
         //yellow cake
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.URANIUM)),
               MekanismItems.YELLOW_CAKE_URANIUM.asTemplate(2)
         ).save(consumer, Mekanism.rl(basePath + "yellow_cake_uranium"));
         //hydrofluoric acid

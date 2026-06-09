@@ -45,8 +45,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IColoredItem, ICapabilityAware {
 
@@ -58,13 +57,13 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+    public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         ItemAccess itemAccess = ItemAccessUtils.sideEffectFreeAccess(stack);
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
@@ -73,13 +72,12 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(@NotNull ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
@@ -100,7 +98,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
         super.inventoryTick(stack, level, entity, slot);
         if (!level.isClientSide() && level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             syncColorWithFrequency(stack);
@@ -112,7 +110,6 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
         event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (_, itemAccess) -> new OwnerObject(itemAccess), this);
     }
 
-    @NotNull
     @Override
     public DataComponentType<FrequencyAware<QIOFrequency>> getFrequencyComponent() {
         return MekanismDataComponents.QIO_FREQUENCY.get();

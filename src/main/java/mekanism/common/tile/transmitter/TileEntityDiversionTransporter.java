@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase implements IComputerTile {
 
@@ -34,7 +33,6 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         return TransmitterType.DIVERSION_TRANSPORTER;
     }
 
-    @NotNull
     @Override
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData.Diversion();

@@ -31,7 +31,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum PropertyType {
     BOOLEAN(Boolean.TYPE, false, (getter, setter, _) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept), () -> BooleanPropertyData.STREAM_CODEC),
@@ -53,6 +53,7 @@ public enum PropertyType {
     public static final StreamCodec<ByteBuf, PropertyType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PropertyType::ordinal);
 
     private final Class<?> type;
+    @Nullable
     private final Object defaultValue;
     @Nullable
     private final CreatorFunction creatorFunction;
@@ -60,7 +61,7 @@ public enum PropertyType {
 
     private static final PropertyType[] VALUES = values();
 
-    PropertyType(Class<?> type, Object defaultValue, @Nullable CreatorFunction creatorFunction, Supplier<StreamCodec<? super RegistryFriendlyByteBuf, ? extends PropertyData>> streamCodec) {
+    PropertyType(Class<?> type, @Nullable Object defaultValue, @Nullable CreatorFunction creatorFunction, Supplier<StreamCodec<? super RegistryFriendlyByteBuf, ? extends PropertyData>> streamCodec) {
         this.type = type;
         this.defaultValue = defaultValue;
         this.creatorFunction = creatorFunction;
@@ -71,6 +72,7 @@ public enum PropertyType {
         return (T) defaultValue;
     }
 
+    @Nullable
     public static PropertyType getFromType(Class<?> type) {
         for (PropertyType propertyType : VALUES) {
             if (type == propertyType.type) {
@@ -80,7 +82,7 @@ public enum PropertyType {
         return null;
     }
 
-    public ISyncableData create(Supplier<Object> supplier, Consumer<Object> consumer, Object defaultValue) {
+    public ISyncableData create(Supplier<Object> supplier, Consumer<Object> consumer, @Nullable Object defaultValue) {
         if (creatorFunction == null) {
             throw new IllegalStateException(name() + " does not support annotation based syncing.");
         }
@@ -94,6 +96,6 @@ public enum PropertyType {
     @FunctionalInterface
     private interface CreatorFunction {
 
-        ISyncableData create(Supplier<Object> getter, Consumer<Object> setter, Object defaultValue);
+        ISyncableData create(Supplier<Object> getter, Consumer<Object> setter, @Nullable Object defaultValue);
     }
 }

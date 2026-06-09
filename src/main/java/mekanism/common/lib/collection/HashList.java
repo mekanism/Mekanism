@@ -6,8 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.BiConsumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class HashList<T> extends LinkedHashSet<T> {
 
-    @NotNull
     protected List<T> list;
 
     public HashList() {
@@ -96,7 +94,7 @@ public class HashList<T> extends LinkedHashSet<T> {
     }
 
     @Override
-    public Object @NotNull [] toArray() {
+    public Object [] toArray() {
         return list.toArray();
     }
 
@@ -164,7 +162,7 @@ public class HashList<T> extends LinkedHashSet<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         }
@@ -174,7 +172,6 @@ public class HashList<T> extends LinkedHashSet<T> {
         return list.equals(((HashList<?>) o).list);
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return list.iterator();

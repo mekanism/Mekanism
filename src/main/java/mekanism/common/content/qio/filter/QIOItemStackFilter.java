@@ -12,7 +12,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
 
@@ -63,7 +63,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
@@ -89,14 +89,13 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
         return FilterType.QIO_ITEMSTACK_FILTER;
     }
 
-    @NotNull
     @Override
     public ItemResource getItemType() {
         return itemType;
     }
 
     @Override
-    public void setItemType(@NotNull ItemResource itemType) {
+    public void setItemType(ItemResource itemType) {
         this.itemType = itemType;
     }
 }

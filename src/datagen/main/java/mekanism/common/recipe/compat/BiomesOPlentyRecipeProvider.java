@@ -1,7 +1,6 @@
 package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.item.BOPItems;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 
-@NothingNullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     public BiomesOPlentyRecipeProvider(HolderLookup.Provider registries, String modid) {

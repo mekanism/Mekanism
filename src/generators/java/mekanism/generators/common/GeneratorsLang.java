@@ -1,10 +1,8 @@
 package mekanism.generators.common;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Util;
 
-@NothingNullByDefault
 public enum GeneratorsLang implements ILangEntry {
     MEKANISM_GENERATORS("constants", "mod_name"),
     PACK_DESCRIPTION("constants", "pack_description"),

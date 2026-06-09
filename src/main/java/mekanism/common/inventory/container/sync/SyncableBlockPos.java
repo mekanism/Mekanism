@@ -6,19 +6,19 @@ import mekanism.common.network.to_client.container.property.BlockPosPropertyData
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SyncableBlockPos implements ISyncableData {
 
-    public static SyncableBlockPos create(Supplier<BlockPos> getter, Consumer<BlockPos> setter) {
+    public static SyncableBlockPos create(Supplier<@Nullable BlockPos> getter, Consumer<@Nullable BlockPos> setter) {
         return new SyncableBlockPos(getter, setter);
     }
 
-    private final Supplier<BlockPos> getter;
-    private final Consumer<BlockPos> setter;
+    private final Supplier<@Nullable BlockPos> getter;
+    private final Consumer<@Nullable BlockPos> setter;
     private int lastKnownHashCode;
 
-    private SyncableBlockPos(Supplier<BlockPos> getter, Consumer<BlockPos> setter) {
+    private SyncableBlockPos(Supplier<@Nullable BlockPos> getter, Consumer<@Nullable BlockPos> setter) {
         this.getter = getter;
         this.setter = setter;
     }

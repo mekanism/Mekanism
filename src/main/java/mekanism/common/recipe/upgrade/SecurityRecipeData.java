@@ -1,7 +1,6 @@
 package mekanism.common.recipe.upgrade;
 
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
@@ -9,9 +8,8 @@ import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData> {
 
     private final UUID owner;

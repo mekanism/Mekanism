@@ -9,7 +9,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
 
 public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<EntityRobit>, ISecurityContainer {
 
@@ -22,30 +21,28 @@ public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return entity.isAlive();
     }
 
-    @NotNull
     @Override
     public EntityRobit getEntity() {
         return entity;
     }
 
-    @NotNull
     @Override
     public MenuType<?> getType() {
         return MekanismContainerTypes.REPAIR_ROBIT.get();
     }
 
     @Override
-    public void removed(@NotNull Player player) {
+    public void removed(Player player) {
         super.removed(player);
         entity.close(player);
     }
 
     @Override
-    public boolean canPlayerAccess(@NotNull Player player) {
+    public boolean canPlayerAccess(Player player) {
         return IEntitySecurityUtils.INSTANCE.canAccess(player, entity);
     }
 }

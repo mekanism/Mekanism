@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<ChemicalResource, IChemicalTank, ChemicalNetwork, PressurizedTube> implements ITileRadioactive {
 
@@ -40,9 +39,8 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
         return ChemicalResource.CODEC;
     }
 
-    @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
+    protected BlockState upgradeResult(BlockState current, BaseTier tier) {
         return BlockStateHelper.copyStateData(current, switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_PRESSURIZED_TUBE;
             case ADVANCED -> MekanismBlocks.ADVANCED_PRESSURIZED_TUBE;
@@ -60,7 +58,7 @@ public class TileEntityPressurizedTube extends TileEntityResourceTransmitter<Che
         PressurizedTube tube = getTransmitter();
         if (isRemote()) {
             if (tube.hasTransmitterNetwork()) {
-                ChemicalNetwork network = tube.getTransmitterNetwork();
+                ChemicalNetwork network = tube.getTransmitterNetworkNN();
                 if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().isRadioactive()) {
                     //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                     // going through it, but it shouldn't matter too much

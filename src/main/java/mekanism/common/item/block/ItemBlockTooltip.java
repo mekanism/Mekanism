@@ -54,7 +54,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IComponentAware {
 
@@ -70,13 +69,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+    public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override
-    public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
+    public boolean placeBlock(BlockPlaceContext context, BlockState state) {
         AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
         if (hasBounding == null) {
             return super.placeBlock(context, state);
@@ -87,7 +86,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltipAdder.accept(getBlock().getDescription().translate());
@@ -102,12 +101,12 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
     }
 
-    protected void addDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
@@ -129,8 +128,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCapOrTooltips()) {
             StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, false);
@@ -138,7 +137,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(@NotNull ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         if (exposesEnergyCapOrTooltips()) {
             //Ignore NBT for energized items causing re-equip animations
             //TODO: Only ignore the energy attachment?
@@ -148,7 +147,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public boolean shouldCauseBlockBreakReset(@NotNull ItemStack oldStack, @NotNull ItemStack newStack) {
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
         if (exposesEnergyCapOrTooltips()) {
             //Ignore NBT for energized items causing block break reset
             //TODO: Only ignore the energy attachment?
@@ -157,7 +156,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         return super.shouldCauseBlockBreakReset(oldStack, newStack);
     }
 
-    protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
+    protected Predicate<AutomationType> getEnergyCapInsertPredicate() {
         return ConstantPredicates.alwaysTrue();
     }
 
@@ -171,10 +170,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
         BLOCK block = getBlock();
-        AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
-        if (attributeEnergy == null) {
-            throw new IllegalStateException("Expected block " + block + " to have the energy attribute");
-        }
+        AttributeEnergy attributeEnergy = Attribute.getOrThrow(block, AttributeEnergy.class);
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return EnergyContainersBuilder.creator(attachedAccess -> {

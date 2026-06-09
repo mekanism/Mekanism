@@ -1,6 +1,5 @@
 package mekanism.api.recipes.vanilla_input;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 
 /**
@@ -8,7 +7,6 @@ import mekanism.api.chemical.ChemicalStack;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public record SingleChemicalRecipeInput(ChemicalStack chemical) implements ChemicalRecipeInput {
 
     @Override

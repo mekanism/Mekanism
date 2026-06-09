@@ -7,13 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.level.storage.TagValueOutput;
-import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public interface IUpgradeData {
 
-    @NonNull
     static CompoundTag readComponents(Provider provider, List<ITileComponent> components, PathElement pathElement) {
         try (var reporter = new ProblemReporter.ScopedCollector(pathElement, readComponentsLogger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);

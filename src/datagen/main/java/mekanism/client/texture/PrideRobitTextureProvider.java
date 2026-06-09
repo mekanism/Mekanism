@@ -22,7 +22,6 @@ import net.minecraft.data.PackOutput.Target;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.stb.STBIWriteCallback;
 import org.lwjgl.stb.STBImageWrite;
@@ -39,10 +38,9 @@ public class PrideRobitTextureProvider implements DataProvider {
         this.resourceManager = resourceManager;
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache) {
         return CompletableFuture.runAsync(() -> {
             PathProvider pathProvider = output.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
             try {
@@ -121,7 +119,6 @@ public class PrideRobitTextureProvider implements DataProvider {
         return data.getColor()[index % colors.length];
     }
 
-    @NotNull
     @Override
     public String getName() {
         return "Robit Texture Provider";

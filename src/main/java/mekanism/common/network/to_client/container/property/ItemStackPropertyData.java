@@ -5,7 +5,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemStackPropertyData extends PropertyData {
 
@@ -15,10 +14,9 @@ public class ItemStackPropertyData extends PropertyData {
           ItemStackPropertyData::new
     );
 
-    @NotNull
     private final ItemStack value;
 
-    public ItemStackPropertyData(short property, @NotNull ItemStack value) {
+    public ItemStackPropertyData(short property, ItemStack value) {
         super(PropertyType.ITEM_STACK, property);
         this.value = value;
     }

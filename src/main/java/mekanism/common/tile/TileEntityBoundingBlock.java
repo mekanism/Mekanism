@@ -22,8 +22,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
@@ -127,28 +126,28 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         input.read(SerializationConstants.MAIN, BlockPos.CODEC).ifPresent(pos -> mainPos = pos);
         currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.storeNullable(SerializationConstants.MAIN, BlockPos.CODEC, mainPos);
         output.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.storeNullable(SerializationConstants.MAIN, BlockPos.CODEC, mainPos);
         output.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
         input.read(SerializationConstants.MAIN, BlockPos.CODEC).ifPresent(pos -> mainPos = pos);
         currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
@@ -159,7 +158,6 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return getMainTile(worldPosition) instanceof Nameable mainTile && mainTile.hasCustomName();
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
@@ -169,7 +167,6 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
     }
 
-    @NotNull
     @Override
     public Component getDisplayName() {
         return getMainTile(worldPosition) instanceof Nameable mainTile ? mainTile.getDisplayName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
@@ -193,7 +190,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         }, MekanismBlocks.BOUNDING_BLOCK.value());
     }
 
-    public static <CAP, CONTEXT> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
+    public static <CAP, CONTEXT extends @Nullable Object> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
         event.registerBlock(capability, (level, pos, _, boundingBlock, context) -> {
             if (boundingBlock instanceof TileEntityBoundingBlock bounding && bounding.canRedirectFrom(pos)) {
                 return WorldUtils.getCapability(level, capability, bounding.getMainPos(), context);

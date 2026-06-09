@@ -32,7 +32,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, MekanismTileContainer<TileEntityLogisticalSorter>> {
 
@@ -68,7 +68,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         // Write to info display
         renderTitleText(guiGraphics);
@@ -83,7 +83,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void onClick(IFilter<?> filter, int index) {
+    protected void onClick(@Nullable IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
             addWindow(GuiSorterItemStackFilter.edit(this, tile, (SorterItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -31,9 +30,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing, SPSRenderState> {
 
     private static final CustomEffect CORE = Util.make(new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png")),
@@ -56,7 +54,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     }
 
     @Override
-    public void extractRenderState(TileEntitySPSCasing sps, SPSRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntitySPSCasing sps, SPSRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(sps, state, partialTick, cameraPosition, breakProgress);
         SPSMultiblockData multiblock = sps.getMultiblock();
         state.setProcessed(multiblock.lastProcessed);

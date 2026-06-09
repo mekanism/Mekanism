@@ -58,8 +58,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides methods to get parameters from a computer integration and return converted values back. NB: new conversions should have an entry added to
@@ -72,7 +71,6 @@ public abstract class BaseComputerHelper {
 
     public static final Lazy<Map<Class<?>, TableType>> BUILTIN_TABLES = Lazy.of(BaseComputerHelper::getBuiltInTables);
 
-    @NotNull
     private <T> T requireNonNull(int param, @Nullable T value) throws ComputerException {
         if (value == null) {
             throw new ComputerException("Invalid parameter at index " + param);
@@ -90,7 +88,6 @@ public abstract class BaseComputerHelper {
      *
      * @throws ComputerException if the param index does not exist, enum value doesn't exist or param is the wrong type.
      */
-    @NotNull
     public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
         return requireNonNull(param, SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param)));
     }
@@ -111,10 +108,8 @@ public abstract class BaseComputerHelper {
 
     public abstract double getDouble(int param) throws ComputerException;
 
-    @NotNull
     public abstract String getString(int param) throws ComputerException;
 
-    @NotNull
     public abstract Map<?, ?> getMap(int param) throws ComputerException;
 
     /**
@@ -139,7 +134,6 @@ public abstract class BaseComputerHelper {
      *
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
-    @NotNull
     public Identifier getIdentifier(int param) throws ComputerException {
         return requireNonNull(param, Identifier.tryParse(getString(param)));
     }
@@ -158,8 +152,7 @@ public abstract class BaseComputerHelper {
         return getItemFromResourceLocation(itemName).value();
     }
 
-    @NotNull
-    private static Holder<Item> getItemFromResourceLocation(Identifier itemName) {
+    private static Holder<Item> getItemFromResourceLocation(@Nullable Identifier itemName) {
         Holder.Reference<Item> air = Items.AIR.builtInRegistryHolder();
         if (itemName == null) {
             return air;
@@ -203,9 +196,7 @@ public abstract class BaseComputerHelper {
      *
      * @return Computer platform dependent.
      */
-    public Object voidResult() {
-        return null;
-    }
+    public abstract Object voidResult();
 
     public Object convert(int i) {
         return i;
@@ -227,7 +218,7 @@ public abstract class BaseComputerHelper {
         return b;
     }
 
-    public <T> Object convert(@Nullable Collection<T> list, @NotNull Function<T, Object> converter) {
+    public <T> Object convert(@Nullable Collection<T> list, Function<T, Object> converter) {
         if (list == null) {
             return Collections.emptyList();
         }
@@ -238,14 +229,17 @@ public abstract class BaseComputerHelper {
         return converted;
     }
 
+    @Nullable
     public Object convert(@Nullable Identifier rl) {
         return rl == null ? null : rl.toString();
     }
 
+    @Nullable
     public Object convert(@Nullable UUID uuid) {
         return uuid == null ? null : uuid.toString();
     }
 
+    @Nullable
     public Object convert(@Nullable ChemicalStack stack) {
         if (stack == null) {
             return null;
@@ -253,6 +247,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), DataComponentPatch.EMPTY);
     }
 
+    @Nullable
     public Map<String, Object> convert(@Nullable ChemicalResource type) {
         if (type == null) {
             return null;
@@ -260,6 +255,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), DataComponentPatch.EMPTY);
     }
 
+    @Nullable
     public Object convert(@Nullable FluidStack stack) {
         if (stack == null) {
             return null;
@@ -267,6 +263,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), stack.getComponentsPatch());
     }
 
+    @Nullable
     public Map<String, Object> convert(@Nullable FluidResource type) {
         if (type == null) {
             return null;
@@ -274,6 +271,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), type.getComponentsPatch());
     }
 
+    @Nullable
     public Object convert(@Nullable LargeResourceStack<?> stack) {
         if (stack == null) {
             return null;
@@ -291,6 +289,7 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Map<String, Object> convert(@Nullable ItemResource type) {
         if (type == null) {
             return null;
@@ -298,6 +297,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), type.getComponentsPatch());
     }
 
+    @Nullable
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
@@ -305,6 +305,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.COUNT, stack.count(), stack.getComponentsPatch());
     }
 
+    @Nullable
     public Object convert(@Nullable BlockState state) {
         if (state == null) {
             return null;
@@ -326,6 +327,7 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable Vec3i pos) {
         if (pos == null) {
             return null;
@@ -338,11 +340,12 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable GlobalPos globalPos) {
         if (globalPos == null) {
             return null;
         }
-        Map<String, Object> wrapped = new HashMap<>(4);
+        Map<String, @Nullable Object> wrapped = new HashMap<>(4);
         wrapped.put(SerializationConstants.X, globalPos.pos().getX());
         wrapped.put(SerializationConstants.Y, globalPos.pos().getY());
         wrapped.put(SerializationConstants.Z, globalPos.pos().getZ());
@@ -350,24 +353,26 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable Frequency frequency) {
         if (frequency == null) {
             return null;
         }
         Frequency.FrequencyIdentity identity = frequency.getIdentity();
-        Map<String, Object> wrapped = new HashMap<>(3);
+        Map<String, @Nullable Object> wrapped = new HashMap<>(3);
         wrapped.put(SerializationConstants.KEY, identity.key().toString());
         wrapped.put(SerializationConstants.SECURITY_MODE, convert(identity.securityMode()));
         wrapped.put(SerializationConstants.OWNER_UUID, convert(identity.ownerUUID()));
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable Enum<?> res) {
         return res == null ? null : res.name();
     }
 
-    protected Map<String, Object> convertFilterCommon(IFilter<?> result) {
-        Map<String, Object> wrapped = new HashMap<>();
+    protected Map<String, @Nullable Object> convertFilterCommon(IFilter<?> result) {
+        Map<String, @Nullable Object> wrapped = new HashMap<>();
         wrapped.put(SerializationConstants.TYPE, convert(result.getFilterType()));
         wrapped.put(SerializationConstants.ENABLED, result.isEnabled());
         switch (result) {
@@ -389,21 +394,23 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable MinerFilter<?> minerFilter) {
         if (minerFilter == null) {
             return null;
         }
-        Map<String, Object> wrapped = convertFilterCommon(minerFilter);
+        Map<String, @Nullable Object> wrapped = convertFilterCommon(minerFilter);
         wrapped.put(SerializationConstants.REQUIRES_REPLACEMENT, minerFilter.requiresReplacement);
         wrapped.put(SerializationConstants.REPLACE_TARGET, convert(minerFilter.replaceTarget));
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable SorterFilter<?> sorterFilter) {
         if (sorterFilter == null) {
             return null;
         }
-        Map<String, Object> wrapped = convertFilterCommon(sorterFilter);
+        Map<String, @Nullable Object> wrapped = convertFilterCommon(sorterFilter);
         wrapped.put(SerializationConstants.ALLOW_DEFAULT, sorterFilter.allowDefault);
         wrapped.put(SerializationConstants.COLOR, convert(sorterFilter.color));
         wrapped.put(SerializationConstants.SIZE, sorterFilter.sizeMode);
@@ -415,22 +422,24 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable QIOFilter<?> qioFilter) {
         if (qioFilter == null) {
             return null;
         }
-        Map<String, Object> wrapped = convertFilterCommon(qioFilter);
+        Map<String, @Nullable Object> wrapped = convertFilterCommon(qioFilter);
         if (qioFilter instanceof QIOItemStackFilter filter) {
             wrapped.put(SerializationConstants.FUZZY, filter.fuzzyMode);
         }
         return wrapped;
     }
 
+    @Nullable
     public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
         if (filter == null) {
             return null;
         }
-        Map<String, Object> wrapped = convertFilterCommon(filter);
+        Map<String, @Nullable Object> wrapped = convertFilterCommon(filter);
         wrapped.put(SerializationConstants.TARGET, filter.getFilterText());
         if (filter instanceof OredictionificatorItemFilter itemFilter) {
             wrapped.put(SerializationConstants.SELECTED, convert(itemFilter.getResultElement()));
@@ -438,14 +447,16 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public <KEY, VALUE> Object convert(@NotNull Map<KEY, VALUE> res, Function<KEY, Object> keyConverter, @NotNull Function<VALUE, Object> valueConverter) {
-        Map<Object, Object> map = new HashMap<>(res.size());
+    public <KEY, VALUE> Object convert(Map<KEY, VALUE> res, Function<KEY, Object> keyConverter, Function<VALUE, @Nullable Object> valueConverter) {
+        Map<Object, @Nullable Object> map = new HashMap<>(res.size());
         for (Entry<KEY, VALUE> entry : res.entrySet()) {
             map.put(keyConverter.apply(entry.getKey()), valueConverter.apply(entry.getValue()));
         }
         return map;
     }
 
+    @Nullable
+    @SuppressWarnings("deprecation")
     public Object convert(@Nullable Item item) {
         if (item == null) {
             return null;
@@ -453,6 +464,7 @@ public abstract class BaseComputerHelper {
         return convert(RegistryUtils.getName(item.builtInRegistryHolder()));
     }
 
+    @Nullable
     public Object convert(@Nullable Convertable<?> convertable) {
         if (convertable == null) {
             return null;
@@ -460,6 +472,7 @@ public abstract class BaseComputerHelper {
         return convertable.convert(this);
     }
 
+    @Nullable
     public Object convert(@Nullable MethodHelpData methodHelpData) {
         if (methodHelpData == null) {
             return null;

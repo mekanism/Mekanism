@@ -17,7 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SecurityFrequency extends Frequency {
 

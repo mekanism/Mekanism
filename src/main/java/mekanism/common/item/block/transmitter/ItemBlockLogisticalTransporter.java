@@ -1,6 +1,5 @@
 package mekanism.common.item.block.transmitter;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -18,26 +17,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEntityLogisticalTransporter> {
 
     private final TransporterTier tier;
 
     public ItemBlockLogisticalTransporter(BlockLargeTransmitter<TileEntityLogisticalTransporter> block, Item.Properties properties) {
-        tier = Objects.requireNonNull(Attribute.getTier(block, TransporterTier.class));
+        tier = Attribute.getTierNN(block, TransporterTier.class);
         super(block, properties);
     }
 
-    @NotNull
     @Override
     public TransporterTier getTier() {
         return tier;
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.addStats(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
         //Ensure no one somehow passes in invalid data
         float tickRate = Math.max(context.tickRate(), TickRateManager.MIN_TICKRATE);

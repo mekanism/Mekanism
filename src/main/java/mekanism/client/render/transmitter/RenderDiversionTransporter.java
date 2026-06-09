@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState.DiversionTransporterRenderState;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -34,9 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderDiversionTransporter extends RenderLogisticalTransporter<TileEntityDiversionTransporter, DiversionTransporterRenderState> {
 
     public static final ModelLayerLocation OVERLAY_LAYER = new ModelLayerLocation(Mekanism.rl("diversion_overlay"), "main");
@@ -69,7 +67,7 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
 
     @Override
     public void extractRenderState(TileEntityDiversionTransporter transporter, DiversionTransporterRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(transporter, state, partialTick, cameraPosition, breakProgress);
         Player player = Minecraft.getInstance().player;
         //Player shouldn't be null here, but validate it

@@ -4,7 +4,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MekanismEmiHolderRecipe<RECIPE extends Recipe<?>> extends MekanismEmiRecipe<RECIPE> {
 

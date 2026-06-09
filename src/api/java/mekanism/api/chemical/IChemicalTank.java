@@ -1,13 +1,11 @@
 package mekanism.api.chemical;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 /// Represents a [`resource container`][IResourceContainer] that contains [`chemicals`][ChemicalResource].
-@NothingNullByDefault
 public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
 
     /// {@return the attribute validator used by this tank}

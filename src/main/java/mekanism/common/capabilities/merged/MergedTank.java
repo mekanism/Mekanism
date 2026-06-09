@@ -2,7 +2,6 @@ package mekanism.common.capabilities.merged;
 
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IResourceContainer;
@@ -11,7 +10,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-@NothingNullByDefault
 public class MergedTank {
 
     public static MergedTank create(IFluidTank fluidTank, IChemicalTank gasTank) {

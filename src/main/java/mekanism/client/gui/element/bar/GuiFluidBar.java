@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: I think neo might have added a way to declare tooltips for fluids, if so we should gather those here
 public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {

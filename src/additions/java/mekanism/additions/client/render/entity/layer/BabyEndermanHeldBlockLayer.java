@@ -9,9 +9,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class BabyEndermanHeldBlockLayer extends RenderLayer<EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
     public BabyEndermanHeldBlockLayer(RenderLayerParent<EndermanRenderState, EndermanModel<EndermanRenderState>> renderer) {

@@ -1,6 +1,5 @@
 package mekanism.common.item.block.transmitter;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -16,34 +15,32 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockUniversalCable extends ItemBlockTooltip<BlockSmallTransmitter<TileEntityUniversalCable>> {
 
     private final CableTier tier;
 
     public ItemBlockUniversalCable(BlockSmallTransmitter<TileEntityUniversalCable> block, Item.Properties properties) {
-        tier = Objects.requireNonNull(Attribute.getTier(block, CableTier.class));
+        tier = Attribute.getTierNN(block, CableTier.class);
         super(block, true, properties);
     }
 
-    @NotNull
     @Override
     public CableTier getTier() {
         return tier;
     }
 
     @Override
-    protected void addDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.addDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
         tooltipAdder.accept(MekanismLang.CAPABLE_OF_TRANSFERRING.translateColored(EnumColor.DARK_GRAY));
         tooltipAdder.accept(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.PURPLE, MekanismLang.ENERGY_FORGE_SHORT, MekanismLang.FORGE));
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.addStats(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
         tooltipAdder.accept(MekanismLang.CAPACITY_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(tier.getCableCapacity())));
     }

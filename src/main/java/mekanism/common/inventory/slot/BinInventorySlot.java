@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.ResourceContainerWrapper;
@@ -20,10 +19,9 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
 
     public static final Predicate<ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);

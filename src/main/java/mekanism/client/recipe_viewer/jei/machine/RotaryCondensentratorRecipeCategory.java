@@ -19,7 +19,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<RotaryRecipe> {
 
@@ -41,7 +40,7 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RotaryRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<RotaryRecipe> recipeHolder, IFocusGroup focusGroup) {
         RotaryRecipe recipe = recipeHolder.value();
         ContextMap slotDisplayContext = getSlotDisplayContext();
         if (condensentrating) {
@@ -55,9 +54,8 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
         }
     }
 
-    @NotNull
     @Override
-    public Identifier getIdentifier(@NotNull RecipeHolder<RotaryRecipe> recipe) {
+    public Identifier getIdentifier(RecipeHolder<RotaryRecipe> recipe) {
         Identifier baseId = super.getIdentifier(recipe);
         if (condensentrating) {
             return RegistryUtils.synthetic(baseId, "condensentrating");

@@ -1,7 +1,6 @@
 package mekanism.api.resource;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -12,7 +11,6 @@ import org.jspecify.annotations.Nullable;
 /// Helper class to simplify wrapping a resource container while allowing providing overrides for specific methods.
 ///
 /// @since 10.8.0
-@NothingNullByDefault
 public abstract class ResourceContainerWrapper<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     protected final CONTAINER internal;

@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
@@ -10,7 +9,6 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-@NothingNullByDefault
 public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<FluidChemicalToChemicalRecipeBuilder> {
 
     private final ChemicalStackIngredient chemicalInput;

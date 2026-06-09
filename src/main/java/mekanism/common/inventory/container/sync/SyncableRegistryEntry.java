@@ -5,29 +5,27 @@ import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entries.
  */
 public class SyncableRegistryEntry<V> implements ISyncableData {
 
-    public static <V> SyncableRegistryEntry<V> create(Registry<V> registry, Supplier<@NotNull V> getter, Consumer<@NotNull V> setter) {
+    public static <V> SyncableRegistryEntry<V> create(Registry<V> registry, Supplier<V> getter, Consumer<V> setter) {
         return new SyncableRegistryEntry<>(registry, getter, setter);
     }
 
-    private final Supplier<@NotNull V> getter;
-    private final Consumer<@NotNull V> setter;
+    private final Supplier<V> getter;
+    private final Consumer<V> setter;
     private final Registry<V> registry;
     private V lastKnownValue;
 
-    private SyncableRegistryEntry(Registry<V> registry, Supplier<@NotNull V> getter, Consumer<@NotNull V> setter) {
+    private SyncableRegistryEntry(Registry<V> registry, Supplier<V> getter, Consumer<V> setter) {
         this.registry = registry;
         this.getter = getter;
         this.setter = setter;
     }
 
-    @NotNull
     public V get() {
         return getter.get();
     }

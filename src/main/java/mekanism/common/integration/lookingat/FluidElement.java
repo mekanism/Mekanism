@@ -1,6 +1,5 @@
 package mekanism.common.integration.lookingat;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -12,7 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public non-sealed class FluidElement extends ResourceElement<FluidResource> {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidElement> STREAM_CODEC = StreamCodec.composite(

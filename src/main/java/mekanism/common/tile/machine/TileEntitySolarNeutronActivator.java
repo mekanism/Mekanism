@@ -46,14 +46,14 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
 
@@ -77,8 +77,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     private float productionRate;
     private boolean settingsChecked;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     ChemicalInventorySlot inputSlot;
@@ -98,7 +98,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -109,7 +108,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -146,8 +144,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (!settingsChecked) {
             recheckSettings();
         }
@@ -158,7 +156,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
@@ -198,9 +195,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return peakProductionRate * brightness;
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull ChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalToChemicalRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

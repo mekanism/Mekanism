@@ -16,6 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
+import org.jspecify.annotations.Nullable;
 
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
 public class RenderPropertiesProvider {
@@ -26,8 +27,8 @@ public class RenderPropertiesProvider {
     public static IClientBlockExtensions boundingParticles() {
         return new IClientBlockExtensions() {
             @Override
-            public boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
-                if (target.getType() == Type.BLOCK && target instanceof BlockHitResult blockTarget) {
+            public boolean addHitEffects(BlockState state, Level world, @Nullable HitResult target, ParticleEngine manager) {
+                if (target != null && target.getType() == Type.BLOCK && target instanceof BlockHitResult blockTarget) {
                     BlockPos pos = blockTarget.getBlockPos();
                     BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
                     if (mainPos != null) {

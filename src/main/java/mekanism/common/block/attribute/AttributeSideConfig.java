@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import mekanism.common.lib.transmitter.TransmissionType;
-import org.jetbrains.annotations.NotNull;
 
-public record AttributeSideConfig(@NotNull Set<TransmissionType> supportedTypes) implements Attribute {
+public record AttributeSideConfig(Set<TransmissionType> supportedTypes) implements Attribute {
 
     public static final AttributeSideConfig ELECTRIC_MACHINE = create(TransmissionType.ITEM, TransmissionType.ENERGY);
     public static final AttributeSideConfig ADVANCED_ELECTRIC_MACHINE = create(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY);

@@ -29,9 +29,6 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.component.FilterAware;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -56,6 +53,9 @@ import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ResourceHandlerManager;
+import mekanism.common.component.FilterAware;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.integration.computer.BoundMethodHolder;
@@ -75,13 +75,13 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.lib.transaction.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
+import mekanism.common.lib.transaction.LastEnergyTracker;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.ITileComponent;
@@ -125,6 +125,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -136,8 +137,6 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
@@ -167,6 +166,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean canBeUpgraded;
     private boolean isDirectional;
     private boolean isActivatable;
+    @Nullable
     private AttributeStateActive activeAttribute;
     private boolean hasBounding;
     private boolean hasSecurity;
@@ -229,12 +229,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IMekanismHeatHandler
     protected final Map<Direction, BlockCapabilityCache<IHeatHandler, @Nullable Direction>> adjacentHeatCaps;
+    @Nullable
     protected final CachedAmbientTemperature ambientTemperature;
     @Nullable
     protected final HeatHandlerManager heatHandlerManager;
     //End variables for IMekanismHeatHandler
 
     //Variables for handling ITileSecurity
+    @Nullable
     private TileComponentSecurity securityComponent;
     //End variables ITileSecurity
 
@@ -253,6 +255,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Only used on the client
      */
+    @Nullable
     private SoundInstance activeSound;
     private int playSoundCooldown = 0;
     //End variables ITileSound
@@ -282,7 +285,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
-            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, MekanismUtils.getGameTimeSupplier(this)));
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this::getGameTime));
         } else {
             energyHandlerManager = null;
         }
@@ -354,7 +357,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Should data related to the given type be persisted in this tile save
      */
-    public boolean persists(@UnknownNullability IContainerType<?, ?> type) {
+    public boolean persists(IContainerType<?, ?> type) {
         return type.canHandle(this);
     }
 
@@ -460,14 +463,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return components;
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
         return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockHolder());
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getDisplayName() {
@@ -513,7 +514,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    protected void notifyComparatorChange() {
+    protected void notifyComparatorChange(Level level) {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
     }
 
@@ -606,7 +607,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (tile.hasSound()) {
             tile.updateSound();
         }
-        tile.onUpdateClient();
+        tile.onUpdateClient(level);
         //None of our impls currently care about the ticker in their onUpdateClient methods
         //tile.ticker++;
     }
@@ -638,7 +639,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        boolean sendUpdatePacket = tile.onUpdateServer();
+        //TODO - 26.1: Shouuld we validate this is a server level??
+        boolean sendUpdatePacket = tile.onUpdateServer((ServerLevel) level);
         if (tile.updateRadiationScale()) {
             sendUpdatePacket = true;
         }
@@ -660,7 +662,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             int newRedstoneLevel = tile.getRedstoneLevel();
             if (newRedstoneLevel != tile.currentRedstoneLevel) {
                 tile.currentRedstoneLevel = newRedstoneLevel;
-                tile.notifyComparatorChange();
+                tile.notifyComparatorChange(level);
             }
             tile.updateComparators = false;
         }
@@ -693,7 +695,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         for (ITileComponent component : components) {
             component.removed();
@@ -708,7 +710,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
      */
-    protected void onUpdateClient() {
+    protected void onUpdateClient(Level level) {
     }
 
     /**
@@ -716,7 +718,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      *
      * @return {@code true} if an update packet needs to be sent to the client.
      */
-    protected boolean onUpdateServer() {
+    protected boolean onUpdateServer(ServerLevel level) {
         return false;
     }
 
@@ -728,20 +730,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     @Deprecated
-    public void setBlockState(@NotNull BlockState newState) {
+    public void setBlockState(BlockState newState) {
         super.setBlockState(newState);
         if (isDirectional()) {
             //Note: We get the new cached direction from the state as hopefully the state is not changing super often
             // and that way we can properly clear things that only should happen when the direction actually changes and not when we go from active to inactive
             Direction newDirection = Attribute.getFacing(newState);
-            if (cachedDirection != newDirection) {
+            //Note: The new direction should never be null as we validated that we are directional, double check it just to fix the warning though
+            if (newDirection != null && cachedDirection != newDirection) {
                 invalidateDirectionCaches(newDirection);
             }
         }
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         redstone = input.getBooleanOr(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
@@ -769,7 +772,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putBoolean(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
@@ -797,13 +800,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         if (supportsRedstone()) {
             NBTUtils.writeEnum(output, SerializationConstants.CONTROL_TYPE, controlType);
         }
     }
 
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(input, SerializationConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
         }
@@ -813,7 +816,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
     // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         // Check if the stack has a custom name, and if the tile supports naming, name it
         if (isNameable()) {
@@ -870,7 +873,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+    public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         for (ITileComponent component : components) {
             output.discard(component.getComponentKey());
@@ -889,7 +892,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
@@ -967,7 +970,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         for (ITileComponent component : components) {
             //TODO - 26.1: Do we want to be passing a child?
@@ -977,7 +980,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
         for (ITileComponent component : components) {
             component.readFromUpdateTag(input);
@@ -985,16 +988,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         radiationScale = input.getFloatOr(SerializationConstants.RADIATION, radiationScale);
     }
 
-    public void onNeighborChange(BlockPos neighborPos) {
-        if (!isRemote()) {
-            updatePower();
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+        if (!level.isClientSide()) {
+            updatePower(level);
         }
     }
 
     @Override
-    public void onAdded() {
-        super.onAdded();
-        updatePower();
+    public void onAdded(Level level) {
+        super.onAdded(level);
+        updatePower(level);
         if (getClientActive()) {
             currentActive = true;
         }
@@ -1006,13 +1009,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     //Methods pertaining to IUpgradeableTile
-    public void parseUpgradeData(@NotNull IUpgradeData data, Provider provider, TransactionContext transaction) {
+    public void parseUpgradeData(IUpgradeData data, Provider provider, TransactionContext transaction) {
         Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
     }
     //End methods IUpgradeableTile
 
     //Methods for implementing ITileDirectional
-    @NotNull
     @Override
     @ComputerMethod(restriction = MethodRestriction.DIRECTIONAL)
     public final Direction getDirection() {
@@ -1043,11 +1045,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setFacing(@NotNull Direction direction) {
+    public void setFacing(Direction direction) {
         setFacing(direction, true);
     }
 
-    public void setFacing(@NotNull Direction direction, boolean notifyCaps) {
+    public void setFacing(Direction direction, boolean notifyCaps) {
         if (isDirectional() && direction != cachedDirection && level != null) {
             invalidateDirectionCaches(direction);
             BlockState state = Attribute.setFacing(getBlockState(), direction);
@@ -1070,7 +1072,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setControlType(@NotNull RedstoneControl type) {
+    public void setControlType(RedstoneControl type) {
         if (supportsRedstone()) {
             type = supportedOrNextType(type);
             if (type != controlType) {
@@ -1080,7 +1082,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    private RedstoneControl supportedOrNextType(@NotNull RedstoneControl type) {
+    private RedstoneControl supportedOrNextType(RedstoneControl type) {
         Objects.requireNonNull(type);
         if (!supportsMode(type)) {
             //Validate we support the mode that is being set
@@ -1099,7 +1101,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsRedstone() && redstoneLastTick;
     }
 
-    public final void updatePower() {
+    public final void updatePower(LevelReader level) {
         if (supportsRedstone()) {
             boolean power = level.hasNeighborSignal(getBlockPos());
             if (redstone != power) {
@@ -1163,7 +1165,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IComparatorSupport
 
     //Methods for implementing ITileUpgradable
-    @NotNull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
@@ -1199,7 +1200,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return null;
     }
 
-    @NotNull
     public final List<IInventorySlot> getInventorySlots() {
         return itemHandlerManager == null ? Collections.emptyList() : itemHandlerManager.getContainers(null);
     }
@@ -1239,7 +1239,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return null;
     }
 
-    @NotNull
     public final List<IChemicalTank> getChemicalTanks() {
         return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(null);
     }
@@ -1251,7 +1250,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return null;
     }
 
-    @NotNull
     public final List<IFluidTank> getFluidTanks() {
         return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(null);
     }
@@ -1285,7 +1283,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public double getAmbientTemperature(@NotNull Direction side) {
+    public double getAmbientTemperature(Direction side) {
         if (canHandleHeat() && ambientTemperature != null) {
             return ambientTemperature.getTemperature(side);
         }
@@ -1294,7 +1292,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             return getAdjacentUnchecked(side);
         }
@@ -1302,7 +1300,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nullable
-    protected IHeatHandler getAdjacentUnchecked(@NotNull Direction side) {
+    protected IHeatHandler getAdjacentUnchecked(Direction side) {
         BlockCapabilityCache<IHeatHandler, @Nullable Direction> cache = adjacentHeatCaps.get(side);
         if (cache == null) {
             cache = BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(side), side.getOpposite());
@@ -1311,12 +1309,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return cache.getCapability();
     }
 
-    @NotNull
     public final List<IHeatCapacitor> getHeatCapacitors() {
         return getHeatCapacitors(null);
     }
 
-    @NotNull
     @Override
     public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatHandlerManager == null ? Collections.emptyList() : heatHandlerManager.getContainers(side);
@@ -1351,13 +1347,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IConfigCardAccess
 
     //Methods for implementing ITileSecurity
+    @Nullable
     @Override
     public TileComponentSecurity getSecurity() {
         return securityComponent;
     }
 
     @Override
-    public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
+    public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
         if (!isRemote() && hasGui() && level != null) {
             BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
         }

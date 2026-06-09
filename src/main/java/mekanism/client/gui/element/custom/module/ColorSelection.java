@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class ColorSelection extends MiniElement<Integer> {
 
@@ -33,10 +33,9 @@ class ColorSelection extends MiniElement<Integer> {
     private final int OFFSET_X;
     private final boolean supportsAlpha;
 
-    @Nullable
-    private final GuiModuleTweaker.ArmorPreview armorPreview;
+    private final GuiModuleTweaker.@Nullable ArmorPreview armorPreview;
 
-    ColorSelection(GuiModuleScreen parent, ModuleColorConfig data, Component description, int xPos, int yPos, @Nullable GuiModuleTweaker.ArmorPreview armorPreview) {
+    ColorSelection(GuiModuleScreen parent, ModuleColorConfig data, Component description, int xPos, int yPos, GuiModuleTweaker.@Nullable ArmorPreview armorPreview) {
         super(parent, data, description, xPos, yPos);
         this.armorPreview = armorPreview;
         this.supportsAlpha = data.supportsAlpha();

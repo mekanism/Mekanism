@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.Objects;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -42,7 +41,7 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
-              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
@@ -51,11 +50,11 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(tank).getLowerName();
+        String tierName = Attribute.getBaseTierNN(tank).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
-              .key(Pattern.OSMIUM, this.items, Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
+              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + tierName));
     }

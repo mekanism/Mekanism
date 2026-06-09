@@ -4,16 +4,15 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 
 public class FlamethrowerSoundIdle extends PlayerSound {
 
-    public FlamethrowerSoundIdle(@NotNull Player player) {
+    public FlamethrowerSoundIdle(Player player) {
         super(player, MekanismSounds.FLAMETHROWER_IDLE);
     }
 
     @Override
-    public boolean shouldPlaySound(@NotNull Player player) {
+    public boolean shouldPlaySound(Player player) {
         if (player.isUsingItem()) {
             InteractionHand usedHand = player.getUsedItemHand();
             if (player.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower) {

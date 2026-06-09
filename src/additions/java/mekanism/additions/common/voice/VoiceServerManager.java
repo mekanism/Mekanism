@@ -7,11 +7,14 @@ import java.net.SocketException;
 import java.util.Set;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceServerManager {
 
     private final Set<VoiceConnection> connections = new ObjectOpenHashSet<>();
+    @Nullable
     private ServerSocket serverSocket;
+    @Nullable
     private Thread listenThread;
     private boolean foundLocal = false;
     private boolean running;

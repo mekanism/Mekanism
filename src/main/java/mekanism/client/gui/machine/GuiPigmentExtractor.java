@@ -22,7 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentExtractor, MekanismTileContainer<TileEntityPigmentExtractor>> {
 
@@ -46,7 +46,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics, energyBar.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
@@ -54,6 +54,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
     private class PigmentColorDetails implements ColorDetails {
 
+        @Nullable
         private WeakReference<ItemStackToChemicalRecipe> cachedRecipe;
 
         @Override

@@ -1,15 +1,14 @@
 package mekanism.common.item.block.machine;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.component.AttachedEjector;
-import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.component.component.AttachedEjector;
+import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
@@ -19,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
@@ -35,7 +33,7 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     private final FactoryTier tier;
 
     public ItemBlockFactory(BlockFactory<?> block, Properties properties) {
-        tier = Objects.requireNonNull(Attribute.getTier(block, FactoryTier.class));
+        tier = Attribute.getTierNN(block, FactoryTier.class);
         super(block, true, properties
               .component(MekanismDataComponents.SORTING, false)
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
@@ -49,8 +47,8 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull ItemAccess itemAccess, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay,
-          @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+          Consumer<Component> tooltipAdder, TooltipFlag flag) {
         //Should always be present but validate it just in case
         AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
         if (factoryType != null) {

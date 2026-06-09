@@ -20,6 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.jspecify.annotations.Nullable;
 
 public class RecipeRegistryHelper {
 
@@ -55,7 +56,7 @@ public class RecipeRegistryHelper {
         registry.addRecipes(MekanismJEI.recipeType(recipeType), recipes);
     }
 
-    public static void addAnvilRecipes(IRecipeRegistration registry, Holder<Item> item, Function<Item, HolderSet<Item>> repairMaterials) {
+    public static void addAnvilRecipes(IRecipeRegistration registry, Holder<Item> item, Function<Item, @Nullable HolderSet<Item>> repairMaterials) {
         IVanillaRecipeFactory factory = registry.getVanillaRecipeFactory();
         //Based off of how JEI adds for Vanilla items
         ItemStack damaged2 = new ItemStack(item);

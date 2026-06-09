@@ -1,6 +1,5 @@
 package mekanism.common.recipe.compat;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import vectorwing.farmersdelight.common.registry.ModItems;
 
-@NothingNullByDefault
 public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
 
     public FarmersDelightRecipeProvider(HolderLookup.Provider registries, String modid) {

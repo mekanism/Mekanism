@@ -19,8 +19,7 @@ import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockType {
 
@@ -42,10 +41,18 @@ public class BlockType {
         return (ATTRIBUTE) attributeMap.get(type);
     }
 
+    public <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Class<ATTRIBUTE> type) {
+        ATTRIBUTE attribute = get(type);
+        if (attribute == null) {
+            throw new IllegalStateException("Expected " + getDescription() + " to have an attribute of type " + type.getSimpleName());
+        }
+        return attribute;
+    }
+
     @SafeVarargs
     protected final void setFrom(BlockTypeTile<?> tile, Class<? extends Attribute>... types) {
         for (Class<? extends Attribute> type : types) {
-            attributeMap.put(type, tile.get(type));
+            attributeMap.put(type, tile.getOrThrow(type));
         }
     }
 
@@ -66,7 +73,6 @@ public class BlockType {
         return attributeMap.values();
     }
 
-    @NotNull
     public ILangEntry getDescription() {
         return description;
     }
@@ -82,6 +88,7 @@ public class BlockType {
         return false;
     }
 
+    @Nullable
     public static BlockType get(Block block) {
         return block instanceof ITypeBlock typeBlock ? typeBlock.getType() : null;
     }

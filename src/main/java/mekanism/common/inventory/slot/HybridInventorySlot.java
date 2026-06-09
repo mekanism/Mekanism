@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transaction.RateLimitTracker;
@@ -17,9 +16,8 @@ import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class HybridInventorySlot extends ResourceHandlerSlot {
 
     public static HybridInventorySlot input(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {

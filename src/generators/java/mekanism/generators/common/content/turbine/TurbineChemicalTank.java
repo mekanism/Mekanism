@@ -2,15 +2,13 @@ package mekanism.generators.common.content.turbine;
 
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.registries.MekanismChemicals;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class TurbineChemicalTank extends VariableCapacityChemicalTank {
 
     private final TurbineMultiblockData multiblock;

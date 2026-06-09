@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 public class CrTImportsComponent implements ICrTExampleComponent {
 
@@ -27,7 +26,6 @@ public class CrTImportsComponent implements ICrTExampleComponent {
         return !paths.isEmpty();
     }
 
-    @NotNull
     @Override
     public String asString() {
         if (paths.isEmpty()) {

@@ -3,7 +3,6 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -22,8 +21,7 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -39,8 +37,7 @@ import org.jetbrains.annotations.Range;
  *
  * @apiNote Pressurized Reaction Chambers can process this recipe type.
  */
-@NothingNullByDefault
-public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput> implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull ChemicalStack> {
+public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput> implements TriPredicate<ItemStack, FluidStack, ChemicalStack> {
 
     private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
 
@@ -136,7 +133,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

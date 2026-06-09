@@ -20,7 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 /**
@@ -214,8 +214,8 @@ public class SearchQueryParser {
         },
         MOD_ID('@') {
             @Override
-            public boolean matches(Level level, @Nullable Player player, String key, ItemStack stack) {
-                return MekanismUtils.getModId(level.registryAccess(), stack).toLowerCase(Locale.ROOT).contains(key);
+            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
+                return level != null && MekanismUtils.getModId(level.registryAccess(), stack).toLowerCase(Locale.ROOT).contains(key);
             }
         },
         TOOLTIP('$') {
@@ -266,7 +266,7 @@ public class SearchQueryParser {
             this.prefix = prefix;
         }
 
-        public abstract boolean matches(Level level, @Nullable Player player, String key, ItemStack stack);
+        public abstract boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack);
     }
 
     public static class SearchQuery implements ISearchQuery {
@@ -275,7 +275,7 @@ public class SearchQueryParser {
         private final Map<QueryType, List<String>> queryStrings = new EnumMap<>(QueryType.class);
 
         @Override
-        public boolean test(Level level, @Nullable Player player, ItemStack stack) {
+        public boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack) {
             for (Map.Entry<QueryType, List<String>> entry : queryStrings.entrySet()) {
                 boolean hasNoMatch = true;
                 for (String key : entry.getValue()) {
@@ -305,7 +305,7 @@ public class SearchQueryParser {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {
@@ -352,7 +352,7 @@ public class SearchQueryParser {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

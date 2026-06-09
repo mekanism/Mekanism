@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -18,7 +19,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<ChemicalCrystallizerRecipe> {
 
@@ -33,9 +33,8 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         List<ChemicalStack> inputRepresentations = input.getRepresentations();
         displayItems = RecipeViewerUtils.getDisplayItems(input);
         oreInfo = new IOreInfo() {
-            @NotNull
             @Override
-            public ChemicalStack getInputChemical() {
+            public ChemicalResource getInputChemical() {
                 return inputRepresentations.isEmpty() ? ChemicalStack.EMPTY : RecipeViewerUtils.getCurrent(inputRepresentations);
             }
 
@@ -44,7 +43,6 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
                 return recipe;
             }
 
-            @NotNull
             @Override
             public ItemStack getRenderStack() {
                 return displayItems.isEmpty() ? ItemStack.EMPTY : RecipeViewerUtils.getCurrent(displayItems);

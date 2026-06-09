@@ -18,11 +18,9 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class RenderRobitItem implements SpecialModelRenderer<BakeResult> {
 
     public static final RenderRobitItem INSTANCE = new RenderRobitItem();

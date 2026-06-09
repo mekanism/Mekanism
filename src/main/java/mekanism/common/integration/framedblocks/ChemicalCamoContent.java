@@ -3,8 +3,6 @@ package mekanism.common.integration.framedblocks;
 import io.github.xfacthd.framedblocks.api.camo.CamoContent;
 import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
 import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContent;
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -23,10 +21,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
-@MethodsAreNotNullByDefault
 final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, ChemicalCamoContent> {
 
     private final MapColor mapColor;
@@ -108,7 +104,6 @@ final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, Ch
     }
 
     @Override
-    @Nullable
     public MapColor getMapColor(BlockGetter level, BlockPos pos) {
         return mapColor;
     }
@@ -179,7 +174,7 @@ final class ChemicalCamoContent extends ResourceCamoContent<ChemicalResource, Ch
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != ChemicalCamoContent.class) return false;
         return resource.equals(((ChemicalCamoContent) obj).resource);

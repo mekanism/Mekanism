@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
 
@@ -46,7 +45,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract int getTabColor(GuiGraphicsExtractor guiGraphics);
 
     @Override
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
@@ -55,14 +54,14 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (!this.slotHolder) {
             draw(guiGraphics);
         }
     }
 
-    protected void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
+    protected void draw(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, width, height, getTabColor(guiGraphics));
     }
 

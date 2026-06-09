@@ -1,6 +1,5 @@
 package mekanism.api.gear;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -13,7 +12,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public interface EnchantmentAwareModule<MODULE extends EnchantmentAwareModule<MODULE>> extends ICustomModule<MODULE> {
 
     /**

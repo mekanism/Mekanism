@@ -1,13 +1,11 @@
 package mekanism.common.tier;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public enum CableTier implements ITier {
     BASIC(BaseTier.BASIC, 8_000L),
     ADVANCED(BaseTier.ADVANCED, 128_000L),

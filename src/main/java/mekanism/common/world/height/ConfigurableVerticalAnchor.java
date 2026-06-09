@@ -9,7 +9,7 @@ import mekanism.common.resource.ore.OreAnchor;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record ConfigurableVerticalAnchor(CachedEnumValue<AnchorType> anchorType, CachedIntValue value) {
 

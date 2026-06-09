@@ -34,8 +34,10 @@ import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.network.to_client.container.property.PropertyType;
 import mekanism.common.util.LambdaMetaFactoryUtil;
 import net.minecraft.core.BlockPos;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;
+import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 public class SyncMapper extends BaseAnnotationScanner {
@@ -52,10 +54,10 @@ public class SyncMapper extends BaseAnnotationScanner {
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid
         specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
-              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, (container, contents) -> container.setContents(contents, null), LargeResourceStack.FLUID_HELPER.empty())
+              SpecialPropertyData.create(resourceStackClass(), IResourceContainer::asStack, (container, contents) -> container.setContents(contents, null), LargeResourceStack.FLUID_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
-              SpecialPropertyData.create(LargeResourceStack.class, IResourceContainer::asStack, (container, contents) -> container.setContents(contents, null), LargeResourceStack.CHEMICAL_HELPER.empty())
+              SpecialPropertyData.create(resourceStackClass(), IResourceContainer::asStack, (container, contents) -> container.setContents(contents, null), LargeResourceStack.CHEMICAL_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
               SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getAmountAsLong, (energyContainer, energy) -> energyContainer.setEnergy(energy, null), 0L)
@@ -65,9 +67,9 @@ public class SyncMapper extends BaseAnnotationScanner {
               SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeat, IHeatCapacitor::setHeat, 0D)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
-              SpecialPropertyData.create(LargeResourceStack.class, tank -> tank.getFluidTank().asStack(),
+              SpecialPropertyData.create(resourceStackClass(), tank -> tank.getFluidTank().asStack(),
                     (tank, stack) -> tank.getFluidTank().setContents(stack, null), LargeResourceStack.FLUID_HELPER.empty()),
-              SpecialPropertyData.create(LargeResourceStack.class, tank -> tank.getChemicalTank().asStack(),
+              SpecialPropertyData.create(resourceStackClass(), tank -> tank.getChemicalTank().asStack(),
                     (tank, stack) -> tank.getChemicalTank().setContents(stack, null), LargeResourceStack.CHEMICAL_HELPER.empty())
         ));
         specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,
@@ -76,13 +78,18 @@ public class SyncMapper extends BaseAnnotationScanner {
         ));
     }
 
+    @SuppressWarnings("unchecked")
+    private <RESOURCE extends Resource> Class<LargeResourceStack<RESOURCE>> resourceStackClass() {
+        return (Class<LargeResourceStack<RESOURCE>>) (Object) LargeResourceStack.class;
+    }
+
     @Override
     protected Map<ElementType, Type[]> getSupportedTypes() {
         return Collections.singletonMap(ElementType.FIELD, new Type[]{Type.getType(ContainerSync.class)});
     }
 
     @Override
-    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData) {
+    protected void collectScanData(Map<String, @Nullable Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData) {
         Map<Class<?>, List<PropertyFieldInfo>> rawPropertyMap = new Object2ObjectOpenHashMap<>();
         //Only create the list once for the default fallback
         List<String> fallbackTagsList = Collections.singletonList(DEFAULT_TAG);
@@ -213,16 +220,17 @@ public class SyncMapper extends BaseAnnotationScanner {
         private final PropertyType propertyType;
         private final Function<Object, Object> getter;
         private final BiConsumer<Object, Object> setter;
+        @Nullable
         private final Object defaultValue;
 
-        private TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, PropertyType propertyType, Object defaultValue) {
+        private TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, PropertyType propertyType, @Nullable Object defaultValue) {
             this.getter = getter;
             this.setter = setter;
             this.propertyType = propertyType;
             this.defaultValue = defaultValue;
         }
 
-        protected void track(MekanismContainer container, Supplier<Object> holderSupplier) {
+        protected void track(MekanismContainer container, Supplier<@Nullable Object> holderSupplier) {
             container.track(createSyncableData(holderSupplier));
         }
 
@@ -234,7 +242,7 @@ public class SyncMapper extends BaseAnnotationScanner {
             setter.accept(dataObj, value);
         }
 
-        protected ISyncableData createSyncableData(Supplier<Object> obj) {
+        protected ISyncableData createSyncableData(Supplier<@Nullable Object> obj) {
             return create(() -> {
                 Object dataObj = obj.get();
                 return dataObj == null ? getDefault() : get(dataObj);
@@ -254,7 +262,8 @@ public class SyncMapper extends BaseAnnotationScanner {
             return defaultValue == null ? propertyType.getDefault() : defaultValue;
         }
 
-        protected static TrackedFieldData create(Class<?> propertyType, Function<Object, Object> getter, BiConsumer<Object, Object> setter, Object defaultValue) {
+        @Nullable
+        protected static TrackedFieldData create(Class<?> propertyType, Function<Object, Object> getter, BiConsumer<Object, Object> setter, @Nullable Object defaultValue) {
             if (propertyType.isEnum()) {
                 return new EnumFieldData(getter, setter, propertyType);
             } else if (propertyType.isArray()) {
@@ -294,22 +303,17 @@ public class SyncMapper extends BaseAnnotationScanner {
         protected <ENUM extends Enum<ENUM>> ISyncableData createData(ENUM[] constants, Supplier<Object> getter, Consumer<Object> setter) {
             return SyncableEnum.create(val -> constants[val], constants[0], () -> (ENUM) getter.get(), setter::accept);
         }
-
-        @Override
-        protected Object getDefault() {
-            return constants[0];
-        }
     }
 
     //Assumes length of array is constant regardless of holder implementation
     protected static class ArrayFieldData extends TrackedFieldData {
 
-        protected ArrayFieldData(Function<Object, Object> getter, PropertyType propertyType, Object defaultElementValue) {
+        protected ArrayFieldData(Function<Object, Object> getter, PropertyType propertyType, @Nullable Object defaultElementValue) {
             super(getter, null, propertyType, defaultElementValue);
         }
 
         @Override
-        protected void track(MekanismContainer container, Supplier<Object> holderSupplier) {
+        protected void track(MekanismContainer container, Supplier<@Nullable Object> holderSupplier) {
             Object holder = holderSupplier.get();
             if (holder != null) {
                 //Try to get the current holder
@@ -344,7 +348,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         }
 
         @Override
-        protected ISyncableData createSyncableData(Supplier<Object> obj) {
+        protected ISyncableData createSyncableData(Supplier<@Nullable Object> obj) {
             throw new UnsupportedOperationException("Unsupported, uses overridden.");
         }
     }
@@ -366,9 +370,10 @@ public class SyncMapper extends BaseAnnotationScanner {
         private final Class<?> propertyType;
         private final Function<O, ?> getter;
         private final BiConsumer<O, Object> setter;
+        @Nullable
         private final Object defaultValue;
 
-        private SpecialPropertyData(Class<?> propertyType, Function<O, ?> getter, BiConsumer<O, Object> setter, Object defaultValue) {
+        private SpecialPropertyData(Class<?> propertyType, Function<O, ?> getter, BiConsumer<O, Object> setter, @Nullable Object defaultValue) {
             this.propertyType = propertyType;
             this.getter = getter;
             this.setter = setter;
@@ -384,7 +389,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         }
 
         @SuppressWarnings("unchecked")
-        protected static <O, V> SpecialPropertyData<O> create(Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter, V defaultValue) {
+        protected static <O, V> SpecialPropertyData<O> create(Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter, @Nullable V defaultValue) {
             return new SpecialPropertyData<>(propertyType, getter, (BiConsumer<O, Object>) setter, defaultValue);
         }
     }

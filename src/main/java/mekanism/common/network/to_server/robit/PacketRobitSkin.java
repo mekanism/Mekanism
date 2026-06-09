@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketRobitSkin(int entityId, ResourceKey<RobitSkin> skin) implements IMekanismPacket {
 
@@ -24,11 +23,10 @@ public record PacketRobitSkin(int entityId, ResourceKey<RobitSkin> skin) impleme
           PacketRobitSkin::new
     );
 
-    public PacketRobitSkin(EntityRobit robit, @NotNull ResourceKey<RobitSkin> skin) {
+    public PacketRobitSkin(EntityRobit robit, ResourceKey<RobitSkin> skin) {
         this(robit.getId(), skin);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketRobitSkin> type() {
         return TYPE;

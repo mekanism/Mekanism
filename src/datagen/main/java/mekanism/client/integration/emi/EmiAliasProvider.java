@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
@@ -45,7 +44,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-@NothingNullByDefault
 public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredient, EmiIngredient, EmiIngredient> {
 
     private static boolean emiSerializersInitialized;

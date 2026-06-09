@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
 import net.neoforged.fml.ModList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses,
                             Class<?> returnType, Class<?>[] returnExtra, ComputerFunctionCaller<T> handler, @Nullable String methodDescription,
@@ -30,7 +30,7 @@ public record MethodData<T>(String name, MethodRestriction restriction, String[]
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

@@ -1,9 +1,8 @@
 package mekanism.tools.common.material.impl;
 
-import java.util.Objects;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tags.MekanismTags.Items;
+import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.core.Holder;
@@ -13,7 +12,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
@@ -58,7 +56,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(@NotNull ArmorType armorType) {
+    public int getDurabilityForType(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 390;
             case LEGGINGS -> 450;
@@ -68,7 +66,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(@NotNull ArmorType armorType) {
+    public int getDefense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 3;
             case LEGGINGS -> 6;
@@ -78,28 +76,24 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         };
     }
 
-    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "osmium";
     }
 
-    @NotNull
     @Override
     public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_OSMIUM_TOOL;
     }
 
-    @NotNull
     @Override
     public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @NotNull
     @Override
     public TagKey<Item> getRepairItems() {
-        return Objects.requireNonNull(Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+        return MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM);
     }
 
     @Override

@@ -18,10 +18,8 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, EntityModel<RobitRenderState>> {
 
     private static final ModelPart EMPTY_MODEL_PART = new ModelPart(Collections.emptyList(), Collections.emptyMap());

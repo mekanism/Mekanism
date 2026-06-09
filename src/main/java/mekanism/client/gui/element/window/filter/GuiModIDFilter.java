@@ -20,8 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
@@ -52,7 +51,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         return setFilterName(text.getText(), false);
     }
 
-    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
@@ -67,7 +65,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         return new IGhostIngredientConsumer() {
             @Nullable
             @Override
-            public String supportedTarget(Object ingredient) {
+            public String supportedTarget(@Nullable Object ingredient) {
                 if (ingredient instanceof ItemStack stack) {
                     return stack.isEmpty() ? null : MekanismClient.getModId(stack);
                 }

@@ -3,7 +3,6 @@ package mekanism.tools.common.item;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
@@ -31,10 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
 public class ItemMekanismPaxel extends Item implements IsMekanismTool {
 
     private static final Set<ItemAbility> PAXEL_ACTIONS = Util.make(new ReferenceOpenHashSet<>(), actions -> {
@@ -62,7 +59,7 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ToolsUtils.addDurability(tooltipAdder, stack);
     }
@@ -77,7 +74,6 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
      *
      * Merged version of {@link net.minecraft.world.item.AxeItem#useOn(UseOnContext)} and {@link net.minecraft.world.item.ShovelItem#useOn(UseOnContext)}
      */
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();

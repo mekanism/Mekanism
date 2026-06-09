@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class FilterSelectButton extends MekanismButton {
 
@@ -17,13 +16,13 @@ public class FilterSelectButton extends MekanismButton {
 
     private final boolean down;
 
-    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, @NotNull IClickable onPress) {
+    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, IClickable onPress) {
         super(gui, x, y, 11, 7, CommonComponents.EMPTY, onPress);
         this.down = down;
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //TODO - 26.1 Gui blend
         //RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();

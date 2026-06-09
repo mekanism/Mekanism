@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -26,7 +24,6 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
-@ParametersAreNotNullByDefault
 public record ModuleAttackAmplificationUnit(AttackDamage attackDamage) implements ICustomModule<ModuleAttackAmplificationUnit> {
 
     public static final Identifier ATTACK_DAMAGE = Mekanism.rl("bonus_attack_damage");
@@ -47,7 +44,6 @@ public record ModuleAttackAmplificationUnit(AttackDamage attackDamage) implement
         }
     }
 
-    @NothingNullByDefault
     public enum AttackDamage implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(4),

@@ -10,13 +10,13 @@ public class TileEntityIndustrialAlarm extends TileEntityMekanism {
     public TileEntityIndustrialAlarm(BlockPos pos, BlockState state) {
         super(MekanismBlocks.INDUSTRIAL_ALARM, pos, state);
         delaySupplier = () -> 3;
-        this.onPowerChange();
+        onPowerChange();
     }
 
     @Override
     public void onPowerChange() {
         super.onPowerChange();
-        if (getLevel() != null && !getLevel().isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             setActive(isPowered());
         }
     }

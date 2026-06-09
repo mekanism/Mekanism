@@ -31,8 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
@@ -44,14 +43,12 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         delaySupplier = NO_DELAY;
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
         return _ -> getMultiblock().getChemicalTanks();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return _ -> getMultiblock().getFluidTanks();
@@ -62,7 +59,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         return _ -> getMultiblock().getEnergyContainer();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return _ -> getMultiblock().getHeatCapacitors();
@@ -96,7 +92,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FUSION_REACTOR_PORT))

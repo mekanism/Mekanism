@@ -30,11 +30,11 @@ import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -94,8 +94,7 @@ import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
@@ -110,12 +109,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     private final Predicate<Entity> SAME_DIMENSION_TARGET = entity -> canTeleportEntity(entity, null);
+    @Nullable
     private AABB teleportBounds;
     public int teleDelay = 0;
     public boolean shouldRender;
     @Nullable
     private Direction frameDirection;
     private boolean frameRotated;
+    @Nullable
     private EnumColor color;
 
     /**
@@ -142,7 +143,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return _ -> energyContainer;
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -185,8 +185,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (teleportBounds == null && frameDirection != null) {
             resetBounds();
         }
@@ -201,7 +201,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
         }
         if (teleDelay == 0 && teleportBounds != null && !didTeleport.isEmpty()) {
-            cleanTeleportCache();
+            cleanTeleportCache(level);
         }
 
         boolean prevShouldRender = shouldRender;
@@ -225,7 +225,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frequency == null ? null : frequency.getClosestCoords(getTileGlobalPos());
     }
 
-    private void cleanTeleportCache() {
+    private void cleanTeleportCache(ServerLevel level) {
         List<UUID> inTeleporter = level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).toList();
         if (inTeleporter.isEmpty()) {
             didTeleport.clear();
@@ -635,7 +635,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameRotated;
     }
 
-    public AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
+    public AABB getTeleporterBoundingBox(Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
         return AABB.encapsulatingFullBlocks(worldPosition.relative(frameDirection), worldPosition.relative(frameDirection, 2));
     }
@@ -674,6 +674,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energySlot.getGuiX();
     }
 
+    @Nullable
     public EnumColor getColor() {
         return color;
     }
@@ -685,7 +686,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.RENDERING, shouldRender);
         if (color != null) {
@@ -694,7 +695,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, shouldRender);
         color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
@@ -815,13 +816,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return !isError;
         }
 
-        @NotNull
         @Override
         public Component getTextComponent() {
             return name;
         }
 
-        @NotNull
         @Override
         public String getSerializedName() {
             return serializedName;

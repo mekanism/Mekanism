@@ -25,8 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SideDataButton extends BasicColorButton {
 
@@ -41,7 +40,7 @@ public class SideDataButton extends BasicColorButton {
     @Nullable
     private Tooltip lastTooltip;
 
-    public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
+    public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<@Nullable DataType> dataTypeSupplier, Supplier<@Nullable EnumColor> colorSupplier,
           TileEntityMekanism tile, SideDataPacketCreator packetCreator, boolean displayDataType) {
         super(gui, x, y, 22, () -> {
             DataType dataType = dataTypeSupplier.get();
@@ -74,12 +73,13 @@ public class SideDataButton extends BasicColorButton {
         }
     }
 
+    @Nullable
     public DataType getDataType() {
         return this.dataTypeSupplier.get();
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (!otherBlockItem.isEmpty()) {

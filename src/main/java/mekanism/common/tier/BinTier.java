@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: Do we want to up the default config limits for any of these tiers?
 public enum BinTier implements ITier {
@@ -14,6 +15,7 @@ public enum BinTier implements ITier {
 
     private final long baseStorage;
     private final BaseTier baseTier;
+    @Nullable
     private CachedLongValue storageReference;
 
     BinTier(BaseTier tier, long storage) {

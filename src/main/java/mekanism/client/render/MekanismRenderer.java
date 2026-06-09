@@ -46,9 +46,7 @@ import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class MekanismRenderer {
@@ -73,7 +71,7 @@ public class MekanismRenderer {
      *
      * @return the sprite, or missing sprite if not found
      *///TODO - 26.1 - is this still what should be done?
-    public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
+    public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
             return fluidModel.stillMaterial().sprite();
@@ -82,12 +80,11 @@ public class MekanismRenderer {
         }
     }
 
-    public static TextureAtlasSprite getFluidTexture(@NotNull TypedInstance<Fluid> fluid, @NotNull FluidTextureType type) {
+    public static TextureAtlasSprite getFluidTexture(TypedInstance<Fluid> fluid, FluidTextureType type) {
         return getFluidTexture(fluid.typeHolder().value(), type);
     }
 
-    @NonNull
-    private static TextureAtlasSprite getFluidTexture(@NonNull Fluid fluid, @NonNull FluidTextureType type) {
+    private static TextureAtlasSprite getFluidTexture(Fluid fluid, FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
             return fluidModel.stillMaterial().sprite();
@@ -96,22 +93,22 @@ public class MekanismRenderer {
         }
     }
 
-    private static @NonNull FluidModel getFluidModel(TypedInstance<Fluid> fluid) {
+    private static FluidModel getFluidModel(TypedInstance<Fluid> fluid) {
         return getFluidModel(fluid.typeHolder().value());
     }
 
-    private static @NonNull FluidModel getFluidModel(Fluid fluid) {
+    private static FluidModel getFluidModel(Fluid fluid) {
         Minecraft minecraft = Minecraft.getInstance();
         ModelManager modelManager = minecraft.getModelManager();
         FluidStateModelSet fluidStateModelSet = modelManager.getFluidStateModelSet();
         return fluidStateModelSet.get(fluid.defaultFluidState());
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@NotNull TypedInstance<Chemical> stack) {
+    public static TextureAtlasSprite getChemicalTexture(TypedInstance<Chemical> stack) {
         return getChemicalTexture(stack.typeHolder());
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@NotNull Holder<Chemical> chemical) {
+    public static TextureAtlasSprite getChemicalTexture(Holder<Chemical> chemical) {
         return getSprite(chemical.value().getIcon());
     }
 
@@ -142,21 +139,21 @@ public class MekanismRenderer {
         return color.argb();
     }
 
-    public static int color(@NotNull FluidStack fluid) {
+    public static int color(FluidStack fluid) {
         if (!fluid.isEmpty()) {
             return getColorARGB(fluid);
         }
         return -1;
     }
 
-    public static int color(@NotNull FluidResource fluid) {
+    public static int color(FluidResource fluid) {
         if (!fluid.isEmpty()) {
             return getColorARGB(fluid);
         }
         return -1;
     }
 
-    public static int color(@NotNull TypedInstance<Chemical> instance) {
+    public static int color(TypedInstance<Chemical> instance) {
         if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
         }
@@ -175,7 +172,7 @@ public class MekanismRenderer {
         return getColorARGB(color.getPackedColor(), alpha);
     }
 
-    public static int getColorARGB(@NotNull TypedInstance<Fluid> typedInstance) {
+    public static int getColorARGB(TypedInstance<Fluid> typedInstance) {
         FluidModel fluidModel = getFluidModel(typedInstance);
         FluidTintSource tintSource = fluidModel.fluidTintSource();
         if (tintSource == null) {
@@ -184,7 +181,7 @@ public class MekanismRenderer {
         return tintSource.color(typedInstance.typeHolder().value().defaultFluidState());
     }
 
-    public static int getColorARGB(@NotNull FluidResource fluidType, float fluidScale) {
+    public static int getColorARGB(FluidResource fluidType, float fluidScale) {
         if (fluidType.isEmpty()) {
             return CommonColors.WHITE;
         }
@@ -196,15 +193,15 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static int getColorARGB(@NotNull TypedInstance<Chemical> stack, float scale) {
+    public static int getColorARGB(TypedInstance<Chemical> stack, float scale) {
         return getColorARGB(stack.typeHolder(), scale);
     }
 
-    public static int getTint(@NotNull Holder<Chemical> chemical) {
+    public static int getTint(Holder<Chemical> chemical) {
         return chemical.value().getTint();
     }
 
-    public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
+    public static int getColorARGB(Holder<Chemical> chemical, float scale) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return CommonColors.WHITE;
         } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
@@ -222,7 +219,7 @@ public class MekanismRenderer {
         return ARGB.color(alpha, argb);
     }
 
-    public static int calculateGlowLight(int combinedLight, @NotNull FluidResource fluidType) {
+    public static int calculateGlowLight(int combinedLight, FluidResource fluidType) {
         return fluidType.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluidType.getFluidType().getLightLevel());
     }
 
@@ -256,7 +253,7 @@ public class MekanismRenderer {
     }
 
     private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(Identifier rl, T[] elements) {
-        List<Color> parsed = ColorAtlas.load(rl, elements.length);
+        List<@Nullable Color> parsed = ColorAtlas.load(rl, elements.length);
         if (parsed.size() < elements.length) {
             Mekanism.logger.error("Failed to parse color atlas: {}.", rl);
             return;

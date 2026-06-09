@@ -11,13 +11,12 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.util.ChunkUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.ChunkPos;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 /**
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.VisibleForTesting;
  * <p>
  * Values MUST support equals, else removal by value will not work.
  */
-@NothingNullByDefault
 public class IndexedCuboidMap<VALUE> {
 
     private final BiLongMultimap<CenteredBoundingBox> chunkIndex = new BiLongMultimap<>();

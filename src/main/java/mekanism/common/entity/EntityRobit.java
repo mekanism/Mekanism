@@ -40,9 +40,9 @@ import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
@@ -124,8 +124,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
@@ -178,16 +177,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
-    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
+    private final IInputHandler<Item, ItemStack> inputHandler;
+    private final IOutputHandler<ItemStackTemplate> outputHandler;
 
-    @NotNull
     private final List<IInventorySlot> inventorySlots;
-    @NotNull
     private final List<IInventorySlot> mainContainerSlots;
-    @NotNull
     private final List<IInventorySlot> smeltingContainerSlots;
-    @NotNull
     private final List<IInventorySlot> inventoryContainerSlots;
     private final IMekanismResourceHandler<ItemResource, IInventorySlot> directInventoryHandler;
     private final EnergyInventorySlot energySlot;
@@ -258,7 +253,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         //Default before it has a brief chance to get set the owner to mekanism's fake player
         builder.define(OWNER_UUID, Mekanism.gameProfile.id());
@@ -399,9 +394,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return WorldUtils.getTileEntity(TileEntityChargepad.class, level(), blockPosition()) != null;
     }
 
-    @NotNull
     @Override
-    protected InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         //TODO - 26.1: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
         if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
@@ -465,7 +459,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull ValueOutput output) {
+    public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, getOwnerUUID());
         NBTUtils.writeEnum(output, SerializationConstants.SECURITY_MODE, getSecurityMode());
@@ -479,7 +473,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull ValueInput input) {
+    public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(ownerUUID -> setOwnerUUID(ownerUUID, null));
         NBTUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> setSecurityMode(mode, null));
@@ -493,7 +487,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public void onDamageTaken(@NotNull DamageContainer damageContainer) {
+    public void onDamageTaken(DamageContainer damageContainer) {
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before hitting a robit
         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             energyContainer.extract(MathUtils.clampToInt(1_000 * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
@@ -522,30 +516,28 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return !energyContainer.isEmpty();
     }
 
+    @Nullable
     public Player getOwner() {
         return level().getPlayerByUUID(getOwnerUUID());
     }
 
-    @NotNull
     @Override
     public String getOwnerName() {
         return entityData.get(OWNER_NAME);
     }
 
-    @NotNull
     @Override
     public UUID getOwnerUUID() {
         return entityData.get(OWNER_UUID);
     }
 
-    @NotNull
     @Override
     public SecurityMode getSecurityMode() {
         return entityData.get(SECURITY);
     }
 
     @Override
-    public void setSecurityMode(@NotNull SecurityMode mode, @Nullable TransactionContext transaction) {
+    public void setSecurityMode(SecurityMode mode, @Nullable TransactionContext transaction) {
         SecurityMode current = getSecurityMode();
         if (current != mode) {
             entityData.set(SECURITY, mode);
@@ -564,7 +556,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
-    public void setOwnerUUID(UUID uuid, @Nullable TransactionContext transaction) {
+    public void setOwnerUUID(@Nullable UUID uuid, @Nullable TransactionContext transaction) {
         entityData.set(OWNER_UUID, uuid);
         entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
     }
@@ -585,7 +577,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         entityData.set(DROP_PICKUP, pickup);
     }
 
-    @NotNull
     public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
@@ -595,8 +586,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         //TODO: Do we need to save the things? Probably, if not remove the call to here from createNewCachedRecipe
     }
 
-    @NotNull
-    public List<IInventorySlot> getContainerInventorySlots(@NotNull MenuType<?> containerType) {
+    public List<IInventorySlot> getContainerInventorySlots(MenuType<?> containerType) {
         if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.get()) {
             return inventoryContainerSlots;
         } else if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
@@ -607,7 +597,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return Collections.emptyList();
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.SMELTING;
@@ -638,9 +627,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         Arrays.fill(trackedErrors, false);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
@@ -680,9 +668,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
             return ContainerLevelAccess.NULL;
         }
         return new ContainerLevelAccess() {
-            @NotNull
             @Override
-            public <T> Optional<T> evaluate(@NotNull BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
+            public <T> Optional<T> evaluate(BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
                 return Optional.ofNullable(worldBlockPosTBiFunction.apply(level(), blockPosition()));
@@ -698,7 +685,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         entityData.set(DEFAULT_SKIN_MANUALLY_SELECTED, value);
     }
 
-    @NotNull
     @Override
     public ResourceKey<RobitSkin> getSkinId() {
         return entityData.get(SKIN);
@@ -711,7 +697,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     //todo - 26.1: cache the skin instance and index
 
     @Override
-    public boolean setSkin(@NotNull ResourceKey<RobitSkin> skinKey, @Nullable Player player) {
+    public boolean setSkin(ResourceKey<RobitSkin> skinKey, @Nullable Player player) {
         Objects.requireNonNull(skinKey, "Robit skin cannot be null.");
         if (getSkinId() == skinKey) {
             //Don't do anything if the robit already has that skin selected

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.CreeperRenderState;
@@ -14,7 +13,6 @@ import net.minecraft.util.Mth;
 /**
  * Copy of vanilla's creeper render, modified to use our own model/layer that is properly scaled
  */
-@NothingNullByDefault
 public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, CreeperRenderState, ModelBabyCreeper> {
 
     private static final Identifier CREEPER_TEXTURES = Identifier.withDefaultNamespace("textures/entity/creeper/creeper.png");

@@ -63,9 +63,8 @@ import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -210,7 +209,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void openInventory(@NotNull Inventory inv) {
+    protected void openInventory(Inventory inv) {
         super.openInventory(inv);
         if (!getLevel().isClientSide()) {
             QIOFrequency freq = getFrequency();
@@ -221,7 +220,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void closeInventory(@NotNull Player player) {
+    protected void closeInventory(Player player) {
         super.closeInventory(player);
         if (!player.level().isClientSide()) {
             QIOFrequency freq = getFrequency();
@@ -295,9 +294,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return craftingGridSlots;
     }
 
-    @NotNull
     @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
+    public ItemStack quickMoveStack(Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
@@ -554,7 +552,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return sortType;
     }
 
-    @NotNull
     public List<IScrollableSlot> getQIOItemList() {
         return searchQuery.isInvalid() ? itemList : searchList;
     }
@@ -737,7 +734,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(@Nullable Object obj) {
             if (obj == this) {
                 return true;
             } else if (obj == null || obj.getClass() != this.getClass()) {
@@ -786,7 +783,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return this == ASCENDING;
         }
 
-        @NotNull
         @Override
         public String getTranslationKey() {
             return name.getTranslationKey();
@@ -847,7 +843,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return name.translate();
         }
 
-        @NotNull
         @Override
         public Component getTranslatedName() {
             return getShortName();

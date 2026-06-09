@@ -9,8 +9,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class QEContainerHolder<CONTAINER> extends QEConfigHolder<List<CONTAINER>> implements IContainerHolder<CONTAINER> {
 
@@ -24,7 +23,6 @@ public class QEContainerHolder<CONTAINER> extends QEConfigHolder<List<CONTAINER>
         return Collections.emptyList();
     }
 
-    @NotNull
     @Override
     public List<CONTAINER> getContainers(@Nullable Direction side) {
         return getData(side);

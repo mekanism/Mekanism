@@ -21,9 +21,8 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class DataBasedGeometry implements IUnbakedGeometry<DataBasedGeometry> {
 
     private final Map<ModelProperty<Void>, UnbakedModel> propertyBasedUnbakedModels = new HashMap<>();

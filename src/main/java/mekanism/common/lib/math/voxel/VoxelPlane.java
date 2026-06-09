@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.core.BlockPos;
+import org.jspecify.annotations.Nullable;
 
 public class VoxelPlane {
 
@@ -118,7 +119,7 @@ public class VoxelPlane {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof VoxelPlane other && size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
     }
 

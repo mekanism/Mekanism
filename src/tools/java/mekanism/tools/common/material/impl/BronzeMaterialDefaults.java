@@ -10,7 +10,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
@@ -55,7 +54,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(@NotNull ArmorType armorType) {
+    public int getDurabilityForType(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 234;
             case LEGGINGS -> 270;
@@ -65,7 +64,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(@NotNull ArmorType armorType) {
+    public int getDefense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 2;
             case LEGGINGS -> 6;
@@ -75,19 +74,16 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
         };
     }
 
-    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "bronze";
     }
 
-    @NotNull
     @Override
     public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_BRONZE_TOOL;
     }
 
-    @NotNull
     @Override
     public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;

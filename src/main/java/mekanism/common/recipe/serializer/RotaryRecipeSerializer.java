@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
-@NothingNullByDefault
 public class RotaryRecipeSerializer {
 
     private static final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC.validate(

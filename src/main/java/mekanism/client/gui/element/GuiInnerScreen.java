@@ -13,8 +13,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
 
@@ -139,9 +138,8 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return getWidth();
     }
 
-    @NotNull
     @Override
-    public GuiInnerScreen recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories) {
+    public GuiInnerScreen recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }

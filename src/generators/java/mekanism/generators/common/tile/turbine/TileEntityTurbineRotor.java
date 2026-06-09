@@ -8,12 +8,12 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTurbineRotor extends TileEntityInternalMultiblock implements Clearable {
 
@@ -34,8 +34,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void onNeighborChange(BlockPos neighborPos) {
-        super.onNeighborChange(neighborPos);
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+        super.onNeighborChange(level, neighborPos);
         if (!isRemote()) {
             updateRotors();
         }
@@ -162,7 +162,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         if (!isRemote()) {
             int amount = getHousedBlades();
@@ -173,7 +173,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         blades = input.getIntOr(SerializationConstants.BLADES, blades);
         position = input.getIntOr(SerializationConstants.POSITION, position);
@@ -181,21 +181,21 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.BLADES, getHousedBlades());
         output.putInt(SerializationConstants.POSITION, getPosition());
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putInt(SerializationConstants.BLADES, blades);
         output.putInt(SerializationConstants.POSITION, position);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         int prevBlades = blades;
         int prevPosition = position;

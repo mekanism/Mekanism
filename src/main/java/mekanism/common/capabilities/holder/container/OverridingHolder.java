@@ -10,8 +10,7 @@ import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class OverridingHolder<CONTAINER> extends BasicContainerHolder<CONTAINER> {
 
@@ -21,7 +20,7 @@ public class OverridingHolder<CONTAINER> extends BasicContainerHolder<CONTAINER>
         super(facingSupplier, insertPredicate, extractPredicate);
     }
 
-    void addContainer(@NotNull CONTAINER container, BiFunction<CONTAINER, RelativeSide, CONTAINER> containerTransformer) {
+    void addContainer(CONTAINER container, BiFunction<CONTAINER, RelativeSide, CONTAINER> containerTransformer) {
         addContainer(container);
         for (RelativeSide side : EnumUtils.SIDES) {
             CONTAINER transformed = containerTransformer.apply(container, side);
@@ -34,7 +33,6 @@ public class OverridingHolder<CONTAINER> extends BasicContainerHolder<CONTAINER>
         }
     }
 
-    @NotNull
     @Override
     public List<CONTAINER> getContainers(@Nullable Direction side) {
         if (side == null) {

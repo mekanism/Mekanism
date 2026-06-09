@@ -5,24 +5,21 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class MekKeyBindingBuilder {
 
     @Nullable
     private String description;
     private IKeyConflictContext keyConflictContext = KeyConflictContext.UNIVERSAL;
     private KeyModifier keyModifier = KeyModifier.NONE;
-    @Nullable
-    private InputConstants.Key key;
+    private InputConstants.@Nullable Key key;
     private KeyMapping.Category category = MekanismKeyHandler.CATEGORY;
     @Nullable
     private BiConsumer<KeyMapping, Boolean> onKeyDown;

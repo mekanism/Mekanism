@@ -1,22 +1,21 @@
 package mekanism.common.content.network.distribution;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
-public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, Void> {
+public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, @Nullable Void> {
 
     public EnergySaveTarget(int expectedSize) {
         super(expectedSize);
     }
 
     @Override
-    protected long accept(EnergySaveTarget.SaveHandler handler, Void unused, long amount, TransactionContext transaction) {
+    protected long accept(EnergySaveTarget.SaveHandler handler, @Nullable Void unused, long amount, TransactionContext transaction) {
         return handler.accept(amount, transaction);
     }
 
-    @NothingNullByDefault
     public static class SaveHandler {
 
         private final IEnergyContainer delegate;

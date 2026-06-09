@@ -2,7 +2,6 @@ package mekanism.common.recipe;
 
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 //TODO: Somehow represent this recipe in JEI and EMI??
-@NothingNullByDefault
 public class ClearConfigurationRecipe extends CustomRecipe {
 
     public static final ClearConfigurationRecipe INSTANCE = new ClearConfigurationRecipe();

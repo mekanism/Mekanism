@@ -3,15 +3,13 @@ package mekanism.common.inventory.slot;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class CraftingWindowInventorySlot extends BasicInventorySlot {
 
     public static CraftingWindowInventorySlot input(QIOCraftingWindow window, @Nullable IContentsListener saveListener) {

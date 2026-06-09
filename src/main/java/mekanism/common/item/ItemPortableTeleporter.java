@@ -24,7 +24,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem, ICapabilityAware {
 
@@ -34,7 +33,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder);
         MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
@@ -45,9 +44,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
         return FrequencyTypes.TELEPORTER;
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 

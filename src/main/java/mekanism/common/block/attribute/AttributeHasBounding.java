@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Currently requires the block to also have a tile and to implement IBoundingBlock for functionality of things
 // at some point that should be cleaned up some
@@ -16,7 +17,7 @@ public class AttributeHasBounding implements Attribute {
 
     public static final AttributeHasBounding ABOVE_ONLY = new AttributeHasBounding(new HandleBoundingBlock() {
         @Override
-        public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+        public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
             return consumer.accept(level, pos.above(), data);
         }
     });
@@ -77,17 +78,17 @@ public class AttributeHasBounding implements Attribute {
         }
     }
 
-    public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate) {
+    public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate) {
         return boundingPosHandlers.handle(level, pos, state, data, predicate);
     }
 
     public interface HandleBoundingBlock {
 
-        <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate);
+        <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate);
     }
 
     @FunctionalInterface
-    public interface TriBooleanFunction<PARAM1, PARAM2, PARAM3> {
+    public interface TriBooleanFunction<PARAM1, PARAM2, PARAM3 extends @Nullable Object> {
 
         boolean accept(PARAM1 param1, PARAM2 param2, PARAM3 param3);
     }

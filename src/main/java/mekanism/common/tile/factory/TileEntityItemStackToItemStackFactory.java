@@ -22,8 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //Smelting, enriching, crushing
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
@@ -43,13 +42,13 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
+    public boolean isItemValidForSlot(ItemResource itemType) {
         //contains recipe in general already validated by isValidInputItem
         return true;
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+    public boolean isValidInputItem(ItemResource itemType) {
         return containsRecipe(itemType);
     }
 
@@ -59,16 +58,16 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, @NotNull ItemResource itemType) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, ItemResource itemType) {
         return cached != null && cached.getRecipe().getInput().testType(itemType);
     }
 
+    @Nullable
     @Override
-    protected ItemStackToItemStackRecipe findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected ItemStackToItemStackRecipe findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.resource(), CAN_OUTPUT_STACK);
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return switch (type) {
@@ -95,9 +94,8 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
         return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(this::canFunction)
@@ -109,7 +107,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
-    @NotNull
     @Override
     public MachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new MachineUpgradeData(provider, redstone, getControlType(), energyContainer, progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());

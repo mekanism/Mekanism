@@ -1,14 +1,12 @@
 package mekanism.common.capabilities.proxy;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IMekanismResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class AutomatedResourceHandler<RESOURCE extends Resource> implements ResourceHandler<RESOURCE> {
 
     @Nullable

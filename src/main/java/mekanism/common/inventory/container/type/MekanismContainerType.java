@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.type;
 
+import io.netty.handler.codec.DecoderException;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
@@ -17,8 +18,7 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.IContainerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
 
@@ -73,31 +73,29 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return null;
     }
 
-    @NotNull
     private static <TILE extends BlockEntity> TILE getTileFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
-            throw new IllegalArgumentException("Null packet buffer");
+            throw new DecoderException("Null packet buffer");
         } else if (!FMLEnvironment.getDist().isClient()) {
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         BlockPos pos = buf.readBlockPos();
         TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos);
         if (tile == null) {
-            throw new IllegalStateException("Client could not locate tile at " + pos + " for tile container. "
-                                            + "This is likely caused by a mod breaking client side tile lookup");
+            throw new DecoderException("Client could not locate tile at " + pos + " for tile container. "
+                                       + "This is likely caused by a mod breaking client side tile lookup");
         }
         return tile;
     }
 
-    @NotNull
     private static <ENTITY extends Entity> ENTITY getEntityFromBuf(FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
-            throw new IllegalArgumentException("Null packet buffer");
+            throw new DecoderException("Null packet buffer");
         } else if (!FMLEnvironment.getDist().isClient()) {
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         if (Minecraft.getInstance().level == null) {
-            throw new IllegalStateException("Client world is null.");
+            throw new DecoderException("Client world is null.");
         }
         int entityId = buf.readVarInt();
         Entity e = Minecraft.getInstance().level.getEntity(entityId);
@@ -105,7 +103,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
             //noinspection unchecked
             return (ENTITY) e;
         }
-        throw new IllegalStateException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "
+        throw new DecoderException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "
                                         + "This is likely caused by a mod breaking client side entity lookup.");
     }
 

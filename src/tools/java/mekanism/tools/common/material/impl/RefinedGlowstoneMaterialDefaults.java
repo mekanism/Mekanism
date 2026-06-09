@@ -10,7 +10,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
 
@@ -55,7 +54,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(@NotNull ArmorType armorType) {
+    public int getDurabilityForType(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 221;
             case LEGGINGS -> 255;
@@ -65,7 +64,7 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(@NotNull ArmorType armorType) {
+    public int getDefense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
@@ -74,25 +73,21 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
         };
     }
 
-    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "refined_glowstone";
     }
 
-    @NotNull
     @Override
     public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_REFINED_GLOWSTONE_TOOL;
     }
 
-    @NotNull
     @Override
     public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @NotNull
     @Override
     public TagKey<Item> getRepairItems() {
         return MekanismTags.Items.INGOTS_REFINED_GLOWSTONE;

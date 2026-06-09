@@ -15,7 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ConfigurableHeightProvider extends HeightProvider {
 
@@ -25,6 +25,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
 
     private final OreVeinType oreVeinType;
     private final ConfigurableHeightRange range;
+    @Nullable
     private LongSet warnedFor;
 
     private ConfigurableHeightProvider(OreVeinType oreVeinType, OreVeinConfig oreConfig) {
@@ -37,7 +38,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
     }
 
     @Override
-    public int sample(@NotNull RandomSource random, @NotNull WorldGenerationContext context) {
+    public int sample(RandomSource random, WorldGenerationContext context) {
         int min = range.minInclusive().resolveY(context);
         int max = range.maxInclusive().resolveY(context);
         if (min > max) {
@@ -55,7 +56,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
         };
     }
 
-    private int sampleTrapezoid(@NotNull RandomSource random, int min, int max) {
+    private int sampleTrapezoid(RandomSource random, int min, int max) {
         int plateau = range.plateau().getAsInt();
         int range = max - min;
         if (plateau >= range) {
@@ -65,7 +66,6 @@ public class ConfigurableHeightProvider extends HeightProvider {
         return min + Mth.randomBetweenInclusive(random, 0, range - middle) + Mth.randomBetweenInclusive(random, 0, middle);
     }
 
-    @NotNull
     @Override
     public HeightProviderType<?> getType() {
         return MekanismHeightProviderTypes.CONFIGURABLE.get();

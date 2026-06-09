@@ -14,8 +14,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement implements ISupportsWarning<GuiBar<INFO>> {
 
@@ -37,7 +36,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public GuiBar<INFO> warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public GuiBar<INFO> warning(WarningType type, BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -47,7 +46,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
@@ -60,7 +59,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         drawContentsChecked(guiGraphics, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
     }
 
-    void drawContentsChecked(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         //If there are any contents render them
         if (handlerLevel > 0) {
             renderBarOverlay(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);

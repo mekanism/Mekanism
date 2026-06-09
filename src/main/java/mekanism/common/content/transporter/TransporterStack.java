@@ -29,8 +29,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TransporterStack {
 
@@ -60,10 +59,12 @@ public class TransporterStack {
 
     public int progress;
 
+    @Nullable
     public EnumColor color = null;
 
     public boolean initiatedPath = false;
 
+    @Nullable
     public Direction idleDir = null;
 
     //packed BlockPos-es
@@ -80,7 +81,7 @@ public class TransporterStack {
     public TransporterStack() {
     }
 
-    private TransporterStack(@NotNull ValueInput input) {
+    private TransporterStack(ValueInput input) {
         this.color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
@@ -88,21 +89,21 @@ public class TransporterStack {
         this.itemStack = LargeResourceStack.ITEM_HELPER.readOrEmpty(input, SerializationConstants.ITEM);
     }
 
-    public static TransporterStack read(@NotNull ValueInput input) {
+    public static TransporterStack read(ValueInput input) {
         TransporterStack stack = new TransporterStack(input);
         stack.idleDir = NBTUtils.getEnum(input, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
         stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
         return stack;
     }
 
-    public static TransporterStack readFromUpdate(@NotNull ValueInput input) {
+    public static TransporterStack readFromUpdate(ValueInput input) {
         TransporterStack stack = new TransporterStack(input);
         stack.clientNext = input.getLongOr(SerializationConstants.NEXT, Long.MAX_VALUE);
         stack.clientPrev = input.getLongOr(SerializationConstants.PREVIOUS, Long.MAX_VALUE);
         return stack;
     }
 
-    private void writeCommon(@NotNull ValueOutput output) {
+    private void writeCommon(ValueOutput output) {
         if (color != null) {
             NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
@@ -111,7 +112,7 @@ public class TransporterStack {
         LargeResourceStack.ITEM_HELPER.storeNonEmpty(output, SerializationConstants.ITEM, itemStack);
     }
 
-    public void writeToUpdateTag(LogisticalTransporterBase transporter, @NotNull ValueOutput output) {
+    public void writeToUpdateTag(LogisticalTransporterBase transporter, ValueOutput output) {
         writeCommon(output);
         NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, getPathType());
         long next = getNext(transporter);
@@ -124,7 +125,7 @@ public class TransporterStack {
         }
     }
 
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         writeCommon(output);
         if (pathType != null) {
             //TODO - 26.1: Figure out path type and if we should set it to none when saving to file instead of not saving it
@@ -159,7 +160,7 @@ public class TransporterStack {
         this.itemStack = LargeResourceStack.ITEM_HELPER.createStack(itemType, amount);
     }
 
-    private void setPath(Level world, @NotNull LongList path, @NotNull Path type, @Nullable TransactionContext transaction) {
+    private void setPath(Level world, LongList path, Path type, @Nullable TransactionContext transaction) {
         //Make sure old path isn't null
         if (pathType == null || pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack

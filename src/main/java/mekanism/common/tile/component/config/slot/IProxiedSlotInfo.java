@@ -88,7 +88,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
     }
 
     @FunctionalInterface
-    interface ProxySlotInfoCreator<T> {
+    interface ProxySlotInfoCreator<T extends @Nullable Object> {
 
         IProxiedSlotInfo create(boolean canInput, boolean canOutput, Supplier<T> supplier);
     }

@@ -8,7 +8,6 @@ import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiStateTexture extends GuiTexturedElement {
 
@@ -26,7 +25,7 @@ public class GuiStateTexture extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
         Identifier resource = onSupplier.getAsBoolean() ? onTexture : offTexture;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, relativeX + 2, relativeY + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);

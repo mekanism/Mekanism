@@ -22,7 +22,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
 
@@ -44,10 +43,9 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         return ambientLight;
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
-          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player,
+          InteractionHand hand, BlockHitResult hit) {
         if (stack.isEmpty()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }

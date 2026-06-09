@@ -6,7 +6,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.world.MenuProvider;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class AttributeGui implements Attribute {
 
@@ -19,6 +19,7 @@ public class AttributeGui implements Attribute {
         this.customName = customName;
     }
 
+    @Nullable
     public <TILE extends TileEntityMekanism> MenuProvider getProvider(TILE tile, boolean resetMousePosition) {
         return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile, resetMousePosition);
     }

@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 
@@ -18,6 +17,5 @@ import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
  *  <li>Pigment Extracting: Can be processed in a Pigment Extractor.</li>
  * </ul>
  */
-@NothingNullByDefault
 public abstract class ItemStackToChemicalRecipe extends ItemInputRecipe<ChemicalStackTemplate> {
 }

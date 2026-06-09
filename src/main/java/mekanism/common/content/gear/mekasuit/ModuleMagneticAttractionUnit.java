@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.text.IHasTextComponent;
@@ -31,7 +29,6 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule<ModuleMagneticAttractionUnit> {
 
     public static final Identifier RANGE = Mekanism.rl("range");
@@ -87,7 +84,6 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         module.toggleEnabled(itemAccess, player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate(), transaction);
     }
 
-    @NothingNullByDefault
     public enum Range implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(1F),

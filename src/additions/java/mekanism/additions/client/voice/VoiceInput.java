@@ -6,11 +6,13 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 import mekanism.additions.client.AdditionsKeyHandler;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceInput extends Thread {
 
     private final VoiceClient voiceClient;
     private final DataLine.Info microphone;
+    @Nullable
     private TargetDataLine targetLine;
 
     public VoiceInput(VoiceClient client) {

@@ -11,7 +11,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
 
@@ -90,7 +89,7 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     }
 
     @Override
-    public void collect(FreeRunnerRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
         super.collect(state, poseStack, submitNodeCollector, light, overlayLight, hasEffect);
         if (state.leftVisible()) {
             collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasEffect);

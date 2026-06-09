@@ -18,8 +18,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
 
@@ -29,8 +28,11 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
+        if (state == null) {
+            return null;
+        }
         Direction facing = Attribute.getFacing(state);
         if (facing == null) {
             //Should never be null but if it is for some reason just return the state we already found
@@ -53,10 +55,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         return state;
     }
 
-    @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
-          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
+          Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (!level.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, level, currentPos);
             Direction opposite = facing.getOpposite();

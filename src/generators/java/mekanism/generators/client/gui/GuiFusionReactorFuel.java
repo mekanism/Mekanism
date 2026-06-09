@@ -17,7 +17,6 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
 
@@ -45,7 +44,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, 35, TextAlignment.CENTER, titleTextColor(), 16, false);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 4, 117, TextAlignment.RIGHT, titleTextColor(), 99, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

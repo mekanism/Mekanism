@@ -13,8 +13,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
@@ -63,7 +62,6 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
         return !TagCache.getItemTagStacks(name).isEmpty();
     }
 
-    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

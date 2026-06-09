@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -12,7 +11,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
-@NothingNullByDefault
 public final class DataMapTypeRegister {
 
     private final String namespace;

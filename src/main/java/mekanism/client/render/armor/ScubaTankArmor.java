@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -22,7 +21,7 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
     }
 
     @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         model = new ModelScubaTank(Minecraft.getInstance().getEntityModels());
     }
 

@@ -1,14 +1,12 @@
 package mekanism.common.lib.inventory;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public interface IAdvancedTransportEjector {
 
     @Nullable

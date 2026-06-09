@@ -16,7 +16,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -24,6 +23,7 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -66,8 +66,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class FusionReactorMultiblockData extends MultiblockData {
 
@@ -170,7 +168,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
-    @NonNull
     @Override
     public IEnergyContainer energyContainer() {
         return energyContainer;
@@ -189,14 +186,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         lastPlasmaTemperature = input.getDoubleOr(SerializationConstants.PLASMA_TEMP, getPlasmaTemp());
         setBurning(input.getBooleanOr(SerializationConstants.BURNING, isBurning()));
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         output.putDouble(SerializationConstants.PLASMA_TEMP, getLastPlasmaTemp());
         output.putBoolean(SerializationConstants.BURNING, isBurning());
@@ -390,7 +387,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    @NotNull
     @Override
     public HeatTransfer simulate() {
         double environmentTransfer = 0;
@@ -435,7 +431,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             //TODO - 26.1: Should these configs be limited to ints?
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
-            if (getLevel() != null && !isRemote()) {
+            if (!isRemote()) {
                 ContainerType.FLUID.clampContents(waterTank, null);
                 ContainerType.CHEMICAL.clampContents(steamTank, null);
             }

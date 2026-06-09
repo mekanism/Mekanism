@@ -1,6 +1,5 @@
 package mekanism.tools.common.recipe;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
@@ -13,7 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
-@NothingNullByDefault
 public class PaxelRecipe extends WrappedShapedRecipe {
 
     public PaxelRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {

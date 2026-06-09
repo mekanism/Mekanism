@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 /**
@@ -191,12 +190,12 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return super.isValidClickButton(buttonInfo) || textField.isValidClickButton(buttonInfo);
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         double scaledX = event.x();
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
@@ -210,7 +209,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         backgroundType.render(this, guiGraphics);
         Matrix3x2fStack matrix = guiGraphics.pose();
@@ -250,7 +249,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (canWrite()) {
             if (event.isEscape() || event.isCycleFocus()) {
                 //Manually handle hitting escape to make the whole interface go away
@@ -298,7 +297,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean charTyped(@NotNull CharacterEvent event) {
+    public boolean charTyped(CharacterEvent event) {
         if (canWrite()) {
             int initialCodepoint = event.codepoint();
             int codepointUsed = initialCodepoint;
@@ -378,12 +377,12 @@ public class GuiTextField extends GuiElement {
         }
 
         @Override
-        public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
             return super.isValidClickButton(buttonInfo) || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
         }
 
         @Override
-        public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
             if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                 //Allow clearing on right click
                 setValue("");
@@ -393,7 +392,7 @@ public class GuiTextField extends GuiElement {
         }
 
         @Override
-        public void insertText(@NotNull String text) {
+        public void insertText(String text) {
             if (allowColors) {
                 //Copy of super, but modified to call a custom filter text that allows the section symbol to be used
                 // so that the player can enter color codes

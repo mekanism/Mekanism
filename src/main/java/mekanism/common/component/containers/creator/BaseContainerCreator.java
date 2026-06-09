@@ -1,11 +1,9 @@
 package mekanism.common.component.containers.creator;
 
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.IAttachedContainers;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
-@NothingNullByDefault
 public abstract class BaseContainerCreator<ATTACHED extends IAttachedContainers<?, ATTACHED>, CONTAINER> implements IContainerCreator<CONTAINER, ATTACHED> {
 
     private final List<IBasicContainerCreator<CONTAINER>> creators;

@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public class BoltRenderer {
@@ -107,6 +107,7 @@ public class BoltRenderer {
     public static class BoltOwnerData {
 
         private final Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
+        @Nullable
         private BoltEffect lastBolt;
         private Timestamp lastBoltTimestamp = new Timestamp();
         private Timestamp lastUpdateTimestamp = new Timestamp();

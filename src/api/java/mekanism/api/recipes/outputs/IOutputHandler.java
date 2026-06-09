@@ -1,6 +1,5 @@
 package mekanism.api.recipes.outputs;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
@@ -11,7 +10,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @param <OUTPUT> Type of output handled by this handler.
  */
-@ParametersAreNotNullByDefault
 public interface IOutputHandler<OUTPUT> {
 
     /// Adds `operations` operations worth of `toOutput` to the output.

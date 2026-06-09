@@ -7,33 +7,30 @@ import mekanism.common.network.to_client.container.property.ItemStackPropertyDat
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling item stacks
  */
 public class SyncableItemStack implements ISyncableData {
 
-    public static SyncableItemStack create(Supplier<@NotNull ItemStack> getter, Consumer<@NotNull ItemStack> setter) {
+    public static SyncableItemStack create(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {
         return new SyncableItemStack(getter, setter);
     }
 
-    private final Supplier<@NotNull ItemStack> getter;
-    private final Consumer<@NotNull ItemStack> setter;
-    @NotNull
+    private final Supplier<ItemStack> getter;
+    private final Consumer<ItemStack> setter;
     private ItemStack lastKnownValue = ItemStack.EMPTY;
 
-    private SyncableItemStack(Supplier<@NotNull ItemStack> getter, Consumer<@NotNull ItemStack> setter) {
+    private SyncableItemStack(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @NotNull
     public ItemStack get() {
         return getter.get();
     }
 
-    public void set(@NotNull ItemStack value) {
+    public void set(ItemStack value) {
         setter.accept(value);
     }
 

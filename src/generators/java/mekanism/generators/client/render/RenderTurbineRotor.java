@@ -2,7 +2,6 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
@@ -20,9 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor, TurbineRotorRenderState> {
 
     private static final float BASE_SPEED = 512F;
@@ -41,7 +39,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public void extractRenderState(TileEntityTurbineRotor rotor, TurbineRotorRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(rotor, state, partialTick, cameraPosition, breakProgress);
         int housedBlades = rotor.getHousedBlades();
         if (housedBlades == 0) {

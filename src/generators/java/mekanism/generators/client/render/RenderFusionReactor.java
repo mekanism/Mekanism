@@ -2,7 +2,6 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
@@ -22,9 +21,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReactorMultiblockData, TileEntityFusionReactorController, FusionRenderState> {
 
     private static final double SCALE = 100_000_000;
@@ -43,7 +41,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
 
     @Override
     public void extractRenderState(TileEntityFusionReactorController controller, FusionRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         FusionReactorMultiblockData multiblock = controller.getMultiblock();
         state.scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);

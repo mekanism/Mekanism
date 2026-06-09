@@ -1,20 +1,19 @@
 package mekanism.api.text;
 
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper interface for creating formatted translations in our lang enums
  */
-@MethodsAreNotNullByDefault
 public interface ILangEntry extends IHasTranslationKey {
 
     /**
      * Translates this {@link ILangEntry} using a "smart" replacement scheme to allow for automatic replacements, and coloring to take place.
      */
-    default MutableComponent translate(Object... args) {
+    default MutableComponent translate(@Nullable Object... args) {
         return TextComponentUtil.smartTranslate(getTranslationKey(), args);
     }
 
@@ -28,7 +27,7 @@ public interface ILangEntry extends IHasTranslationKey {
     /**
      * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} of the given {@link EnumColor} to the {@link Component}.
      */
-    default MutableComponent translateColored(EnumColor color, Object... args) {
+    default MutableComponent translateColored(EnumColor color, @Nullable Object... args) {
         return translateColored(color.getColor(), args);
     }
 
@@ -44,7 +43,7 @@ public interface ILangEntry extends IHasTranslationKey {
      *
      * @since 10.4.0
      */
-    default MutableComponent translateColored(TextColor color, Object... args) {
+    default MutableComponent translateColored(TextColor color, @Nullable Object... args) {
         return TextComponentUtil.build(color, translate(args));
     }
 

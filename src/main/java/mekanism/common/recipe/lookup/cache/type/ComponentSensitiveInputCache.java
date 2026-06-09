@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import mekanism.common.Mekanism;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentHolder;
@@ -19,7 +20,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.util.strategy.BasicStrategy;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Extended input cache that implements the backend handling to allow for both the basic key based input lookup that {@link BaseInputCache} provides, and also a more
@@ -92,8 +93,12 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
      * @param patch       The component patch to apply against inputHolder for storing in the index
      * @param recipe      Recipe to add.
      */
-    protected void addNbtInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RECIPE recipe) {
+    protected void addComponentInputCache(Holder<KEY> inputHolder, DataComponentPatch patch, RECIPE recipe) {
         ResourceKey<KEY> key = inputHolder.getKey();
+        if (key == null) {
+            Mekanism.logger.warn("Component Input Cache received a direct holder");
+            return;
+        }
         DataComponentMap components = PatchedDataComponentMap.fromPatch(inputHolder.components(), patch);
         var holderMatch = componentInputCache.get(key);
         if (holderMatch == null) {

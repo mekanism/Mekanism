@@ -28,19 +28,18 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils or the corresponding container type
 
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap) {
+    public static void addStoredEnergy(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean showMissingCap) {
         addStoredEnergy(itemAccess, tooltipAdder, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
+    public static void addStoredEnergy(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
         EnergyHandler energyHandler = ContainerType.ENERGY.getCapOrUnexposed(itemAccess);
         if (energyHandler != null) {
             tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(energyHandler)));
@@ -49,7 +48,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         }
     }
 
-    public static void addStoredChemical(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder) {
+    public static void addStoredChemical(ItemAccess itemAccess, Consumer<Component> tooltipAdder) {
         ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
@@ -66,11 +65,11 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         }
     }
 
-    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder) {
+    public static void addStoredFluid(ItemAccess itemAccess, Consumer<Component> tooltipAdder) {
         addStoredFluid(itemAccess, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
     }
 
-    public static void addStoredFluid(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
+    public static void addStoredFluid(ItemAccess itemAccess, Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
         ResourceHandler<FluidResource> handler = ContainerType.FLUID.getCapOrUnexposed(itemAccess);
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
@@ -90,7 +89,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     /**
      * @implNote Assumes there is only one "type" per substance type
      */
-    public static void addStoredSubstance(@NotNull ItemAccess itemAccess, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
+    public static void addStoredSubstance(ItemAccess itemAccess, Consumer<Component> tooltipAdder, boolean isCreative) {
         LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
         LargeResourceStack<ChemicalResource> chemicalStack = ContainerType.CHEMICAL.getStoredContentsFromAttachment(itemAccess);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {

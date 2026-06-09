@@ -1,11 +1,8 @@
 package mekanism.api.text;
 
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.TranslatableEnum;
-import org.jetbrains.annotations.NotNull;
 
-@MethodsAreNotNullByDefault
 public interface IHasTranslationKey {
 
     /**
@@ -19,7 +16,6 @@ public interface IHasTranslationKey {
      */
     interface IHasEnumNameTranslationKey extends IHasTranslationKey, TranslatableEnum {
 
-        @NotNull
         @Override
         default Component getTranslatedName() {
             return TextComponentUtil.translate(getTranslationKey());

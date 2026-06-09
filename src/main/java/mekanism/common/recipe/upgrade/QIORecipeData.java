@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
 import mekanism.common.content.qio.IQIODriveItem;
@@ -17,13 +16,12 @@ import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * QIO Drive merging data helper. Duplicates a fair bit of code from {@link QIODriveData}, but without requiring a {@link QIODriveKey}, and not validating the total size
  * until writing to the output item
  */
-@NothingNullByDefault
 public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
     //Note: We just keep track of the UUID as we know it is unique by type so there is no reason to look up the stacks for merging purposes

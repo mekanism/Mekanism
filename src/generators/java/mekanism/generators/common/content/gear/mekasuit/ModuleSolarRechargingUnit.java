@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.gear.mekasuit;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.MathUtils;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@ParametersAreNotNullByDefault
 public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRechargingUnit> {
 
     @Override

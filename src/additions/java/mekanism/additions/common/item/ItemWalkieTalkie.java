@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
@@ -44,7 +43,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         stack.addToTooltip(AdditionsDataComponents.WALKIE_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
@@ -52,9 +51,8 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         }
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
@@ -65,12 +63,12 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+    public void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         ItemResource resource = itemAccess.getResource();
         WalkieData data = resource.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         if (data.running()) {
@@ -81,9 +79,8 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         }
     }
 
-    @NotNull
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(ITEM instance) {
         WalkieData data = instance.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, EnumColor.WHITE, data.channel());
     }
@@ -103,7 +100,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         );
 
         @Override
-        public void addToTooltip(@NotNull TooltipContext context, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag, @NotNull DataComponentGetter componentGetter) {
+        public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
             tooltipAdder.accept(OnOff.of(running(), true).getTextComponent());
             tooltipAdder.accept(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, channel()));
         }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -29,9 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblockData, TileEntityDynamicTank, DynamicTankRenderState> {
 
     public RenderDynamicTank(BlockEntityRendererProvider.Context context) {
@@ -45,7 +43,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
 
     @Override
     public void extractRenderState(TileEntityDynamicTank tank, DynamicTankRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         TankMultiblockData multiblock = tank.getMultiblock();
         state.gather(multiblock);
@@ -101,15 +99,13 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
 
     public static class DynamicTankRenderState extends MultiblockContentsRenderState {
 
-        @Nullable
-        public RenderResizableCuboid.TexturePicker tankTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker tankTexture;
         public int tankColor;
         public int tankGlow;
         public float tankMaxY;
 
         public List<ValveRenderData> valves = new ArrayList<>();
-        @Nullable
-        public MekanismRenderer.ValveTextureGetter valveTexture;
+        public MekanismRenderer.@Nullable ValveTextureGetter valveTexture;
 
     }
 }

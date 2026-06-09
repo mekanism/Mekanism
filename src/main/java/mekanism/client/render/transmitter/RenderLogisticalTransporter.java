@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState.TransporterStackRenderState;
@@ -38,10 +37,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
 
-@NothingNullByDefault
 public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransporterBase, STATE extends TransporterRenderState> extends RenderTransmitterBase<TILE, STATE> {
 
     public static final ModelLayerLocation BOX_LAYER = new ModelLayerLocation(Mekanism.rl("transporter_box"), "main");
@@ -74,7 +72,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
     }
 
     @Override
-    public void extractRenderState(TILE transporter, STATE state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TILE transporter, STATE state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(transporter, state, partialTick, cameraPosition, breakProgress);
         LogisticalTransporterBase transmitter = transporter.getTransmitter();
         Collection<TransporterStack> inTransit = transmitter.getTransit();
@@ -85,7 +83,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
             Set<TransportInformation> information = new ObjectOpenHashSet<>(inTransit.size());
             for (TransporterStack stack : inTransit) {
                 //Shrink the in transit list as much as possible. Don't try to render things of the same type that are in the same spot with the same color, ignoring stack size
-                if (stack != null && !stack.isEmpty() && information.add(new TransportInformation(stack))) {
+                if (!stack.isEmpty() && information.add(new TransportInformation(stack))) {
                     //Ensure the stack is valid AND we did not already have information matching the stack
                     //We use add to check if it already contained the value, so that we only have to query the set once
                     Vector3f stackPos = TransporterUtils.getStackPosition(transmitter, stack, partial);
@@ -162,7 +160,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(@Nullable Object obj) {
             if (obj == this) {
                 return true;
             }

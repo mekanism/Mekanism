@@ -2,7 +2,6 @@ package mekanism.common.content.gear.shared;
 
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -15,7 +14,6 @@ import mekanism.common.util.EnergyUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
     public static long getEnergyCapacity(ItemAccess attachedAccess, LongSupplier base) {

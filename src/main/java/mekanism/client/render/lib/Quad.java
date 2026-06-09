@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -138,7 +137,6 @@ public class Quad {
         return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade, hasAmbientOcclusion);
     }
 
-    @NothingNullByDefault
     private static class BakedQuadUnpacker implements VertexConsumer {
 
         private final Vertex[] vertices = new Vertex[4];

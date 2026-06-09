@@ -3,9 +3,8 @@ package mekanism.api.robit;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Prefab of a robit skin that is always unlocked.
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.4.0
  */
-@NothingNullByDefault
 public record BasicRobitSkin(List<Identifier> textures, @Nullable Identifier customModel) implements RobitSkin {
 
     public BasicRobitSkin {

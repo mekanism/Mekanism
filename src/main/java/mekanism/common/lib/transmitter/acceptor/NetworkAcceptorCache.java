@@ -17,7 +17,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 

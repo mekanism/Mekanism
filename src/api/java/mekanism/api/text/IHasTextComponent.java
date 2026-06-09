@@ -1,11 +1,8 @@
 package mekanism.api.text;
 
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.TranslatableEnum;
-import org.jetbrains.annotations.NotNull;
 
-@MethodsAreNotNullByDefault
 public interface IHasTextComponent {
 
     //TODO - 1.18: Debate replacing this with returning IFormattableTextComponent so that we know it can be "modified" instead of having to copy it
@@ -23,7 +20,6 @@ public interface IHasTextComponent {
      */
     interface IHasEnumNameTextComponent extends IHasTextComponent, TranslatableEnum {
 
-        @NotNull
         @Override
         default Component getTranslatedName() {
             return getTextComponent();

@@ -8,7 +8,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.util.ChemicalUtils;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister(loaders = CrTConstants.CONTENT_LOADER)

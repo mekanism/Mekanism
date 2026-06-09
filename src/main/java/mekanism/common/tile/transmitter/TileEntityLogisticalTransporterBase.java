@@ -9,11 +9,11 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter {
 
@@ -35,15 +35,16 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     @Override
-    public void onUpdateServer() {
-        super.onUpdateServer();
-        getTransmitter().onUpdateServer();
+    public void onUpdateServer(ServerLevel level) {
+        super.onUpdateServer(level);
+        getTransmitter().onUpdateServer(level);
     }
 
     @Override
-    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
-        if (!isRemote()) {
+        Level level = getWorldNN();
+        if (!level.isClientSide()) {
             LogisticalTransporterBase transporter = getTransmitter();
             //TODO - 26.1: Evaluate overriding Block#shouldChangedStateKeepBlockEntity to make it so that upgrading lets the entity persist?
             // Also evaluate if there are any other cases where we might want to override that method
@@ -52,7 +53,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 //Note: Protect against the block being broken by an auto clicker that might have already checked if it can extract energy
                 try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     for (TransporterStack stack : transporter.getTransit()) {
-                        transporter.drop(stack, transaction);
+                        transporter.drop(level, stack, transaction);
                     }
                     transaction.commit();
                 }
@@ -61,7 +62,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     @Override
-    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
+    public void sideChanged(Direction side, ConnectionType old, ConnectionType type) {
         super.sideChanged(side, old, type);
         //Note: We don't expose a cap for when the connection type is none or push and this method only gets called if type != old,
         // so we can check to ensure that if we are one of the two that the other isn't the other one we don't have a cap for

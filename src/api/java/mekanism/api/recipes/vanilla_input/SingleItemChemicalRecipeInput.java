@@ -1,15 +1,14 @@
 package mekanism.api.recipes.vanilla_input;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Simple implementation of a recipe input of one item and one chemical.
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemical) implements ItemChemicalRecipeInput {
 
     @Override
@@ -39,7 +38,7 @@ public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemic
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

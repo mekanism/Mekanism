@@ -4,13 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public class MekKeyBinding extends KeyMapping {
 
     @Nullable

@@ -8,7 +8,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
@@ -24,7 +24,7 @@ public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseIn
     }
 
     @Override
-    public boolean isEmpty(@UnknownNullability TypedInstance<Chemical> input) {
+    public boolean isEmpty(@Nullable TypedInstance<Chemical> input) {
         return switch (input) {
             case ChemicalStack stack -> stack.isEmpty();
             case ChemicalResource resource -> resource.isEmpty();

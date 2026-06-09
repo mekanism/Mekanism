@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.energy;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
@@ -10,7 +9,6 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
 
     public static ComponentBackedEnergyCubeContainer create(ItemAccess attachedAccess) {

@@ -32,7 +32,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket {
 
@@ -43,7 +42,6 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
           PacketPortableTeleporterTeleport::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketPortableTeleporterTeleport> type() {
         return TYPE;

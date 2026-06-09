@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class GuiConfirmationDialog extends GuiWindow {
 
@@ -55,13 +56,13 @@ public class GuiConfirmationDialog extends GuiWindow {
         NORMAL(() -> null),
         DANGER(() -> EnumColor.RED);
 
-        private final Supplier<EnumColor> colorSupplier;
+        private final Supplier<@Nullable EnumColor> colorSupplier;
 
-        DialogType(Supplier<EnumColor> colorSupplier) {
+        DialogType(Supplier<@Nullable EnumColor> colorSupplier) {
             this.colorSupplier = colorSupplier;
         }
 
-        public Supplier<EnumColor> getColorSupplier() {
+        public Supplier<@Nullable EnumColor> getColorSupplier() {
             return colorSupplier;
         }
     }

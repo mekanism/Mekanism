@@ -3,14 +3,13 @@ package mekanism.api.security;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system when applied to blocks and block entities.
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  * @see IBlockSecurityUtils#INSTANCE
  * @since 10.5.0
  */
-@NothingNullByDefault
 public interface IBlockSecurityUtils {
 
     /**
@@ -31,7 +29,7 @@ public interface IBlockSecurityUtils {
     /**
      * {@return the block capability representing owner objects}
      */
-    BlockCapability<IOwnerObject, Void> ownerCapability();
+    BlockCapability<IOwnerObject, @Nullable Void> ownerCapability();
 
     /**
      * {@return the owner capability for the block at the given location or null if the block doesn't expose an owner capability}
@@ -72,7 +70,7 @@ public interface IBlockSecurityUtils {
     /**
      * {@return the block capability representing security objects}
      */
-    BlockCapability<ISecurityObject, Void> securityCapability();
+    BlockCapability<ISecurityObject, @Nullable Void> securityCapability();
 
     /**
      * {@return the security capability for the block at the given location or null if the block doesn't expose a security capability}

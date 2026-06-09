@@ -18,7 +18,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketOpenGui(GuiType guiType) implements IMekanismPacket {
 
@@ -27,7 +26,6 @@ public record PacketOpenGui(GuiType guiType) implements IMekanismPacket {
           PacketOpenGui::new, PacketOpenGui::guiType
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketOpenGui> type() {
         return TYPE;

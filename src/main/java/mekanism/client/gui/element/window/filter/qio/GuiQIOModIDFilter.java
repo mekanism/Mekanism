@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIOModIDFilter extends GuiModIDFilter<QIOModIDFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 

@@ -26,8 +26,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class OredictionificatorFilter<TYPE, RESOURCE extends RegisteredResource<TYPE>, FILTER extends OredictionificatorFilter<TYPE, RESOURCE, FILTER>> extends BaseFilter<FILTER> {
 
@@ -60,9 +59,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
 
     @Nullable
     TagKey<TYPE> filterLocation;
-    @Nullable
-    private HolderSet.Named<TYPE> filterTag;
-    @NotNull
+    private HolderSet.@Nullable Named<TYPE> filterTag;
     Holder<TYPE> selectedOutput = getFallbackElement();
     @Nullable
     private RESOURCE cachedSelectedType;
@@ -150,7 +147,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
     /**
      * Only publicly exposed for creating via ComputerCraft
      */
-    public final void setSelectedOutput(@NotNull Holder<TYPE> output) {
+    public final void setSelectedOutput(Holder<TYPE> output) {
         this.selectedOutput = output;
         //Invalidate cached stack
         cachedSelectedType = null;
@@ -164,7 +161,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
         setSelectedOutput(getFallbackElement());
     }
 
-    private void setSelectedOrFallback(@NotNull Identifier resourceLocation) {
+    private void setSelectedOrFallback(Identifier resourceLocation) {
         Registry<TYPE> registry = getRegistry();
         registry.get(ResourceKey.create(registry.key(), resourceLocation))
               .ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
@@ -233,7 +230,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {

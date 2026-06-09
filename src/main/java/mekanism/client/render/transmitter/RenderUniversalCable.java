@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.transmitter.TransmitterRenderState.CableRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
@@ -12,9 +11,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable, CableRenderState> {
 
     public RenderUniversalCable(BlockEntityRendererProvider.Context context) {
@@ -28,7 +26,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
 
     @Override
     public void extractRenderState(TileEntityUniversalCable cable, CableRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cable, state, partialTick, cameraPosition, breakProgress);
         EnergyNetwork network = cable.getTransmitter().getTransmitterNetwork();
         if (network == null) {//TODO - 26.1: Does this race condition still exist?
@@ -61,7 +59,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         if (super.shouldRenderTransmitter(tile, camera)) {
             UniversalCable cable = tile.getTransmitter();
             if (cable.hasTransmitterNetwork()) {
-                EnergyNetwork network = cable.getTransmitterNetwork();
+                EnergyNetwork network = cable.getTransmitterNetworkNN();
                 //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
                 return network.currentScale > 0;
             }

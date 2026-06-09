@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import java.util.Iterator;
 import java.util.ServiceLoader;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
@@ -20,7 +19,6 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
-@NothingNullByDefault
 public class MekanismAPI {
 
     private MekanismAPI() {

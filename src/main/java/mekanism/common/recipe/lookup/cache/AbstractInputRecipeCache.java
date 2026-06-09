@@ -10,7 +10,7 @@ import mekanism.common.recipe.lookup.cache.type.IInputCache;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Basic helper implementation for {@link IInputRecipeCache} that keeps track of the recipe type and if this cache has been initialized yet or not.

@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1 - should it still use Item or should we use holders?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
@@ -41,7 +41,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
             //Special handling for neo's NBT Ingredient as it requires an exact component match
             DataComponentPatch components = componentIngredient.components();
             for (Holder<Item> holder : componentIngredient.itemSet()) {
-                addNbtInputCache(holder, components, recipe);
+                addComponentInputCache(holder, components, recipe);
             }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
@@ -52,7 +52,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
     }
 
     @Override
-    public boolean isEmpty(@UnknownNullability TypedInstance<Item> input) {
+    public boolean isEmpty(@Nullable TypedInstance<Item> input) {
         return switch (input) {
             case ItemStack stack -> stack.isEmpty();
             case ItemResource resource -> resource.isEmpty();

@@ -9,8 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class EntityObsidianTNT extends PrimedTnt {
 
@@ -43,7 +42,6 @@ public class EntityObsidianTNT extends PrimedTnt {
         }
     }
 
-    @NotNull
     @Override
     public EntityType<?> getType() {
         return AdditionsEntityTypes.OBSIDIAN_TNT.value();

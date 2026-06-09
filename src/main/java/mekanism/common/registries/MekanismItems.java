@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Locale;
+import java.util.Objects;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
@@ -10,13 +11,13 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
 import mekanism.common.component.containers.energy.EnergyContainersBuilder;
 import mekanism.common.component.containers.fluid.FluidTanksBuilder;
 import mekanism.common.component.containers.item.ItemSlotsBuilder;
 import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.entity.EntityRobit;
@@ -74,8 +75,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismItems {
 
@@ -330,6 +330,10 @@ public class MekanismItems {
         }
     }
 
+    public static ItemRegistryObject<Item> getProcessedResource(ResourceType resourceType, PrimaryResource resource) {
+            return Objects.requireNonNull(PROCESSED_RESOURCES.get(resourceType, resource));
+        }
+
     private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
         return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
     }
@@ -341,15 +345,14 @@ public class MekanismItems {
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         return ITEMS.registerItem(tier.getLowerName() + "_control_circuit", properties -> new Item(properties) {
-            @NotNull
             @Override
-            public Component getName(@NotNull ItemStack stack) {
+            public Component getName(ItemStack stack) {
                 return TextComponentUtil.build(tier.getColor(), super.getName(stack));
             }
         });
     }
 
-    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, @NotNull BaseTier toTier) {
+    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, BaseTier toTier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         return ITEMS.registerItem(toTier.getLowerName() + "_tier_installer", properties -> new ItemTierInstaller(fromTier, toTier, properties));
     }

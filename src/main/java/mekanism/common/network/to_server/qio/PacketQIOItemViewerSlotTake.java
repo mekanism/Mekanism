@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements IMekanismPacket {
 
@@ -27,7 +26,6 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
           PacketQIOItemViewerSlotTake::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketQIOItemViewerSlotTake> type() {
         return TYPE;

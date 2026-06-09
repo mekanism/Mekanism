@@ -11,7 +11,6 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine {
 
@@ -19,7 +18,6 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine {
         super(MekanismBlocks.ENERGIZED_SMELTER, pos, state, BASE_TICKS_REQUIRED);
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.SMELTING;

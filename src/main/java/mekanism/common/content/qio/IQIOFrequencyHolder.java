@@ -5,7 +5,7 @@ import mekanism.api.inventory.qio.IQIOComponent;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.tile.interfaces.ITileWrapper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IQIOFrequencyHolder extends IFrequencyHandler, ITileWrapper, IQIOComponent {
 

@@ -10,7 +10,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFilterHolder<?>> extends GuiWindow {
 

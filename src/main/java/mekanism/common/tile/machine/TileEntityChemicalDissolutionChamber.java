@@ -51,14 +51,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> implements ConstantUsageRecipeLookupHandler,
       ItemChemicalRecipeLookupHandler<ChemicalDissolutionRecipe> {
@@ -83,8 +83,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private int usedSoFar;
 
     private final IOutputHandler<ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
+    private final IInputHandler<Item, ItemStack> itemInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem", docPlaceholder = "gas input item slot")
@@ -115,7 +115,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         injectUsageMultiplier = (_, _) -> StatUtils.inversePoisson(injectUsage);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -130,7 +129,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -145,8 +143,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         gasInputSlot.fillTankOrConvert(null);
         outputSlot.drainTankIntoSlot(null);
@@ -154,7 +152,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ChemicalDissolutionRecipe, ItemChemical<ChemicalDissolutionRecipe>> getRecipeType() {
         return MekanismRecipeType.DISSOLUTION;
@@ -171,9 +168,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(@NotNull ChemicalDissolutionRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(ChemicalDissolutionRecipe recipe, int cacheIndex) {
         CachedRecipe<ChemicalDissolutionRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
@@ -210,13 +206,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }

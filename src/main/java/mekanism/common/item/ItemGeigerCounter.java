@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemGeigerCounter extends Item {
 
@@ -27,9 +26,8 @@ public class ItemGeigerCounter extends Item {
         super(props.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!world.isClientSide()) {

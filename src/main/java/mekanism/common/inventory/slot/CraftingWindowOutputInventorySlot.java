@@ -1,12 +1,10 @@
 package mekanism.common.inventory.slot;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 
-@NothingNullByDefault
 public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySlot {
 
     public static CraftingWindowOutputInventorySlot create(QIOCraftingWindow window) {

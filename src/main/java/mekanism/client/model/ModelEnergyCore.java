@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import org.jetbrains.annotations.NotNull;
 
 //TODO - 26.1: Remove this in favor of just rendering a model part?
 public class ModelEnergyCore extends MekanismJavaModel<Integer> {
@@ -26,7 +25,7 @@ public class ModelEnergyCore extends MekanismJavaModel<Integer> {
     }
 
     @Override
-    public void collect(Integer color, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+    public void collect(Integer color, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
         setupAnim(color);
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, color, null, hasEffect);
     }

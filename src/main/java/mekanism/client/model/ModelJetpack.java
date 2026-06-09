@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelJetpack extends MekanismJavaModel.NoState {
 
@@ -120,7 +119,7 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
     }
 
     @Override
-    public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim();
         collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, -1, null, hasFoil);
         collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasFoil);

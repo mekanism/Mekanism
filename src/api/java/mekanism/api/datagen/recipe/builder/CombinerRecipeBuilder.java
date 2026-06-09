@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 
-@NothingNullByDefault
 public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeBuilder> {
 
     private final ItemStackIngredient mainInput;

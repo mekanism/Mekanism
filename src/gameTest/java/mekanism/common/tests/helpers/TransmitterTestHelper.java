@@ -1,6 +1,5 @@
 package mekanism.common.tests.helpers;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.tier.AlloyTier;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.BlockPos;
@@ -8,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.entity.player.Player;
 
-@NothingNullByDefault
 public class TransmitterTestHelper extends MekGameTestHelper {
 
     public TransmitterTestHelper(GameTestInfo info) {

@@ -19,7 +19,7 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookup
             return 0;
         }
         long prev = energyContainer.getAmountAsLong();
-        if (updateAndProcess()) {
+        if (updateAndProcess() && cachedRecipe != null) {
             //TODO: Re-evaluate this at some point
             int toProcess = (int) Math.sqrt(prev / (double) machineEnergyContainer.getEnergyPerTick());
             for (int i = 0; i < toProcess - 1; i++) {

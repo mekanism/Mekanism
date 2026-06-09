@@ -2,7 +2,7 @@ package mekanism.common.config;
 
 import mekanism.api.text.IHasTranslationKey;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IConfigTranslation extends IHasTranslationKey {
 

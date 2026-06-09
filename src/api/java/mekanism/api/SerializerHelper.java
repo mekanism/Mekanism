@@ -13,10 +13,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import mekanism.api.annotations.NothingNullByDefault;
 
 //TODO - 1.21: Update the wiki docs to fix the syntax
-@NothingNullByDefault
 public class SerializerHelper {
 
     private SerializerHelper() {

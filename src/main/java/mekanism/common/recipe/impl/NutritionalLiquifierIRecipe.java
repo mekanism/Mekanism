@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -10,9 +9,8 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidOptionalItemRecipe {
 
     public NutritionalLiquifierIRecipe(ItemStackIngredient input, FluidStackTemplate output, @Nullable ItemStackTemplate emptyContainer) {

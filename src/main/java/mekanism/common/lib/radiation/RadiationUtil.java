@@ -15,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
 
 public class RadiationUtil {
 
@@ -48,7 +47,7 @@ public class RadiationUtil {
             }
         }
         if (resistance < 1 && Mekanism.hooks.curios.isLoaded()) {
-            @Nullable ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(entity);
+            ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(entity);
             if (handler != null) {
                 for (int i = 0, slots = handler.size(); i < slots; i++) {
                     ItemStack stack = handler.getResource(i).toStack();

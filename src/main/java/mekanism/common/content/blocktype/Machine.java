@@ -36,7 +36,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         }
 
         public FactoryType getFactoryType() {
-            return get(AttributeFactoryType.class).getFactoryType();
+            return getOrThrow(AttributeFactoryType.class).getFactoryType();
         }
     }
 

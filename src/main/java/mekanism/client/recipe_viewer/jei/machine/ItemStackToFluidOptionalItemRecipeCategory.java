@@ -32,8 +32,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCategory<BasicItemStackToFluidOptionalItemRecipe> {
 
@@ -58,7 +57,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
         List<FluidStackTemplate> fluidOutputs = new ArrayList<>(outputDefinition.size());
@@ -79,8 +78,8 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Nullable
     @Override
-    public Identifier getIdentifier(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
-        List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations(getSlotDisplayContext());
+    public Identifier getIdentifier(BasicItemStackToFluidOptionalItemRecipe recipe) {
+        List<ItemStack> representations = recipe.getInput().getRepresentations(getSlotDisplayContext());
         if (representations.size() == 1) {
             Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
             if (itemId != null) {
@@ -90,9 +89,8 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
         return null;
     }
 
-    @NotNull
     @Override
-    public Codec<BasicItemStackToFluidOptionalItemRecipe> getCodec(@NotNull ICodecHelper codecHelper, @NotNull IRecipeManager recipeManager) {
+    public Codec<BasicItemStackToFluidOptionalItemRecipe> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager) {
         return RECIPE_CODEC;
     }
 }

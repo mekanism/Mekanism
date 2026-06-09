@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.text.IHasTextComponent;
@@ -18,7 +16,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
-@ParametersAreNotNullByDefault
 public record ModuleHydraulicPropulsionUnit(JumpBoost jumpBoost, StepAssist stepAssist) implements ICustomModule<ModuleHydraulicPropulsionUnit> {
 
     public static final Identifier JUMP_BOOST = Mekanism.rl("jump_boost");
@@ -36,7 +33,6 @@ public record ModuleHydraulicPropulsionUnit(JumpBoost jumpBoost, StepAssist step
         return stepAssist.getHeight();
     }
 
-    @NothingNullByDefault
     public enum JumpBoost implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(0.5F),
@@ -73,7 +69,6 @@ public record ModuleHydraulicPropulsionUnit(JumpBoost jumpBoost, StepAssist step
         }
     }
 
-    @NothingNullByDefault
     public enum StepAssist implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(0.5F),

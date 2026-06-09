@@ -7,15 +7,13 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
 
 public abstract sealed class ResourceElement<RESOURCE extends Resource> extends LookingAtElement permits ChemicalElement, FluidElement {
 
-    @NotNull
     protected final LargeResourceStack<RESOURCE> stored;
     protected final long capacity;
 
-    public ResourceElement(@NotNull LargeResourceStack<RESOURCE> stored, long capacity) {
+    public ResourceElement(LargeResourceStack<RESOURCE> stored, long capacity) {
         super(CommonColors.BLACK, CommonColors.WHITE);
         this.stored = stored;
         this.capacity = capacity;
@@ -29,7 +27,6 @@ public abstract sealed class ResourceElement<RESOURCE extends Resource> extends 
         return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.amount(), capacity));
     }
 
-    @NotNull
     public LargeResourceStack<RESOURCE> getStored() {
         return stored;
     }

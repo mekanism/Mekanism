@@ -37,14 +37,14 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "energy_cube/";
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.STEEL_CASING, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC);
-        addTieredEnergyCube(consumer, basePath, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED);
+        addTieredEnergyCube(consumer, basePath, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED);
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED);
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
     private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> energyCube, BlockRegistryObject<?, ?> previousEnergyCube,
           TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(energyCube).getLowerName();
+        String tierName = Attribute.getBaseTierNN(energyCube).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)

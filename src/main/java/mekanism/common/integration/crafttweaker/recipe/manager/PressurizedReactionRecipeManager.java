@@ -163,7 +163,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      *                       recipe.
      */
     public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ItemStackTemplate outputItem, ChemicalStackTemplate outputChemical, int energyRequired) {
+          int duration, @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical, int energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }

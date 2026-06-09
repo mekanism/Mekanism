@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> {
 
@@ -27,7 +26,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
         super(blockProvider, pos, state);
     }
 
-    @NotNull
     @Override
     public BoilerMultiblockData createMultiblock() {
         return new BoilerMultiblockData(this);
@@ -38,7 +36,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
         return MekanismMultiblocks.BOILER;
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return _ -> getMultiblock().getHeatCapacitors();

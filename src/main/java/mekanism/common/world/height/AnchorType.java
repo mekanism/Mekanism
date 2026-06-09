@@ -4,7 +4,6 @@ import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
-import org.jetbrains.annotations.NotNull;
 
 public enum AnchorType implements IHasEnumNameTranslationKey {
     ABSOLUTE(MekanismLang.ANCHOR_TYPE_ABSOLUTE, (_, value) -> value),
@@ -23,7 +22,6 @@ public enum AnchorType implements IHasEnumNameTranslationKey {
         return yResolver.resolve(context, value);
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return langEntry.getTranslationKey();

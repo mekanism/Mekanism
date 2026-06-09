@@ -2,13 +2,11 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class FactoryInputInventorySlot extends InputInventorySlot {
 
     public static FactoryInputInventorySlot create(TileEntityFactory<?> factory, int process, IInventorySlot outputSlot, @Nullable IContentsListener listener,

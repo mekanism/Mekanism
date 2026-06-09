@@ -16,9 +16,9 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class Frequency implements IFrequency {
 
@@ -82,14 +82,14 @@ public abstract class Frequency implements IFrequency {
     /**
      * @return {@code true} if persistent data was changed by deactivating the block and the frequency needs to be saved.
      */
-    public boolean onDeactivate(BlockEntity tile) {
+    public boolean onDeactivate(Level level, BlockEntity tile) {
         return false;
     }
 
     /**
      * @return {@code true} if persistent data was changed by updating the block and the frequency needs to be saved.
      */
-    public boolean update(BlockEntity tile) {
+    public boolean update(Level level, BlockEntity tile) {
         return false;
     }
 
@@ -137,7 +137,6 @@ public abstract class Frequency implements IFrequency {
         return Objects.equals(ownerUUID, toCheck);
     }
 
-    @NotNull
     public String getOwnerName() {
         return ownerName;
     }
@@ -164,7 +163,7 @@ public abstract class Frequency implements IFrequency {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

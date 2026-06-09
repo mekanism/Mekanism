@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultiblockData> {
 
@@ -24,7 +23,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
         super(blockProvider, pos, state);
     }
 
-    @NotNull
     @Override
     public MatrixMultiblockData createMultiblock() {
         return new MatrixMultiblockData(this);

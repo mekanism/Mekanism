@@ -66,7 +66,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -143,7 +143,7 @@ public class ClientTickHandler {
         if (delay == 0) {
             PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, identity, player.level().getGameTime() + delay));
         }
     }
 

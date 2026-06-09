@@ -60,8 +60,7 @@ import net.neoforged.neoforge.transfer.transaction.RootCommitJournal;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
 
 public abstract class LogisticalTransporterBase extends Transmitter<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
@@ -73,8 +72,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
-    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> capabilityCache = new EnumMap<>(Direction.class);
-    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
+    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>> capabilityCache = new EnumMap<>(Direction.class);
+    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
@@ -83,7 +82,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     @Nullable
     private ResourceHandler<ItemResource> getCapForSide(Direction logisticalSide) {
-        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = capabilityCache.get(logisticalSide);
+        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
             cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
             capabilityCache.put(logisticalSide, cache);
@@ -93,8 +92,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     @Nullable
     private ResourceHandler<ItemResource> getFallbackCapForSide(long pos, Direction handlerSide) {
-        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, _ -> new EnumMap<>(Direction.class));
-        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = sideCache.get(handlerSide);
+        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, _ -> new EnumMap<>(Direction.class));
+        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
             cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
             sideCache.put(handlerSide, cache);
@@ -113,7 +112,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return false;
     }
 
-    public boolean exposesInsertCap(@NotNull Direction side) {
+    public boolean exposesInsertCap(Direction side) {
         return getConnectionTypeRaw(side).canAccept();
     }
 
@@ -146,7 +145,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         }
     }
 
-    public void onUpdateServer() {
+    public void onUpdateServer(ServerLevel level) {
         InventoryNetwork network = getTransmitterNetwork();
         if (network != null) {
             //Pull items into the transporter
@@ -163,7 +162,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                 long pos = getWorldPositionLong();
                 IntSet deletes;
                 try (Transaction transaction = Transaction.openRoot()) {
-                    deletes = tickTransit(getLevel(), pos, network, transaction);
+                    deletes = tickTransit(level, pos, network, transaction);
                     transaction.commit();
                 }
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
@@ -227,7 +226,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             int stackId = entry.getIntKey();
             TransporterStack stack = entry.getValue();
             if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
-                if (stack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE, transaction)) {
+                if (stack.isEmpty() || !recalculate(level, stackId, stack, Long.MAX_VALUE, transaction)) {
                     deletes.add(stackId);
                     continue;
                 }
@@ -282,7 +281,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                         }
                     }
                 }
-                if (!recalculate(stackId, stack, prevSet, transaction)) {
+                if (!recalculate(level, stackId, stack, prevSet, transaction)) {
                     deletes.add(stackId);
                 } else if (prevSet == Long.MAX_VALUE) {
                     stack.progress = 50;
@@ -319,7 +318,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                         }
                     }
                 }
-                if (tryRecalculate && !recalculate(stackId, stack, Long.MAX_VALUE, transaction)) {
+                if (tryRecalculate && !recalculate(level, stackId, stack, Long.MAX_VALUE, transaction)) {
                     deletes.add(stackId);
                 }
             }
@@ -331,9 +330,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     public void remove() {
         super.remove();
         clearCapabilityCaches();
-        if (!isRemote()) {
+        Level level = getLevel();
+        if (!level.isClientSide()) {
             for (TransporterStack stack : getTransit()) {
-                TransporterManager.remove(getLevel(), stack, null);
+                TransporterManager.remove(level, stack, null);
             }
         }
     }
@@ -366,7 +366,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (!transit.isEmpty()) {
             ValueOutputList itemOutputs = output.childrenList(SerializationConstants.ITEMS);
@@ -380,7 +380,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull ValueInput input) {
+    public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         transit.clear();
         ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
@@ -392,7 +392,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
         for (ValueInput itemInput : itemInputs) {
@@ -401,7 +401,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         Collection<TransporterStack> transit = getTransit();
         if (!transit.isEmpty()) {
@@ -432,7 +432,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         transit.put(id, s);
     }
 
-    public void drop(TransporterStack stack, @Nullable TransactionContext transaction) {
+    public void drop(Level level, TransporterStack stack, @Nullable TransactionContext transaction) {
         if (stack.isEmpty()) {
             //Skip any stacks that for some reason get passed to this with an empty method
             return;
@@ -445,17 +445,17 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             zOffset = Mth.floor(pos.z());
         }
         try (Transaction subTransaction = Transaction.open(transaction)) {
-            TransporterManager.remove(getLevel(), stack, subTransaction);
+            TransporterManager.remove(level, stack, subTransaction);
             droppedItems.addDrop(stack.getItemType(), stack.size(), xOffset, yOffset, zOffset, subTransaction);
             subTransaction.commit();
         }
     }
 
-    private boolean recalculate(int stackId, TransporterStack stack, long from, @Nullable TransactionContext transaction) {
+    private boolean recalculate(Level level, int stackId, TransporterStack stack, long from, @Nullable TransactionContext transaction) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
         boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack), this, 0, transaction).isEmpty();
         if (noPath && !stack.calculateIdle(this, transaction)) {
-            drop(stack, transaction);
+            drop(level, stack, transaction);
             return false;
         }
 

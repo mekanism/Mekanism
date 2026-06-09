@@ -18,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, int networkRepresentation) implements IMekanismPacket {
 
@@ -30,7 +29,6 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, 
           PacketRadialModeChange::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketRadialModeChange> type() {
         return TYPE;

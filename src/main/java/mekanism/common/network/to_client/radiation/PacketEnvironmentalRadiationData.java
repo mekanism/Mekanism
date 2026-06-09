@@ -9,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketEnvironmentalRadiationData(double radiation, double maxMagnitude) implements IMekanismPacket {
 
@@ -24,7 +23,6 @@ public record PacketEnvironmentalRadiationData(double radiation, double maxMagni
         this(levelAndMaxMagnitude.level(), levelAndMaxMagnitude.maxMagnitude());
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketEnvironmentalRadiationData> type() {
         return TYPE;

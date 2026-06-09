@@ -34,7 +34,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public record PacketDropperUse(DropperAction action, TankType tankType, int tankId) implements IMekanismPacket {
@@ -47,7 +46,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
           PacketDropperUse::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketDropperUse> type() {
         return TYPE;
@@ -60,30 +58,28 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             ItemResource itemResource = itemAccess.getResource();
             if (!itemResource.isEmpty() && itemResource.getItem() instanceof ItemGaugeDropper) {
                 TileEntityMekanism tile = mekTileContainer.getTileEntity();
-                if (tile != null) {
-                    if (tile instanceof TileEntityMultiblock<?> multiblock) {
-                        MultiblockData structure = multiblock.getMultiblock();
-                        if (structure.isFormed()) {
-                            if (tankType == TankType.FLUID_TANK) {
-                                handleResourceTank(player, itemAccess, ContainerType.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
-                            } else if (tankType == TankType.CHEMICAL_TANK) {
-                                handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
-                            }
-                        }
-                    } else {
-                        if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
-                            //If the dropper is being used to dump the tank and the player is not in creative
-                            // check if the block the tank is in is a tiered block and if it is, and it is creative
-                            // don't allow clearing the tank
-                            if (Attribute.getBaseTier(tile.getBlockHolder()) == BaseTier.CREATIVE) {
-                                return;
-                            }
-                        }
+                if (tile instanceof TileEntityMultiblock<?> multiblock) {
+                    MultiblockData structure = multiblock.getMultiblock();
+                    if (structure.isFormed()) {
                         if (tankType == TankType.FLUID_TANK) {
-                            handleResourceTank(player, itemAccess, ContainerType.FLUID, tile);
+                            handleResourceTank(player, itemAccess, ContainerType.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
                         } else if (tankType == TankType.CHEMICAL_TANK) {
-                            handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, tile);
+                            handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
                         }
+                    }
+                } else {
+                    if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
+                        //If the dropper is being used to dump the tank and the player is not in creative
+                        // check if the block the tank is in is a tiered block and if it is, and it is creative
+                        // don't allow clearing the tank
+                        if (Attribute.getBaseTier(tile.getBlockHolder()) == BaseTier.CREATIVE) {
+                            return;
+                        }
+                    }
+                    if (tankType == TankType.FLUID_TANK) {
+                        handleResourceTank(player, itemAccess, ContainerType.FLUID, tile);
+                    } else if (tankType == TankType.CHEMICAL_TANK) {
+                        handleResourceTank(player, itemAccess, ContainerType.CHEMICAL, tile);
                     }
                 }
             }

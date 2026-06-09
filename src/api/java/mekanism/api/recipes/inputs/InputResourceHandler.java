@@ -2,7 +2,6 @@ package mekanism.api.recipes.inputs;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -18,7 +17,6 @@ import org.jspecify.annotations.Nullable;
 /// Base helper implementation for [IInputHandler] that simplifies creating input handlers for resource containers.
 ///
 /// @since 10.8.0
-@NothingNullByDefault
 public abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredResource<HOLDER_TYPE>, CONTAINER extends IResourceContainer<RESOURCE>,
       STACK extends TypedInstance<HOLDER_TYPE>> implements IInputHandler<HOLDER_TYPE, STACK> {
 

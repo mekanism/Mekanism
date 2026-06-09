@@ -20,20 +20,18 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE>> extends MekanismButton {
 
     private static final Identifier TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
-    @NotNull
     private final IReactorLogic<TYPE> tile;
     private final Supplier<@Nullable TYPE> modeSupplier;
     private final Map<TYPE, Tooltip> typeTooltips;
     private final Consumer<TYPE> onPress;
 
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, Class<TYPE> clazz, IntSupplier indexSupplier, Supplier<TYPE[]> modeList,
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, IReactorLogic<TYPE> tile, Class<TYPE> clazz, IntSupplier indexSupplier, Supplier<TYPE[]> modeList,
           Consumer<TYPE> onPress) {
         this(gui, x, y, tile, clazz, onPress, () -> {
             int i = indexSupplier.getAsInt() + index;
@@ -42,7 +40,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         });
     }
 
-    private ReactorLogicButton(IGuiWrapper gui, int x, int y, @NotNull IReactorLogic<TYPE> tile, Class<TYPE> clazz, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
+    private ReactorLogicButton(IGuiWrapper gui, int x, int y, IReactorLogic<TYPE> tile, Class<TYPE> clazz, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
         super(gui, x, y, 128, 22, CommonComponents.EMPTY, (element, _, _) -> ((ReactorLogicButton<?>) element).click());
         this.onPress = onPress;
         this.modeSupplier = modeSupplier;
@@ -59,7 +57,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             MekanismRenderer.color(mode.getColor());

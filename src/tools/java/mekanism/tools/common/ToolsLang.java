@@ -1,10 +1,8 @@
 package mekanism.tools.common;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Util;
 
-@NothingNullByDefault
 public enum ToolsLang implements ILangEntry {
     MEKANISM_TOOLS("constants", "mod_name"),
     PACK_DESCRIPTION("constants", "pack_description"),

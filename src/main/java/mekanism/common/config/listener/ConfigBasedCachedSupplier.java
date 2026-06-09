@@ -3,8 +3,7 @@ package mekanism.common.config.listener;
 import java.util.function.Supplier;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ConfigBasedCachedSupplier<VALUE> implements Supplier<VALUE> {
 
@@ -24,7 +23,6 @@ public class ConfigBasedCachedSupplier<VALUE> implements Supplier<VALUE> {
         this.cachedValue = resolver.get();
     }
 
-    @NotNull
     @Override
     public VALUE get() {
         if (cachedValue == null) {

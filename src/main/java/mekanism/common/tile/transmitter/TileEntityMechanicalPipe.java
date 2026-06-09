@@ -14,7 +14,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMechanicalPipe extends TileEntityResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> {
 
@@ -37,9 +36,8 @@ public class TileEntityMechanicalPipe extends TileEntityResourceTransmitter<Flui
         return FluidResource.CODEC;
     }
 
-    @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
+    protected BlockState upgradeResult(BlockState current, BaseTier tier) {
         return BlockStateHelper.copyStateData(current, switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_MECHANICAL_PIPE;
             case ADVANCED -> MekanismBlocks.ADVANCED_MECHANICAL_PIPE;

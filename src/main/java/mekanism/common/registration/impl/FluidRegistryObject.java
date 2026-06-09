@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-@NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
     extends MekanismDeferredHolder<Fluid, STILL> implements IHasTextComponent, IHasTranslationKey {
 

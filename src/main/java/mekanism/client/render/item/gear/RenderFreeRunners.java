@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3fc;
 
-@NothingNullByDefault
 public class RenderFreeRunners implements NoDataSpecialModelRenderer {
 
     public static final Unbaked REGULAR = new Unbaked(GearArmorType.UNARMORED);

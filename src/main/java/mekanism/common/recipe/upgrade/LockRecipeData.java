@@ -1,14 +1,12 @@
 package mekanism.common.recipe.upgrade;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.LockData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     private final LockData lockData;

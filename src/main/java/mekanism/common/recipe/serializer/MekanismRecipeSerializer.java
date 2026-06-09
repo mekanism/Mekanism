@@ -51,7 +51,6 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jspecify.annotations.NonNull;
 
 public class MekanismRecipeSerializer {
 
@@ -216,7 +215,7 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static <RECIPE extends ItemStackToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<@NonNull RECIPE> itemToChemical(
+    public static <RECIPE extends ItemStackToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<RECIPE> itemToChemical(
           BiFunction<ItemStackIngredient, ChemicalStackTemplate, RECIPE> factory) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
@@ -228,7 +227,7 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static <RECIPE extends ItemStackChemicalToItemStackRecipe & IBasicItemStackOutput> RecipeSerializer<@NonNull RECIPE> itemChemicalToItem(
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe & IBasicItemStackOutput> RecipeSerializer<RECIPE> itemChemicalToItem(
           Function4<ItemStackIngredient, ChemicalStackIngredient, ItemStackTemplate, Boolean, RECIPE> factory) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
@@ -244,7 +243,7 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static <RECIPE extends ChemicalChemicalToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<@NonNull RECIPE> chemicalChemicalToChemical(
+    public static <RECIPE extends ChemicalChemicalToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<RECIPE> chemicalChemicalToChemical(
           Function3<ChemicalStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, RECIPE> factory, IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> ingredientCreator) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ingredientCreator.codec().fieldOf(SerializationConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),

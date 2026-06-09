@@ -37,17 +37,7 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         addElement(widgetHolder, new GuiInnerScreen(this, 45, 18, 104, 68));
         GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
         initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 5, 18), input(1));
-        addElement(widgetHolder, new GuiEnergyGauge(new IEnergyInfoHandler() {
-            @Override
-            public long getEnergy() {
-                return 1L;
-            }
-
-            @Override
-            public long getMaxEnergy() {
-                return 1L;
-            }
-        }, GaugeType.SMALL_MED, this, 172, 18));
+        addElement(widgetHolder, new GuiEnergyGauge(IEnergyInfoHandler.ALWAYS_FULL, GaugeType.SMALL_MED, this, 172, 18));
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(recipe.getDuration()),
               5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }

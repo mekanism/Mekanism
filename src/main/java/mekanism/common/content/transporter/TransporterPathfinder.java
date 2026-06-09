@@ -35,8 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class TransporterPathfinder {
 
@@ -81,7 +80,7 @@ public final class TransporterPathfinder {
         TransitResponse response = data.getResponse();
         if (response.sendingAmount() >= min) {
             BlockPos dest = data.getLocation();
-            CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
+            CachedPath test = PathfinderCache.getCache(network, start, dest, data.getSides());
             if (test != null && checkPath(network, test.path(), stack)) {
                 return new Destination(test, response);
             }
@@ -198,6 +197,7 @@ public final class TransporterPathfinder {
             transportStack = stack;
         }
 
+        @Nullable
         public Destination find(@Nullable TransactionContext transaction) {
             LongList ret = new LongArrayList();
             ret.add(start.asLong());
@@ -267,6 +267,7 @@ public final class TransporterPathfinder {
             }
         }
 
+        @Nullable
         private Direction findSide(@Nullable LogisticalTransporterBase startTransmitter) {
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
@@ -295,20 +296,21 @@ public final class TransporterPathfinder {
 
     public static class Destination implements Comparable<Destination> {
 
+        @Nullable
         private final TransitResponse response;
         private final LongList path;
         private final int cachedHash;
         private final double score;
         private Path pathType = Path.NONE;
 
-        public Destination(CachedPath path, TransitResponse ret) {
+        public Destination(CachedPath path, @Nullable TransitResponse ret) {
             this(path.path(), ret, path.cost());
         }
 
         /**
          * @apiNote Expects list to be unmodifiable/immutable (at the very least not mutated after being passed).
          */
-        public Destination(LongList path, TransitResponse ret, double gScore) {
+        public Destination(LongList path, @Nullable TransitResponse ret, double gScore) {
             this.path = path;
             this.cachedHash = this.path.hashCode();
             this.response = ret;
@@ -326,12 +328,12 @@ public final class TransporterPathfinder {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             return o instanceof Destination other && other.path.equals(path);
         }
 
         @Override
-        public int compareTo(@NotNull Destination dest) {
+        public int compareTo(Destination dest) {
             if (score < dest.score) {
                 return -1;
             } else if (score > dest.score) {
@@ -340,6 +342,7 @@ public final class TransporterPathfinder {
             return path.size() - dest.path.size();
         }
 
+        @Nullable
         public TransitResponse getResponse() {
             return response;
         }
@@ -370,6 +373,7 @@ public final class TransporterPathfinder {
         private final DestChecker destChecker;
         private final Level world;
         private double finalScore;
+        @Nullable
         private Direction side;
         private LongList results = new LongArrayList();
 
@@ -514,6 +518,7 @@ public final class TransporterPathfinder {
             return finalScore;
         }
 
+        @Nullable
         public Direction getSide() {
             return side;
         }

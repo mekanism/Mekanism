@@ -14,12 +14,10 @@ import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class UseTierInstallerTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
-    @NotNull
     @Override
     public Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
@@ -43,7 +41,6 @@ public class UseTierInstallerTrigger extends SimpleCriterionTrigger<TriggerInsta
             this.baseTier = baseTier;
         }
 
-        @NotNull
         @Override
         public String getSerializedName() {
             return name().toLowerCase(Locale.ROOT);

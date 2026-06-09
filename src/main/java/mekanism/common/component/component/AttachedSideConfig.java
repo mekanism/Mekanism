@@ -8,7 +8,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -19,10 +18,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
 
     public static final Codec<AttachedSideConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -308,9 +305,8 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
             sideConfig = Collections.unmodifiableMap(sideConfig);
         }
 
-        @NotNull
         @Override
-        public DataType getDataType(@NotNull RelativeSide side) {
+        public DataType getDataType(RelativeSide side) {
             return sideConfig.getOrDefault(side, DataType.NONE);
         }
     }

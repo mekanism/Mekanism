@@ -22,7 +22,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum Holiday implements StringRepresentable {
     AprilFools(new YearlyDate(Month.APRIL, 1)),

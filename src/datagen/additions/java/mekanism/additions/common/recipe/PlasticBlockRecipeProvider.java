@@ -137,7 +137,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
             Holder<Item> result = entry.getValue().getItemHolder();
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(REINFORCED_PLASTIC)
-                  .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM))
+                  .key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM))
                   .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));

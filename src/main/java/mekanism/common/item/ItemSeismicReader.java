@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemSeismicReader extends ItemEnergized {
 
@@ -39,7 +38,7 @@ public class ItemSeismicReader extends ItemEnergized {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltipAdder.accept(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
         } else if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
@@ -50,9 +49,8 @@ public class ItemSeismicReader extends ItemEnergized {
         }
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (world.isClientSide()) {
             return InteractionResult.SUCCESS_SERVER;
         } else if (!WorldUtils.isChunkVibrated(ChunkPos.containing(player.blockPosition()), player.level())) {

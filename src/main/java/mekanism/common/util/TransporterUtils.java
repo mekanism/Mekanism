@@ -18,7 +18,7 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Vector3f;
 
 public final class TransporterUtils {
@@ -49,6 +49,7 @@ public final class TransporterUtils {
         return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
     }
 
+    @Nullable
     public static EnumColor increment(@Nullable EnumColor color) {
         if (color == null) {
             return EnumUtils.COLORS[0];
@@ -58,6 +59,7 @@ public final class TransporterUtils {
         return color.getNext();
     }
 
+    @Nullable
     public static EnumColor decrement(@Nullable EnumColor color) {
         if (color == null) {
             return EnumUtils.COLORS[EnumUtils.COLORS.length - 1];
@@ -72,11 +74,12 @@ public final class TransporterUtils {
               .add(0.5F, 0.25F, 0.5F);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force, @Nullable TransactionContext transaction) {
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force,
+          @Nullable TransactionContext transaction) {
         return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force, transaction);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side,
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, @Nullable EnumColor color, ItemResource itemType, int itemAmount, Direction side,
           boolean force, @Nullable TransactionContext transaction) {
         TransferPreconditions.checkNonEmptyNonNegative(itemType, itemAmount);
         if (itemAmount == 0) {

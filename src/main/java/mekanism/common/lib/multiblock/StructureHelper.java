@@ -13,6 +13,7 @@ import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide.Face;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.Structure.Axis;
+import org.jspecify.annotations.Nullable;
 
 public class StructureHelper {
 
@@ -28,6 +29,7 @@ public class StructureHelper {
      *
      * @return found cuboid, or null if it doesn't exist
      */
+    @Nullable
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
         VoxelCuboid prev = null;
         for (Axis axis : Axis.AXES) {
@@ -71,6 +73,7 @@ public class StructureHelper {
      *
      * @return found cuboid, or null if it doesn't exist
      */
+    @Nullable
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, Set<CuboidSide> sides, int tolerance) {
         // make sure we have enough sides to create cuboidal dimensions
         if (sides.size() < 2) {

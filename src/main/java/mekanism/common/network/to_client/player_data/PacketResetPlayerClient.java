@@ -8,7 +8,6 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketResetPlayerClient(UUID uuid) implements IMekanismPacket {
 
@@ -17,7 +16,6 @@ public record PacketResetPlayerClient(UUID uuid) implements IMekanismPacket {
           PacketResetPlayerClient::new, PacketResetPlayerClient::uuid
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketResetPlayerClient> type() {
         return TYPE;

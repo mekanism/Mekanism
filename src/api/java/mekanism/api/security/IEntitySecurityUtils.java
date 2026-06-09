@@ -3,7 +3,7 @@ package mekanism.api.security;
 import mekanism.api.MekanismAPI;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.capabilities.EntityCapability;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system when applied to entities.
@@ -23,7 +23,7 @@ public interface IEntitySecurityUtils extends ITypedSecurityUtils<Entity> {
     /**
      * {@return the entity capability representing owner objects}
      */
-    EntityCapability<IOwnerObject, Void> ownerCapability();
+    EntityCapability<IOwnerObject, @Nullable Void> ownerCapability();
 
     @Nullable
     @Override
@@ -34,7 +34,7 @@ public interface IEntitySecurityUtils extends ITypedSecurityUtils<Entity> {
     /**
      * {@return the entity capability representing security objects}
      */
-    EntityCapability<ISecurityObject, Void> securityCapability();
+    EntityCapability<ISecurityObject, @Nullable Void> securityCapability();
 
     @Nullable
     @Override

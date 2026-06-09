@@ -13,12 +13,10 @@ import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
-    @NotNull
     private final WeakReference<Player> playerReference;
     private final int subtitleFrequency;
     private float lastX;
@@ -29,12 +27,12 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     private float fadeDownStep = 0.1f;
     private int consecutiveTicks;
 
-    public PlayerSound(@NotNull Player player, @NotNull SoundEventRegistryObject<?> sound) {
+    public PlayerSound(Player player, SoundEventRegistryObject<?> sound) {
         this(player, sound.get(), 3 * SharedConstants.TICKS_PER_SECOND);
         //Set it to repeat the subtitle every 3 seconds the sound is constantly playing
     }
 
-    public PlayerSound(@NotNull Player player, @NotNull SoundEvent sound, int subtitleFrequency) {
+    public PlayerSound(Player player, SoundEvent sound, int subtitleFrequency) {
         super(sound, SoundSource.PLAYERS, player.level().getRandom());
         this.playerReference = new WeakReference<>(player);
         this.subtitleFrequency = subtitleFrequency;
@@ -127,7 +125,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
         }
     }
 
-    public abstract boolean shouldPlaySound(@NotNull Player player);
+    public abstract boolean shouldPlaySound(Player player);
 
     @Override
     public float getVolume() {

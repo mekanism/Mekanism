@@ -8,6 +8,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
@@ -30,6 +31,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
         return new GuiQIODashboard(container, inv, title);
     }
 
+    @Nullable
     @Override
     public FrequencyIdentity getFrequency() {
         QIOFrequency freq = tile.getQIOFrequency();

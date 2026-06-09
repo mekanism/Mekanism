@@ -46,6 +46,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,8 +57,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<BasicItemStackToFluidOptionalItemRecipe> {
 
@@ -76,8 +76,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IFluidTank fluidTank;
 
-    private final IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
+    private final IOutputHandler<FluidOptionalItemOutput> outputHandler;
+    private final IInputHandler<Item, ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -107,7 +107,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
@@ -121,7 +120,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -143,8 +141,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         containerFillSlot.drainTankIntoSlot(containerOutputSlot, null);
         recipeCacheLookupMonitor.updateAndProcess();
@@ -161,7 +159,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
     public MekanismRecipeType<SingleRecipeInput, BasicItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
@@ -198,9 +195,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         );
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<BasicItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
+    public CachedRecipe<BasicItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(BasicItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -224,7 +220,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putChild(SerializationConstants.FLUID, fluidTank);
         if (!lastPasteItem.isEmpty()) {
@@ -233,7 +229,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.FLUID, fluidTank);
         lastPasteItem = input.read(SerializationConstants.ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);

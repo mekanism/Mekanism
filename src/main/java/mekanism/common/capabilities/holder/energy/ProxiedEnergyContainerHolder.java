@@ -11,12 +11,12 @@ public class ProxiedEnergyContainerHolder extends ProxiedHolder implements IEner
 
     private final Function<@Nullable Direction, @Nullable IEnergyContainer> containerFunction;
 
-    public static ProxiedEnergyContainerHolder create(Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate,
+    public static ProxiedEnergyContainerHolder create(Predicate<@Nullable Direction> insertPredicate, Predicate<@Nullable Direction> extractPredicate,
           Function<@Nullable Direction, @Nullable IEnergyContainer> containerFunction) {
         return new ProxiedEnergyContainerHolder(insertPredicate, extractPredicate, containerFunction);
     }
 
-    private ProxiedEnergyContainerHolder(Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate,
+    private ProxiedEnergyContainerHolder(Predicate<@Nullable Direction> insertPredicate, Predicate<@Nullable Direction> extractPredicate,
           Function<@Nullable Direction, @Nullable IEnergyContainer> containerFunction) {
         super(insertPredicate, extractPredicate);
         this.containerFunction = containerFunction;

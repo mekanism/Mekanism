@@ -12,8 +12,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The default tiers used in Mekanism.
@@ -110,7 +109,6 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
         return this.textColor;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);

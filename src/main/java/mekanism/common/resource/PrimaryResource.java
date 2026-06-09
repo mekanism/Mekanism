@@ -6,7 +6,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum PrimaryResource implements IResource {
     IRON("iron", 0xFFAF8E77, Tags.Items.ORES_IRON),
@@ -22,18 +22,20 @@ public enum PrimaryResource implements IResource {
     //Note: This is a supplier because of the chicken and egg of referencing OreType and OreType referencing PrimaryResource
     private final Supplier<TagKey<Item>> oreTag;
     private final boolean isVanilla;
+    @Nullable
     private final BlockResourceInfo resourceBlockInfo;
+    @Nullable
     private final BlockResourceInfo rawResourceBlockInfo;
 
     PrimaryResource(String name, int tint, TagKey<Item> oreTag) {
         this(name, tint, () -> oreTag, true, null, null);
     }
 
-    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, @Nullable BlockResourceInfo resourceBlockInfo, @Nullable BlockResourceInfo rawResourceBlockInfo) {
         this(name, tint, oreTag, false, resourceBlockInfo, rawResourceBlockInfo);
     }
 
-    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, boolean isVanilla, @Nullable BlockResourceInfo resourceBlockInfo, @Nullable BlockResourceInfo rawResourceBlockInfo) {
         this.name = name;
         this.tint = tint;
         this.oreTag = oreTag;

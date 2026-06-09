@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.ModelRenderer;
@@ -29,9 +28,8 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe, PipeRenderState> {
 
     private static final int STAGES = 100;
@@ -48,7 +46,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    public void extractRenderState(TileEntityMechanicalPipe pipe, PipeRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityMechanicalPipe pipe, PipeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(pipe, state, partialTick, cameraPosition, breakProgress);
         MechanicalPipe transmitter = pipe.getTransmitter();
         FluidNetwork network = transmitter.getTransmitterNetwork();
@@ -208,7 +206,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (super.shouldRenderTransmitter(tile, camera)) {
             MechanicalPipe pipe = tile.getTransmitter();
             if (pipe.hasTransmitterNetwork()) {
-                FluidNetwork network = pipe.getTransmitterNetwork();
+                FluidNetwork network = pipe.getTransmitterNetworkNN();
                 return !network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.currentScale > 0;
             }
         }

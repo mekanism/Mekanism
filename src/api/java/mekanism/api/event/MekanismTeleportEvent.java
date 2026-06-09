@@ -1,7 +1,6 @@
 package mekanism.api.event;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.robit.IRobit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -16,14 +15,13 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base Mekanism extension of the {@link EntityTeleportEvent}.
  *
  * @since 10.3.9
  */
-@NothingNullByDefault
 public class MekanismTeleportEvent extends EntityTeleportEvent {
 
     /**

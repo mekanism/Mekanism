@@ -8,8 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface ITransactionalSlot {
 
@@ -22,7 +21,7 @@ public interface ITransactionalSlot {
     int extract(Player player, ItemResource resource, int amount, TransactionContext transaction);
 
     /// Used for determining if this slot can merge with the given stack when the stack is double-clicked.
-    default boolean canMergeWith(@NotNull ItemStack stack) {
+    default boolean canMergeWith(ItemStack stack) {
         return true;
     }
 

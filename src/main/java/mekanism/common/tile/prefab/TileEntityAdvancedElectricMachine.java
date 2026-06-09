@@ -48,6 +48,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -55,8 +56,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO: See what classes we can deduplicate by making this a parent class of them
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements
@@ -81,9 +81,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
     public IChemicalTank chemicalTank;
 
-    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    protected final IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
+    protected final IOutputHandler<ItemStackTemplate> outputHandler;
+    protected final IInputHandler<Item, ItemStack> itemInputHandler;
+    protected final IInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -121,7 +121,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         }
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -136,7 +135,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -150,8 +148,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         secondarySlot.fillTankOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
@@ -172,9 +170,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return findFirstRecipe(itemInputHandler, chemicalInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
             cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.create(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler,
@@ -205,7 +202,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         }
     }
 
-    @NotNull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), energyContainer, getOperatingTicks(), usedSoFar, chemicalTank, secondarySlot,
@@ -228,13 +224,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }

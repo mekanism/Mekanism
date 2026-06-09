@@ -12,10 +12,9 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public class GuiMergedTankGauge extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
+public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRecipeViewerIngredientHelper {
 
     private final Supplier<MergedTank> mergedTankSupplier;
     private final Supplier<IMultiblockContents> handlerSupplier;
@@ -54,7 +53,7 @@ public class GuiMergedTankGauge extends GuiGauge<Void> implements IRecipeViewerI
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
@@ -108,6 +107,7 @@ public class GuiMergedTankGauge extends GuiGauge<Void> implements IRecipeViewerI
         return label;
     }
 
+    @Nullable
     @Override
     public TransmissionType getTransmission() {
         return getCurrentGauge().getTransmission();

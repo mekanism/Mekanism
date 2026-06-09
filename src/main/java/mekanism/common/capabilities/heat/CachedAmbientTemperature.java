@@ -8,15 +8,15 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class CachedAmbientTemperature implements DoubleSupplier {
 
     private final double[] ambientTemperature = new double[EnumUtils.DIRECTIONS.length + 1];
-    private final Supplier<Level> worldSupplier;
+    private final Supplier<@Nullable Level> worldSupplier;
     private final Supplier<BlockPos> positionSupplier;
 
-    public CachedAmbientTemperature(Supplier<Level> worldSupplier, Supplier<BlockPos> positionSupplier) {
+    public CachedAmbientTemperature(Supplier<@Nullable Level> worldSupplier, Supplier<BlockPos> positionSupplier) {
         this.worldSupplier = worldSupplier;
         this.positionSupplier = positionSupplier;
         Arrays.fill(ambientTemperature, -1);

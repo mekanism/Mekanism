@@ -1,6 +1,5 @@
 package mekanism.common.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-@NothingNullByDefault
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();

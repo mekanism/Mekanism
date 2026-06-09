@@ -41,7 +41,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -115,7 +114,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         mergedTank.readFromUpdateTag(input);
@@ -123,7 +122,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         output.putFloat(SerializationConstants.SCALE, prevScale);
         mergedTank.addToUpdateTag(output);

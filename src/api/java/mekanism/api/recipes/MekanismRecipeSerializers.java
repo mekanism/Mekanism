@@ -3,6 +3,7 @@ package mekanism.api.recipes;
 import mekanism.api.MekanismAPI;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
+import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
@@ -12,33 +13,30 @@ import mekanism.api.recipes.basic.BasicCompressingRecipe;
 import mekanism.api.recipes.basic.BasicCrushingRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicEnrichingRecipe;
-import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
-import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
-import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
+import mekanism.api.recipes.basic.BasicWashingRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jspecify.annotations.NonNull;
 
 public class MekanismRecipeSerializers {
 
     public static class Names {
 
-        @NonNull
         private static ResourceKey<RecipeSerializer<?>> key(String name) {
             return ResourceKey.create(Registries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, name));
         }

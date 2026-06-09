@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.lib.Outlines;
@@ -26,9 +25,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator, VibratorRenderState> implements IWireFrameRenderer {
 
     @Nullable
@@ -49,7 +47,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
 
     @Override
     public void extractRenderState(TileEntitySeismicVibrator vibrator, VibratorRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(vibrator, state, partialTick, cameraPosition, breakProgress);
         state.piston = Math.max(0, Mth.sin((vibrator.clientPiston + (vibrator.getActive() ? partialTick : 0)) / 5F));
     }

@@ -12,7 +12,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketFluidNetworkContents(UUID networkID, FluidResource fluid) implements IMekanismPacket {
 
@@ -23,7 +22,6 @@ public record PacketFluidNetworkContents(UUID networkID, FluidResource fluid) im
           PacketFluidNetworkContents::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketFluidNetworkContents> type() {
         return TYPE;

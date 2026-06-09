@@ -4,13 +4,12 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base Chemical ingredient implementation that matches if any of the child ingredients match. This type additionally represents the array notation used in
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
  * @see CompoundIngredient CompoundIngredient, its item equivalent
  * @since 10.6.0
  */
-@NothingNullByDefault
 public non-sealed class CompoundChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<CompoundChemicalIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(

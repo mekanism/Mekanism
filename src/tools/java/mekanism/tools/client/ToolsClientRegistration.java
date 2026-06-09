@@ -18,7 +18,6 @@ public class ToolsClientRegistration {
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         //TODO - 26.1: code updated to compile, but a singleton doesn't seem right? Probably should make a new instance for each?
         /*event.registerItem(new IClientItemExtensions() {
-            @NotNull
             @Override
             public Model getHumanoidArmorModel(ItemStack itemStack, EquipmentClientInfo.LayerType layerType, Model original) {
                 if (!(original instanceof HumanoidModel<?> humanoidModel)) {

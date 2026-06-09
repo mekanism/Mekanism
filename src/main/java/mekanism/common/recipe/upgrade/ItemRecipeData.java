@@ -2,7 +2,6 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.LargeResourceStack;
@@ -13,7 +12,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@NothingNullByDefault
 public class ItemRecipeData extends ResourceRecipeData<ItemResource> {
 
     ItemRecipeData(List<LargeResourceStack<ItemResource>> slots) {

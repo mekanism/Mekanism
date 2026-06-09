@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.Level;
  *
  * @since 10.7.0
  */
-@NothingNullByDefault
 public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends TwoInputMekRecipe<Item, ItemStack, ItemStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleItemChemicalRecipeInput, OUTPUT> {
 
     /**

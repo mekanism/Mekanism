@@ -2,7 +2,6 @@ package mekanism.common.inventory.access;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
 import mekanism.api.resource.IResourceContainer;
@@ -17,12 +16,10 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.NonNull;
 
-@NothingNullByDefault
 public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends InventorySlotItemAccess {
 
-    private final ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> capability;
+    private final ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability;
     private final LastDirectionJournal transferDirectionSupplier;
     private final IInventorySlot output;
     private final RESOURCE currentStoredContents;
@@ -34,7 +31,7 @@ public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends Inve
         this(input, output, containerType.capability().item(), transferDirectionSupplier, currentContents, container.capacityAsInt(currentContents));
     }
 
-    public InOutSlotResourceItemAccess(IInventorySlot input, IInventorySlot output, ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> capability,
+    public InOutSlotResourceItemAccess(IInventorySlot input, IInventorySlot output, ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability,
           LastDirectionJournal transferDirectionSupplier, RESOURCE currentStoredContents, int currentTypeCapacity) {
         super(input, AutomationType.INTERNAL);
         this.output = Objects.requireNonNull(output, "Output slot may not be null");
@@ -44,7 +41,7 @@ public class InOutSlotResourceItemAccess<RESOURCE extends Resource> extends Inve
         this.currentTypeCapacity = currentTypeCapacity;
     }
 
-    public ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> getCapability() {
+    public ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> getCapability() {
         return capability;
     }
 

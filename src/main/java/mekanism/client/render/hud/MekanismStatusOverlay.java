@@ -13,7 +13,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.client.gui.GuiLayer;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 public class MekanismStatusOverlay implements GuiLayer {
@@ -32,7 +31,7 @@ public class MekanismStatusOverlay implements GuiLayer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && !minecraft.options.hideGui) {
             ItemStack stack = minecraft.player.getMainHandItem();

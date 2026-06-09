@@ -1,13 +1,10 @@
 package mekanism.common.capabilities.resolver;
 
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
-public interface ICapabilityResolver<CONTEXT> {
+public interface ICapabilityResolver<CONTEXT extends @Nullable Object> {
 
     /**
      * Gets the list of capabilities this resolver is able to resolve.
@@ -28,7 +25,7 @@ public interface ICapabilityResolver<CONTEXT> {
      * @implNote The result should be cached
      */
     @Nullable
-    <T> T resolve(BlockCapability<T, CONTEXT> capability, @UnknownNullability CONTEXT side);
+    <T> T resolve(BlockCapability<T, CONTEXT> capability, CONTEXT side);
 
     /**
      * Invalidates the given capability on the given side.
@@ -36,7 +33,7 @@ public interface ICapabilityResolver<CONTEXT> {
      * @param capability Capability
      * @param context    Context
      */
-    void invalidate(BlockCapability<?, CONTEXT> capability, @UnknownNullability CONTEXT context);
+    void invalidate(BlockCapability<?, CONTEXT> capability, CONTEXT context);
 
     /**
      * Invalidates all cached capabilities.

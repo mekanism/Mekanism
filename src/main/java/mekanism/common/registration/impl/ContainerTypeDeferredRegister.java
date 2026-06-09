@@ -24,7 +24,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.MenuType.MenuSupplier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.IContainerFactory;
-import org.jetbrains.annotations.NotNull;
 
 public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<MenuType<?>> {
 
@@ -161,7 +160,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
                 }
 
                 @Override
-                protected void addInventorySlots(@NotNull Inventory inv) {
+                protected void addInventorySlots(Inventory inv) {
                     super.addInventorySlots(inv);
                     if (armorSlotsX != -1 && armorSlotsY != -1) {
                         addArmorSlots(inv, armorSlotsX, armorSlotsY, offhandOffset);

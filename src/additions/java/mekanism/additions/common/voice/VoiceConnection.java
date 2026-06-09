@@ -21,14 +21,18 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceConnection extends Thread {
 
     private final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+    @Nullable
     private DataOutputStream output;
+    @Nullable
     private DataInputStream input;
     private boolean open = true;
     private final Socket socket;
+    @Nullable
     private UUID uuid;
 
     VoiceConnection(Socket s) {
@@ -149,6 +153,9 @@ public class VoiceConnection extends Thread {
 
     public int getCurrentChannel() {
         ServerPlayer player = getPlayer();
+        if (player == null) {
+            return 0;
+        }
         int channel = getCurrentChannel(player.getMainHandItem());
         if (channel == 0) {
             channel = getCurrentChannel(player.getOffhandItem());
@@ -161,7 +168,8 @@ public class VoiceConnection extends Thread {
         return data.running() ? data.channel() : 0;
     }
 
+    @Nullable
     public ServerPlayer getPlayer() {
-        return server.getPlayerList().getPlayer(uuid);
+        return uuid == null ? null : server.getPlayerList().getPlayer(uuid);
     }
 }

@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.jetbrains.annotations.NotNull;
 
 public class AttributeStateFissionPortMode implements AttributeState {
 
@@ -35,7 +33,7 @@ public class AttributeStateFissionPortMode implements AttributeState {
     }
 
     @Override
-    public BlockState getDefaultState(@NotNull BlockState state) {
+    public BlockState getDefaultState(BlockState state) {
         return state.setValue(modeProperty, FissionPortMode.INPUT);
     }
 
@@ -44,7 +42,6 @@ public class AttributeStateFissionPortMode implements AttributeState {
         properties.add(modeProperty);
     }
 
-    @NothingNullByDefault
     public enum FissionPortMode implements StringRepresentable, IHasEnumNameTextComponent, IIncrementalEnum<FissionPortMode> {
         INPUT("input", GeneratorsLang.FISSION_PORT_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),

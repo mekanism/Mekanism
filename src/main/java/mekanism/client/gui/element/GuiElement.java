@@ -45,8 +45,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
@@ -92,7 +91,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void updateWidgetNarration(@NotNull NarrationElementOutput output) {
+    public void updateWidgetNarration(NarrationElementOutput output) {
         //TODO: See GuiMekanism#addRenderableWidget for more details, and also figure out how to make this properly support nested narratables
         // as some of our GuiElements have sub GuiElements and those are the ones we actually would want to narrate
     }
@@ -186,25 +185,22 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return guiObj.getYSize();
     }
 
-    @NotNull
     @Override
     public ScreenRectangle getRectangle() {
         return new ScreenRectangle(getGuiLeft() + getButtonX(), getGuiTop() + getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
-    @NotNull
     protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
         return getRectangle();
     }
 
-    @NotNull
     @Override
     public List<GuiElement> children() {
         return children;
     }
 
     @Override
-    public void visitWidgets(@NotNull Consumer<AbstractWidget> consumer) {
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {
         super.visitWidgets(consumer);
         children.forEach(consumer);
     }
@@ -314,7 +310,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     //TODO: Evaluate if we can somehow move the remaining uses to the new tooltip system
-    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         updateTooltip(mouseX, mouseY);
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
@@ -343,7 +339,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         this.isDragging = dragging;
     }
 
-    @NotNull
     @Override
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         if (checkWindows(mouseX, mouseY)) {
@@ -400,7 +395,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Nullable
     @Override
-    public ComponentPath nextFocusPath(@NotNull FocusNavigationEvent event) {
+    public ComponentPath nextFocusPath(FocusNavigationEvent event) {
         if (!this.active || !this.visible) {
             //If we aren't active or aren't visible, don't check if we can be the next focus path
             return null;
@@ -427,7 +422,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     //TODO - 1.20: Do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         GuiElement clickedChild = GuiUtils.findChild(children, event, isDoubleClick, GuiElement::mouseClicked);
         //Note: This setFocused call is outside the clickedChild find, so that if we couldn't find one
         // then we un-focus whatever child is currently focused
@@ -442,17 +437,17 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         return GuiUtils.checkChildren(children, event, GuiElement::keyPressed) || super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(@NotNull CharacterEvent event) {
+    public boolean charTyped(CharacterEvent event) {
         return GuiUtils.checkChildrenChar(children, event, GuiElement::charTyped) || super.charTyped(event);
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+    protected void onDrag(MouseButtonEvent event, double deltaX, double deltaY) {
         //TODO - 1.20.4: For this and onRelease etc do we want to somewhat do something like ContainerEventHandler does
         // where it only does the focused element?
         for (GuiElement element : children) {
@@ -462,7 +457,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void onRelease(@NotNull MouseButtonEvent event) {
+    public void onRelease(MouseButtonEvent event) {
         setDragging(false);
         for (GuiElement element : children) {
             element.onRelease(event);
@@ -569,19 +564,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return isHovering;
     }
 
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (buttonBackground != ButtonBackground.NONE) {
             drawButton(guiGraphics, mouseX, mouseY);
         }
     }
 
-    public final void onDrawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public final void onDrawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
-    public final void renderShifted(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public final void renderShifted(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Copy of super.render, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
         if (this.visible) {
             //TODO - 1.21: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
@@ -592,7 +587,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
         if (visible) {
             Matrix3x2fStack matrix = guiGraphics.pose();
@@ -604,7 +599,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
@@ -635,6 +630,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
+    @Nullable
     protected Identifier getButtonVariant(boolean hoveredOrFocused) {
         if (!this.active) {
             return buttonBackground.inactive();
@@ -650,11 +646,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     protected void drawButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Identifier texture = getButtonVariant(isMouseOverCheckWindows(mouseX, mouseY));
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), getButtonBlitColor());
+        if (texture != null) {
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), getButtonBlitColor());
+        }
     }
 
     @Override
-    public void playDownSound(@NotNull SoundManager soundHandler) {
+    public void playDownSound(SoundManager soundHandler) {
         if (clickSound != null) {
             playClickSound(soundHandler, clickSound, clickVolume);
         }
@@ -665,7 +663,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         playClickSound(minecraft.getSoundManager(), sound, 0.25F);
     }
 
-    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Supplier<SoundEvent> sound, float clickVolume) {
+    private static void playClickSound(SoundManager soundHandler, Supplier<SoundEvent> sound, float clickVolume) {
         soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F, clickVolume));
     }
 
@@ -696,24 +694,30 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         DIGITAL(Mekanism.rl("button_digital")),
         NONE(null);
 
+        @Nullable
         private final Identifier base;
+        @Nullable
         private final Identifier focus;
+        @Nullable
         private final Identifier inactive;//i.e. disabled?
 
-        ButtonBackground(Identifier base) {
+        ButtonBackground(@Nullable Identifier base) {
             this.base = base;
             this.focus = base == null ? null : base.withSuffix("_focus");
             this.inactive = base == null ? null : base.withSuffix("_inactive");
         }
 
+        @Nullable
         public Identifier base() {
             return base;
         }
 
+        @Nullable
         public Identifier focus() {
             return focus;
         }
 
+        @Nullable
         public Identifier inactive() {
             return inactive;
         }
@@ -723,6 +727,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public interface IClickable {
 
         //TODO: Can we make the element be a generic type? It might allow for making the implementations non-capturing
-        boolean onClick(GuiElement element, @NotNull MouseButtonEvent event, boolean isDoubleClick);
+        boolean onClick(GuiElement element, MouseButtonEvent event, boolean isDoubleClick);
     }
 }

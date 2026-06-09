@@ -15,8 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO - V11: Rewrite/refactor usages of this to better handle tags for fluids and chemicals by allowing them to make use of the super OredictionificatorFilter class
 public class OredictionificatorItemFilter extends OredictionificatorFilter<Item, ItemResource, OredictionificatorItemFilter> {
@@ -81,7 +80,7 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
     }
 
     @ComputerMethod(nameOverride = "setSelectedOutput", threadSafe = true)
-    void computerSetSelectedOutput(@NotNull Item item) {
+    void computerSetSelectedOutput(Item item) {
         setSelectedOutput(item.builtInRegistryHolder());
     }
 }

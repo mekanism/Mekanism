@@ -10,9 +10,7 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class GeneratorsModelProvider extends BaseModelProvider {
 
     public GeneratorsModelProvider(PackOutput output, ResourceManager clientResources) {

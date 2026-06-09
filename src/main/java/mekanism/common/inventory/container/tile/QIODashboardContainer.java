@@ -13,8 +13,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 
@@ -41,19 +40,19 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    protected void openInventory(@NotNull Inventory inv) {
+    protected void openInventory(Inventory inv) {
         super.openInventory(inv);
         tile.open(inv.player);
     }
 
     @Override
-    protected void closeInventory(@NotNull Player player) {
+    protected void closeInventory(Player player) {
         super.closeInventory(player);
         tile.close(player);
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         //prevent Containers from remaining valid after the chunk has unloaded;
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }
@@ -73,7 +72,7 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public boolean canPlayerAccess(@NotNull Player player) {
+    public boolean canPlayerAccess(Player player) {
         Level level = tile.getLevel();
         if (level == null) {
             return false;

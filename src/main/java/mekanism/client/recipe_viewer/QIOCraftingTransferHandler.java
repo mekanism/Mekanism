@@ -45,8 +45,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class QIOCraftingTransferHandler {
 
@@ -354,7 +353,7 @@ public class QIOCraftingTransferHandler {
         return null;
     }
 
-    private static <RESULT> RESULT invalidSource(RVRecipeInfo<RESULT, ?, ?> recipeHelper, @NotNull ItemResource type) {
+    private static <RESULT> RESULT invalidSource(RVRecipeInfo<RESULT, ?, ?> recipeHelper, ItemResource type) {
         Mekanism.logger.warn("Error finding source for: {}. This should not be possible.", type);
         return recipeHelper.createInternalError();
     }

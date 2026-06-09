@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.Objects;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -26,7 +25,7 @@ public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerReci
                   recipe.getExtraInput()
             ));
         }
-        return addConversions(mapper, recipe.getMainInput(), recipe.getExtraInput(), recipe::getOutput, Objects::nonNull,
-              fakeGroupHelper::forItems, fakeGroupHelper::forItems, null, TypedMekanismRecipeMapper::addConversion, contextMap);
+        return addConversions(mapper, recipe.getMainInput(), recipe.getExtraInput(), recipe::getOutput, fakeGroupHelper::forItems, fakeGroupHelper::forItems,
+              TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

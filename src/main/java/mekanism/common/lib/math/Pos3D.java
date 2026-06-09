@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Pos3D - a way of performing operations on objects in a three-dimensional environment.
@@ -201,7 +201,6 @@ public class Pos3D extends Vec3 {
      *
      * @return rotated Pos3D
      */
-    @NotNull
     @Override
     public Pos3D yRot(float yaw) {
         double yawRadians = Math.toRadians(yaw);
@@ -216,7 +215,6 @@ public class Pos3D extends Vec3 {
         return new Pos3D(xPos, y, zPos);
     }
 
-    @NotNull
     @Override
     public Pos3D xRot(float pitch) {
         double pitchRadians = Math.toRadians(pitch);
@@ -250,7 +248,6 @@ public class Pos3D extends Vec3 {
         return new Pos3D(xPos, yPos, zPos);
     }
 
-    @NotNull
     @Override
     public Pos3D multiply(Vec3 pos) {
         return multiply(pos.x, pos.y, pos.z);
@@ -265,13 +262,11 @@ public class Pos3D extends Vec3 {
      *
      * @return scaled Pos3D
      */
-    @NotNull
     @Override
     public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
     }
 
-    @NotNull
     @Override
     public Pos3D scale(double scale) {
         return multiply(scale, scale, scale);
@@ -319,7 +314,6 @@ public class Pos3D extends Vec3 {
         return Math.acos(dot(pos2));
     }
 
-    @NotNull
     @Override
     public Pos3D normalize() {
         return new Pos3D(super.normalize());
@@ -347,14 +341,13 @@ public class Pos3D extends Vec3 {
         return new Pos3D(x, y, z);
     }
 
-    @NotNull
     @Override
     public String toString() {
         return "[Pos3D: " + x + ", " + y + ", " + z + "]";
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof Vec3 other && other.x == x && other.y == y && other.z == z;
     }
 

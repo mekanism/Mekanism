@@ -16,7 +16,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeSlot;
@@ -32,9 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements EmiRecipeHandler<CONTAINER> {
 
     @Override
@@ -188,7 +186,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

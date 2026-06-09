@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-@NothingNullByDefault
 public class MekanismShapedRecipe extends WrappedShapedRecipe {
 
     public MekanismShapedRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {

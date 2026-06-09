@@ -20,14 +20,14 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
@@ -47,7 +47,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         super(blockProvider, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -61,8 +60,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (solarCheck == null) {
             recheckSettings();
         }
@@ -107,7 +106,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return MathUtils.clampToInt(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
     }
 
-    protected float getBrightnessMultiplier(@NotNull Level world) {
+    protected float getBrightnessMultiplier(Level world) {
         //Get the brightness of the sun; including rain penalty
         return WorldUtils.getSunBrightness(world, this.worldPosition);
     }

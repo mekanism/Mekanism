@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -24,9 +23,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey {
 
     /**
@@ -221,7 +219,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     @Override
     public Holder<Chemical> typeHolder() {
         //Note: We know chemical is not null here as that gets checked as part of isEmpty
-        return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : chemical;
+        return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : Objects.requireNonNull(chemical);
     }
 
     /**
@@ -323,12 +321,12 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
         }
         //Note: chemical is not null here, and we know it isn't empty so we can just directly reference it
         // rather than having to check if it is empty again
-        int hash = chemical.hashCode();
+        int hash = Objects.requireNonNull(chemical).hashCode();
         return 31 * hash + amount;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

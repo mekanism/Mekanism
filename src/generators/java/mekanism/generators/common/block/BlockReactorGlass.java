@@ -7,7 +7,6 @@ import mekanism.generators.common.block.fusion.BlockLaserFocusMatrix;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockReactorGlass<TILE extends TileEntityStructuralMultiblock> extends BlockStructuralGlass<TILE> {
 
@@ -16,7 +15,7 @@ public class BlockReactorGlass<TILE extends TileEntityStructuralMultiblock> exte
     }
 
     @Override
-    protected boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+    protected boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
         return super.skipRendering(state, adjacentBlockState, side) || adjacentBlockState.getBlock() instanceof BlockLaserFocusMatrix;
     }
 }

@@ -6,8 +6,7 @@ import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiRightArrow extends GuiTextureOnlyElement implements IRecipeViewerRecipeArea<GuiRightArrow> {
 
@@ -19,9 +18,8 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IRecipeViewe
         super(ARROW, gui, x, y, 22, 15);
     }
 
-    @NotNull
     @Override
-    public GuiRightArrow recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories) {
+    public GuiRightArrow recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }

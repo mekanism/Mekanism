@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.MultiblockContentsRenderState;
@@ -27,9 +26,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<EvaporationMultiblockData, TileEntityThermalEvaporationController, TEPRenderState> {
 
     public RenderThermalEvaporationPlant(BlockEntityRendererProvider.Context context) {
@@ -42,7 +40,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
     }
 
     @Override
-    public void extractRenderState(TileEntityThermalEvaporationController controller, TEPRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityThermalEvaporationController controller, TEPRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         EvaporationMultiblockData multiblock = controller.getMultiblock();
         state.gather(multiblock);
@@ -88,10 +86,8 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         public int tankGlow;
         public float tankMaxY;
         public List<ValveRenderData> valves = new ArrayList<>();
-        @Nullable
-        public RenderResizableCuboid.TexturePicker fluidTexture;
-        @Nullable
-        public MekanismRenderer.ValveTextureGetter valveTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker fluidTexture;
+        public MekanismRenderer.@Nullable ValveTextureGetter valveTexture;
 
     }
 }

@@ -6,11 +6,10 @@ import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 
 public class GeigerSound extends PlayerSound {
 
-    public static GeigerSound create(@NotNull Player player, RadiationScale scale) {
+    public static GeigerSound create(Player player, RadiationScale scale) {
         int subtitleFrequency = switch (scale) {
             case LOW -> 3 * SharedConstants.TICKS_PER_SECOND;
             case MEDIUM -> 2 * SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
@@ -24,14 +23,14 @@ public class GeigerSound extends PlayerSound {
 
     private final RadiationScale scale;
 
-    private GeigerSound(@NotNull Player player, RadiationScale scale, int subtitleFrequency) {
+    private GeigerSound(Player player, RadiationScale scale, int subtitleFrequency) {
         super(player, Objects.requireNonNull(scale.getSoundEvent()), subtitleFrequency);
         this.scale = scale;
         setFade(1, 1);
     }
 
     @Override
-    public boolean shouldPlaySound(@NotNull Player player) {
+    public boolean shouldPlaySound(Player player) {
         return scale == ClientRadiation.getClientScale();
     }
 

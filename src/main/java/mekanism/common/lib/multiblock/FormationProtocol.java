@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -171,16 +173,16 @@ public class FormationProtocol<T extends MultiblockData> {
     }
 
     @FunctionalInterface
-    public interface FormationChecker<NODE> {
+    public interface FormationChecker<NODE extends @Nullable Object> {
 
         boolean check(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
     }
 
-    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker) {
+    public static <NODE extends @Nullable Object> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker) {
         return explore(level, chunkMap, start, node, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
     }
 
-    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker, int maxCount) {
+    public static <NODE extends @Nullable Object> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker, int maxCount) {
         if (!checker.check(level, chunkMap, start, node, start)) {
             return 0;
         }
@@ -213,11 +215,12 @@ public class FormationProtocol<T extends MultiblockData> {
         public static final FormationResult SUCCESS = new FormationResult(true, null, false);
         public static final FormationResult FAIL = new FormationResult(false, null, false);
 
+        @Nullable
         private final Component resultText;
         private final boolean formed;
         private final boolean noIgnore;
 
-        private FormationResult(boolean formed, Component resultText, boolean noIgnore) {
+        private FormationResult(boolean formed, @Nullable Component resultText, boolean noIgnore) {
             this.formed = formed;
             this.resultText = resultText;
             this.noIgnore = noIgnore;
@@ -263,20 +266,21 @@ public class FormationProtocol<T extends MultiblockData> {
             return noIgnore;
         }
 
+        @Nullable
         public Component getResultText() {
             return resultText;
         }
     }
 
     private StructureResult<T> fail(FormationResult result) {
-        return new StructureResult<>(result, null, null);
+        return new StructureResult<>(result, null, Collections.emptyMap());
     }
 
     private StructureResult<T> form(T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
         return new StructureResult<>(FormationResult.SUCCESS, structureFound, idsFound);
     }
 
-    private record StructureResult<T extends MultiblockData>(FormationResult result, T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
+    private record StructureResult<T extends MultiblockData>(FormationResult result, @Nullable T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
     }
 
     public enum CasingType {

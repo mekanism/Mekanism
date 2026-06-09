@@ -1,11 +1,9 @@
 package mekanism.generators.client.recipe_viewer.alias;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.util.Util;
 
-@NothingNullByDefault
 public enum GeneratorsAliases implements IAliasedTranslation {
     FUSION_FUEL("fusion_fuel", "Fusion Fuel"),
     GBG_ETHYLENE("gbg.ethylene", "Ethylene Generator"),

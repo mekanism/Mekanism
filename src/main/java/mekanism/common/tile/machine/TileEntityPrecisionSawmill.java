@@ -41,13 +41,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
@@ -61,8 +61,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     );
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
-    private final IOutputHandler<@NotNull ChanceOutput> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
+    private final IOutputHandler<ChanceOutput> outputHandler;
+    private final IInputHandler<Item, ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityPrecisionSawmill> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -92,7 +92,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -105,15 +104,14 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }
 
     @Override
-    @NotNull
     public IMekanismRecipeTypeProvider<SingleRecipeInput, SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
     }
@@ -129,9 +127,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
         return findFirstRecipe(inputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@NotNull SawmillRecipe recipe, int cacheIndex) {
+    public CachedRecipe<SawmillRecipe> createNewCachedRecipe(SawmillRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -143,7 +140,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
               .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
-    @NotNull
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new SawmillUpgradeData(provider, redstone, getControlType(), energyContainer, getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot,

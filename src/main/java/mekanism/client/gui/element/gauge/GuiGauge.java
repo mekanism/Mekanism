@@ -24,10 +24,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupportsWarning<GuiGauge<T>> {
+public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedElement implements ISupportsWarning<GuiGauge<T>> {
 
     private final GaugeType gaugeType;
     protected boolean dummy;
@@ -49,7 +48,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public GuiGauge<T> warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public GuiGauge<T> warning(WarningType type, BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -59,6 +58,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     @Nullable
     public abstract TextureAtlasSprite getIcon();
 
+    @Nullable
     public abstract Component getLabel();
 
     public abstract List<Component> getTooltipText();
@@ -76,7 +76,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, color.getResourceLocation(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
@@ -155,8 +155,4 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
 
     @Nullable
     public abstract TransmissionType getTransmission();
-
-    public void setDummyType(T type) {
-        dummyType = type;
-    }
 }

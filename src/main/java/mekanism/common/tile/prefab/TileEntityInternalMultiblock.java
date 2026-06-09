@@ -9,17 +9,18 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism implements IInternalMultiblock {
 
     @Nullable
     private MultiblockData multiblock;
+    @Nullable
     private UUID multiblockUUID;
 
     public TileEntityInternalMultiblock(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
@@ -59,11 +60,11 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     @Override
-    public void onNeighborChange(BlockPos neighborPos) {
-        super.onNeighborChange(neighborPos);
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+        super.onNeighborChange(level, neighborPos);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         //Note: We handle when an internal multiblock is removed that isn't touching anything in BlockMekanism#onRemove
-        if (!isRemote() && multiblock != null) {
+        if (!level.isClientSide() && multiblock != null) {
             //Check if the neighborPos is really a neighbor of this block for bad mods giving non-neighbors
             int dX = Math.abs(neighborPos.getX() - worldPosition.getX());
             int dY = Math.abs(neighborPos.getY() - worldPosition.getY());
@@ -83,7 +84,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     @Override
-    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         //If an internal multiblock is being removed then mark the multiblock it was in as needing to recheck the structure
         if (!isRemote() && hasFormedMultiblock() && multiblock != null) {
@@ -93,13 +94,13 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.storeNullable(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC, multiblockUUID);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         //TODO - 26.1: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
         input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(this::setMultiblock, () -> multiblockUUID = null);

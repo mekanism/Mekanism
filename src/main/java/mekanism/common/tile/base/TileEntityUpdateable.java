@@ -25,9 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
@@ -40,6 +38,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     private boolean cacheCoord;
     private long lastSave;
     private final long worldPositionLong;
+    @Nullable
     private PathElement cachedProblemPath = null;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
@@ -57,7 +56,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     /**
      * Called when block is placed in world
      */
-    public void onAdded() {
+    public void onAdded(Level level) {
     }
 
     /**
@@ -69,12 +68,16 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         updateCoord();
     }
 
+    public long getGameTime() {
+        //TODO - 26.1: Re-evaluate this impl
+        return level == null ? 0 : level.getGameTime();
+    }
+
     /**
      * Like getWorld(), but for when you _know_ world won't be null
      *
      * @return The world!
      */
-    @NotNull
     protected Level getWorldNN() {
         return Objects.requireNonNull(getLevel(), "getWorldNN called before world set");
     }
@@ -89,7 +92,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
      * @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
      *///TODO - 26.1: verify this works as intended - does the drop contain the contents?
     @Override
-    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
     }
 
     /**
@@ -119,7 +122,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
                 WorldUtils.markChunkDirty(level, worldPosition);
                 lastSave = time;
             }
-            if (updateComparator && !isRemote()) {
+            if (updateComparator && !level.isClientSide()) {
                 markDirtyComparator();
             }
         }
@@ -131,9 +134,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @NotNull
     @Override
-    public final CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+    public final CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         //TODO - 26.1: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
@@ -143,21 +145,20 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     //todo - 26.1 - did we _need_ to change this to ValueOutput?
-    protected void writeUpdatedTag(@NotNull ValueOutput output) {
+    protected void writeUpdatedTag(ValueOutput output) {
         writeReducedUpdatedTag(output);
     }
 
     /**
      * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
      */
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
     }
 
     /**
      * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
-     */
-    @NotNull//TODO - 26.1: Re-evaluate this method and if we want to just inline this into the one caller
-    public final CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+     *///TODO - 26.1: Re-evaluate this method and if we want to just inline this into the one caller
+    public final CompoundTag getReducedUpdateTag(HolderLookup.Provider provider) {
         //TODO - 26.1: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
@@ -167,7 +168,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void onDataPacket(@NotNull Connection net, @NotNull ValueInput input) {
+    public void onDataPacket(Connection net, ValueInput input) {
         //Handle the update tag when we are on the client
         //TODO - 26.1: Do we need to check if it is empty in any way?
         /*CompoundTag tag = pkt.getTag();
@@ -198,13 +199,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         updateCoord();
     }
 
     @Override
-    public void setLevel(@NotNull Level world) {
+    public void setLevel(Level world) {
         super.setLevel(world);
         updateCoord();
         //TODO - 26.1: Do we need to clear the BlockCapabilityCaches we are storing if the level changes? Probably
@@ -228,7 +229,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public @NonNull PathElement problemPath() {
+    public PathElement problemPath() {
         if (cachedProblemPath != null) {
             return cachedProblemPath;
         }

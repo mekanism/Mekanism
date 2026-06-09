@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekatool;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -38,12 +37,10 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
 // Also double check the stuff we override as it looks like some of it might have changed in vanilla
-@ParametersAreNotNullByDefault
 public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     @Override
@@ -69,7 +66,6 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         return ItemAbilities.DEFAULT_SHEARS_ACTIONS.contains(action);
     }
 
-    @NotNull
     @Override
     public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand, ItemAccess itemAccess,
           TransactionContext transaction) {
@@ -90,7 +86,6 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
     public InteractionResult onItemUse(IModule<ModuleShearingUnit> module, UseOnContext context, TransactionContext transaction) {
         int cost = MekanismConfig.gear.mekaToolEnergyUsageShearTrim.get();
@@ -119,7 +114,6 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
     public ModuleDispenseResult onDispense(IModule<ModuleShearingUnit> module, ItemAccess itemAccess, BlockSource source, TransactionContext transaction) {
         ServerLevel world = source.level();

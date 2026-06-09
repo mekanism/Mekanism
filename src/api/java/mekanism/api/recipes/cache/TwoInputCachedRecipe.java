@@ -6,19 +6,17 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.TwoInputMekRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base class to help implement handling of recipes with two inputs.
  */
-@NothingNullByDefault
 public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
       HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
       OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT>> extends CachedRecipe<RECIPE> {

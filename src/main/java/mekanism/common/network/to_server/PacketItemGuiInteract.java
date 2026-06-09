@@ -17,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionHand hand, int extra) implements IMekanismPacket {
 
@@ -33,7 +32,6 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
         this(interaction, hand, 0);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketItemGuiInteract> type() {
         return TYPE;

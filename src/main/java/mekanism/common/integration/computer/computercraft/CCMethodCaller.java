@@ -9,7 +9,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerException;
-import org.jetbrains.annotations.NotNull;
 
 public class CCMethodCaller extends BoundMethodHolder {
 
@@ -44,7 +43,6 @@ public class CCMethodCaller extends BoundMethodHolder {
         ));
     }
 
-    @NotNull
     private static MethodResult callHandler(IArguments arguments, BoundMethodData<?> methodToCall) throws LuaException {
         Object result;
         try {

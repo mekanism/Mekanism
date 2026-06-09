@@ -1,7 +1,6 @@
 package mekanism.common.recipe.builder;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.BlockItem;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 
-@NothingNullByDefault
 public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCookingRecipeBuilder> {
 
     private final AbstractCookingRecipe.Factory<?> factory;

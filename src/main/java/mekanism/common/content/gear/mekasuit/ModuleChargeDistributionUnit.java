@@ -2,7 +2,6 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -27,7 +26,6 @@ import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
 
     public static final Identifier CHARGE_SUIT = Mekanism.rl("charge_suit");

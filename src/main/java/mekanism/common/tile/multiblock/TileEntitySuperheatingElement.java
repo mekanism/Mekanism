@@ -5,6 +5,7 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock {
@@ -14,8 +15,8 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         UUID multiblockUUID = getMultiblockUUID();
         setActive(multiblockUUID != null && BoilerMultiblockData.hotMap.getBoolean(multiblockUUID));
         return sendUpdatePacket;

@@ -83,10 +83,8 @@ import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class MekanismModelProvider extends BaseModelProvider {
 
     /// Like regular cube, but with the faces having tint index 0

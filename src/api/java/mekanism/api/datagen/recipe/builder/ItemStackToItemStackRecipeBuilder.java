@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicCrushingRecipe;
@@ -13,7 +12,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 
-@NothingNullByDefault
 public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder> {
 
     private final ItemStackToItemStackRecipeBuilder.Factory factory;

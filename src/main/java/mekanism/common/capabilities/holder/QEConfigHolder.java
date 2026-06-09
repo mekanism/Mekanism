@@ -8,7 +8,7 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
-public abstract class QEConfigHolder<TYPE> extends ConfigHolder<TYPE> {
+public abstract class QEConfigHolder<TYPE extends @Nullable Object> extends ConfigHolder<TYPE> {
 
     private final Function<InventoryFrequency, TYPE> containerResolver;
     protected final TileEntityQuantumEntangloporter entangloporter;

@@ -9,7 +9,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPacket {
 
@@ -18,7 +17,6 @@ public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPa
           PacketHitBlockEffect::new, PacketHitBlockEffect::result
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketHitBlockEffect> type() {
         return TYPE;

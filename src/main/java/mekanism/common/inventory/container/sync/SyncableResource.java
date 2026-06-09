@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.resource.ChemicalResourcePropertyData;
@@ -12,32 +11,30 @@ import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling resources
  */
-@NothingNullByDefault
 public class SyncableResource<RESOURCE extends Resource> implements ISyncableData {
 
-    public static SyncableResource<ItemResource> createItem(Supplier<@NotNull ItemResource> getter, Consumer<@NotNull ItemResource> setter) {
+    public static SyncableResource<ItemResource> createItem(Supplier<ItemResource> getter, Consumer<ItemResource> setter) {
         return new SyncableResource<>(getter, setter, ItemResource.EMPTY, ItemResourcePropertyData::new);
     }
 
-    public static SyncableResource<FluidResource> createFluid(Supplier<@NotNull FluidResource> getter, Consumer<@NotNull FluidResource> setter) {
+    public static SyncableResource<FluidResource> createFluid(Supplier<FluidResource> getter, Consumer<FluidResource> setter) {
         return new SyncableResource<>(getter, setter, FluidResource.EMPTY, FluidResourcePropertyData::new);
     }
 
-    public static SyncableResource<ChemicalResource> createChemical(Supplier<@NotNull ChemicalResource> getter, Consumer<@NotNull ChemicalResource> setter) {
+    public static SyncableResource<ChemicalResource> createChemical(Supplier<ChemicalResource> getter, Consumer<ChemicalResource> setter) {
         return new SyncableResource<>(getter, setter, ChemicalResource.EMPTY, ChemicalResourcePropertyData::new);
     }
 
     private final PropertyCreator<RESOURCE> propertyCreator;
-    private final Supplier<@NotNull RESOURCE> getter;
-    private final Consumer<@NotNull RESOURCE> setter;
+    private final Supplier<RESOURCE> getter;
+    private final Consumer<RESOURCE> setter;
     private RESOURCE lastKnownValue;
 
-    private SyncableResource(Supplier<@NotNull RESOURCE> getter, Consumer<@NotNull RESOURCE> setter, RESOURCE emptyResource, PropertyCreator<RESOURCE> propertyCreator) {
+    private SyncableResource(Supplier<RESOURCE> getter, Consumer<RESOURCE> setter, RESOURCE emptyResource, PropertyCreator<RESOURCE> propertyCreator) {
         this.getter = getter;
         this.setter = setter;
         this.propertyCreator = propertyCreator;

@@ -45,8 +45,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
@@ -102,7 +101,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return transmissionTypes;
     }
 
-    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
+    public boolean isCapabilityDisabled(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         TransmissionType type = null;
         if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
@@ -134,7 +133,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type);
     }
 
-    public void addDisabledSides(@NotNull RelativeSide... sides) {
+    public void addDisabledSides(RelativeSide... sides) {
         for (ConfigInfo config : configInfo.values()) {
             config.addDisabledSides(sides);
         }
@@ -229,7 +228,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     //TODO: Use relative side where possible?
     @Nullable
-    public ISlotInfo getSlotInfo(TransmissionType type, Direction direction) {
+    public ISlotInfo getSlotInfo(TransmissionType type, @Nullable Direction direction) {
         if (direction == null) {
             return null;
         }
@@ -250,7 +249,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    public void applyImplicitComponents(DataComponentGetter input) {
         AttachedSideConfig sideConfig = input.get(MekanismDataComponents.SIDE_CONFIG);
         if (sideConfig != null) {
             for (Entry<TransmissionType, LightConfigInfo> entry : sideConfig.configInfo().entrySet()) {
@@ -279,7 +278,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput configInput) {
+    public void deserialize(ValueInput configInput) {
         read(configInput, configInfo, (type, side) -> {
             if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                 Direction direction = side.getDirection(tile.getDirection());
@@ -288,12 +287,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         });
     }
 
-    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
+    public static void read(ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
         read(configInput, configInfo, (_, _) -> {
         });
     }
 
-    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
+    public static void read(ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
@@ -315,11 +314,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput configOutput) {
+    public void serialize(ValueOutput configOutput) {
         write(configOutput, configInfo, true);
     }
 
-    public static void write(@NotNull ValueOutput configOutput, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
+    public static void write(ValueOutput configOutput, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
         for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             IPersistentConfigInfo info = entry.getValue();
@@ -339,7 +338,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
      * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
      */
     @Override
-    public void addToUpdateTag(@NotNull ValueOutput output) {
+    public void addToUpdateTag(ValueOutput output) {
         String key = getComponentKey();
         ValueOutput configOutput = output.child(key);
         write(configOutput, configInfo, false);
@@ -349,7 +348,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void readFromUpdateTag(@NotNull ValueInput input) {
+    public void readFromUpdateTag(ValueInput input) {
         input.child(getComponentKey()).ifPresent(configInput -> read(configInput, configInfo));
     }
 

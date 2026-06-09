@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.objects.ObjectSets;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of array map which does a proper BiConsumer and a couple other microoptimisations.
@@ -34,13 +33,13 @@ public class CustomObjectToObjectArrayMap<KEY, VALUE> extends Object2ObjectArray
 
     //save a tiny bit of heap space and not create an object
     @Override
-    public @NotNull ObjectSet<KEY> keySet() {
+    public ObjectSet<KEY> keySet() {
         return size == 0 ? ObjectSets.emptySet() : super.keySet();
     }
 
     //save a tiny bit of heap space and not create an object
     @Override
-    public @NotNull ObjectSet<Map.Entry<KEY, VALUE>> entrySet() {
+    public ObjectSet<Map.Entry<KEY, VALUE>> entrySet() {
         return size == 0 ? ObjectSets.emptySet() : super.entrySet();
     }
 }

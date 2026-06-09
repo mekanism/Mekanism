@@ -23,8 +23,7 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MekContainerHelper<CONTAINER> {
 
@@ -33,7 +32,7 @@ public class MekContainerHelper<CONTAINER> {
     public static final Function<ISlotInfo, List<IChemicalTank>> CHEMICAL_SLOT_PARSER = slotInfo -> slotInfo instanceof ChemicalSlotInfo info ? info.getTanks() : Collections.emptyList();
     public static final Function<ISlotInfo, List<IHeatCapacitor>> HEAT_SLOT_PARSER = slotInfo -> slotInfo instanceof HeatSlotInfo info ? info.getHeatCapacitors() : Collections.emptyList();
 
-    public static BiPredicate<ChemicalResource, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
+    public static BiPredicate<ChemicalResource, AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
         return (type, automationType) -> !automationType.isExternal() ||
@@ -90,7 +89,7 @@ public class MekContainerHelper<CONTAINER> {
         return new MekContainerHelper<>(new ContainerConfigHolder<>(sideConfiguration, transmissionType, slotInfoParser));
     }
 
-    public <CONT extends CONTAINER> CONT addContainer(@NotNull CONT container) {
+    public <CONT extends CONTAINER> CONT addContainer(CONT container) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -103,7 +102,7 @@ public class MekContainerHelper<CONTAINER> {
         return container;
     }
 
-    public <CONT extends CONTAINER> CONT addContainer(@NotNull CONT container, RelativeSide... sides) {
+    public <CONT extends CONTAINER> CONT addContainer(CONT container, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -115,7 +114,7 @@ public class MekContainerHelper<CONTAINER> {
         return container;
     }
 
-    public <CONT extends CONTAINER> CONT addContainer(@NotNull CONT container, BiFunction<CONTAINER, RelativeSide, @Nullable CONTAINER> containerTransformer) {
+    public <CONT extends CONTAINER> CONT addContainer(CONT container, BiFunction<CONTAINER, RelativeSide, CONTAINER> containerTransformer) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

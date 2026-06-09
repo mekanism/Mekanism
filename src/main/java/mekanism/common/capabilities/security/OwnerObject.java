@@ -2,7 +2,6 @@ package mekanism.common.capabilities.security;
 
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IOwnerObject;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
@@ -11,9 +10,8 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class OwnerObject implements IOwnerObject {
 
     protected final ItemAccess itemAccess;

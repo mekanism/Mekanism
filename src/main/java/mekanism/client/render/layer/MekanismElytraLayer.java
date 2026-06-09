@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class MekanismElytraLayer<STATE extends HumanoidRenderState, MODEL extends EntityModel<STATE>> extends WingsLayer<STATE, MODEL> {
 
@@ -31,9 +30,8 @@ public class MekanismElytraLayer<STATE extends HumanoidRenderState, MODEL extend
         super.submit(poseStack, submitNodeCollector, lightCoords, state, yRot, xRot);
     }
 
-    @NotNull
     //todo - 26.1: this is now a static method @Override
-    public Identifier getElytraTexture(@NotNull ItemStack stack, @NotNull STATE state) {
+    public Identifier getElytraTexture(ItemStack stack, STATE state) {
         return HDPE_ELYTRA;
     }
 }

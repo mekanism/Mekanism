@@ -10,15 +10,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockPersonalStorage;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.component.containers.type.IListContainerType;
 import mekanism.common.component.containers.type.ISingleContainerType;
-import mekanism.common.block.BlockPersonalStorage;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -63,8 +62,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
@@ -78,13 +75,12 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     }
 
     @Override
-    protected void add(@NotNull Block block, @NotNull LootTable.Builder table) {
+    protected void add(Block block, LootTable.Builder table) {
         //Overwrite the core register method to add to our list of known blocks
         super.add(block, table);
         knownBlocks.add(block);
     }
 
-    @NotNull
     @Override
     protected Iterable<Block> getKnownBlocks() {
         return knownBlocks;
@@ -164,7 +160,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
             //delayed items until after other copies are added, for cases like referencing the owner
             DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
-            @Nullable
             BlockEntity tile = null;
             if (block instanceof EntityBlock entityBlock) {
                 tile = entityBlock.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
@@ -264,9 +259,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     /**
      * Like vanilla's {@link BlockLootSubProvider#createSlabItemTable(Block)} except with a named pool
      */
-    @NotNull
     @Override
-    protected LootTable.Builder createSlabItemTable(@NotNull Block slab) {
+    protected LootTable.Builder createSlabItemTable(Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
               .setRolls(ConstantValue.exactly(1))
@@ -284,16 +278,15 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
      * Like vanilla's {@link BlockLootSubProvider#dropOther(Block, ItemLike)} except with a named pool
      */
     @Override
-    public void dropOther(@NotNull Block block, @NotNull ItemLike drop) {
+    public void dropOther(Block block, ItemLike drop) {
         add(block, createSingleItemTable(drop));
     }
 
     /**
      * Like vanilla's {@link BlockLootSubProvider#createSingleItemTable(ItemLike)} except with a named pool
      */
-    @NotNull
     @Override
-    public LootTable.Builder createSingleItemTable(@NotNull ItemLike item) {
+    public LootTable.Builder createSingleItemTable(ItemLike item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
               .name("main")
               .setRolls(ConstantValue.exactly(1))
@@ -304,27 +297,24 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     /**
      * Like vanilla's {@link BlockLootSubProvider#createSingleItemTableWithSilkTouch(Block, ItemLike, NumberProvider)} except with a named pool
      */
-    @NotNull
     @Override
-    protected LootTable.Builder createSingleItemTableWithSilkTouch(@NotNull Block block, @NotNull ItemLike item, @NotNull NumberProvider range) {
+    protected LootTable.Builder createSingleItemTableWithSilkTouch(Block block, ItemLike item, NumberProvider range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(range))));
     }
 
     /**
      * Like vanilla's {@link BlockLootSubProvider#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)} except with a named pool
      */
-    @NotNull
     @Override
-    protected LootTable.Builder createSilkTouchDispatchTable(@NotNull Block block, @NotNull LootPoolEntryContainer.Builder<?> builder) {
+    protected LootTable.Builder createSilkTouchDispatchTable(Block block, LootPoolEntryContainer.Builder<?> builder) {
         return createSelfDropDispatchTable(block, hasSilkTouch(), builder);
     }
 
     /**
      * Like vanilla's {@link BlockLootSubProvider#createSelfDropDispatchTable(Block, LootItemCondition.Builder, LootPoolEntryContainer.Builder)} except with a named pool
      */
-    @NotNull
-    protected static LootTable.Builder createSelfDropDispatchTable(@NotNull Block block, @NotNull LootItemCondition.Builder conditionBuilder,
-          @NotNull LootPoolEntryContainer.Builder<?> entry) {
+    protected static LootTable.Builder createSelfDropDispatchTable(Block block, LootItemCondition.Builder conditionBuilder,
+          LootPoolEntryContainer.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
               .setRolls(ConstantValue.exactly(1))
@@ -335,7 +325,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         );
     }
 
-    @NothingNullByDefault
     public static class DelayedLootItemBuilder implements ConditionUserBuilder<DelayedLootItemBuilder>, FunctionUserBuilder<DelayedLootItemBuilder> {
 
         private final List<LootItemFunction.Builder> functions = new ArrayList<>();

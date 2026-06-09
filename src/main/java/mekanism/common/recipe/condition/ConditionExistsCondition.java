@@ -2,9 +2,10 @@ package mekanism.common.recipe.condition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record ConditionExistsCondition(@Nullable ICondition condition) implements ICondition {
 
@@ -27,7 +28,7 @@ public record ConditionExistsCondition(@Nullable ICondition condition) implement
 
     public static MapCodec<ConditionExistsCondition> makeCodec() {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-              CODEC.fieldOf(SerializationConstants.CONDITION).orElse(DOES_NOT_EXIST).forGetter(ConditionExistsCondition::condition)
-        ).apply(instance, ConditionExistsCondition::new));
+              CODEC.lenientOptionalFieldOf(SerializationConstants.CONDITION).forGetter(condition -> Optional.ofNullable(condition.condition()))
+        ).apply(instance, condition -> condition.map(ConditionExistsCondition::new).orElse(DOES_NOT_EXIST)));
     }
 }

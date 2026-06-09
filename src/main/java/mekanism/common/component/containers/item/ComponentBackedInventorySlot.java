@@ -4,7 +4,6 @@ import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.component.containers.resource.ComponentBackedResourceContainer;
 import mekanism.common.component.containers.type.ContainerType;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class ComponentBackedInventorySlot extends ComponentBackedResourceContainer<ItemResource> implements IInventorySlot {
 
     private static final LongSupplier ABSOLUTE_MAX_STACK_SIZE = () -> Item.ABSOLUTE_MAX_STACK_SIZE;

@@ -15,7 +15,6 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public class PersonalStorageItemContainer extends MekanismItemContainer {
 
@@ -58,12 +57,12 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the personal chest from the player's inventory slot
         if (index == inv.getSelectedSlot() && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean mayPickup(@NotNull Player player) {
+                public boolean mayPickup(Player player) {
                     return false;
                 }
             };
@@ -72,7 +71,7 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @NotNull ContainerInput containerInput, @NotNull Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput containerInput, Player player) {
         if (containerInput == ContainerInput.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == Inventory.SLOT_OFFHAND) {
                 //Block pressing f to swap it when it is in the offhand

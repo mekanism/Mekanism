@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.RotaryRecipe;
@@ -11,9 +10,8 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuilder> {
 
     @Nullable
@@ -82,12 +80,12 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
 
     @Override
     protected RotaryRecipe asRecipe() {
-        if (fluidInput != null) {
-            if (chemicalInput != null) {
+        if (fluidInput != null && chemicalOutput != null) {
+            if (chemicalInput != null && fluidOutput != null) {
                 return new BasicRotaryRecipe(fluidInput, chemicalInput, chemicalOutput, fluidOutput);
             }
             return new BasicRotaryRecipe(fluidInput, chemicalOutput);
-        } else if (chemicalInput != null) {
+        } else if (chemicalInput != null && fluidOutput != null) {
             return new BasicRotaryRecipe(chemicalInput, fluidOutput);
         }
         throw new IllegalStateException("Invalid rotary recipe");

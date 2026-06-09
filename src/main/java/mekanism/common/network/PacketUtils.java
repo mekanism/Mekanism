@@ -38,10 +38,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PacketUtils {
 
@@ -53,14 +53,13 @@ public class PacketUtils {
 
     public static final StreamCodec<FriendlyByteBuf, BlockHitResult> BLOCK_HIT_RESULT_STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeBlockHitResult, FriendlyByteBuf::readBlockHitResult);
     public static final StreamCodec<ByteBuf, OptionalDouble> OPTIONAL_DOUBLE_STREAM_CODEC = new StreamCodec<>() {
-        @NotNull
         @Override
-        public OptionalDouble decode(@NotNull ByteBuf buffer) {
+        public OptionalDouble decode(ByteBuf buffer) {
             return buffer.readBoolean() ? OptionalDouble.of(buffer.readDouble()) : OptionalDouble.empty();
         }
 
         @Override
-        public void encode(@NotNull ByteBuf buffer, @NotNull OptionalDouble value) {
+        public void encode(ByteBuf buffer, OptionalDouble value) {
             if (value.isPresent()) {
                 buffer.writeBoolean(true);
                 buffer.writeDouble(value.getAsDouble());
@@ -77,8 +76,8 @@ public class PacketUtils {
         }
     }
 
-    public static <OBJ> OBJ read(RegistryAccess registryAccess, byte[] rawData, Function<RegistryFriendlyByteBuf, OBJ> deserializer) {
-        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(rawData), registryAccess);
+    public static <OBJ extends @Nullable Object> OBJ read(RegistryAccess registryAccess, byte[] rawData, Function<RegistryFriendlyByteBuf, OBJ> deserializer) {
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(rawData), registryAccess, ConnectionType.NEOFORGE);
         try {
             return deserializer.apply(buffer);
         } finally {
@@ -158,6 +157,9 @@ public class PacketUtils {
     //TODO: Evaluate moving various network related packets over to this (and making it support non buffered networks)
     public static void sendToAllTracking(DynamicBufferedNetwork<?, ?, ?, ?> network, CustomPacketPayload... packets) {
         Range3D range = network.getPacketRange();
+        if (range == null) {
+            return;
+        }
         //TODO: Create a method in DynamicNetwork to get all players that are "tracking" the network
         // Also evaluate moving various network packet things over to using this at that point
         //TODO - 1.20.4: If we just make the packet range instead keep track of the ChunkPositions that then we check if the player is tracking

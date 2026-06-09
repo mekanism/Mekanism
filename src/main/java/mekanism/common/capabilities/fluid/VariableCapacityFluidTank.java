@@ -6,15 +6,13 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class VariableCapacityFluidTank extends BasicFluidTank {
 
     public static VariableCapacityFluidTank create(MultiblockData multiblock, LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {

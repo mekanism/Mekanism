@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.energy;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -19,7 +18,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
     public static ComponentBackedResistiveEnergyContainer create(ItemAccess attachedAccess) {

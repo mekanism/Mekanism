@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
@@ -19,7 +18,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 /**
  * @since 10.6.0
  */
-@NothingNullByDefault
 public interface IChemicalIngredientCreator {
 
     /**

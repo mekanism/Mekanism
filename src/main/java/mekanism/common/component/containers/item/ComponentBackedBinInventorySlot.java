@@ -3,7 +3,6 @@ package mekanism.common.component.containers.item;
 
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.ResourceContainerWrapper;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlot {
 
     private final boolean isCreative;

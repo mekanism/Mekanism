@@ -4,8 +4,7 @@ import mekanism.common.tile.interfaces.ITileWrapper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IMultiblockBase extends ITileWrapper {
 
@@ -25,6 +24,7 @@ public interface IMultiblockBase extends ITileWrapper {
 
     InteractionResult onActivate(Player player, InteractionHand hand);
 
+    @Nullable
     Structure getStructure(MultiblockManager<?> manager);
 
     boolean hasStructure(Structure structure);

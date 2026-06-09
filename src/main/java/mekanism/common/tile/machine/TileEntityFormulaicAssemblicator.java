@@ -20,13 +20,13 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.component.FormulaComponent;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.FormulaComponent;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -60,19 +60,20 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
@@ -93,7 +94,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private int pulseOperations;
 
-    @NotNull
     public RecipeFormula formula = RecipeFormula.EMPTY;
     @Nullable
     private RecipeHolder<CraftingRecipe> cachedRecipe = null;
@@ -104,19 +104,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
-    private List<IInventorySlot> craftingGridSlots;
-    private List<IInventorySlot> inputSlots;
-    private List<IInventorySlot> outputSlots;
+    private final List<IInventorySlot> craftingGridSlots;
+    private final List<IInventorySlot> inputSlots;
+    private final List<IInventorySlot> outputSlots;
     /// For in inserting to input slots and stacking before going to empty slots
-    private IMekanismResourceHandler<ItemResource, IInventorySlot> directInputHandler;
+    private final IMekanismResourceHandler<ItemResource, IInventorySlot> directInputHandler;
     /// For in inserting to output slots and stacking before going to empty slots
-    private IMekanismResourceHandler<ItemResource, IInventorySlot> directOutputHandler;
+    private final IMekanismResourceHandler<ItemResource, IInventorySlot> directOutputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
     BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
+        craftingGridSlots = new ArrayList<>();
+        inputSlots = new ArrayList<>();
+        outputSlots = new ArrayList<>();
         super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -127,6 +130,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+        directInputHandler = () -> inputSlots;
+        directOutputHandler = () -> outputSlots;
     }
 
     @Override
@@ -135,12 +140,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
-        craftingGridSlots = new ArrayList<>();
-        inputSlots = new ArrayList<>();
-        outputSlots = new ArrayList<>();
         IContentsListener inputSlotChanged = () -> {
             listener.onContentsChanged();
             //If an input slot changes allow trying to move items to the crafting grid again as potentially we have something that can be moved
@@ -189,8 +190,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
         builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
-        directInputHandler = () -> inputSlots;
-        directOutputHandler = () -> outputSlots;
         return builder.build();
     }
 
@@ -201,8 +200,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!isRemote()) {
-            checkFormula();
+        Level level = getWorldNN();
+        if (!level.isClientSide()) {
+            checkFormula(level);
             recalculateRecipe();
             if (!formula.isEmpty() && stockControl) {
                 //Ensure stock control is loaded before our first tick in case something inserting ticks before our first tick
@@ -213,8 +213,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //Invalidate the cached recipe and recalculate
             cachedRecipe = null;
@@ -232,7 +232,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else if (canFunction()) {
             pulseOperations++;
         }
-        checkFormula();
+        checkFormula(level);
         if (autoMode && formula.isEmpty()) {
             nextMode();
         }
@@ -241,12 +241,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode && !formula.isEmpty() && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
-                canOperate = moveItemsToGrid();
+                canOperate = moveItemsToGrid(level);
             }
             if (canOperate) {
                 isRecipe = true;
                 if (operatingTicks >= ticksRequired) {
-                    if (doSingleCraft()) {
+                    if (doSingleCraft(level)) {
                         operatingTicks = 0;
                         if (pulseOperations > 0) {
                             pulseOperations--;
@@ -272,12 +272,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return sendUpdatePacket;
     }
 
-    private void checkFormula() {
+    private void checkFormula(Level level) {
         ItemResource formulaStack = formulaSlot.resource();
         FormulaComponent attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaComponent.EMPTY);
         if (!attachment.isEmpty() && !attachment.invalid()) {
             if (formula.isEmpty() || !lastFormulaStack.equals(formulaStack)) {
-                formula = loadFormula(formulaStack, attachment);
+                formula = loadFormula(level, formulaStack, attachment);
             }
         } else {
             formula = RecipeFormula.EMPTY;
@@ -288,7 +288,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Note: Assumes attachment is not invalid
-    private RecipeFormula loadFormula(ItemResource formulaStack, FormulaComponent attachment) {
+    private RecipeFormula loadFormula(Level level, ItemResource formulaStack, FormulaComponent attachment) {
         RecipeFormula recipe = RecipeFormula.create(level, attachment);
         if (recipe.valid()) {
             if (!formula.isEmpty() && !formula.equals(recipe)) {
@@ -360,7 +360,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private boolean doSingleCraft() {
+    private boolean doSingleCraft(Level level) {
         if (lastOutputStack.isEmpty()) {
             return false;
         }
@@ -393,20 +393,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             transaction.commit();
         }
         if (!formula.isEmpty()) {
-            moveItemsToGrid();
+            moveItemsToGrid(level);
         }
         return true;
     }
 
-    public boolean craftSingle() {
+    public boolean craftSingle(Level level) {
         boolean canOperate = true;
-        if (!formula.isEmpty() && !formula.matches(getLevel(), craftingGridSlots)) {
-            canOperate = moveItemsToGrid();
+        if (!formula.isEmpty() && !formula.matches(level, craftingGridSlots)) {
+            canOperate = moveItemsToGrid(level);
         }
-        return canOperate && doSingleCraft();
+        return canOperate && doSingleCraft(level);
     }
 
-    private boolean moveItemsToGrid() {
+    private boolean moveItemsToGrid(Level level) {
         if (!canTryToMove) {
             return false;
         }
@@ -414,7 +414,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             if (!formula.isIngredientInPos(level, recipeSlot.resource(), i)) {
-                if (!tryMoveToGrid(recipeSlot, i)) {
+                if (!tryMoveToGrid(level, recipeSlot, i)) {
                     canOperate = false;
                 }
             }
@@ -427,7 +427,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return canOperate;
     }
 
-    private boolean tryMoveToGrid(IInventorySlot recipeSlot, int i) {
+    private boolean tryMoveToGrid(Level level, IInventorySlot recipeSlot, int i) {
         ItemResource resource = recipeSlot.resource();
         int stored = recipeSlot.amountAsInt();
         try (Transaction transaction = Transaction.openRoot()) {
@@ -491,32 +491,32 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return false;
     }
 
-    public void craftAll() {
+    public void craftAll(Level level) {
         //TODO: Can we somehow optimize this, maybe by moving multiple items at once
-        while (craftSingle()) {
+        while (craftSingle(level)) {
         }
     }
 
-    public void fillGrid() {
+    public void fillGrid(Level level) {
         if (!formula.isEmpty()) {
-            moveItemsToGrid();
+            moveItemsToGrid(level);
         }
     }
 
-    public void emptyGrid() {
+    public void emptyGrid(Level level) {
         if (formula.isEmpty()) {
-            moveItemsToInput(true);
+            moveItemsToInput(level, true);
         }
     }
 
-    private void moveItemsToInput(boolean forcePush) {
+    private void moveItemsToInput(Level level, boolean forcePush) {
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             if (recipeSlot.isEmpty()) {
                 continue;
             }
             ItemResource resource = recipeSlot.resource();
-            if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
+            if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(level, resource, i)) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     int inserted = directInputHandler.insert(resource, recipeSlot.amountAsInt(), transaction, AutomationType.INTERNAL);
                     if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
@@ -537,7 +537,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             autoMode = false;
             markForSave();
         } else if (!formula.isEmpty()) {
-            moveItemsToInput(false);
+            moveItemsToInput(level, false);
             autoMode = true;
             markForSave();
         }
@@ -692,7 +692,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         autoMode = input.getBooleanOr(SerializationConstants.AUTO, autoMode);
         operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
@@ -701,7 +701,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putBoolean(SerializationConstants.AUTO, autoMode);
         output.putInt(SerializationConstants.PROGRESS, operatingTicks);
@@ -722,9 +722,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @NotNull
     @Override
-    public List<Component> getInfo(@NotNull Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
@@ -747,7 +746,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
         for (int i = 0; i < 9; i++) {
             int index = i;
-            container.track(SyncableItemStack.create(() -> formula.getInputStack(index), stack -> formula = formula.withStack(getLevel(), index, stack)));
+            container.track(SyncableItemStack.create(() -> formula.getInputStack(index), stack -> formula = formula.withStack(level, index, stack)));
         }
     }
 
@@ -813,7 +812,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             throw new ComputerException("Emptying the grid requires Auto-Mode to be disabled.");
         }
-        emptyGrid();
+        emptyGrid(level);
     }
 
     @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
@@ -822,7 +821,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             throw new ComputerException("Filling the grid requires Auto-Mode to be disabled.");
         }
-        fillGrid();
+        fillGrid(level);
     }
 
     private void validateCanCraft() throws ComputerException {
@@ -837,13 +836,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftSingleItem() throws ComputerException {
         validateCanCraft();
-        craftSingle();
+        craftSingle(level);
     }
 
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftAvailableItems() throws ComputerException {
         validateCanCraft();
-        craftAll();
+        craftAll(level);
     }
 
     private void validateHasValidFormula(String operation) throws ComputerException {

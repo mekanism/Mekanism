@@ -4,15 +4,14 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This class serves as the chemical analogue of an item {@link Ingredient}, that is, a representation of both a {@linkplain #test predicate} to test {@link Chemical}s
@@ -21,7 +20,6 @@ import net.neoforged.neoforge.common.crafting.ICustomIngredient;
  * @see mekanism.api.recipes.ingredients.ChemicalStackIngredient
  * @since 10.6.0
  */
-@NothingNullByDefault
 public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chemical>> permits CompoundChemicalIngredient, DifferenceChemicalIngredient,
       EmptyChemicalIngredient, IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient {
 
@@ -114,5 +112,5 @@ public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chem
 
     //Force overriding
     @Override
-    public abstract boolean equals(Object obj);
+    public abstract boolean equals(@Nullable Object obj);
 }

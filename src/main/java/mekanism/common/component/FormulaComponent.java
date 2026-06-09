@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import net.minecraft.core.NonNullList;
@@ -16,7 +15,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-@NothingNullByDefault
 public record FormulaComponent(List<ItemResource> inventory, boolean invalid) {
 
     public static final FormulaComponent EMPTY = new FormulaComponent(NonNullList.withSize(9, ItemResource.EMPTY), false);

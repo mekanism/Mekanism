@@ -1,7 +1,6 @@
 package mekanism.api.security;
 
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -16,7 +15,6 @@ import org.jspecify.annotations.Nullable;
  * the provider exposes a security capability.
  * @since 10.2.1
  */
-@NothingNullByDefault
 public interface ISecurityObject extends IOwnerObject {
 
     /**

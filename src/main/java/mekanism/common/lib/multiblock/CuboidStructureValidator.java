@@ -18,17 +18,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import org.jspecify.annotations.Nullable;
 
 public abstract class CuboidStructureValidator<T extends MultiblockData> implements IStructureValidator<T> {
 
     private final VoxelCuboid minBounds;
     private final VoxelCuboid maxBounds;
 
+    @Nullable
     protected VoxelCuboid cuboid;
     protected Structure structure;
 
     protected Level world;
     protected MultiblockManager<T> manager;
+    @Nullable
     protected MultiblockType<T> multiblockType;
 
     public CuboidStructureValidator() {
@@ -50,6 +53,9 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     @Override
     public FormationResult validate(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap) {
+        if (cuboid == null) {
+            return FormationResult.FAIL;
+        }
         BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = min.getX(); x <= max.getX(); x++) {
@@ -101,7 +107,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     protected abstract CasingType getCasingType(BlockState state);
 
-    protected boolean isFrameCompatible(BlockEntity tile) {
+    protected boolean isFrameCompatible(@Nullable BlockEntity tile) {
         if (multiblockType != null && tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(multiblockType)) {
             return true;
         }
@@ -157,6 +163,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return cuboid.getSide(pos);
     }
 
+    @Nullable
     @Override
     public IShape getShape() {
         return cuboid;

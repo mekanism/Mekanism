@@ -21,8 +21,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
@@ -113,17 +112,17 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         super.clearRemoved();
     }
 
-    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
+    public final void invalidateCapability(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         capabilityCache.invalidate(capability, side);
         invalidateCapabilities();
     }
 
-    public final void invalidateCapabilityAll(@NotNull BlockCapability<?, @Nullable Direction> capability) {
+    public final void invalidateCapabilityAll(BlockCapability<?, @Nullable Direction> capability) {
         capabilityCache.invalidateAll(capability);
         invalidateCapabilities();
     }
 
-    public final void invalidateCapabilitiesAll(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities) {
+    public final void invalidateCapabilitiesAll(Collection<BlockCapability<?, @Nullable Direction>> capabilities) {
         for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
             capabilityCache.invalidateAll(capability);
         }

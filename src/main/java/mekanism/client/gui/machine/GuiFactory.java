@@ -20,8 +20,7 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
 
@@ -92,7 +91,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics, dumpButton == null ? this.getImageWidth() : dumpButton.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

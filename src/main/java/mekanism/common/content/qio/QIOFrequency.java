@@ -53,6 +53,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -60,9 +61,8 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
 
@@ -463,7 +463,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public boolean tick(boolean tickingNormally) {
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?
-            SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
+            SecurityFrequency security = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, getOwner());
             if (security != null) {
                 for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
                     if (!ownerMatches(player.getUUID()) && !security.isTrusted(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {
@@ -523,8 +523,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public boolean onDeactivate(BlockEntity tile) {
-        boolean changedData = super.onDeactivate(tile);
+    public boolean onDeactivate(Level level, BlockEntity tile) {
+        boolean changedData = super.onDeactivate(level, tile);
         if (tile instanceof IQIODriveHolder holder) {
             for (int i = 0, size = holder.getDriveSlots().size(); i < size; i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
@@ -537,9 +537,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public boolean update(BlockEntity tile) {
-        this.registries = tile.getLevel().registryAccess();
-        boolean changedData = super.update(tile);
+    public boolean update(Level level, BlockEntity tile) {
+        this.registries = level.registryAccess();
+        boolean changedData = super.update(level, tile);
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
             List<QIODriveSlot> driveSlots = holder.getDriveSlots();
             for (int i = 0, slots = driveSlots.size(); i < slots; i++) {
@@ -776,7 +776,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
-        public void updateSnapshots(@NonNull TransactionContext transaction) {
+        public void updateSnapshots(TransactionContext transaction) {
             super.updateSnapshots(transaction);
             justAdded = false;
         }
@@ -787,7 +787,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
-        protected void revertToSnapshot(QIOItemTypeData.@NonNull Snapshot snapshot) {
+        protected void revertToSnapshot(QIOItemTypeData.Snapshot snapshot) {
             count = snapshot.count();
             justAdded = snapshot.justAdded();
             containingDrives = snapshot.containingDrives();

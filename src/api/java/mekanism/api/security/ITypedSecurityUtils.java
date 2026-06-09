@@ -3,10 +3,9 @@ package mekanism.api.security;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base utility class for interacting with Mekanism's security system using a specific provider type.
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
  * @see IItemSecurityUtils
  * @since 10.5.0
  */
-@NothingNullByDefault
 public interface ITypedSecurityUtils<PROVIDER> {
 
     /**

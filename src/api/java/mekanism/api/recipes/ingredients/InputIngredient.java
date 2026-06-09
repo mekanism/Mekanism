@@ -2,15 +2,12 @@ package mekanism.api.recipes.ingredients;
 
 import java.util.List;
 import java.util.function.Predicate;
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface describing the base methods common to all inputs of our recipes.
  */
-@MethodsAreNotNullByDefault
 public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
 
     /**
@@ -20,7 +17,7 @@ public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@NotNull TypedInstance<HOLDER_TYPE> type);
+    boolean testType(TypedInstance<HOLDER_TYPE> type);
 
     /**
      * Gets a copy of the internal instance that matches the given argument.

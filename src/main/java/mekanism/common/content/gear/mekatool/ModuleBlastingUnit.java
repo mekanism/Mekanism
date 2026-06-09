@@ -7,8 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -37,10 +35,8 @@ import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModule<ModuleBlastingUnit> {
 
     public static final Identifier BLAST_RADIUS = Mekanism.rl("blast_radius");
@@ -109,7 +105,6 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
         }
     }
 
-    @NothingNullByDefault
     public enum BlastRadius implements IHasTextComponent, TranslatableEnum, IRadialMode, StringRepresentable {
         OFF(0, MekanismLang.RADIAL_BLASTING_POWER_OFF, EnumColor.WHITE, "blasting_off"),
         LOW(1, MekanismLang.RADIAL_BLASTING_POWER_LOW, EnumColor.BRIGHT_GREEN, "blasting_low"),
@@ -146,7 +141,6 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
             return radius;
         }
 
-        @NotNull
         @Override
         public Component sliceName() {
             return langEntry.translateColored(color);
@@ -157,7 +151,6 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
             return sliceName();
         }
 
-        @NotNull
         @Override
         public Identifier icon() {
             return icon;

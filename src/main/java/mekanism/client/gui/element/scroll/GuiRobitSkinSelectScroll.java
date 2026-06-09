@@ -22,8 +22,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
@@ -64,7 +63,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
@@ -95,7 +94,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(@NotNull GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
+    private static void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, size, size, slotX, slotY);
     }
 
@@ -126,7 +125,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         ticks++;
     }
 
-    @NotNull
     @Override
     protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
         return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
@@ -150,7 +148,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         ResourceKey<RobitSkin> skin = getSkin(event.x(), event.y(), false);
         if (skin != null) {

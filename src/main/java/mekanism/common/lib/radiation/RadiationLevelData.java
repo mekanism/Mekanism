@@ -5,18 +5,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntSupplier;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.lib.collection.IndexedCuboidMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-@NothingNullByDefault
 public class RadiationLevelData implements ValueIOSerializable {
     private static final IntSupplier MAX_BLOCK_RANGE = new ConfigBasedCachedIntSupplier(() -> {
         int chunkRadius = MekanismConfig.general.radiationChunkCheckRadius.get();

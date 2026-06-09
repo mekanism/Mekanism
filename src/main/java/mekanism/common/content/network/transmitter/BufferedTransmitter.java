@@ -8,9 +8,9 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
@@ -23,7 +23,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     /**
      * @apiNote Only call from the server side
      */
-    protected abstract void pullFromAcceptors();
+    protected abstract void pullFromAcceptors(ServerLevel level);
 
     public abstract long getCapacity();
 
@@ -32,7 +32,6 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
      *
      * @return The transmitter's buffer, or if null the network's buffer.
      */
-    @NotNull
     public abstract BUFFER getBufferWithFallback();
 
     /**
@@ -126,12 +125,12 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     private void recheckConnectionPrechecked(Direction side) {
         TileEntityTransmitter otherTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
         if (otherTile != null) {
-            NETWORK network = getTransmitterNetwork();
+            NETWORK network = getTransmitterNetworkNN();
             //The other one should always have the same incompatible networks state as us
             // But just in case it doesn't just check the boolean
             Transmitter<?, ?, ?> other = otherTile.getTransmitter();
             if (other instanceof BufferedTransmitter && ((BufferedTransmitter<?, ?, ?, ?>) other).canHaveIncompatibleNetworks() && other.hasTransmitterNetwork()) {
-                NETWORK otherNetwork = (NETWORK) other.getTransmitterNetwork();
+                NETWORK otherNetwork = (NETWORK) other.getTransmitterNetworkNN();
                 if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
                     //We have two networks that are now compatible, and they are not the same source network
                     // The most common cause that they would be same source network is that they would merge
@@ -176,13 +175,13 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
+    protected void handleContentsUpdateTag(NETWORK network, ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.updateCapacity();
     }
 
     @Override
-    protected void updateClientNetwork(@NotNull NETWORK network) {
+    protected void updateClientNetwork(NETWORK network) {
         super.updateClientNetwork(network);
         network.updateCapacity();
     }
@@ -197,14 +196,13 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     /**
      * @return Gets the transmitter's buffer.
      */
-    @NotNull
     public abstract BUFFER getShare();
 
     @Override
     public void validateAndTakeShare(@Nullable TransactionContext transaction) {
         if (hasTransmitterNetwork()) {
             //Ensure we save the shares to the tiles so that they can properly take them
-            getTransmitterNetwork().validateSaveShares(getTransmitter(), transaction);
+            getTransmitterNetworkNN().validateSaveShares(getTransmitter(), transaction);
         }
         super.validateAndTakeShare(transaction);
     }

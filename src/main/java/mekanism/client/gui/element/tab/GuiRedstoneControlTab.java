@@ -20,7 +20,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
@@ -40,13 +39,13 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         PacketUtils.sendToServer(new PacketGuiInteract(event.button() == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_REDSTONE_CONTROL
                                                                                                           : GuiInteraction.PREVIOUS_REDSTONE_CONTROL, dataSource));
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
@@ -65,7 +64,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void drawBackgroundOverlay(@NotNull GuiGraphicsExtractor guiGraphics) {
+    protected void drawBackgroundOverlay(GuiGraphicsExtractor guiGraphics) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
             //TODO - 26.1: figure out the rest of the params
             //guiGraphics.blit(RenderPipelines.GUI, MekanismRenderer.REDSTONE_PULSE_ID, getButtonX() + 1, getButtonY() + 1, 0, innerWidth - 2, innerHeight - 2);

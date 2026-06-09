@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.Objects;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
@@ -645,12 +646,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ULTIMATE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.builder(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, pos, state)).build();
 
     public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>> getFactoryTile(FactoryTier tier, FactoryType type) {
-        return FACTORIES.get(tier, type);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[] getFactoryTiles() {
-        return FACTORIES.values().toArray(new TileEntityTypeRegistryObject[0]);
+        return Objects.requireNonNull(FACTORIES.get(tier, type));
     }
 
     @FunctionalInterface

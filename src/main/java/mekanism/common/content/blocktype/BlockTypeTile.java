@@ -16,7 +16,7 @@ import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import net.minecraft.sounds.SoundEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType {
 

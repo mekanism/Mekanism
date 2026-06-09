@@ -19,12 +19,13 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
+import org.jspecify.annotations.Nullable;
 
 
 public class GhostIngredientHandler {
 
     public static <INGREDIENT, TARGET> List<TARGET> getTargetsTyped(GuiMekanism<?> gui, INGREDIENT ingredient,
-          BiFunction<IGhostIngredientConsumer, INGREDIENT, Object> supportedIngredient, TargetCreator<TARGET> targetCreator) {
+          BiFunction<IGhostIngredientConsumer, INGREDIENT, @Nullable Object> supportedIngredient, TargetCreator<TARGET> targetCreator) {
         boolean hasTargets = false;
         int depth = 0;
         Int2ObjectLinkedOpenHashMap<List<TargetInfo<TARGET>>> depthBasedTargets = new Int2ObjectLinkedOpenHashMap<>();
@@ -77,7 +78,7 @@ public class GhostIngredientHandler {
     }
 
     private static <INGREDIENT, TARGET> List<TargetInfo<TARGET>> getTargets(List<? extends GuiEventListener> children, INGREDIENT ingredient,
-          BiFunction<IGhostIngredientConsumer, INGREDIENT, Object> supportedIngredient, TargetCreator<TARGET> targetCreator) {
+          BiFunction<IGhostIngredientConsumer, INGREDIENT, @Nullable Object> supportedIngredient, TargetCreator<TARGET> targetCreator) {
         List<TargetInfo<TARGET>> ghostTargets = new ArrayList<>();
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget) {

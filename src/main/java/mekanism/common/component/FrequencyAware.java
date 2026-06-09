@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -38,10 +37,8 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity> identity, Optional<FREQ> frequency) implements TooltipProvider {
 
     public static final FrequencyAware<?> NONE = new FrequencyAware<>(Optional.empty(), Optional.empty());
@@ -83,7 +80,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
           DriveMetadata::new
     );
 
-    public FrequencyAware(@NotNull FREQ freq) {
+    public FrequencyAware(FREQ freq) {
         this(Optional.of(freq.getIdentity()), Optional.of(freq));
     }
 
@@ -103,7 +100,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             //If it is a trusted frequency, and we are on the server, validate whether the owner of the item can actually access the frequency
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(itemAccess);
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
-                SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
+                SecurityFrequency security = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
                     resource = resource.without(type);
                     if (resource.getItem() instanceof IColoredItem) {
