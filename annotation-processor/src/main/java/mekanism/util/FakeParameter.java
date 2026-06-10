@@ -12,6 +12,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Shim type to reuse code which expects an AST parameter where one doesn't actually exist yet.
@@ -66,6 +67,7 @@ public class FakeParameter implements VariableElement {
         return Collections.emptySet();
     }
 
+    @Nullable
     @Override
     public Object getConstantValue() {
         return null;
@@ -91,13 +93,14 @@ public class FakeParameter implements VariableElement {
         return Collections.emptyList();
     }
 
+    @Nullable
     @Override
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         return null;
     }
 
-    @SuppressWarnings({"unchecked", "DataFlowIssue"})
     @Override
+    @SuppressWarnings({"unchecked", "DataFlowIssue", "SuspiciousArrayCast"})
     public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
         return (A[]) new Object[0];
     }

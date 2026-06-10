@@ -9,21 +9,23 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Converts an annotation value to a format suitable for a CodeBlock's $L formatter
  */
-public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisitor14<Object, TypeMirror> {
+public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisitor14<@Nullable Object, TypeMirror> {
 
     AnnotationValueToLiteralVisitor() {
     }
 
-    public AnnotationValueToLiteralVisitor(Object defaultValue) {
+    public AnnotationValueToLiteralVisitor(@Nullable Object defaultValue) {
         super(defaultValue);
     }
 
+    @Nullable
     @Override
-    public Object visitString(String s, TypeMirror valueType) {
+    public Object visitString(@Nullable String s, TypeMirror valueType) {
         return s != null && !s.isBlank() ? CodeBlock.of("$S", s) : super.defaultAction(s, valueType);
     }
 
@@ -33,7 +35,7 @@ public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisito
     }
 
     @Override
-    public Object visitArray(List<? extends AnnotationValue> vals, TypeMirror valueType) {
+    public Object visitArray(@Nullable List<? extends AnnotationValue> vals, TypeMirror valueType) {
         TypeMirror componentType = ((ArrayType) valueType).getComponentType();
         if (vals == null || vals.isEmpty()) {
             return CodeBlock.of("new $T[0]", ClassName.get(componentType));

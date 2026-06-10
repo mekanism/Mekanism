@@ -41,6 +41,7 @@ import mekanism.MekAnnotationProcessors;
 import mekanism.util.FakeParameter;
 import mekanism.visitors.AnnotationHelper;
 import mekanism.visitors.ParamToHelperMapper;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Heavy lifting class to generate a Factory for a single target class
@@ -206,7 +207,7 @@ public class ComputerHandlerBuilder {
         } else if (annotatedElement instanceof ExecutableElement executableElement) {
             //get either the proxy method or call the actual method
             if (isPrivate) {
-                MethodSpec proxyMethod = methodProxies.computeIfAbsent(executableElement, el -> getMethodProxy(annotatedName, executableElement));
+                MethodSpec proxyMethod = methodProxies.computeIfAbsent(executableElement, _ -> getMethodProxy(annotatedName, executableElement));
                 if (isStatic) {
                     targetReference = CodeBlock.of("$N()", proxyMethod);
                 } else {
@@ -373,14 +374,15 @@ public class ComputerHandlerBuilder {
         //wrap the target method code, or call it and return void
         CodeBlock valueReturner = convertValueToReturn(executableElement, returnType, targetInvoker);
 
-        String nameOverride = annotationValues.getStringValue("nameOverride", annotatedName);
+        String nameOverride = Objects.requireNonNull(annotationValues.getStringValue("nameOverride", annotatedName));
 
         //add the method to the class
         MethodSpec handlerMethod = buildHandlerMethod(nameOverride + "_" + parameters.size(), valueReturner);
         handlerTypeSpec.addMethod(handlerMethod);
 
         //add a call to register() in the handler class's constructor
-        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride, annotationValues.getBooleanValue("threadSafe", false), annotationValues.getStringValue("methodDescription", null));
+        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride,
+              annotationValues.getBooleanValue("threadSafe", false), annotationValues.getStringValue("methodDescription", null));
         constructorBuilder.addStatement(registerMethodBuilder);
     }
 
@@ -607,7 +609,8 @@ public class ComputerHandlerBuilder {
      *
      * @return a CodeBlock to be added to the constructor
      */
-    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, boolean threadSafeLiteral, String methodDescription) {
+    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod,
+          String computerExposedName, boolean threadSafeLiteral, @Nullable String methodDescription) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name & handler reference
         registerMethodBuilder.add("register($T.builder($S, $N::$N)", methodData, computerExposedName, handlerClassName, handlerMethod);
