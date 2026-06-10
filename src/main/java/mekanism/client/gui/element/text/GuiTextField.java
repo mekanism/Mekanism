@@ -27,6 +27,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -43,18 +44,25 @@ public class GuiTextField extends GuiElement {
     private final ClearingEditBox textField;
     private ContainerEventHandler parent;
 
-    private Runnable enterHandler;
+    @Nullable
+    private Consumer<GuiTextField> enterHandler;
+    @Nullable
     private IntPredicate inputValidator;
+    @Nullable
     private IntUnaryOperator inputTransformer;
+    @Nullable
     private UnaryOperator<String> pasteTransformer;
+    @Nullable
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
+    @Nullable
     private IconType iconType;
 
     private int textOffsetX, textOffsetY;
     private float textScale = 1.0F;
 
+    @Nullable
     private MekanismImageButton checkmarkButton;
 
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
@@ -106,7 +114,7 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField configureDigitalInput(Runnable enterHandler) {
+    public GuiTextField configureDigitalInput(Consumer<GuiTextField> enterHandler) {
         setBackground(BackgroundType.NONE);
         setIcon(IconType.DIGITAL);
         setTextColor(screenTextColor());
@@ -116,7 +124,7 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField configureDigitalBorderInput(Runnable enterHandler) {
+    public GuiTextField configureDigitalBorderInput(Consumer<GuiTextField> enterHandler) {
         setBackground(BackgroundType.DIGITAL);
         setTextColor(screenTextColor());
         setEnterHandler(enterHandler);
@@ -125,22 +133,22 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField setEnterHandler(Runnable enterHandler) {
+    public GuiTextField setEnterHandler(@Nullable Consumer<GuiTextField> enterHandler) {
         this.enterHandler = enterHandler;
         return this;
     }
 
-    public GuiTextField setInputValidator(IntPredicate inputValidator) {
+    public GuiTextField setInputValidator(@Nullable IntPredicate inputValidator) {
         this.inputValidator = inputValidator;
         return this;
     }
 
-    public GuiTextField setInputTransformer(IntUnaryOperator inputTransformer) {
+    public GuiTextField setInputTransformer(@Nullable IntUnaryOperator inputTransformer) {
         this.inputTransformer = inputTransformer;
         return this;
     }
 
-    public GuiTextField setPasteTransformer(UnaryOperator<String> pasteTransformer) {
+    public GuiTextField setPasteTransformer(@Nullable UnaryOperator<String> pasteTransformer) {
         this.pasteTransformer = pasteTransformer;
         return this;
     }
@@ -157,13 +165,14 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField addCheckmarkButton(Runnable callback) {
+    public GuiTextField addCheckmarkButton(Consumer<GuiTextField> callback) {
         return addCheckmarkButton(ButtonType.NORMAL, callback);
     }
 
-    public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
+    public GuiTextField addCheckmarkButton(ButtonType type, Consumer<GuiTextField> callback) {
         checkmarkButton = addChild(type.getButton(this, (_, _, _) -> {
-            callback.run();
+            //TODO: Instead of capturing this can we just use the passed element?
+            callback.accept(this);
             parent.setFocused(this);
             return true;
         }));
@@ -258,7 +267,7 @@ public class GuiTextField extends GuiElement {
             } else if (event.isConfirmation()) {
                 //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
-                    enterHandler.run();
+                    enterHandler.accept(this);
                 }
                 return true;
             } else if (event.isPaste()) {
@@ -319,24 +328,28 @@ public class GuiTextField extends GuiElement {
         return textField.getValue();
     }
 
-    public void setVisible(boolean visible) {
+    public GuiTextField setVisible(boolean visible) {
         textField.setVisible(visible);
+        return this;
     }
 
-    public void setMaxLength(int length) {
+    public GuiTextField setMaxLength(int length) {
         textField.setMaxLength(length);
+        return this;
     }
 
-    public void setTextColor(int color) {
+    public GuiTextField setTextColor(int color) {
         textField.setTextColor(color);
+        return this;
     }
 
     public void setTextColorUneditable(int color) {
         textField.setTextColorUneditable(color);
     }
 
-    public void setEditable(boolean enabled) {
+    public GuiTextField setEditable(boolean enabled) {
         textField.setEditable(enabled);
+        return this;
     }
 
     public void setCanLoseFocus(boolean canLoseFocus) {
@@ -364,8 +377,9 @@ public class GuiTextField extends GuiElement {
         textField.setValue(text);
     }
 
-    public void setResponder(Consumer<String> responder) {
+    public GuiTextField setResponder(Consumer<String> responder) {
         this.responder = responder;
+        return this;
     }
 
     private static class ClearingEditBox extends EditBox {

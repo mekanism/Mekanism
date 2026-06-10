@@ -141,6 +141,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private long heatedCoolantCapacity;
     private long fuelCapacity;
 
+    @Nullable
     private AABB hotZone;
 
     public float prevCoolantScale;
@@ -514,7 +515,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void radiateEntities(Level world) {
-        if (RadiationManager.isGlobalRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (hotZone != null && RadiationManager.isGlobalRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
             double magnitude = lastBurnRate + wasteRadiation;
             if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {

@@ -49,9 +49,10 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IState
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
+    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacementNN(super.getStateForPlacement(context), context);
+        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
     }
 
     @Override

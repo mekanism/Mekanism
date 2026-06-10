@@ -25,11 +25,14 @@ import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
+    @UnknownNullability//Initialized via getInitialInventory
     private SecurityInventorySlot unlockSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     private SecurityInventorySlot lockSlot;
 
     public TileEntitySecurityDesk(BlockPos pos, BlockState state) {

@@ -18,7 +18,9 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
         return new GuiSorterModIDFilter(gui, (gui.getXSize() - SORTER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
+    @Nullable
     private GuiTextField minField;
+    @Nullable
     private GuiTextField maxField;
 
     private GuiSorterModIDFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterModIDFilter origFilter) {
@@ -41,7 +43,7 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
 
     @Override
     protected void validateAndSave() {
-        if (text.getText().isEmpty() || setText()) {
+        if (text.getText().isEmpty() || setText(text)) {
             validateAndSaveSorterFilter(this, minField, maxField);
         }
     }

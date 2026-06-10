@@ -9,6 +9,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
@@ -72,7 +73,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     }
 
     @Override
-    protected boolean setText() {
+    protected boolean setText(GuiTextField text) {
         String name = text.getText();
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());

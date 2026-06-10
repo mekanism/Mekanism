@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer, MekanismTileContainer<TileEntityPigmentMixer>> {
 
@@ -63,7 +64,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? CommonColors.WHITE : tile.leftInputTank.resource().getChemicalColorRepresentation();
+            return tile.leftInputTank.resource().getChemicalColorRepresentation();
         }
     }
 
@@ -71,12 +72,13 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? CommonColors.WHITE : tile.rightInputTank.resource().getChemicalColorRepresentation();
+            return tile.rightInputTank.resource().getChemicalColorRepresentation();
         }
     }
 
     private abstract class PigmentColorDetails implements ColorDetails {
 
+        @Nullable
         private WeakReference<ChemicalChemicalToChemicalRecipe> cachedRecipe;
 
         @Override
@@ -84,10 +86,6 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorTo() {
-            if (tile == null) {
-                //Should never actually be null, but just in case check it to make intellij happy
-                return CommonColors.WHITE;
-            }
             if (tile.outputTank.isEmpty()) {
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
@@ -112,6 +110,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return tile.outputTank.resource().getChemicalColorRepresentation();
         }
 
+        @Nullable
         private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {
             ChemicalChemicalToChemicalRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {

@@ -35,6 +35,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
@@ -42,8 +43,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     private static final Identifier INPUT = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
     private static final Identifier SILK = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
 
+    @Nullable
     private MekanismButton startButton;
+    @Nullable
     private MekanismButton stopButton;
+    @Nullable
     private MekanismButton configButton;
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
@@ -128,9 +132,15 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     }
 
     private void updateEnabledButtons() {
-        startButton.active = tile.searcher.state == State.IDLE || !tile.isRunning();
-        stopButton.active = tile.searcher.state != State.IDLE && tile.isRunning();
-        configButton.active = tile.searcher.state == State.IDLE;
+        if (startButton != null) {
+            startButton.active = tile.searcher.state == State.IDLE || !tile.isRunning();
+        }
+        if (stopButton != null) {
+            stopButton.active = tile.searcher.state != State.IDLE && tile.isRunning();
+        }
+        if (configButton != null) {
+            configButton.active = tile.searcher.state == State.IDLE;
+        }
     }
 
     @Override

@@ -72,14 +72,14 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         // Write to info display
         renderTitleText(guiGraphics);
-        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 4);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_SINGLE_ITEM.translate(), 19);
+        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 0, 4);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_SINGLE_ITEM.translate(), 0, 19);
         drawScreenText(guiGraphics, OnOff.of(tile.getSingleItem()).getTextComponent(), 14, 32);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_ROUND_ROBIN.translate(), 49);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_ROUND_ROBIN.translate(), 0, 49);
         drawScreenText(guiGraphics, OnOff.of(tile.getRoundRobin()).getTextComponent(), 14, 62);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_AUTO_EJECT.translate(), 79);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_AUTO_EJECT.translate(), 0, 79);
         drawScreenText(guiGraphics, OnOff.of(tile.getAutoEject()).getTextComponent(), 14, 92);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_DEFAULT.translate(), 109);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_DEFAULT.translate(), 0, 109);
     }
 
     @Override

@@ -36,6 +36,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModModule {
@@ -52,6 +53,7 @@ public class MekanismAdditions implements IModModule {
     /**
      * The VoiceServer manager for walkie-talkies
      */
+    @Nullable
     public static VoiceServerManager voiceManager;
 
     public MekanismAdditions(ModContainer modContainer, IEventBus modEventBus) {

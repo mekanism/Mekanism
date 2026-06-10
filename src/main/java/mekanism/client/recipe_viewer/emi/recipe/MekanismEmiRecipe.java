@@ -147,7 +147,6 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         return category;
     }
 
-    @Nullable
     @Override
     public Identifier getId() {
         return id;

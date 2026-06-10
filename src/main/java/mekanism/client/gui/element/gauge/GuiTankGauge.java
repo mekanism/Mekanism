@@ -35,6 +35,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
     @Nullable
     private final ITankInfoHandler<CONTAINER> infoHandler;
     private final TankType tankType;
+    @Nullable
     private Component label;
 
     protected GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, @Nullable ITankInfoHandler<CONTAINER> infoHandler, TankType tankType,
@@ -51,6 +52,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
         return this;
     }
 
+    @Nullable
     @Override
     public Component getLabel() {
         return label;

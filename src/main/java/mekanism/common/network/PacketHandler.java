@@ -1,5 +1,6 @@
 package mekanism.common.network;
 
+import java.util.Objects;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -62,13 +63,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
+import org.jspecify.annotations.Nullable;
 
 public class PacketHandler extends BasePacketHandler {
 
     //Client to server instanced packets
 
     //Server to client instanced packets
+    @Nullable
     private SimplePacketPayLoad showModeChange;
+    @Nullable
     private SimplePacketPayLoad killItemViewer;
 
     public PacketHandler(IEventBus modEventBus, Version version) {
@@ -80,10 +84,12 @@ public class PacketHandler extends BasePacketHandler {
     }
 
     public void showModeChange(ServerPlayer player) {
+        Objects.requireNonNull(showModeChange, "Show mode change packet not initialized!?");
         PacketDistributor.sendToPlayer(player, showModeChange);
     }
 
     public void killItemViewer(ServerPlayer player) {
+        Objects.requireNonNull(killItemViewer, "Show mode change packet not initialized!?");
         PacketDistributor.sendToPlayer(player, killItemViewer);
     }
 

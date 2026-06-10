@@ -21,7 +21,9 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
         return new GuiSorterItemStackFilter(gui, (gui.getXSize() - SORTER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
+    @Nullable
     private GuiTextField minField;
+    @Nullable
     private GuiTextField maxField;
 
     private GuiSorterItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterItemStackFilter origFilter) {

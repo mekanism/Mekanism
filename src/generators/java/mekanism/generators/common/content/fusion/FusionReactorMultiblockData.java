@@ -66,6 +66,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jspecify.annotations.Nullable;
 
 public class FusionReactorMultiblockData extends MultiblockData {
 
@@ -145,6 +146,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private long maxWater;
     private long maxSteam;
 
+    @Nullable
     private AABB deathZone;
 
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
@@ -281,7 +283,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void kill(ServerLevel world) {
-        if (world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (deathZone != null && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             DamageSource damageSource = GeneratorsDamageTypes.FUSION.source(world, deathZone.getCenter());
             for (Entity entity : world.getEntitiesOfClass(Entity.class, deathZone)) {
                 entity.hurtServer(world, damageSource, 50_000F);

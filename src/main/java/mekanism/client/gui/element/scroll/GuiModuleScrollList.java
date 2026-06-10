@@ -32,7 +32,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
 
     private static final Identifier MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
 
-    private final Consumer<Module<?>> callback;
+    private final Consumer<@Nullable Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
     private final Supplier<ItemResource> itemSupplier;
     private ItemResource currentItem;
@@ -44,7 +44,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemResource> itemSupplier, Consumer<Module<?>> callback) {
+    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemResource> itemSupplier, Consumer<@Nullable Module<?>> callback) {
         super(gui, x, y, height, GuiElementHolder.HOLDER, MODULE_SELECTION, 112, 36);
         this.itemSupplier = itemSupplier;
         this.callback = callback;

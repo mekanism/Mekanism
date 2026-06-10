@@ -73,6 +73,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
@@ -103,6 +104,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private ItemResource lastFormulaStack = ItemResource.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
     private final List<IInventorySlot> craftingGridSlots;
     private final List<IInventorySlot> inputSlots;
@@ -111,8 +113,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private final IMekanismResourceHandler<ItemResource, IInventorySlot> directInputHandler;
     /// For in inserting to output slots and stacking before going to empty slots
     private final IMekanismResourceHandler<ItemResource, IInventorySlot> directOutputHandler;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
     BasicInventorySlot formulaSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -135,7 +139,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, listener);
         return new EnergyConfigHolder(energyContainer, this);
     }

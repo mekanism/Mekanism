@@ -33,6 +33,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     private String tagName;
 
     public SorterTagFilter() {
+        tagName = "";
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

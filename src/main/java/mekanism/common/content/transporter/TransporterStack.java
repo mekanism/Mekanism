@@ -186,7 +186,7 @@ public class TransporterStack {
         return pathType == null ? Path.NONE : pathType;
     }
 
-    public final TransitResponse recalculatePath(TransitRequest request, BlockEntity ignored, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+    public final TransitResponse recalculatePath(TransitRequest request, @Nullable BlockEntity ignored, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
         return recalculatePath(request, transporter, min, transaction);
     }
 

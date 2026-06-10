@@ -24,6 +24,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jspecify.annotations.Nullable;
 
 public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
@@ -34,7 +35,9 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     private int prevDX, prevDY;
     private boolean pinned;
 
+    @Nullable
     private Consumer<GuiWindow> closeListener;
+    @Nullable
     private Consumer<GuiWindow> reattachListener;
     private final long msOpened;
 
@@ -160,7 +163,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
-        setTabListeners(window -> elementSupplier.get().active = true, window -> elementSupplier.get().active = false);
+        setTabListeners(_ -> elementSupplier.get().active = true, _ -> elementSupplier.get().active = false);
     }
 
     public void setTabListeners(Consumer<GuiWindow> closeListener, Consumer<GuiWindow> reattachListener) {

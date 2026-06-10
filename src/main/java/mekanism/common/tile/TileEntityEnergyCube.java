@@ -43,7 +43,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
@@ -55,9 +55,12 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     private final EnergyCubeTier tier;
     private float prevScale;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private EnergyCubeEnergyContainer energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem", docPlaceholder = "charge slot")
     EnergyInventorySlot chargeSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem", docPlaceholder = "discharge slot")
     EnergyInventorySlot dischargeSlot;
 
@@ -74,7 +77,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = EnergyCubeEnergyContainer.create(this, listener);
         return new EnergyConfigHolder(energyContainer, this);
     }

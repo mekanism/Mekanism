@@ -12,22 +12,21 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiRobitRename extends GuiWindow {
 
-    private final GuiTextField nameChangeField;
     private final EntityRobit robit;
 
     public GuiRobitRename(IGuiWrapper gui, int x, int y, EntityRobit robit) {
         super(gui, x, y, 172, 58, WindowType.RENAME);
         this.robit = robit;
-        addChild(new TranslationButton(gui, relativeX + 56, relativeY + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, (_, _, _) -> changeName()));
-        nameChangeField = addChild(new GuiTextField(gui, this, relativeX + 21, relativeY + 17, width - 42, 12));
-        nameChangeField.setMaxLength(PacketRobitName.MAX_NAME_LENGTH);
+        GuiTextField nameChangeField = addChild(new GuiTextField(gui, this, relativeX + 21, relativeY + 17, width - 42, 12))
+              .setEnterHandler(this::changeName)
+              .setMaxLength(PacketRobitName.MAX_NAME_LENGTH);
         nameChangeField.setCanLoseFocus(false);
-        nameChangeField.setEnterHandler(this::changeName);
         nameChangeField.allowColoredText();
+        addChild(new TranslationButton(gui, relativeX + 56, relativeY + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, (_, _, _) -> changeName(nameChangeField)));
         setFocused(nameChangeField);
     }
 
-    private boolean changeName() {
+    private boolean changeName(GuiTextField nameChangeField) {
         String name = nameChangeField.getText().trim();
         if (PacketRobitName.hasContent(name)) {
             PacketUtils.sendToServer(new PacketRobitName(robit, name));

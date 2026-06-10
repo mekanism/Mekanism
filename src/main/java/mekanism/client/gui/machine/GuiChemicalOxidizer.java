@@ -15,9 +15,11 @@ import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalOxidizer, MekanismTileContainer<TileEntityChemicalOxidizer>> {
 
+    @Nullable
     private GuiElement energyBar;
 
     public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, Inventory inv, Component title) {
@@ -41,7 +43,7 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics, energyBar.getRelativeX());
+        renderInventoryText(guiGraphics, energyBar == null ? getImageWidth() : energyBar.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

@@ -27,6 +27,7 @@ import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
@@ -34,6 +35,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private static final Set<RelativeSide> ENERGY_SIDES = Set.of(RelativeSide.BOTTOM);
     private boolean seesSun;
     private int lastProductionAmount = 0;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
     @Nullable

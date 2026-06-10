@@ -10,7 +10,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 public class TileEntityLaser extends TileEntityBasicLaser {
 
@@ -19,7 +18,7 @@ public class TileEntityLaser extends TileEntityBasicLaser {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, ConstantPredicates.alwaysTrue(), this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }

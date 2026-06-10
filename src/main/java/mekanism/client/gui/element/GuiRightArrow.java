@@ -12,7 +12,7 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IRecipeViewe
 
     private static final Identifier ARROW = MekanismUtils.getResource(ResourceType.GUI, "right_arrow.png");
 
-    private IRecipeViewerRecipeType<?>[] recipeCategories;
+    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
 
     public GuiRightArrow(IGuiWrapper gui, int x, int y) {
         super(ARROW, gui, x, y, 22, 15);
@@ -24,9 +24,8 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IRecipeViewe
         return this;
     }
 
-    @Nullable
     @Override
-    public IRecipeViewerRecipeType<?>[] getRecipeCategories() {
+    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
         return recipeCategories;
     }
 }

@@ -102,7 +102,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ContainerSync
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
+    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, @Nullable Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
     private final IOutputHandler<FluidStackTemplate> outputHandler;
     private final IInputHandler<Fluid, FluidStack> inputHandler;

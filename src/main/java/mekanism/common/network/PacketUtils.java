@@ -133,8 +133,10 @@ public class PacketUtils {
         sendToAllTracking(message, tile.getLevel(), tile.getBlockPos());
     }
 
-    public static <MSG extends CustomPacketPayload> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
-        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) world, ChunkPos.containing(pos), message);
+    public static <MSG extends CustomPacketPayload> void sendToAllTracking(MSG message, @Nullable Level world, BlockPos pos) {
+        if (world instanceof ServerLevel level) {
+            PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), message);
+        }
     }
 
     /**

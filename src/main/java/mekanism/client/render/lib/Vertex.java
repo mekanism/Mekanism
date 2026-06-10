@@ -28,8 +28,9 @@ public class Vertex {
     // 0 to 0xF0
     private int lightU, lightV;
 
-    public Vertex() {
+    public Vertex(float x, float y, float z) {
         this.miscData = new HashMap<>();
+        this.pos = new Vector3f(x, y, z);
     }
 
     public Vertex(Vector3f pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {

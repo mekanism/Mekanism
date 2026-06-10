@@ -35,6 +35,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     private String modID;
 
     public SorterModIDFilter() {
+        modID = "";
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

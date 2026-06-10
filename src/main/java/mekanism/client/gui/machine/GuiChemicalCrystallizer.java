@@ -81,6 +81,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             return recipe;
         }
 
+        @Nullable
         private ChemicalCrystallizerRecipe getRecipeAndCache() {
             ChemicalCrystallizerRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {

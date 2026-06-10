@@ -158,7 +158,7 @@ public class Quad {
                 }
             }
             building = true;
-            vertices[vertexIndex] = new Vertex().pos(new Vector3f(x, y, z));
+            vertices[vertexIndex] = new Vertex(x, y, z);
             return this;
         }
 

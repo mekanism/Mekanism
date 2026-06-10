@@ -76,6 +76,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public double lastProcessed;
 
     public boolean couldOperate;
+    @Nullable
     private AABB deathZone, advancementArea;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
@@ -203,7 +204,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void kill(ServerLevel world) {
-        if (lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (deathZone != null && lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
             LightningBolt lightningBolt = null;
             List<ServerPlayer> nearbyPlayers = null;
@@ -225,9 +226,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                             //Trigger advancements for nearby players
                             if (nearbyPlayers == null) {
                                 nearbyPlayers = new ArrayList<>();
-                                for (ServerPlayer player : world.players()) {
-                                    if (advancementArea.contains(player.position())) {
-                                        nearbyPlayers.add(player);
+                                if (advancementArea != null) {//Should not be null unless something went wrong
+                                    for (ServerPlayer player : world.players()) {
+                                        if (advancementArea.contains(player.position())) {
+                                            nearbyPlayers.add(player);
+                                        }
                                     }
                                 }
                             }

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 public class GuiGasMode extends MekanismImageButton {
 
@@ -19,7 +20,9 @@ public class GuiGasMode extends MekanismImageButton {
     private static final Identifier EXCESS = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_excess.png");
     private static final Identifier DUMP = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_dump.png");
 
+    @Nullable
     private final Tooltip dumpExcess;
+    @Nullable
     private final Tooltip dump;
     private final TextAlignment textSide;
     private final Supplier<GasMode> gasModeSupplier;
@@ -28,7 +31,7 @@ public class GuiGasMode extends MekanismImageButton {
         this(gui, x, y, left, gasModeSupplier, pos, tank, null, null);
     }
 
-    public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank, Tooltip dumpExcess, Tooltip dump) {
+    public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank, @Nullable Tooltip dumpExcess, @Nullable Tooltip dump) {
         super(gui, x, y, 10, IDLE, (_, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
         this.textSide = left ? TextAlignment.RIGHT : TextAlignment.LEFT;
         this.gasModeSupplier = gasModeSupplier;

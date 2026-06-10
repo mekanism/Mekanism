@@ -316,7 +316,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
         //Note: We only call this method if we are hovering the proper spot
         //TODO - 26.1: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
-        tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY,true, isFocused(), getTooltipRectangle(mouseX, mouseY));
+        tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY, true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
             if (child.isMouseOver(mouseX, mouseY)) {

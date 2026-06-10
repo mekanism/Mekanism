@@ -31,8 +31,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstoneAdapter, MekanismTileContainer<TileEntityQIORedstoneAdapter>> {
 
-    private GuiTextField text;
-
     public GuiQIORedstoneAdapter(MekanismTileContainer<TileEntityQIORedstoneAdapter> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 26);
         dynamicSlots = true;
@@ -77,8 +75,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             list.add(MekanismLang.QIO_FUZZY_MODE.translate(tile.getFuzzyMode()));
             return list;
         }).clearFormat());
-        text = addRenderableWidget(new GuiTextField(this, 29, 80, imageWidth - 39, 12));
-        text.setInputValidator(InputValidator.DIGIT)
+        GuiTextField text = addRenderableWidget(new GuiTextField(this, 29, 80, imageWidth - 39, 12))
+              .setInputValidator(InputValidator.DIGIT)
               .configureDigitalInput(this::setCount)
               .setMaxLength(10);
         setInitialFocus(text);
@@ -89,7 +87,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, stack.copyWithCount(1)));
     }
 
-    private void setCount() {
+    private void setCount(GuiTextField text) {
         if (!text.getText().isEmpty()) {
             long count = Long.parseLong(text.getText());
             PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_COUNT, tile, (int) Math.min(count, Integer.MAX_VALUE)));

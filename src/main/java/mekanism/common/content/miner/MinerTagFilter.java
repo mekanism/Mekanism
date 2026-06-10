@@ -33,6 +33,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     private String tagName;
 
     public MinerTagFilter() {
+        tagName = "";
     }
 
     protected MinerTagFilter(boolean enabled, Item replaceTarget, boolean requiresReplacement, String tagName) {

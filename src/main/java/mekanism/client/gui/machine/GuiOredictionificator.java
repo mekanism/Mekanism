@@ -31,6 +31,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
      */
     private static final int FILTER_COUNT = 3;
 
+    @Nullable
     private GuiScrollBar scrollBar;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, Inventory inv, Component title) {
@@ -88,6 +89,6 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar != null && scrollBar.adjustScroll(yDelta);
     }
 }

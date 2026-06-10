@@ -10,7 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
@@ -18,7 +18,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     /**
      * May be null if init hasn't been called yet. Will be null if the tile doesn't support upgrades.
      */
-    @Nullable
+    @UnknownNullability
     private GuiUpgradeWindowTab upgradeWindowTab;
 
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title) {

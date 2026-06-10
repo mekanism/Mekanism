@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.IntPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.ITagFilter;
@@ -40,7 +41,7 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected boolean setText() {
+    protected boolean setText(GuiTextField text) {
         String name = text.getText();
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());

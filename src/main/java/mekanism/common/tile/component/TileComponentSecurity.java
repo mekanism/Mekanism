@@ -32,6 +32,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Nullable
     private UUID ownerUUID;
+    @Nullable
     private String ownerName;
 
     private SecurityMode securityMode = SecurityMode.PUBLIC;
@@ -62,6 +63,7 @@ public class TileComponentSecurity implements ITileComponent {
         }
     }
 
+    @Nullable
     @ComputerMethod
     public String getOwnerName() {
         return ownerName;
@@ -141,7 +143,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void readFromUpdateTag(ValueInput input) {
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> ownerUUID = uuid);
-        ownerName = input.getStringOr(SerializationConstants.OWNER_NAME, ownerName);
+        ownerName = input.getString(SerializationConstants.OWNER_NAME).orElse(ownerName);
     }
 
     //Computer related methods

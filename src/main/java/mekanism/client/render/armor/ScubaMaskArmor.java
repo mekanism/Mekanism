@@ -10,11 +10,13 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListener {
 
     public static final ScubaMaskArmor SCUBA_MASK = new ScubaMaskArmor();
 
+    @Nullable
     private ModelScubaMask model;
 
     private ScubaMaskArmor() {
@@ -28,7 +30,7 @@ public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListen
     @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, ItemStack stack) {
-        if (!baseModel.head.visible) {
+        if (model == null || !baseModel.head.visible) {
             //If the head model shouldn't show don't bother displaying it
             return;
         }

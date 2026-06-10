@@ -20,8 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
 
-    private GuiTextField injectionRateField;
-
     public GuiFusionReactorFuel(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
@@ -36,8 +34,8 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 106, 76));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        injectionRateField = addRenderableWidget(new GuiTextField(this, 103, 115, 26, 11));
-        injectionRateField.setInputValidator(InputValidator.DIGIT)
+        GuiTextField injectionRateField = addRenderableWidget(new GuiTextField(this, 103, 115, 26, 11))
+              .setInputValidator(InputValidator.DIGIT)
               .setEnterHandler(this::setInjection)
               .setMaxLength(2);
         setInitialFocus(injectionRateField);
@@ -50,7 +48,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private void setInjection() {
+    private void setInjection(GuiTextField injectionRateField) {
         if (!injectionRateField.getText().isEmpty()) {
             PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, Integer.parseInt(injectionRateField.getText())));
             injectionRateField.setText("");

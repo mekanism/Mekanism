@@ -160,15 +160,17 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return null;
     }
 
+    @Nullable
     @Override
-    protected final @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected final IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         return getInitialEnergyContainer(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+    @Nullable
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
     }
 

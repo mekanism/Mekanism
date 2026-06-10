@@ -66,11 +66,13 @@ import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     protected LaserEnergyContainer energyContainer;
     @Nullable
     @SyntheticComputerMethod(getter = "getDiggingPos")
@@ -83,7 +85,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    protected abstract @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
+    protected abstract IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {

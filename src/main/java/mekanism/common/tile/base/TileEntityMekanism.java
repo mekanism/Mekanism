@@ -207,6 +207,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling ITileUpgradable
     //TODO: Convert this to being private
+    @Nullable
     protected TileComponentUpgrade upgradeComponent;
     //End variables ITileUpgradable
 

@@ -35,12 +35,15 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, MekanismTileContainer<TileEntityFissionReactorCasing>> {
 
+    @Nullable
     private TranslationButton activateButton;
+    @Nullable
     private TranslationButton scramButton;
-
+    @Nullable
     private GuiDoubleGraph heatGraph;
 
     public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
@@ -123,13 +126,16 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
     private void updateButtons() {
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
-        activateButton.active = !multiblock.isActive() && !multiblock.isForceDisabled();
-        scramButton.active = multiblock.isActive();
+        if (activateButton != null) {
+            activateButton.active = !multiblock.isActive() && !multiblock.isForceDisabled();
+        }
+        if (scramButton != null) {
+            scramButton.active = multiblock.isActive();
+        }
     }
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        updateButtons();
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         drawScrollingString(guiGraphics, MekanismLang.TEMPERATURE_LONG.translate(""), 0, 93, TextAlignment.LEFT, titleTextColor(), 5, false);
@@ -140,7 +146,10 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     @Override
     public void containerTick() {
         super.containerTick();
-        heatGraph.addData(tile.getMultiblock().heatCapacitor.getTemperature());
+        updateButtons();
+        if (heatGraph != null) {
+            heatGraph.addData(tile.getMultiblock().heatCapacitor.getTemperature());
+        }
     }
 
     @Override

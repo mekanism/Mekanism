@@ -16,9 +16,10 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHelper {
 
+    @Nullable
     private IVirtualSlot virtualSlot;
 
-    public GuiVirtualSlot(@Nullable IGUIWindow window, SlotType type, IGuiWrapper gui, int x, int y, VirtualInventoryContainerSlot containerSlot) {
+    public GuiVirtualSlot(@Nullable IGUIWindow window, SlotType type, IGuiWrapper gui, int x, int y, @Nullable VirtualInventoryContainerSlot containerSlot) {
         this(type, gui, x, y);
         if (containerSlot != null) {
             SlotOverlay slotOverlay = containerSlot.getSlotOverlay();

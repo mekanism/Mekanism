@@ -10,6 +10,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyController.Type;
 import mekanism.common.lib.frequency.FrequencyTypes.FrequencyConstructor;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.util.MekCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 public class FrequencyType<FREQ extends Frequency> {
 
     //TODO - 26.1 - investigate no usages
-    public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
+    public static final Codec<FrequencyType<?>> CODEC = MekCodecs.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
     public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(255).map(
           name -> {
               FrequencyType<?> type = FrequencyTypes.byName(name);

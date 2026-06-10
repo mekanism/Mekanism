@@ -33,7 +33,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     private final GuiScrollBar scrollBar;
 
-    private final Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins;
+    private final Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins;
     private final EntityRobit robit;
     private ResourceKey<RobitSkin> selectedSkin;
     private float rotation;
@@ -45,7 +45,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
+    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
         this.robit = robit;
         this.selectedSkin = this.robit.getSkinId();
@@ -54,6 +54,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
               () -> getUnlockedSkins() == null ? 0 : Mth.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
     }
 
+    @Nullable
     private List<ResourceKey<RobitSkin>> getUnlockedSkins() {
         return unlockedSkins.get();
     }
@@ -156,6 +157,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
+    @Nullable
     private ResourceKey<RobitSkin> getSkin(double mouseX, double mouseY, boolean updateTooltipRect) {
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {

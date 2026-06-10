@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentExtractor, MekanismTileContainer<TileEntityPigmentExtractor>> {
 
+    @Nullable
     private GuiElement energyBar;
 
     public GuiPigmentExtractor(MekanismTileContainer<TileEntityPigmentExtractor> container, Inventory inv, Component title) {
@@ -48,7 +49,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics, energyBar.getRelativeX());
+        renderInventoryText(guiGraphics, energyBar == null ? getImageWidth() : energyBar.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
@@ -64,10 +65,6 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
         @Override
         public int getColorTo() {
-            if (tile == null) {
-                //Should never actually be null, but just in case check it to make intellij happy
-                return CommonColors.WHITE;
-            }
             if (tile.pigmentTank.isEmpty()) {
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 IInventorySlot inputSlot = tile.getInputSlot();
@@ -92,6 +89,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
             return tile.pigmentTank.resource().getChemicalColorRepresentation();
         }
 
+        @Nullable
         private ItemStackToChemicalRecipe getRecipeAndCache() {
             ItemStackToChemicalRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {

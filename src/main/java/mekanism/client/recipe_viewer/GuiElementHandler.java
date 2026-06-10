@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
+import org.jspecify.annotations.Nullable;
 
 public class GuiElementHandler {
 
@@ -59,7 +60,7 @@ public class GuiElementHandler {
     }
 
     public static <INGREDIENT> Optional<INGREDIENT> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY,
-          BiFunction<IRecipeViewerIngredientHelper, Object, INGREDIENT> ingredientWrapper) {
+          BiFunction<IRecipeViewerIngredientHelper, Object, @Nullable INGREDIENT> ingredientWrapper) {
         GuiEventListener focused = gui.getFocused();
         if (focused instanceof GuiTextField || focused instanceof EditBox) {
             //Don't mark ingredients as clickable if a text box is focused
@@ -74,7 +75,7 @@ public class GuiElementHandler {
     }
 
     private static <INGREDIENT> Optional<INGREDIENT> getIngredientUnderMouse(List<? extends GuiEventListener> children, double mouseX, double mouseY,
-          BiFunction<IRecipeViewerIngredientHelper, Object, INGREDIENT> ingredientWrapper) {
+          BiFunction<IRecipeViewerIngredientHelper, Object, @Nullable INGREDIENT> ingredientWrapper) {
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget) {
                 if (!widget.visible) {

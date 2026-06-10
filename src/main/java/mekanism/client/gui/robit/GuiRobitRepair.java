@@ -4,20 +4,21 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
@@ -27,6 +28,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     private static final Identifier ERROR_SPRITE = Identifier.withDefaultNamespace("container/anvil/error");
     private static final Identifier ANVIL_LOCATION = Identifier.withDefaultNamespace("textures/gui/container/anvil.png");
     private final Player player;
+    @Nullable
     private GuiTextField itemNameField;
     private long msDisplayCost;
 
@@ -79,36 +81,38 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeRight() + 4, 0, TextAlignment.CENTER);
-        renderInventoryText(guiGraphics, 60);
-        int maximumCost = menu.getCost();
-        if (maximumCost > 0) {
-            if (msDisplayCost == 0) {
-                msDisplayCost = Util.getMillis();
-            }
-            int textColor = 0xFF80FF20;
-            Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
-            if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
-                component = MekanismLang.REPAIR_EXPENSIVE.translate();
-                textColor = 0xFFFF6060;
-            } else {
-                Slot slot = menu.getSlot(2);
-                if (!slot.hasItem()) {
-                    component = null;
-                    msDisplayCost = 0;
-                } else if (!slot.mayPickup(player)) {
-                    textColor = 0xFFFF6060;
+        if (itemNameField != null) {
+            renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeRight() + 4, 0, TextAlignment.CENTER);
+            renderInventoryText(guiGraphics, 60);
+            int maximumCost = menu.getCost();
+            if (maximumCost > 0) {
+                if (msDisplayCost == 0) {
+                    msDisplayCost = Util.getMillis();
                 }
-            }
+                int textColor = 0xFF80FF20;
+                Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
+                if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
+                    component = MekanismLang.REPAIR_EXPENSIVE.translate();
+                    textColor = 0xFFFF6060;
+                } else {
+                    Slot slot = menu.getSlot(2);
+                    if (!slot.hasItem()) {
+                        component = null;
+                        msDisplayCost = 0;
+                    } else if (!slot.mayPickup(player)) {
+                        textColor = 0xFFFF6060;
+                    }
+                }
 
-            if (component != null) {
-                int min = Math.max(itemNameField.getRelativeX(), imageWidth - font().width(component) - 10);
-                int max = imageWidth - 8;
-                guiGraphics.fill(min, 67, max, 79, 0x4F000000);
-                drawScrollingString(guiGraphics, component, min, 69, TextAlignment.RIGHT, textColor, max - min, 1, true, msDisplayCost);
+                if (component != null) {
+                    int min = Math.max(itemNameField.getRelativeX(), imageWidth - font().width(component) - 10);
+                    int max = imageWidth - 8;
+                    guiGraphics.fill(min, 67, max, 79, 0x4F000000);
+                    drawScrollingString(guiGraphics, component, min, 69, TextAlignment.RIGHT, textColor, max - min, 1, true, msDisplayCost);
+                }
+            } else {
+                msDisplayCost = 0;
             }
-        } else {
-            msDisplayCost = 0;
         }
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
@@ -130,7 +134,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     public void slotChanged(AbstractContainerMenu container, int slotID, ItemStack stack) {
-        if (slotID == 0) {
+        if (slotID == 0 && itemNameField != null) {
             itemNameField.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
             itemNameField.setEditable(!stack.isEmpty());
             setFocused(itemNameField);

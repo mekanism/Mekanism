@@ -146,7 +146,7 @@ public interface IFancyFontRenderer {
 
     default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
           float scale, long msVisible) {
-        if (scale == 1.0F) {
+        if (Mth.equal(scale, 1)) {
             drawScrollingString(graphics, text, minX, minY, maxX, maxY, alignment, color, shadow, msVisible);
             return;
         }

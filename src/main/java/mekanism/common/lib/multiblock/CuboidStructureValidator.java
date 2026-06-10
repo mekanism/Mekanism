@@ -29,6 +29,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected VoxelCuboid cuboid;
     protected Structure structure;
 
+    @Nullable
     protected Level world;
     protected MultiblockManager<T> manager;
     @Nullable

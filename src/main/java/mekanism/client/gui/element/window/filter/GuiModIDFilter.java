@@ -7,6 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
@@ -47,7 +48,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    protected boolean setText() {
+    protected boolean setText(GuiTextField text) {
         return setFilterName(text.getText(), false);
     }
 

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
@@ -29,6 +30,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
 
     @Nullable
     private List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> outputCaches;
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private BasicEnergyContainer energyContainer;
 
     /**
@@ -43,7 +45,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = BasicEnergyContainer.output(MachineEnergyContainer.validateBlock(this).getStorage(), listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, getEnergySides());
     }

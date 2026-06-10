@@ -32,6 +32,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
     private String modID;
 
     public QIOModIDFilter() {
+        modID = "";
     }
 
     protected QIOModIDFilter(boolean enabled, String modID) {

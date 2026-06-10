@@ -114,7 +114,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         return this;
     }
 
-    public GuiSlot overlayColor(IntSupplier colorSupplier) {
+    public GuiSlot overlayColor(@Nullable IntSupplier colorSupplier) {
         overlayColorSupplier = colorSupplier;
         return this;
     }

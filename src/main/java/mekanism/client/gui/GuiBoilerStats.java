@@ -20,10 +20,13 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, EmptyTileContainer<TileEntityBoilerCasing>> {
 
+    @Nullable
     private GuiLongGraph boilGraph;
+    @Nullable
     private GuiLongGraph maxGraph;
 
     public GuiBoilerStats(EmptyTileContainer<TileEntityBoilerCasing> container, Inventory inv, Component title) {
@@ -59,8 +62,12 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     public void containerTick() {
         super.containerTick();
         BoilerMultiblockData multiblock = tile.getMultiblock();
-        boilGraph.addData(multiblock.lastBoilRate);
-        maxGraph.addData(multiblock.lastMaxBoil);
+        if (boilGraph != null) {
+            boilGraph.addData(multiblock.lastBoilRate);
+        }
+        if (maxGraph != null) {
+            maxGraph.addData(multiblock.lastMaxBoil);
+        }
     }
 
     @Override

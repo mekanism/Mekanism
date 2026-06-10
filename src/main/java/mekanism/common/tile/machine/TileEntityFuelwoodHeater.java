@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
@@ -38,8 +39,10 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
 
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel slot")
     FuelInventorySlot fuelSlot;
+    @UnknownNullability//Initialized via getInitialHeatCapacitors
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
 

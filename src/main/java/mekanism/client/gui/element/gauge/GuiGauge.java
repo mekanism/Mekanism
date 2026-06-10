@@ -142,8 +142,9 @@ public abstract class GuiGauge<T extends @Nullable Object> extends GuiTexturedEl
             }
         } else {
             list = new ArrayList<>(getTooltipText());
-            if (getLabel() != null) {
-                list.addFirst(getLabel());
+            Component label = getLabel();
+            if (label != null) {
+                list.addFirst(label);
             }
         }
         if (!list.equals(lastInfo)) {

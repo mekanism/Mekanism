@@ -22,6 +22,7 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
     private final GuiFluidGauge fluidGauge;
     private final GuiChemicalGauge chemicalGauge;
 
+    @Nullable
     private Component label;
 
     public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<IMultiblockContents> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -102,6 +103,7 @@ public class GuiMergedTankGauge extends GuiGauge<@Nullable Void> implements IRec
         return getCurrentGauge().getTooltipText();
     }
 
+    @Nullable
     @Override
     public Component getLabel() {
         return label;

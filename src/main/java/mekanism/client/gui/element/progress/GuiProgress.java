@@ -17,7 +17,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
-    private IRecipeViewerRecipeType<?>[] recipeCategories;
+    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
     @Nullable
     private ColorDetails colorDetails;
     @Nullable
@@ -96,9 +96,8 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return this;
     }
 
-    @Nullable
     @Override
-    public IRecipeViewerRecipeType<?>[] getRecipeCategories() {
+    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
         return recipeCategories;
     }
 

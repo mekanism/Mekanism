@@ -35,6 +35,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     private String modID;
 
     public MinerModIDFilter() {
+        modID = "";
     }
 
     protected MinerModIDFilter(boolean enabled, Item replaceTarget, boolean requiresReplacement, String modID) {

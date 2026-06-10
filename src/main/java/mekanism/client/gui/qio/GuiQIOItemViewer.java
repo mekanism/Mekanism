@@ -37,6 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> implements ResizeController {
@@ -48,7 +49,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     );
 
     protected final Inventory inv;
+    @UnknownNullability//Initialized via addGuiElements
     private GuiTextField searchField;
+    @UnknownNullability//Initialized via addGuiElements
     private GuiCraftingWindowTab craftingWindowTab;
     private GuiDropdown<?> searchDropdown;
     private boolean loadPinned = true;
@@ -89,15 +92,15 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
                         TextUtils.format(menu.getTypeCapacity()))
             );
         }));
-        searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
-        searchField.setOffset(0, -1)
+        searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10))
+              .setOffset(0, -1)
               .setInputValidator(this::isValidSearchChar)
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               //Note: This responder will also be called when the menu is resized/repositioned and the text gets copied
-              .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true));
-        searchField.setMaxLength(50);
-        searchField.setVisible(true);
-        searchField.setTextColor(CommonColors.WHITE);
+              .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true))
+              .setMaxLength(50)
+              .setVisible(true)
+              .setTextColor(CommonColors.WHITE);
         if (MekanismConfig.client.qioAutoFocusSearchBar.get()) {
             setInitialFocus(searchField);
         }

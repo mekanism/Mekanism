@@ -101,11 +101,12 @@ public class BiLongMultimap<V> {
         return map.keySet();
     }
 
-    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable
+    @NullUnmarked
     public Set<V> getValues(long key) {
         return map.get(key);
     }
 
+    @NullUnmarked
     public LongSortedSet getKeys(V value) {
         return reverseMap.get(value);
     }

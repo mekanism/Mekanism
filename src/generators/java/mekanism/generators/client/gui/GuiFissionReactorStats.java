@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
-    private GuiTextField rateLimitField;
+    private static final int RATE_LIMIT_RELATIVE_X = 77;
 
     public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -55,17 +55,17 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 54, 12));
-        rateLimitField.setEnterHandler(this::setRateLimit);
-        rateLimitField.setInputValidator(InputValidator.DECIMAL);
         //Allow for an adjusted max burn (without decimals) of one less than the actual max burn rate
         long adjustedMaxBurn = Math.max(0, tile.getMultiblock().getMaxBurnRate() - 1);
-        //Calculate length of string allowed to allow for entering the full max burn rate plus a decimal point and two decimal digits
-        rateLimitField.setMaxLength(Long.toString(adjustedMaxBurn).length() + 3);
-        rateLimitField.addCheckmarkButton(this::setRateLimit);
+        addRenderableWidget(new GuiTextField(this, RATE_LIMIT_RELATIVE_X, 128, 54, 12))
+              .setEnterHandler(this::setRateLimit)
+              .setInputValidator(InputValidator.DECIMAL)
+              .addCheckmarkButton(this::setRateLimit)
+              //Calculate length of string allowed to allow for entering the full max burn rate plus a decimal point and two decimal digits
+              .setMaxLength(Long.toString(adjustedMaxBurn).length() + 3);
     }
 
-    private void setRateLimit() {
+    private void setRateLimit(GuiTextField rateLimitField) {
         if (!rateLimitField.getText().isEmpty()) {
             try {
                 double limit = Double.parseDouble(rateLimitField.getText());
@@ -95,7 +95,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_RATE_LIMIT.translate(multiblock.rateLimit), 0, 90, TextAlignment.LEFT, titleTextColor(), 6, false);
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
 
-        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), rateLimitField.getRelativeX() - 2, 3, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), RATE_LIMIT_RELATIVE_X - 2, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

@@ -12,8 +12,7 @@ public interface IRecipeViewerRecipeArea<ELEMENT extends GuiElement> extends Gui
     /**
      * @return null if not an active recipe area, otherwise the category
      */
-    @Nullable
-    IRecipeViewerRecipeType<?>[] getRecipeCategories();
+    IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories();
 
     default boolean isRecipeViewerAreaActive() {
         return true;

@@ -41,13 +41,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private static final Identifier PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final Identifier PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
+    private static final int TRUSTED_RELATIVE_X = 35;
     private MekanismButton removeButton;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
     private MekanismButton trustedButton;
     private MekanismButton overrideButton;
+    @Nullable
     private GuiTextScrollList scrollList;
-    private GuiTextField trustedField;
 
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
@@ -74,23 +75,22 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addRenderableWidget(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addRenderableWidget(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         scrollList = addRenderableWidget(new GuiTextScrollList(this, 13, 13, 122, 42));
-        removeButton = addRenderableWidget(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, (element, _, _) -> {
-            GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
-            int selection = desk.scrollList.getSelection();
-            if (desk.tile.getFreq() != null && selection != -1) {
-                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, desk.tile, selection));
-                desk.scrollList.clearSelection();
-                desk.updateButtons();
+        removeButton = addRenderableWidget(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, (_, _, _) -> {
+            int selection = scrollList.getSelection();
+            if (tile.getFreq() != null && selection != -1) {
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
+                scrollList.clearSelection();
+                updateButtons();
                 return true;
             }
             return false;
         }));
-        trustedField = addRenderableWidget(new GuiTextField(this, 35, 68, 99, 11));
-        trustedField.setMaxLength(SharedConstants.MAX_PLAYER_NAME_LENGTH);
-        trustedField.setBackground(BackgroundType.INNER_SCREEN);
-        trustedField.setEnterHandler(this::setTrusted);
-        trustedField.setInputValidator(InputValidator.USERNAME);
-        trustedField.addCheckmarkButton(this::setTrusted);
+        addRenderableWidget(new GuiTextField(this, TRUSTED_RELATIVE_X, 68, 99, 11))
+              .setBackground(BackgroundType.INNER_SCREEN)
+              .setEnterHandler(this::setTrusted)
+              .addCheckmarkButton(this::setTrusted)
+              .setInputValidator(InputValidator.USERNAME)
+              .setMaxLength(SharedConstants.MAX_PLAYER_NAME_LENGTH);
         publicButton = addRenderableWidget(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
               (element, _, _) -> {
                   GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
@@ -113,14 +113,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   return true;
               })).setTooltip(MekanismLang.TRUSTED_MODE);
         overrideButton = addRenderableWidget(new TooltipToggleButton(this, 146, 59, 16, 16, getButtonLocation("exclamation"), () -> {
-                  SecurityFrequency frequency = tile.getFreq();
-                  return frequency != null && frequency.isOverridden();
-              }, (element, _, _) -> {
-                  GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
-                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, desk.tile));
-                  desk.updateButtons();
-                  return true;
-              }, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.ON), MekanismLang.SECURITY_OVERRIDE.translate(OnOff.OFF)));
+            SecurityFrequency frequency = tile.getFreq();
+            return frequency != null && frequency.isOverridden();
+        }, (element, _, _) -> {
+            GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+            PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, desk.tile));
+            desk.updateButtons();
+            return true;
+        }, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.ON), MekanismLang.SECURITY_OVERRIDE.translate(OnOff.OFF)));
         updateButtons();
     }
 
@@ -128,7 +128,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         return frequency != null && tile.ownerMatches(getMinecraft().player);
     }
 
-    private void setTrusted() {
+    private void setTrusted(GuiTextField trustedField) {
         if (isOwner(tile.getFreq())) {
             addTrusted(trustedField.getText().trim());
             trustedField.setText("");
@@ -144,7 +144,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void updateButtons() {
         SecurityFrequency freq = tile.getFreq();
-        if (tile.getOwnerUUID() != null) {
+        if (tile.getOwnerUUID() != null && scrollList != null) {
             scrollList.setText(freq == null ? Collections.emptyList() : freq.getTrustedUsernameCache());
             removeButton.active = scrollList.hasSelection();
         }
@@ -188,7 +188,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             frequencyText = MekanismLang.SECURITY.translate(frequency.getSecurity());
         }
         drawScrollingString(guiGraphics, frequencyText, 13, 103, TextAlignment.LEFT, titleTextColor(), 122, 0, false);
-        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), trustedField.getRelativeX() - 1, 3, false);
+        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), TRUSTED_RELATIVE_X - 1, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

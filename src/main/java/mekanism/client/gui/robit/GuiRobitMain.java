@@ -30,6 +30,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
@@ -46,7 +47,9 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     static final Tooltip ROBIT_REPAIR = TooltipUtils.create(MekanismLang.ROBIT_REPAIR);
 
     private final EntityRobit robit;
+    @UnknownNullability//Initialized in addGuiElements
     private MekanismButton renameButton;
+    @UnknownNullability//Initialized in addGuiElements
     private MekanismButton skinButton;
 
     public GuiRobitMain(MainRobitContainer container, Inventory inv, Component title) {

@@ -10,10 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityInductionCell> energyContainer;
     public final InductionCellTier tier;
 
@@ -23,7 +24,7 @@ public class TileEntityInductionCell extends TileEntityInternalMultiblock {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.internal(this, listener);
         return _ -> energyContainer;
     }

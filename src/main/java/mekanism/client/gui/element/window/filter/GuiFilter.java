@@ -170,10 +170,11 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }
     }
 
-    protected static <FILTER extends SorterFilter<FILTER>> void validateAndSaveSorterFilter(GuiFilter<FILTER, ?> guiFilter, GuiTextField minField, GuiTextField maxField) {
+    protected static <FILTER extends SorterFilter<FILTER>> void validateAndSaveSorterFilter(GuiFilter<FILTER, ?> guiFilter, @Nullable GuiTextField minField,
+          @Nullable GuiTextField maxField) {
         //Note: This is here not in GuiSorterFilterHelper so that it can access the saveFilter/filterSaveFailed methods
         if (guiFilter.filter.hasFilter()) {
-            if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
+            if (minField == null || maxField == null || minField.getText().isEmpty() || maxField.getText().isEmpty()) {
                 guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_SIZE_MISSING);
             } else {
                 int min = Integer.parseInt(minField.getText());

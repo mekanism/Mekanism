@@ -33,6 +33,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
@@ -184,10 +185,12 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
     }
 
-    private record BlockInfo<TYPE>(BlockState state, TYPE type, RenderTarget<TYPE> renderTarget) {
+    private record BlockInfo<TYPE>(BlockState state, TYPE type, @Nullable RenderTarget<TYPE> renderTarget) {
 
         public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
-            renderTarget.render(guiGraphics, type, x, y);
+            if (renderTarget != null) {
+                renderTarget.render(guiGraphics, type, x, y);
+            }
         }
     }
 

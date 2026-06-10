@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
@@ -119,6 +120,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 @Mod(Mekanism.MODID)
@@ -165,6 +167,7 @@ public class Mekanism {
     public static final KeySync keyMap = new KeySync();
     public static final Set<GlobalPos> activeVibrators = new ObjectOpenHashSet<>();
 
+    @Nullable
     private ReloadListener recipeCacheManager;
 
     public Mekanism(ModContainer modContainer, IEventBus modEventBus) {
@@ -275,8 +278,8 @@ public class Mekanism {
         }
     }
 
-    public ReloadListener getRecipeCacheManager() {
-        return recipeCacheManager;
+    private ReloadListener getRecipeCacheManager() {
+        return Objects.requireNonNull(recipeCacheManager, "Recipe cache manager not set.");
     }
 
     private void onTagsReload(TagsUpdatedEvent event) {

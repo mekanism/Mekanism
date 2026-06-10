@@ -24,7 +24,7 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
     private final Consumer<@Nullable FREQUENCY> setter;
     private int lastKnownHashCode;
 
-    private SyncableFrequency(FrequencyType<FREQUENCY> type, Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
+    private SyncableFrequency(FrequencyType<FREQUENCY> type, Supplier<@Nullable FREQUENCY> getter, Consumer<@Nullable FREQUENCY> setter) {
         this.type = type;
         this.getter = getter;
         this.setter = setter;

@@ -33,19 +33,19 @@ public class OwnerDisplay implements IHasTextComponent {
         return of(null, ownerUUID);
     }
 
-    public static OwnerDisplay of(@Nullable Player player, UUID ownerUUID) {
+    public static OwnerDisplay of(@Nullable Player player, @Nullable UUID ownerUUID) {
         return of(player, ownerUUID, null);
     }
 
-    public static OwnerDisplay of(UUID ownerUUID, String ownerName) {
+    public static OwnerDisplay of(@Nullable UUID ownerUUID, @Nullable String ownerName) {
         return of(null, ownerUUID, ownerName);
     }
 
-    public static OwnerDisplay of(@Nullable Player player, UUID ownerUUID, @Nullable String ownerName) {
+    public static OwnerDisplay of(@Nullable Player player, @Nullable UUID ownerUUID, @Nullable String ownerName) {
         return of(player, ownerUUID, ownerName, true);
     }
 
-    public static OwnerDisplay of(@Nullable Player player, UUID ownerUUID, @Nullable String ownerName, boolean colorBase) {
+    public static OwnerDisplay of(@Nullable Player player, @Nullable UUID ownerUUID, @Nullable String ownerName, boolean colorBase) {
         return new OwnerDisplay(player, ownerUUID, ownerName, colorBase);
     }
 

@@ -81,21 +81,21 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @Nullable
-    private ResourceHandler<ItemResource> getCapForSide(Direction logisticalSide) {
+    private ResourceHandler<ItemResource> getCapForSide(ServerLevel level, Direction logisticalSide) {
         BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
+            cache = Capabilities.ITEM.createCache(level, getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
             capabilityCache.put(logisticalSide, cache);
         }
         return cache.getCapability();
     }
 
     @Nullable
-    private ResourceHandler<ItemResource> getFallbackCapForSide(long pos, Direction handlerSide) {
+    private ResourceHandler<ItemResource> getFallbackCapForSide(ServerLevel level, long pos, Direction handlerSide) {
         EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, _ -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
+            cache = Capabilities.ITEM.createCache(level, BlockPos.of(pos), handlerSide, this::isValid);
             sideCache.put(handlerSide, cache);
         }
         return cache.getCapability();
@@ -156,7 +156,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                 //Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again in 3 ticks
                 delay = 3;
                 //Attempt to pull
-                tryPull();
+                tryPull(level);
             }
             if (!transit.isEmpty()) {
                 long pos = getWorldPositionLong();
@@ -185,12 +185,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         }
     }
 
-    private void tryPull() {
+    private void tryPull(ServerLevel level) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
                 continue;
             }
-            ResourceHandler<ItemResource> inventory = getCapForSide(side);
+            ResourceHandler<ItemResource> inventory = getCapForSide(level, side);
             if (inventory != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
                     //Note: While this might extract at more than a single stack at a time, that is fine as we can split the item into multiple stacks when the transporter
@@ -215,7 +215,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         }
     }
 
-    private IntSet tickTransit(Level level, final long pos, InventoryNetwork network, TransactionContext transaction) {
+    private IntSet tickTransit(ServerLevel level, final long pos, InventoryNetwork network, TransactionContext transaction) {
         //Update stack positions
         IntSet deletes = new IntOpenHashSet();
         //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
@@ -259,7 +259,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                             Direction side = stack.getSide(this).getOpposite();
                             ResourceHandler<ItemResource> acceptor = network.getCachedAcceptor(next, side);
                             if (acceptor == null && stack.getPathType().isHome()) {
-                                acceptor = getFallbackCapForSide(next, side);
+                                acceptor = getFallbackCapForSide(level, next, side);
                             }
                             TransitResponse response = TransitRequest.simple(stack).addToInventory(level, BlockPos.of(next), acceptor, 0,
                                   stack.getPathType().isHome(), transaction);
@@ -501,7 +501,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         return stack;
     }
 
-    private <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, TransporterStack stack, int min,
+    private <BE extends @Nullable BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, TransporterStack stack, int min,
           @Nullable TransactionContext transaction, PathCalculator<BE> pathCalculator) {
         //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
         // destinations, which this doesn't do as it only checks once, rather than trying to check all destinations we can send to
@@ -547,7 +547,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     }
 
     @FunctionalInterface
-    public interface PathCalculator<BE extends BlockEntity> {
+    public interface PathCalculator<BE extends @Nullable BlockEntity> {
 
         TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction);
     }
@@ -584,10 +584,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
             // process elements of the queue one by one to avoid a CME if dropping the entity triggers more additions to the queue
             BlockPos blockPos = getBlockPos();
             Level level = getLevel();
-            while (!entries.isEmpty()) {
-                DroppedItems.DropInfo dropInfo = entries.removeFirst();
-                BlockPos adjustedPos = blockPos.offset(dropInfo.xOffset(), dropInfo.yOffset(), dropInfo.zOffset());
-                InventoryUtils.dropStack(level, adjustedPos, null, dropInfo.resource(), dropInfo.amount(), DROPPER);
+            if (level != null) {
+                while (!entries.isEmpty()) {
+                    DroppedItems.DropInfo dropInfo = entries.removeFirst();
+                    BlockPos adjustedPos = blockPos.offset(dropInfo.xOffset(), dropInfo.yOffset(), dropInfo.zOffset());
+                    InventoryUtils.dropStack(level, adjustedPos, null, dropInfo.resource(), dropInfo.amount(), DROPPER);
+                }
             }
         }
 

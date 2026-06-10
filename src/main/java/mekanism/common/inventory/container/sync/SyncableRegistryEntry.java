@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entries.
@@ -18,6 +19,7 @@ public class SyncableRegistryEntry<V> implements ISyncableData {
     private final Supplier<V> getter;
     private final Consumer<V> setter;
     private final Registry<V> registry;
+    @Nullable
     private V lastKnownValue;
 
     private SyncableRegistryEntry(Registry<V> registry, Supplier<V> getter, Consumer<V> setter) {

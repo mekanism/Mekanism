@@ -1,9 +1,11 @@
 package mekanism.client.gui.machine;
 
+import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiInnerScreen.VerticalPositioning;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -41,7 +43,6 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
           .lifespan(1)
           .spawn(SpawnFunction.CONSECUTIVE)
           .fade(FadeFunction.NONE);
-    private GuiInnerScreen screen;
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 20, DEFAULT_IMAGE_HEIGHT + 27);
@@ -52,7 +53,12 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        screen = addRenderableWidget(new GuiInnerScreen(this, 45, 18, 104, 68).recipeViewerCategory(tile));
+        addRenderableWidget(new GuiInnerScreen(this, 45, 18, 104, 68))
+              .text(() -> List.of(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate()))))
+              .alignment(TextAlignment.CENTER)
+              .verticalAlignment(VerticalPositioning.BOTTOM)
+              .padding(2)
+              .recipeViewerCategory(tile);
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.SMALL_MED, this, 5, 18))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
@@ -76,8 +82,6 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
-        screen.drawScrollingString(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 0,
-              screen.getHeight() - font().lineHeight - 2, TextAlignment.CENTER, screenTextColor(), 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         //TODO - 26.1: gui rendering
         //PoseStack pose = guiGraphics.pose();

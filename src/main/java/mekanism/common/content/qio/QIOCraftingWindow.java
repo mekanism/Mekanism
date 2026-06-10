@@ -212,15 +212,16 @@ public class QIOCraftingWindow implements IContentsListener {
             return false;
         }
         if (lastRecipeJournal.recipe != null) {
-            player.triggerRecipeCrafted(lastRecipeJournal.recipe, craftingInput.items());
-            if (!lastRecipeJournal.recipe.value().isSpecial()) {
+            RecipeHolder<CraftingRecipe> recipe = lastRecipeJournal.recipe;
+            player.triggerRecipeCrafted(recipe, craftingInput.items());
+            if (!recipe.value().isSpecial()) {
                 if (player instanceof ServerPlayer serverPlayer && world instanceof ServerLevel level && level.getGameRules().get(GameRules.LIMITED_CRAFTING) &&
-                    !serverPlayer.getRecipeBook().contains(lastRecipeJournal.recipe.id())) {
+                    !serverPlayer.getRecipeBook().contains(recipe.id())) {
                     //If the player cannot use the recipe, don't allow crafting
                     return false;
                 }
                 //Unlock the recipe for the player
-                player.awardRecipes(Collections.singleton(lastRecipeJournal.recipe));
+                player.awardRecipes(Collections.singleton(recipe));
             }
         }
         return true;

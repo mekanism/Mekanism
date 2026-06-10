@@ -31,6 +31,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     private String tagName;
 
     public QIOTagFilter() {
+        tagName = "";
     }
 
     protected QIOTagFilter(boolean enabled, String tagName) {

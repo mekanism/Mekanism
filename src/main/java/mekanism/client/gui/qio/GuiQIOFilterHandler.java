@@ -36,6 +36,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extends GuiMekanismTile<TILE, MekanismTileContainer<TILE>> {
 
@@ -65,6 +66,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         };
     }
 
+    @Nullable
     private GuiScrollBar scrollBar;
 
     public GuiQIOFilterHandler(MekanismTileContainer<TILE> container, Inventory inv, Component title) {
@@ -108,7 +110,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                         case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemType().toStack());
                         case ITagFilter<?> tagFilter -> {
                             String name = tagFilter.getTagName();
-                            if (name != null && !name.isEmpty()) {
+                            if (!name.isEmpty()) {
                                 yield TagCache.getItemTagStacks(tagFilter.getTagName());
                             }
                             yield Collections.emptyList();
@@ -122,7 +124,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         }
     }
 
-    protected void onClick(IFilter<?> filter, int index) {
+    protected void onClick(@Nullable IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
             addWindow(GuiQIOItemStackFilter.edit(this, tile, (QIOItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
@@ -134,7 +136,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar != null && scrollBar.adjustScroll(yDelta);
     }
 
     @Override

@@ -25,11 +25,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jspecify.annotations.Nullable;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
       IGuiColorFrequencySelector<TeleporterFrequency> {
 
+    @Nullable
     private GuiTeleporterStatus status;
+    @Nullable
     private MekanismButton teleportButton;
 
     public GuiPortableTeleporter(PortableTeleporterContainer container, Inventory inv, Component title) {
@@ -79,12 +82,18 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     public void buttonsUpdated() {
-        teleportButton.active = menu.getStatus().isReady() && getFrequency() != null;
+        if (teleportButton != null) {
+            teleportButton.active = menu.getStatus().isReady() && getFrequency() != null;
+        }
     }
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, status.getRelativeRight());
+        if (status == null) {
+            renderTitleText(guiGraphics);
+        } else {
+            renderTitleTextWithOffset(guiGraphics, status.getRelativeRight());
+        }
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

@@ -42,7 +42,8 @@ public class AcceptorCache<ACCEPTOR> {
     }
 
     private CacheBasedInfo<ACCEPTOR> initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
-        return new CacheBasedInfo<>(BlockCapabilityCache.create(capability, level, pos, opposite, refreshListener, refreshListener));
+        BlockCapabilityCache<ACCEPTOR, @Nullable Direction> cache = BlockCapabilityCache.create(capability, level, pos, opposite, refreshListener, refreshListener);
+        return new CacheBasedInfo<>(cache);
     }
 
     /**

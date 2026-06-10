@@ -16,11 +16,13 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdap
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFissionReactorLogicAdapter, EmptyTileContainer<TileEntityFissionReactorLogicAdapter>> {
 
     private static final int DISPLAY_COUNT = 4;
 
+    @Nullable
     private GuiScrollBar scrollBar;
 
     public GuiFissionReactorLogicAdapter(EmptyTileContainer<TileEntityFissionReactorLogicAdapter> container, Inventory inv, Component title) {
@@ -39,9 +41,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     private void changeLogic(FissionReactorLogic type) {
-        if (type != null) {
-            PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()));
-        }
+        PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()));
     }
 
     @Override
@@ -54,6 +54,6 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY) || scrollBar.adjustScroll(deltaY);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY) || scrollBar != null && scrollBar.adjustScroll(deltaY);
     }
 }

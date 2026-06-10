@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 public class SideDataButton extends BasicColorButton {
 
     private final SideDataPacketCreator packetCreator;
-    private final Supplier<DataType> dataTypeSupplier;
+    private final Supplier<@Nullable DataType> dataTypeSupplier;
     private final TileEntityMekanism tile;
     private final RelativeSide slotPos;
     private final ItemStack otherBlockItem;

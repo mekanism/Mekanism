@@ -112,6 +112,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>, IHasVisualization {
@@ -161,10 +162,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Nullable
     private ChunkPos targetChunk;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private MinerEnergyContainer energyContainer;
     private final List<IInventorySlot> mainSlots;
     /// For in inserting to input slots and stacking before going to empty slots
     private final IMekanismResourceHandler<ItemResource, IInventorySlot> directMainHandler;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -176,7 +179,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MinerEnergyContainer.input(this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, EnumSet.of(RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM));
     }

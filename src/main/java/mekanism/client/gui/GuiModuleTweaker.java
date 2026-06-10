@@ -17,7 +17,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.network.PacketUtils;
@@ -42,14 +41,18 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     private final ArmorPreview armorPreview = new ArmorPreview();
     private final Consumer<ModuleConfig<?>> saveCallback;
 
+    @Nullable
     private GuiModuleScrollList scrollList;
+    @Nullable
     private GuiModuleScreen moduleScreen;
+    @Nullable
     private TranslationButton optionsButton;
 
     private int selected = -1;
@@ -73,7 +76,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         Supplier<ItemResource> itemSupplier = () -> getItemType(selected);
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
-        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
+        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, moduleScreen::setModule));
         optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, _, _) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();
             return true;
@@ -92,10 +95,6 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-    }
-
-    private void onModuleSelected(Module<?> module) {
-        moduleScreen.setModule(module);
     }
 
     private void openOptions() {
@@ -140,8 +139,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        // make sure we get the release event
-        moduleScreen.onRelease(event);
+        if (moduleScreen != null) {
+            // make sure we get the release event
+            moduleScreen.onRelease(event);
+        }
         return super.mouseReleased(event);
     }
 
@@ -156,9 +157,13 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             selected = index;
             ItemResource itemType = getItemType(index);
             armorPreview.tryUpdateFull(menu.slots.get(index).getItem());
-            scrollList.updateItemAndList(itemType);
-            scrollList.clearSelection();
-            optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+            if (scrollList != null) {//Should never be null here
+                scrollList.updateItemAndList(itemType);
+                scrollList.clearSelection();
+            }
+            if (optionsButton != null) {//Should never be null here
+                optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+            }
             return true;
         }
         return false;
@@ -178,6 +183,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     public static class ArmorPreview implements Supplier<LivingEntity> {
 
         private final Map<EquipmentSlot, Supplier<ItemStack>> lazyItems = new EnumMap<>(EquipmentSlot.class);
+        @Nullable
         private ArmorStand preview;
 
         protected ArmorPreview() {

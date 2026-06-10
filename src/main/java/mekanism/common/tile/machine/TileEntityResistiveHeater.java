@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
@@ -55,9 +55,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private double lastTransferLoss;
     private int clientEnergyUsed = 0;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private ResistiveHeaterEnergyContainer energyContainer;
+    @UnknownNullability//Initialized via getInitialHeatCapacitors
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -66,7 +69,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = ResistiveHeaterEnergyContainer.input(this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
     }
