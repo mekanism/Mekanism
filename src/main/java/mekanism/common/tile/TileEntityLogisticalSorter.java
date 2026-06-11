@@ -264,18 +264,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public boolean canSendHome(ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
+    public boolean canSendHome(Level level, ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
         Direction oppositeDirection = getOppositeDirection();
         return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, itemType, amount, oppositeDirection, true, transaction);
     }
 
     @Override
-    public TransitResponse sendHome(TransitRequest request, TransactionContext transaction) {
+    public TransitResponse sendHome(Level level, TransitRequest request, TransactionContext transaction) {
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
         //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another
         // and the only case would be if an inventory was replaced with another sorter connected to an inventory to proxy it back an extra spot
-        return request.addToInventory(getLevel(), pos, getHomeInventory(), 0, false, transaction);
+        return request.addToInventory(level, pos, getHomeInventory(), 0, false, transaction);
     }
 
     @Override
@@ -284,7 +284,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+    protected WrenchResult tryWrenchRotate(Level level, BlockState state, Player player, ItemStack stack) {
         Direction change = MekanismUtils.rotate(getDirection(), true);
         if (!hasConnectedInventory()) {
             for (Direction dir : EnumUtils.DIRECTIONS) {

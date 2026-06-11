@@ -22,6 +22,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
@@ -155,7 +156,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Level level, Player player, Direction side) {
         side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);

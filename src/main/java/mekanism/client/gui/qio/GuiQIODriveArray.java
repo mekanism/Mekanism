@@ -2,7 +2,7 @@ package mekanism.client.gui.qio;
 
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyTileTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -20,7 +20,7 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
+        addRenderableWidget(new GuiQIOFrequencyTileTab(this, tile));
         addRenderableWidget(new GuiQIOFrequencyDataScreen(this, 15, 19, imageWidth - 32, 46, tile::getQIOFrequency));
     }
 

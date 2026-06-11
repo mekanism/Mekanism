@@ -206,9 +206,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables IComparatorSupport
 
     //Variables for handling ITileUpgradable
-    //TODO: Convert this to being private
     @Nullable
-    protected TileComponentUpgrade upgradeComponent;
+    private TileComponentUpgrade upgradeComponent;
     //End variables ITileUpgradable
 
     //Variables for handling IFrequencyHandler
@@ -519,19 +518,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
     }
 
-    protected WrenchResult tryWrenchDismantle(BlockState state, Player player, ItemStack stack) {
+    protected WrenchResult tryWrenchDismantle(Level level, BlockState state, Player player, ItemStack stack) {
         if (player.isShiftKeyDown()) {
             if (RadiationManager.isGlobalRadiationEnabled() && getRadiationScale() > 0) {
                 //Don't allow dismantling radioactive blocks
                 return WrenchResult.RADIOACTIVE;
             }
-            WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player, stack);
+            WorldUtils.dismantleBlock(state, level, worldPosition, this, player, stack);
             return WrenchResult.DISMANTLED;
         }
         return WrenchResult.PASS;
     }
 
-    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+    protected WrenchResult tryWrenchRotate(Level level, BlockState state, Player player, ItemStack stack) {
         //Special ITileDirectional handling
         if (isDirectional()) {
             AttributeStateFacing attribute = Attribute.getOrThrow(getBlockHolder(), AttributeStateFacing.class);
@@ -543,7 +542,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return WrenchResult.PASS;
     }
 
-    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
+    public WrenchResult tryWrench(Level level, BlockState state, Player player, ItemStack stack) {
         if (stack.isEmpty()) {
             return WrenchResult.PASS;
         }
@@ -560,13 +559,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             canRotate = canDismantle = stack.is(MekanismTags.Items.CONFIGURATORS);
         }
         if (canRotate || canDismantle) {
-            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, level, worldPosition, this)) {
                 return WrenchResult.NO_SECURITY;
             } else if (canDismantle) {
-                result = tryWrenchDismantle(state, player, stack);
+                result = tryWrenchDismantle(level, state, player, stack);
             }
             if (result == WrenchResult.PASS && canRotate) {
-                result = tryWrenchRotate(state, player, stack);
+                result = tryWrenchRotate(level, state, player, stack);
             }
         }
         return result;
@@ -606,7 +605,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //TODO - 1.18: Optimize what gets ticks registered to it
     public static void tickClient(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
         if (tile.hasSound()) {
-            tile.updateSound();
+            tile.updateSound(level);
         }
         tile.onUpdateClient(level);
         //None of our impls currently care about the ticker in their onUpdateClient methods
@@ -626,7 +625,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
-            tile.upgradeComponent.tickServer(null);
+            Objects.requireNonNull(tile.upgradeComponent).tickServer(null);
         }
         if (tile.hasChunkloader) {
             ((IChunkLoader) tile).getChunkLoader().tickServer();
@@ -636,7 +635,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 tile.updateDelay--;
                 if (tile.updateDelay == 0 && tile.getClientActive() != tile.currentActive) {
                     //If it doesn't match, and we are done with the delay period, then update it
-                    level.setBlockAndUpdate(pos, tile.activeAttribute.setActive(state, tile.currentActive));
+                    level.setBlockAndUpdate(pos, Objects.requireNonNull(tile.activeAttribute).setActive(state, tile.currentActive));
                 }
             }
         }
@@ -690,8 +689,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.invalidate();
         }
-        if (isRemote() && hasSound()) {
-            updateSound();
+        if (level != null && level.isClientSide() && hasSound()) {
+            updateSound(level);
         }
     }
 
@@ -701,10 +700,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.removed();
         }
-        if (!isRemote() && RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation()) {
+        if (level != null && !level.isClientSide() && RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(), false, null);
+            IRadiationManager.INSTANCE.dumpRadiation(level, worldPosition, getChemicalTanks(), false, null);
         }
     }
 
@@ -1107,7 +1106,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             boolean power = level.hasNeighborSignal(getBlockPos());
             if (redstone != power) {
                 redstone = power;
-                onPowerChange();
+                onPowerChange(level);
             }
         }
     }
@@ -1344,7 +1343,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setChanged();
         invalidateCapabilitiesFull();
         sendUpdatePacket();
-        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), this.getBlockPos());
+        WorldUtils.notifyLoadedNeighborsOfTileChange(level, this.getBlockPos());
     }
     //End methods IConfigCardAccess
 
@@ -1357,7 +1356,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
-        if (!isRemote() && hasGui() && level != null) {
+        if (level != null && !level.isClientSide() && hasGui()) {
             BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
         }
     }
@@ -1409,7 +1408,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Only call this from the client
      */
-    private void updateSound() {
+    private void updateSound(Level level) {
         // If machine sounds are disabled, noop
         if (!hasSound() || !MekanismConfig.client.enableMachineSounds.get() || soundEvent == null) {
             return;
@@ -1448,7 +1447,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected boolean isFullyMuffled() {
         if (hasSound() && supportsUpgrade(Upgrade.MUFFLING)) {
-            return getComponent().getUpgrades(Upgrade.MUFFLING) >= Upgrade.MUFFLING.getMax();
+            return getUpgrades(Upgrade.MUFFLING) >= Upgrade.MUFFLING.getMax();
         }
         return false;
     }
@@ -1464,8 +1463,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return "";
     }
 
+    protected Level validateLevel() throws ComputerException {
+        if (level == null) {
+            throw new ComputerException("Tile's level is not set, how did you get here?");
+        }
+        return level;
+    }
+
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && IBlockSecurityUtils.INSTANCE.getSecurityMode(getWorldNN(), worldPosition, this) != SecurityMode.PUBLIC) {
+        if (hasSecurity() && IBlockSecurityUtils.INSTANCE.getSecurityMode(validateLevel(), worldPosition, this) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

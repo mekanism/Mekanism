@@ -40,6 +40,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -115,8 +116,9 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     protected IContentsListener createSaveAndComparator(IContentsListener contentsListener) {
         return () -> {
             contentsListener.onContentsChanged();
-            if (!isRemote()) {
-                markDirtyComparator(getLevel());
+            Level level = getLevel();
+            if (level != null && !level.isClientSide()) {
+                markDirtyComparator(level);
             }
         };
     }
@@ -196,7 +198,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         for (BlockPos pos : internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IInternalMultiblock internalMultiblock) {
-                internalMultiblock.setMultiblock(this);
+                internalMultiblock.setMultiblock(world, this);
             }
         }
         for (BlockPos pos : locations) {
@@ -247,7 +249,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         for (BlockPos pos : internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IInternalMultiblock internalMultiblock) {
-                internalMultiblock.setMultiblock(null);
+                internalMultiblock.setMultiblock(world, null);
             }
         }
         for (BlockPos pos : locations) {
@@ -316,9 +318,10 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     /**
      * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
      */
-    public <T extends MultiblockData> boolean isPositionInsideBounds(Structure structure, BlockPos pos) {
+    public <T extends MultiblockData> boolean isPositionInsideBounds(Structure structure, BlockGetter level, BlockPos pos) {
         if (isFormed()) {
-            CuboidRelative relativeLocation = getBounds().getRelativeLocation(pos);
+            VoxelCuboid bounds = getBounds();
+            CuboidRelative relativeLocation = bounds.getRelativeLocation(pos);
             if (relativeLocation == CuboidRelative.INSIDE) {
                 return true;
             } else if (relativeLocation.isWall()) {
@@ -328,9 +331,9 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
                 if (manager != null && multiblockType != null) {
                     IStructureValidator<T> validator = multiblockType.createValidator();
                     if (validator instanceof CuboidStructureValidator<T> cuboidValidator) {
-                        validator.init(getLevel(), manager, multiblockType, structure);
-                        cuboidValidator.loadCuboid(getBounds());
-                        return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                        validator.init(level, manager, multiblockType, structure);
+                        cuboidValidator.loadCuboid(bounds);
+                        return cuboidValidator.getStructureRequirement(pos, bounds) == StructureRequirement.INNER;
                     }
                 }
             }

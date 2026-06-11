@@ -367,7 +367,7 @@ public class SoundHandler {
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {
-                int mufflerCount = Math.min(upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING), Upgrade.MUFFLING.getMax());
+                int mufflerCount = Math.min(upgradeTile.getUpgrades(Upgrade.MUFFLING), Upgrade.MUFFLING.getMax());
                 retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
             }
 

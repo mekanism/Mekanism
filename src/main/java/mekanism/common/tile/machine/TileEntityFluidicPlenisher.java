@@ -45,6 +45,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -290,14 +291,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         reset();
         player.sendOverlayMessage(MekanismLang.PLENISHER_RESET.translate());
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public InteractionResult onRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 

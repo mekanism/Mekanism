@@ -537,13 +537,18 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return changedData;
     }
 
+    @VisibleForTesting
+    public void setRegistries(HolderLookup.@Nullable Provider registries) {
+        this.registries = registries;
+        }
+
     private HolderLookup.Provider registries() {
         return Objects.requireNonNull(registries);
     }
 
     @Override
     public boolean update(Level level, BlockEntity tile) {
-        this.registries = level.registryAccess();
+        setRegistries(level.registryAccess());
         boolean changedData = super.update(level, tile);
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
             List<QIODriveSlot> driveSlots = holder.getDriveSlots();

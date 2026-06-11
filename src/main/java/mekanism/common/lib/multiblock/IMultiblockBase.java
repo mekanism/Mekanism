@@ -4,6 +4,7 @@ import mekanism.common.tile.interfaces.ITileWrapper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public interface IMultiblockBase extends ITileWrapper {
@@ -16,13 +17,14 @@ public interface IMultiblockBase extends ITileWrapper {
         return getDefaultData();
     }
 
+    //TODO - 26.1: Is this no longer necessary with the multiblock rewrite? If so we should remove this and the getMultiblockData methods
     default void setMultiblockData(MultiblockManager<?> manager, MultiblockData multiblockData) {
         getStructure(manager).setMultiblockData(multiblockData);
     }
 
     MultiblockData getDefaultData();
 
-    InteractionResult onActivate(Player player, InteractionHand hand);
+    InteractionResult onActivate(Level level, Player player, InteractionHand hand);
 
     @Nullable
     Structure getStructure(MultiblockManager<?> manager);

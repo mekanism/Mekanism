@@ -202,8 +202,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void onLoad() {
         super.onLoad();
-        Level level = getWorldNN();
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             checkFormula(level);
             recalculateRecipe();
             if (!formula.isEmpty() && stockControl) {
@@ -306,7 +305,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void recalculateRecipe() {
-        if (level != null && !isRemote()) {
+        if (level != null && !level.isClientSide()) {
             boolean wasRecipe = isRecipe;
             ItemStack previousOutput = lastOutputStack;
             NonNullList<ItemStack> previousRemaining = lastRemainingItems;
@@ -814,7 +813,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             throw new ComputerException("Emptying the grid requires Auto-Mode to be disabled.");
         }
-        emptyGrid(level);
+        emptyGrid(validateLevel());
     }
 
     @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
@@ -823,7 +822,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             throw new ComputerException("Filling the grid requires Auto-Mode to be disabled.");
         }
-        fillGrid(level);
+        fillGrid(validateLevel());
     }
 
     private void validateCanCraft() throws ComputerException {
@@ -838,13 +837,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftSingleItem() throws ComputerException {
         validateCanCraft();
-        craftSingle(level);
+        craftSingle(validateLevel());
     }
 
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftAvailableItems() throws ComputerException {
         validateCanCraft();
-        craftAll(level);
+        craftAll(validateLevel());
     }
 
     private void validateHasValidFormula(String operation) throws ComputerException {

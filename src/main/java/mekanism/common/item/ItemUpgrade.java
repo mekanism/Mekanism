@@ -8,7 +8,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IUpgradeItem;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.network.chat.Component;
@@ -55,20 +54,17 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         if (player != null && player.isShiftKeyDown()) {
             Level world = context.getLevel();
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
-            if (tile instanceof IUpgradeTile upgradeTile) {
-                if (upgradeTile.supportsUpgrades()) {
-                    TileComponentUpgrade component = upgradeTile.getComponent();
-                    ItemStack stack = context.getItemInHand();
-                    Upgrade type = getUpgradeType();
-                    if (component.supports(type)) {
-                        if (!world.isClientSide()) {
-                            int added = component.addUpgrades(type, stack.count());
-                            if (added > 0) {
-                                stack.shrink(added);
-                            }
+            if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
+                ItemStack stack = context.getItemInHand();
+                Upgrade type = getUpgradeType();
+                if (upgradeTile.supportsUpgrade(type)) {
+                    if (!world.isClientSide()) {
+                        int added = upgradeTile.addUpgrades(type, stack.count());
+                        if (added > 0) {
+                            stack.shrink(added);
                         }
-                        return InteractionResult.SUCCESS_SERVER;
                     }
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }

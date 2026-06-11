@@ -68,8 +68,9 @@ public enum PropertyType {
         this.streamCodec = streamCodec;
     }
 
-    public <T> T getDefault() {
-        return (T) defaultValue;
+    @Nullable
+    public Object getDefault() {
+        return defaultValue;
     }
 
     @Nullable

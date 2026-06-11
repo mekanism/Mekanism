@@ -92,7 +92,10 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void applyImplicitComponents(DataComponentGetter input) {
         securityMode = input.getOrDefault(MekanismDataComponents.SECURITY, securityMode);
-        setOwnerUUID(input.getOrDefault(MekanismDataComponents.OWNER, ownerUUID));
+        UUID owner = input.get(MekanismDataComponents.OWNER);
+        if (owner != null) {
+            setOwnerUUID(owner);
+        }
     }
 
     @Override

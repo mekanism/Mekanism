@@ -131,7 +131,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = ThreadLocalRandom.current().nextInt(RECIPE_CHECK_FREQUENCY);
-        return () -> !tile.playersUsing.isEmpty() && tile.hasLevel() && tile.getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
+        return () -> !tile.playersUsing.isEmpty() && tile.getLevel() != null && tile.getLevel().getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
     }
 
     @Nullable

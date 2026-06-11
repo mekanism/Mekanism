@@ -30,7 +30,7 @@ public class ItemAlloy extends Item {
             IAlloyInteraction alloyInteraction = WorldUtils.getCapability(world, Capabilities.ALLOY_INTERACTION, pos, context.getClickedFace());
             if (alloyInteraction != null) {
                 if (!world.isClientSide()) {
-                    alloyInteraction.onAlloyInteraction(player, context.getItemInHand(), tier);
+                    alloyInteraction.onAlloyInteraction(world, pos, player, context.getItemInHand(), tier);
                 }
                 return InteractionResult.SUCCESS_SERVER;
             }

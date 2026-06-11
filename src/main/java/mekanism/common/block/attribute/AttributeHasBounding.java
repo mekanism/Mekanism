@@ -53,7 +53,7 @@ public class AttributeHasBounding implements Attribute {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {
                     //Note: As we place it on both server and client, we don't need to sync the main location here as it should already be set on both ends
-                    tile.setMainLocation(data, false);
+                    tile.setMainLocation(level, data, false);
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
@@ -69,7 +69,7 @@ public class AttributeHasBounding implements Attribute {
             handle(world, orig, state, orig, (level, boundingLocation, data) -> {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation, true);
                 if (tile != null) {
-                    tile.setMainLocation(data, true);
+                    tile.setMainLocation(level, data, true);
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
                 }

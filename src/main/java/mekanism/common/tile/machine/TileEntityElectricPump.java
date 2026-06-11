@@ -199,7 +199,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {
-        boolean hasFilter = upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
+        boolean hasFilter = getUpgrades(Upgrade.FILTER) > 0;
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
         if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
@@ -373,14 +373,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         reset();
         player.sendOverlayMessage(MekanismLang.PUMP_RESET.translate());
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public InteractionResult onRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 
@@ -394,7 +394,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            outputRate = BASE_OUTPUT_RATE * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED));
+            outputRate = BASE_OUTPUT_RATE * (1 + getUpgrades(Upgrade.SPEED));
         }
     }
 

@@ -720,7 +720,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return InteractionResult.PASS;
     }
 
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Level level, Player player, Direction side) {
         if (handlesRedstone()) {
             redstoneReactive = !redstoneReactive;
             refreshConnections();

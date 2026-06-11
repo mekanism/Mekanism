@@ -126,7 +126,7 @@ public class FrequencyController<FREQ extends Frequency> {
         PRIVATE_ONLY,
         PUBLIC_PRIVATE_TRUSTED;
 
-        boolean supports(SecurityMode securityMode) {
+        public boolean supports(SecurityMode securityMode) {
             return switch (securityMode) {
                 case PUBLIC -> this == PUBLIC_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
                 case PRIVATE -> this == PRIVATE_ONLY || this == PUBLIC_PRIVATE_TRUSTED;

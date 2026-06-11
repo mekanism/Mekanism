@@ -195,11 +195,14 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    private static ChunkAccess getChunkForPos(@Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    private static BlockGetter getChunkForPos(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (!isBlockInBounds(world, pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
+        }
+        if (!(world instanceof LevelReader level)) {
+            return world;
         }
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
@@ -209,7 +212,7 @@ public class WorldUtils {
         ChunkAccess chunk = chunkMap.get(combinedChunk);
         if (chunk == null) {
             //Get the chunk but don't force load it
-            chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+            chunk = level.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
             if (chunk != null) {
                 chunkMap.put(combinedChunk, chunk);
             }
@@ -227,7 +230,7 @@ public class WorldUtils {
      *
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
-    public static Optional<BlockState> getBlockState(@Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the blockstate using the chunk we found/had cached
         return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -275,7 +278,7 @@ public class WorldUtils {
      *
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
-    public static Optional<FluidState> getFluidState(@Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the fluidstate using the chunk we found/had cached
         return getFluidState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -308,7 +311,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static BlockEntity getTileEntity(@Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -326,7 +329,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         return getTileEntity(clazz, world, chunkMap, pos, false);
     }
 
@@ -344,8 +347,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable LevelAccessor world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos,
-          boolean logWrongType) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos, boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
     }
@@ -622,7 +624,7 @@ public class WorldUtils {
             }
             //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
             // don't allow spawning on it.
-            return multiblockTile.getMultiblock().isPositionInsideBounds(multiblockTile.getStructure(), pos.above());
+            return multiblockTile.getMultiblock().isPositionInsideBounds(multiblockTile.getStructure(), reader, pos.above());
         } else if (tile instanceof IStructuralMultiblock structuralMultiblock && structuralMultiblock.hasFormedMultiblock()) {
             //Note: This isn't actually used as all our structural multiblocks are transparent and vanilla tends to not let
             // mobs spawn on glass or stuff
@@ -635,7 +637,7 @@ public class WorldUtils {
                 for (Structure structure : structuralMultiblock.getStructureMap().values()) {
                     //Manually handle the getMultiblockData logic to avoid extra lookups
                     MultiblockData data = structure.getMultiblockData();
-                    if (data != null && data.isFormed() && data.isPositionInsideBounds(structure, above)) {
+                    if (data != null && data.isFormed() && data.isPositionInsideBounds(structure, reader, above)) {
                         //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
                         // don't allow spawning on it.
                         return true;

@@ -7,16 +7,15 @@ import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.RateLimitTracker;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
@@ -103,8 +102,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public void updateEnergyPerTick() {
         if (tile.supportsUpgrades()) {
-            TileComponentUpgrade upgradeComponent = tile.getComponent();
-            if (upgradeComponent.supports(Upgrade.ENERGY) || upgradeComponent.supports(Upgrade.SPEED)) {
+            if (tile.supportsUpgrade(Upgrade.ENERGY) || tile.supportsUpgrade(Upgrade.SPEED)) {
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, getBaseEnergyPerTick()));
             }
         }

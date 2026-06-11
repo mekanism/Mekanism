@@ -77,8 +77,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
      * Validates access for anyone who might be accessing a GUI that changed security modes
      */
     private void validateAccess() {
-        if (hasLevel()) {
-            MinecraftServer server = getWorldNN().getServer();
+        if (level != null) {
+            MinecraftServer server = level.getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                     closeIfNoAccess(player);
@@ -92,8 +92,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (frequency != null) {
             UUID removed = frequency.removeTrusted(index);
             markForSave();
-            if (removed != null && hasLevel()) {
-                MinecraftServer server = getWorldNN().getServer();
+            if (removed != null && level != null) {
+                MinecraftServer server = level.getServer();
                 if (server != null) {
                     closeIfNoAccess(server.getPlayerList().getPlayer(removed));
                 }

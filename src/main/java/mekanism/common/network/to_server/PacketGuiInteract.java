@@ -16,6 +16,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
@@ -231,12 +232,18 @@ public record PacketGuiInteract(GuiInteraction interaction, BlockPos tilePositio
 
         REMOVE_UPGRADE((tile, _, extra) -> {
             if (tile.supportsUpgrades()) {
-                tile.getComponent().removeUpgrade(Upgrade.BY_ID.apply(extra), false);
+                TileComponentUpgrade component = tile.getComponent();
+                if (component != null) {//Should never be null here
+                    component.removeUpgrade(Upgrade.BY_ID.apply(extra), false);
+                }
             }
         }),
         REMOVE_ALL_UPGRADE((tile, _, extra) -> {
             if (tile.supportsUpgrades()) {
-                tile.getComponent().removeUpgrade(Upgrade.BY_ID.apply(extra), true);
+                TileComponentUpgrade component = tile.getComponent();
+                if (component != null) {//Should never be null here
+                    component.removeUpgrade(Upgrade.BY_ID.apply(extra), true);
+                }
             }
         }),
 

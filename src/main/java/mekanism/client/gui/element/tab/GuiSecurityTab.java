@@ -122,7 +122,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     @Override
     public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         ISecurityObject security = dataSource.securityObject();
-        if (security != null && security.ownerMatches(minecraft.player)) {
+        if (security != null && minecraft.player != null && security.ownerMatches(minecraft.player)) {
             int button = event.button();
             if (currentHand != null) {
                 PacketUtils.sendToServer(new PacketItemGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? ItemGuiInteraction.NEXT_SECURITY_MODE

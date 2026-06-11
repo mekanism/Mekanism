@@ -101,6 +101,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
         return GlobalPos.of(level.dimension(), tile.getBlockPos());
     }
 
+    @Nullable
     public GlobalPos getClosestCoords(GlobalPos pos) {
         return getClosestCoords(pos.dimension(), pos.pos());
     }
@@ -109,6 +110,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
         return pos.dimension() == checkDim && pos.pos().equals(checkPos);
     }
 
+    @Nullable
     public GlobalPos getClosestCoords(ResourceKey<Level> dimension, BlockPos pos) {
         GlobalPos closest = null;
         for (GlobalPos iterCoord : activeCoords) {

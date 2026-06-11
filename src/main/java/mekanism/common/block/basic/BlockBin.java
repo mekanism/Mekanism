@@ -78,7 +78,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             //No tile, we can just skip trying to use without an item
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
-        InteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
+        InteractionResult wrenchResult = bin.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         } else if (hit.getDirection() != bin.getDirection()) {

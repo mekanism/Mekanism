@@ -131,11 +131,12 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void onAdded(Level level) {
         super.onAdded(level);
         //Ensure placing a structural multiblock tries to form the connected multiblock
+        //TODO - 26.1: Is this firing on the client? If so it might cause cast exceptions once it gets to onCreate and then creating the eject capability caches
         invalidStructure.tick(level, this, true);
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand) {
+    public InteractionResult onActivate(Level level, Player player, InteractionHand hand) {
         if (!structuralGuiAccessAllowed()) {
             //If we don't have any structures that allow gui access, just short circuit and pass
             return InteractionResult.TRY_WITH_EMPTY_HAND;
@@ -149,7 +150,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
                     // make sure this block is on the structure first
                     if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                        InteractionResult result = master.onActivate(player, hand);
+                        InteractionResult result = master.onActivate(level, player, hand);
                         if (result != InteractionResult.PASS) {
                             return result;
                         }
@@ -169,7 +170,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 //For each structure this structural multiblock is a part of
                 if (s.getController() != null) {
                     MultiblockData multiblock = getMultiblockData(s);
-                    if (multiblock != null && multiblock.isPositionInsideBounds(s, neighborPos)) {
+                    if (multiblock != null && multiblock.isPositionInsideBounds(s, level, neighborPos)) {
                         if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
                             // then we mark the structure as needing to be re-validated
@@ -184,8 +185,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        Level level = getWorldNN();
+    public InteractionResult onRightClick(Level level, Player player) {
         if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
@@ -205,7 +205,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 
@@ -226,8 +226,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        Level level = getWorldNN();
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             removing = true;
             for (Structure s : structures.values()) {
                 s.invalidate(level);

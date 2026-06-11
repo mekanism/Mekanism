@@ -119,7 +119,7 @@ public class SyncMapper extends BaseAnnotationScanner {
                         String setterName = getAnnotationValue(data, "setter", "");
                         if (type != null) {
                             //TODO: See if we can get a reasonable default to pass
-                            newField = new PropertyField(new TrackedFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
+                            newField = new PropertyField(new PropertyFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
                                   LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), type, null));
                         } else if (fieldType.isEnum()) {
                             newField = new PropertyField(new EnumFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
@@ -215,18 +215,16 @@ public class SyncMapper extends BaseAnnotationScanner {
         }
     }
 
-    protected static class TrackedFieldData {
+    protected abstract static class TrackedFieldData {
 
-        private final PropertyType propertyType;
-        private final Function<Object, Object> getter;
-        private final BiConsumer<Object, Object> setter;
+        protected final Function<Object, Object> getter;
+        protected final BiConsumer<Object, Object> setter;
         @Nullable
-        private final Object defaultValue;
+        protected final Object defaultValue;
 
-        private TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, PropertyType propertyType, @Nullable Object defaultValue) {
+        private TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, @Nullable Object defaultValue) {
             this.getter = getter;
             this.setter = setter;
-            this.propertyType = propertyType;
             this.defaultValue = defaultValue;
         }
 
@@ -254,12 +252,11 @@ public class SyncMapper extends BaseAnnotationScanner {
             });
         }
 
-        protected ISyncableData create(Supplier<Object> getter, Consumer<Object> setter) {
-            return propertyType.create(getter, setter, defaultValue);
-        }
+        protected abstract ISyncableData create(Supplier<Object> getter, Consumer<Object> setter);
 
+        @Nullable
         protected Object getDefault() {
-            return defaultValue == null ? propertyType.getDefault() : defaultValue;
+            return defaultValue;
         }
 
         @Nullable
@@ -281,7 +278,29 @@ public class SyncMapper extends BaseAnnotationScanner {
                 Mekanism.logger.error("Tried to create property data for invalid type '{}'.", propertyType.getName());
                 return null;
             }
-            return new TrackedFieldData(getter, setter, type, defaultValue);
+            return new PropertyFieldData(getter, setter, type, defaultValue);
+        }
+    }
+
+    protected static class PropertyFieldData extends TrackedFieldData {
+
+        private final PropertyType propertyType;
+
+        private PropertyFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, PropertyType propertyType, @Nullable Object defaultValue) {
+            super(getter, setter, defaultValue);
+            this.propertyType = propertyType;
+        }
+
+        @Override
+        protected ISyncableData create(Supplier<Object> getter, Consumer<Object> setter) {
+            return propertyType.create(getter, setter, defaultValue);
+        }
+
+        @Nullable
+        @Override
+        protected Object getDefault() {
+            Object defaultValue = super.getDefault();
+            return defaultValue == null ? propertyType.getDefault() : defaultValue;
         }
     }
 
@@ -291,7 +310,7 @@ public class SyncMapper extends BaseAnnotationScanner {
 
         private EnumFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, Class<?> enumClass) {
             Object[] constants = enumClass.getEnumConstants();
-            super(getter, setter, null, constants[0]);
+            super(getter, setter, constants[0]);
             this.constants = constants;
         }
 
@@ -306,7 +325,7 @@ public class SyncMapper extends BaseAnnotationScanner {
     }
 
     //Assumes length of array is constant regardless of holder implementation
-    protected static class ArrayFieldData extends TrackedFieldData {
+    protected static class ArrayFieldData extends PropertyFieldData {
 
         protected ArrayFieldData(Function<Object, Object> getter, PropertyType propertyType, @Nullable Object defaultElementValue) {
             super(getter, null, propertyType, defaultElementValue);

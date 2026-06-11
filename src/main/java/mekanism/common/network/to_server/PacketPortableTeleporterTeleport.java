@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -58,8 +57,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
             }
             GlobalPos coords = found.getClosestCoords(player.level().dimension(), player.blockPosition());
             if (coords != null) {
-                MinecraftServer server = player.level().getServer();
-                ServerLevel teleWorld = server == null ? null : server.getLevel(coords.dimension());
+                ServerLevel teleWorld = player.level().getServer().getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
                     int energyCost;

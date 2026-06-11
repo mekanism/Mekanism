@@ -26,6 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Orientation.SideBias;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -49,7 +50,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && getActive() && isEmitting ? 15 : 0;
+        return side != getOppositeDirection() && getActive() && isEmitting ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     private long getFreqStored() {

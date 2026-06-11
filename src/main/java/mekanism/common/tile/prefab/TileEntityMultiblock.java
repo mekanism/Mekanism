@@ -155,14 +155,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
             isMaster = false;
         }
-        needsPacket |= onUpdateServer(multiblock);
+        needsPacket |= onUpdateServer(level, multiblock);
         return needsPacket;
     }
 
     /**
      * @return if we need an update packet
      */
-    protected boolean onUpdateServer(T multiblock) {
+    protected boolean onUpdateServer(ServerLevel level, T multiblock) {
         return false;
     }
 
@@ -217,7 +217,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand) {
+    public InteractionResult onActivate(Level level, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
@@ -236,8 +236,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void setRemoved() {
         super.setRemoved();
-        Level level = getWorldNN();
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             structure.invalidate(level);
         }
     }
@@ -298,14 +297,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
      * Only call on the client
      */
     private void doMultiblockSparkle(T multiblock) {
-        if (isRemote() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
+        if (level != null && level.isClientSide() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
             //Note: Do not change this from LocalPlayer to Player, or it will cause class loading issues on the server
             // due to trying to validate if the value is actually a Player
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && worldPosition.distSqr(player.blockPosition()) <= 1_600) {
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
-                    new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
+                    new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run(level);
                 } else {
                     player.sendOverlayMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO));
                 }
@@ -354,7 +353,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         if (!level.isClientSide()) {
             T multiblock = getMultiblock();
-            if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
+            if (multiblock.isPositionInsideBounds(getStructure(), level, neighborPos)) {
                 //If the neighbor change happened from inside the bounds of the multiblock,
                 if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
                     //And we are not already an internal part of the structure, or we are changing an internal part to air
@@ -368,9 +367,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        if (!isRemote() && !getMultiblock().isFormed()) {
-            FormationResult result = getStructure().runUpdate(getLevel());
+    public InteractionResult onRightClick(Level level, Player player) {
+        if (!level.isClientSide() && !getMultiblock().isFormed()) {
+            FormationResult result = getStructure().runUpdate(level);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendSystemMessage(result.getResultText());
                 return InteractionResult.SUCCESS_SERVER;
@@ -380,7 +379,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 

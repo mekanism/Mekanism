@@ -21,10 +21,10 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
         boolean handled = true;
         if (OPTIMIZE_BASIC && recipe instanceof BasicRotaryRecipe basicRecipe) {//This will be the case for the majority of our recipes
             if (recipe.hasFluidToChemical()) {
-                handled = addConversion(mapper, basicRecipe.getChemicalOutputRaw(), fakeGroupHelper.forIngredient(recipe.getFluidInput(), contextMap));
+                handled = addConversion(mapper, basicRecipe.getChemicalOutputRaw().orElseThrow(), fakeGroupHelper.forIngredient(recipe.getFluidInput(), contextMap));
             }
             if (recipe.hasChemicalToFluid()) {
-                handled |= addConversion(mapper, basicRecipe.getFluidOutputRaw(), fakeGroupHelper.forIngredient(recipe.getChemicalInput(), contextMap));
+                handled |= addConversion(mapper, basicRecipe.getFluidOutputRaw().orElseThrow(), fakeGroupHelper.forIngredient(recipe.getChemicalInput(), contextMap));
             }
         } else {
             if (recipe.hasFluidToChemical()) {

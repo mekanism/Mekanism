@@ -71,17 +71,19 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
         super.extractRenderState(transporter, state, partialTick, cameraPosition, breakProgress);
         Player player = Minecraft.getInstance().player;
         //Player shouldn't be null here, but validate it
-        ItemStack itemStack = player == null ? ItemStack.EMPTY : player.getMainHandItem();
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-            BlockHitResult rayTraceResult = MekanismUtils.rayTrace(player);
-            if (rayTraceResult.getType() != Type.MISS && rayTraceResult.getBlockPos().equals(state.blockPos)) {
-                DiversionTransporter transmitter = transporter.getTransmitter();
-                Direction side = transporter.getSideLookingAt(player, rayTraceResult.getDirection());
-                state.overlay = switch (transmitter.modes[side.ordinal()]) {
-                    case DISABLED -> GUNPOWDER_TEXTURE;
-                    case HIGH -> TORCH_TEXTURE;
-                    case LOW -> TORCH_OFF_TEXTURE;
-                };
+        if (player != null) {
+            ItemStack itemStack = player.getMainHandItem();
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
+                BlockHitResult rayTraceResult = MekanismUtils.rayTrace(player);
+                if (rayTraceResult.getType() != Type.MISS && rayTraceResult.getBlockPos().equals(state.blockPos)) {
+                    DiversionTransporter transmitter = transporter.getTransmitter();
+                    Direction side = transporter.getSideLookingAt(player, rayTraceResult.getDirection());
+                    state.overlay = switch (transmitter.modes[side.ordinal()]) {
+                        case DISABLED -> GUNPOWDER_TEXTURE;
+                        case HIGH -> TORCH_TEXTURE;
+                        case LOW -> TORCH_OFF_TEXTURE;
+                    };
+                }
             }
         }
     }

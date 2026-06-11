@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -85,6 +87,9 @@ public class FormationProtocol<T extends MultiblockData> {
     public FormationResult doUpdate() {
         IStructureValidator<T> validator = multiblockType.createValidator();
         Level world = pointer.getLevel();
+        if (world == null) {
+            return FormationResult.FAIL;
+        }
         validator.init(world, manager, multiblockType, structure);
         if (!validator.precheck()) {
             return FormationResult.FAIL;
@@ -112,7 +117,7 @@ public class FormationProtocol<T extends MultiblockData> {
                     }
                 }
                 //Replace the caches for all the old ids with a singular merged cache with our desired id
-                manager.replaceCaches(result.idsFound().keySet(), idToUse, cache);
+                manager.replaceCaches(result.idsFound().keySet(), idToUse, Objects.requireNonNull(cache, "Tried to merge multiblock caches but couldn't find a cache?"));
                 if (!rejectContents.rejectedItems.isEmpty()) {
                     //TODO - 1.20.4: Don't drop it in the center if there is no nearest player, maybe drop it on top of the multiblock? Or to one of the sides
                     Vec3 dropPosition = pointerPos.getCenter();
@@ -173,16 +178,18 @@ public class FormationProtocol<T extends MultiblockData> {
     }
 
     @FunctionalInterface
-    public interface FormationChecker<NODE extends @Nullable Object> {
+    public interface FormationChecker<LEVEL extends BlockGetter, NODE extends @Nullable Object> {
 
-        boolean check(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
+        boolean check(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
     }
 
-    public static <NODE extends @Nullable Object> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker) {
+    public static <LEVEL extends BlockGetter, NODE extends @Nullable Object> int explore(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node,
+          FormationChecker<LEVEL, NODE> checker) {
         return explore(level, chunkMap, start, node, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
     }
 
-    public static <NODE extends @Nullable Object> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker, int maxCount) {
+    public static <LEVEL extends BlockGetter, NODE extends @Nullable Object> int explore(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node,
+          FormationChecker<LEVEL, NODE> checker, int maxCount) {
         if (!checker.check(level, chunkMap, start, node, start)) {
             return 0;
         }

@@ -10,6 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.UnknownNullability;
 
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
@@ -45,7 +46,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             upgradeWindowTab = addRenderableWidget(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
         }
         if (tile.supportsRedstone()) {
-            //TODO - 1.21: The warning for redstone can overlap with elements in the following guis:
+            //TODO - 26,1: The warning for redstone can overlap with elements in the following guis:
             // - Chemical tank: Armor
             // - Heat generator: heat tab
             // - Quantum Entangloporter: heat tab
@@ -66,5 +67,11 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
 
     protected void addSecurityTab() {
         addRenderableWidget(new GuiSecurityTab(this, tile));
+    }
+
+    @Override
+    public Level getLevel() {
+        Level level = tile.getLevel();
+        return level == null ? super.getLevel() : level;
     }
 }

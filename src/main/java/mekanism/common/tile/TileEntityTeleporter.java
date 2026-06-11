@@ -168,13 +168,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             //If the frame is horizontal always face towards the other portion of the frame
             side = teleporter.frameDirection;
         } else {
-            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-            Level level = teleporter.getWorldNN();
-            for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
-                mutable.setWithOffset(target, iterSide);
-                if (level.isEmptyBlock(mutable)) {
-                    side = iterSide;
-                    break;
+            Level level = teleporter.getLevel();
+            if (level != null) {
+                BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+                for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
+                    mutable.setWithOffset(target, iterSide);
+                    if (level.isEmptyBlock(mutable)) {
+                        side = iterSide;
+                        break;
+                    }
                 }
             }
         }
@@ -198,7 +200,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         try (Transaction transaction = Transaction.openRoot()) {
             TeleportInfo teleportInfo = canTeleport(freq, transaction);
             status = teleportInfo.status();
-            if (status.isReady() && teleDelay == 0 && canFunction()) {
+            //Note: The frequency not being null should be validated already by the canTeleport status result
+            if (status.isReady() && teleDelay == 0 && canFunction() && freq != null) {
                 teleport(freq, teleportInfo, transaction);
                 transaction.commit();
             }
@@ -229,7 +232,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private void cleanTeleportCache(ServerLevel level) {
-        List<UUID> inTeleporter = level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).toList();
+        List<UUID> inTeleporter = teleportBounds == null ? Collections.emptyList() : level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).toList();
         if (inTeleporter.isEmpty()) {
             didTeleport.clear();
         } else {

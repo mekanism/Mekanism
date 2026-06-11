@@ -17,6 +17,7 @@ import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
@@ -25,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -83,8 +85,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return getBlockState().getValue(AttributeStateBoilerValveMode.modeProperty);
     }
 
-    @ComputerMethod(methodDescription = "Change the configuration of this valve")
-    void setMode(BoilerValveMode mode) {
+    private void setMode(Level level, BoilerValveMode mode) {
         if (mode != getMode()) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateBoilerValveMode.modeProperty, mode));
             invalidateCapabilitiesAll(portCapabilities);
@@ -92,10 +93,10 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             BoilerValveMode mode = getMode().getNext();
-            setMode(mode);
+            setMode(level, mode);
             player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
         }
         return InteractionResult.SUCCESS;
@@ -103,13 +104,18 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Toggle the current valve configuration to the next option in the list")
-    void incrementMode() {
+    void incrementMode() throws ComputerException {
         setMode(getMode().getNext());
     }
 
     @ComputerMethod(methodDescription = "Toggle the current valve configuration to the previous option in the list")
-    void decrementMode() {
+    void decrementMode() throws ComputerException {
         setMode(getMode().getPrevious());
+    }
+
+    @ComputerMethod(methodDescription = "Change the configuration of this valve")
+    void setMode(BoilerValveMode mode) throws ComputerException {
+        setMode(validateLevel(), mode);
     }
     //End methods IComputerTile
 }

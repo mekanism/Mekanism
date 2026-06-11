@@ -73,17 +73,9 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return level == null ? 0 : level.getGameTime();
     }
 
-    /**
-     * Like getWorld(), but for when you _know_ world won't be null
-     *
-     * @return The world!
-     */
-    protected Level getWorldNN() {
-        return Objects.requireNonNull(getLevel(), "getWorldNN called before world set");
-    }
-
+    /// Like [Level#isClientSide()], but for when you _know_ world won't be null
     public boolean isRemote() {
-        return getWorldNN().isClientSide();
+        return Objects.requireNonNull(level, "isRemote called before world set").isClientSide();
     }
 
     /**
@@ -155,18 +147,6 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     public void writeReducedUpdatedTag(ValueOutput output) {
     }
 
-    /**
-     * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
-     *///TODO - 26.1: Re-evaluate this method and if we want to just inline this into the one caller
-    public final CompoundTag getReducedUpdateTag(HolderLookup.Provider provider) {
-        //TODO - 26.1: Is this fine for how to create the problem reporter?
-        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
-            TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
-            writeReducedUpdatedTag(output);
-            return output.buildResult();
-        }
-    }
-
     @Override
     public void onDataPacket(Connection net, ValueInput input) {
         //Handle the update tag when we are on the client
@@ -181,21 +161,28 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     public void sendUpdatePacket(BlockEntity tracking) {
-        if (isRemote()) {
+        Level level = tracking.getLevel();
+        if (level == null) {
+            Mekanism.logger.warn("Update packet call requested for a tile without a level", new IllegalStateException());
+        } else if (level.isClientSide()) {
             Mekanism.logger.warn("Update packet call requested from client side", new IllegalStateException());
         } else if (isRemoved()) {
             Mekanism.logger.warn("Update packet call requested for removed tile", new IllegalStateException());
-        } else if (PacketUtils.hasPlayersTracking((ServerLevel) tracking.getLevel(), tracking.getBlockPos())) {
+        } else if (PacketUtils.hasPlayersTracking((ServerLevel) level, tracking.getBlockPos())) {
             //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
             // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself
             // does not need to and should not be redrawn
-            PacketUtils.sendToAllTracking(new PacketUpdateTile(this), tracking);
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+                TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
+                writeReducedUpdatedTag(output);
+                PacketUtils.sendToAllTracking(new PacketUpdateTile(getBlockPos(), output.buildResult()), tracking);
+            }
         }
     }
 
     protected void updateModelData() {
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+        WorldUtils.updateBlock(level, getBlockPos(), getBlockState());
     }
 
     @Override

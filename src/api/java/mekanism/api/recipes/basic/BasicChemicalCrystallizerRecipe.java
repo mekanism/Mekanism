@@ -29,7 +29,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     }
 
     @Override
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(pure = true)
     public ItemStackTemplate getOutput(TypedInstance<Chemical> input) {
         return output;
     }

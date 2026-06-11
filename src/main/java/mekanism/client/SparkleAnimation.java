@@ -26,8 +26,7 @@ public class SparkleAnimation {
               new BlockPos(renderLoc.getX() + length, renderLoc.getY() + height - 1, renderLoc.getZ() + width));
     }
 
-    public void run() {
-        Level world = tile.getLevel();
+    public void run(Level world) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int xSize = corner2.getX() - corner1.getX() + 1, ySize = corner2.getY() - corner1.getY() + 1, zSize = corner2.getZ() - corner1.getZ() + 1;
         Vec3 origin = new Vec3(xSize / 2D, ySize / 2D, zSize / 2D);

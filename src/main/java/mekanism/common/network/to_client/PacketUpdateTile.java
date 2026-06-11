@@ -24,10 +24,6 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
           PacketUpdateTile::new
     );
 
-    public PacketUpdateTile(TileEntityUpdateable tile) {
-        this(tile.getBlockPos(), tile.getReducedUpdateTag(tile.getLevel().registryAccess()));
-    }
-
     @Override
     public CustomPacketPayload.Type<PacketUpdateTile> type() {
         return TYPE;

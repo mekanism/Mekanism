@@ -15,7 +15,7 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -27,12 +27,12 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     private final VoxelCuboid maxBounds;
 
     @Nullable
-    protected VoxelCuboid cuboid;
+    private VoxelCuboid cuboid;
     @Nullable
     private Structure structure;
 
     @Nullable
-    protected Level world;
+    protected BlockGetter world;
     @Nullable
     protected MultiblockManager<T> manager;
     @Nullable
@@ -48,7 +48,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public void init(Level world, MultiblockManager<T> manager, MultiblockType<T> multiblockType, Structure structure) {
+    public void init(BlockGetter world, MultiblockManager<T> manager, MultiblockType<T> multiblockType, Structure structure) {
         this.world = world;
         this.multiblockType = multiblockType;
         this.manager = manager;
@@ -74,7 +74,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
             for (int y = min.getY(); y <= max.getY(); y++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
                     mutablePos.set(x, y, z);
-                    FormationResult ret = validateNode(ctx, chunkMap, mutablePos);
+                    FormationResult ret = validateNode(ctx, chunkMap, mutablePos, cuboid);
                     if (!ret.isFormed()) {
                         return ret;
                     }
@@ -87,17 +87,17 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     /**
      * @param pos Mutable BlockPos
      */
-    protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+    protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos, VoxelCuboid cuboid) {
         Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
         if (optionalState.isEmpty()) {
             //If the position is not in a loaded chunk or out of bounds of the world, fail
             return FormationResult.FAIL;
         }
         BlockState state = optionalState.get();
-        StructureRequirement requirement = getStructureRequirement(pos);
+        StructureRequirement requirement = getStructureRequirement(pos, cuboid);
         if (requirement.isCasing()) {
             CasingType type = getCasingType(state);
-            FormationResult ret = validateFrame(ctx, pos, state, type, requirement.needsFrame());
+            FormationResult ret = validateFrame(ctx, pos, state, type, requirement.needsFrame(), cuboid);
             if ((requirement != StructureRequirement.IGNORED || ret.isNoIgnore()) && !ret.isFormed()) {
                 return ret;
             }
@@ -129,7 +129,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     /**
      * @param pos Mutable BlockPos
      */
-    protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
+    protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame, VoxelCuboid cuboid) {
         IMultiblockBase tile = structure().getTile(pos);
         // terminate if we encounter a node that already failed this tick
         if (!isFrameCompatible((BlockEntity) tile) || (needsFrame && !type.isFrame())) {
@@ -153,7 +153,8 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         pos = pos.immutable();
         ctx.locations.add(pos);
         if (type.isValve()) {
-            ctx.valves.put(pos, new ValveData(getSide(pos)));
+            Direction side = Objects.requireNonNull(cuboid.getSide(pos), "Side should not be null when part of a wall");
+            ctx.valves.put(pos, new ValveData(side));
         }
         return FormationResult.SUCCESS;
     }
@@ -163,7 +164,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return FormationResult.SUCCESS;
     }
 
-    protected StructureRequirement getStructureRequirement(BlockPos pos) {
+    protected StructureRequirement getStructureRequirement(BlockPos pos, VoxelCuboid cuboid) {
         WallRelative relative = cuboid.getWallRelative(pos);
         if (relative.isOnEdge()) {
             return StructureRequirement.FRAME;
@@ -171,8 +172,8 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return relative.isWall() ? StructureRequirement.OTHER : StructureRequirement.INNER;
     }
 
-    protected Direction getSide(BlockPos pos) {
-        return cuboid.getSide(pos);
+    public VoxelCuboid cuboid() {
+        return Objects.requireNonNull(cuboid, "Invalid cuboid");
     }
 
     @Nullable
@@ -183,8 +184,12 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     @Override
     public boolean precheck() {
-        cuboid = StructureHelper.fetchCuboid(structure(), minBounds, maxBounds);
-        return cuboid != null;
+        return precheck(StructureHelper.fetchCuboid(structure(), minBounds, maxBounds));
+    }
+
+    protected final boolean precheck(@Nullable VoxelCuboid cuboid) {
+        this.cuboid = cuboid;
+        return this.cuboid != null;
     }
 
     public void loadCuboid(VoxelCuboid cuboid) {

@@ -89,10 +89,12 @@ public class VoiceClient extends Thread {
         return running;
     }
 
+    @Nullable
     public DataOutputStream getOutputStream() {
         return output;
     }
 
+    @Nullable
     public DataInputStream getInputStream() {
         return input;
     }

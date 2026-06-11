@@ -30,6 +30,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -53,8 +54,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     private MekanismButton skinButton;
 
     public GuiRobitMain(MainRobitContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
         robit = container.getEntity();
+        super(container, inv, title);
         dynamicSlots = true;
     }
 
@@ -121,5 +122,10 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    public Level getLevel() {
+        return robit.level();
     }
 }

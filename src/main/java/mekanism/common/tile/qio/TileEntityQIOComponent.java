@@ -83,7 +83,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (lastColor != color) {
             lastColor = color;
-            WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+            WorldUtils.updateBlock(level, getBlockPos(), getBlockState());
         }
     }
 

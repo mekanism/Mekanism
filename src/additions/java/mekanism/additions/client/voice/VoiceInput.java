@@ -1,5 +1,6 @@
 package mekanism.additions.client.voice;
 
+import java.io.DataOutputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -44,8 +45,11 @@ public class VoiceInput extends Thread {
                             byte[] audioData = new byte[Math.min(availableBytes, 2_200)];
                             int bytesRead = audioInput.read(audioData, 0, audioData.length);
                             if (bytesRead > 0) {
-                                voiceClient.getOutputStream().writeShort(audioData.length);
-                                voiceClient.getOutputStream().write(audioData);
+                                DataOutputStream outputStream = voiceClient.getOutputStream();
+                                if (outputStream != null) {
+                                    outputStream.writeShort(audioData.length);
+                                    outputStream.write(audioData);
+                                }
                             }
                         } catch (Exception _) {
                         }
@@ -56,9 +60,12 @@ public class VoiceInput extends Thread {
                     }
                     doFlush = true;
                 } else if (doFlush) {
-                    try {
-                        voiceClient.getOutputStream().flush();
-                    } catch (Exception _) {
+                    DataOutputStream outputStream = voiceClient.getOutputStream();
+                    if (outputStream != null) {
+                        try {
+                            outputStream.flush();
+                        } catch (Exception _) {
+                        }
                     }
                     doFlush = false;
                 }

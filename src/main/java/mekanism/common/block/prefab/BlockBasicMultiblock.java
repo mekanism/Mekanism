@@ -41,11 +41,11 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
             }
             return InteractionResult.SUCCESS;
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
-        return tile.onActivate(player, hand);
+        return tile.onActivate(world, player, hand);
     }
 
     @Override

@@ -71,6 +71,7 @@ public class ItemPropertiesTest {
                             ConfigInfo info = config.getConfig(type);
                             helper.assertTrue(info != null, "Config " + type.getTransmission() + " cannot be null");
                             for (RelativeSide side : entry.getValue().sideConfig().keySet()) {
+                                //noinspection DataFlowIssue (nullability checked by above assertTrue call)
                                 if (!info.isSideEnabled(side)) {
                                     helper.fail("Block " + holder.getId() + " has side config for type: " + type.getTransmission() + " on side: " +
                                                 side.name() + ", but the BE has side configs disabled on that side.");

@@ -5,6 +5,7 @@ import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public class ProxyConfigurable extends ProxyHandler<@Nullable IHolder> implements IConfigurable {
@@ -17,28 +18,28 @@ public class ProxyConfigurable extends ProxyHandler<@Nullable IHolder> implement
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        return readOnly || side == null ? InteractionResult.PASS : configurable.onSneakRightClick(player, side);
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        return readOnly || side == null ? InteractionResult.PASS : configurable.onSneakRightClick(level, player, side);
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        return readOnly || side == null ? InteractionResult.PASS : configurable.onRightClick(player, side);
+    public InteractionResult onRightClick(Level level, Player player) {
+        return readOnly || side == null ? InteractionResult.PASS : configurable.onRightClick(level, player, side);
     }
 
     public interface ISidedConfigurable extends IConfigurable {
 
-        InteractionResult onSneakRightClick(Player player, Direction side);
+        InteractionResult onSneakRightClick(Level level, Player player, Direction side);
 
         @Override
-        default InteractionResult onSneakRightClick(Player player) {
+        default InteractionResult onSneakRightClick(Level level, Player player) {
             return InteractionResult.PASS;
         }
 
-        InteractionResult onRightClick(Player player, Direction side);
+        InteractionResult onRightClick(Level level, Player player, Direction side);
 
         @Override
-        default InteractionResult onRightClick(Player player) {
+        default InteractionResult onRightClick(Level level, Player player) {
             return InteractionResult.PASS;
         }
     }

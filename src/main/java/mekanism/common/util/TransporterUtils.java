@@ -86,7 +86,7 @@ public final class TransporterUtils {
             //Note: Theoretically this should never be zero when passed, but if it is, just return that it can be inserted as there is nothing to insert
             return true;
         } else if (force && tile instanceof IAdvancedTransportEjector sorter) {
-            return sorter.canSendHome(itemType, itemAmount, transaction);
+            return sorter.canSendHome(level, itemType, itemAmount, transaction);
         }
         if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {
             Direction tileSide = config.getDirection();

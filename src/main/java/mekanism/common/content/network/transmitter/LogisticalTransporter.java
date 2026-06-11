@@ -4,6 +4,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -15,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -48,7 +50,10 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public InteractionResult onConfigure(Player player, Direction side) {
         setColor(TransporterUtils.increment(getColor()));
-        PathfinderCache.onChanged(getTransmitterNetwork());
+        InventoryNetwork network = getTransmitterNetwork();
+        if (network != null) {//Should not be null, but double check
+            PathfinderCache.onChanged(network);
+        }
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
         player.sendOverlayMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()));
@@ -56,10 +61,10 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Level level, Player player, Direction side) {
         EnumColor color = getColor();
         player.sendOverlayMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()));
-        return super.onRightClick(player, side);
+        return super.onRightClick(level, player, side);
     }
 
     @Override

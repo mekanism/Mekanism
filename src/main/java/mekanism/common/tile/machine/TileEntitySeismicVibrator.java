@@ -133,7 +133,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @ComputerMethod
     BlockState getBlockAt(int chunkRelativeX, int y, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
-        Level level = getWorldNN();
+        Level level = validateLevel();
         if (level.isOutsideBuildHeight(y)) {
             throw new ComputerException("Y '%d' is out of range must be between %d and %d. (Inclusive)", y, level.getMinY(), level.getMaxY());
         }
@@ -144,7 +144,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @ComputerMethod(methodDescription = "Get a column info, table key is the Y level")
     Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
-        Level level = getWorldNN();
+        Level level = validateLevel();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
         BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinY(), chunkRelativeZ);
         for (BlockPos pos : BlockPos.betweenClosed(minPos, new BlockPos(minPos.getX(), level.getMaxY() + 1, minPos.getZ()))) {

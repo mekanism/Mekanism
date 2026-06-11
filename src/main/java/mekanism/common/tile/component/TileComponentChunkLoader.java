@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.LongStream;
@@ -61,7 +60,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     public boolean canOperate() {
-        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().isUpgradeInstalled(Upgrade.ANCHOR);
+        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getUpgrades(Upgrade.ANCHOR) > 0;
     }
 
     private void releaseChunkTickets(ServerLevel world, BlockPos pos) {
@@ -104,8 +103,15 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      * Release and re-register tickets, call when chunk set changes
      */
     public void refreshChunkTickets() {
-        if (!tile.isRemote()) {
-            refreshChunkTickets((ServerLevel) Objects.requireNonNull(tile.getLevel()), tile.getBlockPos(), true);
+        refreshChunkTickets(tile.getLevel(), tile.getBlockPos());
+    }
+
+    /**
+     * Release and re-register tickets, call when chunk set changes
+     */
+    public void refreshChunkTickets(@Nullable Level level, BlockPos pos) {
+        if (level != null && !level.isClientSide()) {
+            refreshChunkTickets((ServerLevel) level, pos, true);
         }
     }
 
@@ -223,7 +229,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     public void read(ValueInput input) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
-            if (tile.hasLevel() && !tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
+            if (tile.getLevel() != null && !tile.getLevel().isClientSide() && hasRegistered && prevWorld != null && prevPos != null) {
                 //If we had any chunks registered remove them. When hasRegistered is true
                 // prevWorld and prevPos should both be nonnull, but validate them just in case
                 releaseChunkTickets(prevWorld, prevPos);

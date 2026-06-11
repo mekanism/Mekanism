@@ -15,12 +15,12 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.item.TransporterItemHandler;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase.PathCalculator;
 import mekanism.common.content.qio.QIOFrequency;
@@ -49,6 +49,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -238,7 +239,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public boolean canSendHome(ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
+    public boolean canSendHome(Level level, ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null) {
             return false;
@@ -249,7 +250,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public TransitRequest.TransitResponse sendHome(TransitRequest request, TransactionContext transaction) {
+    public TransitRequest.TransitResponse sendHome(Level level, TransitRequest request, TransactionContext transaction) {
         if (request.isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;
         }

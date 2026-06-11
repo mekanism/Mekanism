@@ -47,7 +47,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -123,14 +122,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return builder.build();
     }
 
-    private void recheckSettings() {
-        Level world = getLevel();
-        if (world == null) {
-            return;
-        }
-        int seaLevel = world.getSeaLevel();
+    private void recheckSettings(ServerLevel level) {
+        int seaLevel = level.getSeaLevel();
         BlockPos pos = getBlockPos();
-        Biome b = world.getBiomeManager().getBiome(pos).value();
+        Biome b = level.getBiomeManager().getBiome(pos).value();
         boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
@@ -150,11 +145,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
         if (!settingsChecked) {
-            recheckSettings();
+            recheckSettings(level);
         }
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
-        productionRate = recalculateProductionRate();
+        productionRate = recalculateProductionRate(level);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }
@@ -187,13 +182,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return super.canFunction() && canSeeSun();
     }
 
-    private float recalculateProductionRate() {
-        Level world = getLevel();
-        if (world == null || !canFunction()) {
+    private float recalculateProductionRate(ServerLevel level) {
+        if (!canFunction()) {
             return 0;
         }
         //Get the brightness of the sun; including rain penalty
-        float brightness = WorldUtils.getSunBrightness(world, this.worldPosition);
+        float brightness = WorldUtils.getSunBrightness(level, this.worldPosition);
         //Production is a function of the peak possible output in this biome and sun's current brightness
         return peakProductionRate * brightness;
     }

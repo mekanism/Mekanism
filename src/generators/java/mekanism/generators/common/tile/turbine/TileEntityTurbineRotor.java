@@ -36,27 +36,27 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Override
     public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
         super.onNeighborChange(level, neighborPos);
-        if (!isRemote()) {
-            updateRotors();
+        if (!level.isClientSide()) {
+            updateRotors(level);
         }
     }
 
-    public void updateRotors() {
+    public void updateRotors(LevelReader level) {
         // In order to render properly, each rotor has to know its position, relative to other contiguous rotors
         // along the Y axis. When a neighbor changes, rescan the rotors and figure out everyone's position
         // N.B. must be in bottom->top order.
 
         // Find the bottom-most rotor and start scan from there
-        TileEntityTurbineRotor rotor = getRotor(getBlockPos().below());
+        TileEntityTurbineRotor rotor = getRotor(level, getBlockPos().below());
         if (rotor == null) {
             // This is the bottom-most rotor, so start scan up
-            scanRotors(0);
+            scanRotors(level, 0);
         } else {
-            rotor.updateRotors();
+            rotor.updateRotors(level);
         }
     }
 
-    private void scanRotors(int index) {
+    private void scanRotors(LevelReader level, int index) {
         if (index != position) {
             // Our position has changed, update and generate an update packet for client
             position = index;
@@ -70,19 +70,19 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         }
 
         // Pass the scan along to next rotor up, along with their new index
-        TileEntityTurbineRotor rotor = getRotor(getBlockPos().above());
+        TileEntityTurbineRotor rotor = getRotor(level, getBlockPos().above());
         if (rotor != null) {
-            rotor.scanRotors(index + 1);
+            rotor.scanRotors(level, index + 1);
         }
     }
 
-    public boolean addBlade(boolean checkBelow) {
+    public boolean addBlade(LevelReader level, boolean checkBelow) {
         if (checkBelow) {
             //If we want to check rotors that are below (aka we aren't being called by them)
             // and if the rotor beneath has less than two blades, add to it
-            TileEntityTurbineRotor previous = getRotor(getBlockPos().below());
+            TileEntityTurbineRotor previous = getRotor(level, getBlockPos().below());
             if (previous != null && previous.blades < 2) {
-                return previous.addBlade(true);
+                return previous.addBlade(level, true);
             }
         }
         if (blades < 2) {
@@ -91,7 +91,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
             if (position == -1) {
                 //If we haven't gotten a position assigned yet (single rotor height) then rescan it to set things to the correct values
                 // This will also handle sending the update to the client
-                scanRotors(0);
+                scanRotors(level, 0);
             } else {
                 if (hasFormedMultiblock() && getMultiblock() instanceof TurbineMultiblockData multiblock) {
                     //If for some reason someone is modifying the number of blades on a running turbine (which is unsupported),
@@ -106,15 +106,15 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
 
         // This rotor and the rotor below are full up; pass the call
         // on up to the next rotor in stack
-        TileEntityTurbineRotor next = getRotor(getBlockPos().above());
-        return next != null && next.addBlade(false);
+        TileEntityTurbineRotor next = getRotor(level, getBlockPos().above());
+        return next != null && next.addBlade(level, false);
     }
 
-    public boolean removeBlade() {
+    public boolean removeBlade(LevelReader level) {
         // If the rotor above has any blades, remove them first
-        TileEntityTurbineRotor next = getRotor(getBlockPos().above());
+        TileEntityTurbineRotor next = getRotor(level, getBlockPos().above());
         if (next != null && next.blades > 0) {
-            return next.removeBlade();
+            return next.removeBlade(level);
         } else if (blades > 0) {
             // Remove blades from this rotor
             blades--;
@@ -131,8 +131,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
 
         // This rotor and the rotor above are empty; pass the call
         // on up to the next rotor in stack
-        next = getRotor(getBlockPos().below());
-        return next != null && next.removeBlade();
+        next = getRotor(level, getBlockPos().below());
+        return next != null && next.removeBlade(level);
     }
 
     @Override
@@ -157,14 +157,14 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Nullable
-    private TileEntityTurbineRotor getRotor(BlockPos pos) {
-        return WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), pos);
+    private TileEntityTurbineRotor getRotor(LevelReader level, BlockPos pos) {
+        return WorldUtils.getTileEntity(TileEntityTurbineRotor.class, level, pos);
     }
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
-        if (!isRemote()) {
+        if (level != null && !level.isClientSide()) {
             int amount = getHousedBlades();
             if (amount > 0) {
                 Block.popResource(level, worldPosition, GeneratorsItems.TURBINE_BLADE.asStack(amount));

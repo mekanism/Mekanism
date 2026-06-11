@@ -29,14 +29,15 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
@@ -52,22 +53,19 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         boolean outputting = checkMode();
         if (outputting != prevOutputting) {
-            Level world = getLevel();
-            if (world != null) {
-                BlockState state = getBlockState();
-                Direction side = multiblock.getOutsideSide(worldPosition);
-                if (side == null) {
-                    //Not formed, just update all sides
-                    world.updateNeighbourForOutputSignal(getBlockPos(), state.getBlock());
-                } else if (!EventHooks.onNeighborNotify(world, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
-                    BlockPos toUpdate = worldPosition.relative(side);
-                    world.getBlockState(toUpdate).onNeighborChange(world, toUpdate, worldPosition);
-                    //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
-                }
+            BlockState state = getBlockState();
+            Direction side = multiblock.getOutsideSide(worldPosition);
+            if (side == null) {
+                //Not formed, just update all sides
+                level.updateNeighbourForOutputSignal(getBlockPos(), state.getBlock());
+            } else if (!EventHooks.onNeighborNotify(level, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
+                BlockPos toUpdate = worldPosition.relative(side);
+                level.getBlockState(toUpdate).onNeighborChange(level, toUpdate, worldPosition);
+                //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
             }
             prevOutputting = outputting;
         }
@@ -75,7 +73,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     public int getRedstoneLevel(Direction side) {
-        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && checkMode() ? 15 : 0;
+        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && checkMode() ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     public boolean checkMode() {

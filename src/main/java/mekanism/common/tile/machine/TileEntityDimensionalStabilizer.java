@@ -236,10 +236,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 //If the number of chunks loaded is different we need to update our energy to use
                 energyContainer.updateEnergyPerTick();
             }
-            if (hasLevel()) {
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
-            }
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets(level, worldPosition);
         }
     }
 
@@ -264,10 +262,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 //If the number of chunks loaded is different we need to update our energy to use
                 energyContainer.updateEnergyPerTick();
             }
-            if (hasLevel()) {
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
-            }
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets(level, worldPosition);
         }
     }
 

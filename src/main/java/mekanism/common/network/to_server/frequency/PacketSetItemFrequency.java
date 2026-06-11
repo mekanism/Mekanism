@@ -59,7 +59,7 @@ public record PacketSetItemFrequency(boolean set, TypedIdentity data, Interactio
             } else {
                 FrequencyAware<FREQ> frequencyAware = resource.get(frequencyComponent);
                 FrequencyLookup<?> manager = frequencyType.getLookup(data.data(), data.data().ownerUUID() == null ? player.getUUID() : data.data().ownerUUID());
-                if (manager.remove(data.data().key(), player.getUUID()) && frequencyAware != null && frequencyAware.identity().filter(data.data()::equals).isPresent()) {
+                if (manager != null && manager.remove(data.data().key(), player.getUUID()) && frequencyAware != null && frequencyAware.identity().filter(data.data()::equals).isPresent()) {
                     //If the frequency we are removing matches the stored frequency, remove it
                     ItemAccessUtils.exchange(itemAccess, resource.without(frequencyComponent), null);
                 }

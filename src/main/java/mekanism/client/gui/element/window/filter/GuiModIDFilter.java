@@ -55,7 +55,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getItemModIDStacks(tile.getLevel().registryAccess(), filter.getModID());
+            return TagCache.getItemModIDStacks(gui().registryAccess(), filter.getModID());
         }
         return Collections.emptyList();
     }
@@ -106,7 +106,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     private boolean setFilterName(String name, boolean click) {
         boolean success = false;
-        if (name.isEmpty()) {
+        if (name.isEmpty() || text == null) {
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getModID())) {
             filterSaveFailed(MekanismLang.MODID_FILTER_SAME_ID);
@@ -128,6 +128,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     protected boolean hasMatchingTargets(String name) {
-        return !TagCache.getItemModIDStacks(tile.getLevel().registryAccess(), name).isEmpty();
+        return !TagCache.getItemModIDStacks(gui().registryAccess(), name).isEmpty();
     }
 }

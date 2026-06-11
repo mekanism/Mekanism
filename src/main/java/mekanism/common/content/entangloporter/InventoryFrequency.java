@@ -224,7 +224,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                             for (Map.Entry<RelativeSide, DataType> sideEntry : config.getSideConfig()) {
                                 if (sideEntry.getValue().canOutput()) {
                                     Direction side = sideEntry.getKey().getDirection(facing);
-                                    accept(entry.getValue(), qe, side, transmissionType);
+                                    accept(entry.getValue(), qe, level, side, transmissionType);
                                 }
                             }
                         }
@@ -246,8 +246,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         }
     }
 
-    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
-        TYPE cachedCapability = qe.getCachedCapability(side, transmissionType);
+    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, ServerLevel level, Direction side, TransmissionType transmissionType) {
+        TYPE cachedCapability = qe.getCachedCapability(level, side, transmissionType);
         if (cachedCapability != null) {
             target.addHandler(cachedCapability);
         }

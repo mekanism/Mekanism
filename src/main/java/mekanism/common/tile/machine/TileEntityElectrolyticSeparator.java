@@ -318,7 +318,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            double speed = Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+            double speed = Math.pow(2, getUpgrades(Upgrade.SPEED));
             baselineMaxOperations = (int) speed;
             dumpRate = (int) (BASE_DUMP_RATE * speed);
         }

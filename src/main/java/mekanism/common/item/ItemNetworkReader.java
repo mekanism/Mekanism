@@ -129,7 +129,7 @@ public class ItemNetworkReader extends ItemEnergized {
             if (tile instanceof TileEntityTransmitter transmitterTile) {
                 Transmitter<?, ?, ?> transmitter = transmitterTile.getTransmitter();
                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
-                if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
+                if (transmitterNetwork != null && transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                     displayBorder(player, compileList(transmitter.getSupportedTransmissionTypes()), false);
                     player.sendSystemMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
                           compileList(transmitterNetwork.getAcceptorDirections(posAsLong))));

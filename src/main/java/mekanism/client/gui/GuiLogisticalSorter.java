@@ -27,7 +27,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -100,6 +99,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
 
     @Override
     protected List<ItemStack> getModIDStacks(String tagName) {
-        return TagCache.getItemModIDStacks(Minecraft.getInstance().level.registryAccess(), tagName);
+        return TagCache.getItemModIDStacks(registryAccess(), tagName);
     }
 }

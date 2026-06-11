@@ -331,7 +331,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
         super.remove();
         clearCapabilityCaches();
         Level level = getLevel();
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             for (TransporterStack stack : getTransit()) {
                 TransporterManager.remove(level, stack, null);
             }

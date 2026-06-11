@@ -1,6 +1,6 @@
 package mekanism.client.gui.qio;
 
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyItemTab;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -19,7 +19,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, menu.getHand()));
+        addRenderableWidget(new GuiQIOFrequencyItemTab(this, menu.getHand()));
     }
 
     @Override

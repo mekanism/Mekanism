@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
@@ -238,12 +239,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         @Override
         public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
             List<ELEMENT> containers = containerList(data);
-            if (containers != null) {
-                List<ELEMENT> cacheContainers = containerList(cache);
-                for (int i = 0; i < cacheContainers.size(); i++) {
-                    if (i < containers.size()) {
-                        copy(cacheContainers.get(i), containers.get(i));
-                    }
+            List<ELEMENT> cacheContainers = containerList(cache);
+            for (int i = 0; i < cacheContainers.size(); i++) {
+                if (i < containers.size()) {
+                    copy(cacheContainers.get(i), containers.get(i));
                 }
             }
         }
@@ -251,14 +250,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         @Override
         public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
             List<ELEMENT> containersToCopy = containerList(data);
-            if (containersToCopy != null) {
-                List<ELEMENT> cacheContainers = containerList(cache);
-                if (cacheContainers.isEmpty()) {
-                    prefab(cache, containersToCopy.size());
-                }
-                for (int i = 0; i < containersToCopy.size(); i++) {
-                    copy(containersToCopy.get(i), cacheContainers.get(i));
-                }
+            List<ELEMENT> cacheContainers = containerList(cache);
+            if (cacheContainers.isEmpty()) {
+                prefab(cache, containersToCopy.size());
+            }
+            for (int i = 0; i < containersToCopy.size(); i++) {
+                copy(containersToCopy.get(i), cacheContainers.get(i));
             }
         }
 
@@ -308,7 +305,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             ELEMENT container = container(cache);
             if (container == null) {
                 prefab(cache, 1);
-                return container(cache);
+                return Objects.requireNonNull(container(cache), "Container should be present after initialization");
             }
             return container;
         }

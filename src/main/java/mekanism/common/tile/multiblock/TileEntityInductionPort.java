@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -59,8 +60,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendOverlayMessage(MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));

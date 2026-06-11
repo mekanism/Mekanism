@@ -98,7 +98,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         if (isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;
         } else if (force && WorldUtils.getTileEntity(level, pos) instanceof IAdvancedTransportEjector sorter) {
-            return sorter.sendHome(this, transaction);
+            return sorter.sendHome(level, this, transaction);
         }
         return addToInventoryUnchecked(inventory, min, transaction);
     }

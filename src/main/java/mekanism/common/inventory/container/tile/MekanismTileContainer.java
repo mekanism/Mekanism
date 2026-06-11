@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.IEmptyContainer;
@@ -8,6 +9,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -73,9 +75,10 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
             return;
         }
         if (tile.supportsUpgrades()) {
+            TileComponentUpgrade upgradeComponent = Objects.requireNonNull(tile.getComponent(), "Upgrade component should be present");
             //Add the virtual slot for the upgrade (add them before the main inventory to make sure they take priority in targeting)
-            addSlot(upgradeSlot = tile.getComponent().getUpgradeSlot().createContainerSlot());
-            addSlot(upgradeOutputSlot = tile.getComponent().getUpgradeOutputSlot().createContainerSlot());
+            addSlot(upgradeSlot = upgradeComponent.getUpgradeSlot().createContainerSlot());
+            addSlot(upgradeOutputSlot = upgradeComponent.getUpgradeOutputSlot().createContainerSlot());
         }
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has

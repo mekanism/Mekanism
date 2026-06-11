@@ -17,6 +17,7 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,7 +25,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockData> {
 
-    private static final FormationChecker<BlockPos> HEATING_ELEMENT_CHECKER = (level, chunks, _, n, pos) ->
+    private static final FormationChecker<BlockGetter, BlockPos> HEATING_ELEMENT_CHECKER = (level, chunks, _, n, pos) ->
           pos.getY() < n.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, level, chunks, pos) != null;
 
     @Override
@@ -104,7 +105,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             for (int y = renderLocation.getY(); y < initDisperser.getY(); y++) {
                 for (int z = renderLocation.getZ(); z < renderLocation.getZ() + structure.width(); z++) {
                     mutableAir.set(x, y, z);
-                    if (isAirOrFrame(chunkMap, mutableAir)) {
+                    if (isAirOrFrame(world, chunkMap, mutableAir)) {
                         initAir = mutableAir.immutable();
                         totalAir++;
                     }
@@ -122,7 +123,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             }
         }
         Data data = new Data(initDisperser.getY(), renderLocation, structure.length(), structure.width());
-        FormationChecker<Data> waterChecker = (_, chunks, _, d, pos) -> d.check(pos) && isAirOrFrame(chunks, pos);
+        FormationChecker<BlockGetter, Data> waterChecker = (level, chunks, _, d, pos) -> d.check(pos) && isAirOrFrame(level, chunks, pos);
         structure.setWaterVolume(FormationProtocol.explore(world, chunkMap, initAir, data, waterChecker));
 
         //Make sure all air blocks are connected
@@ -136,9 +137,9 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         return FormationResult.SUCCESS;
     }
 
-    private boolean isAirOrFrame(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos airPos) {
-        Optional<BlockState> stateOptional = WorldUtils.getBlockState(world, chunkMap, airPos);
+    private boolean isAirOrFrame(BlockGetter level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos airPos) {
+        Optional<BlockState> stateOptional = WorldUtils.getBlockState(level, chunkMap, airPos);
         return (stateOptional.isPresent() && stateOptional.get().isAir()) ||
-               isFrameCompatible(WorldUtils.getTileEntity(world, chunkMap, airPos));
+               isFrameCompatible(WorldUtils.getTileEntity(level, chunkMap, airPos));
     }
 }

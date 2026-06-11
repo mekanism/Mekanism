@@ -12,10 +12,12 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
@@ -123,7 +125,7 @@ public final class MekanismUtils {
         return level == null ? 0 : level.getGameTime();
     };
 
-    private static final List<UUID> warnedFails = new ArrayList<>();
+    private static final Set<UUID> warnedFails = new HashSet<>();
 
     public static Component logFormat(Object message) {
         return logFormat(EnumColor.GRAY, message);
@@ -205,7 +207,7 @@ public final class MekanismUtils {
 
     public static double fractionUpgrades(IUpgradeTile tile, Upgrade type) {
         if (tile.supportsUpgrade(type)) {
-            return tile.getComponent().getUpgrades(type) / (double) type.getMax();
+            return tile.getUpgrades(type) / (double) type.getMax();
         }
         return 0;
     }
@@ -530,15 +532,17 @@ public final class MekanismUtils {
             return "<???>";
         }
         String ret = UsernameCache.getLastKnownUsername(uuid);
-        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
-            Optional<NameAndId> nameToIdCache = ServerLifecycleHooks.getCurrentServer().services().nameToIdCache().get(uuid);
-            if (nameToIdCache.isPresent()) {
-                ret = nameToIdCache.get().name();
+        if (ret == null && EffectiveSide.get().isServer() && !warnedFails.contains(uuid)) { // see if MC/Yggdrasil knows about it?!
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                Optional<NameAndId> nameToIdCache = server.services().nameToIdCache().get(uuid);
+                if (nameToIdCache.isPresent()) {
+                    ret = nameToIdCache.get().name();
+                }
             }
         }
-        if (ret == null && !warnedFails.contains(uuid)) {
+        if (ret == null && warnedFails.add(uuid)) {
             Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
-            warnedFails.add(uuid);
         }
         return ret == null ? "<" + uuid + ">" : ret;
     }

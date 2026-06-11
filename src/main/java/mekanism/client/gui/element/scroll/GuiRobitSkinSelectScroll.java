@@ -34,7 +34,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private final GuiScrollBar scrollBar;
 
     private final Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins;
-    private final EntityRobit robit;
     private ResourceKey<RobitSkin> selectedSkin;
     private float rotation;
     private int ticks;
@@ -47,8 +46,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
-        this.robit = robit;
-        this.selectedSkin = this.robit.getSkinId();
+        this.selectedSkin = robit.getSkinId();
         this.unlockedSkins = unlockedSkins;
         scrollBar = addChild(new GuiScrollBar(gui, relativeX + INNER_DIMENSIONS, relativeY, INNER_DIMENSIONS,
               () -> getUnlockedSkins() == null ? 0 : Mth.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
@@ -179,7 +177,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
-        SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
+        SkinLookup skinLookup = MekanismRobitSkins.lookup(gui().registryAccess(), skinKey);
         List<Identifier> textures = skinLookup.textures();
         //TODO - 26.1 robit model
         /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);

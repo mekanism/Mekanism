@@ -46,8 +46,8 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     }
 
     @Override
-    protected boolean onUpdateServer(SPSMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, SPSMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         boolean active = multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0;
         if (active != prevActive) {
             prevActive = active;

@@ -43,8 +43,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
-        Level level = getWorldNN();
-        if (!level.isClientSide()) {
+        if (level != null && !level.isClientSide()) {
             LogisticalTransporterBase transporter = getTransmitter();
             //TODO - 26.1: Evaluate overriding Block#shouldChangedStateKeepBlockEntity to make it so that upgrading lets the entity persist?
             // Also evaluate if there are any other cases where we might want to override that method

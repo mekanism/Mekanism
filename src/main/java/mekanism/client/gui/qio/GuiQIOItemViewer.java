@@ -118,7 +118,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiToggleClientConfigTab(this, 6, false, getButtonLocation("searchbar_autofocus_off"), getButtonLocation("searchbar_autofocus_on"),
               //Note: This is backwards as it describes what the button will be doing
               MekanismConfig.client.qioAutoFocusSearchBar, MekanismLang.QIO_SEARCH_MANUAL_FOCUS.translate(), MekanismLang.QIO_SEARCH_AUTO_FOCUS.translate()));
-        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos));
+        addRenderableWidget(new GuiResizeControls(this, (minecraft.getWindow().getGuiScaledHeight() / 2) - topPos));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
@@ -187,9 +187,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         //Skip loading pinned windows for now on the new viewer as we will transfer any open windows manually (pinned or not)
         s.loadPinned = false;
-        getMinecraft().screen = null;
-        getMinecraft().player.containerMenu = s.getMenu();
-        getMinecraft().setScreen(s);
+        minecraft.screen = null;
+        minecraft.player.containerMenu = s.getMenu();
+        minecraft.setScreen(s);
         s.searchField.setText(searchField.getText());
         //Transfer all the windows to the new GUI
         s.transferWindows(windows);

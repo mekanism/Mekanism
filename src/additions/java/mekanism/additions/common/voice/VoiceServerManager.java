@@ -32,15 +32,19 @@ public class VoiceServerManager {
     public void stop() {
         try {
             Mekanism.logger.info("VoiceServer: Shutting down server...");
-            try {
-                listenThread.interrupt();
-            } catch (Exception _) {
+            if (listenThread != null) {
+                try {
+                    listenThread.interrupt();
+                } catch (Exception _) {
+                }
             }
             foundLocal = false;
-            try {
-                serverSocket.close();
-                serverSocket = null;
-            } catch (Exception _) {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                    serverSocket = null;
+                } catch (Exception _) {
+                }
             }
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while shutting down server.", e);

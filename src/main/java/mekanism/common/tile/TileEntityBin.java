@@ -121,17 +121,14 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         setActive(!getActive());
-        Level world = getLevel();
-        if (world != null) {
-            world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
-        }
+        level.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public InteractionResult onRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 

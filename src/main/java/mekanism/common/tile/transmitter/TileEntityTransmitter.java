@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
@@ -143,8 +144,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        Level level = getWorldNN();
-        if (level.isClientSide()) {
+        if (level != null && level.isClientSide()) {
             onWorldJoin(level, false);
         } else {
             markJoined = true;
@@ -208,7 +208,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void chunkAccessibilityChange(boolean loaded) {
         if (loaded) {
             //Chunk went from "unloaded" to loaded
-            onWorldJoin(getLevel(), true);
+            onWorldJoin(level, true);
         } else {
             //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
             getTransmitter().validateAndTakeShare(null);
@@ -245,8 +245,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player, Direction side) {
+        if (!level.isClientSide()) {
             Direction hitSide = getSideLookingAt(player);
             if (hitSide == null) {
                 if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE) {
@@ -278,8 +278,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
-        return getTransmitter().onRightClick(player, side);
+    public InteractionResult onRightClick(Level level, Player player, Direction side) {
+        return getTransmitter().onRightClick(level, player, side);
     }
 
     public List<VoxelShape> getCollisionBoxes() {
@@ -322,16 +322,11 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void onAlloyInteraction(Player player, ItemStack stack, IAlloyTier tier) {
-        if (getLevel() != null && getTransmitter().hasTransmitterNetwork()) {
+    public void onAlloyInteraction(Level level, BlockPos pos, Player player, ItemStack stack, IAlloyTier tier) {
+        if (getTransmitter().hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = getTransmitter().getTransmitterNetworkNN();
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
-            list.sort((o1, o2) -> {
-                if (o1 != null && o2 != null) {
-                    return Double.compare(o1.getBlockPos().distSqr(worldPosition), o2.getBlockPos().distSqr(worldPosition));
-                }
-                return 0;
-            });
+            list.sort(Comparator.comparingDouble(transmitter -> transmitter.getBlockPos().distSqr(pos)));
             boolean sharesSet = false;
             int upgraded = 0;
             for (Transmitter<?, ?, ?> transmitter : list) {
@@ -356,15 +351,14 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     transmitter.startUpgrading();
                     TransmitterUpgradeData upgradeData = upgradeableTransmitter.getUpgradeData();
                     BlockPos transmitterPos = transmitter.getBlockPos();
-                    Level transmitterWorld = transmitter.getLevel();
                     if (upgradeData == null) {
                         Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
-                              transmitterPos, transmitterWorld);
+                              transmitterPos, level);
                     } else {
-                        transmitterWorld.setBlockAndUpdate(transmitterPos, upgradeState);
-                        TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitterWorld, transmitterPos);
+                        level.setBlockAndUpdate(transmitterPos, upgradeState);
+                        TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, level, transmitterPos);
                         if (upgradedTile == null) {
-                            Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, transmitterWorld);
+                            Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, level);
                         } else {
                             Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
                             if (upgradedTransmitter instanceof IUpgradeableTransmitter) {

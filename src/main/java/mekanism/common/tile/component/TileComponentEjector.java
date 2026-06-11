@@ -134,7 +134,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return info.isEjecting() && (canEject == null || canEject.test(type));
     }
 
-    public void tickServer(@Nullable TransactionContext transaction) {
+    public void tickServer(ServerLevel level, @Nullable TransactionContext transaction) {
         //loop on array to avoid iterator usage and high memory consumption
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             ConfigInfo info = configInfo.get(type);
@@ -144,12 +144,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
-                        outputItems(tile.facingSupplier.get(), info, transaction);
+                        outputItems(level, tile.facingSupplier.get(), info, transaction);
                     } else {
                         tickDelay--;
                     }
                 } else if (type != TransmissionType.HEAT) {
-                    eject(type, tile.facingSupplier.get(), info, transaction);
+                    eject(type, level, tile.facingSupplier.get(), info, transaction);
                 }
             }
         }
@@ -170,7 +170,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void eject(TransmissionType type, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
+    private void eject(TransmissionType type, ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         //Used to keep track of tanks to what sides they output to
         Map<Object, Set<Direction>> outputData = null;//todo what is the point of putting it into a map??
         for (DataType dataType : info.getSupportedDataTypes()) {
@@ -207,7 +207,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
         if (outputData != null && !outputData.isEmpty()) {
-            ServerLevel level = (ServerLevel) tile.getLevel();
             BlockPos pos = tile.getBlockPos();
             Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, _ -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
@@ -256,8 +255,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void outputItems(Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
-        ServerLevel level = (ServerLevel) tile.getLevel();
+    private void outputItems(ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {

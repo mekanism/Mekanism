@@ -28,20 +28,20 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     }
 
     @Override
-    public void setMultiblock(@Nullable MultiblockData multiblock) {
+    public void setMultiblock(LevelReader level, @Nullable MultiblockData multiblock) {
         this.multiblock = multiblock;
-        setMultiblock(multiblock == null ? null : multiblock.inventoryID);
+        setMultiblock(level, multiblock == null ? null : multiblock.inventoryID);
     }
 
-    private void setMultiblock(UUID id) {
+    private void setMultiblock(LevelReader level, @Nullable UUID id) {
         UUID old = multiblockUUID;
         multiblockUUID = id;
         if (!Objects.equals(old, id)) {
-            multiblockChanged(old);
+            multiblockChanged(level, old);
         }
     }
 
-    protected void multiblockChanged(@Nullable UUID old) {
+    protected void multiblockChanged(LevelReader level, @Nullable UUID old) {
         if (!isRemote()) {
             sendUpdatePacket();
         }
@@ -87,7 +87,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
         //If an internal multiblock is being removed then mark the multiblock it was in as needing to recheck the structure
-        if (!isRemote() && hasFormedMultiblock() && multiblock != null) {
+        if (level != null && !level.isClientSide() && hasFormedMultiblock() && multiblock != null) {
             //Multiblock shouldn't be null but validate it just in case
             multiblock.recheckStructure = true;
         }
@@ -103,6 +103,6 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         //TODO - 26.1: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
-        input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(this::setMultiblock, () -> multiblockUUID = null);
+        input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(uuid -> setMultiblock(level, uuid), () -> multiblockUUID = null);
     }
 }

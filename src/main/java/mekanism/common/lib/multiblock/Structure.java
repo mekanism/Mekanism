@@ -137,7 +137,7 @@ public class Structure {
             runUpdate(level);
         }
         if (tryValidate && !isValid()) {
-            validate(tile, new Long2ObjectOpenHashMap<>());
+            validate(level, tile, new Long2ObjectOpenHashMap<>());
         }
     }
 
@@ -251,7 +251,7 @@ public class Structure {
         return nodes.size();
     }
 
-    private static void validate(IMultiblockBase node, Long2ObjectMap<ChunkAccess> chunkMap) {
+    private static void validate(Level level, IMultiblockBase node, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (node instanceof IMultiblock<?> multiblock) {
             if (!multiblock.getStructure().isValid()) {
                 // only validate if necessary; this will already be valid if we recursively call validate()
@@ -261,11 +261,11 @@ public class Structure {
         } else if (node instanceof IStructuralMultiblock) {
             node.resetStructure(null);//TODO - 26.1: why null???
         }
-        FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
+        FormationProtocol.explore(level, chunkMap, node.getBlockPos(), node, (lvl, chunks, start, n, pos) -> {
             if (pos.equals(start)) {
                 return true;
             }
-            BlockEntity tile = WorldUtils.getTileEntity(level, chunks, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(lvl, chunks, pos);
             if (tile instanceof IMultiblockBase adj && isCompatible(n, adj)) {
                 boolean didMerge = false;
                 if (n instanceof IStructuralMultiblock structuralN && adj instanceof IStructuralMultiblock structuralAdj) {
@@ -273,19 +273,19 @@ public class Structure {
                     managers.addAll(structuralAdj.getStructureMap().keySet());
                     // if both are structural, they try to merge all manager structures
                     for (MultiblockManager<?> manager : managers) {
-                        didMerge |= mergeIfNecessary(n, adj, manager, true);
+                        didMerge |= mergeIfNecessary(lvl, n, adj, manager, true);
                     }
                 } else if (n instanceof IStructuralMultiblock) {
                     // validate from the perspective of the IMultiblock
                     if (!hasStructure(n, (IMultiblock<?>) adj)) {
-                        validate(adj, chunks);
+                        validate(lvl, adj, chunks);
                     }
                     return false;
                 } else if (adj instanceof IStructuralMultiblock) {
-                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
+                    didMerge = mergeIfNecessary(lvl, n, adj, getManager(n), false);
                 } else { // both are regular IMultiblocks
                     // we know the structures are compatible so managers must be the same for both
-                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
+                    didMerge = mergeIfNecessary(lvl, n, adj, getManager(n), false);
                 }
                 return didMerge;
             }
@@ -297,14 +297,17 @@ public class Structure {
         return structural.getStructure(multiblock.getManager()) == multiblock.getStructure();
     }
 
-    private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager, boolean bothStructural) {
+    private static boolean mergeIfNecessary(Level level, IMultiblockBase node, IMultiblockBase adj, @Nullable MultiblockManager<?> manager, boolean bothStructural) {
+        if (manager == null) {//Should never happen, but check it suppress the nullability warnings
+            return false;
+        }
         // reset the structures if they're invalid
         Structure nodeStructure = node.getStructure(manager);
-        if (!nodeStructure.isValid()) {
+        if (nodeStructure == null || !nodeStructure.isValid()) {
             nodeStructure = node.resetStructure(manager);
         }
         Structure adjStructure = adj.getStructure(manager);
-        if (!adjStructure.isValid()) {
+        if (adjStructure == null || !adjStructure.isValid()) {
             adjStructure = adj.resetStructure(manager);
         }
         // only merge if the structures are different
@@ -332,7 +335,7 @@ public class Structure {
                 changed.add(nodeStructure);
             }
             // update the changed structure
-            changed.markForUpdate(node.getLevel(), false);
+            changed.markForUpdate(level, false);
             return true;
         }
         return false;

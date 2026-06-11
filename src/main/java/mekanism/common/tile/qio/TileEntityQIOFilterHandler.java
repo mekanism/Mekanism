@@ -36,7 +36,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            int speedUpgrades = upgradeComponent.getUpgrades(Upgrade.SPEED);
+            int speedUpgrades = getUpgrades(Upgrade.SPEED);
             // 64 to 320 items
             maxTransitCount = 64 + 32 * speedUpgrades;
             // 1 to 5 types

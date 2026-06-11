@@ -3,6 +3,7 @@ package mekanism.common.tile.multiblock;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock {
@@ -13,8 +14,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    protected boolean onUpdateServer(EvaporationMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, EvaporationMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         setActive(multiblock.isFormed());
         return needsPacket;
     }

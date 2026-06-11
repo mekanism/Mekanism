@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -44,8 +45,8 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    protected boolean onUpdateServer(SPSMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, SPSMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         if (multiblock.isFormed()) {
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 try (Transaction transaction = Transaction.openRoot()) {
@@ -87,8 +88,8 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendOverlayMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));

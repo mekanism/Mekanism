@@ -233,7 +233,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             if (searcher.state == State.FINISHED) {
                 boolean prevRunning = running;
                 reset();
-                start();
+                start(level);
                 running = prevRunning;
             }
             initCalc = true;
@@ -354,7 +354,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setSilkTouch(boolean newSilkTouch) {
         if (silkTouch != newSilkTouch) {
             silkTouch = newSilkTouch;
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
             }
         }
@@ -403,10 +403,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setRadius(int newRadius) {
         if (radius != newRadius && newRadius >= 0) {
             radius = newRadius;
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
                 // If the radius changed, and we're on the server, go ahead and refresh the chunk set
-                getChunkLoader().refreshChunkTickets();
+                getChunkLoader().refreshChunkTickets(level, worldPosition);
             }
         }
     }
@@ -424,7 +424,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setMinY(int newMinY) {
         if (minY != newMinY) {
             minY = newMinY;
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
             }
         }
@@ -443,7 +443,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void setMaxY(int newMaxY) {
         if (maxY != newMaxY) {
             maxY = newMaxY;
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 energyContainer.updateMinerEnergyPerTick();
             }
         }
@@ -533,13 +533,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking
                             return;
                         } else if (MekanismAPI.debug) {
-                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, getWorldNN().dimension().identifier(), pos);
+                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, level.dimension().identifier(), pos);
                         }
                     } else if (MekanismAPI.debug) {
-                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, getWorldNN().dimension().identifier(), pos);
+                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, level.dimension().identifier(), pos);
                     }
                 } else if (MekanismAPI.debug) {
-                    Mekanism.logger.debug("Block was not loaded {} {}", getWorldNN().dimension().identifier(), pos);
+                    Mekanism.logger.debug("Block was not loaded {} {}", level.dimension().identifier(), pos);
                 }
                 //If we failed to mine the block, because it isn't loaded, is air, or we shouldn't mine it
                 // remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
@@ -630,7 +630,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Then source from the upgrade if it is installed
         if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
-            if (upgradeComponent.isUpgradeInstalled(Upgrade.STONE_GENERATOR)) {
+            if (getUpgrades(Upgrade.STONE_GENERATOR) > 0) {
                 return new ItemStack(replaceTarget);
             }
         }
@@ -721,13 +721,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     public void start() {
-        if (getLevel() == null) {
-            return;
+        if (level instanceof ServerLevel serverLevel) {
+            start(serverLevel);
         }
+    }
+
+    public void start(ServerLevel level) {
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new MinerRegionCache((ServerLevel) getLevel(), startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), this.upgradeComponent.isUpgradeInstalled(Upgrade.ANCHOR)));
+            searcher.setChunkCache(new MinerRegionCache(level, startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), getUpgrades(Upgrade.ANCHOR) > 0));
             searcher.start();
         }
         running = true;
@@ -956,14 +959,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.readSustainedData(input);
         setRadius(Math.min(input.getIntOr(SerializationConstants.RADIUS, DEFAULT_RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         input.getInt(SerializationConstants.MIN).ifPresent(newMinY -> {
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 setMinY(Math.max(newMinY, level.getMinY()));
             } else {
                 setMinY(newMinY);
             }
         });
         input.getInt(SerializationConstants.MAX).ifPresent(newMaxY -> {
-            if (hasLevel() && !isRemote()) {
+            if (level != null && !level.isClientSide()) {
                 setMaxY(Math.min(newMaxY, level.getMaxY()));
             } else {
                 setMaxY(newMaxY);
@@ -1013,7 +1016,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, radius), MekanismConfig.general.minerMaxRadius.get()));
         int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, minY);
         int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, minY);
-        if (level != null && !isRemote()) {
+        if (level != null && !level.isClientSide()) {
             setMinY(Math.max(newMinY, level.getMinY()));
             setMaxY(Math.min(newMaxY, level.getMaxY()));
         } else {
@@ -1286,7 +1289,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @ComputerMethod(nameOverride = "start", requiresPublicSecurity = true, methodDescription = "Attempt to start the mining process")
     void computerStart() throws ComputerException {
         validateSecurityIsPublic();
-        start();
+        start((ServerLevel) validateLevel());
     }
 
     @ComputerMethod(nameOverride = "stop", requiresPublicSecurity = true, methodDescription = "Attempt to stop the mining process")

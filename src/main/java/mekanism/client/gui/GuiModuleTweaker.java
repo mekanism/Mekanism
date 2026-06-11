@@ -25,7 +25,6 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
@@ -37,6 +36,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
@@ -45,7 +45,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
-    private final ArmorPreview armorPreview = new ArmorPreview();
+    private final ArmorPreview armorPreview;
     private final Consumer<ModuleConfig<?>> saveCallback;
 
     @Nullable
@@ -59,6 +59,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     public GuiModuleTweaker(ModuleTweakerContainer container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 90, DEFAULT_IMAGE_HEIGHT + 20);
+        armorPreview = new ArmorPreview(this, inv.player);
         saveCallback = configItem -> {
             if (moduleScreen != null) {
                 IModule<?> module = moduleScreen.getCurrentModule();
@@ -183,13 +184,15 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     public static class ArmorPreview implements Supplier<LivingEntity> {
 
         private final Map<EquipmentSlot, Supplier<ItemStack>> lazyItems = new EnumMap<>(EquipmentSlot.class);
+        private final IGuiWrapper gui;
         @Nullable
         private ArmorStand preview;
 
-        protected ArmorPreview() {
+        protected ArmorPreview(IGuiWrapper gui, Player player) {
+            this.gui = gui;
             for (EquipmentSlot armorSlot : EnumUtils.ARMOR_SLOTS) {
                 lazyItems.put(armorSlot, () -> {
-                    ItemStack stack = Minecraft.getInstance().player.getItemBySlot(armorSlot);
+                    ItemStack stack = player.getItemBySlot(armorSlot);
                     if (stack.isEmpty()) {
                         //Fall back to MekaSuit for rendering purposes of if not wearing a full set of stuff
                         return (switch (armorSlot) {
@@ -231,7 +234,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         @Override
         public LivingEntity get() {
             if (preview == null) {
-                preview = new ArmorStand(EntityType.ARMOR_STAND, Minecraft.getInstance().level);
+                preview = new ArmorStand(EntityType.ARMOR_STAND, gui.getLevel());
                 preview.setNoBasePlate(true);
                 //Copy the player's current armor when we first initialize this
                 for (Entry<EquipmentSlot, Supplier<ItemStack>> entry : lazyItems.entrySet()) {

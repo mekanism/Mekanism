@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile;
 
 import com.google.common.primitives.Ints;
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -185,7 +186,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Override
     public HeatTransfer simulate() {
-        double ambientTemp = ambientTemperature.getAsDouble();
+        double ambientTemp = Objects.requireNonNull(ambientTemperature, "Tile cannot simulate temperature before initialization").getAsDouble();
         double temp = getTotalTemperature();
         // 1 - Qc / Qh
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);

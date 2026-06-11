@@ -44,7 +44,8 @@ import org.jetbrains.annotations.UnknownNullability;
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ITileFilterHolder<OredictionificatorItemFilter> {
 
-    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave, this::getLevel);
+    @SuppressWarnings("Convert2Diamond")//IntelliJ gets confused without it about the nullability
+    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<OredictionificatorItemFilter>(OredictionificatorItemFilter.class, this::markForSave, this::getLevel);
     public boolean didProcess;
 
     @UnknownNullability//Initialized via getInitialInventory
@@ -58,7 +59,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot);
-
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 

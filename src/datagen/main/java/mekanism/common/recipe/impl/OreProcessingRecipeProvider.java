@@ -200,8 +200,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             // from nuggets
             ExtendedShapedRecipeBuilder.shapedRecipe(ingot)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
-                  .key(Pattern.PREVIOUS, nugget)
-                  .key(Pattern.CONSTANT, this.items, nuggetTag)
+                  .key(Pattern.PREVIOUS, Objects.requireNonNull(nugget))
+                  .key(Pattern.CONSTANT, this.items, Objects.requireNonNull(nuggetTag))
                   .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
             ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)

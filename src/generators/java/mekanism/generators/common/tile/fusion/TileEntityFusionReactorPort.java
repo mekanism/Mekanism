@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -104,8 +105,8 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendOverlayMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));

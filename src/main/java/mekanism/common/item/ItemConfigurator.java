@@ -158,9 +158,9 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                 IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
                 if (config != null) {
                     if (player.isShiftKeyDown()) {
-                        return config.onSneakRightClick(player);
+                        return config.onSneakRightClick(world, player);
                     }
-                    return config.onRightClick(player);
+                    return config.onRightClick(world, player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {

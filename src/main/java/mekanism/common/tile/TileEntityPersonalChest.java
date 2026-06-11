@@ -62,7 +62,7 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
     @Override
     public InteractionResult openGui(Player player) {
         BlockPos above = getBlockPos().above();
-        if (level.getBlockState(above).isRedstoneConductor(level, above)) {
+        if (level != null && level.getBlockState(above).isRedstoneConductor(level, above)) {
             //If the block above is solid consume the action
             return InteractionResult.CONSUME;
         }

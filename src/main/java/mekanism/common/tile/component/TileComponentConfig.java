@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -140,19 +141,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public <CONTAINER> ConfigInfo setupInputConfig(TransmissionType type, CONTAINER container) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
-            config.setCanEject(false);
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
+        config.setCanEject(false);
         return config;
     }
 
     public <CONTAINER> ConfigInfo setupOutputConfig(TransmissionType type, CONTAINER container) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
         return config;
     }
 
@@ -165,12 +162,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER inputContainer, CONTAINER outputContainer, boolean alwaysAllowInput, boolean alwaysAllowOutput) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
         return config;
     }
 
@@ -179,12 +174,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER info, boolean alwaysAllow) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
         return config;
     }
 
@@ -193,28 +186,28 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupItemIOConfig(List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, IInventorySlot energySlot, boolean alwaysAllow) {
-        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow, true, outputSlots));
-            List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
-            ioSlots.addAll(outputSlots);
-            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-        }
-        return itemConfig;
+        ConfigInfo config = getConfigNN(TransmissionType.ITEM);
+        config.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));
+        config.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow, true, outputSlots));
+        List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
+        ioSlots.addAll(outputSlots);
+        config.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
+        config.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+        return config;
     }
 
     public ConfigInfo setupItemIOExtraConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot extraSlot, IInventorySlot energySlot) {
-        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
-            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-        }
-        return itemConfig;
+        ConfigInfo config = getConfigNN(TransmissionType.ITEM);
+        config.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+        config.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
+        config.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
+        config.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+        return config;
+    }
+
+    private ConfigInfo getConfigNN(TransmissionType type) {
+        return Objects.requireNonNull(getConfig(type), "Config of " + type.getSerializedName() + " item not present");
     }
 
     @Nullable

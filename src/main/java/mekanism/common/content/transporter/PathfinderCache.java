@@ -29,7 +29,7 @@ public class PathfinderCache {
     public static CachedPath addCachedPath(LogisticalTransporterBase start, BlockPos destination, Pathfinder pathfinder) {
         CachedPath cachedPath = new CachedPath(pathfinder.getPath(), pathfinder.getFinalScore());
         PathData data = new PathData(start.getBlockPos(), destination, pathfinder.getSide());
-        cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), _ -> new HashMap<>()).put(data, cachedPath);
+        cachedPaths.computeIfAbsent(start.getTransmitterNetworkNN().getUUID(), _ -> new HashMap<>()).put(data, cachedPath);
         return cachedPath;
     }
 
@@ -54,7 +54,7 @@ public class PathfinderCache {
 
     @Nullable
     public static CachedPath getSingleCache(LogisticalTransporterBase start, BlockPos end, Direction side) {
-        UUID uuid = start.getTransmitterNetwork().getUUID();
+        UUID uuid = start.getTransmitterNetworkNN().getUUID();
         Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
         if (pathMap != null) {
             BlockPos startPos = start.getBlockPos();

@@ -19,11 +19,12 @@ public class QIODriveSlot extends BasicInventorySlot {
     public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.getItem() instanceof IQIODriveItem;
 
     private final Supplier<@Nullable Level> levelSupplier;
+    @Nullable
     private final IQIODriveHolder driveHolder;
     private final QIODriveKey key;
     private boolean isSaving;
 
-    public QIODriveSlot(IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public QIODriveSlot(@Nullable IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
         super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
@@ -47,7 +48,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     protected void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
         super.onContentsChanged(originalState);
         //If the change isn't caused by the frequency saving the contents to the drive (in which case it already knows about the changes)
-        if (!isSaving) {
+        if (!isSaving && driveHolder != null) {
             // Check if we need to update the drive data for the frequency
             ItemResource newDrive = resource();
             ItemResource originalDrive = originalState.resource();

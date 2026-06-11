@@ -2,6 +2,7 @@ package mekanism.api;
 
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 /**
  * Expose this as a capability on your TileEntity to allow if your block to be modified by a Configurator.
@@ -19,7 +20,7 @@ public interface IConfigurable {
      *
      * @apiNote Only called from the server
      */
-    InteractionResult onSneakRightClick(Player player);
+    InteractionResult onSneakRightClick(Level level, Player player);
 
     /**
      * Called when a player right-clicks this block with a Configurator.
@@ -30,5 +31,5 @@ public interface IConfigurable {
      *
      * @apiNote Only called from the server
      */
-    InteractionResult onRightClick(Player player);
+    InteractionResult onRightClick(Level level, Player player);
 }

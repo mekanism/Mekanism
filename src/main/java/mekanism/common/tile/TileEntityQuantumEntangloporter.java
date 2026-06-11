@@ -36,7 +36,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.chunkloading.IChunkLoader;
-import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -71,14 +70,29 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     public TileEntityQuantumEntangloporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER, pos, state);
 
-        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
-        setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks() : Collections.emptyList());
-        setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks() : Collections.emptyList());
-        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainer() : null);
+        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> {
+            InventoryFrequency freq = getFreq();
+            return isFrequencyValid(freq) ? freq.getInventorySlots() : Collections.emptyList();
+        });
+        setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> {
+            InventoryFrequency freq = getFreq();
+            return isFrequencyValid(freq) ? freq.getFluidTanks() : Collections.emptyList();
+        });
+        setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> {
+            InventoryFrequency freq = getFreq();
+            return isFrequencyValid(freq) ? freq.getChemicalTanks() : Collections.emptyList();
+        });
+        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> {
+            InventoryFrequency freq = getFreq();
+            return isFrequencyValid(freq) ? freq.getEnergyContainer() : null;
+        });
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
-            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? getFreq().getHeatCapacitors() : Collections.emptyList();
+            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> {
+                InventoryFrequency freq = getFreq();
+                return isFrequencyValid(freq) ? freq.getHeatCapacitors() : Collections.emptyList();
+            };
             heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new HeatProxy(true, false, capacitorSupplier));
             heatConfig.setCanEject(false);
         }
@@ -146,7 +160,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @ComputerMethod
     public boolean hasFrequency() {
-        Frequency freq = getFreq();
+        return isFrequencyValid(getFreq());
+    }
+
+    private boolean isFrequencyValid(@Nullable InventoryFrequency freq) {
         return freq != null && freq.isValid() && !freq.isRemoved();
     }
 
@@ -176,14 +193,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public <HANDLER> HANDLER getCachedCapability(Direction side, TransmissionType transmissionType) {
+    public <HANDLER> HANDLER getCachedCapability(ServerLevel level, Direction side, TransmissionType transmissionType) {
         if (transmissionType == TransmissionType.HEAT) {
             return (HANDLER) getAdjacentUnchecked(side);
         } else if (transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
         }
-        Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> caches = capabilityCaches.computeIfAbsent(transmissionType, type -> new EnumMap<>(Direction.class));
+        Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> caches = capabilityCaches.computeIfAbsent(transmissionType, _ -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<?, @Nullable Direction> cache = caches.get(side);
         if (cache == null) {
             MultiTypeCapability<HANDLER> capability = (MultiTypeCapability<HANDLER>) switch (transmissionType) {
@@ -193,7 +210,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
                 default -> null;
             };
             if (capability != null) {
-                cache = capability.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+                cache = capability.createCache(level, worldPosition.relative(side), side.getOpposite());
                 caches.put(side, cache);
             }
         }

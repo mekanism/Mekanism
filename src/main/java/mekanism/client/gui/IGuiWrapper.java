@@ -12,14 +12,24 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
 
     default ItemStack getCarriedItem() {
         return ItemStack.EMPTY;
+    }
+
+    default Level getLevel() {
+        return Minecraft.getInstance().level;
+    }
+
+    default RegistryAccess registryAccess() {
+        return getLevel().registryAccess();
     }
 
     int getGuiLeft();

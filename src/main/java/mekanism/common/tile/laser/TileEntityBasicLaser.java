@@ -90,7 +90,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        int energyFired = fireLaser();
+        int energyFired = fireLaser(level);
         if (energyFired > 0) {
             if (energyFired != lastFired || !getActive()) {
                 setActive(true);
@@ -108,14 +108,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    private int fireLaser() {
+    private int fireLaser(ServerLevel level) {
         int toFire = toFire();
         if (toFire == 0) {
             return 0;
         }
         try (Transaction transaction = Transaction.openRoot()) {
             if (energyContainer.extract(toFire, transaction, AutomationType.INTERNAL) == toFire) {
-                fireLaser(toFire, transaction);
+                fireLaser(level, toFire, transaction);
                 transaction.commit();
                 return toFire;
             }
@@ -123,9 +123,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         }
     }
 
-    private void fireLaser(int firing, TransactionContext transaction) {
+    private void fireLaser(ServerLevel level, int firing, TransactionContext transaction) {
         Direction direction = getDirection();
-        ServerLevel level = (ServerLevel) getWorldNN();
         Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
         Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));

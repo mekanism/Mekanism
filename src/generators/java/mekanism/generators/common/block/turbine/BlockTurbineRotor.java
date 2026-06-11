@@ -34,19 +34,19 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
         if (!player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
-                if (tile.addBlade(true)) {
+                if (tile.addBlade(world, true)) {
                     stack.consume(1, player);
                     return InteractionResult.SUCCESS_SERVER;
                 }
             }
         } else if (stack.isEmpty()) {
-            if (tile.removeBlade()) {
+            if (tile.removeBlade(world)) {
                 if (!player.isCreative()) {
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
                     //TODO - 26.1: I don't think this setChanged call or the one lower down are necessary anymore?
@@ -56,7 +56,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             }
         } else if (stack.getItem() instanceof ItemTurbineBlade) {
             if (stack.count() < stack.getMaxStackSize()) {
-                if (tile.removeBlade()) {
+                if (tile.removeBlade(world)) {
                     if (!player.isCreative()) {
                         stack.grow(1);
                         player.getInventory().setChanged();

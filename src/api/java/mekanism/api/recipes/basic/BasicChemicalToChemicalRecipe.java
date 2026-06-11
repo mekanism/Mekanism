@@ -44,7 +44,7 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
     }
 
     @Override
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(pure = true)
     public ChemicalStackTemplate getOutput(TypedInstance<Chemical> input) {
         return output;
     }

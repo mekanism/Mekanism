@@ -86,14 +86,18 @@ public class VoiceConnection extends Thread {
         // Main client listen thread (set to daemon because the voice connection is a daemon)
         new Thread(() -> {
             while (open) {
-                try {
-                    short byteCount = this.input.readShort();
-                    byte[] audioData = new byte[byteCount];
-                    this.input.readFully(audioData);
-                    if (byteCount > 0) {
-                        MekanismAdditions.voiceManager.sendToPlayers(byteCount, audioData, this);
+                if (this.input != null && MekanismAdditions.voiceManager != null) {
+                    try {
+                        short byteCount = this.input.readShort();
+                        byte[] audioData = new byte[byteCount];
+                        this.input.readFully(audioData);
+                        if (byteCount > 0) {
+                            MekanismAdditions.voiceManager.sendToPlayers(byteCount, audioData, this);
+                        }
+                    } catch (Exception e) {
+                        open = false;
                     }
-                } catch (Exception e) {
+                } else {
                     open = false;
                 }
             }
@@ -113,7 +117,9 @@ public class VoiceConnection extends Thread {
             if (socket != null) {
                 socket.close();
             }
-            MekanismAdditions.voiceManager.removeConnection(this);
+            if (MekanismAdditions.voiceManager != null) {//Should never be null
+                MekanismAdditions.voiceManager.removeConnection(this);
+            }
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.", e);
         }
@@ -122,6 +128,10 @@ public class VoiceConnection extends Thread {
     public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection) {
         if (!open) {
             kill();
+            return;
+        } else if (output == null) {
+            Mekanism.logger.error("VoiceServer: Error while sending data to player.");
+            return;
         }
         try {
             output.writeShort(byteCount);

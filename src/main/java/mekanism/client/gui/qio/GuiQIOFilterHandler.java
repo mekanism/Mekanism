@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyTileTab;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOItemStackFilter;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOModIDFilter;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOTagFilter;
@@ -79,7 +79,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
+        addRenderableWidget(new GuiQIOFrequencyTileTab(this, tile));
         addRenderableWidget(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, getFrequencyText(tile)).tooltip(getFrequencyTooltip(tile)));
         //Filter holder
         addRenderableWidget(new GuiElementHolder(this, 9, 30, 204, 68));
@@ -115,7 +115,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                             }
                             yield Collections.emptyList();
                         }
-                        case IModIDFilter<?> modIDFilter -> TagCache.getItemModIDStacks(tile.getLevel().registryAccess(), modIDFilter.getModID());
+                        case IModIDFilter<?> modIDFilter -> TagCache.getItemModIDStacks(registryAccess(), modIDFilter.getModID());
                         default -> Collections.emptyList();
                     };
                 }

@@ -183,10 +183,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return supported.contains(upgrade);
     }
 
-    public boolean isUpgradeInstalled(Upgrade upgrade) {
-        return upgrades.containsKey(upgrade);
-    }
-
     public Set<Upgrade> getInstalledTypes() {
         return upgrades.keySet();
     }

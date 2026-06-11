@@ -271,7 +271,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     public void onRemovedFromLevel() {
-        if (level() != null && !level().isClientSide() && getFollowing() && getOwner() != null) {
+        if (!level().isClientSide() && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
@@ -557,8 +557,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     public void setOwnerUUID(@Nullable UUID uuid, @Nullable TransactionContext transaction) {
-        entityData.set(OWNER_UUID, uuid);
-        entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
+        if (uuid == null) {
+            //If for some reason this is called with a null uuid, default it back to the values the data is initialized with
+            entityData.set(OWNER_UUID, Mekanism.gameProfile.id());
+            entityData.set(OWNER_NAME, "");
+        } else {
+            entityData.set(OWNER_UUID, uuid);
+            entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
+        }
     }
 
     public boolean getFollowing() {

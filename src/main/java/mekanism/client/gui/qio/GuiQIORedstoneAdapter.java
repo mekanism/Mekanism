@@ -9,7 +9,7 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyTileTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostItemConsumer;
 import mekanism.common.MekanismLang;
@@ -41,7 +41,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
+        addRenderableWidget(new GuiQIOFrequencyTileTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, event, _) -> {
             GuiQIORedstoneAdapter gui = (GuiQIORedstoneAdapter) element.gui();
             ItemStack stack = gui.getCarriedItem();

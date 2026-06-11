@@ -94,7 +94,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
             }
             int textColor = 0xFF80FF20;
             Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
-            if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
+            if (maximumCost >= 40 && !player.getAbilities().instabuild) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
                 textColor = 0xFFFF6060;
             } else {

@@ -34,7 +34,7 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
     }
 
     @Override
-    @Contract(value = "_ -> new", pure = true)
+    @Contract(pure = true)
     public ChemicalStackTemplate getOutput(TypedInstance<Item> input) {
         return output;
     }
