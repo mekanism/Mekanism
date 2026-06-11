@@ -8,13 +8,10 @@ import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemAccessUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -38,8 +35,7 @@ public class CuriosIntegration {
     private static void registerRenderers(Holder<Item>... items) {
         for (Holder<Item> holder : items) {
             Item item = holder.value();
-            Equippable equippable = item.components().get(DataComponents.EQUIPPABLE);
-            if (StackUtils.isRenderableArmor(equippable) && IClientItemExtensions.of(item) instanceof ISpecialGear gear) {
+            if (IClientItemExtensions.of(item) instanceof ISpecialGear gear) {
                 ICustomArmor customArmor = gear.gearModel();
                 ICurioRenderer.register(item, () -> new MekanismCurioRenderer(customArmor));
             } else {
