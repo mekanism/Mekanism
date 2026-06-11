@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
@@ -51,13 +50,13 @@ import org.jspecify.annotations.Nullable;
 public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhostTarget {
 
     private final Map<DictionaryTagType, List<String>> tags = new EnumMap<>(DictionaryTagType.class);
-    private final Consumer<Set<DictionaryTagType>> tagSetter;
+    private final BiConsumer<GuiDictionaryTarget, Set<DictionaryTagType>> tagSetter;
     @Nullable
     private Object target;
     @Nullable
     private Tooltip lastTooltip;
 
-    public GuiDictionaryTarget(IGuiWrapper gui, int x, int y, Consumer<Set<DictionaryTagType>> tagSetter) {
+    public GuiDictionaryTarget(IGuiWrapper gui, int x, int y, BiConsumer<GuiDictionaryTarget, Set<DictionaryTagType>> tagSetter) {
         super(gui, x, y, 16, 16);
         this.tagSetter = tagSetter;
     }
@@ -204,7 +203,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             }
         }
         //Update the list being viewed
-        tagSetter.accept(tags.keySet());
+        tagSetter.accept(this, tags.keySet());
         playClickSound(BUTTON_CLICK_SOUND);
     }
 

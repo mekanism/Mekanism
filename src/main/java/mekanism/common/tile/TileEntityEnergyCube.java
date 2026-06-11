@@ -68,12 +68,12 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
      * A block used to store and transfer electricity.
      */
     public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        tier = Attribute.getTierNN(blockProvider, EnergyCubeTier.class);
-        super(blockProvider, pos, state);
+        EnergyCubeTier tier = Attribute.getTierNN(blockProvider, EnergyCubeTier.class);
+        this.tier = tier;
+        super(blockProvider, pos, state, tile -> TileComponentEjector.energy(tile, tier::getTransferRate));
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer);
-        ejectorComponent = new TileComponentEjector(this, tier::getTransferRate, false);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> canFunction());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(_ -> canFunction());
     }
 
     @Override

@@ -129,7 +129,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, event, isDoubleClick) -> {
             if (origFilter != null) {
-                PacketUtils.sendToServer(new PacketEditFilter<>(this.tile.getBlockPos(), origFilter, null));
+                PacketUtils.sendToServer(PacketEditFilter.delete(this.tile.getBlockPos(), origFilter));
             }
             return close(element, event, isDoubleClick);
         }));
@@ -204,11 +204,12 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         ticker = 0;
     }
 
+    @SuppressWarnings("Convert2Diamond")//Confuses IntelliJ about the nullability state
     protected void saveFilter() {
         if (isNew) {
             PacketUtils.sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            PacketUtils.sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, filter));
+            PacketUtils.sendToServer(new PacketEditFilter<FILTER>(tile.getBlockPos(), Objects.requireNonNull(origFilter), filter));
         }
         close();
     }

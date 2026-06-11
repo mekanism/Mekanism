@@ -42,7 +42,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IEitherSideRecipeLookupHandler.EitherSideChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
@@ -125,7 +124,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
 
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank == centerTank);
 

@@ -191,7 +191,7 @@ public class SoundHandler {
         return startTileSound(soundEvent, category, volume, random, pos, true);
     }
 
-    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable
+    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
     private static SoundInstance getSound(long posKey) {
         return soundMap.get(posKey);
     }

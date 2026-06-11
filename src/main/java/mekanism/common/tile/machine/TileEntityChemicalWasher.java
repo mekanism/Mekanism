@@ -50,7 +50,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.FluidChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -117,7 +116,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         configComponent.setupInputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != inputTank);
 

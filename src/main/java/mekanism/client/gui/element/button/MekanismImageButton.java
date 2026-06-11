@@ -20,14 +20,12 @@ public class MekanismImageButton extends MekanismButton {
         this(gui, x, y, size, size, textureSize, textureSize, resource, onPress);
     }
 
-    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier resource,
-          IClickable onPress) {
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier resource, IClickable onPress) {
         this(gui, x, y, width, height, textureWidth, textureHeight, resource, onPress, onPress);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier resource,
-          IClickable onLeftClick, IClickable onRightClick) {
+    public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier resource, IClickable onLeftClick, IClickable onRightClick) {
         super(gui, x, y, width, height, CommonComponents.EMPTY, onLeftClick, onRightClick);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;

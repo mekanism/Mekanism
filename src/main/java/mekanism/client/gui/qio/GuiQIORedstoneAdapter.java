@@ -17,7 +17,8 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem.GuiInteractionItem;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.text.InputValidator;
@@ -84,7 +85,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
 
     private void updateStack(ItemStack stack) {
         //Note: Empty stack will be returned as empty by StackUtils#size, so we do not have to special case it
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, stack.copyWithCount(1)));
+        PacketUtils.sendToServer(new PacketTileGuiInteractItem(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, stack.copyWithCount(1)));
     }
 
     private void setCount(GuiTextField text) {

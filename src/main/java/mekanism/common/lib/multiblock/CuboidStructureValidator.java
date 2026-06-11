@@ -1,6 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.common.MekanismLang;
@@ -27,10 +28,12 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     @Nullable
     protected VoxelCuboid cuboid;
-    protected Structure structure;
+    @Nullable
+    private Structure structure;
 
     @Nullable
     protected Level world;
+    @Nullable
     protected MultiblockManager<T> manager;
     @Nullable
     protected MultiblockType<T> multiblockType;
@@ -50,6 +53,14 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         this.multiblockType = multiblockType;
         this.manager = manager;
         this.structure = structure;
+    }
+
+    protected Structure structure() {
+        return Objects.requireNonNull(structure, "Validator not initialized.");
+    }
+
+    protected MultiblockManager<T> manager() {
+        return Objects.requireNonNull(manager, "Validator not initialized.");
     }
 
     @Override
@@ -112,14 +123,14 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         if (multiblockType != null && tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(multiblockType)) {
             return true;
         }
-        return manager.isCompatible(tile);
+        return manager().isCompatible(tile);
     }
 
     /**
      * @param pos Mutable BlockPos
      */
     protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
-        IMultiblockBase tile = structure.getTile(pos);
+        IMultiblockBase tile = structure().getTile(pos);
         // terminate if we encounter a node that already failed this tick
         if (!isFrameCompatible((BlockEntity) tile) || (needsFrame && !type.isFrame())) {
             //If it is not a valid node or if it is supposed to be a frame but is invalid
@@ -172,7 +183,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     @Override
     public boolean precheck() {
-        cuboid = StructureHelper.fetchCuboid(structure, minBounds, maxBounds);
+        cuboid = StructureHelper.fetchCuboid(structure(), minBounds, maxBounds);
         return cuboid != null;
     }
 

@@ -13,12 +13,14 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismTools.MODID)
 public class MekanismTools implements IModModule {
 
     public static final String MODID = "mekanismtools";
 
+    @Nullable
     public static MekanismTools instance;
 
     /**

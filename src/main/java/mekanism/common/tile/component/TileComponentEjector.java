@@ -86,6 +86,10 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private EnumColor outputColor;
     private int tickDelay = 0;
 
+    public static TileComponentEjector energy(TileEntityMekanism tile, IntSupplier energyEjectRate) {
+        return new TileComponentEjector(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
+    }
+
     public TileComponentEjector(TileEntityMekanism tile) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate);
     }
@@ -96,10 +100,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this(tile, chemicalEjectRate, fluidEjectRate, null);
-    }
-
-    public TileComponentEjector(TileEntityMekanism tile, IntSupplier energyEjectRate, boolean energyMarker) {
-        this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
     public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable IntSupplier energyEjectRate) {

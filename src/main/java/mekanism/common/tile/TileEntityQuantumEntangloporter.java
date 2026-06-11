@@ -16,7 +16,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
@@ -25,6 +24,7 @@ import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.container.QEContainerHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.QEEnergyHolder;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -42,7 +42,6 @@ import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ChemicalProxy;
@@ -84,7 +83,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             heatConfig.setCanEject(false);
         }
 
-        ejectorComponent = new TileComponentEjector(this);
         //Note: All eject types except for items is handled by the frequency
         //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyway
         // also require that we can function before auto ejecting

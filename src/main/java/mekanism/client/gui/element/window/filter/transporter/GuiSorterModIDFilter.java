@@ -43,7 +43,9 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
 
     @Override
     protected void validateAndSave() {
-        if (text.getText().isEmpty() || setText(text)) {
+        if (text == null) {
+            filterSaveFailed(getNoFilterSaveError());
+        } else if (text.getText().isEmpty() || setText(text)) {
             validateAndSaveSorterFilter(this, minField, maxField);
         }
     }

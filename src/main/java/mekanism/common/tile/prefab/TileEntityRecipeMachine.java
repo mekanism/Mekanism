@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
@@ -34,6 +35,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
     private final List<RecipeError> errorTypes;
     private final boolean[] trackedErrors;
 
+    @UnknownNullability//Initialized in presetVariables
     protected RecipeCacheLookupMonitor<RECIPE> recipeCacheLookupMonitor;
     @Nullable
     private IContentsListener recipeCacheSaveOnlyListener;

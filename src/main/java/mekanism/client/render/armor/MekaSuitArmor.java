@@ -246,6 +246,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             return modelSpec.test(s);
         }
 
+        @Nullable
         public static ModelPos get(String name) {
             name = name.toLowerCase(Locale.ROOT);
             for (ModelPos pos : VALUES) {

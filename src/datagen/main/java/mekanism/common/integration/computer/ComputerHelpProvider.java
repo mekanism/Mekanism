@@ -239,7 +239,7 @@ public class ComputerHelpProvider implements DataProvider {
         return CLASS_NAME_SPLITTER.splitAsStream(simpleName).collect(Collectors.joining(" "));
     }
 
-    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = Codec.stringResolver(ComputerHelpProvider::getFriendlyName, _ -> null);
+    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = MekCodecs.stringResolver(ComputerHelpProvider::getFriendlyName, _ -> null);
     private static final Codec<Map<Class<?>, List<MethodHelpData>>> METHODS_DATA_CODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
     private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MekCodecs.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
 

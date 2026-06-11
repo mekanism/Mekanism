@@ -1,5 +1,6 @@
 package mekanism.generators.client;
 
+import java.util.Objects;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliases;
 import mekanism.generators.common.GeneratorTags;
@@ -20,7 +21,7 @@ import net.minecraft.data.PackOutput;
 public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     public GeneratorsLangProvider(PackOutput output) {
-        super(output, MekanismGenerators.MODID, MekanismGenerators.instance);
+        super(output, MekanismGenerators.MODID, Objects.requireNonNull(MekanismGenerators.instance));
     }
 
     @Override

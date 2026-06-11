@@ -34,7 +34,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -85,7 +84,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
         configComponent.setupItemIOConfig(Collections.singletonList(inputSlot), List.of(outputSlot, secondaryOutputSlot), energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);

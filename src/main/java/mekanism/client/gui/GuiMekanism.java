@@ -648,7 +648,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void addSlots() {
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            Slot slot = menu.slots.get(i);
+            Slot slot = menu.getSlot(i);
             if (slot instanceof InventoryContainerSlot containerSlot) {
                 ContainerSlotType slotType = containerSlot.getSlotType();
                 DataType dataType = findDataType(containerSlot);

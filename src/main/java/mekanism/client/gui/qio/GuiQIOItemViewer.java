@@ -48,12 +48,12 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
           allowsChars -> allowsChars.addAll(QueryType.getPrefixChars())
     );
 
+    private final int searchDropdownX;
     protected final Inventory inv;
     @UnknownNullability//Initialized via addGuiElements
     private GuiTextField searchField;
     @UnknownNullability//Initialized via addGuiElements
     private GuiCraftingWindowTab craftingWindowTab;
-    private GuiDropdown<?> searchDropdown;
     private boolean loadPinned = true;
 
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
@@ -62,6 +62,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         inventoryLabelY = imageHeight - 93;
         titleLabelY = 5;
         dynamicSlots = true;
+        searchDropdownX = imageWidth - 63;
     }
 
     private static int calcHeight() {
@@ -106,7 +107,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
         addRenderableWidget(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               menu::getQIOItemList, menu));
-        searchDropdown = addRenderableWidget(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        addRenderableWidget(new GuiDropdown<>(this, searchDropdownX, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               41, ListSortType.class, menu::getSortType, menu::setSortType));
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
@@ -124,7 +125,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdown.getRelativeX() - 5);
+        renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdownX - 5);
         drawScrollingString(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 4, 31, TextAlignment.RIGHT, titleTextColor(), searchField.getRelativeX() - 4, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

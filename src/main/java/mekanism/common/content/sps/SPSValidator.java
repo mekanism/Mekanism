@@ -72,7 +72,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     @Override
     public boolean precheck() {
         // 72 = (12 missing blocks possible on each face) * (6 sides)
-        cuboid = StructureHelper.fetchCuboid(structure, BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
+        cuboid = StructureHelper.fetchCuboid(structure(), BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
         return cuboid != null;
     }
 

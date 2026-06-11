@@ -95,7 +95,8 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
     @Override
     public void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
-        if (hasSelection() && component.getUpgrades(getSelection()) == 0) {
+        Upgrade selection = getSelection();
+        if (selection != null && component.getUpgrades(selection) == 0) {
             clearSelection();
         }
         super.renderElements(guiGraphics, mouseX, mouseY, partialTicks);

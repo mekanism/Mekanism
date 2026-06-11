@@ -2,6 +2,7 @@ package mekanism.client.gui.element.graph;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import java.util.function.LongSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -10,10 +11,12 @@ import net.minecraft.network.chat.Component;
 
 public class GuiLongGraph extends GuiGraph<LongList, LongGraphDataHandler> {
 
+    private final LongSupplier dataSupplier;
     private long currentScale = 10;
 
-    public GuiLongGraph(IGuiWrapper gui, int x, int y, int width, int height, LongGraphDataHandler handler) {
+    public GuiLongGraph(IGuiWrapper gui, int x, int y, int width, int height, LongSupplier dataSupplier, LongGraphDataHandler handler) {
         super(gui, x, y, width, height, new LongArrayList(), handler);
+        this.dataSupplier = dataSupplier;
     }
 
     public void enableFixedScale(long scale) {
@@ -25,7 +28,13 @@ public class GuiLongGraph extends GuiGraph<LongList, LongGraphDataHandler> {
         currentScale = minScale;
     }
 
-    public void addData(long data) {
+    @Override
+    public void tick() {
+        super.tick();
+        addData(dataSupplier.getAsLong());
+    }
+
+    private void addData(long data) {
         if (graphData.size() == width - 2) {
             graphData.removeLong(0);
         }
@@ -63,6 +72,7 @@ public class GuiLongGraph extends GuiGraph<LongList, LongGraphDataHandler> {
         }
     }
 
+    @FunctionalInterface
     public interface LongGraphDataHandler extends GraphDataHandler {
 
         Component getDataDisplay(long data);

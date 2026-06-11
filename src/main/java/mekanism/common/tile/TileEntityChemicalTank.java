@@ -81,13 +81,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     ChemicalInventorySlot fillSlot;
 
     public TileEntityChemicalTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        tier = Attribute.getTierNN(blockProvider, ChemicalTankTier.class);
-        super(blockProvider, pos, state);
+        ChemicalTankTier tier = Attribute.getTierNN(blockProvider, ChemicalTankTier.class);
+        this.tier = tier;
+        super(blockProvider, pos, state, tile -> new TileComponentEjector(tile, tier::getTransferRate));
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank);
-        ejectorComponent = new TileComponentEjector(this, tier::getTransferRate);
         ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL)
-              .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
+              .setCanEject(_ -> canFunction() && (this.tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
     }
 
     @Override

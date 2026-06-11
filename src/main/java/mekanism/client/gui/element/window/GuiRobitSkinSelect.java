@@ -10,8 +10,8 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.PacketUtils;
-import mekanism.common.network.to_server.PacketGuiInteract;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
+import mekanism.common.network.to_server.PacketEntityGuiInteract;
+import mekanism.common.network.to_server.PacketEntityGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.robit.PacketRobitSkin;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.ResourceKey;
@@ -34,13 +34,13 @@ public class GuiRobitSkinSelect extends GuiWindow {
             return close(element, event, isDoubleClick);
         }));
         gui.getMenu().startTracking(MekanismContainer.SKIN_SELECT_WINDOW, gui.getMenu());
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
+        PacketUtils.sendToServer(new PacketEntityGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
     }
 
     @Override
     public void close() {
         super.close();
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_STOP_TRACKING, robit, MekanismContainer.SKIN_SELECT_WINDOW));
+        PacketUtils.sendToServer(new PacketEntityGuiInteract(GuiInteractionEntity.CONTAINER_STOP_TRACKING, robit, MekanismContainer.SKIN_SELECT_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.SKIN_SELECT_WINDOW);
     }
 

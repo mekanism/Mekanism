@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.SequencedMap;
 import java.util.Set;
 import java.util.UUID;
@@ -120,7 +121,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
     private int clientTypes;
-    private HolderLookup.Provider registries = null;//set by update
+    private HolderLookup.@Nullable Provider registries = null;//set by update
 
     private EnumColor color = EnumColor.INDIGO;
 
@@ -200,7 +201,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 failedWildcardTags.clear();
             }
         }
-        String modID = MekanismUtils.getModId(this.registries, type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type.toStack());
         Set<ItemResource> modItems = modIDLookupMap.get(modID);
         if (modItems == null) {
             //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
@@ -256,7 +257,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 return true;
             }
         }
-        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(this.registries, itemType.toStack()), Collections.emptySet()).contains(itemType);
+        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(registries(), itemType.toStack()), Collections.emptySet()).contains(itemType);
     }
 
     @Override
@@ -294,7 +295,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        String modID = MekanismUtils.getModId(this.registries, type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type.toStack());
         Set<ItemResource> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
@@ -534,6 +535,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             driveHolders.remove(holder);
         }
         return changedData;
+    }
+
+    private HolderLookup.Provider registries() {
+        return Objects.requireNonNull(registries);
     }
 
     @Override

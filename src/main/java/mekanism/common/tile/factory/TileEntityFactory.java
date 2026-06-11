@@ -47,7 +47,6 @@ import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
@@ -147,7 +146,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         progress = new int[tier.processes];

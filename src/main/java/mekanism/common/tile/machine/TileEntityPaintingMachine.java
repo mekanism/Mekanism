@@ -44,7 +44,6 @@ import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalReci
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -106,7 +105,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
         configComponent.setupInputConfig(TransmissionType.CHEMICAL, pigmentTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);

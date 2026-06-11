@@ -8,7 +8,6 @@ import mekanism.client.gui.element.GuiDigitalSwitch;
 import mekanism.client.gui.element.GuiDigitalSwitch.SwitchType;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -35,20 +34,12 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import org.jspecify.annotations.Nullable;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
     private static final Identifier EJECT = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
     private static final Identifier INPUT = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
     private static final Identifier SILK = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
-
-    @Nullable
-    private MekanismButton startButton;
-    @Nullable
-    private MekanismButton stopButton;
-    @Nullable
-    private MekanismButton configButton;
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 76);
@@ -112,35 +103,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         }));
 
         int buttonStart = 19;
-        startButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
-              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
-        stopButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
-              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
-        configButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
-              (element, _, _) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, ((GuiDigitalMiner) element.gui()).tile))));
+        addRenderableWidget(new TranslationButton(this, 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, ((GuiDigitalMiner) element.gui()).tile))))
+              .setCheckActive(() -> tile.searcher.state == State.IDLE || !tile.isRunning());
+        addRenderableWidget(new TranslationButton(this, 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
+              (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, ((GuiDigitalMiner) element.gui()).tile))))
+              .setCheckActive(() -> tile.searcher.state != State.IDLE && tile.isRunning());
+        addRenderableWidget(new TranslationButton(this, 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
+              (element, _, _) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, ((GuiDigitalMiner) element.gui()).tile))))
+              .setCheckActive(() -> tile.searcher.state == State.IDLE);
         addRenderableWidget(new TranslationButton(this, 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
-        updateEnabledButtons();
         trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilterManager().anyEnabledMatch(MinerFilter::hasBlacklistedElement));
         trackWarning(WarningType.NO_SPACE_IN_OUTPUT_OVERFLOW, tile::hasOverflow);
-    }
-
-    @Override
-    public void containerTick() {
-        super.containerTick();
-        updateEnabledButtons();
-    }
-
-    private void updateEnabledButtons() {
-        if (startButton != null) {
-            startButton.active = tile.searcher.state == State.IDLE || !tile.isRunning();
-        }
-        if (stopButton != null) {
-            stopButton.active = tile.searcher.state != State.IDLE && tile.isRunning();
-        }
-        if (configButton != null) {
-            configButton.active = tile.searcher.state == State.IDLE;
-        }
     }
 
     @Override

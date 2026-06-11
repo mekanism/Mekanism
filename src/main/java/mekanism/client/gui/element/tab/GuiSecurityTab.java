@@ -25,9 +25,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.PacketEntityGuiInteract;
+import mekanism.common.network.to_server.PacketEntityGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.util.ItemAccessUtils;
@@ -132,8 +133,8 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
                     PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
                                                                                                               : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                 } else if (provider instanceof Entity entity) {
-                    PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
-                                                                                                              : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+                    PacketUtils.sendToServer(new PacketEntityGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                                    : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                 }
             }
         }

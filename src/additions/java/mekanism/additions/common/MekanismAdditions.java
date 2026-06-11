@@ -43,6 +43,7 @@ public class MekanismAdditions implements IModModule {
 
     public static final String MODID = "mekanismadditions";
 
+    @Nullable
     public static MekanismAdditions instance;
 
     /**

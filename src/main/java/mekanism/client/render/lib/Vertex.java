@@ -31,6 +31,8 @@ public class Vertex {
     public Vertex(float x, float y, float z) {
         this.miscData = new HashMap<>();
         this.pos = new Vector3f(x, y, z);
+        //TODO - 26.1: What do we want to be initializing the normal to for this path? In theory it will always get overridden, but still
+        this.normal = new Vector3f();
     }
 
     public Vertex(Vector3f pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {

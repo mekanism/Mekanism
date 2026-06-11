@@ -45,7 +45,6 @@ import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalReci
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
@@ -112,7 +111,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, injectTank, outputTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != injectTank);
 

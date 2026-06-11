@@ -11,10 +11,13 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper> {
 
+    @Nullable
     private final Tooltip falseTooltip;
+    @Nullable
     private final Tooltip trueTooltip;
     private final CachedBooleanValue config;
 

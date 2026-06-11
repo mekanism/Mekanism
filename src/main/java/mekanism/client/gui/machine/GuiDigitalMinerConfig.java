@@ -33,7 +33,8 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem.GuiInteractionItem;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -120,7 +121,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     private void updateInverseReplaceTarget(Item target) {
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
+        PacketUtils.sendToServer(new PacketTileGuiInteractItem(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
     }
 
     @Override

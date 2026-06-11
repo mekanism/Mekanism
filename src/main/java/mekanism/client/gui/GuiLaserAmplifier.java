@@ -18,10 +18,12 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, MekanismTileContainer<TileEntityLaserAmplifier>> {
 
     private static final int TEXT_BOX_START = 96;
+    @Nullable
     private GuiEnergyGauge energyGauge;
 
     public GuiLaserAmplifier(MekanismTileContainer<TileEntityLaserAmplifier> container, Inventory inv, Component title) {
@@ -51,9 +53,9 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, energyGauge.getRelativeRight());
+        int start = energyGauge == null ? 0 : energyGauge.getRelativeRight();
+        renderTitleTextWithOffset(guiGraphics, start);
         renderInventoryText(guiGraphics);
-        int start = energyGauge.getRelativeRight();
         Component delay;
         if (tile.getDelay() > 0) {
             delay = MekanismLang.DELAY.translate(tile.getDelay());

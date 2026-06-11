@@ -52,15 +52,24 @@ public class ComputerHandlerBuilder {
     private static final ClassName baseComputerHelper = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "BaseComputerHelper");
     private static final ClassName computerException = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerException");
     private static final ClassName methodData = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "MethodData");
+    @Nullable
     private static TypeMirror computerMethodAnnotationType;
+    @Nullable
     private static TypeMirror syntheticComputerMethodAnnotationType;
+    @Nullable
     private static TypeMirror wrappingComputerMethodAnnotationType;
+    @Nullable
     private static TypeMirror wrappingComputerMethodDocAnnotationType;
+    @Nullable
     private static TypeMirror collectionType;
+    @Nullable
     private static TypeMirror mapType;
+    @Nullable
     private static TypeMirror convertableType;
+    @Nullable
     private static TypeMirror eitherType;
     private static final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
+    @Nullable
     private static ParamToHelperMapper paramToHelperMapper;
 
     /**

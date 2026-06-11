@@ -2,7 +2,6 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -15,12 +14,10 @@ import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalOxidizer, MekanismTileContainer<TileEntityChemicalOxidizer>> {
 
-    @Nullable
-    private GuiElement energyBar;
+    private static final int ENERGY_BAR_X = 115;
 
     public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -31,7 +28,7 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        energyBar = addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
+        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), ENERGY_BAR_X, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getActive));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.gasTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 131, 13))
@@ -43,7 +40,7 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics, energyBar == null ? getImageWidth() : energyBar.getRelativeX());
+        renderInventoryText(guiGraphics, ENERGY_BAR_X);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

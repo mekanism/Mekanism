@@ -41,11 +41,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private static final Identifier PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final Identifier PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final int TRUSTED_RELATIVE_X = 35;
+    private static final int TRUSTED_X = 35;
+    @Nullable
     private MekanismButton removeButton;
+    @Nullable
     private MekanismButton publicButton;
+    @Nullable
     private MekanismButton privateButton;
+    @Nullable
     private MekanismButton trustedButton;
+    @Nullable
     private MekanismButton overrideButton;
     @Nullable
     private GuiTextScrollList scrollList;
@@ -85,7 +90,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             }
             return false;
         }));
-        addRenderableWidget(new GuiTextField(this, TRUSTED_RELATIVE_X, 68, 99, 11))
+        addRenderableWidget(new GuiTextField(this, TRUSTED_X, 68, 99, 11))
               .setBackground(BackgroundType.INNER_SCREEN)
               .setEnterHandler(this::setTrusted)
               .addCheckmarkButton(this::setTrusted)
@@ -144,21 +149,27 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void updateButtons() {
         SecurityFrequency freq = tile.getFreq();
-        if (tile.getOwnerUUID() != null && scrollList != null) {
-            scrollList.setText(freq == null ? Collections.emptyList() : freq.getTrustedUsernameCache());
-            removeButton.active = scrollList.hasSelection();
+        if (tile.getOwnerUUID() != null) {
+            if (scrollList != null) {
+                scrollList.setText(freq == null ? Collections.emptyList() : freq.getTrustedUsernameCache());
+            }
+            if (removeButton != null) {
+                removeButton.active = scrollList != null && scrollList.hasSelection();
+            }
         }
 
-        if (isOwner(freq)) {
-            publicButton.active = freq.getSecurity() != SecurityMode.PUBLIC;
-            privateButton.active = freq.getSecurity() != SecurityMode.PRIVATE;
-            trustedButton.active = freq.getSecurity() != SecurityMode.TRUSTED;
-            overrideButton.active = true;
-        } else {
-            publicButton.active = false;
-            privateButton.active = false;
-            trustedButton.active = false;
-            overrideButton.active = false;
+        boolean isOwner = isOwner(freq);
+        if (publicButton != null) {
+            publicButton.active = isOwner && freq.getSecurity() != SecurityMode.PUBLIC;
+        }
+        if (privateButton != null) {
+            privateButton.active = isOwner && freq.getSecurity() != SecurityMode.PRIVATE;
+        }
+        if (trustedButton != null) {
+            trustedButton.active = isOwner && freq.getSecurity() != SecurityMode.TRUSTED;
+        }
+        if (overrideButton != null) {
+            overrideButton.active = isOwner;
         }
     }
 
@@ -188,7 +199,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             frequencyText = MekanismLang.SECURITY.translate(frequency.getSecurity());
         }
         drawScrollingString(guiGraphics, frequencyText, 13, 103, TextAlignment.LEFT, titleTextColor(), 122, 0, false);
-        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), TRUSTED_RELATIVE_X - 1, 3, false);
+        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), TRUSTED_X - 1, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

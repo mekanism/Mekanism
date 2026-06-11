@@ -56,7 +56,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
@@ -168,7 +167,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         configComponent.setupInputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> {
                   if (tank == leftTank) {

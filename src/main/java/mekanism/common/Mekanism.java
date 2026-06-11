@@ -142,6 +142,7 @@ public class Mekanism {
     /**
      * Mekanism mod instance
      */
+    @Nullable
     public static Mekanism instance;
     /**
      * Mekanism hooks instance
@@ -222,7 +223,7 @@ public class Mekanism {
     }
 
     public static PacketHandler packetHandler() {
-        return instance.packetHandler;
+        return Objects.requireNonNull(instance).packetHandler;
     }
 
     private void addRegistrationListeners(IEventBus modEventBus) {

@@ -108,6 +108,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return main != null && main.supportsUpgrades();
     }
 
+    @Nullable
     @Override
     public TileComponentUpgrade getComponent() {
         IBoundingBlock main = getMain();

@@ -48,7 +48,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
@@ -132,7 +131,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, formulaSlot));
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
         directInputHandler = () -> inputSlots;
         directOutputHandler = () -> outputSlots;

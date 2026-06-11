@@ -26,11 +26,17 @@ public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FIL
           (pos, filter, edited) -> unchecked(pos, filter, edited.orElse(null))
     );
 
+    @SuppressWarnings("unchecked")
     private static <FILTER extends IFilter<FILTER>> PacketEditFilter<FILTER> unchecked(BlockPos pos, IFilter<?> filter, @Nullable IFilter<?> edited) {
         if (edited != null && edited.getFilterType() != filter.getFilterType()) {
             throw new DecoderException("Expected filter and edited filter to be of the same type");
         }
         return new PacketEditFilter<>(pos, (FILTER) filter, (FILTER) edited);
+    }
+
+    @SuppressWarnings("Convert2Diamond")//Confuses IntelliJ about the nullability state
+    public static <FILTER extends IFilter<FILTER>> PacketEditFilter<FILTER> delete(BlockPos pos, FILTER filter) {
+        return new PacketEditFilter<FILTER>(pos, filter, null);
     }
 
     @Override

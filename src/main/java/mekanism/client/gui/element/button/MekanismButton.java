@@ -2,6 +2,7 @@ package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -19,6 +20,8 @@ public class MekanismButton extends GuiElement {
     private final IClickable onLeftClick;
     @Nullable
     private final IClickable onRightClick;
+    @Nullable
+    private BooleanSupplier checkActive;
 
     public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, IClickable onLeftClick) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick);
@@ -31,6 +34,20 @@ public class MekanismButton extends GuiElement {
         this.onRightClick = onRightClick;
         this.clickSound = BUTTON_CLICK_SOUND;
         setButtonBackground(ButtonBackground.DEFAULT);
+    }
+
+    public MekanismButton setCheckActive(BooleanSupplier checkActive) {
+        this.checkActive = checkActive;
+        this.active = checkActive.getAsBoolean();
+        return this;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (checkActive != null) {
+            active = checkActive.getAsBoolean();
+        }
     }
 
     @Override

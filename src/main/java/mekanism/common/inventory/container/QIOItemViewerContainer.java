@@ -94,7 +94,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
-    private List<InventoryContainerSlot>[] craftingGridInputSlots;
+    private @Nullable List<InventoryContainerSlot> @Nullable [] craftingGridInputSlots;
     private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS][10];
 
     private boolean sortingPaused;
@@ -282,6 +282,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
      * @apiNote Only call on server
      */
     private List<InventoryContainerSlot> getCraftingGridSlots(byte selectedCraftingGrid) {
+        if (craftingGridInputSlots == null) {
+            //Something went wrong or this was called from the client
+            return Collections.emptyList();
+        }
         List<InventoryContainerSlot> craftingGridSlots = craftingGridInputSlots[selectedCraftingGrid];
         if (craftingGridSlots == null) {
             //If we haven't precalculated which slots go with this crafting grid yet, do so
@@ -296,7 +300,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotID) {
-        Slot currentSlot = slots.get(slotID);
+        Slot currentSlot = getSlot(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         } else if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {

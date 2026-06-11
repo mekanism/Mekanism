@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import java.util.function.Function;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -17,12 +18,17 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration {
 
-    public TileComponentEjector ejectorComponent;
+    public final TileComponentEjector ejectorComponent;
     public final TileComponentConfig configComponent;//does not tick!
 
     public TileEntityConfigurableMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        this(blockProvider, pos, state, TileComponentEjector::new);
+    }
+
+    public TileEntityConfigurableMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, Function<TileEntityMekanism, TileComponentEjector> ejectorConstructor) {
         super(blockProvider, pos, state);
         configComponent = new TileComponentConfig(this, Attribute.getOrThrow(blockProvider, AttributeSideConfig.class).supportedTypes());
+        ejectorComponent = ejectorConstructor.apply(this);
     }
 
     @Override

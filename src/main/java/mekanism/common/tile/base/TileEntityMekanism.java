@@ -1174,6 +1174,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return Collections.emptySet();
     }
 
+    @Nullable
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;

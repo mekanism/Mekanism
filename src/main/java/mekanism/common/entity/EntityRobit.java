@@ -669,7 +669,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         }
         return new ContainerLevelAccess() {
             @Override
-            public <T> Optional<T> evaluate(BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
+            public <T> Optional<T> evaluate(BiFunction<Level, BlockPos, @Nullable T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
                 return Optional.ofNullable(worldBlockPosTBiFunction.apply(level(), blockPosition()));

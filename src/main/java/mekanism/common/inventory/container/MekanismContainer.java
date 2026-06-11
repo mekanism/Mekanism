@@ -263,7 +263,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      */
     @Override
     public ItemStack quickMoveStack(Player player, int slotID) {
-        Slot currentSlot = slots.get(slotID);
+        Slot currentSlot = getSlot(slotID);
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
         }

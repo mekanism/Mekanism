@@ -101,7 +101,7 @@ public class BiLongMultimap<V> {
         return map.keySet();
     }
 
-    @NullUnmarked
+    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
     public Set<V> getValues(long key) {
         return map.get(key);
     }

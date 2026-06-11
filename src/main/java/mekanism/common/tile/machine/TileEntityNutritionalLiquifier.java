@@ -40,7 +40,6 @@ import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -108,7 +107,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         configComponent.setupOutputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.FLUID);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);

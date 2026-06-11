@@ -15,10 +15,12 @@ import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jspecify.annotations.Nullable;
 
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, MekanismTileContainer<TileEntityTeleporter>>
       implements ITileGuiFrequencySelector<TeleporterFrequency, TileEntityTeleporter>, IGuiColorFrequencySelector<TeleporterFrequency> {
 
+    @Nullable
     private GuiTeleporterStatus status;
 
     public GuiTeleporter(MekanismTileContainer<TileEntityTeleporter> container, Inventory inv, Component title) {
@@ -39,7 +41,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, status.getRelativeRight(), tile.getEnergySlotX());
+        renderTitleTextWithOffset(guiGraphics, status == null ? 0 : status.getRelativeRight(), tile.getEnergySlotX());
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

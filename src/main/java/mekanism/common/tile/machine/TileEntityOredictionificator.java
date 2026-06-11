@@ -25,7 +25,6 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
@@ -60,7 +59,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 

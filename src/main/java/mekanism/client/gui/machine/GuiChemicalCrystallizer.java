@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
     private final IOreInfo oreInfo = new OreInfo();
+    @Nullable
     private GuiElement inputGauge;
 
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, Inventory inv, Component title) {
@@ -48,7 +49,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
     @Override
     protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight(), tile.getEnergySlotX());
+        renderTitleTextWithOffset(guiGraphics, inputGauge == null ? 0 : inputGauge.getRelativeRight(), tile.getEnergySlotX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

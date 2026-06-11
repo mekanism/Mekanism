@@ -56,6 +56,7 @@ public class FrequencyController<FREQ extends Frequency> {
         }
     }
 
+    @Nullable
     private Codec<FrequencyLookup<FREQ>> codecForMode(SecurityMode mode) {
         return switch (mode) {
             case PUBLIC -> publicCodec;
@@ -90,6 +91,7 @@ public class FrequencyController<FREQ extends Frequency> {
         return getOrCreateLookup(securityMode, ownerUUID, trustedLookups);
     }
 
+    @Nullable
     private FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, @Nullable UUID ownerUUID, @Nullable Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
         if (!frequencyType.getControllerType().supports(securityMode) || lookupsByOwner == null) {
             Mekanism.logger.error("Attempted to access {} frequency lookup of type {}. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());

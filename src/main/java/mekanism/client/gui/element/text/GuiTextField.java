@@ -343,8 +343,9 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public void setTextColorUneditable(int color) {
+    public GuiTextField setTextColorUneditable(int color) {
         textField.setTextColorUneditable(color);
+        return this;
     }
 
     public GuiTextField setEditable(boolean enabled) {
@@ -352,13 +353,15 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public void setCanLoseFocus(boolean canLoseFocus) {
+    public GuiTextField setCanLoseFocus(boolean canLoseFocus) {
         //TODO: Improve handling of when this is set to false in regards to focus changing with tab or things
         textField.setCanLoseFocus(canLoseFocus);
+        return this;
     }
 
-    public void allowColoredText() {
+    public GuiTextField allowColoredText() {
         textField.allowColors = true;
+        return this;
     }
 
     @Override

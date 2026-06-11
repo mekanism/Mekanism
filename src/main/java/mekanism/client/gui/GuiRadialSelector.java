@@ -56,6 +56,7 @@ public class GuiRadialSelector extends Screen {
     private final EquipmentSlot slot;
 
     private RadialData<?> radialData;
+    @Nullable
     private IRadialMode selection = null;
     private boolean overBackButton = false;
     private boolean updateOnClose = true;

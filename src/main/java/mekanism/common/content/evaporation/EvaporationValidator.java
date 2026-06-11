@@ -29,7 +29,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
 
     @Override
     protected FormationResult validateFrame(FormationProtocol<EvaporationMultiblockData> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
-        boolean controller = structure.getTile(pos) instanceof TileEntityThermalEvaporationController;
+        boolean controller = structure().getTile(pos) instanceof TileEntityThermalEvaporationController;
         if (foundController && controller) {
             //Ensure we don't allow ignoring the failure as if there are multiple in the corners which are ignored spots
             // it is possible then we will form with multiple controllers
@@ -69,7 +69,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
 
     @Override
     public boolean precheck() {
-        cuboid = StructureHelper.fetchCuboid(structure, MIN_CUBOID, MAX_CUBOID, EnumSet.complementOf(EnumSet.of(CuboidSide.TOP)), 8);
+        cuboid = StructureHelper.fetchCuboid(structure(), MIN_CUBOID, MAX_CUBOID, EnumSet.complementOf(EnumSet.of(CuboidSide.TOP)), 8);
         return cuboid != null;
     }
 

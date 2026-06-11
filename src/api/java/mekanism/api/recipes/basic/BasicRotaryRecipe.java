@@ -88,24 +88,6 @@ public class BasicRotaryRecipe extends RotaryRecipe {
         return this.chemicalOutput != null;
     }
 
-    /**
-     * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
-     */
-    private void assertHasChemicalToFluid() {
-        if (!hasChemicalToFluid()) {
-            throw new IllegalStateException("This recipe has no chemical to fluid conversion.");
-        }
-    }
-
-    /**
-     * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
-     */
-    private void assertHasFluidToChemical() {
-        if (!hasFluidToChemical()) {
-            throw new IllegalStateException("This recipe has no fluid to chemical conversion.");
-        }
-    }
-
     @Override
     public boolean test(FluidStack fluidStack) {
         return hasFluidToChemical() && fluidInput.test(fluidStack);
@@ -118,40 +100,36 @@ public class BasicRotaryRecipe extends RotaryRecipe {
 
     @Override
     public FluidStackIngredient getFluidInput() {
-        assertHasFluidToChemical();
-        return fluidInput;
+        return Objects.requireNonNull(fluidInput, "This recipe has no fluid to chemical conversion.");
     }
 
     @Override
     public ChemicalStackIngredient getChemicalInput() {
-        assertHasChemicalToFluid();
-        return chemicalInput;
+        return Objects.requireNonNull(chemicalInput, "This recipe has no chemical to fluid conversion.");
     }
 
     @Override
     public List<ChemicalStackTemplate> getChemicalOutputDefinition() {
-        assertHasFluidToChemical();
-        return Collections.singletonList(chemicalOutput);
+        ChemicalStackTemplate output = Objects.requireNonNull(chemicalOutput, "This recipe has no fluid to chemical conversion.");
+        return Collections.singletonList(output);
     }
 
     @Override
     public List<FluidStackTemplate> getFluidOutputDefinition() {
-        assertHasChemicalToFluid();
-        return Collections.singletonList(fluidOutput);
+        FluidStackTemplate output = Objects.requireNonNull(fluidOutput, "This recipe has no chemical to fluid conversion.");
+        return Collections.singletonList(output);
     }
 
     @Override
     @Contract(value = "_ -> new", pure = true)
     public ChemicalStackTemplate getChemicalOutput(FluidStack input) {
-        assertHasFluidToChemical();
-        return chemicalOutput;
+        return Objects.requireNonNull(chemicalOutput, "This recipe has no fluid to chemical conversion.");
     }
 
     @Override
     @Contract(pure = true)
     public FluidStackTemplate getFluidOutput(ChemicalStack input) {
-        assertHasChemicalToFluid();
-        return fluidOutput;
+        return Objects.requireNonNull(fluidOutput, "This recipe has no chemical to fluid conversion.");
     }
 
     /**
@@ -230,7 +208,6 @@ public class BasicRotaryRecipe extends RotaryRecipe {
         }
         if (hasChemicalToFluid()) {
             hash = 31 * hash + chemicalInput.hashCode();
-            //TODO - 26.1: Validate this is fine in relation to direct codecs
             hash = 31 * hash + fluidOutput.hashCode();
         }
         return hash;

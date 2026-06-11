@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
-    private static final int RATE_LIMIT_RELATIVE_X = 77;
+    private static final int RATE_LIMIT_X = 77;
 
     public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -57,7 +57,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         }));
         //Allow for an adjusted max burn (without decimals) of one less than the actual max burn rate
         long adjustedMaxBurn = Math.max(0, tile.getMultiblock().getMaxBurnRate() - 1);
-        addRenderableWidget(new GuiTextField(this, RATE_LIMIT_RELATIVE_X, 128, 54, 12))
+        addRenderableWidget(new GuiTextField(this, RATE_LIMIT_X, 128, 54, 12))
               .setEnterHandler(this::setRateLimit)
               .setInputValidator(InputValidator.DECIMAL)
               .addCheckmarkButton(this::setRateLimit)
@@ -95,7 +95,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_RATE_LIMIT.translate(multiblock.rateLimit), 0, 90, TextAlignment.LEFT, titleTextColor(), 6, false);
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
 
-        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), RATE_LIMIT_RELATIVE_X - 2, 3, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), RATE_LIMIT_X - 2, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

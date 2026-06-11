@@ -46,7 +46,7 @@ public class FusionReactorValidator extends CuboidStructureValidator<FusionReact
     @Override
     protected FormationResult validateFrame(FormationProtocol<FusionReactorMultiblockData> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
         boolean isControllerPos = pos.getY() == cuboid.getMaxPos().getY() && pos.getX() == cuboid.getMinPos().getX() + 2 && pos.getZ() == cuboid.getMinPos().getZ() + 2;
-        boolean controller = structure.getTile(pos) instanceof TileEntityFusionReactorController;
+        boolean controller = structure().getTile(pos) instanceof TileEntityFusionReactorController;
         if (isControllerPos && !controller) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER);
         } else if (!isControllerPos && controller) {
@@ -74,7 +74,7 @@ public class FusionReactorValidator extends CuboidStructureValidator<FusionReact
     @Override
     public boolean precheck() {
         // 72 = (12 missing blocks possible on each face) * (6 sides)
-        cuboid = StructureHelper.fetchCuboid(structure, BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
+        cuboid = StructureHelper.fetchCuboid(structure(), BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
         return cuboid != null;
     }
 }

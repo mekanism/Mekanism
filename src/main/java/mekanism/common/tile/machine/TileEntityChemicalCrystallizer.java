@@ -39,7 +39,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -87,7 +86,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         configComponent.setupInputConfig(TransmissionType.CHEMICAL, inputTank);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);

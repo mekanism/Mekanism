@@ -51,7 +51,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import net.minecraft.core.BlockPos;
@@ -134,7 +133,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         configComponent.setupIOConfig(TransmissionType.FLUID, fluidTank, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.FLUID)
               .setCanEject(transmissionType -> {
                   if (transmissionType == TransmissionType.CHEMICAL) {
