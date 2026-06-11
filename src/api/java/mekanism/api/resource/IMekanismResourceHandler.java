@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -31,7 +30,6 @@ import org.jetbrains.annotations.Range;
 ///
 /// @since 10.8.0
 @FunctionalInterface
-@NothingNullByDefault
 public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends ResourceHandler<RESOURCE> {
 
     /// {@return the list of containers that this resource handler exposes}

@@ -1,7 +1,6 @@
 package mekanism.api.text;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
 
@@ -10,7 +9,6 @@ import net.minecraft.resources.Identifier;
  *
  * @apiNote These should only be accessed via their corresponding users, except for use in making it easier to not miss any entries in the DataGenerators
  */
-@NothingNullByDefault
 public enum APILang implements ILangEntry {
     //Upgrades
     UPGRADE_SPEED("upgrade", "speed"),

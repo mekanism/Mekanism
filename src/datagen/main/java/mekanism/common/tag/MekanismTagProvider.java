@@ -96,13 +96,13 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBuilder(ItemTags.PIGLIN_LOVED).add(
               MekanismBlocks.REFINED_GLOWSTONE_BLOCK.getItemHolder(),
               MekanismItems.REFINED_GLOWSTONE_INGOT,
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)
+              MekanismItems.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD)
         ).add(
               MekanismTags.Items.ENRICHED_GOLD,
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, PrimaryResource.GOLD),
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, PrimaryResource.GOLD),
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, PrimaryResource.GOLD),
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.GOLD)
+              MekanismTags.Items.getProcessedResource(ResourceType.SHARD, PrimaryResource.GOLD),
+              MekanismTags.Items.getProcessedResource(ResourceType.CRYSTAL, PrimaryResource.GOLD),
+              MekanismTags.Items.getProcessedResource(ResourceType.DIRTY_DUST, PrimaryResource.GOLD),
+              MekanismTags.Items.getProcessedResource(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
         getBuilder(MekanismTags.Items.MEKASUIT_HUD_RENDERER).add(MekanismItems.MEKASUIT_HELMET);
         getBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONES_NORMAL);
@@ -111,9 +111,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               Tags.Items.INGOTS_IRON,
               Tags.Items.INGOTS_GOLD,
               Tags.Items.INGOTS_COPPER,
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
-              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
+              MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN),
+              MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD),
               MekanismTags.Items.GEMS_FLUORITE
         );
         addEntities();
@@ -217,7 +217,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ? extends Holder<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(item.getRowKey(), item.getColumnKey());
+            TagKey<Item> tag = MekanismTags.Items.getProcessedResource(item.getRowKey(), item.getColumnKey());
             getBuilder(tag).add(item.getValue());
             getBuilder(switch (item.getRowKey()) {
                 case SHARD -> MekanismTags.Items.SHARDS;
@@ -247,10 +247,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
         //Beacon payment items
         getBuilder(ItemTags.BEACON_PAYMENT_ITEMS).add(
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
+              MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN),
+              MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD),
+              MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.URANIUM),
               MekanismItems.BRONZE_INGOT,
               MekanismItems.REFINED_OBSIDIAN_INGOT,
               MekanismItems.REFINED_GLOWSTONE_INGOT,

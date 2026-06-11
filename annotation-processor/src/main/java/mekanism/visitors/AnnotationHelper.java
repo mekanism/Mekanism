@@ -12,6 +12,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper methods for using an AnnotationMirror and getting elements by name.
@@ -36,7 +37,8 @@ public class AnnotationHelper {
      *
      * @return a raw primitive or CodeBlock representing the value
      */
-    public Object getLiteral(String key, Object defaultValue) {
+    @Nullable
+    public Object getLiteral(String key, @Nullable Object defaultValue) {
         ExecutableElement element = nameToElement.get(key);
         if (element == null) {
             return defaultValue;
@@ -61,9 +63,9 @@ public class AnnotationHelper {
             return defaultValue;
         }
         AnnotationValue value = annotationValueMap.get(element);
-        return value.accept(new SimpleAnnotationValueVisitor14<String, Void>(defaultValue) {
+        return value.accept(new SimpleAnnotationValueVisitor14<String, @Nullable Void>(defaultValue) {
             @Override
-            public String visitEnumConstant(VariableElement c, Void unused) {
+            public String visitEnumConstant(VariableElement c, @Nullable Void unused) {
                 return c.getSimpleName().toString();
             }
         }, null);
@@ -77,7 +79,8 @@ public class AnnotationHelper {
      *
      * @return the string value or the default
      */
-    public String getStringValue(String key, String defaultValue) {
+    @Nullable
+    public String getStringValue(String key, @Nullable String defaultValue) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         if (value != null && value.getValue() instanceof String s && !s.isBlank()) {
             return s;
@@ -108,6 +111,7 @@ public class AnnotationHelper {
      *
      * @return a TypeMirror or null if not a class value
      */
+    @Nullable
     public TypeMirror getClassValue(String key) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         if (value.getValue() instanceof TypeMirror tm) {
@@ -126,17 +130,19 @@ public class AnnotationHelper {
     public List<TypeMirror> getClassArray(String key) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         List<TypeMirror> returnVal = new ArrayList<>();
-        value.accept(new SimpleAnnotationValueVisitor14<Void, Void>() {
+        value.accept(new SimpleAnnotationValueVisitor14<@Nullable Void, @Nullable Void>() {
+            @Nullable
             @Override
-            public Void visitArray(List<? extends AnnotationValue> vals, Void unused) {
+            public Void visitArray(List<? extends AnnotationValue> vals, @Nullable Void unused) {
                 for (AnnotationValue annotationValue : vals) {
                     annotationValue.accept(this, null);
                 }
                 return null;
             }
 
+            @Nullable
             @Override
-            public Void visitType(TypeMirror t, Void unused) {
+            public Void visitType(TypeMirror t, @Nullable Void unused) {
                 returnVal.add(t);
                 return null;
             }
@@ -154,17 +160,19 @@ public class AnnotationHelper {
     public List<String> getStringArray(String key) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         List<String> returnVal = new ArrayList<>();
-        value.accept(new SimpleAnnotationValueVisitor14<Void, Void>() {
+        value.accept(new SimpleAnnotationValueVisitor14<@Nullable Void, @Nullable Void>() {
+            @Nullable
             @Override
-            public Void visitArray(List<? extends AnnotationValue> vals, Void unused) {
+            public Void visitArray(List<? extends AnnotationValue> vals, @Nullable Void unused) {
                 for (AnnotationValue annotationValue : vals) {
                     annotationValue.accept(this, null);
                 }
                 return null;
             }
 
+            @Nullable
             @Override
-            public Void visitString(String s, Void unused) {
+            public Void visitString(@Nullable String s, @Nullable Void unused) {
                 if (s != null && !s.isBlank()) {
                     returnVal.add(s);
                 }

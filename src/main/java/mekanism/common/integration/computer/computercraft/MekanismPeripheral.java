@@ -9,7 +9,7 @@ import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
@@ -57,7 +57,7 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return obj instanceof MekanismPeripheral<?> other && equals(other);
     }
 

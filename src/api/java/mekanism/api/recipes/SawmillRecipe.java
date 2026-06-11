@@ -3,7 +3,6 @@ package mekanism.api.recipes;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import net.minecraft.core.Holder;
@@ -15,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Input: ItemStack
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
 
     protected static final RandomSource RANDOM = RandomSource.create();

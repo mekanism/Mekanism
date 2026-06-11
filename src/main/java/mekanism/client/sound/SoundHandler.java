@@ -40,7 +40,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal with:
@@ -73,6 +74,7 @@ public class SoundHandler {
 
     private static final Long2ObjectMap<SoundInstance> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
+    @Nullable
     private static SoundEngine soundEngine;
     private static boolean hadPlayerSounds;
 
@@ -90,7 +92,7 @@ public class SoundHandler {
         gravitationalModulationSounds.remove(uuid);
     }
 
-    public static void startSound(@NotNull LevelAccessor world, @NotNull UUID uuid, @NotNull SoundType soundType) {
+    public static void startSound(LevelAccessor world, UUID uuid, SoundType soundType) {
         switch (soundType) {
             case JETPACK -> startSound(world, uuid, jetpackSounds, JetpackSound::new);
             case SCUBA_MASK -> startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
@@ -98,7 +100,7 @@ public class SoundHandler {
         }
     }
 
-    public static void startFlamethrowerSound(@NotNull Player player) {
+    public static void startFlamethrowerSound(Player player) {
         //TODO: Evaluate at some point if there is a better way to do this
         // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
         startSounds(player, flamethrowerSounds, FlamethrowerSoundActive::new, FlamethrowerSoundIdle::new);
@@ -184,13 +186,20 @@ public class SoundHandler {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
 
+    @Nullable
     public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos) {
         return startTileSound(soundEvent, category, volume, random, pos, true);
     }
 
+    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
+    private static SoundInstance getSound(long posKey) {
+        return soundMap.get(posKey);
+    }
+
+    @Nullable
     public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos, boolean looping) {
         // First, check to see if there's already a sound playing at the desired location
-        SoundInstance s = soundMap.get(pos.asLong());
+        SoundInstance s = getSound(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
@@ -207,14 +216,14 @@ public class SoundHandler {
 
             // N.B. By the time playSound returns, our expectation is that our wrapping-detector handler has fired
             // and dealt with any muting interceptions and, CRITICALLY, updated the soundMap with the final ISound.
-            s = soundMap.get(pos.asLong());
+            s = getSound(pos.asLong());
         }
         return s;
     }
 
     public static void stopTileSound(BlockPos pos) {
         long posKey = pos.asLong();
-        SoundInstance s = soundMap.get(posKey);
+        SoundInstance s = getSound(posKey);
         if (s != null) {
             // and maybe we can avoid this dedicated soundMap
             Minecraft.getInstance().getSoundManager().stop(s);
@@ -335,7 +344,7 @@ public class SoundHandler {
                 //Make sure we set our volume back to what it actually would be for purposes of letting other mods know
                 // what volume to use
                 volume = originalVolume;
-                SoundInstance s = ClientHooks.playSound(soundEngine, this);
+                SoundInstance s = soundEngine == null ? null :ClientHooks.playSound(soundEngine, this);
                 IN_MUFFLED_CHECK = false;
 
                 if (s == this) {
@@ -358,7 +367,7 @@ public class SoundHandler {
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {
-                int mufflerCount = Math.min(upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING), Upgrade.MUFFLING.getMax());
+                int mufflerCount = Math.min(upgradeTile.getUpgrades(Upgrade.MUFFLING), Upgrade.MUFFLING.getMax());
                 retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
             }
 

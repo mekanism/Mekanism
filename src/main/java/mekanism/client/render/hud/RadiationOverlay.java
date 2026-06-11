@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.gui.GuiLayer;
-import org.jetbrains.annotations.NotNull;
 
 public class RadiationOverlay implements GuiLayer {
 
@@ -28,7 +27,7 @@ public class RadiationOverlay implements GuiLayer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player != null && RadiationManager.isGlobalRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {

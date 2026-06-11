@@ -3,13 +3,12 @@ package mekanism.api.robit;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Prefab of a robit skin that requires a given advancement to be unlocked to use it.
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.4.0
  */
-@NothingNullByDefault
 public record AdvancementBasedRobitSkin(List<Identifier> textures, @Nullable Identifier customModel, Identifier advancement) implements RobitSkin {
 
     public AdvancementBasedRobitSkin {

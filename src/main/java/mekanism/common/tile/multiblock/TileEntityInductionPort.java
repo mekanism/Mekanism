@@ -20,10 +20,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing {
 
@@ -35,7 +36,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
         return ProxiedEnergyContainerHolder.create(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getEnergyContainer());
     }
@@ -59,8 +60,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendOverlayMessage(MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));

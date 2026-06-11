@@ -5,14 +5,12 @@ import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.util.ChemicalUtils;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemicalBuilder> {
 
     private final List<Consumer<ChemicalBuilder>> baseData = new ArrayList<>();

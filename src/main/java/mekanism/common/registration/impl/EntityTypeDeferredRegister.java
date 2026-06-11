@@ -2,8 +2,8 @@ package mekanism.common.registration.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
@@ -21,11 +21,13 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityType<?>> {
 
+    @Nullable
     private Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> livingEntityAttributes = new HashMap<>();
+    @Nullable
     private Map<Supplier<? extends EntityType<? extends LivingEntity>>, SpawnPlacementData<?>> livingEntityPlacements = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
@@ -44,17 +46,17 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
     }
 
     public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> register(String name, Supplier<EntityType.Builder<ENTITY>> builder,
-          Supplier<AttributeSupplier.Builder> attributes, @Nullable SpawnPlacementType placementType, @Nullable Heightmap.Types heightmap,
+          Supplier<AttributeSupplier.Builder> attributes, @Nullable SpawnPlacementType placementType, Heightmap.@Nullable Types heightmap,
           SpawnPlacements.SpawnPredicate<ENTITY> placementPredicate, RegisterSpawnPlacementsEvent.Operation placementOperation) {
         MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> entityTypeRO = register(name, builder, attributes);
-        livingEntityPlacements.put(entityTypeRO, new SpawnPlacementData<>(placementType, heightmap, placementPredicate, placementOperation));
+        Objects.requireNonNull(livingEntityPlacements).put(entityTypeRO, new SpawnPlacementData<>(placementType, heightmap, placementPredicate, placementOperation));
         return entityTypeRO;
     }
 
     public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> register(String name, Supplier<EntityType.Builder<ENTITY>> builder,
           Supplier<AttributeSupplier.Builder> attributes) {
         MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> entityTypeRO = registerBuilder(name, builder);
-        livingEntityAttributes.put(entityTypeRO, attributes);
+        Objects.requireNonNull(livingEntityAttributes).put(entityTypeRO, attributes);
         return entityTypeRO;
     }
 
@@ -63,7 +65,7 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
     }
 
     @Override
-    public void register(@NotNull IEventBus bus) {
+    public void register(IEventBus bus) {
         super.register(bus);
         bus.addListener(this::registerEntityAttributes);
         bus.addListener(this::registerPlacements);
@@ -95,7 +97,7 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
         }
     }
 
-    private record SpawnPlacementData<ENTITY extends LivingEntity>(@Nullable SpawnPlacementType placementType, @Nullable Heightmap.Types heightmap,
+    private record SpawnPlacementData<ENTITY extends LivingEntity>(@Nullable SpawnPlacementType placementType, Heightmap.@Nullable Types heightmap,
                                                                   SpawnPlacements.SpawnPredicate<ENTITY> predicate,
                                                                    RegisterSpawnPlacementsEvent.Operation operation) {
 

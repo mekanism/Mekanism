@@ -4,7 +4,6 @@ import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Optional;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.tileentity.RenderBin.BinRenderState;
@@ -35,12 +34,11 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRenderState> {
 
     private static final Matrix3f FAKE_NORMALS = Util.make(() -> {
@@ -64,7 +62,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
     }
 
     @Override
-    public void extractRenderState(TileEntityBin bin, BinRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityBin bin, BinRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(bin, state, partialTick, cameraPosition, breakProgress);
         Level level = bin.getLevel();
         BinInventorySlot binSlot = bin.getBinSlot();

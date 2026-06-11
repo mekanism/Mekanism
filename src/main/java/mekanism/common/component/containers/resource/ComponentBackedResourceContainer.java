@@ -7,7 +7,6 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.transaction.ITransactionHelper;
@@ -24,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 
 /// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
 /// on the backing item access' size.
-@NothingNullByDefault
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>>
       implements IResourceContainer<RESOURCE> {
 

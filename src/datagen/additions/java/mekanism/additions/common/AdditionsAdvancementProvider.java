@@ -23,12 +23,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.NotNull;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
     @Override
-    public void generate(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         HolderGetter<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
         HolderGetter<EntityType<?>> entityTypeLookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(AdditionsAdvancements.BALLOON)

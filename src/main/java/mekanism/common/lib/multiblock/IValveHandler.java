@@ -18,12 +18,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public interface IValveHandler {
 
-    default void writeValves(@NotNull ValueOutput output) {
+    default void writeValves(ValueOutput output) {
         TypedOutputList<PositionedValve> valveList = output.list(SerializationConstants.VALVE, PositionedValve.CODEC);
         for (Map.Entry<BlockPos, ValveData> entry : getValveData().entrySet()) {
             ValveData valveData = entry.getValue();
@@ -36,7 +35,7 @@ public interface IValveHandler {
         }
     }
 
-    default void readValves(@NotNull ValueInput input) {
+    default void readValves(ValueInput input) {
         Map<BlockPos, ValveData> valveData = getValveData();
         valveData.clear();
         for (PositionedValve valve : input.listOrEmpty(SerializationConstants.VALVE, PositionedValve.CODEC)) {
@@ -111,7 +110,7 @@ public interface IValveHandler {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(@Nullable Object obj) {
             return obj instanceof ValveData other && other.side == side;
         }
 

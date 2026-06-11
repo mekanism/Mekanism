@@ -4,8 +4,7 @@ import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.TranslationPreset;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_HOHLRAUM("server.hohlraum", "Hohlraum", "Settings for configuring Hohlraum", true),
@@ -153,7 +152,6 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
         this.button = button;
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return key;

@@ -29,7 +29,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<NucleosynthesizingRecipe> {
 
@@ -48,17 +47,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         addElement(new GuiInnerScreen(this, 45, 18, 104, 68));
         GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
         chemicalInput = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
-        addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
-            @Override
-            public long getEnergy() {
-                return 1L;
-            }
-
-            @Override
-            public long getMaxEnergy() {
-                return 1L;
-            }
-        }, GaugeType.SMALL_MED, this, 172, 18));
+        addElement(new GuiEnergyGauge(IEnergyInfoHandler.ALWAYS_FULL, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
@@ -71,7 +60,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IFocusGroup focusGroup) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
         ContextMap slotDisplayContext = getSlotDisplayContext();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations(slotDisplayContext));

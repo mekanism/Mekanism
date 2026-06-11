@@ -22,7 +22,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class ElectrolysisRecipeCategory extends HolderRecipeCategory<ElectrolysisRecipe> {
 
@@ -46,7 +45,7 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, IFocusGroup focusGroup) {
         ElectrolysisRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         List<ChemicalStackTemplate> leftDefinition = new ArrayList<>();

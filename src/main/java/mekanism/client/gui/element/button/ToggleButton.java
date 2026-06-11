@@ -8,8 +8,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ToggleButton extends MekanismImageButton {
 
@@ -23,21 +22,21 @@ public class ToggleButton extends MekanismImageButton {
     @Nullable
     private final Tooltip no;
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress) {
+    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, IClickable onPress) {
         this(gui, x, y, 18, toggled, onPress);
     }
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, @NotNull IClickable onPress) {
+    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, IClickable onPress) {
         this(gui, x, y, size, 18, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, null, null);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, Identifier toggle, Identifier flipped, BooleanSupplier toggled,
-          @NotNull IClickable onPress, @Nullable Component yes, @Nullable Component no) {
+          IClickable onPress, @Nullable Component yes, @Nullable Component no) {
         this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, yes, no);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, Identifier toggle, Identifier flipped,
-          BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable Component yes, @Nullable Component no) {
+          BooleanSupplier toggled, IClickable onPress, @Nullable Component yes, @Nullable Component no) {
         super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress);
         this.toggled = toggled;
         this.flipped = flipped;

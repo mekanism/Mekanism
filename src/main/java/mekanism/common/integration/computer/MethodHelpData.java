@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.filter.IFilter;
@@ -27,10 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.apache.commons.lang3.ClassUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction,
                              boolean requiresPublicSecurity) {
 
@@ -55,12 +52,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         return new MethodHelpData(data.name(), params, Returns.from(data), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
     }
 
-    @NotNull
     private static String getHumanType(Class<?> clazz) {
         return getHumanType(clazz, NO_CLASSES);
     }
 
-    @NotNull
     public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || clazz.isEnum()) {
             return "String (" + clazz.getSimpleName() + ")";
@@ -131,7 +126,6 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
               Codec.STRING.listOf().optionalFieldOf(SerializationConstants.VALUES, null).forGetter(Param::values)*/
         ).apply(instance, Param::new));
 
-        @NotNull
         private static Param from(Class<?> argClass, String paramName) {
             return new Param(paramName, getHumanType(argClass), argClass, getEnumConstantNames(argClass));
         }
@@ -163,7 +157,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

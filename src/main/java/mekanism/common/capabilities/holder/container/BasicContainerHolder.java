@@ -10,8 +10,7 @@ import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.common.capabilities.holder.BasicHolder;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BasicContainerHolder<CONTAINER> extends BasicHolder implements IContainerHolder<CONTAINER> {
 
@@ -23,7 +22,7 @@ public class BasicContainerHolder<CONTAINER> extends BasicHolder implements ICon
         super(facingSupplier, insertPredicate, extractPredicate);
     }
 
-    void addContainer(@NotNull CONTAINER container, RelativeSide... sides) {
+    void addContainer(CONTAINER container, RelativeSide... sides) {
         containers.add(container);
         if (sides.length > 0) {
             if (directionalContainers.isEmpty()) {//Lazily initialize the map in case our holder has no directional containers
@@ -35,7 +34,6 @@ public class BasicContainerHolder<CONTAINER> extends BasicHolder implements ICon
         }
     }
 
-    @NotNull
     @Override
     public List<CONTAINER> getContainers(@Nullable Direction side) {
         if (side == null || directionalContainers.isEmpty()) {

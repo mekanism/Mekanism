@@ -7,8 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ContainerProvider implements MenuProvider {
 
@@ -33,11 +32,10 @@ public class ContainerProvider implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inv, @NotNull Player player) {
+    public AbstractContainerMenu createMenu(int i, Inventory inv, Player player) {
         return provider.createMenu(i, inv, player);
     }
 
-    @NotNull
     @Override
     public Component getDisplayName() {
         return displayName;

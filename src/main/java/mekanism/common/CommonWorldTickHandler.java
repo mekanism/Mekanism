@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class CommonWorldTickHandler {
 
@@ -41,7 +41,9 @@ public class CommonWorldTickHandler {
 
     //TODO: I believe this may be fine as is with just the load and save methods being synchronized
     // but there is a chance this is not the case in which case we should adjust how this is done
+    @Nullable
     private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//TODO - 26.1 move this to chunk attachment
+    @Nullable
     private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;//TODO - 26.1: move this to a level attachment
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
@@ -158,7 +160,7 @@ public class CommonWorldTickHandler {
                 for (ServerPlayer player : world.players()) {
                     if (player.containerMenu instanceof PortableQIODashboardContainer qioDashboard) {
                         for (byte index = 0; index < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; index++) {
-                            qioDashboard.getCraftingWindow(index).invalidateRecipe();
+                            qioDashboard.getCraftingWindow(index).invalidateRecipe(world);
                         }
                     }
                 }

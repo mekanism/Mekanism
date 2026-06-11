@@ -6,17 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Inventory for Personal Storages when an item. Handled by the Block when placed in world.
  */
-@NothingNullByDefault
 public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInventory {
 
     public static final Codec<PersonalStorageItemInventory> CODEC = SlotData.CODEC

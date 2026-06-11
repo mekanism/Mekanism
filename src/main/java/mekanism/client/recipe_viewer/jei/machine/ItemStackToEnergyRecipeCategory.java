@@ -24,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemStackToEnergyRecipe> {
 
@@ -41,7 +40,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipeHolder.value().getInput().getRepresentations(getSlotDisplayContext()))
               .setSlotName(INPUT);
     }

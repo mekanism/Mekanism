@@ -4,6 +4,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jspecify.annotations.Nullable;
 
 public enum FluidTankTier implements IStorageTier {//TODO - 26.1: Do we want to change capacities to match chemicals?
     BASIC(BaseTier.BASIC, 32L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
@@ -15,7 +16,9 @@ public enum FluidTankTier implements IStorageTier {//TODO - 26.1: Do we want to 
     private final long baseCapacity;
     private final int baseTransferRate;
     private final BaseTier baseTier;
+    @Nullable
     private CachedLongValue capacityReference;
+    @Nullable
     private CachedIntValue transferRateReference;
 
     FluidTankTier(BaseTier tier, long capacity, int transferRate) {

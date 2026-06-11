@@ -3,7 +3,6 @@ package mekanism.common.registration.impl;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.component.containers.type.ContainerType;
@@ -32,7 +31,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
-@NothingNullByDefault
 public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemDeferredRegister(String modid) {

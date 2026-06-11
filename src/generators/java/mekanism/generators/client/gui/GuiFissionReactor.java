@@ -34,15 +34,9 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, MekanismTileContainer<TileEntityFissionReactorCasing>> {
-
-    private TranslationButton activateButton;
-    private TranslationButton scramButton;
-
-    private GuiDoubleGraph heatGraph;
 
     public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 19, DEFAULT_IMAGE_HEIGHT + 89);
@@ -78,7 +72,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        activateButton = addRenderableWidget(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
+        addRenderableWidget(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
                     ((GuiFissionReactor) element.gui()).tile, 1)), () -> EnumColor.DARK_GREEN) {
             @Override
@@ -100,10 +94,14 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                     active = false;
                 }
             }
+        }).setCheckActive(() -> {
+            FissionReactorMultiblockData multiblock = tile.getMultiblock();
+            return !multiblock.isActive() && !multiblock.isForceDisabled();
         });
-        scramButton = addRenderableWidget(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
+        addRenderableWidget(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
-                    ((GuiFissionReactor) element.gui()).tile, 0)), () -> EnumColor.DARK_RED));
+                    ((GuiFissionReactor) element.gui()).tile, 0)), () -> EnumColor.DARK_RED))
+              .setCheckActive(() -> tile.getMultiblock().isActive());
         addRenderableWidget(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
@@ -116,32 +114,18 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
         }, 5, 102, imageWidth - 12));
-        heatGraph = addRenderableWidget(new GuiDoubleGraph(this, 5, 123, imageWidth - 10, 38,
-              temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)));
-        heatGraph.setMinScale(1_600);
-        updateButtons();
-    }
-
-    private void updateButtons() {
-        FissionReactorMultiblockData multiblock = tile.getMultiblock();
-        activateButton.active = !multiblock.isActive() && !multiblock.isForceDisabled();
-        scramButton.active = multiblock.isActive();
+        addRenderableWidget(new GuiDoubleGraph(this, 5, 123, imageWidth - 10, 38, () -> tile.getMultiblock().heatCapacitor.getTemperature(),
+              temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)))
+              .setMinScale(1_600);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        updateButtons();
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         drawScrollingString(guiGraphics, MekanismLang.TEMPERATURE_LONG.translate(""), 0, 93, TextAlignment.LEFT, titleTextColor(), 5, false);
         drawScrollingString(guiGraphics, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 0, 114, TextAlignment.LEFT, titleTextColor(), 5, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    public void containerTick() {
-        super.containerTick();
-        heatGraph.addData(tile.getMultiblock().heatCapacitor.getTemperature());
     }
 
     @Override

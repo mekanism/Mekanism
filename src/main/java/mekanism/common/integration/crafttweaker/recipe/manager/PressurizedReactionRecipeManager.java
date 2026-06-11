@@ -16,8 +16,8 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.world.item.ItemStackTemplate;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
-import org.openzen.zencode.java.ZenCodeType.Nullable;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_REACTION)
@@ -163,7 +163,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      *                       recipe.
      */
     public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ItemStackTemplate outputItem, ChemicalStackTemplate outputChemical, int energyRequired) {
+          int duration, @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical, int energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }

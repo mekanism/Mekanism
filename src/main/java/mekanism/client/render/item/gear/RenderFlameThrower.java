@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelFlamethrower;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderFlameThrower implements NoDataSpecialModelRenderer {
 
     private final ModelFlamethrower flamethrower;

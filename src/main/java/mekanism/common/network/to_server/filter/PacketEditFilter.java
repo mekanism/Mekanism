@@ -14,8 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FILTER filter, @Nullable FILTER edited) implements IMekanismPacket {
 
@@ -27,6 +26,7 @@ public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FIL
           (pos, filter, edited) -> unchecked(pos, filter, edited.orElse(null))
     );
 
+    @SuppressWarnings("unchecked")
     private static <FILTER extends IFilter<FILTER>> PacketEditFilter<FILTER> unchecked(BlockPos pos, IFilter<?> filter, @Nullable IFilter<?> edited) {
         if (edited != null && edited.getFilterType() != filter.getFilterType()) {
             throw new DecoderException("Expected filter and edited filter to be of the same type");
@@ -34,7 +34,11 @@ public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FIL
         return new PacketEditFilter<>(pos, (FILTER) filter, (FILTER) edited);
     }
 
-    @NotNull
+    @SuppressWarnings("Convert2Diamond")//Confuses IntelliJ about the nullability state
+    public static <FILTER extends IFilter<FILTER>> PacketEditFilter<FILTER> delete(BlockPos pos, FILTER filter) {
+        return new PacketEditFilter<FILTER>(pos, filter, null);
+    }
+
     @Override
     public CustomPacketPayload.Type<PacketEditFilter<?>> type() {
         return TYPE;

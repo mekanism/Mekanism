@@ -17,7 +17,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<FluidChemicalToChemicalRecipe> {
 
@@ -36,7 +35,7 @@ public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder, IFocusGroup focusGroup) {
         FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
         ContextMap slotDisplayContext = getSlotDisplayContext();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations(slotDisplayContext));

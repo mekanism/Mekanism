@@ -1,7 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -11,7 +10,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.tags.TagKey;
 
-@NothingNullByDefault
 public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> {
 
     @Override

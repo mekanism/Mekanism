@@ -6,9 +6,11 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -28,11 +30,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -83,6 +87,9 @@ public class FormationProtocol<T extends MultiblockData> {
     public FormationResult doUpdate() {
         IStructureValidator<T> validator = multiblockType.createValidator();
         Level world = pointer.getLevel();
+        if (world == null) {
+            return FormationResult.FAIL;
+        }
         validator.init(world, manager, multiblockType, structure);
         if (!validator.precheck()) {
             return FormationResult.FAIL;
@@ -110,7 +117,7 @@ public class FormationProtocol<T extends MultiblockData> {
                     }
                 }
                 //Replace the caches for all the old ids with a singular merged cache with our desired id
-                manager.replaceCaches(result.idsFound().keySet(), idToUse, cache);
+                manager.replaceCaches(result.idsFound().keySet(), idToUse, Objects.requireNonNull(cache, "Tried to merge multiblock caches but couldn't find a cache?"));
                 if (!rejectContents.rejectedItems.isEmpty()) {
                     //TODO - 1.20.4: Don't drop it in the center if there is no nearest player, maybe drop it on top of the multiblock? Or to one of the sides
                     Vec3 dropPosition = pointerPos.getCenter();
@@ -171,16 +178,18 @@ public class FormationProtocol<T extends MultiblockData> {
     }
 
     @FunctionalInterface
-    public interface FormationChecker<NODE> {
+    public interface FormationChecker<LEVEL extends BlockGetter, NODE extends @Nullable Object> {
 
-        boolean check(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
+        boolean check(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
     }
 
-    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker) {
+    public static <LEVEL extends BlockGetter, NODE extends @Nullable Object> int explore(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node,
+          FormationChecker<LEVEL, NODE> checker) {
         return explore(level, chunkMap, start, node, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
     }
 
-    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker, int maxCount) {
+    public static <LEVEL extends BlockGetter, NODE extends @Nullable Object> int explore(LEVEL level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node,
+          FormationChecker<LEVEL, NODE> checker, int maxCount) {
         if (!checker.check(level, chunkMap, start, node, start)) {
             return 0;
         }
@@ -213,11 +222,12 @@ public class FormationProtocol<T extends MultiblockData> {
         public static final FormationResult SUCCESS = new FormationResult(true, null, false);
         public static final FormationResult FAIL = new FormationResult(false, null, false);
 
+        @Nullable
         private final Component resultText;
         private final boolean formed;
         private final boolean noIgnore;
 
-        private FormationResult(boolean formed, Component resultText, boolean noIgnore) {
+        private FormationResult(boolean formed, @Nullable Component resultText, boolean noIgnore) {
             this.formed = formed;
             this.resultText = resultText;
             this.noIgnore = noIgnore;
@@ -263,20 +273,21 @@ public class FormationProtocol<T extends MultiblockData> {
             return noIgnore;
         }
 
+        @Nullable
         public Component getResultText() {
             return resultText;
         }
     }
 
     private StructureResult<T> fail(FormationResult result) {
-        return new StructureResult<>(result, null, null);
+        return new StructureResult<>(result, null, Collections.emptyMap());
     }
 
     private StructureResult<T> form(T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
         return new StructureResult<>(FormationResult.SUCCESS, structureFound, idsFound);
     }
 
-    private record StructureResult<T extends MultiblockData>(FormationResult result, T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
+    private record StructureResult<T extends MultiblockData>(FormationResult result, @Nullable T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
     }
 
     public enum CasingType {

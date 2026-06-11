@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -24,7 +23,6 @@ import java.lang.reflect.Method;
  *
  * @param <T> the "subject" that this Factory's methods operate on.
  */
-@ParametersAreNotNullByDefault
 public class ComputerMethodFactory<T> {
 
     protected static String[] NO_STRINGS = new String[0];

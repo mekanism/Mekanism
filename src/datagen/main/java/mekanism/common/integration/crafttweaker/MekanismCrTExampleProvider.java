@@ -65,7 +65,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
@@ -141,7 +140,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 200),
-                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).asTemplate())
+                    MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM).asTemplate())
               .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismAPITags.Chemicals.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
@@ -328,7 +327,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Gas Conversion Recipe that allows converting Osmium Nuggets into 22 mB of Osmium.")
               .blankLine()
               .recipe(ChemicalConversionRecipeManager.INSTANCE)
-              .addExample("gas_conversion/osmium_from_nugget", IngredientCreatorAccess.item().from(items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
+              .addExample("gas_conversion/osmium_from_nugget", IngredientCreatorAccess.item().from(items, MekanismTags.Items.getProcessedResource(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
                     MekanismChemicals.OSMIUM.asTemplate(22))
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
@@ -505,7 +504,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     private record JEIHidingComponent(CrTImportsComponent imports, Holder<Chemical> chemicalProvider,
                                       Function<ChemicalStack, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
-        @NotNull
         @Override
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
@@ -515,7 +513,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private record SimpleCustomChemicalComponent(String type, String constructor, String name, int color) implements ICrTExampleComponent {
 
-        @NotNull
         @Override
         public String asString() {
             return type + '.' + constructor + "().tint(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";

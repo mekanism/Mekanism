@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
@@ -12,10 +11,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketWindowSelect> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("window_select"));
@@ -35,7 +32,6 @@ public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) im
         );
     });
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketWindowSelect> type() {
         return TYPE;

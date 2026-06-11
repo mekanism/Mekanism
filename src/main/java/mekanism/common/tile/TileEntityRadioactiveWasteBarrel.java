@@ -8,13 +8,13 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.proxy.BelowContainerCache;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -32,12 +32,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
     private long lastProcessTick;
+    @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                         "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel chemicalTank;
@@ -52,7 +53,6 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         delaySupplier = NO_DELAY;
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSide(facingSupplier);
@@ -61,11 +61,12 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
-        if (level.getGameTime() > lastProcessTick) {
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
+        long gameTime = level.getGameTime();
+        if (gameTime > lastProcessTick) {
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
-            lastProcessTick = level.getGameTime();
+            lastProcessTick = gameTime;
             if (!chemicalTank.isEmpty()) {
                 ChemicalResource chemicalType = chemicalTank.resource();
                 int decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();
@@ -80,7 +81,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             }
             if (getActive()) {
                 if (belowTankCache == null) {
-                    belowTankCache = new BelowContainerCache<>(Capabilities.CHEMICAL, (ServerLevel) level, worldPosition);
+                    belowTankCache = new BelowContainerCache<>(Capabilities.CHEMICAL, level, worldPosition);
                 }
                 int toEmit = chemicalTank.amountAsInt();
                 IChemicalTank below = belowTankCache.getContainer(StackedWasteBarrel.class);
@@ -100,7 +101,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public void setLevel(@NotNull Level world) {
+    public void setLevel(Level world) {
         super.setLevel(world);
         //Invalidate the cache as if the level changed then it might no longer be valid
         belowTankCache = null;
@@ -115,31 +116,28 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             setActive(!getActive());
-            Level world = getLevel();
-            if (world != null) {
-                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
-            }
+            level.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public InteractionResult onRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putChild(SerializationConstants.CHEMICAL, chemicalTank);
         output.putInt(SerializationConstants.PROGRESS, processTicks);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.CHEMICAL, chemicalTank);
         processTicks = input.getIntOr(SerializationConstants.PROGRESS, processTicks);

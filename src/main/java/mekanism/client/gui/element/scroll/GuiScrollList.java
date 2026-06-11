@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
@@ -38,7 +37,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     protected abstract void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the background
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, background, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
@@ -49,7 +48,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         if (event.x() >= getX() + 1 && event.x() < getX() + barXShift - 1 && event.y() >= getY() + 1 && event.y() < getBottom() - 1) {
             int index = getCurrentSelection();

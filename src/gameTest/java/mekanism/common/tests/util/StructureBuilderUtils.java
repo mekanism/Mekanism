@@ -3,7 +3,6 @@ package mekanism.common.tests.util;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -24,10 +23,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO: PR support to make custom StructureTemplateBuilders to Neo?
-@NothingNullByDefault
 public class StructureBuilderUtils {
 
     private StructureBuilderUtils() {

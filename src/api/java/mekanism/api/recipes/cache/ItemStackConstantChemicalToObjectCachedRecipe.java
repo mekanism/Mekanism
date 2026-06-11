@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -14,19 +13,17 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base class to help implement handling of item chemical to object recipes. Unlike {@link TwoInputCachedRecipe} this variant has constant chemical usage.
  *
  * @since 10.7.0
  */
-@NothingNullByDefault
 public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT>> extends CachedRecipe<RECIPE> {
 
-    private final IOutputHandler<@NotNull OUTPUT> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
+    private final IOutputHandler<OUTPUT> outputHandler;
+    private final IInputHandler<Item, ItemStack> itemInputHandler;
     private final IInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
     private final ChemicalUsageMultiplier chemicalUsage;
     private final IntConsumer chemicalUsedSoFarChanged;
@@ -49,9 +46,9 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      * @param chemicalUsedSoFarChanged Called when the number chemical usage so far changes.
      * @param outputHandler            Output handler.
      */
-    public ItemStackConstantChemicalToObjectCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler,
+    public ItemStackConstantChemicalToObjectCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemStack> itemInputHandler,
           IInputHandler<Chemical, ChemicalStack> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, IntConsumer chemicalUsedSoFarChanged,
-          IOutputHandler<@NotNull OUTPUT> outputHandler) {
+          IOutputHandler<OUTPUT> outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");

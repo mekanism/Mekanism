@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -23,10 +22,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
 
@@ -86,7 +85,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    private void readModes(@NotNull ValueInput input) {
+    private void readModes(ValueInput input) {
         Optional<int[]> optionalModes = input.getIntArray(SerializationConstants.MODE);
         if (optionalModes.isPresent()) {
             int[] modeIndices = optionalModes.get();
@@ -96,7 +95,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    private void writeModes(@NotNull ValueOutput output) {
+    private void writeModes(ValueOutput output) {
         int[] modeIndices = new int[modes.length];
         for (int i = 0; i < modes.length; i++) {
             modeIndices[i] = modes[i].ordinal();
@@ -105,25 +104,25 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         readModes(input);
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         writeModes(output);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         writeModes(output);
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull ValueInput input) {
+    public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         readModes(input);
         return refreshModelData;
@@ -157,7 +156,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Level level, Player player, Direction side) {
         side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
@@ -166,7 +165,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public boolean exposesInsertCap(@NotNull Direction side) {
+    public boolean exposesInsertCap(Direction side) {
         return super.exposesInsertCap(side) && modeReqsMet(side);
     }
 
@@ -193,7 +192,6 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         return WorldUtils.isGettingPowered(getLevel(), getBlockPos());
     }
 
-    @NothingNullByDefault
     public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasEnumNameTextComponent {
         DISABLED(MekanismLang.DIVERSION_CONTROL_DISABLED),
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),

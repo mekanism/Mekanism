@@ -24,20 +24,24 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
+    @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded",
                                                                                      "getBioFuelFilledPercentage"}, docPlaceholder = "biofuel tank")
     public BasicFluidTank bioFuelTank;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel slot")
     FluidFuelInventorySlot fuelSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item")
     EnergyInventorySlot energySlot;
     private float lastFluidScale;
@@ -46,7 +50,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         super(GeneratorsBlocks.BIO_GENERATOR, pos, state);
     }
 
-    private static int biofuelFromItem(@NotNull ItemResource itemType) {
+    private static int biofuelFromItem(ItemResource itemType) {
         if (itemType.is(MekanismTags.Items.FUELS_BIO)) {
             return MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
         } else if (itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
@@ -55,7 +59,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         return 0;
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
@@ -65,7 +68,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -77,8 +79,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.drainContainerIntoSlot(null);
         fuelSlot.fillOrBurn(null);
         boolean isActive = false;
@@ -104,14 +106,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         //TODO - 26.1: Do we want to further trim this and similar cases by skipping adding the fluid key if the tank is empty?
         output.putChild(SerializationConstants.FLUID, bioFuelTank);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.FLUID, bioFuelTank);
     }

@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 import mekanism.AllJar
 import mekanism.MergeModuleResources
 import mekanism.OptimizePng
+import neoforge.GeneratePackageInfos
 import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
@@ -691,6 +692,19 @@ artifacts {
     archives toolsJar
     archives allJar
     archives sourcesJar
+}
+
+tasks.register('generatePackageInfos', GeneratePackageInfos) {
+    files.from(sourceSets.api.java.srcDirTrees)
+    files.from(sourceSets.gameTest.java.srcDirTrees)
+    files.from(sourceSets.test.java.srcDirTrees)
+    def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
+    for (def sourceSet : sourceSets) {
+        files.from(sourceSet.java.srcDirTrees)
+        for (String extraType : extraTypes) {
+            files.from(getExtraSourceSet(sourceSet, extraType).get().java.srcDirTrees)
+        }
+    }
 }
 
 tasks.register('optimizePng', OptimizePng) {

@@ -8,7 +8,6 @@ import mezz.jei.api.recipe.IRecipeManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends BaseRecipeCategory<RecipeHolder<RECIPE>> {
 
@@ -16,7 +15,6 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
         super(helper, MekanismJEI.holderRecipeType(recipeType), recipeType.getTextComponent(), createIcon(helper, recipeType), recipeType.xOffset(), recipeType.yOffset(), recipeType.width(), recipeType.height());
     }
 
-    @NotNull
     @Override
     public Identifier getIdentifier(RecipeHolder<RECIPE> recipe) {
         return recipe.id().identifier();

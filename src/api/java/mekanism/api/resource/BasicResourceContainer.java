@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
@@ -20,7 +19,6 @@ import org.jspecify.annotations.Nullable;
 /// @param <RESOURCE> The type of resource this container manages.
 ///
 /// @since 10.8.0
-@NothingNullByDefault
 public abstract class BasicResourceContainer<RESOURCE extends Resource> extends SnapshotJournal<LargeResourceStack<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     private final BiPredicate<RESOURCE, AutomationType> canExtract;

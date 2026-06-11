@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.Objects;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -24,6 +23,6 @@ public class ItemStackToItemStackRecipeMapper extends TypedMekanismRecipeMapper<
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forItems, null, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forItems, TypedMekanismRecipeMapper::addConversion);
     }
 }

@@ -6,7 +6,6 @@ import moze_intel.projecte.api.data.CustomConversionProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import org.jetbrains.annotations.NotNull;
 
 public class MekanismCustomConversions extends CustomConversionProvider {
 
@@ -15,7 +14,7 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     }
 
     @Override
-    protected void addCustomConversions(@NotNull HolderLookup.Provider registries) {
+    protected void addCustomConversions(HolderLookup.Provider registries) {
         //TODO - 26.1: Enable after ProjectE is updated
         /*createConversionBuilder(Mekanism.rl("defaults"))
               .comment("Default values for Mekanism items.")

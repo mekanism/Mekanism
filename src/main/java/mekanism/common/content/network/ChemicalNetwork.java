@@ -13,8 +13,8 @@ import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
@@ -32,8 +32,11 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
 
     @Override
     protected void disperse(PressurizedTube triggerTransmitter, ChemicalResource resource, long amount) {
-        // Handle radiation leakage
-        IRadiationManager.INSTANCE.dumpRadiation(triggerTransmitter.getLevel(), triggerTransmitter.getBlockPos(), resource, amount);
+        Level level = triggerTransmitter.getLevel();
+        if (level != null) {
+            // Handle radiation leakage
+            IRadiationManager.INSTANCE.dumpRadiation(level, triggerTransmitter.getBlockPos(), resource, amount);
+        }
     }
 
     @Override
@@ -51,7 +54,6 @@ public class ChemicalNetwork extends DynamicBufferedResourceNetwork<ChemicalReso
         return TextComponentUtil.build(container.getNeededAsLong(ChemicalResource.EMPTY));
     }
 
-    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmittersSize(), getAcceptorCount());

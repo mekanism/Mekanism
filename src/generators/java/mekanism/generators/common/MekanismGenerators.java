@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import java.util.Objects;
 import mekanism.api.MekanismIMC;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -28,12 +29,14 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismGenerators.MODID)
 public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
 
+    @Nullable
     public static MekanismGenerators instance;
 
     /**
@@ -69,7 +72,7 @@ public class MekanismGenerators implements IModModule {
     }
 
     public static GeneratorsPacketHandler packetHandler() {
-        return instance.packetHandler;
+        return Objects.requireNonNull(instance).packetHandler;
     }
 
     public static Identifier rl(String path) {

@@ -5,6 +5,7 @@ import mekanism.common.component.containers.type.IContainerType;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityFusionReactorController extends TileEntityFusionReactorBlock {
@@ -15,8 +16,8 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     }
 
     @Override
-    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         setActive(multiblock.isFormed());
         return needsPacket;
     }

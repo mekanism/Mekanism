@@ -34,9 +34,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class AdditionsModelProvider extends BaseModelProvider {
 
     public AdditionsModelProvider(PackOutput output, ResourceManager clientResources) {

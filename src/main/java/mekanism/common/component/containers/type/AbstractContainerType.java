@@ -3,7 +3,6 @@ package mekanism.common.component.containers.type;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.core.component.DataComponentGetter;
@@ -18,7 +17,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializable, ATTACHED> implements IContainerType<CONTAINER, ATTACHED> {
 
     private final Map<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();

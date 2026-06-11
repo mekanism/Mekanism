@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBalloon extends Item {
 
@@ -41,9 +40,8 @@ public class ItemBalloon extends Item {
         return color;
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
             boolean rightHand = MekanismUtils.isRightArm(player, hand);
@@ -59,9 +57,8 @@ public class ItemBalloon extends Item {
         return InteractionResult.SUCCESS_SERVER;
     }
 
-    @NotNull
     @Override
-    public Component getName(@NotNull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBalloon balloon) {
             return TextComponentUtil.build(balloon.getColor(), super.getName(stack));
@@ -69,7 +66,6 @@ public class ItemBalloon extends Item {
         return super.getName(stack);
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -110,9 +106,8 @@ public class ItemBalloon extends Item {
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             Level level = player.level();
             if (!level.isClientSide()) {
@@ -145,9 +140,8 @@ public class ItemBalloon extends Item {
             this.color = color;
         }
 
-        @NotNull
         @Override
-        public ItemStack execute(BlockSource source, @NotNull ItemStack stack) {
+        public ItemStack execute(BlockSource source, ItemStack stack) {
             Direction side = source.state().getValue(DispenserBlock.FACING);
             BlockPos sourcePos = source.pos();
             BlockPos offsetPos = sourcePos.relative(side);

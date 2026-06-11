@@ -11,7 +11,7 @@ import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PathfinderCache {
 
@@ -29,14 +29,14 @@ public class PathfinderCache {
     public static CachedPath addCachedPath(LogisticalTransporterBase start, BlockPos destination, Pathfinder pathfinder) {
         CachedPath cachedPath = new CachedPath(pathfinder.getPath(), pathfinder.getFinalScore());
         PathData data = new PathData(start.getBlockPos(), destination, pathfinder.getSide());
-        cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new HashMap<>()).put(data, cachedPath);
+        cachedPaths.computeIfAbsent(start.getTransmitterNetworkNN().getUUID(), _ -> new HashMap<>()).put(data, cachedPath);
         return cachedPath;
     }
 
     @Nullable
-    public static CachedPath getCache(LogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
+    public static CachedPath getCache(InventoryNetwork network,  LogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
         CachedPath ret = null;
-        UUID uuid = start.getTransmitterNetwork().getUUID();
+        UUID uuid = network.getUUID();
         Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
         if (pathMap != null) {
             BlockPos startPos = start.getBlockPos();
@@ -54,7 +54,7 @@ public class PathfinderCache {
 
     @Nullable
     public static CachedPath getSingleCache(LogisticalTransporterBase start, BlockPos end, Direction side) {
-        UUID uuid = start.getTransmitterNetwork().getUUID();
+        UUID uuid = start.getTransmitterNetworkNN().getUUID();
         Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
         if (pathMap != null) {
             BlockPos startPos = start.getBlockPos();
@@ -70,6 +70,6 @@ public class PathfinderCache {
     public record CachedPath(LongList path, double cost) {
     }
 
-    private record PathData(BlockPos startTransporter, BlockPos end, Direction endSide) {
+    private record PathData(BlockPos startTransporter, BlockPos end, @Nullable Direction endSide) {
     }
 }

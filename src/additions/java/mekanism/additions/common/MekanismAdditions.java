@@ -36,13 +36,14 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModModule {
 
     public static final String MODID = "mekanismadditions";
 
+    @Nullable
     public static MekanismAdditions instance;
 
     /**
@@ -53,6 +54,7 @@ public class MekanismAdditions implements IModModule {
     /**
      * The VoiceServer manager for walkie-talkies
      */
+    @Nullable
     public static VoiceServerManager voiceManager;
 
     public MekanismAdditions(ModContainer modContainer, IEventBus modEventBus) {
@@ -104,9 +106,8 @@ public class MekanismAdditions implements IModModule {
         event.enqueueWork(() -> {
             //Dispenser behavior
             DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
-                @NotNull
                 @Override
-                protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+                protected ItemStack execute(BlockSource source, ItemStack stack) {
                     BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
                     if (BlockObsidianTNT.createAndAddEntity(source.level(), blockpos, null)) {
                         source.level().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
@@ -118,9 +119,8 @@ public class MekanismAdditions implements IModModule {
                 }
             });
             DefaultDispenseItemBehavior balloonBehavior = new DefaultDispenseItemBehavior() {
-                @NotNull
                 @Override
-                protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+                protected ItemStack execute(BlockSource source, ItemStack stack) {
                     ServerLevel level = source.level();
                     Position position = DispenserBlock.getDispensePosition(source, 1, new Vec3(-0.5, -3.5, -0.5));
                     EntityBalloon balloon = EntityBalloon.create(level, position.x(), position.y(), position.z(), ((ItemBalloon) stack.getItem()).getColor());

@@ -23,7 +23,7 @@ public class EmiStackUnderMouseProvider implements EmiStackProvider<Screen> {
                     case FluidStack stack -> emiStack = NeoForgeEmiStack.of(stack);
                     case ChemicalStack stack -> emiStack = new ChemicalEmiStack(stack);
                     default -> {
-                        return null;
+                        return EmiStackInteraction.EMPTY;
                     }
                 }
                 return new EmiStackInteraction(emiStack, null, false);

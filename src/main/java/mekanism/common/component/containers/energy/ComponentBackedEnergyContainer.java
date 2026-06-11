@@ -7,7 +7,6 @@ import java.util.function.LongToIntFunction;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
@@ -18,12 +17,11 @@ import mekanism.common.component.containers.type.EnergyContainerType;
 import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
 /// on the backing item access' size.
-@NothingNullByDefault
 public class ComponentBackedEnergyContainer extends SimpleComponentBackedContainer<Long> implements IEnergyContainer {
 
     private final Predicate<AutomationType> canExtract;

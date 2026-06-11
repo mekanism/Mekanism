@@ -44,18 +44,18 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ITripleRecipeLookupHandler.ItemFluidChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> implements
       ItemFluidChemicalRecipeLookupHandler<PressurizedReactionRecipe> {
@@ -78,27 +78,34 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
+    @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
                                                                                      "getInputFluidFilledPercentage"}, docPlaceholder = "fluid input")
     public BasicFluidTank inputFluidTank;
+    @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputGas", "getInputGasCapacity", "getInputGasNeeded",
                                                                                         "getInputGasFilledPercentage"}, docPlaceholder = "gas input")
     public IChemicalTank inputGasTank;
+    @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutputGas", "getOutputGasCapacity", "getOutputGasNeeded",
                                                                                         "getOutputGasFilledPercentage"}, docPlaceholder = "gas output")
     public IChemicalTank outputGasTank;
 
     private int recipeEnergyRequired = 0;
-    private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
-    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
+    private final IOutputHandler<PressurizedReactionRecipeOutput> outputHandler;
+    private final IInputHandler<Item, ItemStack> itemInputHandler;
+    private final IInputHandler<Fluid, FluidStack> fluidInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> gasInputHandler;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private PRCEnergyContainer energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "item input slot")
     InputInventorySlot inputSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "item output slot")
     OutputInventorySlot outputSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -109,7 +116,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputGasTank, outputGasTank, false, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != inputGasTank);
 
@@ -119,7 +125,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         outputHandler = OutputHelper.getOutputHandler(outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR, outputGasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -131,7 +136,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithFluidConfig(this);
@@ -141,12 +145,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         energyContainer = PRCEnergyContainer.input(this, recipeCacheUnpauseListener);
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -182,8 +185,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
@@ -193,7 +196,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return recipeEnergyRequired;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<PressurizedReactionRecipe>> getRecipeType() {
         return MekanismRecipeType.REACTION;
@@ -210,9 +212,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return findFirstRecipe(itemInputHandler, fluidInputHandler, gasInputHandler);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(@NotNull PressurizedReactionRecipe recipe, int cacheIndex) {
+    public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(PressurizedReactionRecipe recipe, int cacheIndex) {
         return new PressurizedReactionCachedRecipe(recipe, recheckAllRecipeErrors, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

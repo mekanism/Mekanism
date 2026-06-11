@@ -42,7 +42,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
 
     private void setMachineData(FactoryTier tier) {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
-        AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
+        AttributeEnergy origEnergy = origMachine.getOrThrow(AttributeEnergy.class);
         add(new AttributeEnergy(origEnergy::getUsage, () -> MathUtils.clampToLong(Math.max(origEnergy.getConfigStorage() * 0.5, origEnergy.getUsage()) * tier.processes)));
     }
 

@@ -10,6 +10,7 @@ import mekanism.common.lib.distribution.handler.SpecificAmountLongHandler;
 import mekanism.common.lib.distribution.target.LongTarget;
 import mekanism.common.util.EmitUtils;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Test Distribution via EmitUtils (longs)")
 class DistributionLongTest {
 
-    static final Void VOID_RESOURCE = null;
+    @Nullable
+    private static final Void VOID_RESOURCE = null;
 
     public static LongTarget getTargets(long infinite, long some, long none) {
         LongTarget target = new LongTarget();

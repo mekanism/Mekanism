@@ -1,5 +1,6 @@
 package mekanism.tools.client;
 
+import java.util.Objects;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
@@ -22,7 +23,7 @@ import net.minecraft.data.PackOutput;
 public class ToolsLangProvider extends BaseLanguageProvider {
 
     public ToolsLangProvider(PackOutput output) {
-        super(output, MekanismTools.MODID, MekanismTools.instance);
+        super(output, MekanismTools.MODID, Objects.requireNonNull(MekanismTools.instance));
     }
 
     @Override

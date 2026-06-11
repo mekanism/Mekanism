@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.MathUtils;
@@ -150,6 +151,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismBlockTypes {
 
@@ -333,7 +335,7 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   for (int x = -1; x <= 1; x++) {
                       for (int y = 0; y <= 1; y++) {
@@ -539,12 +541,17 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+              public <DATA extends @Nullable Object> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   if (!consumer.accept(level, mutable.setWithOffset(pos, Direction.UP), data)) {
                       return false;
                   }
-                  mutable.setWithOffset(pos, MekanismUtils.getRight(Attribute.getFacing(state)));
+                  Direction facing = Attribute.getFacing(state);
+                  if (facing == null) {
+                      //Something went wrong, return that we failed to handle it
+                      return false;
+                  }
+                  mutable.setWithOffset(pos, MekanismUtils.getRight(facing));
                   if (!consumer.accept(level, mutable, data)) {
                       return false;
                   }
@@ -879,7 +886,7 @@ public class MekanismBlockTypes {
     }
 
     public static Factory<?> getFactory(FactoryTier tier, FactoryType type) {
-        return FACTORIES.get(tier, type);
+        return Objects.requireNonNull(FACTORIES.get(tier, type));
     }
 
     private static <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
@@ -897,7 +904,7 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityBin> Machine<TILE> createBin(BinTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityBin> Machine<TILE> createBin(BinTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, @Nullable Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_BIN)
               .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
               .without(AttributeParticleFX.class, AttributeSecurity.class, AttributeUpgradeSupport.class, AttributeRedstone.class)
@@ -905,7 +912,7 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, @Nullable Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
               .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
               .withEnergyStorage(tier::getCapacity)
@@ -916,7 +923,7 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityFluidTank> Machine<TILE> createFluidTank(FluidTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityFluidTank> Machine<TILE> createFluidTank(FluidTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, @Nullable Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_FLUID_TANK)
               .withGui(() -> MekanismContainerTypes.FLUID_TANK)
               .withCustomShape(BlockShapes.FLUID_TANK)
@@ -926,7 +933,7 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityChemicalTank> Machine<TILE> createChemicalTank(ChemicalTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityChemicalTank> Machine<TILE> createChemicalTank(ChemicalTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, @Nullable Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_CHEMICAL_TANK)
               .withGui(() -> MekanismContainerTypes.CHEMICAL_TANK)
               .withCustomShape(BlockShapes.CHEMICAL_TANK)

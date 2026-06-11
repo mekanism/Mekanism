@@ -66,13 +66,15 @@ import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     protected LaserEnergyContainer energyContainer;
+    @Nullable
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
     private int diggingProgress = 0;
@@ -83,12 +85,12 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    protected abstract @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
+    protected abstract IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
-        int energyFired = fireLaser();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
+        int energyFired = fireLaser(level);
         if (energyFired > 0) {
             if (energyFired != lastFired || !getActive()) {
                 setActive(true);
@@ -106,14 +108,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    private int fireLaser() {
+    private int fireLaser(ServerLevel level) {
         int toFire = toFire();
         if (toFire == 0) {
             return 0;
         }
         try (Transaction transaction = Transaction.openRoot()) {
             if (energyContainer.extract(toFire, transaction, AutomationType.INTERNAL) == toFire) {
-                fireLaser(toFire, transaction);
+                fireLaser(level, toFire, transaction);
                 transaction.commit();
                 return toFire;
             }
@@ -121,9 +123,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         }
     }
 
-    private void fireLaser(int firing, TransactionContext transaction) {
+    private void fireLaser(ServerLevel level, int firing, TransactionContext transaction) {
         Direction direction = getDirection();
-        ServerLevel level = (ServerLevel) getWorldNN();
         Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
         Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
         BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
@@ -426,11 +427,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     private void sendLaserDataToPlayers(ServerLevel level, LaserParticleData data, Vec3 from) {
-        if (!isRemote()) {
-            for (ServerPlayer player : level.players()) {
-                //Note: We render laser particles regardless of the particle limit to avoid players accidentally killing themselves on them
-                level.sendParticles(player, data, true, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-            }
+        for (ServerPlayer player : level.players()) {
+            //Note: We render laser particles regardless of the particle limit to avoid players accidentally killing themselves on them
+            level.sendParticles(player, data, true, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
         }
     }
 
@@ -463,32 +462,32 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+    public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard(SerializationConstants.LAST_FIRED);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putInt(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         lastFired = input.getIntOr(SerializationConstants.LAST_FIRED, lastFired);
     }

@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
 
@@ -38,7 +37,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     }
 
     @Override
-    protected void addInventorySlots(@NotNull Inventory inv) {
+    protected void addInventorySlots(Inventory inv) {
         super.addInventorySlots(inv);
         if (offhandSlots.isEmpty()) {
             //If we don't have a slot relating to offhand data, add a syncable itemstack to track any changes that might happen to the stack
@@ -62,12 +61,12 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     }
 
     @Override
-    public boolean canPlayerAccess(@NotNull Player player) {
+    public boolean canPlayerAccess(Player player) {
         return IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess);
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return isValidType(itemAccess.getResource());
     }
 

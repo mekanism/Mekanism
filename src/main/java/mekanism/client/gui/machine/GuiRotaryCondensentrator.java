@@ -4,7 +4,6 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -25,11 +24,10 @@ import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
 
-    private GuiElement energyBar;
+    private static final int ENERGY_BAR_X = 115;
 
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -42,7 +40,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
         super.addGuiElements();
         addRenderableWidget(new GuiDownArrow(this, 9, 44));
         addRenderableWidget(new GuiDownArrow(this, 159, 44));
-        energyBar = addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), 115, 75))
+        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.energyContainer(), ENERGY_BAR_X, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
@@ -82,10 +80,10 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         ILangEntry modeLang = tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING;
-        drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), energyBar.getRelativeX() - 4, 2, false);
+        drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), ENERGY_BAR_X - 4, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

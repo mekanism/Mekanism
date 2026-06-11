@@ -1,7 +1,6 @@
 package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +18,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  *
  * @apiNote Thermal Evaporation Towers can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class FluidToFluidRecipe extends FluidInputRecipe<FluidStackTemplate> {
 
     private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));

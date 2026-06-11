@@ -8,14 +8,12 @@ import mekanism.client.gui.element.GuiElement;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiSequencedSlotDisplay extends GuiElement {
 
     private List<ItemStack> iterStacks = Collections.emptyList();
     private int stackIndex;
     private int stackSwitchTicker;
-    @NotNull
     private ItemStack renderStack = ItemStack.EMPTY;
     private final Supplier<List<ItemStack>> stackListSupplier;
 
@@ -50,7 +48,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         gui().renderItem(guiGraphics, renderStack, relativeX, relativeY);
     }
@@ -62,7 +60,6 @@ public class GuiSequencedSlotDisplay extends GuiElement {
         stackIndex = -1;
     }
 
-    @NotNull
     public ItemStack getRenderStack() {
         return renderStack;
     }

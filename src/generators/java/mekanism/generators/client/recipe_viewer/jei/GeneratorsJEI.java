@@ -19,12 +19,10 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class GeneratorsJEI implements IModPlugin {
 
-    @NotNull
     @Override
     public Identifier getPluginUid() {
         //Note: Can't use MekanismGenerators.rl, as JEI needs this in the constructor and the class may not be loaded yet.
@@ -33,7 +31,7 @@ public class GeneratorsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerItemSubtypes(@NotNull ISubtypeRegistration registry) {
+    public void registerItemSubtypes(ISubtypeRegistration registry) {
         if (MekanismJEI.shouldLoad()) {
             MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getEntries());
             MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getSecondaryEntries());
@@ -41,7 +39,7 @@ public class GeneratorsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerCategories(@NotNull IRecipeCategoryRegistration registry) {
+    public void registerCategories(IRecipeCategoryRegistration registry) {
         if (!MekanismJEI.shouldLoad()) {
             return;
         }
@@ -50,7 +48,7 @@ public class GeneratorsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registry) {
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
         if (!MekanismJEI.shouldLoad()) {
             return;
         }
@@ -58,12 +56,12 @@ public class GeneratorsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerIngredientAliases(@NotNull IIngredientAliasRegistration registration) {
+    public void registerIngredientAliases(IIngredientAliasRegistration registration) {
         new GeneratorsAliasMapping().addAliases(new JEIAliasHelper(registration));
     }
 
     @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registry) {
+    public void registerRecipes(IRecipeRegistration registry) {
         if (!MekanismJEI.shouldLoad()) {
             return;
         }

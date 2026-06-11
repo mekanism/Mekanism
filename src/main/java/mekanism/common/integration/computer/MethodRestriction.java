@@ -7,7 +7,7 @@ import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum MethodRestriction implements Predicate<Object> {
     /**
@@ -35,9 +35,9 @@ public enum MethodRestriction implements Predicate<Object> {
      */
     COMPARATOR(handler -> handler instanceof IComparatorSupport comparatorSupport && comparatorSupport.supportsComparator());
 
-    private final Predicate<Object> validator;
+    private final Predicate<@Nullable Object> validator;
 
-    MethodRestriction(Predicate<Object> validator) {
+    MethodRestriction(Predicate<@Nullable Object> validator) {
         this.validator = validator;
     }
 

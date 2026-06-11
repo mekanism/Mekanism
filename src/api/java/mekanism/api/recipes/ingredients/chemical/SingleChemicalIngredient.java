@@ -4,12 +4,11 @@ import com.mojang.serialization.MapCodec;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base Chemical ingredient implementation that only matches the given chemical.
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 26.1: Refactor this to be more like SimpleFluidIngredient
 
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalInstance.CHEMICAL_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)

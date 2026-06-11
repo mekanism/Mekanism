@@ -20,7 +20,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAlarm, BlockTypeTile<TileEntityIndustrialAlarm>> {
 
@@ -34,10 +33,9 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
         super(MekanismBlockTypes.INDUSTRIAL_ALARM, properties.strength(2, 2.4F).mapColor(MapColor.COLOR_RED));
     }
 
-    @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
-          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
+          Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(level, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -45,8 +43,12 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
     }
 
     @Override
-    protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
+    protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         Direction side = Attribute.getFacing(state);
+        if (side == null) {
+            //Something went wrong, and we were passed an invalid state, return that we can't survive
+            return false;
+        }
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
         VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);

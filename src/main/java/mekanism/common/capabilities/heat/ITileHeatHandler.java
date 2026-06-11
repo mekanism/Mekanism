@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.heat;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
@@ -8,9 +7,8 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public interface ITileHeatHandler extends IMekanismHeatHandler {
 
     default void updateHeatCapacitors(@Nullable Direction side) {

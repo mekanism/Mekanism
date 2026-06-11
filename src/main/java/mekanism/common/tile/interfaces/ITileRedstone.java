@@ -1,5 +1,7 @@
 package mekanism.common.tile.interfaces;
 
+import net.minecraft.world.level.LevelReader;
+
 public interface ITileRedstone extends IRedstoneControl {
 
     default boolean supportsRedstone() {
@@ -11,6 +13,6 @@ public interface ITileRedstone extends IRedstoneControl {
         return mode != RedstoneControl.PULSE;
     }
 
-    default void onPowerChange() {
+    default void onPowerChange(LevelReader level) {
     }
 }

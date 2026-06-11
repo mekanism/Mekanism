@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
@@ -34,7 +33,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -60,7 +59,6 @@ import org.jetbrains.annotations.Range;
  *
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadiationManager#INSTANCE}
  */
-@NothingNullByDefault
 public final class RadiationManager implements IRadiationManager {
 
     /**

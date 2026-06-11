@@ -7,16 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
-@NothingNullByDefault
 class PersonalStorageData extends SavedData {
     
     private static final Codec<Map<UUID, PersonalStorageItemInventory>> MAP_CODEC = Codec.unboundedMap(
@@ -65,7 +62,6 @@ class PersonalStorageData extends SavedData {
         }
     }
 
-    @NotNull
     private PersonalStorageItemInventory createInventory() {
         return new PersonalStorageItemInventory(contentsListener);
     }

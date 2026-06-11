@@ -34,8 +34,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Mod(value = Mekanism.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
@@ -122,8 +121,7 @@ public class MekanismClient {
         }
     }
 
-    @NotNull
-    public static String getModId(@NotNull ItemStack stack) {
+    public static String getModId(ItemStack stack) {
         return MekanismUtils.getModId(Objects.requireNonNull(Minecraft.getInstance().level, "No active Level").registryAccess(), stack);
     }
 

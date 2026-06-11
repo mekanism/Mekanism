@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.security;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.registries.MekanismDataComponents;
@@ -10,7 +9,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class SecurityObject extends OwnerObject implements ISecurityObject {
 
     public SecurityObject(ItemAccess itemAccess) {

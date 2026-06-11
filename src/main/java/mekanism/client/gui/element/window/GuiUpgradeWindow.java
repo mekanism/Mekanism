@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import mekanism.api.Upgrade;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
@@ -23,6 +24,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -46,18 +48,20 @@ public class GuiUpgradeWindow extends GuiWindow {
         }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 50, tile.getComponent(), () -> {
+        TileComponentUpgrade upgradeComponent = Objects.requireNonNull(this.tile.getComponent(), "Attempted to create an upgrade window for a tile that doesn't support upgrades");
+        scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 50, upgradeComponent, () -> {
             updateEnabledButtons();
             msSelected = Util.getMillis();
         }));
-        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, tile.getComponent().getSupportedTypes()));
+        addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, upgradeComponent.getSupportedTypes()));
         rightScreen = addChild(new GuiInnerScreen(gui, scrollList.getRelativeRight(), relativeY + 18, 59, 50));
-        addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 37));
+        addChild(new GuiProgress(upgradeComponent::getScaledUpgradeProgress, ProgressType.INSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 58));
         removeButton = addChild(new DigitalButton(gui, scrollList.getRelativeRight() + 1, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (_, event, _) -> {
-            if (scrollList.hasSelection()) {
+            Upgrade selectedType = scrollList.getSelection();
+            if (selectedType != null) {
                 return PacketUtils.sendToServer(new PacketGuiInteract(event.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
-                      this.tile, scrollList.getSelection().ordinal()));
+                      this.tile, selectedType.ordinal()));
             }
             return false;
         })).setTooltip(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP);
@@ -65,8 +69,8 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, rightScreen.getRelativeRight() + 2, relativeY + 18, container.getUpgradeSlot()));
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, rightScreen.getRelativeRight() + 2, relativeY + 72, container.getUpgradeOutputSlot()));
         updateEnabledButtons();
-        container.startTracking(MekanismContainer.UPGRADE_WINDOW, tile.getComponent());
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
+        container.startTracking(MekanismContainer.UPGRADE_WINDOW, upgradeComponent);
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, this.tile, MekanismContainer.UPGRADE_WINDOW));
     }
 
     @Override
@@ -84,9 +88,9 @@ public class GuiUpgradeWindow extends GuiWindow {
     public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.UPGRADES.translate(), 5);
-        if (scrollList.hasSelection()) {
-            Upgrade selectedType = scrollList.getSelection();
-            int amount = tile.getComponent().getUpgrades(selectedType);
+        Upgrade selectedType = scrollList.getSelection();
+        if (selectedType != null) {
+            int amount = tile.getUpgrades(selectedType);
             WrappedTextRenderer textRenderer = upgradeTypeData.get(selectedType);
             if (textRenderer == null) {
                 textRenderer = new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(selectedType));

@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemDictionary extends Item {
 
@@ -44,7 +43,7 @@ public class ItemDictionary extends Item {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltipAdder.accept(MekanismLang.DESCRIPTION_DICTIONARY.translate());
@@ -53,7 +52,6 @@ public class ItemDictionary extends Item {
         }
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -83,9 +81,8 @@ public class ItemDictionary extends Item {
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             if (!player.level().isClientSide()) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
@@ -95,9 +92,8 @@ public class ItemDictionary extends Item {
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
                 MekanismContainerTypes.DICTIONARY.tryOpenGui(player, hand);

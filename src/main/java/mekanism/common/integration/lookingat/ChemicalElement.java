@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public non-sealed class ChemicalElement extends ResourceElement<ChemicalResource> {
 
@@ -18,14 +18,15 @@ public non-sealed class ChemicalElement extends ResourceElement<ChemicalResource
           ChemicalElement::new
     );
 
-    public ChemicalElement(@NotNull ChemicalResource chemicalType, long stored, long capacity) {
+    public ChemicalElement(ChemicalResource chemicalType, long stored, long capacity) {
         this(LargeResourceStack.CHEMICAL_HELPER.createStack(chemicalType, stored), capacity);
     }
 
-    public ChemicalElement(@NotNull LargeResourceStack<ChemicalResource> stored, long capacity) {
+    public ChemicalElement(LargeResourceStack<ChemicalResource> stored, long capacity) {
         super(stored, capacity);
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
         return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored.resource());

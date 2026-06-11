@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -18,7 +17,6 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class AcceptorCache<ACCEPTOR> {
 
     private final Map<Direction, RefreshListener> cachedListeners = new EnumMap<>(Direction.class);
@@ -44,7 +42,8 @@ public class AcceptorCache<ACCEPTOR> {
     }
 
     private CacheBasedInfo<ACCEPTOR> initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
-        return new CacheBasedInfo<>(BlockCapabilityCache.create(capability, level, pos, opposite, refreshListener, refreshListener));
+        BlockCapabilityCache<ACCEPTOR, @Nullable Direction> cache = BlockCapabilityCache.create(capability, level, pos, opposite, refreshListener, refreshListener);
+        return new CacheBasedInfo<>(cache);
     }
 
     /**

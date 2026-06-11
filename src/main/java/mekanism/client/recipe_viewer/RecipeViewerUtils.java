@@ -45,8 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class RecipeViewerUtils {
 
@@ -89,11 +88,11 @@ public class RecipeViewerUtils {
         return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
     }
 
-    public static long getCurrent(long[] elements) {
+    public static long getCurrent(int[] elements) {
         return elements[getIndex(elements)];
     }
 
-    public static <T> int getIndex(long[] elements) {
+    public static int getIndex(int[] elements) {
         return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
     }
 
@@ -103,7 +102,6 @@ public class RecipeViewerUtils {
         return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
     }
 
-    @NonNull
     private static ContextMap getSlotDisplayContext() {
         return SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
     }

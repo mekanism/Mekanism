@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Math;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 public class Outlines {
 
@@ -77,9 +78,8 @@ public class Outlines {
             return hash;
         }
 
-        @SuppressWarnings("SuspiciousNameCombination")
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(@Nullable Object obj) {
             if (obj == this) {
                 return true;
             } else if (obj == null || obj.getClass() != Line.class) {

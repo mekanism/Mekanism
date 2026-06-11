@@ -13,8 +13,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.Equippable;
-import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class ItemMekanismArmor extends Item {
 
@@ -29,7 +27,6 @@ public class ItemMekanismArmor extends Item {
     }
 
     /// Copied and adapted from [Item.Properties#humanoidArmor]
-    @NonNull
     private static Properties applyArmorProps(Properties properties, MaterialCreator material, ArmorType armorType) {
         return properties.durability(material.getDurabilityForType(armorType))
               .attributes(material.createAttributes(armorType))
@@ -45,7 +42,7 @@ public class ItemMekanismArmor extends Item {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ToolsUtils.addDurability(tooltipAdder, stack);
     }

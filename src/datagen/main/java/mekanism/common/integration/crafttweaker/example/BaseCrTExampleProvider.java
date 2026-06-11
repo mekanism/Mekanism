@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
@@ -52,8 +51,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BaseCrTExampleProvider implements DataProvider {
 
@@ -128,21 +126,21 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<? extends ACTUAL> actualClass,
-          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
+          Conversion<? super ACTUAL>... conversions) {
         addSupportedConversion(crtClass, null, actualClass, conversions);
     }
 
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversionWithAlt(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
-          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
+          Conversion<? super ACTUAL>... conversions) {
         addSupportedConversion(crtClass, actualClass, conversions);
         addSupportedConversion(altCrTClass, actualClass, conversions);
     }
 
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, @Nullable Class<?> generic, Class<? extends ACTUAL> actualClass,
-          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
-        supportedConversions.computeIfAbsent(crtClass, clazz -> new ConversionTracker()).add(generic, new ClassConversionInfo<>(actualClass, List.of(conversions)));
+          Conversion<? super ACTUAL>... conversions) {
+        supportedConversions.computeIfAbsent(crtClass, _ -> new ConversionTracker()).add(generic, new ClassConversionInfo<>(actualClass, List.of(conversions)));
     }
 
     @Nullable
@@ -170,9 +168,9 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             List<String> representations = new ArrayList<>();
             for (ClassConversionInfo<?> conversionInfo : conversions) {
                 if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
-                    for (BiFunction<CrTImportsComponent, ?, String> stringFunction : conversionInfo.conversions) {
+                    for (Conversion<?> stringFunction : conversionInfo.conversions) {
                         //noinspection unchecked
-                        String representation = ((BiFunction<CrTImportsComponent, ? super ACTUAL, String>) stringFunction).apply(imports, actual);
+                        String representation = ((Conversion<? super ACTUAL>) stringFunction).convert(imports, actual);
                         if (representation != null) {
                             //We use null to represent things we can't represent and then don't add them here
                             representations.add(representation);
@@ -229,9 +227,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return exampleBuilder;
     }
 
-    @NotNull
     @Override
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache) {
         return this.registries.thenCompose(lookup -> {
             examples.clear();
             addExamples(lookup);
@@ -245,7 +242,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         });
     }
 
-    @NotNull
     @Override
     public String getName() {
         return "CraftTweaker Examples: " + modid;
@@ -305,7 +301,14 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
     }
 
-    private record ClassConversionInfo<ACTUAL>(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
+    @FunctionalInterface
+    public interface Conversion<TYPE> {
+
+        @Nullable
+        String convert(CrTImportsComponent imports, TYPE type);
+    }
+
+    private record ClassConversionInfo<ACTUAL>(Class<? extends ACTUAL> actualClass, List<Conversion<? super ACTUAL>> conversions) {
     }
 
     private static class ConversionTracker {

@@ -33,17 +33,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTarget, ISupportsWarning<GuiSlot> {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
     private final SlotType slotType;
+    @Nullable
     private Supplier<ItemStack> validityCheck;
+    @Nullable
     private Supplier<ItemStack> storedStackSupplier;
-    private Supplier<SlotOverlay> overlaySupplier;
+    @Nullable
+    private Supplier<@Nullable SlotOverlay> overlaySupplier;
     @Nullable
     private BooleanSupplier warningSupplier;
     @Nullable
@@ -77,7 +79,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public GuiSlot warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public GuiSlot warning(WarningType type, BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -112,12 +114,12 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         return this;
     }
 
-    public GuiSlot overlayColor(IntSupplier colorSupplier) {
+    public GuiSlot overlayColor(@Nullable IntSupplier colorSupplier) {
         overlayColorSupplier = colorSupplier;
         return this;
     }
 
-    public GuiSlot with(Supplier<SlotOverlay> overlaySupplier) {
+    public GuiSlot with(Supplier<@Nullable SlotOverlay> overlaySupplier) {
         this.overlaySupplier = overlaySupplier;
         return this;
     }
@@ -138,20 +140,20 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(guiGraphics);
         }
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (renderAboveSlots) {
             draw(guiGraphics);
         }
     }
 
-    private void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
+    private void draw(GuiGraphicsExtractor guiGraphics) {
         Identifier texture;
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
             texture = slotType.getWarningTexture();
@@ -168,7 +170,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         drawContents(guiGraphics);
     }
 
-    protected void drawContents(@NotNull GuiGraphicsExtractor guiGraphics) {
+    protected void drawContents(GuiGraphicsExtractor guiGraphics) {
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
@@ -233,7 +235,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (onClick != null && isValidClickButton(event.buttonInfo())) {
             if (event.x() >= getX() + borderSize() && event.y() >= getY() + borderSize() && event.x() < getRight() - borderSize() && event.y() < getBottom() - borderSize()) {
                 if (onClick.onClick(this, event, isDoubleClick)) {

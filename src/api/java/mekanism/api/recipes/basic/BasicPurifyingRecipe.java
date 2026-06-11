@@ -1,7 +1,6 @@
 package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-@NothingNullByDefault
 public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));

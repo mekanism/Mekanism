@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -29,7 +28,7 @@ public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<C
                   scale
             ));
         }
-        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, ChemicalStack::isEmpty,
-              fakeGroupHelper::forItems, fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, scale, contextMap);
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forItems, fakeGroupHelper::forChemicals,
+              TypedMekanismRecipeMapper::addConversion, scale, contextMap);
     }
 }

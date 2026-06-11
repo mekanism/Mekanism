@@ -16,7 +16,7 @@ import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class FrequencyTypes {
     private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
@@ -79,6 +79,6 @@ public class FrequencyTypes {
     @FunctionalInterface
     public interface FrequencyConstructor<FREQ extends Frequency> {
 
-        FREQ create(Object key, UUID owner, SecurityMode securityMode);
+        FREQ create(Object key, @Nullable UUID owner, SecurityMode securityMode);
     }
 }

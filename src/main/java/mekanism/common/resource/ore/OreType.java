@@ -9,7 +9,7 @@ import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.world.height.HeightShape;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public enum OreType implements StringRepresentable {
     TIN(PrimaryResource.TIN,
@@ -71,6 +71,7 @@ public enum OreType implements StringRepresentable {
         return maxExp;
     }
 
+    @Nullable
     public static OreType get(IResource resource) {
         for (OreType ore : values()) {
             if (resource == ore.resource) {
@@ -80,7 +81,6 @@ public enum OreType implements StringRepresentable {
         return null;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return resource.getRegistrySuffix();

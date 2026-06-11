@@ -10,11 +10,12 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
 
+    @Nullable
     protected GuiTextField text;
 
     protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, Component filterName, TILE tile, @Nullable FILTER origFilter) {
@@ -24,9 +25,9 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void init() {
         super.init();
-        text = addChild(new GuiTextField(gui(), this, relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
-        text.setMaxLength(SorterFilter.MAX_LENGTH);
-        text.setInputValidator(getInputValidator())
+        text = addChild(new GuiTextField(gui(), this, relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12))
+              .setMaxLength(SorterFilter.MAX_LENGTH)
+              .setInputValidator(getInputValidator())
               .setInputTransformer(getInputTransformer())
               .configureDigitalInput(this::setText)
               .setEditable(true);
@@ -35,7 +36,9 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     @Override
     protected void validateAndSave() {
-        if (text.getText().isEmpty() || setText()) {
+        if (text == null) {
+            filterSaveFailed(getNoFilterSaveError());
+        } else if (text.getText().isEmpty() || setText(text)) {
             super.validateAndSave();
         }
     }
@@ -56,5 +59,5 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     /**
      * @return {@code true} if it was able to set the text because it is valid, {@code false} if an error occurred.
      */
-    protected abstract boolean setText();
+    protected abstract boolean setText(GuiTextField text);
 }

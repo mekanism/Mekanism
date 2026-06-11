@@ -22,7 +22,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemDosimeter extends Item {
 
@@ -30,9 +29,8 @@ public class ItemDosimeter extends Item {
         super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!world.isClientSide()) {
@@ -42,9 +40,8 @@ public class ItemDosimeter extends Item {
         return InteractionResult.SUCCESS_SERVER;
     }
 
-    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!player.level().isClientSide()) {

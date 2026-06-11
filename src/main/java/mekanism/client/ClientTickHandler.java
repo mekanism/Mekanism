@@ -44,6 +44,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -66,7 +67,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -87,7 +88,7 @@ public class ClientTickHandler {
         visionEnhancement = false;
     }
 
-    public static boolean isJetpackInUse(Player player, @Nullable ItemAccess jetpack) {
+    public static boolean isJetpackInUse(LocalPlayer player, @Nullable ItemAccess jetpack) {
         if (!player.isSpectator() && jetpack != null) {
             ItemResource jetpackType = jetpack.getResource();
             if (jetpackType.isEmpty()) {
@@ -95,12 +96,12 @@ public class ClientTickHandler {
             }
             JetpackMode mode = ((IJetpackItem) jetpackType.getItem()).getJetpackMode(jetpackType);
             boolean guiOpen = minecraft.screen != null;
-            boolean ascending = minecraft.player.input.keyPresses.jump();
+            boolean ascending = player.input.keyPresses.jump();
             boolean rising = ascending && !guiOpen;
             if (mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) {
                 return rising;
             } else if (mode == JetpackMode.HOVER) {
-                boolean descending = minecraft.player.input.keyPresses.shift();
+                boolean descending = player.input.keyPresses.shift();
                 if (!rising || descending) {
                     return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                 }
@@ -143,7 +144,7 @@ public class ClientTickHandler {
         if (delay == 0) {
             PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, identity, player.level().getGameTime() + delay));
         }
     }
 

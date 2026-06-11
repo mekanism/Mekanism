@@ -6,7 +6,6 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
@@ -31,13 +30,13 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     }
 
     @Override
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         super.load(input);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumpMode = mode);
     }
 
     @Override
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         super.save(output);
         NBTUtils.writeEnum(output, SerializationConstants.DUMP_MODE, dumpMode);
     }

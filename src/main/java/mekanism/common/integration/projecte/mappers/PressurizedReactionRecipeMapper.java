@@ -2,7 +2,6 @@ package mekanism.common.integration.projecte.mappers;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import mekanism.api.chemical.ChemicalStackTemplate;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
@@ -43,9 +42,8 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
                   recipe.getInputChemical()
             ));
         }
-        return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput,
-              ConstantPredicates.alwaysFalse(), fakeGroupHelper::forItems, fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, null,
-              PressurizedReactionRecipeMapper::addConversions, contextMap);
+        return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput, fakeGroupHelper::forItems,
+              fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, PressurizedReactionRecipeMapper::addConversions, contextMap);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipeOutput output,

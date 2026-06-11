@@ -3,11 +3,13 @@ package mekanism.common.lib.frequency;
 import java.util.List;
 import java.util.UUID;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import org.jspecify.annotations.Nullable;
 
 public interface IFrequencyHandler {
 
     TileComponentFrequency getFrequencyComponent();
 
+    @Nullable
     default <FREQ extends Frequency> FREQ getFrequency(FrequencyType<FREQ> type) {
         return getFrequencyComponent().getFrequency(type);
     }
@@ -15,7 +17,7 @@ public interface IFrequencyHandler {
     /**
      * Sets or creates a frequency from the data using the given player as the frequency owner.
      */
-    default void setFrequency(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
+    default void setFrequency(FrequencyType<?> type, FrequencyIdentity data, @Nullable UUID player) {
         getFrequencyComponent().setFrequencyFromData(type, data, player);
     }
 

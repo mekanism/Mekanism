@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even exist
@@ -78,5 +78,5 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      *
      * @return {@code true} if the input is empty.
      */
-    boolean isEmpty(TypedInstance<TYPE> input);
+    boolean isEmpty(@Nullable TypedInstance<TYPE> input);
 }

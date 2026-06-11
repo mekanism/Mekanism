@@ -19,19 +19,20 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Orientation.SideBias;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
@@ -49,7 +50,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && getActive() && isEmitting ? 15 : 0;
+        return side != getOppositeDirection() && getActive() && isEmitting ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     private long getFreqStored() {
@@ -100,8 +101,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
-        boolean needsUpdate = super.onUpdateServer(frequency);
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(level, frequency);
         long stored = getStored(frequency);
         boolean hasStored = stored > 0 && stored >= count;
         boolean shouldEmit = hasStored != inverted;
@@ -117,7 +118,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         if (!itemType.isEmpty()) {
             output.store(SerializationConstants.SINGLE_ITEM, ItemResource.CODEC, itemType);
@@ -128,7 +129,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         itemType = input.read(SerializationConstants.SINGLE_ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
         count = input.getLongOr(SerializationConstants.AMOUNT, count);
@@ -136,20 +137,19 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         inverted = input.getBooleanOr(SerializationConstants.INVERSE, inverted);
     }
 
-    @NotNull
     @Override
     public ModelData getModelData() {
         return ModelData.of(EMITTING, this.isEmitting);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.EMITTING, isEmitting);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         boolean emitting = input.getBooleanOr(SerializationConstants.EMITTING, isEmitting);
         if (isEmitting != emitting) {
@@ -159,7 +159,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.ITEM_TARGET, itemType);
         builder.set(MekanismDataComponents.LONG_AMOUNT, count);
@@ -168,7 +168,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY);
         count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);

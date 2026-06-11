@@ -3,7 +3,7 @@ package mekanism.generators.common.advancements;
 import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.generators.common.MekanismGenerators;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GeneratorsAdvancements {
 

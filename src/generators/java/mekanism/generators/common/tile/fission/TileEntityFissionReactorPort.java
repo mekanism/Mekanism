@@ -18,6 +18,7 @@ import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
 import mekanism.common.util.WorldUtils;
@@ -29,12 +30,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
@@ -52,7 +53,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT))
@@ -63,19 +64,16 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return null;
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return _ -> getMultiblock().getChemicalTanks(getMode());
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return _ -> getMode() == FissionPortMode.INPUT ? getMultiblock().getValveFluidTanks(getBlockPos()) : Collections.emptyList();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return _ -> getMultiblock().getHeatCapacitors();
@@ -103,8 +101,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return getBlockState().getValue(AttributeStateFissionPortMode.modeProperty);
     }
 
-    @ComputerMethod
-    void setMode(FissionPortMode mode) {
+    void setMode(Level level, FissionPortMode mode) {
         if (mode != getMode()) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateFissionPortMode.modeProperty, mode));
             invalidateCapabilitiesAll(portCapabilities);
@@ -112,10 +109,10 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        if (!isRemote()) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
+        if (!level.isClientSide()) {
             FissionPortMode mode = getMode().getNext();
-            setMode(mode);
+            setMode(level, mode);
             player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
         }
         return InteractionResult.SUCCESS;
@@ -133,13 +130,18 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @ComputerMethod
-    void incrementMode() {
+    void incrementMode() throws ComputerException {
         setMode(getMode().getNext());
     }
 
     @ComputerMethod
-    void decrementMode() {
+    void decrementMode() throws ComputerException {
         setMode(getMode().getPrevious());
+    }
+
+    @ComputerMethod
+    void setMode(FissionPortMode mode) throws ComputerException {
+        setMode(validateLevel(), mode);
     }
     //End methods IComputerTile
 }

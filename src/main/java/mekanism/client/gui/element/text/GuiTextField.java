@@ -26,8 +26,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -44,18 +44,25 @@ public class GuiTextField extends GuiElement {
     private final ClearingEditBox textField;
     private ContainerEventHandler parent;
 
-    private Runnable enterHandler;
+    @Nullable
+    private Consumer<GuiTextField> enterHandler;
+    @Nullable
     private IntPredicate inputValidator;
+    @Nullable
     private IntUnaryOperator inputTransformer;
+    @Nullable
     private UnaryOperator<String> pasteTransformer;
+    @Nullable
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
+    @Nullable
     private IconType iconType;
 
     private int textOffsetX, textOffsetY;
     private float textScale = 1.0F;
 
+    @Nullable
     private MekanismImageButton checkmarkButton;
 
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
@@ -107,7 +114,7 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField configureDigitalInput(Runnable enterHandler) {
+    public GuiTextField configureDigitalInput(Consumer<GuiTextField> enterHandler) {
         setBackground(BackgroundType.NONE);
         setIcon(IconType.DIGITAL);
         setTextColor(screenTextColor());
@@ -117,7 +124,7 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField configureDigitalBorderInput(Runnable enterHandler) {
+    public GuiTextField configureDigitalBorderInput(Consumer<GuiTextField> enterHandler) {
         setBackground(BackgroundType.DIGITAL);
         setTextColor(screenTextColor());
         setEnterHandler(enterHandler);
@@ -126,22 +133,22 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField setEnterHandler(Runnable enterHandler) {
+    public GuiTextField setEnterHandler(@Nullable Consumer<GuiTextField> enterHandler) {
         this.enterHandler = enterHandler;
         return this;
     }
 
-    public GuiTextField setInputValidator(IntPredicate inputValidator) {
+    public GuiTextField setInputValidator(@Nullable IntPredicate inputValidator) {
         this.inputValidator = inputValidator;
         return this;
     }
 
-    public GuiTextField setInputTransformer(IntUnaryOperator inputTransformer) {
+    public GuiTextField setInputTransformer(@Nullable IntUnaryOperator inputTransformer) {
         this.inputTransformer = inputTransformer;
         return this;
     }
 
-    public GuiTextField setPasteTransformer(UnaryOperator<String> pasteTransformer) {
+    public GuiTextField setPasteTransformer(@Nullable UnaryOperator<String> pasteTransformer) {
         this.pasteTransformer = pasteTransformer;
         return this;
     }
@@ -158,13 +165,14 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField addCheckmarkButton(Runnable callback) {
+    public GuiTextField addCheckmarkButton(Consumer<GuiTextField> callback) {
         return addCheckmarkButton(ButtonType.NORMAL, callback);
     }
 
-    public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
+    public GuiTextField addCheckmarkButton(ButtonType type, Consumer<GuiTextField> callback) {
         checkmarkButton = addChild(type.getButton(this, (_, _, _) -> {
-            callback.run();
+            //TODO: Instead of capturing this can we just use the passed element?
+            callback.accept(this);
             parent.setFocused(this);
             return true;
         }));
@@ -191,12 +199,12 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return super.isValidClickButton(buttonInfo) || textField.isValidClickButton(buttonInfo);
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         double scaledX = event.x();
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
@@ -210,7 +218,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         backgroundType.render(this, guiGraphics);
         Matrix3x2fStack matrix = guiGraphics.pose();
@@ -250,7 +258,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (canWrite()) {
             if (event.isEscape() || event.isCycleFocus()) {
                 //Manually handle hitting escape to make the whole interface go away
@@ -259,7 +267,7 @@ public class GuiTextField extends GuiElement {
             } else if (event.isConfirmation()) {
                 //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
-                    enterHandler.run();
+                    enterHandler.accept(this);
                 }
                 return true;
             } else if (event.isPaste()) {
@@ -298,7 +306,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean charTyped(@NotNull CharacterEvent event) {
+    public boolean charTyped(CharacterEvent event) {
         if (canWrite()) {
             int initialCodepoint = event.codepoint();
             int codepointUsed = initialCodepoint;
@@ -320,33 +328,40 @@ public class GuiTextField extends GuiElement {
         return textField.getValue();
     }
 
-    public void setVisible(boolean visible) {
+    public GuiTextField setVisible(boolean visible) {
         textField.setVisible(visible);
+        return this;
     }
 
-    public void setMaxLength(int length) {
+    public GuiTextField setMaxLength(int length) {
         textField.setMaxLength(length);
+        return this;
     }
 
-    public void setTextColor(int color) {
+    public GuiTextField setTextColor(int color) {
         textField.setTextColor(color);
+        return this;
     }
 
-    public void setTextColorUneditable(int color) {
+    public GuiTextField setTextColorUneditable(int color) {
         textField.setTextColorUneditable(color);
+        return this;
     }
 
-    public void setEditable(boolean enabled) {
+    public GuiTextField setEditable(boolean enabled) {
         textField.setEditable(enabled);
+        return this;
     }
 
-    public void setCanLoseFocus(boolean canLoseFocus) {
+    public GuiTextField setCanLoseFocus(boolean canLoseFocus) {
         //TODO: Improve handling of when this is set to false in regards to focus changing with tab or things
         textField.setCanLoseFocus(canLoseFocus);
+        return this;
     }
 
-    public void allowColoredText() {
+    public GuiTextField allowColoredText() {
         textField.allowColors = true;
+        return this;
     }
 
     @Override
@@ -365,8 +380,9 @@ public class GuiTextField extends GuiElement {
         textField.setValue(text);
     }
 
-    public void setResponder(Consumer<String> responder) {
+    public GuiTextField setResponder(Consumer<String> responder) {
         this.responder = responder;
+        return this;
     }
 
     private static class ClearingEditBox extends EditBox {
@@ -378,12 +394,12 @@ public class GuiTextField extends GuiElement {
         }
 
         @Override
-        public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
             return super.isValidClickButton(buttonInfo) || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
         }
 
         @Override
-        public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
             if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                 //Allow clearing on right click
                 setValue("");
@@ -393,7 +409,7 @@ public class GuiTextField extends GuiElement {
         }
 
         @Override
-        public void insertText(@NotNull String text) {
+        public void insertText(String text) {
             if (allowColors) {
                 //Copy of super, but modified to call a custom filter text that allows the section symbol to be used
                 // so that the player can enter color codes

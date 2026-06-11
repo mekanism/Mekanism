@@ -44,11 +44,9 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.model.standalone.UnbakedStandaloneModel;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class RobitSkinManager {
 
     public static final Identifier BASE_ROBIT_MODEL = Mekanism.rl("robit/robit");

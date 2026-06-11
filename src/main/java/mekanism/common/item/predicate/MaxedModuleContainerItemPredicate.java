@@ -20,7 +20,6 @@ import net.minecraft.core.component.predicates.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 public class MaxedModuleContainerItemPredicate implements DataComponentPredicate {
 
@@ -52,7 +51,7 @@ public class MaxedModuleContainerItemPredicate implements DataComponentPredicate
     }
 
     @Override
-    public boolean matches(@NotNull DataComponentGetter stack) {
+    public boolean matches(DataComponentGetter stack) {
         IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(stack);
         if (container.moduleTypes().containsAll(supportedModules)) {
             for (IModule<?> module : container.modules()) {

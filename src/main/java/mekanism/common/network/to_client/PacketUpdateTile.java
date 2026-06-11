@@ -14,7 +14,6 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements IMekanismPacket {
 
@@ -25,11 +24,6 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
           PacketUpdateTile::new
     );
 
-    public PacketUpdateTile(TileEntityUpdateable tile) {
-        this(tile.getBlockPos(), tile.getReducedUpdateTag(tile.getLevel().registryAccess()));
-    }
-
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketUpdateTile> type() {
         return TYPE;

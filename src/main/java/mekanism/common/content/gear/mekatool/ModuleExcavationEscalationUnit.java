@@ -8,8 +8,6 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -39,10 +37,8 @@ import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) implements ICustomModule<ModuleExcavationEscalationUnit> {
 
     public static final Identifier EXCAVATION_MODE = Mekanism.rl("efficiency");
@@ -127,7 +123,6 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         return excavationMode.getEfficiency();
     }
 
-    @NothingNullByDefault
     public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, TranslatableEnum, IRadialMode, StringRepresentable {
         OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, EnumColor.WHITE, "speed_off"),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 4, EnumColor.PINK, "speed_slow"),
@@ -175,13 +170,11 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
             return efficiency;
         }
 
-        @NotNull
         @Override
         public Component sliceName() {
             return langEntry.translateColored(color);
         }
 
-        @NotNull
         @Override
         public Identifier icon() {
             return icon;

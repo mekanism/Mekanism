@@ -31,7 +31,7 @@ import net.neoforged.testframework.annotation.RegisterStructureTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.GameTest;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @ForEachTest(groups = "network.transmitter")
 public class TransmitterNetworkTest {
@@ -122,6 +122,7 @@ public class TransmitterNetworkTest {
     private static class MatchingNetworkValidator implements Runnable {
 
         private final MekGameTestHelper helper;
+        @Nullable
         private UUID networkUUID;
 
         public MatchingNetworkValidator(MekGameTestHelper helper) {
@@ -136,7 +137,7 @@ public class TransmitterNetworkTest {
                     if (!transmitter.hasTransmitterNetwork()) {
                         helper.fail("No transmitter network found", relativePos);
                     }
-                    DynamicNetwork<?, ?, ?> network = transmitter.getTransmitterNetwork();
+                    DynamicNetwork<?, ?, ?> network = transmitter.getTransmitterNetworkNN();
                     if (networkUUID == null) {
                         networkUUID = network.getUUID();
                     } else if (!networkUUID.equals(network.getUUID())) {

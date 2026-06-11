@@ -20,7 +20,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 public enum FilterType implements StringRepresentable {
     MINER_ITEMSTACK_FILTER(MinerItemStackFilter.CODEC, MinerItemStackFilter.STREAM_CODEC),
@@ -56,7 +55,6 @@ public enum FilterType implements StringRepresentable {
         return streamCodec;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return serializedName;

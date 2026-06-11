@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jspecify.annotations.Nullable;
 
 public class PlayerState {
 
@@ -36,7 +38,8 @@ public class PlayerState {
     private final Set<UUID> activeScubaMasks = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<UUID> activeGravitationalModulators = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    private LevelAccessor world;
+    @Nullable
+    private LevelAccessor level;
 
     public void clear(boolean isRemote) {
         activeJetpacks.clear();
@@ -64,7 +67,11 @@ public class PlayerState {
     }
 
     public void init(LevelAccessor world) {
-        this.world = world;
+        this.level = world;
+    }
+
+    private LevelAccessor level() {
+        return Objects.requireNonNull(level, "Player state level has not been initialized");
     }
 
     // ----------------------
@@ -84,8 +91,9 @@ public class PlayerState {
             activeJetpacks.add(uuid);
         }
 
+        LevelAccessor level = level();
         // If something changed, and we're in a remote world, take appropriate action
-        if (changed && world.isClientSide()) {
+        if (changed && level.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.JETPACK, uuid, isActive));
@@ -93,7 +101,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now flying
             if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
-                SoundHandler.startSound(world, uuid, SoundType.JETPACK);
+                SoundHandler.startSound(level, uuid, SoundType.JETPACK);
             }
         }
     }
@@ -121,8 +129,9 @@ public class PlayerState {
             activeScubaMasks.add(uuid); // Off -> on
         }
 
+        LevelAccessor level = level();
         // If something changed, and we're in a remote world, take appropriate action
-        if (changed && world.isClientSide()) {
+        if (changed && level.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.SCUBA_MASK, uuid, isActive));
@@ -130,7 +139,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now using a scuba mask
             if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
-                SoundHandler.startSound(world, uuid, SoundType.SCUBA_MASK);
+                SoundHandler.startSound(level, uuid, SoundType.SCUBA_MASK);
             }
         }
     }
@@ -190,8 +199,9 @@ public class PlayerState {
             activeGravitationalModulators.add(uuid); // Off -> on
         }
 
+        LevelAccessor level = level();
         // If something changed, and we're in a remote world, take appropriate action
-        if (changed && world.isClientSide()) {
+        if (changed && level.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
@@ -199,7 +209,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now using a gravitational modulator
             if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
-                SoundHandler.startSound(world, uuid, SoundType.GRAVITATIONAL_MODULATOR);
+                SoundHandler.startSound(level, uuid, SoundType.GRAVITATIONAL_MODULATOR);
             }
         }
     }

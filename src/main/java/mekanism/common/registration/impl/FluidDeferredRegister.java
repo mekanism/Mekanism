@@ -43,7 +43,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidDeferredRegister {
 
@@ -53,9 +52,8 @@ public class FluidDeferredRegister {
     private static final Identifier LIQUID_FLOW = Mekanism.rl("mek_liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
     private static final DispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior() {
-        @NotNull
         @Override
-        public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+        public ItemStack execute(BlockSource source, ItemStack stack) {
             Level world = source.level();
             DispensibleContainerItem bucket = (DispensibleContainerItem) stack.getItem();
             BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));

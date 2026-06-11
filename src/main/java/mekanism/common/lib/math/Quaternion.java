@@ -2,6 +2,7 @@ package mekanism.common.lib.math;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 public class Quaternion {
 
@@ -44,7 +45,7 @@ public class Quaternion {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

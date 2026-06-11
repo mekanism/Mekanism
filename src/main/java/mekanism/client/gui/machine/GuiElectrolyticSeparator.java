@@ -17,10 +17,11 @@ import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElectrolyticSeparator, MekanismTileContainer<TileEntityElectrolyticSeparator>> {
 
+    @Nullable
     private GuiElement fluidGauge;
 
     public GuiElectrolyticSeparator(MekanismTileContainer<TileEntityElectrolyticSeparator> container, Inventory inv, Component title) {
@@ -48,8 +49,12 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, fluidGauge.getRelativeRight());
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        if (fluidGauge == null) {
+            renderTitleText(guiGraphics);
+        } else {
+            renderTitleTextWithOffset(guiGraphics, fluidGauge.getRelativeRight());
+        }
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

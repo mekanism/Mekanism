@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketModeChangeCurios(String slotType, int slot, int shift, boolean displayChangeMessage) implements IMekanismPacket {
 
@@ -35,7 +34,6 @@ public record PacketModeChangeCurios(String slotType, int slot, int shift, boole
         this(slotType, slot, shift, false);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketModeChangeCurios> type() {
         return TYPE;

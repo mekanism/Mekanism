@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.sounds.SoundEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class AttributeSound implements Attribute {
 
@@ -14,7 +13,6 @@ public class AttributeSound implements Attribute {
         this.soundRegistrar = soundRegistrar;
     }
 
-    @NotNull
     public Supplier<SoundEvent> getSound() {
         return HolidayManager.filterSound(soundRegistrar);
     }

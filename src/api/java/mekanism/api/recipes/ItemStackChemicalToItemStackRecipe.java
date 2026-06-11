@@ -1,10 +1,8 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for defining item chemical to item recipes.
@@ -25,10 +23,8 @@ import org.jetbrains.annotations.NotNull;
  *     <li>Nucleosynthesizing: Can be processed in the Antiprotonic Nucleosynthesizer.</li>
  * </ul>
  */
-@NothingNullByDefault
 public abstract class ItemStackChemicalToItemStackRecipe extends ItemStackChemicalToObjectRecipe<ItemStackTemplate> {
 
-    @NotNull
     @Override
     public ItemStack assemble(SingleItemChemicalRecipeInput input) {
         if (!isIncomplete() && test(input.item(), input.chemical())) {

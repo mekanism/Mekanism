@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -46,7 +45,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 
-@NothingNullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     static final char DIAMOND_CHAR = 'D';
@@ -412,10 +410,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
-              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM))
+              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM))
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
-              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD))
-              .key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON))
+              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD))
+              .key(Pattern.INGOT, this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON))
               .save(output);
         //Electrolytic separator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTROLYTIC_SEPARATOR)

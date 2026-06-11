@@ -8,7 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 public class EntityBabyCreeper extends Creeper {
 
@@ -23,9 +22,8 @@ public class EntityBabyCreeper extends Creeper {
         return true;
     }
 
-    @NotNull
     @Override
-    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    public EntityDimensions getDefaultDimensions(Pose pose) {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
     }

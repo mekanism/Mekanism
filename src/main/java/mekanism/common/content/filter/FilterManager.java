@@ -15,8 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class FilterManager<FILTER extends IFilter<?>> {
 
@@ -165,7 +164,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     //TODO - 26.1: Test this and deserialization
-    public void serialize(@NotNull ValueOutput output) {
+    public void serialize(ValueOutput output) {
         if (!filters.isEmpty()) {
             TypedOutputList<IFilter<?>> filtersOutput = output.list(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC);
             for (FILTER filter : filters) {
@@ -174,7 +173,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         }
     }
 
-    public void deserialize(@NotNull ValueInput input) {
+    public void deserialize(ValueInput input) {
         filters.clear();
         //Instantiate an empty cache for enabled filters so that when we add enabled filters
         // we can also add them to the enabled ones, and also overwrite our old cache

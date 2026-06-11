@@ -27,7 +27,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
@@ -155,7 +154,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void add(@NotNull String key, @NotNull String value) {
+    public void add(String key, String value) {
         if (value.contains("%s")) {
             throw new IllegalArgumentException("Values containing substitutions should use explicit numbered indices: " + key + " - " + value);
         }
@@ -168,9 +167,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         }
     }
 
-    @NotNull
     @Override
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache) {
         CompletableFuture<?> future = super.run(cache);
         if (altProviders.length > 0) {
             CompletableFuture<?>[] futures = new CompletableFuture[altProviders.length + 1];

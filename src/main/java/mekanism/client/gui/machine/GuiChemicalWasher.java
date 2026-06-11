@@ -18,7 +18,6 @@ import mekanism.common.tile.machine.TileEntityChemicalWasher;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWasher, MekanismTileContainer<TileEntityChemicalWasher>> {
 
@@ -49,7 +48,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

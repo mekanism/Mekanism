@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 /**
  * @param overflow Note: Sorted map to ensure each call to save is in the same order so that there is more uniformity
  */
-@NothingNullByDefault
 public record OverflowAware(Object2IntSortedMap<ItemResource> overflow) {
 
     public static final OverflowAware EMPTY = new OverflowAware(Object2IntSortedMaps.emptyMap());

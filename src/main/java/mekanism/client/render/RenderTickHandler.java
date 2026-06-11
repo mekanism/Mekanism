@@ -83,13 +83,12 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 public class RenderTickHandler {
@@ -432,7 +431,6 @@ public class RenderTickHandler {
         renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
     }
 
-    @NonNull
     private static List<Line> getOutlinesFromModel(ClientLevel level, BlockPos pos, BlockState state) {
         List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {

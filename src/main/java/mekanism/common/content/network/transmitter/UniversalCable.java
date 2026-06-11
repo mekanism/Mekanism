@@ -21,6 +21,7 @@ import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -29,9 +30,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener,
       IUpgradeableTransmitter<UniversalCableUpgradeData> {
@@ -41,7 +40,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     public final BasicEnergyContainer buffer;
 
     public UniversalCable(Holder<Block> blockProvider, TileEntityTransmitter tile) {
-        this.tier = Attribute.getTier(blockProvider, CableTier.class);
+        this.tier = Attribute.getTierNN(blockProvider, CableTier.class);
         super(tile, TransmissionType.ENERGY);
         buffer = BasicEnergyContainer.create(getCapacity(), BasicEnergyContainer.notExternal, ConstantPredicates.alwaysTrue(), this);
         this.saveShareJournal = new SaveShareJournal();
@@ -58,7 +57,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     }
 
     @Override
-    public void pullFromAcceptors() {
+    public void pullFromAcceptors(ServerLevel level) {
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
@@ -91,7 +90,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     }
 
     public IEnergyContainer getContainer() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().energyContainer : buffer;
+        return hasTransmitterNetwork() ? getTransmitterNetworkNN().energyContainer : buffer;
     }
 
     @Override
@@ -99,36 +98,35 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
         getTransmitterTile().setChanged();
     }
 
-    @Nullable
     @Override
     public UniversalCableUpgradeData getUpgradeData() {
         return new UniversalCableUpgradeData(redstoneReactive, getConnectionTypesRaw(), buffer);
     }
 
     @Override
-    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(TransmitterUpgradeData data) {
         return data instanceof UniversalCableUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@NotNull UniversalCableUpgradeData data, TransactionContext transaction) {
+    public void parseUpgradeData(UniversalCableUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         buffer.copyContents(data.buffer, transaction);
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         saveShareJournal.saveShare = input.getLongOr(SerializationConstants.ENERGY, 0);
         buffer.setEnergy(saveShareJournal.saveShare, null);
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().validateSaveShares(this, null);
+            getTransmitterNetworkNN().validateSaveShares(this, null);
         }
         output.putLong(SerializationConstants.ENERGY, saveShareJournal.saveShare);
     }
@@ -143,7 +141,6 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
         return new EnergyNetwork(networkID);
     }
 
-    @NotNull
     @Override
     public Long releaseShare() {
         Long energy = getShare();
@@ -151,7 +148,6 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
         return energy;
     }
 
-    @NotNull
     @Override
     public Long getShare() {
         return buffer.getAmountAsLong();
@@ -167,13 +163,12 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
         return getBufferWithFallback() == 0L;
     }
 
-    @NotNull
     @Override
     public Long getBufferWithFallback() {
         long buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer == 0L && hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getBuffer();
+            return getTransmitterNetworkNN().getBuffer();
         }
         return buffer;
     }
@@ -181,7 +176,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     @Override
     public void takeShare(@Nullable TransactionContext transaction) {
         if (hasTransmitterNetwork()) {
-            EnergyNetwork transmitterNetwork = getTransmitterNetwork();
+            EnergyNetwork transmitterNetwork = getTransmitterNetworkNN();
             if (!transmitterNetwork.energyContainer.isEmpty() && saveShareJournal.saveShare > 0) {
                 //TODO: I believe I fixed the save share distribution bug that caused this to be necessary. If this comes back up look into it again
                 // or reinstate the clamping
@@ -199,7 +194,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull ValueInput input) {
+    protected void handleContentsUpdateTag(EnergyNetwork network, ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.energyContainer.setEnergy(input.getLongOr(SerializationConstants.ENERGY, 0L), null);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
@@ -233,7 +228,7 @@ public class UniversalCable extends BufferedTransmitter<EnergyHandler, EnergyNet
         }
 
         @Override
-        protected void revertToSnapshot(@NonNull Long snapshot) {
+        protected void revertToSnapshot(Long snapshot) {
             this.saveShare = snapshot;
         }
 

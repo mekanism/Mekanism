@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
@@ -17,7 +16,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base implementation for a ChemicalIngredient with an amount.
@@ -27,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
-@NothingNullByDefault
 public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalStack> {
 
     /**
@@ -181,7 +179,7 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

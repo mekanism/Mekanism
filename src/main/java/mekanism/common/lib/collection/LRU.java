@@ -7,10 +7,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public class LRU<T> extends AbstractCollection<T> {
+public class LRU<T extends @Nullable Object> extends AbstractCollection<T> {
 
     private final Map<T, LRUEntry<T>> lookupMap = new Object2ObjectOpenHashMap<>();
 
@@ -91,7 +90,6 @@ public class LRU<T> extends AbstractCollection<T> {
      * @return the first element
      * @throws NoSuchElementException when there are no items in the LRU
      */
-    @NotNull
     public T head() {
         //head.next is never null as it will be tail when empty
         if (head.next.value == null) {
@@ -110,7 +108,7 @@ public class LRU<T> extends AbstractCollection<T> {
         return head.next.value;
     }
 
-    private static class LRUEntry<T> {
+    private static class LRUEntry<T extends @Nullable Object> {
 
         private final T value;
         private LRUEntry<T> prev, next;
@@ -120,7 +118,6 @@ public class LRU<T> extends AbstractCollection<T> {
         }
     }
 
-    @NotNull
     @Override
     public LRUIterator iterator() {
         return new LRUIterator();

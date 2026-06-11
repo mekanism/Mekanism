@@ -2,7 +2,6 @@ package mekanism.common.recipe.compat;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.api.ids.AEItemIds;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -12,7 +11,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
-@ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
     public AE2RecipeProvider(HolderLookup.Provider registries, String modid) {

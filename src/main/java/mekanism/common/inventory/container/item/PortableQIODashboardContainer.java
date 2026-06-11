@@ -25,13 +25,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     protected final InteractionHand hand;
     protected final ItemAccess itemAccess;
+    @Nullable
     private QIOFrequency freq;
 
     public PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean remote, BulkQIOData itemData) {
@@ -42,7 +42,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     private PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemAccess itemAccess, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder,
-          BulkQIOData itemData, CachedSearchData searchData, CachedSortingData sortingData, @Nullable SelectedWindowData selectedWindow, QIOFrequency freq) {
+          BulkQIOData itemData, CachedSearchData searchData, CachedSortingData sortingData, @Nullable SelectedWindowData selectedWindow, @Nullable QIOFrequency freq) {
         super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote, craftingWindowHolder, itemData, searchData, sortingData, selectedWindow);
         this.hand = hand;
         this.freq = freq;
@@ -85,7 +85,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    protected void addInventorySlots(@NotNull Inventory inv) {
+    protected void addInventorySlots(Inventory inv) {
         super.addInventorySlots(inv);
         if (offhandSlots.isEmpty()) {
             //If we don't have a slot relating to offhand data, add a syncable itemstack to track any changes that might happen to the stack
@@ -95,12 +95,12 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the dashboard from the player's inventory slot
         if (index == inv.getSelectedSlot() && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean mayPickup(@NotNull Player player) {
+                public boolean mayPickup(Player player) {
                     return false;
                 }
             };
@@ -109,7 +109,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @NotNull ContainerInput clickType, @NotNull Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput clickType, Player player) {
         if (clickType == ContainerInput.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == Inventory.SLOT_OFFHAND) {
                 //Block pressing f to swap it when it is in the offhand
@@ -125,12 +125,12 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public boolean canPlayerAccess(@NotNull Player player) {
+    public boolean canPlayerAccess(Player player) {
         return IItemSecurityUtils.INSTANCE.canAccess(player, itemAccess);
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return isValidType(itemAccess.getResource());
     }
 

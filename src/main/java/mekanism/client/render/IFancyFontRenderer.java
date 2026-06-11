@@ -14,7 +14,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 //TODO - 1.21: Document this class
@@ -146,7 +146,7 @@ public interface IFancyFontRenderer {
 
     default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
           float scale, long msVisible) {
-        if (scale == 1.0F) {
+        if (Mth.equal(scale, 1)) {
             drawScrollingString(graphics, text, minX, minY, maxX, maxY, alignment, color, shadow, msVisible);
             return;
         }

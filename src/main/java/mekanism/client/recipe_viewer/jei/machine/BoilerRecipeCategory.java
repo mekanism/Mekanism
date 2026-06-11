@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -27,8 +28,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerRecipe> {
 
@@ -82,26 +82,26 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
 
     @Nullable
     @Override
-    public Identifier getIdentifier(@NotNull BoilerRecipeViewerRecipe recipe) {
+    public Identifier getIdentifier(BoilerRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 
-    @NotNull
     @Override
-    public Codec<BoilerRecipeViewerRecipe> getCodec(@NotNull ICodecHelper codecHelper, @NotNull IRecipeManager recipeManager) {
+    public Codec<BoilerRecipeViewerRecipe> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager) {
         return BoilerRecipeViewerRecipe.CODEC;
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, IFocusGroup focusGroup) {
         ContextMap context = getSlotDisplayContext();
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations(context));
-        if (recipe.superHeatedCoolant() == null) {
+        ChemicalStackTemplate cooledCoolant = recipe.cooledCoolant();
+        if (recipe.superHeatedCoolant() == null || cooledCoolant == null) {
             initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
         } else {
             initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations(context));
             initChemical(builder, steamTank, Collections.singletonList(recipe.steam()));
-            initChemical(builder, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
+            initChemical(builder, cooledCoolantTank, Collections.singletonList(cooledCoolant));
         }
     }
 }

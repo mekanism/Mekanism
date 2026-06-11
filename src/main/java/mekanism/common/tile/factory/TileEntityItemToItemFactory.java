@@ -10,6 +10,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -23,22 +24,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityFactory<RECIPE> {
 
-    protected IInputHandler<Item, @NotNull ItemStack>[] inputHandlers;
-    protected IOutputHandler<@NotNull ItemStackTemplate>[] outputHandlers;
+    protected final IInputHandler<Item, ItemStack>[] inputHandlers;
+    protected final IOutputHandler<ItemStackTemplate>[] outputHandlers;
 
     protected TileEntityItemToItemFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
+        FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
+        inputHandlers = new IInputHandler[tier.processes];
+        outputHandlers = new IOutputHandler[tier.processes];
         super(blockProvider, pos, state, errorTypes, globalErrorTypes);
     }
 
     @Override
     protected void addSlots(MekContainerHelper<IInventorySlot> builder, IContentsListener listener, IContentsListener updateSortingListener) {
-        inputHandlers = new IInputHandler[tier.processes];
-        outputHandlers = new IOutputHandler[tier.processes];
-        processInfoSlots = new ProcessInfo[tier.processes];
         int baseX = tier == FactoryTier.BASIC ? 55 : tier == FactoryTier.ADVANCED ? 35 : tier == FactoryTier.ELITE ? 29 : 27;
         int baseXMult = tier == FactoryTier.BASIC ? 38 : tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tier.processes; i++) {

@@ -18,25 +18,27 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
+    @UnknownNullability//Initialized via getInitialInventory
     private SecurityInventorySlot unlockSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     private SecurityInventorySlot lockSlot;
 
     public TileEntitySecurityDesk(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SECURITY_DESK, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -46,8 +48,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         SecurityFrequency frequency = getFreq();
         UUID ownerUUID = getOwnerUUID();
         if (ownerUUID != null && frequency != null) {
@@ -75,8 +77,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
      * Validates access for anyone who might be accessing a GUI that changed security modes
      */
     private void validateAccess() {
-        if (hasLevel()) {
-            MinecraftServer server = getWorldNN().getServer();
+        if (level != null) {
+            MinecraftServer server = level.getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                     closeIfNoAccess(player);
@@ -90,8 +92,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (frequency != null) {
             UUID removed = frequency.removeTrusted(index);
             markForSave();
-            if (removed != null && hasLevel()) {
-                MinecraftServer server = getWorldNN().getServer();
+            if (removed != null && level != null) {
+                MinecraftServer server = level.getServer();
                 if (server != null) {
                     closeIfNoAccess(server.getPlayerList().getPlayer(removed));
                 }
@@ -141,6 +143,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
+    @Nullable
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyTypes.SECURITY);
     }

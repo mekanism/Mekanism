@@ -48,9 +48,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
     
@@ -76,9 +75,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         super(container, inv, title, imageWidth, imageHeight);
     }
 
-    @NotNull
     @Override
-    public BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public BooleanSupplier trackWarning(WarningType type, BooleanSupplier warningSupplier) {
         if (warningTracker == null) {
             warningTracker = new WarningTracker();
         }
@@ -143,7 +141,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void setInitialFocus(@NotNull GuiEventListener listener) {
+    protected void setInitialFocus(GuiEventListener listener) {
         if (!initialFocusSet) {
             super.setInitialFocus(listener);
             initialFocusSet = true;
@@ -260,7 +258,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
-    @NotNull
     @Override
     public ItemStack getCarriedItem() {
         return getMenu().getCarried();
@@ -282,7 +279,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             combinedChildren = List.of(topWindow);
         }
         ContainerEventHandler handlerWithWindows = new ContainerEventHandler() {
-            @NotNull
             @Override
             public List<? extends GuiEventListener> children() {
                 return combinedChildren;
@@ -307,7 +303,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             public void setFocused(@Nullable GuiEventListener focused) {
             }
 
-            @NotNull
             @Override
             public ScreenRectangle getRectangle() {
                 return GuiMekanism.this.getRectangle();
@@ -327,7 +322,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Nullable
     @Override
-    public ComponentPath handleTabNavigation(@NotNull FocusNavigationEvent.TabNavigation navigation) {
+    public ComponentPath handleTabNavigation(FocusNavigationEvent.TabNavigation navigation) {
         //Note: We have to AT this method and the arrow navigation one, as Screen explicitly calls super.nextFocusPath,
         // so we can't get away with just overriding getFocusPath
         if (windows.isEmpty()) {
@@ -338,7 +333,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Nullable
     @Override
-    public ComponentPath handleArrowNavigation(@NotNull FocusNavigationEvent.ArrowNavigation navigation) {
+    public ComponentPath handleArrowNavigation(FocusNavigationEvent.ArrowNavigation navigation) {
         if (windows.isEmpty()) {
             return super.handleArrowNavigation(navigation);
         }
@@ -410,7 +405,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override//TODO - 26.1: review `pose` used for zindex stuff
-    protected void extractLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
                 element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
@@ -438,10 +433,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
 
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     }
 
-    @NotNull
     @Override
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         GuiWindow window = getWindowHovering(mouseX, mouseY);
@@ -464,7 +458,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.peek();
@@ -506,7 +500,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         if (hasClicked) {
             // always pass mouse released events to windows for drag checks
             for (GuiWindow w : windows) {
@@ -518,7 +512,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         for (GuiWindow window : windows) {
             if (window.keyPressed(event)) {
                 return true;
@@ -529,7 +523,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean charTyped(@NotNull CharacterEvent event) {
+    public boolean charTyped(CharacterEvent event) {
         for (GuiWindow window : windows) {
             if (window.charTyped(event)) {
                 return true;
@@ -542,7 +536,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
      * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
      */
     @Override
-    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseXOld, double mouseYOld) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseXOld, double mouseYOld) {
         super.mouseDragged(event, mouseXOld, mouseYOld);
         return getFocused() != null && isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT && getFocused().mouseDragged(event, mouseXOld, mouseYOld);
     }
@@ -597,7 +591,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected boolean isMouseOverSlot(@NotNull Slot slot, double mouseX, double mouseY) {
+    protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
         if (slot instanceof IVirtualSlot virtualSlot) {
             //Virtual slots need special handling to allow for matching them to the window they may be attached to
             if (isVirtualSlotAvailable(virtualSlot)) {
@@ -654,7 +648,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void addSlots() {
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            Slot slot = menu.slots.get(i);
+            Slot slot = menu.getSlot(i);
             if (slot instanceof InventoryContainerSlot containerSlot) {
                 ContainerSlotType slotType = containerSlot.getSlotType();
                 DataType dataType = findDataType(containerSlot);

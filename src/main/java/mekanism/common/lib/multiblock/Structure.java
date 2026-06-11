@@ -21,9 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class Structure {
 
@@ -39,7 +41,9 @@ public class Structure {
     private long updateTimestamp;
     private boolean didUpdate;
 
+    @Nullable
     private MultiblockData multiblockData;
+    @Nullable
     private IMultiblock<?> controller;
     @Nullable
     private MultiblockType<?> multiblockType;
@@ -66,6 +70,7 @@ public class Structure {
         }
     }
 
+    @Nullable
     public MultiblockData getMultiblockData() {
         return multiblockData;
     }
@@ -81,6 +86,7 @@ public class Structure {
         }
     }
 
+    @Nullable
     public IMultiblock<?> getController() {
         return controller;
     }
@@ -107,7 +113,7 @@ public class Structure {
         return planeMap.computeIfAbsent(axis, k -> new Int2ObjectRBTreeMap<>());
     }
 
-    public void markForUpdate(Level world, boolean invalidate) {
+    public void markForUpdate(LevelAccessor world, boolean invalidate) {
         updateTimestamp = world.getGameTime();
         didUpdate = false;
         if (invalidate) {
@@ -117,29 +123,29 @@ public class Structure {
         }
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> void doImmediateUpdate(TILE tile, boolean tryValidate) {
+    public <TILE extends BlockEntity & IMultiblockBase> void doImmediateUpdate(Level level, TILE tile, boolean tryValidate) {
         //Pretend it got marked for update last tick so that when we call tick it will update
-        updateTimestamp = tile.getLevel().getGameTime() - 1;
+        updateTimestamp = level.getGameTime() - 1;
         didUpdate = false;
-        invalidate(tile.getLevel());
-        tick(tile, tryValidate);
+        invalidate(level);
+        tick(level, tile, tryValidate);
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
-        if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
+    public <TILE extends BlockEntity & IMultiblockBase> void tick(Level level, TILE tile, boolean tryValidate) {
+        if (!didUpdate && updateTimestamp == level.getGameTime() - 1) {
             didUpdate = true;
-            runUpdate(tile);
+            runUpdate(level);
         }
         if (tryValidate && !isValid()) {
-            validate(tile, new Long2ObjectOpenHashMap<>());
+            validate(level, tile, new Long2ObjectOpenHashMap<>());
         }
     }
 
-    public <TILE extends BlockEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
+    public FormationResult runUpdate(LevelReader level) {
         if (getController() != null && multiblockData == null) {
             return getController().createFormationProtocol().doUpdate();
         }
-        removeMultiblock(tile.getLevel());
+        removeMultiblock(level);
         return FormationResult.FAIL;
     }
 
@@ -225,12 +231,12 @@ public class Structure {
         return valid;
     }
 
-    public void invalidate(Level world) {
+    public void invalidate(LevelReader world) {
         removeMultiblock(world);
         valid = false;
     }
 
-    public void removeMultiblock(Level world) {
+    public void removeMultiblock(LevelReader world) {
         if (multiblockData != null) {
             multiblockData.remove(world, this);
             multiblockData = null;
@@ -245,7 +251,7 @@ public class Structure {
         return nodes.size();
     }
 
-    private static void validate(IMultiblockBase node, Long2ObjectMap<ChunkAccess> chunkMap) {
+    private static void validate(Level level, IMultiblockBase node, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (node instanceof IMultiblock<?> multiblock) {
             if (!multiblock.getStructure().isValid()) {
                 // only validate if necessary; this will already be valid if we recursively call validate()
@@ -255,11 +261,11 @@ public class Structure {
         } else if (node instanceof IStructuralMultiblock) {
             node.resetStructure(null);//TODO - 26.1: why null???
         }
-        FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
+        FormationProtocol.explore(level, chunkMap, node.getBlockPos(), node, (lvl, chunks, start, n, pos) -> {
             if (pos.equals(start)) {
                 return true;
             }
-            BlockEntity tile = WorldUtils.getTileEntity(level, chunks, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(lvl, chunks, pos);
             if (tile instanceof IMultiblockBase adj && isCompatible(n, adj)) {
                 boolean didMerge = false;
                 if (n instanceof IStructuralMultiblock structuralN && adj instanceof IStructuralMultiblock structuralAdj) {
@@ -267,19 +273,19 @@ public class Structure {
                     managers.addAll(structuralAdj.getStructureMap().keySet());
                     // if both are structural, they try to merge all manager structures
                     for (MultiblockManager<?> manager : managers) {
-                        didMerge |= mergeIfNecessary(n, adj, manager, true);
+                        didMerge |= mergeIfNecessary(lvl, n, adj, manager, true);
                     }
                 } else if (n instanceof IStructuralMultiblock) {
                     // validate from the perspective of the IMultiblock
                     if (!hasStructure(n, (IMultiblock<?>) adj)) {
-                        validate(adj, chunks);
+                        validate(lvl, adj, chunks);
                     }
                     return false;
                 } else if (adj instanceof IStructuralMultiblock) {
-                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
+                    didMerge = mergeIfNecessary(lvl, n, adj, getManager(n), false);
                 } else { // both are regular IMultiblocks
                     // we know the structures are compatible so managers must be the same for both
-                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
+                    didMerge = mergeIfNecessary(lvl, n, adj, getManager(n), false);
                 }
                 return didMerge;
             }
@@ -291,14 +297,17 @@ public class Structure {
         return structural.getStructure(multiblock.getManager()) == multiblock.getStructure();
     }
 
-    private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager, boolean bothStructural) {
+    private static boolean mergeIfNecessary(Level level, IMultiblockBase node, IMultiblockBase adj, @Nullable MultiblockManager<?> manager, boolean bothStructural) {
+        if (manager == null) {//Should never happen, but check it suppress the nullability warnings
+            return false;
+        }
         // reset the structures if they're invalid
         Structure nodeStructure = node.getStructure(manager);
-        if (!nodeStructure.isValid()) {
+        if (nodeStructure == null || !nodeStructure.isValid()) {
             nodeStructure = node.resetStructure(manager);
         }
         Structure adjStructure = adj.getStructure(manager);
-        if (!adjStructure.isValid()) {
+        if (adjStructure == null || !adjStructure.isValid()) {
             adjStructure = adj.resetStructure(manager);
         }
         // only merge if the structures are different
@@ -326,7 +335,7 @@ public class Structure {
                 changed.add(nodeStructure);
             }
             // update the changed structure
-            changed.markForUpdate(node.getLevel(), false);
+            changed.markForUpdate(level, false);
             return true;
         }
         return false;
@@ -346,10 +355,12 @@ public class Structure {
         return false;
     }
 
+    @Nullable
     private static MultiblockManager<?> getManager(IMultiblockBase node) {
         return node instanceof IMultiblock<?> multiblock ? multiblock.getManager() : null;
     }
 
+    @Nullable
     private static MultiblockType<?> getMultiblockType(IMultiblockBase node) {
         return node instanceof IMultiblock<?> multiblock ? multiblock.getMultiblockType() : null;
     }

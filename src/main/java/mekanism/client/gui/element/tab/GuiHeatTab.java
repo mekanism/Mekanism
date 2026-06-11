@@ -23,8 +23,7 @@ import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiHeatTab extends GuiTexturedElement {
 
@@ -41,7 +40,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
     }
@@ -64,7 +63,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         int button = event.button();
         if (button == InputConstants.MOUSE_BUTTON_LEFT) {
             updateTemperatureUnit(IIncrementalEnum::getNext);
@@ -74,7 +73,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 

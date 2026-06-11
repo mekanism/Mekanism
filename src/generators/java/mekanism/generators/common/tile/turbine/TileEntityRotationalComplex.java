@@ -6,8 +6,9 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
 
@@ -16,12 +17,12 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
     }
 
     @Override
-    protected void multiblockChanged(@Nullable UUID old) {
-        super.multiblockChanged(old);
-        if (!isRemote()) {
-            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), getBlockPos().below());
+    protected void multiblockChanged(LevelReader level, @Nullable UUID old) {
+        super.multiblockChanged(level, old);
+        if (!level.isClientSide()) {
+            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, level, getBlockPos().below());
             if (tile != null) {
-                tile.updateRotors();
+                tile.updateRotors(level);
             }
         } else if (getMultiblockUUID() == null && old != null) {
             TurbineMultiblockData.clientRotationMap.removeFloat(old);

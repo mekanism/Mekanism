@@ -1,13 +1,11 @@
 package mekanism.common.recipe.upgrade;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ItemAccessUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class SortingRecipeData implements RecipeUpgradeData<SortingRecipeData> {
 
     static final SortingRecipeData SORTING = new SortingRecipeData();

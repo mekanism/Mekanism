@@ -23,13 +23,13 @@ import net.neoforged.fml.loading.modscan.ModAnnotation;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 public class MekAnnotationScanner {
 
     public static void collectScanData() {
-        Map<String, Class<?>> classNameCache = new Object2ObjectOpenHashMap<>();
+        Map<String, @Nullable Class<?>> classNameCache = new Object2ObjectOpenHashMap<>();
         Map<BaseAnnotationScanner, ScanData> scanners = new Object2ObjectArrayMap<>();
         Map<ElementType, List<ScanData>> elementBasedScanData = new EnumMap<>(ElementType.class);
         addScanningSupport(scanners, elementBasedScanData, SyncMapper.INSTANCE);
@@ -58,7 +58,7 @@ public class MekAnnotationScanner {
         }
     }
 
-    private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data,
+    private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, @Nullable Class<?>> classNameCache, AnnotationData data,
           List<IModFileInfo> modFileData) {
         ElementType targetType = data.targetType();
         List<ScanData> elementScanData = elementBasedScanData.getOrDefault(targetType, Collections.emptyList());
@@ -92,7 +92,7 @@ public class MekAnnotationScanner {
     }
 
     @Nullable
-    private static Class<?> getClassForName(Map<String, Class<?>> classNameCache, String className) {
+    private static Class<?> getClassForName(Map<String, @Nullable Class<?>> classNameCache, String className) {
         if (classNameCache.containsKey(className)) {
             //Note: We have to check if it is contained, as we keep track of failed classes as null values
             return classNameCache.get(className);
@@ -130,7 +130,7 @@ public class MekAnnotationScanner {
 
         protected abstract Map<ElementType, Type[]> getSupportedTypes();
 
-        protected abstract void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData);
+        protected abstract void collectScanData(Map<String, @Nullable Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData);
 
         /**
          * Gets the value of an annotation or null if it is not present. Used for getting classes

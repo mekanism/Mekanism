@@ -1,11 +1,9 @@
 package mekanism.tools.client.recipe_viewer.aliases;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.util.Util;
 
-@NothingNullByDefault
 public enum ToolsAliases implements IAliasedTranslation {
     ;
 

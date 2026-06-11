@@ -31,7 +31,6 @@ import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
-import mekanism.common.recipe.ingredients.creator.ItemStackIngredientCreator;
 import mekanism.common.registries.MekanismDatapackRegistryProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.core.HolderLookup;

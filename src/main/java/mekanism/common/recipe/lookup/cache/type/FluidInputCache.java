@@ -6,6 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Fluid, FluidStack, FluidStackIngredient, RECIPE> {
 
@@ -43,9 +44,9 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends Component
                 mapPlainFluidSet(recipe, componentIngredient.fluidSet());
                 return false;
             }
-            var patch = componentIngredient.components().asPatch();
+            DataComponentPatch patch = componentIngredient.components().asPatch();
             for (Holder<Fluid> holder : componentIngredient.fluidSet()) {
-                addNbtInputCache(holder, patch, recipe);
+                addComponentInputCache(holder, patch, recipe);
             }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
@@ -65,7 +66,7 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends Component
     }
 
     @Override
-    public boolean isEmpty(@UnknownNullability TypedInstance<Fluid> input) {
+    public boolean isEmpty(@Nullable TypedInstance<Fluid> input) {
         return switch (input) {
             case FluidStack stack -> stack.isEmpty();
             case FluidResource resource -> resource.isEmpty();

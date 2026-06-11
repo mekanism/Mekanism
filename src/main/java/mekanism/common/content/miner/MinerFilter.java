@@ -19,7 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -63,11 +63,11 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         requiresReplacement = filter.requiresReplacement;
     }
 
-    public boolean replaceTargetMatches(@NotNull Item target) {
+    public boolean replaceTargetMatches(Item target) {
         return replaceTarget != Items.AIR && replaceTarget == target;
     }
 
-    public boolean replaceTargetMatches(@NotNull ItemResource target) {
+    public boolean replaceTargetMatches(ItemResource target) {
         return replaceTarget != Items.AIR && target.is(replaceTarget);
     }
 
@@ -85,7 +85,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {

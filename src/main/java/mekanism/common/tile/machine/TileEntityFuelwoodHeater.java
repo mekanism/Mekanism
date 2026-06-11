@@ -21,10 +21,11 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
@@ -38,8 +39,10 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
 
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel slot")
     FuelInventorySlot fuelSlot;
+    @UnknownNullability//Initialized via getInitialHeatCapacitors
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
 
@@ -47,7 +50,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         super(MekanismBlocks.FUELWOOD_HEATER, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -55,7 +57,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         MekContainerHelper<IHeatCapacitor> builder = MekContainerHelper.forSide(facingSupplier);
@@ -64,8 +65,8 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (burnTime == 0) {
             maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues(), null);
         }
@@ -94,14 +95,14 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         burnTime = input.getIntOr(SerializationConstants.BURN_TIME, burnTime);
         maxBurnTime = input.getIntOr(SerializationConstants.MAX_BURN_TIME, maxBurnTime);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.BURN_TIME, burnTime);
         output.putInt(SerializationConstants.MAX_BURN_TIME, maxBurnTime);

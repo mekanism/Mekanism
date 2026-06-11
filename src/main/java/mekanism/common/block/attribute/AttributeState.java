@@ -8,9 +8,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface AttributeState extends Attribute {
 
@@ -18,13 +16,11 @@ public interface AttributeState extends Attribute {
 
     void fillBlockStateContainer(Block block, List<Property<?>> properties);
 
-    default BlockState getDefaultState(@NotNull BlockState state) {
+    default BlockState getDefaultState(BlockState state) {
         return state;
     }
 
-    @Contract("null, _, _, _, _ -> null")
-    default BlockState getStateForPlacement(@Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player,
-          @NotNull Direction face) {
+    default BlockState getStateForPlacement(BlockState state, LevelAccessor world, BlockPos pos, @Nullable Player player, Direction face) {
         return state;
     }
 }

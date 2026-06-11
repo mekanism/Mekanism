@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.BasicResourceContainer;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> implements IChemicalTank {
 
     /// Creates a tank with a given capacity, and content listener, using the default attribute validator [ChemicalAttributeValidator#DEFAULT].

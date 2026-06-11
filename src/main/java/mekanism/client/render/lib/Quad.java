@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -15,6 +14,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1 - can we get rid of these?
 public class Quad {
@@ -138,7 +138,6 @@ public class Quad {
         return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade, hasAmbientOcclusion);
     }
 
-    @NothingNullByDefault
     private static class BakedQuadUnpacker implements VertexConsumer {
 
         private final Vertex[] vertices = new Vertex[4];
@@ -160,7 +159,7 @@ public class Quad {
                 }
             }
             building = true;
-            vertices[vertexIndex] = new Vertex().pos(new Vector3f(x, y, z));
+            vertices[vertexIndex] = new Vertex(x, y, z);
             return this;
         }
 
@@ -218,6 +217,7 @@ public class Quad {
         private final Direction side;
         private Color color = Color.WHITE;
 
+        @Nullable
         private Vector3f vec1, vec2, vec3, vec4;
 
         private float minU, minV, maxU, maxV;
@@ -313,6 +313,9 @@ public class Quad {
         }
 
         public Quad build() {
+            if (vec1 == null || vec2 == null || vec3 == null || vec4 == null) {
+                throw new IllegalStateException("Quad vertices not defined");
+            }
             Vertex[] vertices = new Vertex[4];
             //Note: We don't need to create a new Vector3f for the cross multiplication, as it will just mutate the new one we used for the first subtraction
             Vector3f normal = vec3.sub(vec2, new Vector3f()).cross(vec1.sub(vec2,  new Vector3f())).normalize();

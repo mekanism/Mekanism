@@ -9,6 +9,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
@@ -17,8 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
@@ -73,7 +73,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     }
 
     @Override
-    protected boolean setText() {
+    protected boolean setText(GuiTextField text) {
         String name = text.getText();
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());
@@ -126,7 +126,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         return new OredictionificatorItemFilter();
     }
 
-    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         ItemResource result = filter.getResult();

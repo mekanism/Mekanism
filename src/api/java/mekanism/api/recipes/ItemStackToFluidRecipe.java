@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SingleInputRecipe.ItemInputRecipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
@@ -13,6 +12,5 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
  *
  * @apiNote There is currently no types of ItemStack to FluidStack recipe type
  */
-@NothingNullByDefault
 public abstract class ItemStackToFluidRecipe extends ItemInputRecipe<FluidStackTemplate> {
 }

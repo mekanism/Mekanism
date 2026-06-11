@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.alias;
 
 import java.util.List;
 import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.component.containers.type.ContainerType;
@@ -25,7 +24,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
-@NothingNullByDefault
 public final class MekanismAliasMapping implements IAliasMapping {
 
     @Override

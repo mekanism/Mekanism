@@ -12,6 +12,6 @@ public interface ITagFilter<FILTER extends ITagFilter<FILTER>> extends IFilter<F
 
     @Override
     default boolean hasFilter() {
-        return getTagName() != null && !getTagName().isEmpty();
+        return !getTagName().isEmpty();
     }
 }

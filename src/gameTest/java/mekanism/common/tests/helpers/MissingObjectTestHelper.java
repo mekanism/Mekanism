@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
@@ -43,7 +42,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
-@NothingNullByDefault
 public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private static final Holder<Item> ITEM_TO_REPLACE = MekanismItems.INFUSED_ALLOY;

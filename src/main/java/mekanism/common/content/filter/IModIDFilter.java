@@ -12,6 +12,6 @@ public interface IModIDFilter<FILTER extends IModIDFilter<FILTER>> extends IFilt
 
     @Override
     default boolean hasFilter() {
-        return getModID() != null && !getModID().isEmpty();
+        return !getModID().isEmpty();
     }
 }

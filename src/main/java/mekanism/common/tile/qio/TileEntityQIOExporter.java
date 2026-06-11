@@ -15,12 +15,12 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.item.TransporterItemHandler;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase.PathCalculator;
 import mekanism.common.content.qio.QIOFrequency;
@@ -49,6 +49,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -57,8 +58,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements IAdvancedTransportEjector {
 
@@ -80,7 +80,6 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         super(MekanismBlocks.QIO_EXPORTER, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -97,13 +96,13 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
-        boolean needsUpdate = super.onUpdateServer(frequency);
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(level, frequency);
         if (frequency != null && canFunction()) {
             if (delay > 0) {
                 delay--;
             } else {
-                tryEject(frequency);
+                tryEject(level, frequency);
                 delay = MAX_DELAY;
             }
         }
@@ -116,17 +115,17 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         backInventory = null;
     }
 
-    private void tryEject(QIOFrequency freq) {
+    private void tryEject(ServerLevel level, QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM.createCache(level, worldPosition.relative(direction.getOpposite()), direction);
         }
         ResourceHandler<ItemResource> backHandler = backInventory.getCapability();
         if (backHandler != null) {
             if (getFilterManager().hasEnabledFilters()) {
-                FILTER_EJECTOR.eject(this, freq, backHandler);
+                FILTER_EJECTOR.eject(this, freq, backHandler, level.getRandom());
             } else if (exportWithoutFilter) {
-                FILTERLESS_EJECTOR.eject(this, freq, backHandler);
+                FILTERLESS_EJECTOR.eject(this, freq, backHandler, level.getRandom());
             }
         }
     }
@@ -168,33 +167,33 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.storeNullable(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC, getRoundRobinTarget());
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).ifPresent(this::setRoundRobinTarget);
     }
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+    public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard(SerializationConstants.ROUND_ROBIN_TARGET);
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.putBoolean(SerializationConstants.AUTO, exportWithoutFilter);
         output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         exportWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, exportWithoutFilter);
         //TODO - 26.1: Should the default value be the current round robin value?
@@ -202,14 +201,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.AUTO, exportWithoutFilter);
         builder.set(MekanismDataComponents.ROUND_ROBIN, roundRobin);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         exportWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, exportWithoutFilter);
         roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, roundRobin);
@@ -240,7 +239,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public boolean canSendHome(@NotNull ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
+    public boolean canSendHome(Level level, ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null) {
             return false;
@@ -250,9 +249,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         }
     }
 
-    @NotNull
     @Override
-    public TransitRequest.TransitResponse sendHome(@NotNull TransitRequest request, @NotNull TransactionContext transaction) {
+    public TransitRequest.TransitResponse sendHome(Level level, TransitRequest request, TransactionContext transaction) {
         if (request.isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;
         }
@@ -307,7 +305,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
 
         private static final double MAX_EJECT_ATTEMPTS = 100;
 
-        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, ResourceHandler<ItemResource> inventory) {
+        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, ResourceHandler<ItemResource> inventory, RandomSource random) {
             int slots = inventory.size();
             if (slots == 0) {
                 //If the inventory has no slots just exit early and don't even bother calculating the eject map
@@ -328,7 +326,6 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
             if (ejectMap.isEmpty()) {
                 return;
             }
-            RandomSource random = exporter.getLevel().getRandom();
             double ejectChance = Math.min(1, MAX_EJECT_ATTEMPTS / ejectMap.size());
             boolean randomizeEject = ejectChance < 1;
             int maxTypes = exporter.getMaxTransitTypes();

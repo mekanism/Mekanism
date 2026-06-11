@@ -26,6 +26,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class TextComponentUtil {
 
@@ -55,7 +56,7 @@ public class TextComponentUtil {
      *
      * @return Formattable Text Component.
      */
-    public static MutableComponent build(Object... components) {
+    public static MutableComponent build(@Nullable Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
         // from call to call without resetting back to
@@ -115,7 +116,7 @@ public class TextComponentUtil {
         //TODO: Make this more like smartTranslate? Including back to back formatting where we already have that type of formatting set
         // then convert that
         //Ignores any trailing formatting
-        return result;
+        return result == null ? Component.empty() : result;
     }
 
     private static MutableComponent getTranslatedBoolean(boolean bool) {
@@ -188,7 +189,7 @@ public class TextComponentUtil {
      *
      * @return Translation Text Component.
      */
-    public static MutableComponent smartTranslate(String key, Object... components) {
+    public static MutableComponent smartTranslate(String key, @Nullable Object... components) {
         if (components.length == 0) {
             //If we don't have any args just short circuit to creating the translation key
             return translate(key);

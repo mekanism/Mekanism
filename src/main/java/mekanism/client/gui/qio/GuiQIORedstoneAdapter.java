@@ -9,7 +9,7 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyTileTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostItemConsumer;
 import mekanism.common.MekanismLang;
@@ -17,7 +17,8 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem.GuiInteractionItem;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.text.InputValidator;
@@ -28,11 +29,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstoneAdapter, MekanismTileContainer<TileEntityQIORedstoneAdapter>> {
-
-    private GuiTextField text;
 
     public GuiQIORedstoneAdapter(MekanismTileContainer<TileEntityQIORedstoneAdapter> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 26);
@@ -43,7 +41,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
+        addRenderableWidget(new GuiQIOFrequencyTileTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, event, _) -> {
             GuiQIORedstoneAdapter gui = (GuiQIORedstoneAdapter) element.gui();
             ItemStack stack = gui.getCarriedItem();
@@ -78,8 +76,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             list.add(MekanismLang.QIO_FUZZY_MODE.translate(tile.getFuzzyMode()));
             return list;
         }).clearFormat());
-        text = addRenderableWidget(new GuiTextField(this, 29, 80, imageWidth - 39, 12));
-        text.setInputValidator(InputValidator.DIGIT)
+        GuiTextField text = addRenderableWidget(new GuiTextField(this, 29, 80, imageWidth - 39, 12))
+              .setInputValidator(InputValidator.DIGIT)
               .configureDigitalInput(this::setCount)
               .setMaxLength(10);
         setInitialFocus(text);
@@ -87,10 +85,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
 
     private void updateStack(ItemStack stack) {
         //Note: Empty stack will be returned as empty by StackUtils#size, so we do not have to special case it
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, stack.copyWithCount(1)));
+        PacketUtils.sendToServer(new PacketTileGuiInteractItem(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, stack.copyWithCount(1)));
     }
 
-    private void setCount() {
+    private void setCount(GuiTextField text) {
         if (!text.getText().isEmpty()) {
             long count = Long.parseLong(text.getText());
             PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_COUNT, tile, (int) Math.min(count, Integer.MAX_VALUE)));
@@ -99,7 +97,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         renderItem(guiGraphics, tile.getItemType().toStack(), 8, 31);

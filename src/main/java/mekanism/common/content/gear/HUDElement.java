@@ -6,7 +6,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class HUDElement implements IHUDElement {
 
@@ -20,13 +19,11 @@ public class HUDElement implements IHUDElement {
         this.color = color;
     }
 
-    @NotNull
     @Override
     public Identifier getIcon() {
         return icon;
     }
 
-    @NotNull
     @Override
     public Component getText() {
         return text;

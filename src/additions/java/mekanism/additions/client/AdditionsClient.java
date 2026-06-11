@@ -13,10 +13,12 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import org.jspecify.annotations.Nullable;
 
 @Mod(value = MekanismAdditions.MODID, dist = Dist.CLIENT)
 public class AdditionsClient {
 
+    @Nullable
     private static VoiceClient voiceClient;
 
     public AdditionsClient(ModContainer container) {

@@ -17,12 +17,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class LaserParticle extends SingleQuadParticle {
 
     private static final float RADIAN_45 = 45 * Mth.DEG_TO_RAD;
@@ -108,7 +105,6 @@ public class LaserParticle extends SingleQuadParticle {
               .setLight(light);
     }
 
-    @NotNull
     @Override
     protected SingleQuadParticle.Layer getLayer() {
         //TODO - 26.1: Validate this
@@ -160,7 +156,7 @@ public class LaserParticle extends SingleQuadParticle {
         }
 
         @Override
-        public LaserParticle createParticle(LaserParticleData data, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
+        public LaserParticle createParticle(LaserParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction(), data.distance());
             return new LaserParticle(world, start, end, data.direction(), data.energyScale(), spriteSet.get(random));

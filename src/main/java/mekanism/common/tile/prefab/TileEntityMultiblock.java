@@ -9,9 +9,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.FactoryRegistry;
@@ -39,13 +39,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
@@ -93,8 +94,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
+    protected void onUpdateClient(Level level) {
+        super.onUpdateClient(level);
         if (!getMultiblock().isFormed()) {
             unformedTicks++;
             if (!playersUsing.isEmpty()) {
@@ -108,15 +109,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean needsPacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean needsPacket = super.onUpdateServer(level);
         if (ticker >= 3) {
-            structure.tick(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
+            structure.tick(level, this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
         }
         T multiblock = getMultiblock();
         if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
             multiblock.recheckStructure = false;
-            getStructure().doImmediateUpdate(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
+            getStructure().doImmediateUpdate(level, this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
             T newMultiblock = getMultiblock();
             if (newMultiblock != multiblock && !newMultiblock.isFormed()) {
                 //force it to sync if it just unformed
@@ -126,7 +127,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
         if (multiblock.isFormed()) {
             if (!prevStructure) {
-                structureChanged(multiblock);
+                structureChanged(level, multiblock);
                 prevStructure = true;
                 needsPacket = true;
             }
@@ -137,7 +138,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                     markForSave();
                 }
                 if (isMaster()) {
-                    if (multiblock.tick((ServerLevel) level)) {
+                    if (multiblock.tick(level)) {
                         needsPacket = true;
                     }
                     getManager().markTicked(multiblock);
@@ -148,20 +149,20 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 playersUsing.forEach(Player::closeContainer);
             }
             if (prevStructure) {
-                structureChanged(multiblock);
+                structureChanged(level, multiblock);
                 prevStructure = false;
                 needsPacket = true;
             }
             isMaster = false;
         }
-        needsPacket |= onUpdateServer(multiblock);
+        needsPacket |= onUpdateServer(level, multiblock);
         return needsPacket;
     }
 
     /**
      * @return if we need an update packet
      */
-    protected boolean onUpdateServer(T multiblock) {
+    protected boolean onUpdateServer(ServerLevel level, T multiblock) {
         return false;
     }
 
@@ -176,7 +177,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         prevStructure = false;
     }
 
-    protected void structureChanged(T multiblock) {
+    protected void structureChanged(ServerLevel level, T multiblock) {
         invalidateCapabilitiesFull();
         if (multiblock.isFormed() && !multiblock.hasMaster && canBeMaster()) {
             multiblock.hasMaster = true;
@@ -216,7 +217,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand) {
+    public InteractionResult onActivate(Level level, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
@@ -235,7 +236,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (!isRemote()) {
+        if (level != null && !level.isClientSide()) {
             structure.invalidate(level);
         }
     }
@@ -263,7 +264,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
@@ -274,7 +275,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
         T multiblock = getMultiblock();
@@ -296,14 +297,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
      * Only call on the client
      */
     private void doMultiblockSparkle(T multiblock) {
-        if (isRemote() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
+        if (level != null && level.isClientSide() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
             //Note: Do not change this from LocalPlayer to Player, or it will cause class loading issues on the server
             // due to trying to validate if the value is actually a Player
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null && worldPosition.distSqr(player.blockPosition()) <= 1_600) {
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
-                    new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
+                    new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run(level);
                 } else {
                     player.sendOverlayMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO));
                 }
@@ -312,7 +313,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         if (!getMultiblock().isFormed()) {
             input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresent(id -> cachedID = id);
@@ -320,7 +321,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
         // at which point it will gracefully handle multiblock tiles with stale ids and clear them
@@ -341,35 +342,34 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         return super.persists(type);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         return _ -> getMultiblock().getInventorySlots();
     }
 
     @Override
-    public void onNeighborChange(BlockPos neighborPos) {
-        super.onNeighborChange(neighborPos);
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+        super.onNeighborChange(level, neighborPos);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
-        if (!isRemote()) {
+        if (!level.isClientSide()) {
             T multiblock = getMultiblock();
-            if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
+            if (multiblock.isPositionInsideBounds(getStructure(), level, neighborPos)) {
                 //If the neighbor change happened from inside the bounds of the multiblock,
                 if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
                     //And we are not already an internal part of the structure, or we are changing an internal part to air
                     // then we mark the structure as needing to be re-validated
                     //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
                     // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
-                    getStructure().markForUpdate(level, true);
+                    getStructure().markForUpdate(this.level, true);
                 }
             }
         }
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        if (!isRemote() && !getMultiblock().isFormed()) {
-            FormationResult result = getStructure().runUpdate(this);
+    public InteractionResult onRightClick(Level level, Player player) {
+        if (!level.isClientSide() && !getMultiblock().isFormed()) {
+            FormationResult result = getStructure().runUpdate(level);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendSystemMessage(result.getResultText());
                 return InteractionResult.SUCCESS_SERVER;
@@ -379,7 +379,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 

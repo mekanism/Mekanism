@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
 public class TransactionalSlot extends Slot implements ITransactionalSlot {
 
@@ -18,7 +17,7 @@ public class TransactionalSlot extends Slot implements ITransactionalSlot {
     }
 
     @Override
-    public final void set(@NotNull ItemStack stack) {
+    public final void set(ItemStack stack) {
         setDirect(stack);
         setChanged();
     }

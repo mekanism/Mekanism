@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ReadOnlyHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
 
@@ -14,11 +13,10 @@ public class ReadOnlyHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
     ReadOnlyHolder() {
     }
 
-    void addContainer(@NotNull CONTAINER container) {
+    void addContainer(CONTAINER container) {
         containers.add(container);
     }
 
-    @NotNull
     @Override
     public List<CONTAINER> getContainers(@Nullable Direction direction) {
         //Only expose the slots if it is internal

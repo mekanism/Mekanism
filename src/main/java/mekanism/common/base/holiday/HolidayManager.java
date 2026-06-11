@@ -20,8 +20,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class HolidayManager {
 
@@ -68,7 +67,6 @@ public final class HolidayManager {
         Mekanism.logger.info("Initialized HolidayManager.");
     }
 
-    @NonNull
     private static Supplier<SoundEvent> getSoundEventSupplier(Holder<SoundEvent> filterable) {
         return () -> {
             if (areHolidaysEnabled() && soundHoliday != null) {

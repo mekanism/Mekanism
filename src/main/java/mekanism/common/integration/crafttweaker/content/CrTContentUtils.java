@@ -9,12 +9,14 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker
  */
 public class CrTContentUtils {
 
+    @Nullable
     private static Map<Identifier, Chemical> queuedChemicals = new HashMap<>();
 
     /**

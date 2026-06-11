@@ -8,8 +8,7 @@ import java.util.Map;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import org.jetbrains.annotations.NotNull;*/
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;*/
 
 /**
  * Mekanism model loader that properly loads models and switches between them based on the active model data
@@ -28,9 +27,8 @@ import org.jetbrains.annotations.NotNull;*/
     private DataBasedModelLoader() {
     }
 
-    @NotNull
     @Override
-    public DataBasedGeometry read(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext ctx) {
+    public DataBasedGeometry read(JsonObject jsonObject, JsonDeserializationContext ctx) {
         Identifier noData = readModelPath(jsonObject, "no_data");
         Map<ModelProperty<Void>, Identifier> propertyBasedModels = new HashMap<>();
         for (Map.Entry<String, ModelProperty<Void>> entry : SUPPORTED_PROPERTIES.entrySet()) {

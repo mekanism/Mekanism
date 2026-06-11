@@ -17,7 +17,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.network.PacketUtils;
@@ -26,7 +25,6 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
@@ -38,25 +36,30 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
-    private final ArmorPreview armorPreview = new ArmorPreview();
+    private final ArmorPreview armorPreview;
     private final Consumer<ModuleConfig<?>> saveCallback;
 
+    @Nullable
     private GuiModuleScrollList scrollList;
+    @Nullable
     private GuiModuleScreen moduleScreen;
+    @Nullable
     private TranslationButton optionsButton;
 
     private int selected = -1;
 
     public GuiModuleTweaker(ModuleTweakerContainer container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH + 90, DEFAULT_IMAGE_HEIGHT + 20);
+        armorPreview = new ArmorPreview(this, inv.player);
         saveCallback = configItem -> {
             if (moduleScreen != null) {
                 IModule<?> module = moduleScreen.getCurrentModule();
@@ -74,7 +77,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         Supplier<ItemResource> itemSupplier = () -> getItemType(selected);
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
-        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
+        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, moduleScreen::setModule));
         optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, _, _) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();
             return true;
@@ -95,16 +98,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         }
     }
 
-    private void onModuleSelected(Module<?> module) {
-        moduleScreen.setModule(module);
-    }
-
     private void openOptions() {
         addWindow(new GuiMekaSuitHelmetOptions(this, (imageWidth - 140) / 2, (imageHeight - 140) / 2));
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (super.keyPressed(event)) {
             return true;
         }
@@ -140,14 +139,16 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
-        // make sure we get the release event
-        moduleScreen.onRelease(event);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (moduleScreen != null) {
+            // make sure we get the release event
+            moduleScreen.onRelease(event);
+        }
         return super.mouseReleased(event);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 24);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
@@ -157,9 +158,13 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             selected = index;
             ItemResource itemType = getItemType(index);
             armorPreview.tryUpdateFull(menu.slots.get(index).getItem());
-            scrollList.updateItemAndList(itemType);
-            scrollList.clearSelection();
-            optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+            if (scrollList != null) {//Should never be null here
+                scrollList.updateItemAndList(itemType);
+                scrollList.clearSelection();
+            }
+            if (optionsButton != null) {//Should never be null here
+                optionsButton.active = MekanismItems.MEKASUIT_HELMET.is(itemType);
+            }
             return true;
         }
         return false;
@@ -179,12 +184,15 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     public static class ArmorPreview implements Supplier<LivingEntity> {
 
         private final Map<EquipmentSlot, Supplier<ItemStack>> lazyItems = new EnumMap<>(EquipmentSlot.class);
+        private final IGuiWrapper gui;
+        @Nullable
         private ArmorStand preview;
 
-        protected ArmorPreview() {
+        protected ArmorPreview(IGuiWrapper gui, Player player) {
+            this.gui = gui;
             for (EquipmentSlot armorSlot : EnumUtils.ARMOR_SLOTS) {
                 lazyItems.put(armorSlot, () -> {
-                    ItemStack stack = Minecraft.getInstance().player.getItemBySlot(armorSlot);
+                    ItemStack stack = player.getItemBySlot(armorSlot);
                     if (stack.isEmpty()) {
                         //Fall back to MekaSuit for rendering purposes of if not wearing a full set of stuff
                         return (switch (armorSlot) {
@@ -226,7 +234,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         @Override
         public LivingEntity get() {
             if (preview == null) {
-                preview = new ArmorStand(EntityType.ARMOR_STAND, Minecraft.getInstance().level);
+                preview = new ArmorStand(EntityType.ARMOR_STAND, gui.getLevel());
                 preview.setNoBasePlate(true);
                 //Copy the player's current armor when we first initialize this
                 for (Entry<EquipmentSlot, Supplier<ItemStack>> entry : lazyItems.entrySet()) {

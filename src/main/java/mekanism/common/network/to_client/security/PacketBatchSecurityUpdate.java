@@ -10,6 +10,7 @@ import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
@@ -20,7 +21,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketBatchSecurityUpdate(Map<UUID, SecurityData> securityMap, Map<UUID, String> uuidMap) implements IMekanismPacket {
 
@@ -33,18 +33,20 @@ public record PacketBatchSecurityUpdate(Map<UUID, SecurityData> securityMap, Map
 
     public PacketBatchSecurityUpdate() {
         this(new Object2ObjectOpenHashMap<>(), new Object2ObjectOpenHashMap<>());
-        List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequencies());
-        for (SecurityFrequency frequency : frequencies) {
-            UUID owner = frequency.getOwner();
-            //In theory no owner should be null but just in case handle it anyway
-            if (owner != null) {
-                securityMap.put(owner, new SecurityData(frequency));
-                uuidMap.put(owner, frequency.getOwnerName());
+        FrequencyLookup<SecurityFrequency> lookup = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC);
+        if (lookup != null) {
+            List<SecurityFrequency> frequencies = new ArrayList<>(lookup.getFrequencies());
+            for (SecurityFrequency frequency : frequencies) {
+                UUID owner = frequency.getOwner();
+                //In theory no owner should be null but just in case handle it anyway
+                if (owner != null) {
+                    securityMap.put(owner, new SecurityData(frequency));
+                    uuidMap.put(owner, frequency.getOwnerName());
+                }
             }
         }
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketBatchSecurityUpdate> type() {
         return TYPE;

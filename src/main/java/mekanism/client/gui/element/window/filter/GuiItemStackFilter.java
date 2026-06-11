@@ -12,8 +12,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
@@ -36,7 +35,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
         return MekanismLang.ITEM_FILTER_NO_ITEM;
     }
 
-    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         ItemResource itemType = filter.getItemType();
@@ -55,12 +53,12 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
         return getHandleClickSlot(NOT_EMPTY, this::setFilterStack);
     }
 
-    private void setFilterStack(@NotNull ItemResource itemType) {
+    private void setFilterStack(ItemResource itemType) {
         filter.setItemType(itemType);
         slotDisplay.updateStackList();
     }
 
-    protected void setFilterStackWithSound(@NotNull ItemResource itemType) {
+    protected void setFilterStackWithSound(ItemResource itemType) {
         setFilterStack(itemType);
         playClickSound(BUTTON_CLICK_SOUND);
     }

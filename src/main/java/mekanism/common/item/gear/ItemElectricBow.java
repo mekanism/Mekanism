@@ -42,7 +42,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
@@ -52,14 +51,14 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         StorageUtils.addStoredEnergy(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, true);
         tooltipAdder.accept(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack))));
     }
 
     @Override
-    public boolean releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
+    public boolean releaseUsing(ItemStack bow, Level world, LivingEntity entity, int timeLeft) {
         if (!(entity instanceof Player player) || player.isCreative()) {
             return super.releaseUsing(bow, world, entity, timeLeft);
         }
@@ -81,23 +80,22 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
         //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
         // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
         return !enchantment.is(Enchantments.FLAME) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
-    public int getEnchantmentLevel(@NotNull ItemInstance instance, @NotNull Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         if (enchantment.is(Enchantments.FLAME) && getMode(instance)) {
             return Math.max(1, super.getEnchantmentLevel(instance, enchantment));
         }
         return super.getEnchantmentLevel(instance, enchantment);
     }
 
-    @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, @NotNull RegistryLookup<Enchantment> lookup) {
+    public ItemEnchantments getAllEnchantments(ItemStack stack, RegistryLookup<Enchantment> lookup) {
         ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
         if (getMode(stack)) {
             Optional<Reference<Enchantment>> enchantment = lookup.get(Enchantments.FLAME);
@@ -129,17 +127,17 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public boolean isBarVisible(@NotNull ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return StorageUtils.isBarVisible(stack);
     }
 
     @Override
-    public int getBarWidth(@NotNull ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return StorageUtils.getEnergyBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@NotNull ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
     }
 
@@ -149,7 +147,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+    public void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getMode(itemAccess);
@@ -159,9 +157,8 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
         }
     }
 
-    @NotNull
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(ITEM instance) {
         return MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(instance), true));
     }
 

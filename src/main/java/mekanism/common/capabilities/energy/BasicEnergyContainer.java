@@ -6,23 +6,20 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEnergyContainer {
 
-    public static final Predicate<@NotNull AutomationType> internalOnly = AutomationType::isInternal;
-    public static final Predicate<@NotNull AutomationType> manualOnly = AutomationType::isManual;
-    public static final Predicate<@NotNull AutomationType> notExternal = automationType -> !automationType.isExternal();
+    public static final Predicate<AutomationType> internalOnly = AutomationType::isInternal;
+    public static final Predicate<AutomationType> manualOnly = AutomationType::isManual;
+    public static final Predicate<AutomationType> notExternal = automationType -> !automationType.isExternal();
 
     public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
         return create(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
@@ -36,7 +33,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         return create(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
     }
 
-    public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    public static BasicEnergyContainer create(long maxEnergy, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
@@ -44,15 +41,15 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     private long stored = 0L;
-    private final Predicate<@NotNull AutomationType> canExtract;
-    private final Predicate<@NotNull AutomationType> canInsert;
+    private final Predicate<AutomationType> canExtract;
+    private final Predicate<AutomationType> canInsert;
     private final RateLimitTracker insertionRateLimiter;
     private final RateLimitTracker extractionRateLimiter;
     private final long maxEnergy;
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicEnergyContainer(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected BasicEnergyContainer(long maxEnergy, Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert,
           @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter, @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;

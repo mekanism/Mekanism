@@ -2,7 +2,7 @@ package mekanism.api;
 
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Defines and exposes various methods relating to frequency implementations ot the API.

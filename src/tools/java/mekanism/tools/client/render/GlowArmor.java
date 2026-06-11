@@ -8,7 +8,6 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class GlowArmor extends Model {
 
@@ -25,7 +24,7 @@ public class GlowArmor extends Model {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
+    public void renderToBuffer(PoseStack matrix, VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
         if (base != null) {
             //Make it render at full brightness
             base.renderToBuffer(matrix, vertexBuilder, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);

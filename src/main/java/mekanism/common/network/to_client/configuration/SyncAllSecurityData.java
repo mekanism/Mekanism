@@ -7,7 +7,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.configuration.ICustomConfigurationTask;
-import org.jetbrains.annotations.NotNull;
 
 public record SyncAllSecurityData(ServerConfigurationPacketListener listener) implements ICustomConfigurationTask {
 
@@ -20,7 +19,6 @@ public record SyncAllSecurityData(ServerConfigurationPacketListener listener) im
         listener().finishCurrentTask(type());
     }
 
-    @NotNull
     @Override
     public Type type() {
         return TYPE;

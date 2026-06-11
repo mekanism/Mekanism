@@ -7,12 +7,11 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
-import org.jetbrains.annotations.NotNull;
 
 public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
 
     @Override
-    public void generate(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         advancement(GeneratorsAdvancements.HEAT_GENERATOR)
               .displayAndCriterion(GeneratorsBlocks.HEAT_GENERATOR, AdvancementType.TASK, true)
               .save(consumer);

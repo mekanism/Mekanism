@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
@@ -20,8 +18,8 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ItemAccessUtils;
@@ -41,7 +39,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultiplier, ThrustMultiplier hoverThrustMultiplier) implements ICustomModule<ModuleJetpackUnit> {
 
     public static final Identifier JETPACK_MODE = Mekanism.rl("jetpack_mode");
@@ -98,7 +95,6 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
         return thrustMultiplier.getMultiplier();
     }
 
-    @NothingNullByDefault
     public enum ThrustMultiplier implements IHasTextComponent, StringRepresentable {
         HALF(.5f),
         NORMAL(1f),

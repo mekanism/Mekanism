@@ -2,6 +2,7 @@ package mekanism.client.gui.element.graph;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
+import java.util.function.DoubleSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -10,10 +11,12 @@ import net.minecraft.network.chat.Component;
 
 public class GuiDoubleGraph extends GuiGraph<DoubleList, DoubleGraphDataHandler> {
 
+    private final DoubleSupplier dataSupplier;
     private double currentScale = 10;
 
-    public GuiDoubleGraph(IGuiWrapper gui, int x, int y, int width, int height, DoubleGraphDataHandler handler) {
+    public GuiDoubleGraph(IGuiWrapper gui, int x, int y, int width, int height, DoubleSupplier dataSupplier, DoubleGraphDataHandler handler) {
         super(gui, x, y, width, height, new DoubleArrayList(), handler);
+        this.dataSupplier = dataSupplier;
     }
 
     public void enableFixedScale(double scale) {
@@ -23,6 +26,12 @@ public class GuiDoubleGraph extends GuiGraph<DoubleList, DoubleGraphDataHandler>
 
     public void setMinScale(double minScale) {
         currentScale = minScale;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        addData(dataSupplier.getAsDouble());
     }
 
     public void addData(double data) {

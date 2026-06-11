@@ -11,7 +11,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketNewFilter(BlockPos pos, IFilter<?> filter) implements IMekanismPacket {
 
@@ -22,7 +21,6 @@ public record PacketNewFilter(BlockPos pos, IFilter<?> filter) implements IMekan
           PacketNewFilter::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketNewFilter> type() {
         return TYPE;

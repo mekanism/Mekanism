@@ -22,8 +22,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
@@ -34,8 +33,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     private final GuiScrollBar scrollBar;
 
-    private final Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins;
-    private final EntityRobit robit;
+    private final Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins;
     private ResourceKey<RobitSkin> selectedSkin;
     private float rotation;
     private int ticks;
@@ -46,15 +44,15 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
+    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<@Nullable List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
-        this.robit = robit;
-        this.selectedSkin = this.robit.getSkinId();
+        this.selectedSkin = robit.getSkinId();
         this.unlockedSkins = unlockedSkins;
         scrollBar = addChild(new GuiScrollBar(gui, relativeX + INNER_DIMENSIONS, relativeY, INNER_DIMENSIONS,
               () -> getUnlockedSkins() == null ? 0 : Mth.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
     }
 
+    @Nullable
     private List<ResourceKey<RobitSkin>> getUnlockedSkins() {
         return unlockedSkins.get();
     }
@@ -64,7 +62,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
@@ -95,7 +93,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(@NotNull GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
+    private static void renderSlotBackground(GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resource, size, size, slotX, slotY);
     }
 
@@ -126,7 +124,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         ticks++;
     }
 
-    @NotNull
     @Override
     protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
         return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
@@ -150,7 +147,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         ResourceKey<RobitSkin> skin = getSkin(event.x(), event.y(), false);
         if (skin != null) {
@@ -158,6 +155,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
+    @Nullable
     private ResourceKey<RobitSkin> getSkin(double mouseX, double mouseY, boolean updateTooltipRect) {
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
@@ -179,7 +177,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
-        SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
+        SkinLookup skinLookup = MekanismRobitSkins.lookup(gui().registryAccess(), skinKey);
         List<Identifier> textures = skinLookup.textures();
         //TODO - 26.1 robit model
         /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);

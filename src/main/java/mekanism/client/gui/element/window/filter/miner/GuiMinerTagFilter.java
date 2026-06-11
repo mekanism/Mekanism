@@ -8,8 +8,7 @@ import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
@@ -36,7 +35,6 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
         return new MinerTagFilter();
     }
 
-    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

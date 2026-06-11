@@ -11,7 +11,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketPortalFX(BlockPos pos, Direction direction) implements IMekanismPacket {
 
@@ -26,7 +25,6 @@ public record PacketPortalFX(BlockPos pos, Direction direction) implements IMeka
         this(pos, Direction.UP);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketPortalFX> type() {
         return TYPE;

@@ -39,7 +39,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
 
@@ -123,12 +123,12 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
                 return true;
             }));
         }
-        frequencyField = addChild(new GuiTextField(frequencySelector, this, relativeX + 23, relativeY + 99, 98, 11));
-        frequencyField.setMaxLength(FrequencyLookup.MAX_FREQ_LENGTH);
-        frequencyField.setBackground(BackgroundType.INNER_SCREEN);
-        frequencyField.setEnterHandler(this::setFrequency);
-        frequencyField.setInputValidator(InputValidator.LETTER_OR_DIGIT.or(InputValidator.FREQUENCY_CHARS));
-        frequencyField.addCheckmarkButton(this::setFrequency);
+        frequencyField = addChild(new GuiTextField(frequencySelector, this, relativeX + 23, relativeY + 99, 98, 11))
+              .setBackground(BackgroundType.INNER_SCREEN)
+              .setEnterHandler(this::setFrequency)
+              .setInputValidator(InputValidator.LETTER_OR_DIGIT.or(InputValidator.FREQUENCY_CHARS))
+              .addCheckmarkButton(this::setFrequency)
+              .setMaxLength(FrequencyLookup.MAX_FREQ_LENGTH);
         //Disable buttons that shouldn't be enabled to start due to there being no data received yet
         publicButton.active = false;
         setButton.active = false;
@@ -195,7 +195,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         };
     }
 
-    private void setFrequency() {
+    private void setFrequency(GuiTextField frequencyField) {
         setFrequency(frequencyField.getText(), Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getUUID());
         frequencyField.setText("");
         updateButtons();

@@ -21,11 +21,11 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -55,14 +55,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
 
@@ -102,10 +102,10 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ContainerSync
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
+    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, @Nullable Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
-    private final IOutputHandler<@NotNull FluidStackTemplate> outputHandler;
-    private final IInputHandler<Fluid, @NotNull FluidStack> inputHandler;
+    private final IOutputHandler<FluidStackTemplate> outputHandler;
+    private final IInputHandler<Fluid, FluidStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput", docPlaceholder = "input side's input slot")
     final FluidInventorySlot inputInputSlot;
@@ -201,7 +201,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
@@ -209,7 +209,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, inputTank);
         output.putFloat(SerializationConstants.SCALE, prevScale);
@@ -250,7 +250,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
@@ -272,9 +271,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         Arrays.fill(trackedErrors, false);
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@NotNull FluidToFluidRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(FluidToFluidRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {
@@ -340,7 +338,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void remove(Level world, Structure oldStructure) {
+    public void remove(LevelReader world, Structure oldStructure) {
         //Clear the cached solar panels so that we don't hold references to them and prevent them from being able to be garbage collected
         cachedSolar.clear();
         super.remove(world, oldStructure);

@@ -1,6 +1,5 @@
 package mekanism.common.util.text;
 
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -12,7 +11,6 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-@MethodsAreNotNullByDefault
 public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     protected final boolean value;

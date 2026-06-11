@@ -6,7 +6,7 @@ import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IColoredItem {
 

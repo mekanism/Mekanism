@@ -11,7 +11,7 @@ import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
 

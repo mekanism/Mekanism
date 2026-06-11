@@ -16,15 +16,13 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
     @Nullable
@@ -41,13 +39,13 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
-        sendUpdatePacket |= onUpdateServer(getQIOFrequency());
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
+        sendUpdatePacket |= onUpdateServer(level, getQIOFrequency());
         return sendUpdatePacket;
     }
 
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
         EnumColor prev = lastColor;
         lastColor = frequency == null ? null : frequency.getColor();
         boolean needsUpdate = prev != lastColor;
@@ -58,7 +56,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         if (lastColor != null) {
             NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
@@ -66,13 +64,13 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         lastColor = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (lastColor != null) {
             NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
@@ -80,12 +78,12 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (lastColor != color) {
             lastColor = color;
-            WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+            WorldUtils.updateBlock(level, getBlockPos(), getBlockState());
         }
     }
 

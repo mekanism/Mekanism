@@ -11,7 +11,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
@@ -23,10 +22,10 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
@@ -71,8 +70,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemConfigurator extends Item implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
@@ -87,19 +85,18 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         tooltipAdder.accept(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
-    @NotNull
     @Override
-    public Component getName(@NotNull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemInstance instance, @NotNull ItemAbility action) {
+    public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
         if (action == MekanismItemAbilities.WRENCH_CONFIGURE) {
             return getMode(instance).isConfigurating();
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_CHEMICALS) {
@@ -122,7 +119,6 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         return super.canPerformAction(instance, action);
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -162,9 +158,9 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                 IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
                 if (config != null) {
                     if (player.isShiftKeyDown()) {
-                        return config.onSneakRightClick(player);
+                        return config.onSneakRightClick(world, player);
                     }
-                    return config.onRightClick(player);
+                    return config.onRightClick(world, player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
@@ -184,7 +180,13 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
                     for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
-                            InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), Block::popResourceFromFace);
+                            InventoryUtils.dropStack(world, pos, side, inventorySlot.resource(), inventorySlot.amountAsLong(), (lvl, p, face, item) -> {
+                                if (face == null) {//Note: Theoretically this should never be null
+                                    Block.popResource(lvl, p, item);
+                                } else {
+                                    Block.popResourceFromFace(lvl, p, face, item);
+                                }
+                            });
                             ContainerType.ITEM.clearContents(inventorySlot, null);
                         }
                     }
@@ -219,7 +221,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+    public void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         ConfiguratorMode mode = getMode(itemAccess);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode && setMode(itemAccess, player, newMode, transaction)) {
@@ -227,13 +229,11 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         }
     }
 
-    @NotNull
     @Override
-    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(ITEM instance) {
         return getMode(instance).getTextComponent();
     }
 
-    @NotNull
     @Override
     public <ITEM extends TypedInstance<Item> & DataComponentGetter> RadialData<ConfiguratorMode> getRadialData(ITEM instance) {
         return LAZY_RADIAL_DATA.get();
@@ -249,7 +249,6 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         return ConfiguratorMode.CONFIGURATE_ITEMS;
     }
 
-    @NothingNullByDefault
     public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
@@ -307,19 +306,16 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
             return transmissionType;
         }
 
-        @NotNull
         @Override
         public ConfiguratorMode byIndex(int index) {
             return BY_ID.apply(index);
         }
 
-        @NotNull
         @Override
         public Component sliceName() {
             return configurating && transmissionType != null ? transmissionType.getLangEntry().translateColored(color) : getTextComponent();
         }
 
-        @NotNull
         @Override
         public Identifier icon() {
             return icon;

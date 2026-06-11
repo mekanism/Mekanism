@@ -13,10 +13,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
 
@@ -29,7 +29,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand) {
+    public InteractionResult onActivate(Level level, Player player, InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
@@ -55,7 +55,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
-    @NotNull
     @Override
     public TankMultiblockData createMultiblock() {
         return new TankMultiblockData(this);

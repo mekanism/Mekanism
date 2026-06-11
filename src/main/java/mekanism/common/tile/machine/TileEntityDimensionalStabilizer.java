@@ -9,12 +9,12 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.functions.IntObjectToIntFunction;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.common.component.StabilizedChunks;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.StabilizedChunks;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -33,14 +33,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
 
@@ -57,7 +57,9 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     private int chunksLoaded = 1;
     private boolean clientRendering;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -71,12 +73,11 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener);
         return _ -> energyContainer;
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -85,8 +86,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         //Only attempt to use power if chunk loading isn't disabled in the config
         boolean isActive = false;
@@ -214,13 +215,13 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.store(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, StabilizedChunks.CODEC, StabilizedChunks.create(this));
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
@@ -235,15 +236,13 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 //If the number of chunks loaded is different we need to update our energy to use
                 energyContainer.updateEnergyPerTick();
             }
-            if (hasLevel()) {
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
-            }
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets(level, worldPosition);
         }
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         //TODO - 1.20.4: Deduplicate this and the from nbt
         boolean changed = false;
@@ -263,15 +262,13 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 //If the number of chunks loaded is different we need to update our energy to use
                 energyContainer.updateEnergyPerTick();
             }
-            if (hasLevel()) {
-                //Refresh the chunks that are loaded as it has changed
-                getChunkLoader().refreshChunkTickets();
-            }
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets(level, worldPosition);
         }
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.create(this));
     }

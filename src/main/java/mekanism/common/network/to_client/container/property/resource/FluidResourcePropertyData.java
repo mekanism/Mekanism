@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidResourcePropertyData extends ResourcePropertyData<FluidResource> {
 
@@ -16,7 +15,7 @@ public class FluidResourcePropertyData extends ResourcePropertyData<FluidResourc
           FluidResourcePropertyData::new
     );
 
-    public FluidResourcePropertyData(short property, @NotNull FluidResource value) {
+    public FluidResourcePropertyData(short property, FluidResource value) {
         super(PropertyType.FLUID_TYPE, property, value);
     }
 }

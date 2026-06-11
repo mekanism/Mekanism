@@ -11,10 +11,9 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public abstract class ConfigHolder<TYPE> implements IHolder {
+public abstract class ConfigHolder<TYPE extends @Nullable Object> implements IHolder {
 
     private static final Predicate<ISlotInfo> CAN_INPUT = ISlotInfo::canInput;
     private static final Predicate<ISlotInfo> CAN_OUTPUT = ISlotInfo::canOutput;
@@ -44,7 +43,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         }
     };
 
-    private final Map<Direction, ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
+    private final Map<Direction, @Nullable ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
     private final Function<ISlotInfo, TYPE> slotInfoParser;
     private final ISideConfiguration sideConfiguration;
     private final TransmissionType transmissionType;
@@ -75,7 +74,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         return canInteract(side, CAN_OUTPUT);
     }
 
-    private boolean canInteract(@Nullable Direction side, @NotNull Predicate<ISlotInfo> interactPredicate) {
+    private boolean canInteract(@Nullable Direction side, Predicate<ISlotInfo> interactPredicate) {
         if (side == null) {
             return false;
         }
@@ -87,7 +86,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         return slotInfo != null && interactPredicate.test(slotInfo);
     }
 
-    protected TYPE getData(@org.jspecify.annotations.Nullable Direction side) {
+    protected TYPE getData(@Nullable Direction side) {
         if (side == null) {
             //If we want the internal, give all of our slots
             return allData();

@@ -1,7 +1,8 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.UUID;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.LevelReader;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Eventually debate making this extend IMultiblockBase but for now this is mostly just a marker interface
 public interface IInternalMultiblock {
@@ -15,7 +16,7 @@ public interface IInternalMultiblock {
     @Nullable
     MultiblockData getMultiblock();
 
-    void setMultiblock(@Nullable MultiblockData multiblock);
+    void setMultiblock(LevelReader level, @Nullable MultiblockData multiblock);
 
     default boolean hasFormedMultiblock() {
         return getMultiblockUUID() != null;

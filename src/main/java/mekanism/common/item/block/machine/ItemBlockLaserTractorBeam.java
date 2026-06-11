@@ -6,7 +6,6 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.item.block.ItemBlockTooltip;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>> {
 
@@ -15,7 +14,7 @@ public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>>
     }
 
     @Override
-    protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
+    protected Predicate<AutomationType> getEnergyCapInsertPredicate() {
         //Don't allow charging laser tractor beams inside of energy storage devices
         return BasicEnergyContainer.manualOnly;
     }

@@ -33,14 +33,14 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
@@ -55,9 +55,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private double lastTransferLoss;
     private int clientEnergyUsed = 0;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private ResistiveHeaterEnergyContainer energyContainer;
+    @UnknownNullability//Initialized via getInitialHeatCapacitors
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -66,12 +69,11 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = ResistiveHeaterEnergyContainer.input(this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         MekContainerHelper<IHeatCapacitor> builder = MekContainerHelper.forSide(facingSupplier);
@@ -79,7 +81,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -88,8 +89,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         int toUse = 0;
         if (canFunction()) {
@@ -164,26 +165,26 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putFloat(SerializationConstants.SOUND_SCALE, soundScale);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         soundScale = input.getFloatOr(SerializationConstants.SOUND_SCALE, soundScale);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         //Note: We copy the energy usage before handling super, in case it is necessary in order to set the proper value on the item
         builder.set(MekanismDataComponents.ENERGY_USAGE, energyContainer.getEnergyPerTick());
         super.collectImplicitComponents(builder);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         //Apply the usage before processing the stored data as it changes the buffer of the energy container
         energyContainer.updateEnergyUsage(input.getOrDefault(MekanismDataComponents.ENERGY_USAGE, BASE_USAGE));
         super.applyImplicitComponents(input);

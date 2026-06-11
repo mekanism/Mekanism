@@ -51,10 +51,9 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSources;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 public class ClientRegistrationUtil {
 
@@ -98,9 +97,8 @@ public class ClientRegistrationUtil {
                 @Nullable
                 private WeakReference<BlockEntityRenderer<T, S>> cachedRenderer;
 
-                @NotNull
                 @Override
-                public BlockEntityRenderer<T, S> create(@NotNull Context context) {
+                public BlockEntityRenderer<T, S> create(Context context) {
                     //If there is a cached context and renderer make use of it, otherwise create one and cache it
                     // this allows us to reduce the number of renderer classes we create
                     BlockEntityRenderer<T, S> renderer = cachedRenderer == null ? null : cachedRenderer.get();
@@ -187,7 +185,6 @@ public class ClientRegistrationUtil {
                 int fluidTint = fluidType.color;
                 event.registerFluidType(new IClientFluidTypeExtensions() {
 
-                    @Nullable
                     @Override
                     public Identifier getRenderOverlayTexture(Minecraft mc) {
                         return fluidType.renderOverlayTexture;

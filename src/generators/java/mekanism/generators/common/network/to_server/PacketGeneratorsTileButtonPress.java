@@ -23,8 +23,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Used for informing the server that a click happened in a GUI and the gui window needs to change
@@ -38,7 +37,6 @@ public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton button
           PacketGeneratorsTileButtonPress::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketGeneratorsTileButtonPress> type() {
         return TYPE;

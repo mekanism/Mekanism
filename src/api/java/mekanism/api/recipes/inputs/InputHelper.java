@@ -1,6 +1,5 @@
 package mekanism.api.recipes.inputs;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
@@ -15,9 +14,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
-@NothingNullByDefault
 public class InputHelper {
 
     private InputHelper() {
@@ -29,7 +26,7 @@ public class InputHelper {
      * @param slot           Slot to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<Item, @NotNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
+    public static IInputHandler<Item, ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         return new ItemInputHandler(slot, notEnoughError);
     }
 
@@ -39,7 +36,7 @@ public class InputHelper {
      * @param tank           Tank to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<Chemical, @NotNull ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
+    public static IInputHandler<Chemical, ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
         return new ChemicalInputHandler(tank, notEnoughError);
     }
 
@@ -48,7 +45,7 @@ public class InputHelper {
      *
      * @param tank Tank to wrap.
      */
-    public static IInputHandler<Chemical, @NotNull ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
+    public static IInputHandler<Chemical, ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
         //TODO - 26.1: Should this use the normal get input handler for if the recipe isn't per tick chemical usage? Or how do we do handling for that
         return new ChemicalInputHandler(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
             @Override
@@ -66,7 +63,7 @@ public class InputHelper {
      * @param tank           Tank to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<Fluid, @NotNull FluidStack> getInputHandler(IFluidTank tank, RecipeError notEnoughError) {
+    public static IInputHandler<Fluid, FluidStack> getInputHandler(IFluidTank tank, RecipeError notEnoughError) {
         return new FluidInputHandler(tank, notEnoughError);
     }
 

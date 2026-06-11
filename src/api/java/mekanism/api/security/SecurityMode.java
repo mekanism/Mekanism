@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -21,7 +20,6 @@ import net.minecraft.util.StringRepresentable;
  *
  * @since 10.2.1
  */
-@NothingNullByDefault
 public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumNameTextComponent, StringRepresentable {
     /**
      * Public Security: Everyone is allowed access.

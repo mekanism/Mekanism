@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -45,8 +46,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
@@ -102,7 +102,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return transmissionTypes;
     }
 
-    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
+    public boolean isCapabilityDisabled(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         TransmissionType type = null;
         if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
@@ -134,26 +134,22 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type);
     }
 
-    public void addDisabledSides(@NotNull RelativeSide... sides) {
+    public void addDisabledSides(RelativeSide... sides) {
         for (ConfigInfo config : configInfo.values()) {
             config.addDisabledSides(sides);
         }
     }
 
     public <CONTAINER> ConfigInfo setupInputConfig(TransmissionType type, CONTAINER container) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
-            config.setCanEject(false);
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
+        config.setCanEject(false);
         return config;
     }
 
     public <CONTAINER> ConfigInfo setupOutputConfig(TransmissionType type, CONTAINER container) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
         return config;
     }
 
@@ -166,12 +162,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER inputContainer, CONTAINER outputContainer, boolean alwaysAllowInput, boolean alwaysAllowOutput) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
         return config;
     }
 
@@ -180,12 +174,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public <CONTAINER> ConfigInfo setupIOConfig(TransmissionType type, CONTAINER info, boolean alwaysAllow) {
-        ConfigInfo config = getConfig(type);
-        if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
-        }
+        ConfigInfo config = getConfigNN(type);
+        config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
+        config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
         return config;
     }
 
@@ -194,28 +186,28 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupItemIOConfig(List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, IInventorySlot energySlot, boolean alwaysAllow) {
-        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow, true, outputSlots));
-            List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
-            ioSlots.addAll(outputSlots);
-            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-        }
-        return itemConfig;
+        ConfigInfo config = getConfigNN(TransmissionType.ITEM);
+        config.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));
+        config.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow, true, outputSlots));
+        List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
+        ioSlots.addAll(outputSlots);
+        config.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
+        config.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+        return config;
     }
 
     public ConfigInfo setupItemIOExtraConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot extraSlot, IInventorySlot energySlot) {
-        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
-            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-        }
-        return itemConfig;
+        ConfigInfo config = getConfigNN(TransmissionType.ITEM);
+        config.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+        config.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+        config.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
+        config.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
+        config.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+        return config;
+    }
+
+    private ConfigInfo getConfigNN(TransmissionType type) {
+        return Objects.requireNonNull(getConfig(type), "Config of " + type.getSerializedName() + " item not present");
     }
 
     @Nullable
@@ -229,7 +221,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     //TODO: Use relative side where possible?
     @Nullable
-    public ISlotInfo getSlotInfo(TransmissionType type, Direction direction) {
+    public ISlotInfo getSlotInfo(TransmissionType type, @Nullable Direction direction) {
         if (direction == null) {
             return null;
         }
@@ -250,7 +242,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    public void applyImplicitComponents(DataComponentGetter input) {
         AttachedSideConfig sideConfig = input.get(MekanismDataComponents.SIDE_CONFIG);
         if (sideConfig != null) {
             for (Entry<TransmissionType, LightConfigInfo> entry : sideConfig.configInfo().entrySet()) {
@@ -279,7 +271,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput configInput) {
+    public void deserialize(ValueInput configInput) {
         read(configInput, configInfo, (type, side) -> {
             if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                 Direction direction = side.getDirection(tile.getDirection());
@@ -288,12 +280,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         });
     }
 
-    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
+    public static void read(ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
         read(configInput, configInfo, (_, _) -> {
         });
     }
 
-    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
+    public static void read(ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
@@ -315,11 +307,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput configOutput) {
+    public void serialize(ValueOutput configOutput) {
         write(configOutput, configInfo, true);
     }
 
-    public static void write(@NotNull ValueOutput configOutput, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
+    public static void write(ValueOutput configOutput, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
         for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             IPersistentConfigInfo info = entry.getValue();
@@ -339,7 +331,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
      * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
      */
     @Override
-    public void addToUpdateTag(@NotNull ValueOutput output) {
+    public void addToUpdateTag(ValueOutput output) {
         String key = getComponentKey();
         ValueOutput configOutput = output.child(key);
         write(configOutput, configInfo, false);
@@ -349,7 +341,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void readFromUpdateTag(@NotNull ValueInput input) {
+    public void readFromUpdateTag(ValueInput input) {
         input.child(getComponentKey()).ifPresent(configInput -> read(configInput, configInfo));
     }
 

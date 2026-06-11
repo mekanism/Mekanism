@@ -32,28 +32,27 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
 
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         @Override
-        protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
+        protected void onOpen(Level level, BlockPos pos, BlockState state) {
             TileEntityPersonalStorage.this.onOpen(level, pos, state);
         }
 
         @Override
-        protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
+        protected void onClose(Level level, BlockPos pos, BlockState state) {
             TileEntityPersonalStorage.this.onClose(level, pos, state);
         }
 
         @Override
-        protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int oldCount, int openCount) {
+        protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int oldCount, int openCount) {
             level.blockEvent(pos, state.getBlock(), ChestBlock.EVENT_SET_OPEN_COUNT, openCount);
         }
 
         @Override
-        public boolean isOwnContainer(@NotNull Player player) {
+        public boolean isOwnContainer(Player player) {
             return player.containerMenu instanceof MekanismTileContainer<?> container && container.getTileEntity() == TileEntityPersonalStorage.this;
         }
     };
@@ -62,7 +61,6 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         super(blockProvider, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -99,9 +97,9 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         }
     }
 
-    protected abstract void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state);
+    protected abstract void onOpen(Level level, BlockPos pos, BlockState state);
 
-    protected abstract void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state);
+    protected abstract void onClose(Level level, BlockPos pos, BlockState state);
 
     protected abstract Identifier getStat();
 
@@ -116,7 +114,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         if (!isRemote()) {
             UUID owner = input.get(MekanismDataComponents.OWNER);

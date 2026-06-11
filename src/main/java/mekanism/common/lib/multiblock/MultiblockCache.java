@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
@@ -28,7 +29,6 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
@@ -52,13 +52,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     }
 
-    public void load(@NotNull ValueInput input) {
+    public void load(ValueInput input) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
             type.readFrom(input, this);
         }
     }
 
-    public void save(@NotNull ValueOutput output) {
+    public void save(ValueOutput output) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
             type.saveTo(output, this);
         }
@@ -85,19 +85,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     }
 
-    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
-    @NotNull
     @Override
     public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 
-    @NotNull
     @Override
     public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
@@ -109,9 +106,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         return energyContainer;
     }
 
-    @NotNull
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;
     }
 
@@ -243,12 +239,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         @Override
         public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
             List<ELEMENT> containers = containerList(data);
-            if (containers != null) {
-                List<ELEMENT> cacheContainers = containerList(cache);
-                for (int i = 0; i < cacheContainers.size(); i++) {
-                    if (i < containers.size()) {
-                        copy(cacheContainers.get(i), containers.get(i));
-                    }
+            List<ELEMENT> cacheContainers = containerList(cache);
+            for (int i = 0; i < cacheContainers.size(); i++) {
+                if (i < containers.size()) {
+                    copy(cacheContainers.get(i), containers.get(i));
                 }
             }
         }
@@ -256,14 +250,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         @Override
         public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
             List<ELEMENT> containersToCopy = containerList(data);
-            if (containersToCopy != null) {
-                List<ELEMENT> cacheContainers = containerList(cache);
-                if (cacheContainers.isEmpty()) {
-                    prefab(cache, containersToCopy.size());
-                }
-                for (int i = 0; i < containersToCopy.size(); i++) {
-                    copy(containersToCopy.get(i), cacheContainers.get(i));
-                }
+            List<ELEMENT> cacheContainers = containerList(cache);
+            if (cacheContainers.isEmpty()) {
+                prefab(cache, containersToCopy.size());
+            }
+            for (int i = 0; i < containersToCopy.size(); i++) {
+                copy(containersToCopy.get(i), cacheContainers.get(i));
             }
         }
 
@@ -313,7 +305,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             ELEMENT container = container(cache);
             if (container == null) {
                 prefab(cache, 1);
-                return container(cache);
+                return Objects.requireNonNull(container(cache), "Container should be present after initialization");
             }
             return container;
         }

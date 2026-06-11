@@ -1,6 +1,5 @@
 package mekanism.common.inventory.access;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -8,7 +7,6 @@ import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@NothingNullByDefault
 public class SideEffectFreeItemAccess extends SnapshotJournal<ResourceStack<ItemResource>> implements ItemAccess {
 
     private ItemResource currentType;

@@ -17,10 +17,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public record SelectedWindowData(@NotNull WindowType type, byte extraData) {
+public record SelectedWindowData(WindowType type, byte extraData) {
 
     public static final SelectedWindowData UNSPECIFIED = new SelectedWindowData(WindowType.UNSPECIFIED);
 
@@ -32,7 +31,7 @@ public record SelectedWindowData(@NotNull WindowType type, byte extraData) {
         extraData = type.isValid(extraData) ? extraData : 0;
     }
 
-    public SelectedWindowData(@NotNull WindowType type) {
+    public SelectedWindowData(WindowType type) {
         this(type, (byte) 0);
     }
 

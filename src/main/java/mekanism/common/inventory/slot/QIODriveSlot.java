@@ -3,7 +3,6 @@ package mekanism.common.inventory.slot;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
@@ -13,19 +12,19 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class QIODriveSlot extends BasicInventorySlot {
 
     public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.getItem() instanceof IQIODriveItem;
 
     private final Supplier<@Nullable Level> levelSupplier;
+    @Nullable
     private final IQIODriveHolder driveHolder;
     private final QIODriveKey key;
     private boolean isSaving;
 
-    public QIODriveSlot(IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public QIODriveSlot(@Nullable IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
         super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, null, null, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
@@ -49,7 +48,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     protected void onContentsChanged(LargeResourceStack<ItemResource> originalState) {
         super.onContentsChanged(originalState);
         //If the change isn't caused by the frequency saving the contents to the drive (in which case it already knows about the changes)
-        if (!isSaving) {
+        if (!isSaving && driveHolder != null) {
             // Check if we need to update the drive data for the frequency
             ItemResource newDrive = resource();
             ItemResource originalDrive = originalState.resource();

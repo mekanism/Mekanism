@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
@@ -25,7 +24,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
-@ParametersAreNotNullByDefault
 public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
 
     private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "geiger_counter.png");

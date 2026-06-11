@@ -3,13 +3,12 @@ package mekanism.common.lib.radiation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.BlockPos;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RadiationSource implements IRadiationSource {
 
     //TODO - 26.1: Should we apply bounds to what is valid as the radiation level
@@ -49,7 +48,7 @@ public class RadiationSource implements IRadiationSource {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

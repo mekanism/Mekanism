@@ -3,7 +3,6 @@ package mekanism.generators.common.content.gear.mekasuit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -25,9 +24,8 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {
 
     private static final Int2ObjectMap<ModuleDamageAbsorbInfo> DAMAGE_ABSORB_VALUES = Util.make(() -> {

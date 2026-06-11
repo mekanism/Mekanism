@@ -2,7 +2,6 @@ package mekanism.common.component.containers.type;
 
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.Capabilities;
@@ -12,7 +11,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-@NothingNullByDefault
 public class ItemContainerType extends ResourceContainerType<ItemResource, IInventorySlot> {
 
     ItemContainerType() {

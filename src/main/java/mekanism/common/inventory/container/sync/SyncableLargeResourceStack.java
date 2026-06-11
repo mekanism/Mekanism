@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
@@ -11,11 +10,11 @@ import mekanism.common.network.to_client.container.property.resource.ResourceSta
 import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling large resource stacks
  */
-@NothingNullByDefault
 public final class SyncableLargeResourceStack<RESOURCE extends Resource> implements ISyncableData {
 
     public static <RESOURCE extends Resource> SyncableLargeResourceStack<RESOURCE> create(IResourceContainer<RESOURCE> handler) {
@@ -27,8 +26,10 @@ public final class SyncableLargeResourceStack<RESOURCE extends Resource> impleme
     }
 
     @Internal
-    public static <RESOURCE extends Resource> SyncableLargeResourceStack<RESOURCE> forSyncableProperty(Supplier<Object> getter,
-          Consumer<Object> setter, Object emptyStack) {
+    public static <RESOURCE extends Resource> SyncableLargeResourceStack<RESOURCE> forSyncableProperty(Supplier<Object> getter, Consumer<Object> setter, @Nullable Object emptyStack) {
+        if (emptyStack == null) {
+            throw new IllegalStateException("Something went wrong when generating syncable property for a LargeResourceStack");
+        }
         return new SyncableLargeResourceStack<>(() -> (LargeResourceStack<RESOURCE>) getter.get(), setter::accept, (LargeResourceStack<RESOURCE>) emptyStack);
     }
 

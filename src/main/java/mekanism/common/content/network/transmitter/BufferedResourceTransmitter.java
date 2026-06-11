@@ -21,6 +21,7 @@ import mekanism.common.upgrade.transmitter.ResourceTransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -28,9 +29,7 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
@@ -63,49 +62,47 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     }
 
     @Override
-    public void read(@NotNull ValueInput input) {
+    public void read(ValueInput input) {
         super.read(input);
         saveShareJournal.saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
         bufferContainer.setContents(saveShareJournal.saveShare, null);
     }
 
     @Override
-    public void write(@NotNull ValueOutput output) {
+    public void write(ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().validateSaveShares(getTransmitter(), null);
+            getTransmitterNetworkNN().validateSaveShares(getTransmitter(), null);
         }
         stackHelper.storeNonEmpty(output, SerializationConstants.STORED, saveShareJournal.saveShare);
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
+    protected void handleContentsUpdateTag(NETWORK network, ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
         network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(stackHelper.empty().resource()));
     }
 
-    @Nullable
     @Override
     public ResourceTransmitterUpgradeData<RESOURCE> getUpgradeData() {
         return new ResourceTransmitterUpgradeData<>(redstoneReactive, getConnectionTypesRaw(), bufferContainer);
     }
 
     @Override
-    public void parseUpgradeData(@NotNull ResourceTransmitterUpgradeData<RESOURCE> data, TransactionContext transaction) {
+    public void parseUpgradeData(ResourceTransmitterUpgradeData<RESOURCE> data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         bufferContainer.copyContents(data.buffer, transaction);
     }
 
     protected CONTAINER getContainer() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getContainer() : bufferContainer;
+        return hasTransmitterNetwork() ? getTransmitterNetworkNN().getContainer() : bufferContainer;
     }
 
-    @NotNull
     public List<CONTAINER> getContainers() {
         if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getContainers();
+            return getTransmitterNetworkNN().getContainers();
         }
         return containers;
     }
@@ -125,13 +122,11 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         return saveShareJournal;
     }
 
-    @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getShare() {
         return bufferContainer.asStack();
     }
 
-    @NotNull
     @Override
     public LargeResourceStack<RESOURCE> releaseShare() {
         LargeResourceStack<RESOURCE> share = getShare();
@@ -142,7 +137,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     public void takeShare(@Nullable TransactionContext transaction) {
         if (hasTransmitterNetwork()) {
-            CONTAINER networkContainer = getTransmitterNetwork().getContainer();
+            CONTAINER networkContainer = getTransmitterNetworkNN().getContainer();
             if (!networkContainer.isEmpty() && !saveShareJournal.saveShare.isEmpty()) {
                 networkContainer.setContents(networkContainer.resource(), networkContainer.amountAsLong() - saveShareJournal.saveShare.amount(), transaction);
                 bufferContainer.setContents(saveShareJournal.saveShare, transaction);
@@ -164,21 +159,23 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         return getBufferWithFallback().isEmpty();
     }
 
-    @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getBufferWithFallback() {
         LargeResourceStack<RESOURCE> buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer.isEmpty() && hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getBuffer();
+            return getTransmitterNetworkNN().getBuffer();
         }
         return buffer;
     }
 
     protected RESOURCE getBufferOrFallback() {
         RESOURCE buffer = getBufferWithFallback().resource();
-        if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            return getTransmitterNetwork().getLastType();
+        if (buffer.isEmpty() && hasTransmitterNetwork()) {
+            NETWORK network = getTransmitterNetworkNN();
+            if (network.getPrevTransferAmount() > 0) {
+                return network.getLastType();
+            }
         }
         return buffer;
     }
@@ -189,7 +186,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     }
 
     @Override
-    public void pullFromAcceptors() {
+    public void pullFromAcceptors(ServerLevel level) {
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
@@ -256,7 +253,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         }
 
         @Override
-        protected void revertToSnapshot(@NonNull LargeResourceStack<RESOURCE> snapshot) {
+        protected void revertToSnapshot(LargeResourceStack<RESOURCE> snapshot) {
             this.saveShare = snapshot;
         }
 

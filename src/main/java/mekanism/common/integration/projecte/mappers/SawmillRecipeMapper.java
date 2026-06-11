@@ -17,7 +17,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.apache.commons.lang3.math.Fraction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @RecipeTypeMapper
 public class SawmillRecipeMapper extends TypedMekanismRecipeMapper<SawmillRecipe> {
@@ -75,7 +75,7 @@ public class SawmillRecipeMapper extends TypedMekanismRecipeMapper<SawmillRecipe
             };
         }
         return addConversions(mapper, recipe.getInput(), input -> SawmillOutput.create(recipe.getOutput(input), primaryMultiplier, secondaryMultiplier),
-              output -> output.mainOutput() == null, representationGetter, null, SawmillRecipeMapper::addConversions);
+              output -> output.mainOutput() == null, representationGetter, SawmillRecipeMapper::addConversions);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, SawmillOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {

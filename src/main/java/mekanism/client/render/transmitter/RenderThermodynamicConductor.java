@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.transmitter.TransmitterRenderState.ConductorRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
@@ -12,9 +11,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor, ConductorRenderState> {
 
     public RenderThermodynamicConductor(BlockEntityRendererProvider.Context context) {
@@ -28,7 +26,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
 
     @Override
     public void extractRenderState(TileEntityThermodynamicConductor conductor, ConductorRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(conductor, state, partialTick, cameraPosition, breakProgress);
         ThermodynamicConductor transmitter = conductor.getTransmitter();
         state.tempColor = HeatUtils.getColorFromTemp(transmitter.getTotalTemperature(), transmitter.getBaseColor()).argb();

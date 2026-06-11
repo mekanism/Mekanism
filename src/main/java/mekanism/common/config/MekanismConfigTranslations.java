@@ -19,8 +19,7 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum MekanismConfigTranslations implements IConfigTranslation {
     //Client config
@@ -557,7 +556,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
         this.button = button;
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return key;
@@ -591,7 +589,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
             return Stream.of(first, second, third).filter(Objects::nonNull).toArray(IConfigTranslation[]::new);
         }
 
-        @NotNull
         @Override
         public IConfigTranslation first() {
             if (first == null) {
@@ -600,7 +597,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
             return first;
         }
 
-        @NotNull
         @Override
         public IConfigTranslation second() {
             if (second == null) {
@@ -609,7 +605,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
             return second;
         }
 
-        @NotNull
         @Override
         public IConfigTranslation third() {
             if (third == null) {

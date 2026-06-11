@@ -20,7 +20,6 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.StructureModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
@@ -31,7 +30,6 @@ public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntrie
         this.modid = modid;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return "Datapack registries: " + modid;

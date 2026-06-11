@@ -9,15 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean strictInput, Optional<EnumColor> outputColor) {
 
     //TODO - 1.21: Re-evaluate this, and maybe rework it so that we can actually just use Collections.emptyList
@@ -36,7 +34,7 @@ public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean str
           AttachedEjector::new
     );
 
-    public static AttachedEjector create(EnumColor[] inputColors, boolean strictInput, @Nullable EnumColor outputColor) {
+    public static AttachedEjector create(@Nullable EnumColor[] inputColors, boolean strictInput, @Nullable EnumColor outputColor) {
         boolean isDefault = strictInput == DEFAULT.strictInput() && outputColor == DEFAULT.outputColor().orElse(null);
         List<Optional<EnumColor>> inputs = new ArrayList<>(inputColors.length);
         for (EnumColor inputColor : inputColors) {

@@ -7,7 +7,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
 
@@ -23,7 +22,7 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DIGITAL_BAR, relativeX, relativeY, 1, 0, width, height, 1, 1, texWidth, texHeight);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DIGITAL_BAR, relativeX + 1, relativeY + 1, 1, 1, width - 2, 6, 1, 1, texWidth, texHeight);

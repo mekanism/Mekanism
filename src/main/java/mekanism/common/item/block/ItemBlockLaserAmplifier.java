@@ -9,7 +9,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>> {
 
@@ -22,7 +21,7 @@ public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<Til
     }
 
     @Override
-    protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
+    protected Predicate<AutomationType> getEnergyCapInsertPredicate() {
         //Don't allow charging laser amplifiers inside of energy storage devices
         return BasicEnergyContainer.manualOnly;
     }

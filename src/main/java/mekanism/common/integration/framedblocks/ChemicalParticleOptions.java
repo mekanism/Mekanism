@@ -7,7 +7,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOptions {
 
@@ -20,7 +19,6 @@ record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOpt
           ChemicalParticleOptions::chemical
     );
 
-    @NotNull
     @Override
     public ParticleType<?> getType() {
         return FramedBlocksIntegration.CHEMICAL_PARTICLE.value();
@@ -32,13 +30,11 @@ record ChemicalParticleOptions(ChemicalResource chemical) implements ParticleOpt
             super(false);
         }
 
-        @NotNull
         @Override
         public MapCodec<ChemicalParticleOptions> codec() {
             return CODEC;
         }
 
-        @NotNull
         @Override
         public StreamCodec<? super RegistryFriendlyByteBuf, ChemicalParticleOptions> streamCodec() {
             return STREAM_CODEC;

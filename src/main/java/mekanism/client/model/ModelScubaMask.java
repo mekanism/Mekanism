@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelScubaMask extends MekanismJavaModel.NoState {
 
@@ -133,7 +132,7 @@ public class ModelScubaMask extends MekanismJavaModel.NoState {
     }
 
     @Override
-    public void collect(@NotNull PoseStack matrix, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack matrix, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim();
         collectParts(parts, matrix, RENDER_TYPE, collector, light, overlayLight, CommonColors.WHITE, null, hasFoil);
         collectParts(litParts, matrix, RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, CommonColors.WHITE, null, hasFoil);

@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 final class ChemicalSpriteParticle extends SingleQuadParticle {
 
@@ -38,7 +38,6 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.layer = Layer.bySprite(sprite);
     }
 
-    @NotNull
     @Override
     protected SingleQuadParticle.Layer getLayer() {
         return layer;
@@ -73,8 +72,9 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
 
     static final class Provider implements ParticleProvider<ChemicalParticleOptions> {
 
+        @Nullable
         @Override
-        public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz, @NotNull RandomSource random) {
+        public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz, RandomSource random) {
             if (!type.chemical().isEmpty()) {
                 return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
             }

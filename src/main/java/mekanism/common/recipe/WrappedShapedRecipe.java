@@ -2,7 +2,6 @@ package mekanism.common.recipe;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.Level;
 
-@NothingNullByDefault
 public abstract class WrappedShapedRecipe extends ShapedRecipe {
 
     public static <CLAZZ extends WrappedShapedRecipe> RecipeSerializer<CLAZZ> serializer(Factory<CLAZZ> constructor) {

@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import org.jetbrains.annotations.NotNull;
 
 public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
 
@@ -48,7 +47,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
     }
 
     @Override
-    public void submit(@NotNull FlameRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector nodeCollector, @NotNull CameraRenderState camera) {
+    public void submit(FlameRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
@@ -72,7 +71,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
     }
 
     @Override
-    public boolean shouldRender(EntityFlame flame, @NotNull Frustum camera, double camX, double camY, double camZ) {
+    public boolean shouldRender(EntityFlame flame, Frustum camera, double camX, double camY, double camZ) {
         float alpha = flame.tickCount / (float) EntityFlame.LIFESPAN;
         float actualAlpha = 1 - alpha;
         return actualAlpha > 0 && super.shouldRender(flame, camera, camX, camY, camZ);

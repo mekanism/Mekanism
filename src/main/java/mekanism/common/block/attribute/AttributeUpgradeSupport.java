@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Upgrade;
-import org.jetbrains.annotations.NotNull;
 
-public record AttributeUpgradeSupport(@NotNull Set<Upgrade> supportedUpgrades) implements Attribute {
+public record AttributeUpgradeSupport(Set<Upgrade> supportedUpgrades) implements Attribute {
 
     public static final AttributeUpgradeSupport DEFAULT_MACHINE_UPGRADES = create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
     public static final AttributeUpgradeSupport DEFAULT_ADVANCED_MACHINE_UPGRADES = create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.CHEMICAL);

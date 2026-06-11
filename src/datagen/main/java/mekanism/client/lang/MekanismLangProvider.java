@@ -405,7 +405,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             String resourceName = TextUtils.formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
-            TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(item.getRowKey(), item.getColumnKey());
+            TagKey<Item> tag = MekanismTags.Items.getProcessedResource(item.getRowKey(), item.getColumnKey());
             switch (item.getRowKey()) {
                 case SHARD -> {
                     add(item.getValue(), resourceName + " Shard");

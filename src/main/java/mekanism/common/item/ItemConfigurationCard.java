@@ -38,8 +38,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemConfigurationCard extends Item {
 
@@ -51,14 +50,13 @@ public class ItemConfigurationCard extends Item {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         //TODO - 26.1: Go through the various append methods we have and move some over to data component based
         // Also support TooltipDisplay#hideTooltip
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         tooltipAdder.accept(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -127,8 +125,7 @@ public class ItemConfigurationCard extends Item {
     }
 
     @Override
-    @NotNull
-    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (!player.isShiftKeyDown()) {
             return super.use(level, player, usedHand);
         } else if (!level.isClientSide()) {
@@ -171,7 +168,6 @@ public class ItemConfigurationCard extends Item {
     }
 
     private record ConfigurationCardPathElement(Block block, BlockPos pos) implements ProblemReporter.PathElement {
-        @NotNull
         @Override
         public String get() {
             return "configuration_card(" + RegistryUtils.getNameForReporting(BuiltInRegistries.BLOCK, block) + "@" + pos + ")";

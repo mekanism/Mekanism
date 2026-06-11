@@ -13,11 +13,9 @@ import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
-    @NotNull
     @Override
     public Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
@@ -35,7 +33,6 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<TriggerInstan
 
         public static final Codec<UseDropperAction> CODEC = StringRepresentable.fromEnum(UseDropperAction::values);
 
-        @NotNull
         @Override
         public String getSerializedName() {
             return name().toLowerCase(Locale.ROOT);

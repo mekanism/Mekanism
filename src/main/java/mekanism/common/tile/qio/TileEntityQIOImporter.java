@@ -27,8 +27,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
@@ -46,13 +45,13 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
-        boolean needsUpdate = super.onUpdateServer(frequency);
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(level, frequency);
         if (frequency != null && canFunction()) {
             if (delay > 0) {
                 delay--;
             } else {
-                tryImport(frequency);
+                tryImport(level, frequency);
                 delay = MAX_DELAY;
             }
         }
@@ -65,10 +64,10 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         backInventory = null;
     }
 
-    private void tryImport(QIOFrequency freq) {
+    private void tryImport(ServerLevel level, QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM.createCache(level, worldPosition.relative(direction.getOpposite()), direction);
         }
         ResourceHandler<ItemResource> inventory = backInventory.getCapability();
         if (inventory == null) {//Not an IItemHandler
@@ -138,25 +137,25 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.putBoolean(SerializationConstants.AUTO, importWithoutFilter);
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         importWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, importWithoutFilter);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.AUTO, importWithoutFilter);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         importWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, importWithoutFilter);
     }

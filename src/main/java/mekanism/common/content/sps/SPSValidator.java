@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
@@ -38,16 +39,17 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     };
 
     @Override
-    protected StructureRequirement getStructureRequirement(BlockPos pos) {
+    protected StructureRequirement getStructureRequirement(BlockPos pos, VoxelCuboid cuboid) {
         WallRelative relative = cuboid.getWallRelative(pos);
         if (relative.isWall()) {
-            Axis axis = Axis.get(cuboid.getSide(pos));
+            Direction side = Objects.requireNonNull(cuboid.getSide(pos), "Side should not be null when part of a wall");
+            Axis axis = Axis.get(side);
             Axis h = axis.horizontal(), v = axis.vertical();
             //Note: This ends up becoming immutable by doing this but that is fine and doesn't really matter
             pos = pos.subtract(cuboid.getMinPos());
             return StructureRequirement.REQUIREMENTS[ALLOWED_GRID[h.getCoord(pos)][v.getCoord(pos)]];
         }
-        return super.getStructureRequirement(pos);
+        return super.getStructureRequirement(pos, cuboid);
     }
 
     @Override
@@ -72,8 +74,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     @Override
     public boolean precheck() {
         // 72 = (12 missing blocks possible on each face) * (6 sides)
-        cuboid = StructureHelper.fetchCuboid(structure, BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
-        return cuboid != null;
+        return precheck(StructureHelper.fetchCuboid(structure(), BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72));
     }
 
     @Override

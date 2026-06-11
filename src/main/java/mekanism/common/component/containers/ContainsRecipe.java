@@ -2,7 +2,7 @@ package mekanism.common.component.containers;
 
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @FunctionalInterface
 public interface ContainsRecipe<INPUT_CACHE extends IInputRecipeCache, TYPE> {

@@ -10,7 +10,6 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
-import org.jetbrains.annotations.NotNull;
 
 public class MekBannerShieldRecipe extends CustomRecipe {
 
@@ -21,7 +20,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingInput inv, @NotNull Level world) {
+    public boolean matches(CraftingInput inv, Level world) {
         ItemStack shieldStack = ItemStack.EMPTY;
         ItemStack bannerStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.size(); ++i) {
@@ -47,7 +46,6 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         return !shieldStack.isEmpty() && !bannerStack.isEmpty();
     }
 
-    @NotNull
     @Override
     public ItemStack assemble(CraftingInput inv) {
         ItemStack bannerStack = ItemStack.EMPTY;
@@ -70,7 +68,6 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         return shieldStack;
     }
 
-    @NotNull
     @Override
     public RecipeSerializer<MekBannerShieldRecipe> getSerializer() {
         return ToolsRecipeSerializers.BANNER_SHIELD.get();

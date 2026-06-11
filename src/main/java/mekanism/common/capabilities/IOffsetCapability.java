@@ -3,8 +3,7 @@ package mekanism.common.capabilities;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Allows for handling capabilities at an offset to the actual implementer. This allows Tile Entities such as the Digital Miner to via the advanced bounding blocks be
@@ -32,7 +31,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * {@link #getOffsetCapabilityIfEnabled(BlockCapability, Direction, Vec3i)}, calling this method is fine.
      */
     @Nullable
-    default <T> T getOffsetCapability(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+    default <T> T getOffsetCapability(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, Vec3i offset) {
         return isOffsetCapabilityDisabled(capability, side, offset) ? null : getOffsetCapabilityIfEnabled(capability, side, offset);
     }
 
@@ -47,7 +46,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)}
      * should return {@code null}.
      */
-    default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+    default boolean isOffsetCapabilityDisabled(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side, Vec3i offset) {
         return false;
     }
 
@@ -70,5 +69,5 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return The requested capability.
      */
     @Nullable
-    <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset);
+    <T> T getOffsetCapabilityIfEnabled(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, Vec3i offset);
 }

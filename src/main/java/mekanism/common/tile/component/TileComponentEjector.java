@@ -63,8 +63,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
@@ -73,7 +72,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
 
-    private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
+    private final @Nullable EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
@@ -83,8 +82,13 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Nullable//TODO: At some point it would be nice to be able to generify this further
     private Predicate<IChemicalTank> canTankEject;
     private boolean strictInput;
+    @Nullable
     private EnumColor outputColor;
     private int tickDelay = 0;
+
+    public static TileComponentEjector energy(TileEntityMekanism tile, IntSupplier energyEjectRate) {
+        return new TileComponentEjector(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
+    }
 
     public TileComponentEjector(TileEntityMekanism tile) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate);
@@ -96,10 +100,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this(tile, chemicalEjectRate, fluidEjectRate, null);
-    }
-
-    public TileComponentEjector(TileEntityMekanism tile, IntSupplier energyEjectRate, boolean energyMarker) {
-        this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
     public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable IntSupplier energyEjectRate) {
@@ -134,7 +134,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return info.isEjecting() && (canEject == null || canEject.test(type));
     }
 
-    public void tickServer(@Nullable TransactionContext transaction) {
+    public void tickServer(ServerLevel level, @Nullable TransactionContext transaction) {
         //loop on array to avoid iterator usage and high memory consumption
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
             ConfigInfo info = configInfo.get(type);
@@ -144,12 +144,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
-                        outputItems(tile.facingSupplier.get(), info, transaction);
+                        outputItems(level, tile.facingSupplier.get(), info, transaction);
                     } else {
                         tickDelay--;
                     }
                 } else if (type != TransmissionType.HEAT) {
-                    eject(type, tile.facingSupplier.get(), info, transaction);
+                    eject(type, level, tile.facingSupplier.get(), info, transaction);
                 }
             }
         }
@@ -170,7 +170,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void eject(TransmissionType type, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
+    private void eject(TransmissionType type, ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         //Used to keep track of tanks to what sides they output to
         Map<Object, Set<Direction>> outputData = null;//todo what is the point of putting it into a map??
         for (DataType dataType : info.getSupportedDataTypes()) {
@@ -207,7 +207,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
         if (outputData != null && !outputData.isEmpty()) {
-            ServerLevel level = (ServerLevel) tile.getLevel();
             BlockPos pos = tile.getBlockPos();
             Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, _ -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
@@ -256,8 +255,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void outputItems(Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
-        ServerLevel level = (ServerLevel) tile.getLevel();
+    private void outputItems(ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {
@@ -316,7 +314,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tickDelay = MekanismUtils.TICKS_PER_HALF_SECOND;
     }
 
-    private Set<Direction> getSidesForData(ConfigInfo info, @NotNull Direction facing, @NotNull DataType dataType) {
+    private Set<Direction> getSidesForData(ConfigInfo info, Direction facing, DataType dataType) {
         Set<Direction> directions = null;
         for (Map.Entry<RelativeSide, DataType> entry : info.getSideConfig()) {
             if (entry.getValue() == dataType) {
@@ -331,6 +329,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return directions == null ? Collections.emptySet() : directions;
     }
 
+    @Nullable
     private ResourceHandler<ItemResource> getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
         // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
@@ -349,24 +348,25 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    @Nullable
     @ComputerMethod
     public EnumColor getOutputColor() {
         return outputColor;
     }
 
-    public void setOutputColor(EnumColor color) {
+    public void setOutputColor(@Nullable EnumColor color) {
         if (outputColor != color) {
             outputColor = color;
             tile.markForSave();
         }
     }
 
-    public boolean isInputSideEnabled(@NotNull RelativeSide side) {
+    public boolean isInputSideEnabled(RelativeSide side) {
         ConfigInfo info = configInfo.get(TransmissionType.ITEM);
         return info == null || info.isSideEnabled(side);
     }
 
-    public void setInputColor(RelativeSide side, EnumColor color) {
+    public void setInputColor(RelativeSide side, @Nullable EnumColor color) {
         if (isInputSideEnabled(side)) {
             int ordinal = side.ordinal();
             if (inputColors[ordinal] != color) {
@@ -376,6 +376,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    @Nullable
     @ComputerMethod
     public EnumColor getInputColor(RelativeSide side) {
         return inputColors[side.ordinal()];
@@ -387,7 +388,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    public void applyImplicitComponents(DataComponentGetter input) {
         AttachedEjector ejector = input.get(MekanismDataComponents.EJECTOR);
         if (ejector != null) {
             for (int i = 0; i < inputColors.length; i++) {
@@ -404,7 +405,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(@NotNull ValueInput ejectorInput) {
+    public void deserialize(ValueInput ejectorInput) {
         strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
         outputColor = NBTUtils.getEnum(ejectorInput, SerializationConstants.COLOR, EnumColor.BY_ID);
         //Input colors
@@ -420,7 +421,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput ejectorOutput) {
+    public void serialize(ValueOutput ejectorOutput) {
         if (strictInput) {
             ejectorOutput.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
@@ -528,11 +529,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public EjectTransitRequest(ResourceHandler<ItemResource> handler) {
+        public EjectTransitRequest(@Nullable ResourceHandler<ItemResource> handler) {
             super(handler);
         }
 
-        protected void setHandler(ResourceHandler<ItemResource> handler) {
+        protected void setHandler(@Nullable ResourceHandler<ItemResource> handler) {
             this.handler = handler;
         }
     }

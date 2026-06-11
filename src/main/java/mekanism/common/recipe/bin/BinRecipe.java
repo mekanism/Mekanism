@@ -1,6 +1,5 @@
 package mekanism.common.recipe.bin;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockBin;
@@ -10,7 +9,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 
 //Note: We don't bother checking anywhere to ensure the bin's item stack size is one, as we only allow bins
 // to be in stacks of one anyway. If this changes at some point, then we will need to adjust this recipe
-@NothingNullByDefault
 public abstract class BinRecipe extends CustomRecipe {
 
     protected static ComponentBackedBinInventorySlot convertToSlot(ItemAccess binAccess) {

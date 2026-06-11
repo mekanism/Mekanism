@@ -9,8 +9,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.MethodsAreNotNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
@@ -26,10 +24,8 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@MethodsAreNotNullByDefault
-@ParametersAreNotNullByDefault
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class PersonalStorageManager {
 

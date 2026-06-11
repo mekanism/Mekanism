@@ -11,14 +11,13 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiProgress extends GuiTexturedElement implements IRecipeViewerRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
-    private IRecipeViewerRecipeType<?>[] recipeCategories;
+    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
     @Nullable
     private ColorDetails colorDetails;
     @Nullable
@@ -40,13 +39,13 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     }
 
     @Override
-    public GuiProgress warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
+    public GuiProgress warning(WarningType type, BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             Identifier resource = getResource();
@@ -91,16 +90,14 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return handler.isActive();
     }
 
-    @NotNull
     @Override
-    public GuiProgress recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories) {
+    public GuiProgress recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
-    @Nullable
     @Override
-    public IRecipeViewerRecipeType<?>[] getRecipeCategories() {
+    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
         return recipeCategories;
     }
 

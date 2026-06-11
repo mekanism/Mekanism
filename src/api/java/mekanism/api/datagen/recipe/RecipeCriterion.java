@@ -2,7 +2,6 @@ package mekanism.api.datagen.recipe;
 
 import java.util.Objects;
 import net.minecraft.advancements.Criterion;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper class to declare named criteria for repeated use.
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @param name      Name of the Recipe Criterion.
  * @param criterion Criterion Instance.
  */
-public record RecipeCriterion(@NotNull String name, @NotNull Criterion<?> criterion) {
+public record RecipeCriterion(String name, Criterion<?> criterion) {
 
     /**
      * @param name      Name of the Recipe Criterion.

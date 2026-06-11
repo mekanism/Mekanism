@@ -2,7 +2,6 @@ package mekanism.common.lib.security;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
@@ -25,28 +24,26 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.NonNull;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IItemSecurityUtils#INSTANCE}
  */
-@NothingNullByDefault
 public class ItemSecurityUtils implements IItemSecurityUtils {
 
-    private static final ItemCapability<IOwnerObject, @NonNull ItemAccess> OWNER_CAPABILITY = ItemCapability.create(Capabilities.OWNER_OBJECT_NAME, IOwnerObject.class, ItemAccess.class);
-    private static final ItemCapability<ISecurityObject, @NonNull ItemAccess> SECURITY_CAPABILITY = ItemCapability.create(Capabilities.SECURITY_OBJECT_NAME, ISecurityObject.class, ItemAccess.class);
+    private static final ItemCapability<IOwnerObject, ItemAccess> OWNER_CAPABILITY = ItemCapability.create(Capabilities.OWNER_OBJECT_NAME, IOwnerObject.class, ItemAccess.class);
+    private static final ItemCapability<ISecurityObject, ItemAccess> SECURITY_CAPABILITY = ItemCapability.create(Capabilities.SECURITY_OBJECT_NAME, ISecurityObject.class, ItemAccess.class);
 
     public static ItemSecurityUtils get() {
         return (ItemSecurityUtils) INSTANCE;
     }
 
     @Override
-    public ItemCapability<IOwnerObject, @NonNull ItemAccess> ownerCapability() {
+    public ItemCapability<IOwnerObject, ItemAccess> ownerCapability() {
         return OWNER_CAPABILITY;
     }
 
     @Override
-    public ItemCapability<ISecurityObject, @NonNull ItemAccess> securityCapability() {
+    public ItemCapability<ISecurityObject, ItemAccess> securityCapability() {
         return SECURITY_CAPABILITY;
     }
 

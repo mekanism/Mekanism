@@ -22,8 +22,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
@@ -32,7 +31,9 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
      * The number of filters that can be displayed
      */
     private static final int FILTER_COUNT = 4;
-    protected GuiInnerScreen leftScreen;
+    @Nullable
+    private GuiInnerScreen leftScreen;
+    @Nullable
     private GuiScrollBar scrollBar;
 
     protected GuiFilterHolder(CONTAINER container, Inventory inv, Component title) {
@@ -68,10 +69,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         }
     }
 
-    protected void drawScreenText(GuiGraphicsExtractor guiGraphics, Component text, int y) {
-        drawScreenText(guiGraphics, text, 0, y);
-    }
-
     protected void drawScreenText(GuiGraphicsExtractor guiGraphics, Component text, int x, int y) {
         //TODO: Do we want to make usages of this method eventually set the text to be rendered within the gui element for the screen?
         if (leftScreen != null) {//Validate it was properly set
@@ -99,11 +96,11 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         return tile.getFilterManager();
     }
 
-    protected abstract void onClick(IFilter<?> filter, int index);
+    protected abstract void onClick(@Nullable IFilter<?> filter, int index);
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar != null && scrollBar.adjustScroll(yDelta);
     }
 
     protected abstract List<ItemStack> getTagStacks(String tagName);
@@ -111,7 +108,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract List<ItemStack> getModIDStacks(String tagName);
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderInventoryText(guiGraphics);
     }

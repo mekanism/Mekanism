@@ -10,7 +10,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
@@ -60,7 +59,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(@NotNull ArmorType armorType) {
+    public int getDurabilityForType(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 975;
             case LEGGINGS -> 1_125;
@@ -70,7 +69,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(@NotNull ArmorType armorType) {
+    public int getDefense(ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 5;
             case LEGGINGS -> 8;
@@ -80,19 +79,16 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         };
     }
 
-    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "refined_obsidian";
     }
 
-    @NotNull
     @Override
     public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_REFINED_OBSIDIAN_TOOL;
     }
 
-    @NotNull
     @Override
     public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;

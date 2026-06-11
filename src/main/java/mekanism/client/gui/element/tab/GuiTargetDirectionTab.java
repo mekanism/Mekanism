@@ -9,11 +9,13 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerContainer> {
 
+    @Nullable
     private static final Tooltip QIO_TRANSFER_TO_WINDOW = TooltipUtils.create(MekanismLang.QIO_TRANSFER_TO_WINDOW);
+    @Nullable
     private static final Tooltip QIO_TRANSFER_TO_FREQUENCY = TooltipUtils.create(MekanismLang.QIO_TRANSFER_TO_FREQUENCY);
 
     public GuiTargetDirectionTab(IGuiWrapper gui, QIOItemViewerContainer holder, int y) {
@@ -32,7 +34,7 @@ public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerCo
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         dataSource.toggleTargetDirection();
     }
 }

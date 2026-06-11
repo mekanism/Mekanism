@@ -49,7 +49,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredFluidTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(tank).getLowerName();
+        String tierName = Attribute.getBaseTierNN(tank).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)

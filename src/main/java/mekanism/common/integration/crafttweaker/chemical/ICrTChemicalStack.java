@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -21,7 +20,6 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      *
      * @return A MCResourceLocation representing the registry name.
      */
-    @NotNull
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     default Identifier getRegistryName() {

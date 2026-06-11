@@ -4,12 +4,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base Chemical ingredient implementation that matches the difference of two provided chemical ingredients, i.e. anything contained in {@code base} that is not in
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  * @see DifferenceIngredient DifferenceIngredient, its item equivalent
  * @since 10.6.0
  */
-@NothingNullByDefault
 public non-sealed class DifferenceChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<DifferenceChemicalIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(

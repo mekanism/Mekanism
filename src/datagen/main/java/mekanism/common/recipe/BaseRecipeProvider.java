@@ -3,9 +3,7 @@ package mekanism.common.recipe;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -24,7 +22,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
-@NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
     protected final HolderGetter<Fluid> fluids;
@@ -69,17 +66,14 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     public static HolderSet<Item> osmiumIngot(HolderGetter<Item> lookup) {
-        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
-        return lookup.getOrThrow(tag);
+        return lookup.getOrThrow(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM));
     }
 
     public static HolderSet<Item> leadIngot(HolderGetter<Item> lookup) {
-        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD));
-        return lookup.getOrThrow(tag);
+        return lookup.getOrThrow(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD));
     }
 
     public static HolderSet<Item> tinIngot(HolderGetter<Item> lookup) {
-        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN));
-        return lookup.getOrThrow(tag);
+        return lookup.getOrThrow(MekanismTags.Items.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN));
     }
 }

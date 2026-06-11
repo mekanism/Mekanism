@@ -15,14 +15,13 @@ import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
@@ -51,7 +50,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             public boolean canExtract(@Nullable Direction direction) {
                 return TileEntityUniversalCable.this.canExtract(direction);
             }
-        }, MekanismUtils.getGameTimeSupplier(this)));
+        }, this::getGameTime));
     }
 
     @Override
@@ -65,9 +64,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @Override
-    protected void onUpdateServer() {
-        getTransmitter().pullFromAcceptors();
-        super.onUpdateServer();
+    protected void onUpdateServer(ServerLevel level) {
+        getTransmitter().pullFromAcceptors(level);
+        super.onUpdateServer(level);
     }
 
     @Override
@@ -75,9 +74,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         return TransmitterType.UNIVERSAL_CABLE;
     }
 
-    @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
+    protected BlockState upgradeResult(BlockState current, BaseTier tier) {
         return BlockStateHelper.copyStateData(current, switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_UNIVERSAL_CABLE;
             case ADVANCED -> MekanismBlocks.ADVANCED_UNIVERSAL_CABLE;
@@ -88,18 +86,18 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @Override
-    protected void writeUpdatedTag(@NotNull ValueOutput output) {
+    protected void writeUpdatedTag(ValueOutput output) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
-            EnergyNetwork network = getTransmitter().getTransmitterNetwork();
+            EnergyNetwork network = getTransmitter().getTransmitterNetworkNN();
             output.putLong(SerializationConstants.ENERGY, network.energyContainer.getAmountAsLong());
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
     }
 
     @Override
-    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
+    public void sideChanged(Direction side, ConnectionType old, ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
@@ -140,7 +138,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     @ComputerMethod
     long getCapacity() {
         UniversalCable cable = getTransmitter();
-        return cable.hasTransmitterNetwork() ? cable.getTransmitterNetwork().getCapacity() : cable.getCapacity();
+        return cable.hasTransmitterNetwork() ? cable.getTransmitterNetworkNN().getCapacity() : cable.getCapacity();
     }
 
     @ComputerMethod

@@ -2,11 +2,10 @@ package mekanism.api.radial;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base abstraction for providing functionality and required data to radials.
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.3.2
  */
-@NothingNullByDefault
 public abstract class RadialData<MODE extends IRadialMode> {
 
     private final Identifier identifier;
@@ -138,7 +136,7 @@ public abstract class RadialData<MODE extends IRadialMode> {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(@Nullable Object other) {
         if (other == this) {
             return true;
         } else if (other == null || getClass() != other.getClass()) {

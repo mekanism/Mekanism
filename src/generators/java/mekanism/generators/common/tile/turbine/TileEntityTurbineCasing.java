@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultiblockData> implements IHasGasMode {
 
@@ -30,7 +29,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
         }
     }
 
-    @NotNull
     @Override
     public TurbineMultiblockData createMultiblock() {
         return new TurbineMultiblockData(this);

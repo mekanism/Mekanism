@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.Objects;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
@@ -14,7 +13,7 @@ public class TileEntityInductionProvider extends TileEntityInternalMultiblock {
     public final InductionProviderTier tier;
 
     public TileEntityInductionProvider(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, InductionProviderTier.class));
+        tier = Attribute.getTierNN(blockProvider, InductionProviderTier.class);
         super(blockProvider, pos, state);
     }
 }

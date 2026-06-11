@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
@@ -28,7 +27,6 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
         super(GeneratorsBlocks.TURBINE_VENT, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return _ -> getMultiblock().getFluidTanks();

@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneIngot extends Item {
 
@@ -11,7 +10,7 @@ public class ItemRefinedGlowstoneIngot extends Item {
     }
 
     @Override
-    public boolean isPiglinCurrency(@NotNull ItemStack stack) {
+    public boolean isPiglinCurrency(ItemStack stack) {
         return true;
     }
 }

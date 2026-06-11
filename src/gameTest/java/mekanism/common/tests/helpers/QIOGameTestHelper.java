@@ -22,7 +22,9 @@ public class QIOGameTestHelper extends MekGameTestHelper {
     public ParametrizedGameTestSequence<QIOFrequency> startWithFrequency() {
         return startSequence().thenMap(() -> {
             //Note: Create a new frequency that isn't added to the frequency manager to ensure we don't persist it
-            return new QIOFrequency("test_frequency", Mekanism.gameProfile.id(), SecurityMode.PUBLIC);
+            QIOFrequency frequency = new QIOFrequency("test_frequency", Mekanism.gameProfile.id(), SecurityMode.PUBLIC);
+            frequency.setRegistries(getLevel().registryAccess());
+            return frequency;
         }).thenExecute(frequency -> {
             if (frequency.getTotalItemCount() > 0 || frequency.getTotalItemTypes(false) > 0) {
                 fail("Newly created QIO frequency was not empty");

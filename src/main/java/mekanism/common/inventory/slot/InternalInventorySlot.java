@@ -3,12 +3,10 @@ package mekanism.common.inventory.slot;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class InternalInventorySlot extends BasicInventorySlot {
 
-    @NotNull
     public static InternalInventorySlot create(@Nullable IContentsListener listener) {
         return new InternalInventorySlot(listener);
     }

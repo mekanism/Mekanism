@@ -1,13 +1,11 @@
 package mekanism.common.util.text;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.UnitDisplayUtils;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
-@NothingNullByDefault
 public class EnergyDisplay implements IHasTextComponent {
 
     public static final EnergyDisplay ZERO = of(0L);

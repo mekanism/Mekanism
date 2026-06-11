@@ -9,7 +9,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.MekanismLang;
@@ -32,8 +31,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
@@ -41,8 +40,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private final Reference2IntMap<Block> blockFrequencies = new Reference2IntOpenHashMap<>();
     private final Reference2IntMap<FluidType> fluidFrequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
-    private MekanismButton upButton;
-    private MekanismButton downButton;
+    @Nullable
     private GuiScrollBar scrollBar;
 
     public GuiSeismicReader(SeismicReaderContainer container, Inventory inv, Component title) {
@@ -123,31 +121,21 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         addRenderableWidget(new GuiInnerScreen(this, 77, 11, 51, 160));
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 129, 25, 132, blockList::size, () -> 1));
         addRenderableWidget(new GuiArrowSelection(this, 79, 81, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
-        upButton = addRenderableWidget(new MekanismImageButton(this, 129, 11, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), (_, _, _) -> scrollBar.adjustScroll(1)));
-        downButton = addRenderableWidget(new MekanismImageButton(this, 129, 157, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), (_, _, _) -> scrollBar.adjustScroll(-1)));
-        updateEnabledButtons();
-    }
-
-    @Override
-    public void containerTick() {
-        super.containerTick();
-        updateEnabledButtons();
-    }
-
-    private void updateEnabledButtons() {
-        int currentLayer = scrollBar.getCurrentSelection();
-        upButton.active = currentLayer > 0;
-        downButton.active = currentLayer + 1 < blockList.size();
+        addRenderableWidget(new MekanismImageButton(this, 129, 11, 14,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), (_, _, _) -> scrollBar.adjustScroll(1)))
+              .setCheckActive(() -> scrollBar.getCurrentSelection() > 0);
+        addRenderableWidget(new MekanismImageButton(this, 129, 157, 14,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), (_, _, _) -> scrollBar.adjustScroll(-1)))
+              .setCheckActive(() -> getCurrentLayer() > 0);
     }
 
     private int getCurrentLayer() {
-        return blockList.size() - scrollBar.getCurrentSelection() - 1;
+        int currentSelection = scrollBar == null ? 0 : scrollBar.getCurrentSelection();
+        return blockList.size() - currentSelection - 1;
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks or fluids
         int currentLayer = getCurrentLayer();
@@ -182,13 +170,15 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar != null && scrollBar.adjustScroll(yDelta);
     }
 
-    private record BlockInfo<TYPE>(BlockState state, TYPE type, RenderTarget<TYPE> renderTarget) {
+    private record BlockInfo<TYPE>(BlockState state, TYPE type, @Nullable RenderTarget<TYPE> renderTarget) {
 
         public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
-            renderTarget.render(guiGraphics, type, x, y);
+            if (renderTarget != null) {
+                renderTarget.render(guiGraphics, type, x, y);
+            }
         }
     }
 

@@ -9,15 +9,21 @@ import java.net.Socket;
 import javax.sound.sampled.AudioFormat;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceClient extends Thread {
 
     private final AudioFormat format = new AudioFormat(16_000F, 16, 1, true, true);
+    @Nullable
     private VoiceOutput outputThread;
+    @Nullable
     private VoiceInput inputThread;
+    @Nullable
     private DataOutputStream output;
+    @Nullable
     private DataInputStream input;
     private boolean running;
+    @Nullable
     private Socket socket;
     private final String ip;
 
@@ -83,10 +89,12 @@ public class VoiceClient extends Thread {
         return running;
     }
 
+    @Nullable
     public DataOutputStream getOutputStream() {
         return output;
     }
 
+    @Nullable
     public DataInputStream getInputStream() {
         return input;
     }

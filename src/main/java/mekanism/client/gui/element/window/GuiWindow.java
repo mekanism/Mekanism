@@ -24,7 +24,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
@@ -35,7 +35,9 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     private int prevDX, prevDY;
     private boolean pinned;
 
+    @Nullable
     private Consumer<GuiWindow> closeListener;
+    @Nullable
     private Consumer<GuiWindow> reattachListener;
     private final long msOpened;
 
@@ -97,7 +99,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         boolean ret = super.mouseClicked(event, isDoubleClick);
         // drag 'safe area'
         if (isMouseOver(event.x(), event.y())) {
@@ -124,7 +126,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+    protected void onDrag(MouseButtonEvent event, double deltaX, double deltaY) {
         super.onDrag(event, deltaX, deltaY);
         if (isDragging()) {
             int newDX = (int) Math.round(event.x() - dragX), newDY = (int) Math.round(event.y() - dragY);
@@ -149,7 +151,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (super.keyPressed(event)) {
             return true;
         }
@@ -161,7 +163,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
-        setTabListeners(window -> elementSupplier.get().active = true, window -> elementSupplier.get().active = false);
+        setTabListeners(_ -> elementSupplier.get().active = true, _ -> elementSupplier.get().active = false);
     }
 
     public void setTabListeners(Consumer<GuiWindow> closeListener, Consumer<GuiWindow> reattachListener) {

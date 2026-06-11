@@ -23,7 +23,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketRobitName(int entityId, String name) implements IMekanismPacket {
 
@@ -52,7 +51,6 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
         name = name.trim();
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketRobitName> type() {
         return TYPE;

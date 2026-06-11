@@ -8,28 +8,27 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
-    public ItemBlockMekanism(@NotNull BLOCK block, Item.Properties properties) {
+    public ItemBlockMekanism(BLOCK block, Item.Properties properties) {
         super(block, properties);
     }
 
-    @NotNull
     @Override
     @SuppressWarnings("unchecked")
     public BLOCK getBlock() {
         return (BLOCK) super.getBlock();
     }
 
+    @Nullable
     public ITier getTier() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Component getName(@NotNull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         if (getBlock() instanceof IColoredBlock coloredBlock) {
             return TextComponentUtil.build(coloredBlock.getColor(), super.getName(stack));
         }

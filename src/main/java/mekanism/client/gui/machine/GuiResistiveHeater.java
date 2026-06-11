@@ -24,11 +24,8 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, MekanismTileContainer<TileEntityResistiveHeater>> {
-
-    private GuiTextField energyUsageField;
 
     public GuiResistiveHeater(MekanismTileContainer<TileEntityResistiveHeater> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -59,21 +56,21 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
             return List.of(MekanismLang.TEMPERATURE.translate(temp), MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
 
-        energyUsageField = addRenderableWidget(new GuiTextField(this, 50, 51, 76, 12));
-        energyUsageField.setMaxLength(7);
-        energyUsageField.setInputValidator(InputValidator.DIGIT)
-              .configureDigitalInput(this::setEnergyUsage);
+        GuiTextField energyUsageField = addRenderableWidget(new GuiTextField(this, 50, 51, 76, 12))
+              .setInputValidator(InputValidator.DIGIT)
+              .configureDigitalInput(this::setEnergyUsage)
+              .setMaxLength(7);
         setInitialFocus(energyUsageField);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private void setEnergyUsage() {
+    private void setEnergyUsage(GuiTextField energyUsageField) {
         if (!energyUsageField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENERGY_USAGE, tile.getBlockPos(), Math.max(0, Integer.parseInt(energyUsageField.getText()))));

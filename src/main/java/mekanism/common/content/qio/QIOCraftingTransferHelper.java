@@ -29,8 +29,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class QIOCraftingTransferHelper {
 
@@ -101,7 +100,7 @@ public class QIOCraftingTransferHelper {
     }
 
     @Nullable
-    public ItemTypeSource getSource(@NotNull ItemResource item) {
+    public ItemTypeSource getSource(ItemResource item) {
         return reverseLookup.get(item);
     }
 
@@ -238,7 +237,7 @@ public class QIOCraftingTransferHelper {
         private final byte slot;
         private int used;
 
-        public SingularItemTypeSource(@NotNull UUID qioSource, int used) {
+        public SingularItemTypeSource(UUID qioSource, int used) {
             this.qioSource = qioSource;
             this.slot = -1;
             this.used = used;

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
@@ -34,10 +33,8 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
@@ -48,7 +45,6 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      */
     boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction);
 
-    @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemAccess itemAccess) {
         //TODO: Add more types of data that can be transferred such as side configs, bucket mode, dumping mode
         ItemResource itemType = itemAccess.getResource();

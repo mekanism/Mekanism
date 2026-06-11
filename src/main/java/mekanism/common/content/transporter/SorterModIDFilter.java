@@ -16,6 +16,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
 
@@ -34,6 +35,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     private String modID;
 
     public SorterModIDFilter() {
+        modID = "";
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -59,7 +61,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {

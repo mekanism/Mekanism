@@ -3,7 +3,6 @@ package mekanism.common.registration.impl;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.base.IChemicalConstant;
@@ -11,8 +10,7 @@ import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.ChemicalUtils;
 import net.minecraft.resources.Identifier;
-
-@NothingNullByDefault//TODO - 1.20.2: Do we want to expose a basic form of this to the API
+//TODO - 1.20.2: Do we want to expose a basic form of this to the API
 public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical> {
 
     public ChemicalDeferredRegister(String modid) {

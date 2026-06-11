@@ -1,6 +1,7 @@
 package mekanism.additions.client;
 
 import java.util.Map;
+import java.util.Objects;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliases;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.AdditionsTags;
@@ -24,7 +25,7 @@ import net.minecraft.data.PackOutput;
 public class AdditionsLangProvider extends BaseLanguageProvider {
 
     public AdditionsLangProvider(PackOutput output) {
-        super(output, MekanismAdditions.MODID, MekanismAdditions.instance);
+        super(output, MekanismAdditions.MODID, Objects.requireNonNull(MekanismAdditions.instance));
     }
 
     @Override

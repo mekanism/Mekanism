@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.objects.ObjectSets;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import org.jetbrains.annotations.NotNull;
+import mekanism.api.functions.TriConsumer;
 
 /**
  * Version of array map which does a proper BiConsumer and a couple other microoptimisations.
@@ -32,15 +32,26 @@ public class CustomObjectToObjectArrayMap<KEY, VALUE> extends Object2ObjectArray
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <DATA> void forEach(DATA data, TriConsumer<? super KEY, ? super VALUE, DATA> consumer) {
+        if (size == 0) {
+            return;
+        }
+        final int max = size;
+        for (int i = 0; i < max; i++) {
+            consumer.accept((KEY)key[i], (VALUE)value[i], data);
+        }
+    }
+
     //save a tiny bit of heap space and not create an object
     @Override
-    public @NotNull ObjectSet<KEY> keySet() {
+    public ObjectSet<KEY> keySet() {
         return size == 0 ? ObjectSets.emptySet() : super.keySet();
     }
 
     //save a tiny bit of heap space and not create an object
     @Override
-    public @NotNull ObjectSet<Map.Entry<KEY, VALUE>> entrySet() {
+    public ObjectSet<Map.Entry<KEY, VALUE>> entrySet() {
         return size == 0 ? ObjectSets.emptySet() : super.entrySet();
     }
 }

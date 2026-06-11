@@ -37,9 +37,9 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "upgrade/";
         addUpgradeRecipe(consumer, MekanismItems.ANCHOR_UPGRADE, MekanismTags.Items.DUSTS_DIAMOND, basePath);
-        addUpgradeRecipe(consumer, MekanismItems.ENERGY_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), basePath);
-        addUpgradeRecipe(consumer, MekanismItems.FILTER_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN), basePath);
-        addUpgradeRecipe(consumer, MekanismItems.CHEMICAL_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON), basePath);
+        addUpgradeRecipe(consumer, MekanismItems.ENERGY_UPGRADE, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), basePath);
+        addUpgradeRecipe(consumer, MekanismItems.FILTER_UPGRADE, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN), basePath);
+        addUpgradeRecipe(consumer, MekanismItems.CHEMICAL_UPGRADE, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.IRON), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MUFFLING_UPGRADE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
@@ -48,7 +48,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CONSTANT, this.items, ItemTags.WOOL)
               .key(Pattern.INGOT, this.items, MekanismTags.Items.MUFFLING_CENTER)
               .save(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.MUFFLING_UPGRADE)));
-        addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
+        addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STONE_GENERATOR_UPGRADE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),

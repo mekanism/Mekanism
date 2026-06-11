@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
-import org.jetbrains.annotations.NotNull;
 
 //Modified copy of vanilla's OreFeature but to support ResizableOreFeatureConfig
 public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
@@ -28,7 +27,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
     }
 
     @Override
-    public boolean place(@NotNull FeaturePlaceContext<ResizableOreFeatureConfig> context) {
+    public boolean place(FeaturePlaceContext<ResizableOreFeatureConfig> context) {
         RandomSource random = context.random();
         BlockPos pos = context.origin();
         WorldGenLevel world = context.level();

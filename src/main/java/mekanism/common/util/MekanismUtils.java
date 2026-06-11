@@ -12,11 +12,12 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
@@ -31,9 +32,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.component.FrequencyAware;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
@@ -95,8 +96,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -125,7 +125,7 @@ public final class MekanismUtils {
         return level == null ? 0 : level.getGameTime();
     };
 
-    private static final List<UUID> warnedFails = new ArrayList<>();
+    private static final Set<UUID> warnedFails = new HashSet<>();
 
     public static Component logFormat(Object message) {
         return logFormat(EnumColor.GRAY, message);
@@ -138,14 +138,6 @@ public final class MekanismUtils {
     public static boolean isTickingNormally(@Nullable Level level) {
         //Same as Minecraft#isLevelRunningNormally
         return level == null || level.tickRateManager().runsNormally();
-    }
-
-    public static LongSupplier getGameTimeSupplier(BlockEntity blockEntity) {
-        Objects.requireNonNull(blockEntity);
-        return () -> {
-            Level level = blockEntity.getLevel();
-            return level == null ? 0 : level.getGameTime();
-        };
     }
 
     @Nullable
@@ -163,8 +155,7 @@ public final class MekanismUtils {
      *
      * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
      */
-    @NotNull
-    public static String getModId(@NotNull HolderLookup.Provider registries, @NotNull ItemStack stack) {
+    public static String getModId(HolderLookup.Provider registries, ItemStack stack) {
         Item item = stack.getItem();
         String modid = item.getCreatorModId(registries, stack);
         if (modid == null) {
@@ -216,7 +207,7 @@ public final class MekanismUtils {
 
     public static double fractionUpgrades(IUpgradeTile tile, Upgrade type) {
         if (tile.supportsUpgrade(type)) {
-            return tile.getComponent().getUpgrades(type) / (double) type.getMax();
+            return tile.getUpgrades(type) / (double) type.getMax();
         }
         return 0;
     }
@@ -459,7 +450,7 @@ public final class MekanismUtils {
     /**
      * @apiNote Only call on the client.
      */
-    public static void addFrequencyItemTooltip(ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public static void addFrequencyItemTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         if (stack.isEmpty() || !(stack.getItem() instanceof IFrequencyItem frequencyItem)) {//Note: This shouldn't be empty, but we validate it just in case
             return;
         }
@@ -536,21 +527,22 @@ public final class MekanismUtils {
         return false;
     }
 
-    @NotNull
     public static String getLastKnownUsername(@Nullable UUID uuid) {
         if (uuid == null) {
             return "<???>";
         }
         String ret = UsernameCache.getLastKnownUsername(uuid);
-        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
-            Optional<NameAndId> nameToIdCache = ServerLifecycleHooks.getCurrentServer().services().nameToIdCache().get(uuid);
-            if (nameToIdCache.isPresent()) {
-                ret = nameToIdCache.get().name();
+        if (ret == null && EffectiveSide.get().isServer() && !warnedFails.contains(uuid)) { // see if MC/Yggdrasil knows about it?!
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                Optional<NameAndId> nameToIdCache = server.services().nameToIdCache().get(uuid);
+                if (nameToIdCache.isPresent()) {
+                    ret = nameToIdCache.get().name();
+                }
             }
         }
-        if (ret == null && !warnedFails.contains(uuid)) {
+        if (ret == null && warnedFails.add(uuid)) {
             Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
-            warnedFails.add(uuid);
         }
         return ret == null ? "<" + uuid + ">" : ret;
     }

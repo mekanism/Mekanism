@@ -10,17 +10,18 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyController.Type;
 import mekanism.common.lib.frequency.FrequencyTypes.FrequencyConstructor;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.util.MekCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class FrequencyType<FREQ extends Frequency> {
 
     //TODO - 26.1 - investigate no usages
-    public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
+    public static final Codec<FrequencyType<?>> CODEC = MekCodecs.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
     public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(255).map(
           name -> {
               FrequencyType<?> type = FrequencyTypes.byName(name);
@@ -73,7 +74,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return frequency;
     }
 
-    public FREQ create(Object key, UUID ownerUUID, SecurityMode securityMode) {
+    public FREQ create(Object key, @Nullable UUID ownerUUID, SecurityMode securityMode) {
         return creationFunction.create(key, ownerUUID, securityMode);
     }
 
@@ -85,6 +86,13 @@ public class FrequencyType<FREQ extends Frequency> {
         return FrequencyControllerManager.getController(this);
     }
 
+    @Nullable
+    public FREQ getFrequency(@Nullable UUID owner, SecurityMode securityMode, @Nullable Object key) {
+        FrequencyLookup<FREQ> lookup = getLookup(owner, securityMode);
+        return lookup == null ? null : lookup.getFrequency(key);
+    }
+
+    @Nullable
     public FrequencyLookup<FREQ> getLookup(@Nullable UUID owner, SecurityMode securityMode) {
         return switch (securityMode) {
             case PUBLIC -> getController().getPublicLookup();
@@ -111,7 +119,8 @@ public class FrequencyType<FREQ extends Frequency> {
         };
     }
 
-    public FrequencyLookup<FREQ> getLookup(FrequencyIdentity identity, UUID owner) {
+    @Nullable
+    public FrequencyLookup<FREQ> getLookup(FrequencyIdentity identity, @Nullable UUID owner) {
         return switch (identity.securityMode()) {
             case PUBLIC -> getController().getPublicLookup();
             case PRIVATE -> getController().getPrivateLookup(owner);
@@ -127,7 +136,7 @@ public class FrequencyType<FREQ extends Frequency> {
         } else {
             lookup = getLookup(identity, owner);
         }
-        return lookup.getFrequency(identity.key());
+        return lookup == null ? null : lookup.getFrequency(identity.key());
     }
 
     public IdentitySerializer getIdentitySerializer() {
@@ -145,7 +154,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return super.equals(obj) || (obj instanceof FrequencyType<?> other && Objects.equals(name, other.name));
     }
 

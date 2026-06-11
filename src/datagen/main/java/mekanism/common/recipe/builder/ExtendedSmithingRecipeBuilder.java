@@ -1,7 +1,6 @@
 package mekanism.common.recipe.builder;
 
 import java.util.Optional;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.Item;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.ItemLike;
 
-@NothingNullByDefault
 public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmithingRecipeBuilder> {
 
     private final Ingredient template;

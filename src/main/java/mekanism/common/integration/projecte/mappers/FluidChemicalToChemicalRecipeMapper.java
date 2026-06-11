@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -26,7 +25,7 @@ public class FluidChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapp
                   recipe.getChemicalInput()
             ));
         }
-        return addConversions(mapper, recipe.getFluidInput(), recipe.getChemicalInput(), recipe::getOutput, ChemicalStack::isEmpty,
-              fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, contextMap);
+        return addConversions(mapper, recipe.getFluidInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals,
+              TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.TwoInputMekRecipe.SimpleTwoInputRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
@@ -10,7 +9,6 @@ import org.jetbrains.annotations.Contract;
 /// Base class to make implementing two input recipes that don't care about the ingredient order easier
 ///
 /// @since 10.8.0
-@NothingNullByDefault
 public abstract class OrderlessTwoInputRecipe<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>, INPUT extends InputIngredient<HOLDER_TYPE, STACK>,
       VANILLA_INPUT extends RecipeInput, OUTPUT> extends SimpleTwoInputRecipe<HOLDER_TYPE, STACK, INPUT, VANILLA_INPUT, OUTPUT> {
 

@@ -27,8 +27,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements ItemLike, IHasTextComponent, IHasTranslationKey {
 
@@ -41,7 +40,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         super(key);
     }
 
-    @NotNull
     @Override
     public ITEM asItem() {
         return value();
@@ -72,13 +70,11 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         return resource.is(get());
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return value().getDescriptionId();
     }
 
-    @NotNull
     @Override
     public Component getTextComponent() {
         return value().getName(asStack());

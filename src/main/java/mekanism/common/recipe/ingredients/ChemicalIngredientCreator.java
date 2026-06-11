@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
@@ -27,7 +26,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
-@NothingNullByDefault
 public class ChemicalIngredientCreator implements IChemicalIngredientCreator {
 
     public static final ChemicalIngredientCreator INSTANCE = new ChemicalIngredientCreator();

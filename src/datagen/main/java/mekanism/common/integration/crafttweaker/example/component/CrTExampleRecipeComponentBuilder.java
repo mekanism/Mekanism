@@ -23,8 +23,7 @@ import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> extends CrTBaseExampleRecipeComponent {
@@ -156,7 +155,6 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         throw new IllegalArgumentException("No matching recipe signature found for recipe type '" + recipeType + "'");
     }
 
-    @NotNull
     @Override
     public String asString() {
         validate();
@@ -400,7 +398,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
     private record RecipeExample(RecipeMethod method, Object[] params) {
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) {
                 return true;
             }

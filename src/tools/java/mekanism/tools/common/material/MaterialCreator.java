@@ -2,7 +2,6 @@ package mekanism.tools.common.material;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -25,7 +24,6 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@NothingNullByDefault
 public class MaterialCreator implements BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;

@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -47,9 +46,8 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntityTag) implements TooltipProvider {
 
     public static final Codec<BlockData> CODEC = RecordCodecBuilder.create(instance -> instance.group(

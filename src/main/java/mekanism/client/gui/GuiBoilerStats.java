@@ -20,12 +20,8 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, EmptyTileContainer<TileEntityBoilerCasing>> {
-
-    private GuiLongGraph boilGraph;
-    private GuiLongGraph maxGraph;
 
     public GuiBoilerStats(EmptyTileContainer<TileEntityBoilerCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -39,13 +35,13 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        boilGraph = addRenderableWidget(new GuiLongGraph(this, 7, 82, 162, 38, MekanismLang.BOIL_RATE::translate));
-        maxGraph = addRenderableWidget(new GuiLongGraph(this, 7, 121, 162, 38, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale(MathUtils.clampToInt((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
+        addRenderableWidget(new GuiLongGraph(this, 7, 82, 162, 38, () -> tile.getMultiblock().lastBoilRate, MekanismLang.BOIL_RATE::translate));
+        addRenderableWidget(new GuiLongGraph(this, 7, 121, 162, 38, () -> tile.getMultiblock().lastMaxBoil, MekanismLang.MAX_BOIL_RATE::translate))
+              .enableFixedScale(MathUtils.clampToInt((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         BoilerMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.capacityAsLong(multiblock.waterTank.resource()))), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
@@ -54,14 +50,6 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         drawScrollingString(guiGraphics, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 6, 58, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format(multiblock.getBoilCapacity())), 0, 72, TextAlignment.LEFT, titleTextColor(), 8, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    public void containerTick() {
-        super.containerTick();
-        BoilerMultiblockData multiblock = tile.getMultiblock();
-        boilGraph.addData(multiblock.lastBoilRate);
-        maxGraph.addData(multiblock.lastMaxBoil);
     }
 
     @Override

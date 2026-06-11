@@ -13,7 +13,7 @@ import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class CCCapabilityHelper {
 

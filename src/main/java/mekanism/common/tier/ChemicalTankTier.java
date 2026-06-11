@@ -6,7 +6,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public enum ChemicalTankTier implements IStorageTier, StringRepresentable {
     BASIC(BaseTier.BASIC, 64L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
@@ -18,7 +18,9 @@ public enum ChemicalTankTier implements IStorageTier, StringRepresentable {
     private final long baseCapacity;
     private final int baseTransferRate;
     private final BaseTier baseTier;
+    @Nullable
     private CachedLongValue capacityReference;
+    @Nullable
     private CachedIntValue transferRateReference;
 
     ChemicalTankTier(BaseTier tier, long capacity, int transferRate) {
@@ -32,7 +34,6 @@ public enum ChemicalTankTier implements IStorageTier, StringRepresentable {
         return baseTier;
     }
 
-    @NotNull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);

@@ -25,8 +25,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
@@ -34,9 +33,8 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         super(properties.strength(0.5F, 0.6F).mapColor(MapColor.WOOD));
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!canReplace(world, player, pos, state)) {
@@ -74,7 +72,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
         if (state != null && context.getItemInHand().has(MekanismDataComponents.BLOCK_DATA)) {
             return state.setValue(BlockStateHelper.storageProperty, true);

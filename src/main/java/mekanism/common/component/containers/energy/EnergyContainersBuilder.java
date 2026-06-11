@@ -12,7 +12,6 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainersBuilder {
 
@@ -30,7 +29,7 @@ public class EnergyContainersBuilder {
         return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), maxEnergy, rate));
     }
 
-    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, IntSupplier rate,
+    public static IContainerCreator<IEnergyContainer, Long> basicCreator(Predicate<AutomationType> canExtract, Predicate<AutomationType> canInsert, IntSupplier rate,
           LongSupplier maxEnergy) {
         return creator(attachedAccess -> new ComponentBackedEnergyContainer(attachedAccess, canExtract, canInsert, maxEnergy, rate));
     }

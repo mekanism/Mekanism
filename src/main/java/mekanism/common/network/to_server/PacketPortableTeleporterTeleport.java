@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -32,7 +31,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket {
 
@@ -43,7 +41,6 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
           PacketPortableTeleporterTeleport::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketPortableTeleporterTeleport> type() {
         return TYPE;
@@ -60,8 +57,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
             }
             GlobalPos coords = found.getClosestCoords(player.level().dimension(), player.blockPosition());
             if (coords != null) {
-                MinecraftServer server = player.level().getServer();
-                ServerLevel teleWorld = server == null ? null : server.getLevel(coords.dimension());
+                ServerLevel teleWorld = player.level().getServer().getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
                     int energyCost;

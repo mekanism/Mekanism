@@ -1,7 +1,6 @@
 package mekanism.api.gear;
 
 import java.util.function.IntSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.Holder;
@@ -13,14 +12,13 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface that describes various methods that modules have.
  *
  * @apiNote This interface should not be directly implemented as it is mostly used to expose various parts of a module to the implemented {@link ICustomModule}.
  */
-@NothingNullByDefault
 public interface IModule<MODULE extends ICustomModule<MODULE>> {
 
     /**

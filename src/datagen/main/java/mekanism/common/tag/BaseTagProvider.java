@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseTagProvider implements DataProvider {
 
@@ -57,7 +56,6 @@ public abstract class BaseTagProvider implements DataProvider {
         this.lookupProvider = lookupProvider;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return "Tags: " + modid;
@@ -69,9 +67,8 @@ public abstract class BaseTagProvider implements DataProvider {
         return Collections.emptyList();
     }
 
-    @NotNull
     @Override
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(CachedOutput cache) {
         return this.lookupProvider.thenApply(registries -> {
             supportedTagTypes.values().forEach(Map::clear);
             registerTags(registries);
@@ -99,7 +96,7 @@ public abstract class BaseTagProvider implements DataProvider {
     private <TYPE> TagsProvider<TYPE> createDummyTagsProvider(ResourceKey<?> registry, Map<TagKey<?>, TagBuilder> tagTypeMap) {
         return new TagsProvider<>(output, (ResourceKey<? extends Registry<TYPE>>) registry, lookupProvider, modid) {
             @Override
-            protected void addTags(@NotNull HolderLookup.Provider lookupProvider) {
+            protected void addTags(HolderLookup.Provider lookupProvider) {
                 //Add each tag builder to the wrapped provider's builder
                 for (Map.Entry<TagKey<?>, TagBuilder> e : tagTypeMap.entrySet()) {
                     builders.put(e.getKey().location(), e.getValue());

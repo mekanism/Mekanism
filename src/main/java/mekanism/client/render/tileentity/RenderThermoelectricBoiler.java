@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -29,9 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<BoilerMultiblockData, TileEntityBoilerCasing, BoilerRenderState> {
 
     public RenderThermoelectricBoiler(BlockEntityRendererProvider.Context context) {
@@ -45,7 +43,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
     @Override
     public void extractRenderState(TileEntityBoilerCasing boiler, BoilerRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(boiler, state, partialTick, cameraPosition, breakProgress);
         BoilerMultiblockData multiblock = boiler.getMultiblock();
         state.gather(multiblock);
@@ -116,20 +114,17 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
         public BlockPos upperRenderLocation = BlockPos.ZERO;
 
-        @Nullable
-        public RenderResizableCuboid.TexturePicker waterTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker waterTexture;
         public int waterColor;
         public int waterGlow;
         public float waterMaxY;
 
-        @Nullable
-        public RenderResizableCuboid.TexturePicker steamTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker steamTexture;
         public float steamMaxY;
         public int steamColor;
         public int steamHeight;
 
         public List<ValveRenderData> valves = new ArrayList<>();
-        @Nullable
-        public MekanismRenderer.ValveTextureGetter valveTexture;
+        public MekanismRenderer.@Nullable ValveTextureGetter valveTexture;
     }
 }

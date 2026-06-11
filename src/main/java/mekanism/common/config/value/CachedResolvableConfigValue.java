@@ -3,8 +3,7 @@ package mekanism.common.config.value;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
@@ -23,7 +22,6 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
 
     protected abstract REAL encode(TYPE value);
 
-    @NotNull
     public TYPE getOrDefault() {
         if (cachedValue != null || isLoaded()) {
             return get();
@@ -31,7 +29,6 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
         return resolve(internal.getDefault());
     }
 
-    @NotNull
     @Override
     public TYPE get() {
         if (cachedValue == null) {

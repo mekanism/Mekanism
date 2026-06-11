@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.MathUtils;
@@ -28,7 +26,6 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
     public static final Identifier SPRINT_BOOST = Mekanism.rl("sprint_boost");
@@ -90,7 +87,6 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
         return false;
     }
 
-    @NothingNullByDefault
     public enum SprintBoost implements IHasTextComponent, IIncrementalEnum<SprintBoost>, StringRepresentable {
         OFF(0),
         LOW(0.05F),

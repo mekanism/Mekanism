@@ -2,7 +2,6 @@ package mekanism.api.radial;
 
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
 
@@ -12,7 +11,6 @@ import net.minecraft.resources.Identifier;
  * @see IRadialDataHelper#INSTANCE
  * @since 10.3.2
  */
-@NothingNullByDefault
 public interface IRadialDataHelper {
 
     /**

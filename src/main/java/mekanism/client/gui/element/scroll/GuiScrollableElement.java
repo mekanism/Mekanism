@@ -8,7 +8,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScrollableElement extends GuiTexturedElement {
 
@@ -46,7 +45,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected abstract int getFocusedElements();
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         int scroll = getScroll();
         int x = getGuiLeft() + barX;
@@ -64,7 +63,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+    protected void onDrag(MouseButtonEvent event, double deltaX, double deltaY) {
         super.onDrag(event, deltaX, deltaY);
         if (isDragging() && needsScrollBars()) {
             double yAxis = event.y() - getGuiTop();
@@ -73,7 +72,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     @Override
-    public void onRelease(@NotNull MouseButtonEvent event) {
+    public void onRelease(MouseButtonEvent event) {
         super.onRelease(event);
         dragOffset = 0;
     }

@@ -3,7 +3,6 @@ package mekanism.api.gear;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -29,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 /**
  * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
  */
-@NothingNullByDefault
 public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /// Called each tick on the server side when installed in a MekaSuit and set to enabled.

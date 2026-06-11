@@ -21,8 +21,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: rewrite multiblocks to have the MultiblockData ticked here, without a Cache middleman
 // MultiblockData should possibly be renamed MultiblockEntity as it's like a BE, but multi
@@ -67,7 +66,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         return multiblockType.id().toString();
     }
 
-    public boolean isCompatible(BlockEntity tile) {
+    public boolean isCompatible(@Nullable BlockEntity tile) {
         if (tile instanceof IMultiblock<?> multiblock) {
             return multiblock.getMultiblockType() == this.multiblockType;
         }
@@ -149,7 +148,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
 
 
     @Override
-    public void deserialize(@NotNull ValueInput input) {
+    public void deserialize(ValueInput input) {
         ValueInputList list = input.childrenListOrEmpty(SerializationConstants.CACHE);
         for (ValueInput child : list) {
             Optional<UUID> id = child.read(SerializationConstants.INVENTORY_ID, UUIDUtil.LENIENT_CODEC);
@@ -162,7 +161,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
     }
 
     @Override
-    public void serialize(@NotNull ValueOutput output) {
+    public void serialize(ValueOutput output) {
         ValueOutputList outList = output.childrenList(SerializationConstants.CACHE);
         for (Map.Entry<UUID, MultiblockCache<T>> entry : caches.entrySet()) {
             ValueOutput cacheOutput = outList.addChild();

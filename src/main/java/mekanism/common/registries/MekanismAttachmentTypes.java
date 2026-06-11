@@ -2,7 +2,6 @@ package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
@@ -13,7 +12,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-@NothingNullByDefault
 public class MekanismAttachmentTypes {
 
     private MekanismAttachmentTypes() {

@@ -1,16 +1,14 @@
 package mekanism.api.robit;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Basic interface that Robit's implement to provide basic access to some methods by allowing mods to instance check the entity against this interface.
  */
-@NothingNullByDefault
 public interface IRobit extends ISecurityObject {
 
     /**

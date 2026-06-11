@@ -22,8 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class MekanismRobitSkins {
 
@@ -64,7 +63,6 @@ public class MekanismRobitSkins {
         return new SkinLookup(key, skin.get());
     }
 
-    @NonNull
     private static Registry<RobitSkin> getSkinRegistry(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     }

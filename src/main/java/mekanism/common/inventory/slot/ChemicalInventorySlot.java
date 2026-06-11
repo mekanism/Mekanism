@@ -6,7 +6,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.chemical.IChemicalTank;
@@ -23,9 +22,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ChemicalInventorySlot extends ResourceHandlerSlot {
 
     public static boolean canFillOrConvert(IChemicalTank chemicalTank, Supplier<@Nullable Level> levelSupplier, ItemResource itemType) {
@@ -77,14 +75,14 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
     /**
      * Fills the tank from this item OR converts the given item to a gas
      */
-    public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<@Nullable Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new ChemicalInventorySlot(gasTank, worldSupplier, (itemType, automationType) -> !automationType.isExternal() || !canFillOrConvert(gasTank, worldSupplier, itemType),
               (itemType, automationType) -> automationType.isInternal() || canFillOrConvert(gasTank, worldSupplier, itemType), null, null, listener, x, y);
     }
 
-    private final Supplier<Level> worldSupplier;
+    private final Supplier<@Nullable Level> worldSupplier;
     protected final IChemicalTank chemicalTank;
 
     protected ChemicalInventorySlot(IChemicalTank chemicalTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
@@ -92,7 +90,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         this(chemicalTank, NO_LEVEL, canExtract, canInsert, null, null, listener, x, y);
     }
 
-    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
+    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<@Nullable Level> worldSupplier, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, @Nullable RateLimitTracker insertionRateLimiter, @Nullable RateLimitTracker extractionRateLimiter,
           @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, insertionRateLimiter, extractionRateLimiter, listener, x, y);

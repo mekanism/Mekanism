@@ -19,9 +19,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TransitRequest implements Iterable<ItemData> {
 
@@ -79,15 +77,13 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return ret;
     }
 
-    @NotNull
     public TransitResponse eject(BlockEntity outputter, @Nullable ResourceHandler<ItemResource> target, int min, @Nullable EnumColor outputColor,
-          @NotNull TransactionContext transaction) {
+          TransactionContext transaction) {
         return eject(outputter, outputter.getBlockPos(), target, min, outputColor, transaction);
     }
 
-    @NotNull
     public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, @Nullable ResourceHandler<ItemResource> target, int min,
-          @Nullable EnumColor outputColor, @NotNull TransactionContext transaction) {
+          @Nullable EnumColor outputColor, TransactionContext transaction) {
         if (isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;
         } else if (target instanceof TransporterItemHandler cursed) {
@@ -98,19 +94,17 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return addToInventoryUnchecked(target, min, transaction);
     }
 
-    @NotNull
-    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable ResourceHandler<ItemResource> inventory, int min, boolean force, @NotNull TransactionContext transaction) {
+    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable ResourceHandler<ItemResource> inventory, int min, boolean force, TransactionContext transaction) {
         if (isEmpty()) {//Short circuit if our request is empty
             return TransitResponse.EMPTY;
         } else if (force && WorldUtils.getTileEntity(level, pos) instanceof IAdvancedTransportEjector sorter) {
-            return sorter.sendHome(this, transaction);
+            return sorter.sendHome(level, this, transaction);
         }
         return addToInventoryUnchecked(inventory, min, transaction);
     }
 
     //Note: We are unchecked because we don't validate if we are empty or not
-    @NotNull
-    private TransitResponse addToInventoryUnchecked(@Nullable ResourceHandler<ItemResource> inventory, int min, @NotNull TransactionContext transaction) {
+    private TransitResponse addToInventoryUnchecked(@Nullable ResourceHandler<ItemResource> inventory, int min, TransactionContext transaction) {
         if (inventory == null || inventory.size() == 0) {
             //If the inventory has no slots just exit early with the result that we can't send any items
             return TransitResponse.EMPTY;
@@ -137,7 +131,6 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return !iterator().hasNext();
     }
 
-    @NotNull
     public TransitResponse createResponse(ItemResource itemType, int inserted, ItemData data) {
         if (itemType.isEmpty() || inserted <= 0) {
             return TransitResponse.EMPTY;
@@ -193,7 +186,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {
@@ -227,7 +220,6 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             slotData = Collections.singletonList(new SimpleItemData(itemType, amount));
         }
 
-        @NonNull
         @Override
         public Iterator<ItemData> iterator() {
             return slotData.iterator();

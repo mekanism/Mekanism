@@ -8,12 +8,14 @@ import net.jqwik.api.Property;
 import net.jqwik.api.constraints.IntRange;
 import net.jqwik.api.constraints.Positive;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 
 @Label("Property based testing of distribution via EmitUtils")
 class DistributionPropertyTest {
 
-    static final Void VOID_RESOURCE = null;
+    @Nullable
+    private static final Void VOID_RESOURCE = null;
 
     //Force our example count to be higher than the default by 100x
     private static final int TRIES = 100_000;

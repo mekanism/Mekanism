@@ -6,10 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable class representing a module config (name and value).
@@ -20,7 +20,6 @@ import net.minecraft.resources.Identifier;
  * types are needed either open an issue or create a PR implementing support for them.
  * @since 10.6.0
  */
-@NothingNullByDefault
 public abstract class ModuleConfig<DATA> {
 
     private static Identifier rl(String path) {
@@ -100,7 +99,7 @@ public abstract class ModuleConfig<DATA> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == this) {
             return true;
         } else if (obj == null || obj.getClass() != this.getClass()) {

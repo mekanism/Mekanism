@@ -75,7 +75,7 @@ public enum RadiationScale implements StringRepresentable {
             case MEDIUM -> MekanismSounds.GEIGER_MEDIUM.get();
             case ELEVATED, HIGH -> MekanismSounds.GEIGER_ELEVATED.get();
             case EXTREME -> MekanismSounds.GEIGER_FAST.get();
-            default -> null;
+            case NONE -> throw new IllegalStateException("Method not expected to be called for no radiation");
         };
     }
 

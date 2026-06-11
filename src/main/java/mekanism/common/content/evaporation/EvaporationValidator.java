@@ -28,19 +28,19 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     private boolean foundController = false;
 
     @Override
-    protected FormationResult validateFrame(FormationProtocol<EvaporationMultiblockData> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
-        boolean controller = structure.getTile(pos) instanceof TileEntityThermalEvaporationController;
+    protected FormationResult validateFrame(FormationProtocol<EvaporationMultiblockData> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame, VoxelCuboid cuboid) {
+        boolean controller = structure().getTile(pos) instanceof TileEntityThermalEvaporationController;
         if (foundController && controller) {
             //Ensure we don't allow ignoring the failure as if there are multiple in the corners which are ignored spots
             // it is possible then we will form with multiple controllers
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, pos, true);
         }
         foundController |= controller;
-        return super.validateFrame(ctx, pos, state, type, needsFrame);
+        return super.validateFrame(ctx, pos, state, type, needsFrame, cuboid);
     }
 
     @Override
-    protected StructureRequirement getStructureRequirement(BlockPos pos) {
+    protected StructureRequirement getStructureRequirement(BlockPos pos, VoxelCuboid cuboid) {
         WallRelative relative = cuboid.getWallRelative(pos);
         if (pos.getY() == cuboid.getMaxPos().getY()) {
             if (relative.isOnCorner()) {
@@ -51,7 +51,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
                 return StructureRequirement.OTHER;
             }
         }
-        return super.getStructureRequirement(pos);
+        return super.getStructureRequirement(pos, cuboid);
     }
 
     @Override
@@ -69,8 +69,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
 
     @Override
     public boolean precheck() {
-        cuboid = StructureHelper.fetchCuboid(structure, MIN_CUBOID, MAX_CUBOID, EnumSet.complementOf(EnumSet.of(CuboidSide.TOP)), 8);
-        return cuboid != null;
+        return precheck(StructureHelper.fetchCuboid(structure(), MIN_CUBOID, MAX_CUBOID, EnumSet.complementOf(EnumSet.of(CuboidSide.TOP)), 8));
     }
 
     @Override

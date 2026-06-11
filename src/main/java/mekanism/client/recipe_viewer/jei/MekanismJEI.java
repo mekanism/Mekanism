@@ -82,7 +82,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
@@ -127,7 +126,6 @@ public class MekanismJEI implements IModPlugin {
         return Arrays.stream(recipeTypes).map(MekanismJEI::genericRecipeType).toArray(IRecipeType[]::new);
     }
 
-    @NotNull
     @Override
     public Identifier getPluginUid() {
         //Note: Can't use Mekanism.rl, as JEI needs this in the constructor and the class may not be loaded yet.

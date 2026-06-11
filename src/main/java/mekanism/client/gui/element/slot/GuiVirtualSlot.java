@@ -12,14 +12,14 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHelper {
 
+    @Nullable
     private IVirtualSlot virtualSlot;
 
-    public GuiVirtualSlot(@Nullable IGUIWindow window, SlotType type, IGuiWrapper gui, int x, int y, VirtualInventoryContainerSlot containerSlot) {
+    public GuiVirtualSlot(@Nullable IGUIWindow window, SlotType type, IGuiWrapper gui, int x, int y, @Nullable VirtualInventoryContainerSlot containerSlot) {
         this(type, gui, x, y);
         if (containerSlot != null) {
             SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
@@ -40,13 +40,13 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
         return this.virtualSlot == virtualSlot;
     }
 
-    public void updateVirtualSlot(@Nullable IGUIWindow window, @NotNull IVirtualSlot virtualSlot) {
+    public void updateVirtualSlot(@Nullable IGUIWindow window, IVirtualSlot virtualSlot) {
         this.virtualSlot = virtualSlot;
         this.virtualSlot.updatePosition(window, () -> relativeX + 1, () -> relativeY + 1);
     }
 
     @Override
-    protected void drawContents(@NotNull GuiGraphicsExtractor guiGraphics) {
+    protected void drawContents(GuiGraphicsExtractor guiGraphics) {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
@@ -61,7 +61,7 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (event.x() >= getX() && event.y() >= getY() && event.x() < getRight() && event.y() < getBottom()) {
             IGuiWrapper gui = gui();
             if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {

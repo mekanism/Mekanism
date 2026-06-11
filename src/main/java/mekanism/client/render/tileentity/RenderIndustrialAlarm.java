@@ -2,7 +2,6 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
 import mekanism.client.render.tileentity.RenderIndustrialAlarm.AlarmRenderState;
@@ -27,9 +26,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm, AlarmRenderState> {
 
     public static final ModelLayerLocation LIGHT_BOX_LAYER = new ModelLayerLocation(Mekanism.rl("industrial_alarm/light_box"), "main");
@@ -61,11 +59,11 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
 
     @Override
     public void extractRenderState(TileEntityIndustrialAlarm alarm, AlarmRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(alarm, state, partialTick, cameraPosition, breakProgress);
         state.direction = alarm.getDirection();
         //TODO - 26.1: Do we want to use game time as a basis or some other value?
-        state.modelState.setRotation((alarm.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360);
+        state.modelState.setRotation((alarm.getGameTime() + partialTick) * ROTATE_SPEED % 360);
     }
 
     @Override

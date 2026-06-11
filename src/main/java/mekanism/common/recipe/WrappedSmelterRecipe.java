@@ -3,7 +3,6 @@ package mekanism.common.recipe;
 import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
-@NothingNullByDefault
 public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     public static ItemStackToItemStackRecipe tryUnwrap(SmeltingRecipe original) {
         ItemStackIngredient input = IngredientCreatorAccess.item().from(original.input());

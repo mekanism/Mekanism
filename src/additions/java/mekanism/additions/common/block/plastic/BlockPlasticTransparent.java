@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticTransparent extends BlockPlastic {
 
@@ -27,31 +26,32 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    protected float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos) {
         return 0.8F;
     }
 
     @Override
-    protected boolean useShapeForLightOcclusion(@NotNull BlockState state) {
+    protected boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@NotNull BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
     @Override
-    protected boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+    protected boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
         return isSideInvisible(this, state, adjacentBlockState, side);
     }
 
     @Override
-    public Integer getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
+    public Integer getBeaconColorMultiplier(BlockState state, LevelReader world, BlockPos pos, BlockPos beaconPos) {
         return getColor().getPackedColor();
     }
 
-    public static boolean isSideInvisible(@NotNull IColoredBlock block, @NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+    @SuppressWarnings("DataFlowIssue")
+    public static boolean isSideInvisible(IColoredBlock block, BlockState state, BlockState adjacentBlockState, Direction side) {
         Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
             || adjacentBlock instanceof BlockPlasticTransparentStairs) {

@@ -14,7 +14,7 @@ import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.ConsumableListener;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class PasteBucketConsumption implements ConsumableListener {
 
@@ -25,7 +25,7 @@ public class PasteBucketConsumption implements ConsumableListener {
     }
 
     @Override
-    public void onConsume(@NonNull Level level, @NonNull LivingEntity user, @NonNull ItemStack stack, @NonNull Consumable consumable) {
+    public void onConsume(Level level, LivingEntity user, ItemStack stack, Consumable consumable) {
         //Based off of FoodProperties implementation of onConsume
         RandomSource random = user.getRandom();
         level.playSound(null, user.getX(), user.getY(), user.getZ(), consumable.sound().value(), SoundSource.NEUTRAL, 1.0F, random.triangle(1.0F, 0.4F));
@@ -37,7 +37,7 @@ public class PasteBucketConsumption implements ConsumableListener {
 
     //Note: These are required to be implemented due to validation that neo does for components, given we are a unit component though we can just use the default impl
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         return super.equals(obj);
     }
 

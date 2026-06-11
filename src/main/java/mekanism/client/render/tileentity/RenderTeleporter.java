@@ -2,7 +2,6 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.SideRender;
@@ -22,9 +21,8 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter, TeleporterRenderState> {
 
     public static final float MIN_SIDE_BOUND1 = 0.46F;
@@ -43,7 +41,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     public void extractRenderState(TileEntityTeleporter teleporter, TeleporterRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(teleporter, state, partialTick, cameraPosition, breakProgress);
         state.tint = MekanismRenderer.getColorARGB(teleporter.getColor(), 0.75F);
 

@@ -5,17 +5,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable class representing a boolean module config (name and boolean value).
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
 
     /**
@@ -67,7 +66,7 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (!super.equals(o)) {

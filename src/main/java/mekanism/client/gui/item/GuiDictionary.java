@@ -1,7 +1,6 @@
 package mekanism.client.gui.item;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import java.util.Set;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDropdown;
@@ -18,14 +17,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
-    private GuiTextScrollList scrollList;
+    private static final int DROPDOWN_X = 113;
+
+    @Nullable
     private GuiDictionaryTarget target;
-    private GuiDropdown<?> dropdown;
     private DictionaryTagType currentType = DictionaryTagType.ITEM;
 
     public GuiDictionary(DictionaryContainer container, Inventory inv, Component title) {
@@ -39,35 +39,35 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
-        scrollList = addRenderableWidget(new GuiTextScrollList(this, 7, 29, 162, 42));
+        GuiTextScrollList scrollList = addRenderableWidget(new GuiTextScrollList(this, 7, 29, 162, 42));
+        target = addRenderableWidget(new GuiDictionaryTarget(this, 6, 6, (target, supportedTypes) -> {
+            if (!supportedTypes.contains(currentType) && !supportedTypes.isEmpty()) {
+                currentType = supportedTypes.stream().findFirst().orElse(currentType);
+            }
+            scrollList.setText(target.getTags(currentType));
+        }));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better
         // and could then be limited to just the tags the target supports
-        dropdown = addRenderableWidget(new GuiDropdown<>(this, 113, 73, 56, DictionaryTagType.class, () -> currentType, this::setCurrentType));
-        target = addRenderableWidget(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
-    }
-
-    private void setCurrentType(DictionaryTagType type) {
-        currentType = type;
-        scrollList.setText(target.getTags(currentType));
-    }
-
-    private void updateScrollList(Set<DictionaryTagType> supportedTypes) {
-        if (!supportedTypes.contains(currentType) && !supportedTypes.isEmpty()) {
-            currentType = supportedTypes.stream().findFirst().orElse(currentType);
-        }
-        scrollList.setText(target.getTags(currentType));
+        addRenderableWidget(new GuiDropdown<>(this, DROPDOWN_X, 73, 56, DictionaryTagType.class, () -> currentType, type -> {
+            currentType = type;
+            scrollList.setText(target.getTags(currentType));
+        }));
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
-        renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - dropdown.getRelativeX() - 5);
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        if (target == null) {
+            renderTitleText(guiGraphics);
+        } else {
+            renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
+        }
+        renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - DROPDOWN_X - 5);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && event.hasShiftDown() && !target.hasTarget()) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && event.hasShiftDown() && target != null && !target.hasTarget()) {
             Slot slot = getHoveredSlot();
             if (slot != null) {
                 ItemStack stack = slot.getItem();

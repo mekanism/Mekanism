@@ -13,8 +13,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.world.inventory.StackCopySlot;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Like [ResourceHandlerSlot], except directly interacts with the [IInventorySlot] instead
 public class InventoryContainerSlot extends StackCopySlot implements ITransactionalSlot {
@@ -62,7 +61,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
     }
 
     @Override
-    public boolean mayPlace(@NotNull ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
         }
@@ -77,14 +76,13 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         return slot.isValidForInsertion(targetResource, AutomationType.MANUAL);
     }
 
-    @NotNull
     @Override
     protected ItemStack getStackCopy() {
         return slot.resource().toStack(slot.amountAsInt());
     }
 
     @Override
-    protected void setStackCopy(@NotNull ItemStack stack) {
+    protected void setStackCopy(ItemStack stack) {
         slot.setContents(ItemResource.of(stack), stack.count(), null);
     }
 
@@ -98,17 +96,17 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
     }
 
     @Override
-    public int getMaxStackSize(@NotNull ItemStack stack) {
+    public int getMaxStackSize(ItemStack stack) {
         return slot.capacityAsInt(ItemResource.of(stack));
     }
 
     @Override
-    public boolean mayPickup(@NotNull Player player) {
+    public boolean mayPickup(Player player) {
         return !slot.isEmpty() && slot.isCurrentValidForExtraction(AutomationType.MANUAL);
     }
 
     @Override
-    public boolean isSameInventory(@NotNull Slot other) {
+    public boolean isSameInventory(Slot other) {
         return other instanceof InventoryContainerSlot rhs && rhs.slot == this.slot;
     }
 
@@ -121,9 +119,8 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         return slotOverlay;
     }
 
-    @NotNull
     @Override
-    public Optional<ItemStack> tryRemove(int amount, int maxAmount, @NotNull Player player) {
+    public Optional<ItemStack> tryRemove(int amount, int maxAmount, Player player) {
         if (!allowPartialRemoval()) {
             //Super logic for if we don't allow removing part of the stack
             return super.tryRemove(amount, maxAmount, player);

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Like {@link BiMultimap} but with long as key, using FastUtils
@@ -45,7 +46,7 @@ public class BiLongMultimap<V> {
     }
 
     public boolean remove(long key, V value) {
-        Set<V> valueSet = map.get(key);
+        Set<V> valueSet = getValues(key);
         boolean remove1 = false;
         if (valueSet != null) {
             remove1 = valueSet.remove(value);
@@ -84,7 +85,7 @@ public class BiLongMultimap<V> {
         LongIterator iterator = getKeys(value).iterator();
         while (iterator.hasNext()) {
             long key = iterator.nextLong();
-            Set<V> vs = map.get(key);
+            Set<V> vs = getValues(key);
             if (vs != null) {
                 changed |= vs.remove(value);
                 if (vs.isEmpty()) {
@@ -100,10 +101,12 @@ public class BiLongMultimap<V> {
         return map.keySet();
     }
 
+    @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
     public Set<V> getValues(long key) {
         return map.get(key);
     }
 
+    @NullUnmarked
     public LongSortedSet getKeys(V value) {
         return reverseMap.get(value);
     }

@@ -6,7 +6,6 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
@@ -29,10 +28,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     private final LastDirectionJournal lastDirectionJournal = new LastDirectionJournal();
@@ -88,7 +85,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
 
     @Nullable
     private <RESOURCE extends Resource> ResourceHandler<RESOURCE> getHandler(InOutSlotResourceItemAccess<RESOURCE> access) {
-        ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> capability = access.getCapability();
+        ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability = access.getCapability();
         //TODO - 26.1: Can we somehow predict whether we should use a one by one access or not? The issue with not using a oneByOne access for things like buckets
         // is that their max stack size when filled is one, so then we can't move it all into the output slot (and have a successful exchange by doing so)
         ResourceHandler<RESOURCE> handler = access.oneByOne().getCapability(capability);
@@ -358,7 +355,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     protected static <RESOURCE extends Resource> boolean canInput(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> itemCapability) {
         ResourceHandler<RESOURCE> resourceHandler = itemAccess.getCapability(itemCapability);
         return resourceHandler != null && canInput(resourceContainer, resourceHandler);
     }
@@ -392,7 +389,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     public static <RESOURCE extends Resource> boolean canFill(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> itemCapability) {
         ResourceHandler<RESOURCE> resourceHandler = itemAccess.getCapability(itemCapability);
         return resourceHandler != null && canFill(resourceContainer, resourceHandler);
     }
@@ -420,12 +417,12 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     public static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ItemResource itemType,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> itemCapability) {
         return canDrain(resourceContainer, ItemAccessUtils.sideEffectFreeAccess(itemType), itemCapability);
     }
 
     public static <RESOURCE extends Resource> boolean canDrain(IResourceContainer<RESOURCE> resourceContainer, ItemAccess itemAccess,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> itemCapability) {
         ResourceHandler<RESOURCE> resourceHandler = itemAccess.getCapability(itemCapability);
         return resourceHandler != null && canDrain(resourceContainer, resourceHandler);
     }
@@ -459,7 +456,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     }
 
     protected static <RESOURCE extends Resource> boolean canRotaryInsert(IResourceContainer<RESOURCE> resourceContainer, ItemResource itemType,
-          ItemCapability<ResourceHandler<RESOURCE>, @NonNull ItemAccess> itemCapability, BooleanSupplier isProcessingResource) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> itemCapability, BooleanSupplier isProcessingResource) {
         ResourceHandler<RESOURCE> resourceHandler = ItemAccessUtils.sideEffectFreeAccess(itemType).getCapability(itemCapability);
         return resourceHandler != null && canRotaryInsert(resourceContainer, resourceHandler, isProcessingResource.getAsBoolean());
     }

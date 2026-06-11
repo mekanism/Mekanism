@@ -16,8 +16,7 @@ import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 public class GuiUtils {
@@ -178,7 +177,7 @@ public class GuiUtils {
         boolean test(ELEMENT element, CharacterEvent event);
     }
 
-    public static void renderItem(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
+    public static void renderItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
                 Matrix3x2fStack pose = guiGraphics.pose();

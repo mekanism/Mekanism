@@ -12,9 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public class RobitSpriteUploader {
 
     public static final Identifier ATLAS_LOCATION = Mekanism.rl("textures/atlas/robit.png");

@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemAlloy extends Item {
 
@@ -22,7 +21,6 @@ public class ItemAlloy extends Item {
         this.tier = tier;
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -32,7 +30,7 @@ public class ItemAlloy extends Item {
             IAlloyInteraction alloyInteraction = WorldUtils.getCapability(world, Capabilities.ALLOY_INTERACTION, pos, context.getClickedFace());
             if (alloyInteraction != null) {
                 if (!world.isClientSide()) {
-                    alloyInteraction.onAlloyInteraction(player, context.getItemInHand(), tier);
+                    alloyInteraction.onAlloyInteraction(world, pos, player, context.getItemInHand(), tier);
                 }
                 return InteractionResult.SUCCESS_SERVER;
             }

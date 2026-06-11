@@ -16,8 +16,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -59,9 +57,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationRange) implements ICustomModule<ModuleVeinMiningUnit> {
 
     public static final Identifier EXTENDED_MODE = Mekanism.rl("extended_mode");
@@ -193,7 +190,6 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
         }
     }
 
-    @NothingNullByDefault
     public enum ExcavationRange implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(2),
@@ -255,7 +251,6 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
         }
     }
 
-    @NothingNullByDefault
     public static class ModuleExtendedModeConfig extends ModuleBooleanConfig {
 
         public static final Codec<ModuleExtendedModeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(

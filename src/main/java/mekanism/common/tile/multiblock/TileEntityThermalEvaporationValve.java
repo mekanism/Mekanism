@@ -10,7 +10,6 @@ import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
 
@@ -18,13 +17,11 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         super(MekanismBlocks.THERMAL_EVAPORATION_VALVE, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return _ -> getMultiblock().getValveFluidTanks(getBlockPos());
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return _ -> getMultiblock().getHeatCapacitors();

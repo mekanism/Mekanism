@@ -3,14 +3,12 @@ package mekanism.common.util;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public class NBTUtils {//TODO - 26.1: Should we rename this class?
 
     private NBTUtils() {

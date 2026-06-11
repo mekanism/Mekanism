@@ -2,7 +2,6 @@ package mekanism.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-@NothingNullByDefault
 public class MekanismEmiDefaults extends BaseEmiDefaults {
 
     public MekanismEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {

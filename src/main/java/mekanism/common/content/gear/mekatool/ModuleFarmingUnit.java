@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -55,10 +53,8 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomModule<ModuleFarmingUnit> {
 
     public static final Identifier FARMING_RADIUS = Mekanism.rl("farming_radius");
@@ -78,7 +74,6 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         this(module.<FarmingRadius>getConfigOrThrow(FARMING_RADIUS).get());
     }
 
-    @NotNull
     @Override
     public InteractionResult onItemUse(IModule<ModuleFarmingUnit> module, UseOnContext context, TransactionContext transaction) {
         //Start with doing common logic to the module before we get onto specific logic for the different ways the module can be used
@@ -131,7 +126,6 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         return ItemAbilities.DEFAULT_AXE_ACTIONS.contains(action) || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(action) || ItemAbilities.DEFAULT_HOE_ACTIONS.contains(action);
     }
 
-    @NothingNullByDefault
     public enum FarmingRadius implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(1),

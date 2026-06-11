@@ -13,8 +13,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
 
@@ -25,11 +24,14 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     @Nullable
     private Tooltip lastTooltip;
 
+    @Nullable
     private Supplier<List<Component>> renderStrings;
+    @Nullable
     private Supplier<List<Component>> tooltipStrings;
 
-    private IRecipeViewerRecipeType<?>[] recipeCategories;
-    private boolean centerY;
+    private IRecipeViewerRecipeType<?> @Nullable [] recipeCategories;
+    private TextAlignment textAlignment = TextAlignment.LEFT;
+    private VerticalPositioning verticalAlignment = VerticalPositioning.TOP;
     private int spacing;
     private int padding = 3;
     private float textScale = 1.0F;
@@ -50,8 +52,23 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return this;
     }
 
+    public GuiInnerScreen text(Supplier<List<Component>> renderStrings) {
+        this.renderStrings = renderStrings;
+        return this;
+    }
+
     public GuiInnerScreen spacing(int spacing) {
         this.spacing = spacing;
+        return this;
+    }
+
+    public GuiInnerScreen alignment(TextAlignment alignment) {
+        this.textAlignment = alignment;
+        return this;
+    }
+
+    public GuiInnerScreen verticalAlignment(VerticalPositioning alignment) {
+        this.verticalAlignment = alignment;
         return this;
     }
 
@@ -73,18 +90,13 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return this;
     }
 
-    public GuiInnerScreen centerY() {
-        centerY = true;
-        return this;
-    }
-
     public GuiInnerScreen clearFormat() {
-        centerY = false;
+        verticalAlignment = VerticalPositioning.TOP;
         return this;
     }
 
     public GuiInnerScreen defaultFormat() {
-        return padding(5).spacing(2).textScale(0.8F).centerY();
+        return padding(5).spacing(2).textScale(0.8F).verticalAlignment(VerticalPositioning.CENTERED);
     }
 
     protected List<Component> getRenderStrings() {
@@ -100,20 +112,24 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
             int minY = relativeY + padding;
             int maxY = minY + lineHeight;
             int heightToNextLine = lineHeight + spacing;
-            if (centerY) {
+            if (verticalAlignment == VerticalPositioning.CENTERED) {
                 int totalHeight = heightToNextLine * list.size() - spacing;
                 float center = (getHeight() - totalHeight) / 2F;
                 //If center is not evenly divisible, this will make it so that when we divide to find the target y in scrolling string
                 // it gets the correct position
                 minY = relativeY + Mth.floor(center);
                 maxY = relativeY + lineHeight + Mth.ceil(center);
+            } else if (verticalAlignment == VerticalPositioning.BOTTOM) {
+                int totalHeight = heightToNextLine * list.size() - spacing;
+                minY = getRelativeBottom() - padding - totalHeight;
+                maxY = minY + lineHeight;
             }
             int minX = relativeX + padding;
             int screenTextColor = screenTextColor();
             for (int i = 0, size = list.size(); i < size; i++) {
                 Component text = list.get(i);
                 int maxX = relativeX + getMaxTextWidth(i) - padding;
-                drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, TextAlignment.LEFT, screenTextColor, false, textScale, getTimeOpened());
+                drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, textAlignment, screenTextColor, false, textScale, getTimeOpened());
                 minY += heightToNextLine;
                 maxY += heightToNextLine;
             }
@@ -139,16 +155,14 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return getWidth();
     }
 
-    @NotNull
     @Override
-    public GuiInnerScreen recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories) {
+    public GuiInnerScreen recipeViewerCategories(IRecipeViewerRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
-    @Nullable
     @Override
-    public IRecipeViewerRecipeType<?>[] getRecipeCategories() {
+    public IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories() {
         return recipeCategories;
     }
 
@@ -156,5 +170,11 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     public boolean isMouseOverRecipeViewerArea(double mouseX, double mouseY) {
         //Override as active is occasionally false here so isMouseOver would return false
         return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getRight() && mouseY < getBottom();
+    }
+
+    public enum VerticalPositioning {
+        CENTERED,
+        TOP,
+        BOTTOM
     }
 }

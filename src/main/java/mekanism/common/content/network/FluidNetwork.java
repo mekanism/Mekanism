@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> {
 
@@ -46,7 +45,6 @@ public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, 
         return MekanismLang.FLUID_NETWORK_NEEDED.translate(container.getNeededAsLong(FluidResource.EMPTY) / (float) FluidType.BUCKET_VOLUME);
     }
 
-    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmittersSize(), getAcceptorCount());
@@ -61,7 +59,7 @@ public class FluidNetwork extends DynamicBufferedResourceNetwork<FluidResource, 
 
         public final FluidResource fluidType;
 
-        public FluidTransferEvent(FluidNetwork network, @NotNull FluidResource type) {
+        public FluidTransferEvent(FluidNetwork network, FluidResource type) {
             super(network);
             fluidType = type;
         }

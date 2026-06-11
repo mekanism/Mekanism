@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide inputSide, TransmissionType transmission) implements IMekanismPacket {
 
@@ -27,7 +26,6 @@ public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide 
           PacketSideData::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketSideData> type() {
         return TYPE;

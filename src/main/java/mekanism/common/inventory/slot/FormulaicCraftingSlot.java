@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class FormulaicCraftingSlot extends BasicInventorySlot {
 

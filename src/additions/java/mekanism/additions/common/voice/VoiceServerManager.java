@@ -7,11 +7,14 @@ import java.net.SocketException;
 import java.util.Set;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceServerManager {
 
     private final Set<VoiceConnection> connections = new ObjectOpenHashSet<>();
+    @Nullable
     private ServerSocket serverSocket;
+    @Nullable
     private Thread listenThread;
     private boolean foundLocal = false;
     private boolean running;
@@ -29,15 +32,19 @@ public class VoiceServerManager {
     public void stop() {
         try {
             Mekanism.logger.info("VoiceServer: Shutting down server...");
-            try {
-                listenThread.interrupt();
-            } catch (Exception _) {
+            if (listenThread != null) {
+                try {
+                    listenThread.interrupt();
+                } catch (Exception _) {
+                }
             }
             foundLocal = false;
-            try {
-                serverSocket.close();
-                serverSocket = null;
-            } catch (Exception _) {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                    serverSocket = null;
+                } catch (Exception _) {
+                }
             }
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while shutting down server.", e);

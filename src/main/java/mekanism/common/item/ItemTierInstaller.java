@@ -32,17 +32,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemTierInstaller extends Item {
 
     @Nullable
     private final BaseTier fromTier;
-    @NotNull
     private final BaseTier toTier;
 
-    public ItemTierInstaller(@Nullable BaseTier fromTier, @NotNull BaseTier toTier, Properties properties) {
+    public ItemTierInstaller(@Nullable BaseTier fromTier, BaseTier toTier, Properties properties) {
         super(properties);
         this.fromTier = fromTier;
         this.toTier = toTier;
@@ -53,18 +51,15 @@ public class ItemTierInstaller extends Item {
         return fromTier;
     }
 
-    @NotNull
     public BaseTier getToTier() {
         return toTier;
     }
 
-    @NotNull
     @Override
-    public Component getName(@NotNull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         return TextComponentUtil.build(toTier.getColor(), super.getName(stack));
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -110,7 +105,7 @@ public class ItemTierInstaller extends Item {
                     } else {
                         AttributeHasBounding upgradeBounding = Attribute.get(upgradeState, AttributeHasBounding.class);
                         //If the resulting block has bounding blocks, validate that all of them will be able to be placed
-                        if (upgradeBounding != null && !upgradeBounding.handle(world, pos, upgradeState, pos, (level, boundingPos, mainPos) -> {
+                        if (upgradeBounding != null && !upgradeBounding.handle(world, pos, upgradeState, pos, (Level level, BlockPos boundingPos, BlockPos mainPos) -> {
                             Optional<BlockState> blockState = WorldUtils.getBlockState(level, boundingPos);
                             if (blockState.isPresent()) {
                                 BlockState boundingCurrentState = blockState.get();

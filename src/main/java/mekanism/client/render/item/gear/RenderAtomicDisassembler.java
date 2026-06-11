@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelAtomicDisassembler;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderAtomicDisassembler implements NoDataSpecialModelRenderer {
 
     private final ModelAtomicDisassembler atomicDisassembler;

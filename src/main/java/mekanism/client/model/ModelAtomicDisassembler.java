@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelAtomicDisassembler extends MekanismJavaModel.NoState {
 
@@ -97,14 +96,14 @@ public class ModelAtomicDisassembler extends MekanismJavaModel.NoState {
 
     //TODO should this give render type with or without texture?
     @Override
-    public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         setupAnim();
         collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, -1, null, hasFoil);//TODO - 26.1 What color? vanilla seems to pass -1 when not specified
         collectParts(bladeParts, poseStack, BLADE_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0xBFFFFFFF, null, hasFoil);
     }
 
     /*@Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
     }*/
 }

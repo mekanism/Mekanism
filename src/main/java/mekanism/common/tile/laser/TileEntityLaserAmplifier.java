@@ -8,16 +8,15 @@ import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -34,14 +33,15 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
@@ -57,20 +57,20 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = LaserEnergyContainer.create(ConstantPredicates.alwaysTrue(), BasicEnergyContainer.internalOnly, this, listener);
         return _ -> energyContainer;
     }
 
     @Override
-    protected boolean onUpdateServer() {
+    protected boolean onUpdateServer(ServerLevel level) {
         setEmittingRedstone(false);
         if (ticks < delay) {
             ticks++;
         } else {
             ticks = 0;
         }
-        boolean sendUpdatePacket = super.onUpdateServer();
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
             setEmittingRedstone(false);
         }
@@ -104,7 +104,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void notifyComparatorChange() {
+    protected void notifyComparatorChange(Level level) {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
         level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
     }
@@ -173,7 +173,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         input.getInt(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
         input.getInt(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
@@ -183,7 +183,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.putInt(SerializationConstants.MIN, minThreshold);
         output.putInt(SerializationConstants.MAX, maxThreshold);
@@ -192,7 +192,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         updateMinThreshold(input.getOrDefault(MekanismDataComponents.MIN_THRESHOLD, minThreshold));
         updateMaxThreshold(input.getOrDefault(MekanismDataComponents.MAX_THRESHOLD, maxThreshold));
@@ -201,7 +201,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.MIN_THRESHOLD, minThreshold);
         builder.set(MekanismDataComponents.MAX_THRESHOLD, maxThreshold);
@@ -275,7 +275,6 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
     //End methods IComputerTile
 
-    @NothingNullByDefault
     public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasEnumNameTranslationKey, StringRepresentable {
         OFF(MekanismLang.OFF),
         ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),

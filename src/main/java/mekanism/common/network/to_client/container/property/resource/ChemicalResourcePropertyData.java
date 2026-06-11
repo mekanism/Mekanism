@@ -6,7 +6,6 @@ import mekanism.common.network.to_client.container.property.PropertyType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public class ChemicalResourcePropertyData extends ResourcePropertyData<ChemicalResource> {
 
@@ -16,7 +15,7 @@ public class ChemicalResourcePropertyData extends ResourcePropertyData<ChemicalR
           ChemicalResourcePropertyData::new
     );
 
-    public ChemicalResourcePropertyData(short property, @NotNull ChemicalResource value) {
+    public ChemicalResourcePropertyData(short property, ChemicalResource value) {
         super(PropertyType.CHEMICAL_TYPE, property, value);
     }
 }

@@ -5,13 +5,12 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.tags.TagKey;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base Chemical ingredient implementation that matches all chemicals within the given tag.
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<TagChemicalIngredient> CODEC = TagKey.codec(MekanismAPI.CHEMICAL_REGISTRY_NAME).xmap(

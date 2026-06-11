@@ -43,10 +43,8 @@
     <REPEAT_ANNOTATIONS>
       <ANNO name="javax.annotation.Nonnull"/>
       <ANNO name="javax.annotation.Nullable"/>
-      <ANNO name="mekanism.api.annotations.FieldsAreNotNullByDefault"/>
-      <ANNO name="mekanism.api.annotations.NothingNullByDefault"/>
-      <ANNO name="mekanism.api.annotations.ParametersAreNotNullByDefault"/>
-      <ANNO name="net.minecraft.MethodsReturnNonnullByDefault"/>
+      <ANNO name="org.jspecify.annotations.NullMarked"/>
+      <ANNO name="org.jspecify.annotations.Nullable"/>
       <ANNO name="org.jetbrains.annotations.NotNull"/>
       <ANNO name="org.jetbrains.annotations.Nullable"/>
     </REPEAT_ANNOTATIONS>

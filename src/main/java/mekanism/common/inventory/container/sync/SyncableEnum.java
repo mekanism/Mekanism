@@ -5,32 +5,29 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.RegistryAccess;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for making it easier to handle enums
  */
 public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
 
-    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(IntFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter,
-          Consumer<@NotNull ENUM> setter) {
+    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(IntFunction<ENUM> decoder, ENUM defaultValue, Supplier<ENUM> getter,
+          Consumer<ENUM> setter) {
         return new SyncableEnum<>(decoder, defaultValue, getter, setter);
     }
 
     private final IntFunction<ENUM> decoder;
-    private final Supplier<@NotNull ENUM> getter;
-    private final Consumer<@NotNull ENUM> setter;
-    @NotNull
+    private final Supplier<ENUM> getter;
+    private final Consumer<ENUM> setter;
     private ENUM lastKnownValue;
 
-    private SyncableEnum(IntFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter, Consumer<@NotNull ENUM> setter) {
+    private SyncableEnum(IntFunction<ENUM> decoder, ENUM defaultValue, Supplier<ENUM> getter, Consumer<ENUM> setter) {
         this.decoder = decoder;
         this.lastKnownValue = defaultValue;
         this.getter = getter;
         this.setter = setter;
     }
 
-    @NotNull
     public ENUM get() {
         return getter.get();
     }
@@ -39,7 +36,7 @@ public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
         set(decoder.apply(ordinal));
     }
 
-    public void set(@NotNull ENUM value) {
+    public void set(ENUM value) {
         setter.accept(value);
     }
 

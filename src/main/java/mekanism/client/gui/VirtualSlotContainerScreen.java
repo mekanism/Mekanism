@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -19,7 +18,6 @@ import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: Heavily re-evaluate this class/make sure nothing has gotten broken
-@NothingNullByDefault
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {

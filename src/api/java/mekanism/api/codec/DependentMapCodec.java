@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 
 /**
  * MapCodec where the element type is dependent on another field
@@ -55,7 +56,7 @@ public class DependentMapCodec<ELEMENT, DEPENDENCY> extends MapCodec<ELEMENT> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }

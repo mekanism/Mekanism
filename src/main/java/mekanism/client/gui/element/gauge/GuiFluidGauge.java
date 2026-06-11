@@ -17,7 +17,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
 
@@ -27,7 +27,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidResource, IFluidTank> {
         return gauge;
     }
 
-    public GuiFluidGauge(@Nullable ITankInfoHandler<IFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+    private GuiFluidGauge(@Nullable ITankInfoHandler<IFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK, FluidResource.EMPTY);
     }
 

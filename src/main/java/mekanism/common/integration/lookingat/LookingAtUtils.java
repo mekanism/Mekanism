@@ -43,8 +43,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utils for simplifying the code for interacting with various mods that you look at things for (TOP, and Hwyla)
@@ -77,7 +76,7 @@ public class LookingAtUtils {
         return null;
     }
 
-    public static void addInfo(LookingAtHelper info, @NotNull Entity entity) {
+    public static void addInfo(LookingAtHelper info, Entity entity) {
         if (entity instanceof EntityRobit robit) {
             displayEnergy(info, robit.getEnergyContainer());
         }
@@ -148,7 +147,7 @@ public class LookingAtUtils {
         if (handler != null) {
             RESOURCE fallback = containerType.emptyResource();
             if (tile instanceof TileEntityResourceTransmitter<?, ?, ?, ?> transmitter && transmitter.getTransmitter().hasTransmitterNetwork()) {
-                fallback = containerType.asResourceOrEmpty(transmitter.getTransmitter().getTransmitterNetwork().getLastType());
+                fallback = containerType.asResourceOrEmpty(transmitter.getTransmitter().getTransmitterNetworkNN().getLastType());
             }
             if (handler instanceof ProxyResourceHandler<RESOURCE, ?> proxiedHandler) {
                 addResourceTanks(info, proxiedHandler.getProxiedContainers(), fallback, langEntry, creator);

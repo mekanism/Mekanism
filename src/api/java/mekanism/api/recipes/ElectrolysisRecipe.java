@@ -2,7 +2,6 @@ package mekanism.api.recipes;
 
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.SingleInputRecipe.FluidInputRecipe;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  *
  * @apiNote Electrolytic Separators can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRecipeOutput> {
 
     private static final Holder<Item> ELECTROLYTIC_SEPARATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"));

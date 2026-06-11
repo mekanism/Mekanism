@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.Objects;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackChemicalToItemStackRecipe;
@@ -49,7 +48,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
                   scale
             ));
         }
-        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forItems,
-              fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, scale, contextMap);
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, fakeGroupHelper::forItems, fakeGroupHelper::forChemicals,
+              TypedMekanismRecipeMapper::addConversion, scale, contextMap);
     }
 }

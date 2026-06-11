@@ -20,7 +20,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TeleporterFrequency extends Frequency implements IColorableFrequency {
 
@@ -80,27 +80,28 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     }
 
     @Override
-    public boolean update(BlockEntity tile) {
-        boolean changedData = super.update(tile);
-        activeCoords.add(getCoord(tile));
+    public boolean update(Level level, BlockEntity tile) {
+        boolean changedData = super.update(level, tile);
+        activeCoords.add(getCoord(level, tile));
         return changedData;
     }
 
     @Override
-    public boolean onDeactivate(BlockEntity tile) {
-        boolean changedData = super.onDeactivate(tile);
-        activeCoords.remove(getCoord(tile));
+    public boolean onDeactivate(Level level, BlockEntity tile) {
+        boolean changedData = super.onDeactivate(level, tile);
+        activeCoords.remove(getCoord(level, tile));
         return changedData;
     }
 
-    private GlobalPos getCoord(BlockEntity tile) {
+    private GlobalPos getCoord(Level level, BlockEntity tile) {
         if (tile instanceof ITileWrapper tileWrapper) {
             //Note: This should be the case the majority of the time, and allows us to use the cached coord4d object
             return tileWrapper.getTileGlobalPos();
         }
-        return GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos());
+        return GlobalPos.of(level.dimension(), tile.getBlockPos());
     }
 
+    @Nullable
     public GlobalPos getClosestCoords(GlobalPos pos) {
         return getClosestCoords(pos.dimension(), pos.pos());
     }
@@ -109,6 +110,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
         return pos.dimension() == checkDim && pos.pos().equals(checkPos);
     }
 
+    @Nullable
     public GlobalPos getClosestCoords(ResourceKey<Level> dimension, BlockPos pos) {
         GlobalPos closest = null;
         for (GlobalPos iterCoord : activeCoords) {

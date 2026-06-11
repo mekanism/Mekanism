@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
@@ -23,7 +22,6 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 10.5.0
  */
-@NothingNullByDefault
 public interface IModuleContainer {
 
     /**

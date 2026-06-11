@@ -35,8 +35,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
@@ -56,13 +55,13 @@ public class GuiRadialSelector extends Screen {
     private final Supplier<Player> playerSupplier;
     private final EquipmentSlot slot;
 
-    @NotNull
     private RadialData<?> radialData;
+    @Nullable
     private IRadialMode selection = null;
     private boolean overBackButton = false;
     private boolean updateOnClose = true;
 
-    public GuiRadialSelector(EquipmentSlot slot, @NotNull RadialData<?> radialData, Supplier<Player> playerSupplier) {
+    public GuiRadialSelector(EquipmentSlot slot, RadialData<?> radialData, Supplier<Player> playerSupplier) {
         super(MekanismLang.RADIAL_SCREEN.translate());
         this.slot = slot;
         this.radialData = radialData;
@@ -70,7 +69,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = guiGraphics.guiWidth() / 2F;
         float centerY = guiGraphics.guiHeight() / 2F;
@@ -78,7 +77,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     //TODO - 26.1: rendering
-    private <MODE extends IRadialMode> void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
+    private <MODE extends IRadialMode> void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
         int activeModes = modes.size();
@@ -208,7 +207,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public boolean keyPressed(@NotNull KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         // handle & ignore all key events
         return true;
     }
@@ -237,7 +236,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         updateSelection(radialData);
         return true;
     }

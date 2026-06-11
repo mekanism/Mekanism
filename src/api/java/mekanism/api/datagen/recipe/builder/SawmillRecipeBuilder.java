@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
@@ -10,9 +9,8 @@ import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBuilder> {
 
     private final ItemStackIngredient input;

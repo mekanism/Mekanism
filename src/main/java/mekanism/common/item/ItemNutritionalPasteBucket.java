@@ -20,7 +20,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilityAware {
 
@@ -31,9 +30,8 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
         );
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (MekanismUtils.isPlayingMode(player) && player.canEat(false) && FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get() > 0) {
             ItemStack stack = player.getItemInHand(hand);
             Consumable consumable = stack.get(DataComponents.CONSUMABLE);

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -20,6 +20,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     public static final FreeRunnerArmor ARMORED_FREE_RUNNERS = new FreeRunnerArmor(true);
 
     private final boolean armored;
+    @Nullable
     private ModelFreeRunners model;
 
     private FreeRunnerArmor(boolean armored) {
@@ -27,7 +28,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     }
 
     @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         if (armored) {
             model = new ModelArmoredFreeRunners(Minecraft.getInstance().getEntityModels());
         } else {
@@ -39,7 +40,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, ItemStack stack) {
         //If the model isn't meant to be shown don't bother rendering anything
-        if (!baseModel.leftLeg.visible && !baseModel.rightLeg.visible) {
+        if (model == null || !baseModel.leftLeg.visible && !baseModel.rightLeg.visible) {
             return;
         }
         poseStack.pushPose();

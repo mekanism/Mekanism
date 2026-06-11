@@ -4,8 +4,7 @@ import mekanism.common.config.IConfigTranslation;
 import mekanism.common.util.text.TextUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum ToolsConfigTranslations implements IConfigTranslation {
     //Client config
@@ -48,7 +47,6 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         this.button = button;
     }
 
-    @NotNull
     @Override
     public String getTranslationKey() {
         return key;

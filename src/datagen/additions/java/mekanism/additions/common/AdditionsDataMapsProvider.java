@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.registries.datamaps.builtin.ParrotImitation;
-import org.jetbrains.annotations.NotNull;
 
 public class AdditionsDataMapsProvider extends DataMapProvider {
 
@@ -17,7 +16,7 @@ public class AdditionsDataMapsProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather(@NotNull HolderLookup.Provider provider) {
+    protected void gather(HolderLookup.Provider provider) {
         //Add parrot sound imitations for baby mobs
         //Note: There is no imitation sound for endermen
         builder(NeoForgeDataMaps.PARROT_IMITATIONS)

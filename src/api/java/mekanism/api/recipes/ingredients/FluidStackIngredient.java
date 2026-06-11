@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,8 +19,7 @@ import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Implementation for how Mekanism handle's FluidStack Ingredients.
@@ -30,8 +28,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @implNote This is a wrapper around {@link SizedFluidIngredient}
  */
-@NothingNullByDefault
-public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNull FluidStack> {
+public final class FluidStackIngredient implements InputIngredient<Fluid, FluidStack> {
 
     /**
      * A codec which can (de)encode fluid stack ingredients.
@@ -122,7 +119,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
     }
 
     @Override
-    public List<@NotNull FluidStack> getRepresentations(ContextMap context) {
+    public List<FluidStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
             this.representations = ingredient.ingredient().display().resolve(context, (ForFluidStacks<FluidStack>) stack -> stack.copyWithAmount(ingredient.amount())).toList();
         }
@@ -140,7 +137,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

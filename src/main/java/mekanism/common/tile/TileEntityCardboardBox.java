@@ -10,7 +10,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 //TODO: If we end up with more blocks where we care about the actual backing component, we should abstract some of this up into TileEntityUpdateable
 public class TileEntityCardboardBox extends TileEntityUpdateable {
@@ -31,7 +30,7 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (components().has(MekanismDataComponents.BLOCK_DATA.get())) {
             //If we have the block data component, just sync all the components to the client, as when handling the update tag

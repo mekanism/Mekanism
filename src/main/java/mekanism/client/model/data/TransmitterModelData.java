@@ -6,6 +6,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import org.jspecify.annotations.Nullable;
 
 public sealed class TransmitterModelData permits Diversion {
 
@@ -35,7 +36,7 @@ public sealed class TransmitterModelData permits Diversion {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         }

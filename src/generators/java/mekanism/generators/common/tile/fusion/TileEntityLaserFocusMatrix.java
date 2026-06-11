@@ -6,6 +6,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -26,8 +27,8 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        if (!isRemote() && player.isCreative()) {
+    public InteractionResult onRightClick(Level level, Player player) {
+        if (!level.isClientSide() && player.isCreative()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 multiblock.setPlasmaTemp(1_000_000_000);
@@ -35,7 +36,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
             }
         }
         //TODO - 26.1: Don't call super on the client side if it was successful?
-        return super.onRightClick(player);
+        return super.onRightClick(level, player);
     }
 
     @Override

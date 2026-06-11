@@ -2,6 +2,7 @@ package mekanism.common.lib;
 
 import mekanism.common.util.StatUtils;
 import net.minecraft.util.ARGB;
+import org.jspecify.annotations.Nullable;
 
 public class Color {
 
@@ -228,7 +229,7 @@ public class Color {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == this) {
             return true;
         }

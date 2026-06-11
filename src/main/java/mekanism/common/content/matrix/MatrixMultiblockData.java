@@ -23,16 +23,14 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class MatrixMultiblockData extends MultiblockData {
 
     public static final String STATS_TAB = "stats";
 
     private final List<CapabilityOutputTarget<EnergyHandler>> energyOutputTargets = new ArrayList<>();
-    @NotNull
     private final MatrixEnergyContainer energyContainer;
 
     @ContainerSync(getter = "getLastOutput")
@@ -54,10 +52,8 @@ public class MatrixMultiblockData extends MultiblockData {
     @ContainerSync(tags = STATS_TAB, getter = "getCellCount")
     private int clientCells;
 
-    @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     final EnergyInventorySlot energyInputSlot;
-    @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     final EnergyInventorySlot energyOutputSlot;
 
@@ -88,7 +84,6 @@ public class MatrixMultiblockData extends MultiblockData {
         energyContainer.addProvider(provider.getBlockPos(), provider);
     }
 
-    @NonNull
     @Override
     public MatrixEnergyContainer energyContainer() {
         return energyContainer;
@@ -109,7 +104,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void remove(Level world, Structure oldStructure) {
+    public void remove(LevelReader world, Structure oldStructure) {
         energyContainer.invalidate();
         super.remove(world, oldStructure);
     }

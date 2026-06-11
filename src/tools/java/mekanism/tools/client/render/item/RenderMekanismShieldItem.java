@@ -66,7 +66,7 @@ public class RenderMekanismShieldItem implements SpecialModelRenderer<RenderMeka
 
     @Override
     public void submit(@Nullable MekShieldState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
-        if (state == null) {
+        if (state == null || state.base == null) {
             return;
         }
         BannerPatternLayers patterns = state.bannerPattern;
@@ -105,8 +105,10 @@ public class RenderMekanismShieldItem implements SpecialModelRenderer<RenderMeka
 
     public static class MekShieldState {
 
+        @Nullable
         SpriteId base;
-        BannerPatternLayers bannerPattern;
+        BannerPatternLayers bannerPattern = BannerPatternLayers.EMPTY;
+        @Nullable
         DyeColor color;
     }
 

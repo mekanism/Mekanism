@@ -3,7 +3,6 @@ package mekanism.common.component.containers.type;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.component.containers.heat.AttachedHeat;
 import mekanism.common.component.containers.heat.HeatCapacitorData;
@@ -13,7 +12,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<HeatCapacitorData, IHeatCapacitor, AttachedHeat> {
 
     HeatContainerType() {

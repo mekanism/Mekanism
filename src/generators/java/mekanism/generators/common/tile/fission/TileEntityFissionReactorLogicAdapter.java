@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
@@ -32,18 +31,19 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
 
@@ -55,22 +55,19 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(ServerLevel level, FissionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(level, multiblock);
         RedstoneStatus status = getStatus();
         if (status != prevStatus) {
-            Level world = getLevel();
-            if (world != null) {
-                Direction side = multiblock.getOutsideSide(worldPosition);
-                BlockState state = getBlockState();
-                if (side == null) {
-                    //Not formed, just update all sides
-                    world.updateNeighborsAt(getBlockPos(), state.getBlock());
-                } else if (!EventHooks.onNeighborNotify(world, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
-                    BlockPos toUpdate = worldPosition.relative(side);
-                    world.getBlockState(toUpdate).onNeighborChange(world, toUpdate, worldPosition);
-                    //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
-                }
+            Direction side = multiblock.getOutsideSide(worldPosition);
+            BlockState state = getBlockState();
+            if (side == null) {
+                //Not formed, just update all sides
+                level.updateNeighborsAt(getBlockPos(), state.getBlock());
+            } else if (!EventHooks.onNeighborNotify(level, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
+                BlockPos toUpdate = worldPosition.relative(side);
+                level.getBlockState(toUpdate).onNeighborChange(level, toUpdate, worldPosition);
+                //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
             }
             prevStatus = status;
         }
@@ -89,7 +86,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     public int getRedstoneLevel(Direction side) {
-        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0;
+        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatus() == RedstoneStatus.OUTPUTTING ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     @ComputerMethod(nameOverride = "getRedstoneLogicStatus")
@@ -147,9 +144,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
 
 
     @Override
-    public void onPowerChange() {
-        super.onPowerChange();
-        if (!isRemote()) {
+    public void onPowerChange(LevelReader level) {
+        super.onPowerChange(level);
+        if (!level.isClientSide()) {
             FissionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 if (logicType == FissionReactorLogic.ACTIVATION) {
@@ -160,25 +157,25 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         NBTUtils.writeEnum(output, SerializationConstants.LOGIC_TYPE, logicType);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         logicType = input.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
     }
@@ -195,13 +192,11 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         return false;
     }
 
-    @NothingNullByDefault
     public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasEnumNameTranslationKey, StringRepresentable {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, Items.GUNPOWDER, EnumColor.DARK_GRAY),
         ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, Items.FLINT_AND_STEEL, EnumColor.AQUA),
         TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, Items.REDSTONE, EnumColor.RED),
         CRITICAL_WASTE_LEVEL(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, Items.REDSTONE, EnumColor.RED) {
-            @NotNull
             @Override
             public Component getDescription() {
                 return description.translate(TextUtils.getPercent(MekanismGeneratorsConfig.generators.fissionExcessWasteRatio.get()));
@@ -254,7 +249,6 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         }
     }
 
-    @NothingNullByDefault
     public enum RedstoneStatus implements IHasEnumNameTranslationKey {
         IDLE(MekanismLang.IDLE),
         OUTPUTTING(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING),

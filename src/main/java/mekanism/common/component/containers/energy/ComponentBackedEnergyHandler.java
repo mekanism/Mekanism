@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.energy;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.component.containers.ComponentBackedHandler;
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 ///Similar to [net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler] in that it scales the results based on the amount of items in the backing attached access.
-@NothingNullByDefault
 public class ComponentBackedEnergyHandler extends ComponentBackedHandler<IEnergyContainer, Long, EnergyContainerType> implements EnergyHandler {
 
     @Nullable

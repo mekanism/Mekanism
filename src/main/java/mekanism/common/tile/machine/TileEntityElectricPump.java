@@ -16,8 +16,6 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -25,6 +23,8 @@ import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -71,8 +71,8 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
@@ -86,13 +86,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * This pump's tank
      */
+    @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "buffer tank")
     public BasicFluidTank fluidTank;
     /**
      * The type of fluid this pump is pumping
      */
-    @NotNull
     private FluidResource activeType = FluidResource.EMPTY;
     public int ticksRequired = BASE_TICKS_REQUIRED;
     /**
@@ -108,11 +108,15 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Nullable
     private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluidHandlerAbove;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     FluidInventorySlot inputSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -120,7 +124,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
@@ -129,12 +132,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -145,8 +147,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         inputSlot.drainTankIntoSlot(outputSlot, null);
         int clientEnergyUsed = 0;
@@ -163,7 +165,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                     operatingTicks++;
                     if (operatingTicks >= ticksRequired) {
                         operatingTicks = 0;
-                        if (suck((ServerLevel) level, transaction)) {
+                        if (suck(level, transaction)) {
                             clientEnergyUsed = energyPerTick;
                         } else {
                             reset();
@@ -178,7 +180,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         usedEnergy = clientEnergyUsed > 0;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove == null) {
-                fluidHandlerAbove = Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN);
+                fluidHandlerAbove = Capabilities.FLUID.createCache(level, worldPosition.above(), Direction.DOWN);
             }
             ResourceUtils.emit(fluidHandlerAbove.getCapability(), fluidTank, outputRate, null);
         }
@@ -186,7 +188,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void setLevel(@NotNull Level world) {
+    public void setLevel(Level world) {
         super.setLevel(world);
         //Invalidate the cache as if the level changed then it might no longer be valid
         fluidHandlerAbove = null;
@@ -197,7 +199,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(ServerLevel level, TransactionContext transaction) {
-        boolean hasFilter = upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
+        boolean hasFilter = getUpgrades(Upgrade.FILTER) > 0;
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
         if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
@@ -256,7 +258,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             } else if (isInfiniteSource(level, sourceFluid)) {
                 //If it is an infinite source, we can just go ahead and commit and mark it as having been sucked
                 subTransaction.commit();
-                suck(fluidType, pos, addRecurring);
+                suck(level, fluidType, pos, addRecurring);
                 return true;
             }
             //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
@@ -271,7 +273,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 if (sourceFluid == bucket.content) {
                     //Same type as expected, commit the insertion and mark things as having happened
                     subTransaction.commit();
-                    suck(fluidType, pos, addRecurring);
+                    suck(level, fluidType, pos, addRecurring);
                     return true;
                 }
                 sourceFluid = bucket.content;
@@ -289,7 +291,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 int inserted = fluidTank.insert(fluidType, amountProduced, subTransaction, AutomationType.INTERNAL);
                 if (inserted > 0) {
                     subTransaction.commit();
-                    suck(fluidType, pos, addRecurring);
+                    suck(level, fluidType, pos, addRecurring);
                     if (inserted < amountProduced) {
                         //If we can't insert everything that we would pump up, log a warning
                         Mekanism.logger.warn("Fluid removed without successfully picking the full thing up. Fluid {} at {} in {} was valid, but after picking up was {}. "
@@ -324,7 +326,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return new FluidStack(sourceFluid, FluidType.BUCKET_VOLUME);
     }
 
-    private void suck(FluidResource fluidType, BlockPos pos, boolean addRecurring) {
+    private void suck(ServerLevel level, FluidResource fluidType, BlockPos pos, boolean addRecurring) {
         activeType = fluidType;
         if (addRecurring) {
             recurringNodes.add(pos.immutable());
@@ -338,7 +340,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
@@ -353,7 +355,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
         activeType = input.read(SerializationConstants.FLUID, FluidResource.CODEC).orElse(FluidResource.EMPTY);
@@ -365,20 +367,20 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+    public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard(SerializationConstants.RECURRING_NODES);
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public InteractionResult onSneakRightClick(Level level, Player player) {
         reset();
         player.sendOverlayMessage(MekanismLang.PUMP_RESET.translate());
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public InteractionResult onRightClick(Level level, Player player) {
         return InteractionResult.PASS;
     }
 
@@ -392,7 +394,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            outputRate = BASE_OUTPUT_RATE * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED));
+            outputRate = BASE_OUTPUT_RATE * (1 + getUpgrades(Upgrade.SPEED));
         }
     }
 
@@ -406,9 +408,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return type == ContainerType.FLUID;
     }
 
-    @NotNull
     @Override
-    public List<Component> getInfo(@NotNull Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
@@ -420,7 +421,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return usedEnergy;
     }
 
-    @NotNull
     public FluidResource getActiveType() {
         return this.activeType;
     }

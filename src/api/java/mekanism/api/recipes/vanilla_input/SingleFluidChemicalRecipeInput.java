@@ -1,15 +1,14 @@
 package mekanism.api.recipes.vanilla_input;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Simple implementation of a recipe input of one fluid and one chemical.
  *
  * @since 10.6.0
  */
-@NothingNullByDefault
 public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack chemical) implements FluidChemicalRecipeInput {
 
     @Override
@@ -39,7 +38,7 @@ public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack che
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         } else if (o == null || getClass() != o.getClass()) {

@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
@@ -20,12 +19,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.permission.PermissionAPI;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ISecurityUtils#INSTANCE}
  */
-@NothingNullByDefault
 public final class SecurityUtils implements ISecurityUtils {
 
     public static SecurityUtils get() {
@@ -131,7 +129,7 @@ public final class SecurityUtils implements ISecurityUtils {
                     // sides but I don't think there is much benefit to doing so for how complex it is to do
                     yield true;
                 }
-                SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(owner);
+                SecurityFrequency frequency = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, owner);
                 //If we have no frequency handle it as if it was private, otherwise check if the player is trusted
                 yield frequency != null && frequency.isTrusted(player);
             }
@@ -172,7 +170,7 @@ public final class SecurityUtils implements ISecurityUtils {
         } else if (isClient) {
             return MekanismClient.clientSecurityMap.getOrDefault(uuid, SecurityData.DUMMY);
         }
-        SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(uuid);
+        SecurityFrequency frequency = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, uuid);
         return frequency == null ? SecurityData.DUMMY : new SecurityData(frequency);
     }
 
@@ -229,7 +227,7 @@ public final class SecurityUtils implements ISecurityUtils {
 
     public boolean isTrusted(SecurityMode mode, @Nullable UUID ownerUUID, UUID playerUUID) {
         if (ownerUUID != null && mode == SecurityMode.TRUSTED) {
-            SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(ownerUUID);
+            SecurityFrequency frequency = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, ownerUUID);
             return frequency != null && frequency.isTrusted(playerUUID);
         }
         return false;

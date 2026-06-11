@@ -8,7 +8,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IUpgradeItem;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.network.chat.Component;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemUpgrade extends Item implements IUpgradeItem {
 
@@ -35,7 +33,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             Upgrade upgradeType = getUpgradeType();
             tooltipAdder.accept(upgradeType.getDescription());
@@ -50,27 +48,23 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         return upgrade;
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         if (player != null && player.isShiftKeyDown()) {
             Level world = context.getLevel();
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
-            if (tile instanceof IUpgradeTile upgradeTile) {
-                if (upgradeTile.supportsUpgrades()) {
-                    TileComponentUpgrade component = upgradeTile.getComponent();
-                    ItemStack stack = context.getItemInHand();
-                    Upgrade type = getUpgradeType();
-                    if (component.supports(type)) {
-                        if (!world.isClientSide()) {
-                            int added = component.addUpgrades(type, stack.count());
-                            if (added > 0) {
-                                stack.shrink(added);
-                            }
+            if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrades()) {
+                ItemStack stack = context.getItemInHand();
+                Upgrade type = getUpgradeType();
+                if (upgradeTile.supportsUpgrade(type)) {
+                    if (!world.isClientSide()) {
+                        int added = upgradeTile.addUpgrades(type, stack.count());
+                        if (added > 0) {
+                            stack.shrink(added);
                         }
-                        return InteractionResult.SUCCESS_SERVER;
                     }
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }

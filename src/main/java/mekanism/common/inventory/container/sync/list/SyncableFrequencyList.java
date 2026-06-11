@@ -7,21 +7,20 @@ import java.util.function.Supplier;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequency lists
  */
 public class SyncableFrequencyList<FREQUENCY extends Frequency> extends SyncableList<FREQUENCY> {
 
-    public static <FREQUENCY extends Frequency> SyncableFrequencyList<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<? extends @NotNull Collection<FREQUENCY>> getter,
-          Consumer<@NotNull List<FREQUENCY>> setter) {
+    public static <FREQUENCY extends Frequency> SyncableFrequencyList<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<? extends Collection<FREQUENCY>> getter,
+          Consumer<List<FREQUENCY>> setter) {
         return new SyncableFrequencyList<>(type, getter, setter);
     }
 
     private final FrequencyType<FREQUENCY> type;
 
-    private SyncableFrequencyList(FrequencyType<FREQUENCY> type, Supplier<? extends @NotNull Collection<FREQUENCY>> getter, Consumer<@NotNull List<FREQUENCY>> setter) {
+    private SyncableFrequencyList(FrequencyType<FREQUENCY> type, Supplier<? extends Collection<FREQUENCY>> getter, Consumer<List<FREQUENCY>> setter) {
         super(getter, setter);
         this.type = type;
     }

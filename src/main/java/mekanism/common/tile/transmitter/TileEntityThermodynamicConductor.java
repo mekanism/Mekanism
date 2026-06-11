@@ -17,8 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
@@ -35,7 +34,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             }
             return conductor.getHeatCapacitors(direction);
         }, new IMekanismHeatHandler() {
-            @NotNull
             @Override
             public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
                 return heatHandlerManager.getContainers(side);
@@ -58,9 +56,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         return TransmitterType.THERMODYNAMIC_CONDUCTOR;
     }
 
-    @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
+    protected BlockState upgradeResult(BlockState current, BaseTier tier) {
         return BlockStateHelper.copyStateData(current, switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR;
             case ADVANCED -> MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR;
@@ -71,7 +68,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     }
 
     @Override
-    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
+    public void sideChanged(Direction side, ConnectionType old, ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.IntFunction;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.energycube.EnergyCubeBaseGeometry.CubeSideModelState;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -36,9 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class EnergyCubeModel implements DynamicBlockStateModel {
 
     private static final CubeSideState[] INACTIVE = Util.make(new CubeSideState[EnumUtils.DIRECTIONS.length], sideStates -> Arrays.fill(sideStates, CubeSideState.INACTIVE));

@@ -7,7 +7,6 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelBabyEnderman extends EndermanModel<EndermanRenderState> {
 
@@ -19,7 +18,7 @@ public class ModelBabyEnderman extends EndermanModel<EndermanRenderState> {
     }
 
     @Override
-    public void setupAnim(@NotNull EndermanRenderState state) {
+    public void setupAnim(EndermanRenderState state) {
         super.setupAnim(state);
         if (state.isCreepy) {
             //Shift the head when angry to only the third the distance it goes up when it is an adult

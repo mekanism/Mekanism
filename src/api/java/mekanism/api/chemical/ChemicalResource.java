@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.core.Holder;
@@ -13,9 +12,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 26.1: Update docs on this
-@NothingNullByDefault
 public final class ChemicalResource implements RegisteredResource<Chemical>, IHasTextComponent, IHasTranslationKey {
 
     /**
@@ -153,7 +152,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }

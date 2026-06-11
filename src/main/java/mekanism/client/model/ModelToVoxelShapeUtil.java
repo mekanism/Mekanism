@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
 public class ModelToVoxelShapeUtil {
@@ -123,7 +124,7 @@ public class ModelToVoxelShapeUtil {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

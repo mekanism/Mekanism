@@ -1,6 +1,5 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -8,8 +7,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-@NothingNullByDefault//TODO - 26.1: Test all our renderers, and figure out if/how to get profiling per type working again
+//TODO - 26.1: Test all our renderers, and figure out if/how to get profiling per type working again
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
     protected final BlockEntityRendererProvider.Context context;

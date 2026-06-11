@@ -16,10 +16,11 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiResizeControls extends GuiSideHolder {
 
+    @Nullable
     private static final Tooltip COMPENSATE = TooltipUtils.create(MekanismLang.QIO_COMPENSATE_TOOLTIP);
 
     private final MekanismImageButton expandButton, shrinkButton;
@@ -61,7 +62,7 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         super.onClick(event, isDoubleClick);
         if (!expandButton.active && event.x() >= expandButton.getX() && event.x() < expandButton.getRight() && event.y() >= expandButton.getY() && event.y() < expandButton.getBottom()) {
             tooltipTicks = 5 * SharedConstants.TICKS_PER_SECOND;

@@ -18,7 +18,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
 
@@ -49,7 +48,7 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<SawmillRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<SawmillRecipe> recipeHolder, IFocusGroup focusGroup) {
         SawmillRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         initItem(builder, output.getX() + 4, output.getY() + 4, recipe.getMainOutputDefinition());

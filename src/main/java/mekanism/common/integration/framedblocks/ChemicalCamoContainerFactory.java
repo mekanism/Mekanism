@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.MekanismLang;
@@ -25,9 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 final class ChemicalCamoContainerFactory extends ResourceCamoContainerFactory<ChemicalResource, ChemicalCamoContent, ChemicalCamoContainer> {
 
     private static final TagKey<Item> CRAFTING_BLOCKED_CONTAINERS = Utils.itemTag("crafting_blocked_chemical_containers");

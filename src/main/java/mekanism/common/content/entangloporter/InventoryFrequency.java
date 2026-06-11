@@ -62,8 +62,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class InventoryFrequency extends Frequency implements ITileHeatHandler, IContentsListener {
 
@@ -141,17 +140,14 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
               1_000, null, this));
     }
 
-    @NotNull
     public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
-    @NotNull
     public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
     }
 
-    @NotNull
     public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
@@ -160,12 +156,10 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         return storedEnergy;
     }
 
-    @NotNull
     public List<IHeatCapacitor> getHeatCapacitors() {
         return heatCapacitors;
     }
 
-    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;
@@ -177,21 +171,21 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     }
 
     @Override
-    public boolean update(BlockEntity tile) {
-        boolean changedData = super.update(tile);
+    public boolean update(Level level, BlockEntity tile) {
+        boolean changedData = super.update(level, tile);
         if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
-            activeQEs.put(tile.getLevel().dimension(), entangloporter.getBlockPos(), entangloporter);
+            activeQEs.put(level.dimension(), entangloporter.getBlockPos(), entangloporter);
         } else {
-            activeQEs.remove(tile.getLevel().dimension(), tile.getBlockPos());
+            activeQEs.remove(level.dimension(), tile.getBlockPos());
         }
         return changedData;
     }
 
     @Override
-    public boolean onDeactivate(BlockEntity tile) {
-        boolean changedData = super.onDeactivate(tile);
-        activeQEs.remove(tile.getLevel().dimension(), tile.getBlockPos());
+    public boolean onDeactivate(Level level, BlockEntity tile) {
+        boolean changedData = super.onDeactivate(level, tile);
+        activeQEs.remove(level.dimension(), tile.getBlockPos());
         return changedData;
     }
 
@@ -230,7 +224,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                             for (Map.Entry<RelativeSide, DataType> sideEntry : config.getSideConfig()) {
                                 if (sideEntry.getValue().canOutput()) {
                                     Direction side = sideEntry.getKey().getDirection(facing);
-                                    accept(entry.getValue(), qe, side, transmissionType);
+                                    accept(entry.getValue(), qe, level, side, transmissionType);
                                 }
                             }
                         }
@@ -252,8 +246,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         }
     }
 
-    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
-        TYPE cachedCapability = qe.getCachedCapability(side, transmissionType);
+    private static <TYPE> void accept(Target<TYPE, ?> target, TileEntityQuantumEntangloporter qe, ServerLevel level, Direction side, TransmissionType transmissionType) {
+        TYPE cachedCapability = qe.getCachedCapability(level, side, transmissionType);
         if (cachedCapability != null) {
             target.addHandler(cachedCapability);
         }

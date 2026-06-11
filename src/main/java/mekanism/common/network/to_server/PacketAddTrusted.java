@@ -12,7 +12,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPacket {
 
@@ -23,7 +22,6 @@ public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPa
           PacketAddTrusted::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketAddTrusted> type() {
         return TYPE;

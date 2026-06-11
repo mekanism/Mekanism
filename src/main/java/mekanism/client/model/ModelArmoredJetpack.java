@@ -11,7 +11,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredJetpack extends ModelJetpack {
 
@@ -76,7 +75,7 @@ public class ModelArmoredJetpack extends ModelJetpack {
     }
 
     @Override
-    public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
         super.collect(poseStack, collector, light, overlayLight, hasFoil);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);

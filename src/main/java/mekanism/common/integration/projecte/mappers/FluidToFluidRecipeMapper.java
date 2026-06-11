@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.Objects;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -23,6 +22,6 @@ public class FluidToFluidRecipeMapper extends TypedMekanismRecipeMapper<FluidToF
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forFluids, null, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, TypedMekanismRecipeMapper::addConversion);
     }
 }

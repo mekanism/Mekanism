@@ -33,8 +33,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends GuiBar<ResourceTankInfoProvider<RESOURCE, CONTAINER>> implements IRecipeViewerIngredientHelper {
 
@@ -94,7 +93,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         ItemStack stack = gui().getCarriedItem();
         if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             int index = getHandler().getContainerIndex();
@@ -111,7 +110,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 

@@ -17,14 +17,14 @@ import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
@@ -37,7 +37,7 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
         this.capability = capability.block();
         addCapabilityResolver(new ResourceHandlerManager<>(capability, new IContainerHolder<CONTAINER>() {
             @Override
-            public @NotNull List<CONTAINER> getContainers(@Nullable Direction direction) {
+            public List<CONTAINER> getContainers(@Nullable Direction direction) {
                 TRANSMITTER transmitter = TileEntityResourceTransmitter.this.getTransmitter();
                 if (direction != null && (transmitter.getConnectionTypeRaw(direction) == ConnectionType.NONE) || transmitter.isRedstoneActivated()) {
                     //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
@@ -70,13 +70,13 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
     protected abstract Codec<RESOURCE> resourceCodec();
 
     @Override
-    protected void onUpdateServer() {
-        getTransmitter().pullFromAcceptors();
-        super.onUpdateServer();
+    protected void onUpdateServer(ServerLevel level) {
+        getTransmitter().pullFromAcceptors(level);
+        super.onUpdateServer(level);
     }
 
     @Override
-    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
+    public void sideChanged(Direction side, ConnectionType old, ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
@@ -104,11 +104,11 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
     }
 
     @Override
-    protected void writeUpdatedTag(@NotNull ValueOutput output) {
+    protected void writeUpdatedTag(ValueOutput output) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
-            NETWORK network = getTransmitter().getTransmitterNetwork();
+            NETWORK network = getTransmitter().getTransmitterNetworkNN();
             if (!network.getLastType().isEmpty()) {
                 output.store(SerializationConstants.STORED, resourceCodec(), network.getLastType());
             }
@@ -125,7 +125,7 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
     @ComputerMethod
     long getCapacity() {
         BufferedResourceTransmitter<RESOURCE, CONTAINER, ?, ?> transmitter = getTransmitter();
-        return transmitter.hasTransmitterNetwork() ? transmitter.getTransmitterNetwork().getCapacity() : transmitter.getCapacity();
+        return transmitter.hasTransmitterNetwork() ? transmitter.getTransmitterNetworkNN().getCapacity() : transmitter.getCapacity();
     }
 
     @ComputerMethod

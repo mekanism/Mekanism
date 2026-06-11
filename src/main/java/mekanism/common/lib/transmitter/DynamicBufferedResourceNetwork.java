@@ -29,8 +29,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>,
       NETWORK extends DynamicBufferedResourceNetwork<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>,
@@ -58,7 +57,6 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         return this.containers;
     }
 
-    @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getBuffer() {
         return container.asStack();
@@ -149,7 +147,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         return lastType;
     }
 
-    public void setLastType(@NotNull RESOURCE type) {
+    public void setLastType(RESOURCE type) {
         if (type.isEmpty()) {
             if (!container.isEmpty()) {
                 containerType().clearContents(container, null);
@@ -190,7 +188,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@NotNull TRANSMITTER triggerTransmitter) {
+    protected void onLastTransmitterRemoved(TRANSMITTER triggerTransmitter) {
         if (!container.isEmpty()) {
             disperse(triggerTransmitter, container.resource(), container.amountAsLong());
         }

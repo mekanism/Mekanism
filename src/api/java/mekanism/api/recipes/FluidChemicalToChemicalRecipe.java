@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
@@ -22,7 +21,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
  *
  * @apiNote Chemical Washers can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class FluidChemicalToChemicalRecipe extends TwoInputMekRecipe<Fluid, FluidStack, FluidStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleFluidChemicalRecipeInput, ChemicalStackTemplate> {
 
     @Override

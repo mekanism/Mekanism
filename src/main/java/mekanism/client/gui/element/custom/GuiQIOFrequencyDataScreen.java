@@ -11,12 +11,13 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
-    private final Supplier<QIOFrequency> frequencySupplier;
+    private final Supplier<@Nullable QIOFrequency> frequencySupplier;
 
-    public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<QIOFrequency> frequencySupplier) {
+    public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<@Nullable QIOFrequency> frequencySupplier) {
         super(gui, x, y, width, height);
         this.frequencySupplier = frequencySupplier;
         this.active = true;
@@ -27,6 +28,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 return freq == null ? 0 : freq.getTotalItemCount() / (double) freq.getTotalItemCountCapacity();
             }
 
+            @Nullable
             @Override
             public Component getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
@@ -41,6 +43,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 return freq == null ? 0 : freq.getTotalItemTypes(true) / (double) freq.getTotalItemTypeCapacity();
             }
 
+            @Nullable
             @Override
             public Component getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();

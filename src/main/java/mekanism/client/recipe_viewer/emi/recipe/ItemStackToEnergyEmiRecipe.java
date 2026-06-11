@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
+import java.util.Arrays;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -28,13 +29,9 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     }
 
     private IEnergyInfoHandler getEnergyInfoHandler() {
-        long[] outputDefinition = recipe.getOutputDefinition();
+        int[] outputDefinition = recipe.getOutputDefinition();
         if (outputDefinition.length > 1) {
-            long maxEnergy = 0;
-            for (long val : outputDefinition) {
-                maxEnergy = Math.max(maxEnergy, val);
-            }
-            long finalMaxEnergy = maxEnergy;
+            int maxEnergy = Arrays.stream(outputDefinition).max().getAsInt();
             return new IEnergyInfoHandler() {
                 @Override
                 public long getEnergy() {
@@ -43,11 +40,11 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
 
                 @Override
                 public long getMaxEnergy() {
-                    return finalMaxEnergy;
+                    return maxEnergy;
                 }
             };
         }
-        long energy = outputDefinition.length == 0 ? 0L : outputDefinition[0];
+        int energy = outputDefinition.length == 0 ? 0 : outputDefinition[0];
         return new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {

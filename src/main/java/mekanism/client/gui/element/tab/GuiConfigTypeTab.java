@@ -16,9 +16,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-public class GuiConfigTypeTab extends GuiInsetElement<Void> {
+public class GuiConfigTypeTab extends GuiInsetElement<@Nullable Void> {
 
     private final Map<TransmissionType, Tooltip> typeTooltips = new EnumMap<>(TransmissionType.class);
     private final TransmissionType transmission;
@@ -55,7 +55,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         config.setCurrentType(transmission);
         config.updateTabs();
     }

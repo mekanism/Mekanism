@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.SequencedMap;
 import java.util.Set;
 import java.util.UUID;
@@ -53,6 +54,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -60,9 +62,8 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
 
@@ -120,7 +121,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
     private int clientTypes;
-    private HolderLookup.Provider registries = null;//set by update
+    private HolderLookup.@Nullable Provider registries = null;//set by update
 
     private EnumColor color = EnumColor.INDIGO;
 
@@ -200,7 +201,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 failedWildcardTags.clear();
             }
         }
-        String modID = MekanismUtils.getModId(this.registries, type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type.toStack());
         Set<ItemResource> modItems = modIDLookupMap.get(modID);
         if (modItems == null) {
             //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
@@ -256,7 +257,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 return true;
             }
         }
-        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(this.registries, itemType.toStack()), Collections.emptySet()).contains(itemType);
+        return modIDLookupMap.getOrDefault(MekanismUtils.getModId(registries(), itemType.toStack()), Collections.emptySet()).contains(itemType);
     }
 
     @Override
@@ -294,7 +295,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        String modID = MekanismUtils.getModId(this.registries, type.toStack());
+        String modID = MekanismUtils.getModId(registries(), type.toStack());
         Set<ItemResource> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
@@ -463,7 +464,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public boolean tick(boolean tickingNormally) {
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?
-            SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
+            SecurityFrequency security = FrequencyTypes.SECURITY.getFrequency(null, SecurityMode.PUBLIC, getOwner());
             if (security != null) {
                 for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
                     if (!ownerMatches(player.getUUID()) && !security.isTrusted(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {
@@ -523,8 +524,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public boolean onDeactivate(BlockEntity tile) {
-        boolean changedData = super.onDeactivate(tile);
+    public boolean onDeactivate(Level level, BlockEntity tile) {
+        boolean changedData = super.onDeactivate(level, tile);
         if (tile instanceof IQIODriveHolder holder) {
             for (int i = 0, size = holder.getDriveSlots().size(); i < size; i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
@@ -536,10 +537,19 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return changedData;
     }
 
+    @VisibleForTesting
+    public void setRegistries(HolderLookup.@Nullable Provider registries) {
+        this.registries = registries;
+        }
+
+    private HolderLookup.Provider registries() {
+        return Objects.requireNonNull(registries);
+    }
+
     @Override
-    public boolean update(BlockEntity tile) {
-        this.registries = tile.getLevel().registryAccess();
-        boolean changedData = super.update(tile);
+    public boolean update(Level level, BlockEntity tile) {
+        setRegistries(level.registryAccess());
+        boolean changedData = super.update(level, tile);
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
             List<QIODriveSlot> driveSlots = holder.getDriveSlots();
             for (int i = 0, slots = driveSlots.size(); i < slots; i++) {
@@ -776,7 +786,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
-        public void updateSnapshots(@NonNull TransactionContext transaction) {
+        public void updateSnapshots(TransactionContext transaction) {
             super.updateSnapshots(transaction);
             justAdded = false;
         }
@@ -787,7 +797,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         @Override
-        protected void revertToSnapshot(QIOItemTypeData.@NonNull Snapshot snapshot) {
+        protected void revertToSnapshot(QIOItemTypeData.Snapshot snapshot) {
             count = snapshot.count();
             justAdded = snapshot.justAdded();
             containingDrives = snapshot.containingDrives();

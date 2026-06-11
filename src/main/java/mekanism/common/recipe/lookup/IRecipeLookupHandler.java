@@ -7,8 +7,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends IContentsListener {
 
@@ -21,7 +20,6 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
     /**
      * @return The recipe type this {@link IRecipeLookupHandler} handles.
      */
-    @NotNull
     IMekanismRecipeTypeProvider<?, RECIPE, ?> getRecipeType();
 
     @Nullable
@@ -58,8 +56,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
      *
      * @return A new cached recipe representing the given recipe.
      */
-    @NotNull
-    CachedRecipe<RECIPE> createNewCachedRecipe(@NotNull RECIPE recipe, int cacheIndex);
+    CachedRecipe<RECIPE> createNewCachedRecipe(RECIPE recipe, int cacheIndex);
 
     /**
      * Called when the cached recipe changes at a given index before processing the new cached recipe.
@@ -86,7 +83,6 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
      */
     interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe<?>, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {
 
-        @NotNull
         @Override
         IMekanismRecipeTypeProvider<?, RECIPE, INPUT_CACHE> getRecipeType();
     }

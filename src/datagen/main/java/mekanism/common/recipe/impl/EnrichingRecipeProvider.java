@@ -606,12 +606,12 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "refined_obsidian"));
         //Gold
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD)),
               MekanismItems.ENRICHED_GOLD.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "gold"));
         //Tin
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN)),
               MekanismItems.ENRICHED_TIN.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "tin"));
     }

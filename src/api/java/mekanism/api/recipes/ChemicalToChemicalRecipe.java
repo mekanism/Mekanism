@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.SingleInputRecipe.ChemicalInputRecipe;
 
@@ -17,6 +16,5 @@ import mekanism.api.recipes.SingleInputRecipe.ChemicalInputRecipe;
  *     <li>Centrifuging: Can be processed in an Isotopic Centrifuge.</li>
  * </ul>
  */
-@NothingNullByDefault
 public abstract class ChemicalToChemicalRecipe extends ChemicalInputRecipe<ChemicalStackTemplate> {
 }

@@ -17,11 +17,8 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
-
-    private GuiTextField injectionRateField;
 
     public GuiFusionReactorFuel(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -37,21 +34,21 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 106, 76));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        injectionRateField = addRenderableWidget(new GuiTextField(this, 103, 115, 26, 11));
-        injectionRateField.setInputValidator(InputValidator.DIGIT)
+        GuiTextField injectionRateField = addRenderableWidget(new GuiTextField(this, 103, 115, 26, 11))
+              .setInputValidator(InputValidator.DIGIT)
               .setEnterHandler(this::setInjection)
               .setMaxLength(2);
         setInitialFocus(injectionRateField);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, 35, TextAlignment.CENTER, titleTextColor(), 16, false);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 4, 117, TextAlignment.RIGHT, titleTextColor(), 99, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private void setInjection() {
+    private void setInjection(GuiTextField injectionRateField) {
         if (!injectionRateField.getText().isEmpty()) {
             PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, Integer.parseInt(injectionRateField.getText())));
             injectionRateField.setText("");

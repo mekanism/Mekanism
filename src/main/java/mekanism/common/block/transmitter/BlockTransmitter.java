@@ -41,8 +41,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> extends BlockBaseModel<BlockTypeTile<TILE>> implements IHasTileEntity<TILE> {
 
@@ -71,7 +70,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     //TODO - 26.1: https://github.com/mekanism/Mekanism/commit/ba9d4fa1c10c3d3c4802eabcef19b79170fdee78 switched from neighbor block updates to neighbor block entity updates
     // Check other overriders and figure out how to adjust them for orientation and the like
     @Override
-    protected void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, level, pos);
         if (tile != null) {
@@ -81,13 +80,12 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     }
 
     @Override
-    protected boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
-    @NotNull
     @Override
-    protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.value())) {
             return getRealShape(world, pos);
         }
@@ -110,18 +108,16 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         return getCenter();
     }
 
-    @NotNull
     @Override
-    protected VoxelShape getOcclusionShape(@NotNull BlockState state) {
+    protected VoxelShape getOcclusionShape(BlockState state) {
         //TODO - 26.1: can we do this?
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         //return getRealShape(world, pos);
         return getCenter();
     }
 
-    @NotNull
     @Override
-    protected VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }
@@ -175,10 +171,9 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         return shape;
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
+          Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {

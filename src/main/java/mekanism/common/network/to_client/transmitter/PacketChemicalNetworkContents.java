@@ -12,7 +12,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketChemicalNetworkContents(UUID networkID, ChemicalResource chemical) implements IMekanismPacket {
 
@@ -23,7 +22,6 @@ public record PacketChemicalNetworkContents(UUID networkID, ChemicalResource che
           PacketChemicalNetworkContents::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketChemicalNetworkContents> type() {
         return TYPE;

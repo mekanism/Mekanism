@@ -16,6 +16,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements IModIDFilter<MinerModIDFilter> {
 
@@ -34,6 +35,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     private String modID;
 
     public MinerModIDFilter() {
+        modID = "";
     }
 
     protected MinerModIDFilter(boolean enabled, Item replaceTarget, boolean requiresReplacement, String modID) {
@@ -63,7 +65,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {

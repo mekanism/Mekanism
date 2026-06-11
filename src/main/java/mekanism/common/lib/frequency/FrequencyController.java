@@ -4,8 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
@@ -14,19 +16,25 @@ import org.jspecify.annotations.Nullable;
 public class FrequencyController<FREQ extends Frequency> {
 
     private final FrequencyType<FREQ> frequencyType;
+    @Nullable
     private FrequencyLookup<FREQ> publicLookup;
+    @Nullable
     private Map<UUID, FrequencyLookup<FREQ>> privateLookups;
+    @Nullable
     private Map<UUID, FrequencyLookup<FREQ>> trustedLookups;
 
+    @Nullable
     private final Codec<FrequencyLookup<FREQ>> publicCodec;
+    @Nullable
     private final Codec<FrequencyLookup<FREQ>> trustedCodec;
+    @Nullable
     private final Codec<FrequencyLookup<FREQ>> privateCodec;
 
     private FrequencyController(FrequencyType<FREQ> frequencyType) {
         this.frequencyType = frequencyType;
         Type type = frequencyType.getControllerType();
 
-        Codec<Pair<UUID, List<FREQ>>> baseCodec = FrequencyLookup.baseCodec(frequencyType);
+        Codec<Pair<Optional<UUID>, List<FREQ>>> baseCodec = FrequencyLookup.baseCodec(frequencyType);
 
         if (type.supportsPublic()) {
             publicCodec = FrequencyLookup.codec(frequencyType, baseCodec, SecurityMode.PUBLIC);
@@ -48,7 +56,8 @@ public class FrequencyController<FREQ extends Frequency> {
         }
     }
 
-    public Codec<FrequencyLookup<FREQ>> codecForMode(SecurityMode mode) {
+    @Nullable
+    private Codec<FrequencyLookup<FREQ>> codecForMode(SecurityMode mode) {
         return switch (mode) {
             case PUBLIC -> publicCodec;
             case PRIVATE -> privateCodec;
@@ -60,6 +69,7 @@ public class FrequencyController<FREQ extends Frequency> {
         return new FrequencyController<>(frequencyType);
     }
 
+    @Nullable
     public FrequencyLookup<FREQ> getPublicLookup() {
         if (!frequencyType.getControllerType().supportsPublic()) {
             Mekanism.logger.error("Attempted to access public frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
@@ -69,18 +79,21 @@ public class FrequencyController<FREQ extends Frequency> {
         return publicLookup;
     }
 
-    public FrequencyLookup<FREQ> getPrivateLookup(UUID ownerUUID) {
+    @Nullable
+    public FrequencyLookup<FREQ> getPrivateLookup(@Nullable UUID ownerUUID) {
         SecurityMode securityMode = SecurityMode.PRIVATE;
         return getOrCreateLookup(securityMode, ownerUUID, privateLookups);
     }
 
-    public FrequencyLookup<FREQ> getTrustedLookup(UUID ownerUUID) {
+    @Nullable
+    public FrequencyLookup<FREQ> getTrustedLookup(@Nullable UUID ownerUUID) {
         SecurityMode securityMode = SecurityMode.TRUSTED;
         return getOrCreateLookup(securityMode, ownerUUID, trustedLookups);
     }
 
-    private @Nullable FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, UUID ownerUUID, Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
-        if (!frequencyType.getControllerType().supports(securityMode)) {
+    @Nullable
+    private FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, @Nullable UUID ownerUUID, @Nullable Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
+        if (!frequencyType.getControllerType().supports(securityMode) || lookupsByOwner == null) {
             Mekanism.logger.error("Attempted to access {} frequency lookup of type {}. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
@@ -96,7 +109,7 @@ public class FrequencyController<FREQ extends Frequency> {
     }
 
     public Collection<FrequencyLookup<FREQ>> getTrustedLookups() {
-        return trustedLookups.values();
+        return trustedLookups == null ? Collections.emptyList() : trustedLookups.values();
     }
 
     public void clear() {
@@ -113,7 +126,7 @@ public class FrequencyController<FREQ extends Frequency> {
         PRIVATE_ONLY,
         PUBLIC_PRIVATE_TRUSTED;
 
-        boolean supports(SecurityMode securityMode) {
+        public boolean supports(SecurityMode securityMode) {
             return switch (securityMode) {
                 case PUBLIC -> this == PUBLIC_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
                 case PRIVATE -> this == PRIVATE_ONLY || this == PUBLIC_PRIVATE_TRUSTED;

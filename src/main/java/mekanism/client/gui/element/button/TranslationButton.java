@@ -5,20 +5,19 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TranslationButton extends MekanismButton {
 
     @Nullable
-    private final Supplier<EnumColor> colorSupplier;
+    private final Supplier<@Nullable EnumColor> colorSupplier;
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, IClickable onPress) {
         this(gui, x, y, width, height, translationHelper, onPress, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress,
-          @Nullable Supplier<EnumColor> colorSupplier) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, IClickable onPress,
+          @Nullable Supplier<@Nullable EnumColor> colorSupplier) {
         super(gui, x, y, width, height, translationHelper.translate(), onPress);
         this.colorSupplier = colorSupplier;
     }

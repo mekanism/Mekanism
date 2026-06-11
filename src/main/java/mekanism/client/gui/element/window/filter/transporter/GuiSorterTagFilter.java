@@ -6,7 +6,7 @@ import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
@@ -18,7 +18,9 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
         return new GuiSorterTagFilter(gui, (gui.getXSize() - SORTER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
+    @Nullable
     private GuiTextField minField;
+    @Nullable
     private GuiTextField maxField;
 
     private GuiSorterTagFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterTagFilter origFilter) {
@@ -41,7 +43,9 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
 
     @Override
     protected void validateAndSave() {
-        if (text.getText().isEmpty() || setText()) {
+        if (text == null) {
+            filterSaveFailed(getNoFilterSaveError());
+        } else if (text.getText().isEmpty() || setText(text)) {
             validateAndSaveSorterFilter(this, minField, maxField);
         }
     }

@@ -19,8 +19,7 @@ import net.minecraft.core.HolderSet.Named;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
 
@@ -30,7 +29,6 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
     private final IOreInfo oreInfo;
     private final GuiSlot slot;
 
-    @NotNull
     private ChemicalResource prevSlurry = ChemicalResource.EMPTY;
 
     public GuiQIOCrystallizerScreen(IGuiWrapper gui, int x, int y, int width, int height, IOreInfo oreInfo) {
@@ -123,13 +121,11 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
 
     public interface IOreInfo {
 
-        @NotNull
         ChemicalResource getInputChemical();
 
         @Nullable
         ChemicalCrystallizerRecipe getRecipe();
 
-        @NotNull
         default ItemStack getRenderStack() {
             return ItemStack.EMPTY;
         }

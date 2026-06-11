@@ -21,7 +21,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for informing the server that an action happened in a GUI
@@ -48,7 +47,6 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
         this(interaction, tilePosition, 0);
     }
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketGeneratorsGuiInteract> type() {
         return TYPE;

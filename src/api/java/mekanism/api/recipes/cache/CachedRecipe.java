@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
@@ -21,7 +20,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 /**
  * Base class to help implement handling of Mekanism recipes.
  */
-@NothingNullByDefault
 public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
 
     /**

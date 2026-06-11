@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
@@ -13,7 +12,6 @@ import net.minecraft.world.item.crafting.Recipe;
 /**
  * @since 10.7.0 Previously was GasToGasRecipeBuilder
  */
-@NothingNullByDefault
 public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ChemicalToChemicalRecipeBuilder> {
 
     private final ChemicalToChemicalRecipeBuilder.Factory factory;

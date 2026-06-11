@@ -10,6 +10,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -22,6 +23,7 @@ public class CrTRotaryRecipe {
     /**
      * Gets the chemical to fluid conversion this rotary recipe has or {@code null} if it only has a fluid to chemical conversion.
      */
+    @Nullable
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicalToFluid")
@@ -35,6 +37,7 @@ public class CrTRotaryRecipe {
     /**
      * Gets the fluid to chemical conversion this rotary recipe has or {@code null} if it only has a chemical to fluid conversion.
      */
+    @Nullable
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     @ZenCodeType.Getter("fluidToChemical")

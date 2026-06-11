@@ -6,8 +6,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class VirtualInventoryContainerSlot extends InventoryContainerSlot implements IVirtualSlot {
 
@@ -26,6 +25,7 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
         this.windowData = windowData;
     }
 
+    @Nullable
     @Override
     public IGUIWindow getLinkedWindow() {
         return window;
@@ -49,13 +49,12 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     }
 
     @Override
-    public void updateRenderInfo(@NotNull ItemStack stackToRender, boolean shouldDrawOverlay, @Nullable String tooltipOverride) {
+    public void updateRenderInfo(ItemStack stackToRender, boolean shouldDrawOverlay, @Nullable String tooltipOverride) {
         this.stackToRender = stackToRender;
         this.shouldDrawOverlay = shouldDrawOverlay;
         this.tooltipOverride = tooltipOverride;
     }
 
-    @NotNull
     @Override
     public ItemStack getStackToRender() {
         return stackToRender;

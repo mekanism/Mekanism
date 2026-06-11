@@ -10,7 +10,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base input cache that implements the backend handling and lookup of a single basic key based input.

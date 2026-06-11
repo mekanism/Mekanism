@@ -2,15 +2,15 @@ package mekanism.common.lib.collection;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class FilterTransformIterator<IN, OUT> implements Iterator<OUT> {
 
     private final Iterator<IN> iterator;
+    @Nullable
     private OUT next;
 
-    protected FilterTransformIterator(Iterator<@NotNull IN> upstream) {
+    protected FilterTransformIterator(Iterator<IN> upstream) {
         this.iterator = upstream;
         this.next = findNext();
     }

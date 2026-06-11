@@ -18,7 +18,6 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
@@ -33,13 +32,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTranslationKey, IHasTextComponent {
 
-    private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
+    private final Function<IModule<MODULE>, MODULE> constructor;
     private final Int2ObjectMap<ConstructedConfigData> configData;
     private final Holder<Item> itemHolder;
     private final int maxStackSize;
@@ -85,7 +82,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
      *
      * @since 10.7.11
      */
-    @NotNull
     public final Holder<Item> getItemHolder() {
         return itemHolder;
     }
@@ -95,7 +91,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
      *
      * @since 10.6.0
      */
-    @NotNull
     public final MODULE create(IModule<MODULE> module) {
         return constructor.apply(module);
     }
@@ -325,7 +320,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
          *
          * @since 10.7.11
          */
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<@NotNull MODULE> customModule, Holder<Item> item) {
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<MODULE> customModule, Holder<Item> item) {
             MODULE customModuleInstance = customModule.get();
             Function<IModule<MODULE>, MODULE> function = module -> customModuleInstance;
             return new ModuleDataBuilder<>(function, item, true);
@@ -342,12 +337,12 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
          *
          * @since 10.7.11
          */
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, @NotNull MODULE> customModule, Holder<Item> item) {
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, MODULE> customModule, Holder<Item> item) {
             return new ModuleDataBuilder<>(customModule, item, false);
         }
 
         private final Int2ObjectMap<ConfigData> configData = new Int2ObjectOpenHashMap<>();
-        private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
+        private final Function<IModule<MODULE>, MODULE> constructor;
         private final Holder<Item> itemHolder;
         private final boolean isInstanced;
         private int maxStackSize = 1;
@@ -358,7 +353,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         private boolean noDisable;
         private boolean disabledByDefault;
 
-        private ModuleDataBuilder(Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor, Holder<Item> item, boolean isInstanced) {
+        private ModuleDataBuilder(Function<IModule<MODULE>, MODULE> constructor, Holder<Item> item, boolean isInstanced) {
             this.constructor = Objects.requireNonNull(constructor, "Custom module constructor cannot be null.");
             this.itemHolder = Objects.requireNonNull(item, "Item holder cannot be null.");
             this.isInstanced = isInstanced;

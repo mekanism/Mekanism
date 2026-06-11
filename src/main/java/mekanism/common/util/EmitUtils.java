@@ -9,7 +9,7 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class EmitUtils {
 
@@ -26,8 +26,8 @@ public class EmitUtils {
     /// passed to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return The amount that actually got sent.
-    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, RESOURCE resource,
-          @Nullable TransactionContext transaction) {
+    public static <HANDLER, RESOURCE extends @Nullable Object, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets,
+          int amountToSplit, RESOURCE resource, @Nullable TransactionContext transaction) {
         return Ints.saturatedCast(sendToAcceptors(availableTargets, (long) amountToSplit, resource, transaction));
     }
 
@@ -41,8 +41,8 @@ public class EmitUtils {
     /// passed to conveniently have this method open its own root transaction and perform the sending.
     ///
     /// @return The amount that actually got sent.
-    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE resource,
-          @Nullable TransactionContext transaction) {
+    public static <HANDLER, RESOURCE extends @Nullable Object, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets,
+          long amountToSplit, RESOURCE resource, @Nullable TransactionContext transaction) {
         if (availableTargets == null || amountToSplit == 0) {
             return 0;
         }

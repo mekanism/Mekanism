@@ -1,15 +1,18 @@
 package mekanism.additions.client.voice;
 
+import java.io.DataInputStream;
 import java.io.EOFException;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.Nullable;
 
 public class VoiceOutput extends Thread {
 
     private final VoiceClient voiceClient;
     private final DataLine.Info speaker;
+    @Nullable
     private SourceDataLine sourceLine;
 
     public VoiceOutput(VoiceClient client) {
@@ -30,9 +33,10 @@ public class VoiceOutput extends Thread {
             int length;
             while (voiceClient.isRunning()) {
                 try {
-                    if (voiceClient.getInputStream().available() > 0) {
+                    DataInputStream inputStream = voiceClient.getInputStream();
+                    if (inputStream != null && inputStream.available() > 0) {
                         //Why would we only read signed shorts? negative amount of waiting data doesn't make sense anyway :D
-                        byteCount = voiceClient.getInputStream().readUnsignedShort();
+                        byteCount = inputStream.readUnsignedShort();
                         while (byteCount > 0 && voiceClient.isRunning()) {
                             length = audioData.length;
                             if (length > byteCount) {
@@ -40,7 +44,7 @@ public class VoiceOutput extends Thread {
                             }
                             //That one returns the actual read amount of data (we can begin transferring even if input
                             // is waiting/incomplete)
-                            length = voiceClient.getInputStream().read(audioData, 0, length);
+                            length = inputStream.read(audioData, 0, length);
                             if (length < 0) {
                                 throw new EOFException();
                             }
@@ -65,7 +69,9 @@ public class VoiceOutput extends Thread {
     }
 
     public void close() {
-        sourceLine.flush();
-        sourceLine.close();
+        if (sourceLine != null) {
+            sourceLine.flush();
+            sourceLine.close();
+        }
     }
 }

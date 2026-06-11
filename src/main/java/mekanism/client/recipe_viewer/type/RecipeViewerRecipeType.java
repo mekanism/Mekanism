@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.type;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -32,7 +31,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 
 //Note: Do not use any classes from any recipe viewer mods here as this is to allow us to safely keep them each optional while referencing from our GUIs
-@NothingNullByDefault
 public class RecipeViewerRecipeType {
 
     private RecipeViewerRecipeType() {

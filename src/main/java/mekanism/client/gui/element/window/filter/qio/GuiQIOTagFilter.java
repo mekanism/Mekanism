@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiQIOTagFilter extends GuiTagFilter<QIOTagFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 

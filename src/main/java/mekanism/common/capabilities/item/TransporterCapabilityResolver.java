@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class TransporterCapabilityResolver implements ICapabilityResolver<@Nullable Direction> {
 
         private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM.block());

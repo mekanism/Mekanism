@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.type;
 
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.IMekanismConfig;
@@ -14,10 +13,8 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable, ATTACHED, HANDLER> extends AbstractContainerType<CONTAINER, ATTACHED> {
 
     protected final MultiTypeCapability<HANDLER> capability;
@@ -45,7 +42,7 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
         event.registerItem(capability.item(), getCapabilityProvider(requiredConfigs), item);
     }
 
-    protected ICapabilityProvider<ItemStack, @NonNull ItemAccess, HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
+    protected ICapabilityProvider<ItemStack, ItemAccess, HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
         if (requiredConfigs.length == 0) {
             return (_, itemAccess) -> createHandler(itemAccess);
         }

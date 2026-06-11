@@ -12,8 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockQIOComponent<TILE extends TileEntityQIOComponent, BLOCK extends BlockTypeTile<TILE>> extends BlockTileModel<TILE, BLOCK> {
 
@@ -23,7 +22,7 @@ public class BlockQIOComponent<TILE extends TileEntityQIOComponent, BLOCK extend
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
         if (state != null) {
             AttributeStateActive attribute = Attribute.get(state, AttributeStateActive.class);

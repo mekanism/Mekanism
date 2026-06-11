@@ -7,18 +7,17 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.collection.HashList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling filter lists
  */
 public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableCollection<FILTER, Collection<FILTER>> {
 
-    public static <FILTER extends IFilter<?>> SyncableFilterList<FILTER> create(Supplier<@NotNull Collection<FILTER>> getter, Consumer<@NotNull Collection<FILTER>> setter) {
+    public static <FILTER extends IFilter<?>> SyncableFilterList<FILTER> create(Supplier<Collection<FILTER>> getter, Consumer<Collection<FILTER>> setter) {
         return new SyncableFilterList<>(getter, setter);
     }
 
-    private SyncableFilterList(Supplier<@NotNull Collection<FILTER>> getter, Consumer<@NotNull Collection<FILTER>> setter) {
+    private SyncableFilterList(Supplier<Collection<FILTER>> getter, Consumer<Collection<FILTER>> setter) {
         super(getter, setter);
     }
 

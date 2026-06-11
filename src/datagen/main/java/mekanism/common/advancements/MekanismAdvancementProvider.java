@@ -49,13 +49,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
-    public void generate(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         HolderGetter<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
 
         advancement(MekanismAdvancements.ROOT)
@@ -63,11 +62,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .addCriterion("automatic", MekanismCriteriaTriggers.LOGGED_IN.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
-              .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), AdvancementType.TASK, false)
-              .orCriteria("material", itemLookup, MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
-                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
-                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
-                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
+              .display(MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), AdvancementType.TASK, false)
+              .orCriteria("material", itemLookup, MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
+                    MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN),
+                    MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD),
+                    MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.URANIUM),
                     MekanismItems.FLUORITE_GEM
               ).save(consumer);
 
@@ -429,7 +428,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
     }
 
-    private void addExperiments(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+    private void addExperiments(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         RegistryLookup<EntityType<?>> lookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_CREEPER)
               .display(Items.CREEPER_HEAD, null, AdvancementType.CHALLENGE, true, true, true)

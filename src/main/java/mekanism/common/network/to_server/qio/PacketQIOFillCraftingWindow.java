@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSource;
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
@@ -26,11 +25,9 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 //Note: While our logic is not dependent on knowing about transferMultiple, we make use of it for encoding and decoding
 // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
-@NothingNullByDefault
 public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boolean transferMultiple, boolean rejectToInventory,
                                           Byte2ObjectMap<List<SingularItemTypeSource>> sources) implements IMekanismPacket {
 
@@ -38,7 +35,6 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
     private static final StreamCodec<ByteBuf, ResourceKey<Recipe<?>>> RECIPE_ID_CODEC = ResourceKey.streamCodec(Registries.RECIPE);
     public static final StreamCodec<ByteBuf, PacketQIOFillCraftingWindow> STREAM_CODEC = StreamCodec.ofMember(PacketQIOFillCraftingWindow::write, PacketQIOFillCraftingWindow::decode);
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketQIOFillCraftingWindow> type() {
         return TYPE;
@@ -68,7 +64,7 @@ public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boole
         }
     }
 
-    private void write(@NotNull ByteBuf buffer) {
+    private void write(ByteBuf buffer) {
         RECIPE_ID_CODEC.encode(buffer, recipeID);
         buffer.writeBoolean(transferMultiple);
         buffer.writeBoolean(rejectToInventory);

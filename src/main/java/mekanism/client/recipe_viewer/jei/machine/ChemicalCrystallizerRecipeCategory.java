@@ -29,8 +29,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<ChemicalCrystallizerRecipe> {
 
@@ -69,7 +68,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IFocusGroup focusGroup) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
@@ -89,7 +88,6 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         private ChemicalStack ingredient;
         private ItemStack itemIngredient = ItemStack.EMPTY;
 
-        @NotNull
         @Override
         public ChemicalResource getInputChemical() {
             if (ingredient == null || ingredient.isEmpty()) {
@@ -104,7 +102,6 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
             return currentRecipe;
         }
 
-        @NotNull
         @Override
         public ItemStack getRenderStack() {
             return itemIngredient;

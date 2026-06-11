@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -192,7 +193,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
 
 public class MekanismBlocks {
 
@@ -1015,7 +1015,7 @@ public class MekanismBlocks {
     }
 
     private static <TILE extends TileEntityFactory<?>> BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> registerFactory(Factory<TILE> type) {
-        FactoryTier tier = (FactoryTier) type.get(AttributeTier.class).tier();
+        FactoryTier tier = (FactoryTier) type.getOrThrow(AttributeTier.class).tier();
         BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> factory = registerTieredBlock(tier, "_" + type.getFactoryType().getRegistryNameComponent() + "_factory", properties -> new BlockFactory<>(type, properties), ItemBlockFactory::new);
         factory.forItemHolder(holder -> {
             int processes = tier.processes;
@@ -1080,13 +1080,13 @@ public class MekanismBlocks {
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,
           BiFunction<BlockBehaviour.Properties, MapColor, ? extends BLOCK> blockCreator, BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        ITier tier = type.get(AttributeTier.class).tier();
+        ITier tier = type.getOrThrow(AttributeTier.class).tier();
         return registerTieredBlock(tier, suffix, properties -> blockCreator.apply(properties, tier.getBaseTier().getMapColor()), itemCreator);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,
           Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator, BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), suffix, blockCreator, itemCreator);
+        return registerTieredBlock(type.getOrThrow(AttributeTier.class).tier(), suffix, blockCreator, itemCreator);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,
@@ -1127,8 +1127,8 @@ public class MekanismBlocks {
      *
      * @return factory with defined tier and recipe type
      */
-    public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> getFactory(@NotNull FactoryTier tier, @NotNull FactoryType type) {
-        return FACTORIES.get(tier, type);
+    public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> getFactory(FactoryTier tier, FactoryType type) {
+        return Objects.requireNonNull(FACTORIES.get(tier, type));
     }
 
     @SuppressWarnings("unchecked")

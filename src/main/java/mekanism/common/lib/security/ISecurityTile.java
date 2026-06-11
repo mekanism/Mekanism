@@ -5,11 +5,11 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface ISecurityTile extends ISecurityObject {
 
+    @Nullable
     TileComponentSecurity getSecurity();
 
     default boolean hasSecurity() {
@@ -30,7 +30,6 @@ public interface ISecurityTile extends ISecurityObject {
         return security == null ? null : security.getOwnerName();
     }
 
-    @NotNull
     @Override
     default SecurityMode getSecurityMode() {
         TileComponentSecurity security = getSecurity();
@@ -38,7 +37,7 @@ public interface ISecurityTile extends ISecurityObject {
     }
 
     @Override
-    default void setSecurityMode(@NotNull SecurityMode mode, @Nullable TransactionContext transaction) {
+    default void setSecurityMode(SecurityMode mode, @Nullable TransactionContext transaction) {
         TileComponentSecurity security = getSecurity();
         if (security != null) {
             security.setMode(mode);

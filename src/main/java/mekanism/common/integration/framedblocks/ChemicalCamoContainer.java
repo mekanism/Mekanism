@@ -5,7 +5,7 @@ import io.github.xfacthd.framedblocks.api.camo.resource.ResourceCamoContainer;
 import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 final class ChemicalCamoContainer extends ResourceCamoContainer<ChemicalResource, ChemicalCamoContent, ChemicalCamoContainer> {
 
@@ -34,7 +34,7 @@ final class ChemicalCamoContainer extends ResourceCamoContainer<ChemicalResource
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != ChemicalCamoContainer.class) return false;
         return content.equals(((ChemicalCamoContainer) obj).content);

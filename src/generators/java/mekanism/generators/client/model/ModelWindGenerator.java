@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 
 public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationRenderState> {
 
@@ -133,7 +132,7 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
     }
 
     @Override
-    public void collect(WindGeneratorRotationRenderState windGeneratorRotationRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+    public void collect(WindGeneratorRotationRenderState windGeneratorRotationRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
         setupAnim(windGeneratorRotationRenderState);
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }

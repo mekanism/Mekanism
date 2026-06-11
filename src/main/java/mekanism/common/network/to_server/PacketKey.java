@@ -8,7 +8,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
 
 public record PacketKey(int key, boolean add) implements IMekanismPacket {
 
@@ -19,7 +18,6 @@ public record PacketKey(int key, boolean add) implements IMekanismPacket {
           PacketKey::new
     );
 
-    @NotNull
     @Override
     public CustomPacketPayload.Type<PacketKey> type() {
         return TYPE;

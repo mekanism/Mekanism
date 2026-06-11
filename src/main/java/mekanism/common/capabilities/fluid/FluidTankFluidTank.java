@@ -5,20 +5,17 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class FluidTankFluidTank extends BasicFluidTank {
 
     public static FluidTankFluidTank create(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
@@ -30,7 +27,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
     private final boolean isCreative;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
-        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        LongSupplier gameTimeSupplier = tile::getGameTime;
         IntSupplier rateLimit = tile.tier::getTransferRate;
         super(tile.tier.getCapacity(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot

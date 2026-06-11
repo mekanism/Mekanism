@@ -2,7 +2,6 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -21,9 +20,8 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<TurbineMultiblockData, TileEntityTurbineCasing, TurbineRenderState> {
 
     public RenderIndustrialTurbine(BlockEntityRendererProvider.Context context) {
@@ -37,7 +35,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
 
     @Override
     public void extractRenderState(TileEntityTurbineCasing turbine, TurbineRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(turbine, state, partialTick, cameraPosition, breakProgress);
         TurbineMultiblockData multiblock = turbine.getMultiblock();
         state.gather(multiblock);
@@ -73,8 +71,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
     }
 
     public static class TurbineRenderState extends MultiblockContentsRenderState {
-        @Nullable
-        public RenderResizableCuboid.TexturePicker steamTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker steamTexture;
         public float steamMaxY;
         public int steamColor;
     }

@@ -22,10 +22,10 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -41,19 +41,18 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
 
@@ -64,9 +63,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     );
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
+    @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public IChemicalTank inputTank;
+    @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IChemicalTank outputTank;
@@ -77,11 +78,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     private float productionRate;
     private boolean settingsChecked;
 
-    private final IOutputHandler<@NotNull ChemicalStackTemplate> outputHandler;
-    private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
+    private final IOutputHandler<ChemicalStackTemplate> outputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> inputHandler;
 
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     ChemicalInventorySlot inputSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     ChemicalInventorySlot outputSlot;
 
@@ -91,14 +94,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputTank, outputTank, false, true);
         configComponent.addDisabledSides(RelativeSide.TOP);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != inputTank);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @NotNull
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IChemicalTank> builder = MekContainerHelper.forSideWithChemicalConfig(this);
@@ -109,7 +110,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return builder.build();
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -122,14 +122,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return builder.build();
     }
 
-    private void recheckSettings() {
-        Level world = getLevel();
-        if (world == null) {
-            return;
-        }
-        int seaLevel = world.getSeaLevel();
+    private void recheckSettings(ServerLevel level) {
+        int seaLevel = level.getSeaLevel();
         BlockPos pos = getBlockPos();
-        Biome b = world.getBiomeManager().getBiome(pos).value();
+        Biome b = level.getBiomeManager().getBiome(pos).value();
         boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
@@ -146,19 +142,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         if (!settingsChecked) {
-            recheckSettings();
+            recheckSettings(level);
         }
         inputSlot.fillTankFromSlot(null);
         outputSlot.drainTankIntoSlot(null);
-        productionRate = recalculateProductionRate();
+        productionRate = recalculateProductionRate(level);
         recipeCacheLookupMonitor.updateAndProcess();
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
@@ -187,20 +182,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         return super.canFunction() && canSeeSun();
     }
 
-    private float recalculateProductionRate() {
-        Level world = getLevel();
-        if (world == null || !canFunction()) {
+    private float recalculateProductionRate(ServerLevel level) {
+        if (!canFunction()) {
             return 0;
         }
         //Get the brightness of the sun; including rain penalty
-        float brightness = WorldUtils.getSunBrightness(world, this.worldPosition);
+        float brightness = WorldUtils.getSunBrightness(level, this.worldPosition);
         //Production is a function of the peak possible output in this biome and sun's current brightness
         return peakProductionRate * brightness;
     }
 
-    @NotNull
     @Override
-    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull ChemicalToChemicalRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(ChemicalToChemicalRecipe recipe, int cacheIndex) {
         return new OneInputCachedRecipe<>(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

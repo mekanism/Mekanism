@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ColorAtlas {
 
@@ -37,7 +37,7 @@ public class ColorAtlas {
     }
 
     public void parse(Identifier rl) {
-        List<Color> parsed = load(rl, colors.size());
+        List<@Nullable Color> parsed = load(rl, colors.size());
         if (parsed.size() < colors.size()) {
             Mekanism.logger.error("Failed to parse '{}' color atlas.", name);
             return;
@@ -47,8 +47,8 @@ public class ColorAtlas {
         }
     }
 
-    public static List<Color> load(Identifier rl, int count) {
-        List<Color> ret = new ArrayList<>();
+    public static List<@Nullable Color> load(Identifier rl, int count) {
+        List<@Nullable Color> ret = new ArrayList<>();
         try {
             loadColorAtlas(rl, count, ret);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class ColorAtlas {
         return ret;
     }
 
-    private static void loadColorAtlas(Identifier rl, int count, List<Color> ret) throws IOException {
+    private static void loadColorAtlas(Identifier rl, int count, List<@Nullable Color> ret) throws IOException {
         try (InputStream input = Minecraft.getInstance().getResourceManager().open(rl);
              NativeImage image = NativeImage.read(input)) {
             for (int i = 0; i < count; i++) {

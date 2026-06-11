@@ -1,6 +1,6 @@
 package mekanism.client.gui.qio;
 
-import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab.GuiQIOFrequencyItemTab;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -8,6 +8,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
 
@@ -18,7 +19,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiQIOFrequencyTab(this, menu.getHand()));
+        addRenderableWidget(new GuiQIOFrequencyItemTab(this, menu.getHand()));
     }
 
     @Override
@@ -26,6 +27,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
         return new GuiPortableQIODashboard(container, inv, title);
     }
 
+    @Nullable
     @Override
     public FrequencyIdentity getFrequency() {
         ItemResource itemType = menu.getItemType();

@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.resolver.manager;
 
 import java.util.function.LongSupplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -12,10 +11,9 @@ import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class EnergyHandlerManager extends BasicSidedCapabilityResolver<IEnergyContainerHolder, EnergyHandler> {
 
     private final IEnergyContainerHolder holder;

@@ -28,23 +28,23 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends GuiGauge<RESOURCE> implements IRecipeViewerIngredientHelper {
 
     @Nullable
     private final ITankInfoHandler<CONTAINER> infoHandler;
     private final TankType tankType;
+    @Nullable
     private Component label;
 
-    public GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, @Nullable ITankInfoHandler<CONTAINER> infoHandler, TankType tankType,
+    protected GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, @Nullable ITankInfoHandler<CONTAINER> infoHandler, TankType tankType,
           RESOURCE emptyResource) {
         super(type, gui, x, y, sizeX, sizeY);
         this.infoHandler = infoHandler;
         this.tankType = tankType;
         //Ensure it isn't null
-        setDummyType(emptyResource);
+        dummyType = emptyResource;
     }
 
     public GuiTankGauge<RESOURCE, CONTAINER> setLabel(Component label) {
@@ -52,6 +52,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
         return this;
     }
 
+    @Nullable
     @Override
     public Component getLabel() {
         return label;
@@ -88,7 +89,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         ItemStack stack = gui().getCarriedItem();
         if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             int index = infoHandler == null ? -1 : infoHandler.getContainerIndex();
@@ -105,7 +106,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
@@ -171,16 +172,14 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
 
             @Override
             public int getContainerIndex() {
-                CONTAINER container = getContainer();
-                return container == null ? -1 : containers.get().indexOf(container);
+                return containers.get().indexOf(getContainer());
             }
         };
     }
 
-    public interface ITankInfoHandler<TANK> {
+    public interface ITankInfoHandler<CONTAINER> {
 
-        @Nullable
-        TANK getContainer();
+        CONTAINER getContainer();
 
         int getContainerIndex();
     }

@@ -5,8 +5,6 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class ConfigurableUniformInt implements IntProvider {
 
@@ -17,7 +15,7 @@ public class ConfigurableUniformInt implements IntProvider {
     }
 
     @Override
-    public int sample(@NotNull RandomSource random) {
+    public int sample(RandomSource random) {
         return Mth.randomBetweenInclusive(random, minInclusive(), maxInclusive());
     }
 
@@ -32,7 +30,7 @@ public class ConfigurableUniformInt implements IntProvider {
     }
 
     @Override
-    public @NonNull MapCodec<? extends IntProvider> codec() {
+    public MapCodec<? extends IntProvider> codec() {
         return CODEC;
     }
 

@@ -35,8 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SpecialConverters {
 
@@ -107,8 +106,7 @@ public class SpecialConverters {
         return raw instanceof Number number ? number.intValue() : 0;
     }
 
-    @NotNull
-    public static <FILTER extends IFilter<FILTER>> FILTER convertMapToFilter(@NotNull Class<FILTER> expectedType, @NotNull Map<?, ?> map) throws ComputerException {
+    public static <FILTER extends IFilter<FILTER>> FILTER convertMapToFilter(Class<FILTER> expectedType, Map<?, ?> map) throws ComputerException {
         //We may want to try improving this at some point, or somehow making it slightly less hardcoded
         // but for now this will have to do
         Object type = map.get(SerializationConstants.TYPE);
@@ -147,7 +145,7 @@ public class SpecialConverters {
         return expectedType.cast(filter);
     }
 
-    private static void decodeOreDictFilter(@NotNull Map<?, ?> map, OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) throws ComputerException {
+    private static void decodeOreDictFilter(Map<?, ?> map, OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) throws ComputerException {
         Object rawTag = map.get(SerializationConstants.TARGET);
         if (!(rawTag instanceof String tag) || tag.isEmpty()) {
             throw new ComputerException("Missing '" + SerializationConstants.TARGET + "'");
@@ -165,13 +163,13 @@ public class SpecialConverters {
         }
     }
 
-    private static void decodeQioFilter(@NotNull Map<?, ?> map, QIOFilter<?> qioFilter) {
+    private static void decodeQioFilter(Map<?, ?> map, QIOFilter<?> qioFilter) {
         if (qioFilter instanceof QIOItemStackFilter qioItemFilter) {
             qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get(SerializationConstants.FUZZY));
         }
     }
 
-    private static void decodeSorterFilter(@NotNull Map<?, ?> map, SorterFilter<?> sorterFilter) throws ComputerException {
+    private static void decodeSorterFilter(Map<?, ?> map, SorterFilter<?> sorterFilter) throws ComputerException {
         sorterFilter.allowDefault = getBooleanFromRaw(map.get(SerializationConstants.ALLOW_DEFAULT));
         Object rawColor = map.get(SerializationConstants.COLOR);
         if (rawColor instanceof String) {
@@ -189,12 +187,12 @@ public class SpecialConverters {
         }
     }
 
-    private static void decodeMinerFilter(@NotNull Map<?, ?> map, MinerFilter<?> minerFilter) {
+    private static void decodeMinerFilter(Map<?, ?> map, MinerFilter<?> minerFilter) {
         minerFilter.requiresReplacement = getBooleanFromRaw(map.get(SerializationConstants.REQUIRES_REPLACEMENT));
         minerFilter.replaceTarget = tryCreateItem(map.get(SerializationConstants.REPLACE_TARGET));
     }
 
-    private static void decodeTagFilter(@NotNull Map<?, ?> map, ITagFilter<?> tagFilter) throws ComputerException {
+    private static void decodeTagFilter(Map<?, ?> map, ITagFilter<?> tagFilter) throws ComputerException {
         String tag = tryGetFilterTag(map.get(SerializationConstants.TAG));
         if (tag == null) {
             throw new ComputerException("Invalid or missing tag specified for Tag filter");
@@ -202,7 +200,7 @@ public class SpecialConverters {
         tagFilter.setTagName(tag);
     }
 
-    private static void decodeModIdFilter(@NotNull Map<?, ?> map, IModIDFilter<?> modIDFilter) throws ComputerException {
+    private static void decodeModIdFilter(Map<?, ?> map, IModIDFilter<?> modIDFilter) throws ComputerException {
         String modId = tryGetFilterModId(map.get(SerializationConstants.MODID));
         if (modId == null) {
             throw new ComputerException("Invalid or missing modId specified for Mod Id filter");
@@ -210,7 +208,7 @@ public class SpecialConverters {
         modIDFilter.setModID(modId);
     }
 
-    private static void decodeItemStackFilter(@NotNull Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
+    private static void decodeItemStackFilter(Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
         ItemResource itemType = tryCreateFilterItem((String) map.get(SerializationConstants.ITEM), (String) map.get(SerializationConstants.COMPONENTS));
         if (itemType.isEmpty()) {
             throw new ComputerException("Invalid or missing item specified for ItemResource filter");
@@ -218,7 +216,7 @@ public class SpecialConverters {
         itemFilter.setItemType(itemType);
     }
 
-    static Map<String, Object> wrapStack(String name, String sizeKey, int amount, @NotNull DataComponentPatch components) {
+    static Map<String, Object> wrapStack(String name, String sizeKey, int amount, DataComponentPatch components) {
         int elements = 2;
         boolean hasComponents = !components.isEmpty() && amount > 0;
         if (hasComponents) {
@@ -233,7 +231,7 @@ public class SpecialConverters {
         return wrapped;
     }
 
-    static Map<String, Object> wrapResource(String name, @NotNull DataComponentPatch components) {
+    static Map<String, Object> wrapResource(String name, DataComponentPatch components) {
         int elements = 1;
         if (!components.isEmpty()) {
             elements++;
@@ -246,11 +244,11 @@ public class SpecialConverters {
         return wrapped;
     }
 
-    static String wrapComponents(@NotNull DataComponentPatch components) {
+    static String wrapComponents(DataComponentPatch components) {
         return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(getRegistryNbtOps(), components).getOrThrow());
     }
 
-    static DataComponentPatch unwrapComponents(@NotNull String rawComponents) throws ComputerException {
+    static DataComponentPatch unwrapComponents(String rawComponents) throws ComputerException {
         CompoundTag nbt;
         try {
             nbt = NbtUtils.snbtToStructure(rawComponents);

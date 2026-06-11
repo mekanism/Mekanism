@@ -2,7 +2,6 @@ package mekanism.api.inventory.access;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -13,7 +12,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 ///
 /// @see ItemAccess#forHandlerIndexStrict(ResourceHandler, int)
 /// @since 10.8.0
-@NothingNullByDefault
 public class InventorySlotItemAccess implements ItemAccess {
 
     protected final IInventorySlot slot;

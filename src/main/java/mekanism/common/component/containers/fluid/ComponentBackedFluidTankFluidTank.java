@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.fluid;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
@@ -12,7 +11,6 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank {
 
     private final boolean isCreative;

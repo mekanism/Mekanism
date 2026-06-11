@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class CreativeTabDeferredRegister extends MekanismDeferredRegister<CreativeModeTab> {
 
@@ -35,7 +34,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     @Override
-    public void register(@NotNull IEventBus bus) {
+    public void register(IEventBus bus) {
         super.register(bus);
         bus.addListener(addToExistingTabs);
     }

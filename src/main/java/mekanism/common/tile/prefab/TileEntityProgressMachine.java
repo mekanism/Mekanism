@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>> extends TileEntityRecipeMachine<RECIPE> {
 
@@ -56,13 +55,13 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
     }
@@ -80,9 +79,8 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
         return this.operationsPerTick;
     }
 
-    @NotNull
     @Override
-    public List<Component> getInfo(@NotNull Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

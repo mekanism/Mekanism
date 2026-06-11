@@ -1,5 +1,6 @@
 package mekanism.common.network;
 
+import java.util.Objects;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -25,6 +26,7 @@ import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
 import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.network.to_server.PacketAddTrusted;
 import mekanism.common.network.to_server.PacketDropperUse;
+import mekanism.common.network.to_server.PacketEntityGuiInteract;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
@@ -35,6 +37,7 @@ import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.network.to_server.PacketRemoveModule;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress;
@@ -62,13 +65,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
+import org.jspecify.annotations.Nullable;
 
 public class PacketHandler extends BasePacketHandler {
 
     //Client to server instanced packets
 
     //Server to client instanced packets
+    @Nullable
     private SimplePacketPayLoad showModeChange;
+    @Nullable
     private SimplePacketPayLoad killItemViewer;
 
     public PacketHandler(IEventBus modEventBus, Version version) {
@@ -80,10 +86,12 @@ public class PacketHandler extends BasePacketHandler {
     }
 
     public void showModeChange(ServerPlayer player) {
+        Objects.requireNonNull(showModeChange, "Show mode change packet not initialized!?");
         PacketDistributor.sendToPlayer(player, showModeChange);
     }
 
     public void killItemViewer(ServerPlayer player) {
+        Objects.requireNonNull(killItemViewer, "Show mode change packet not initialized!?");
         PacketDistributor.sendToPlayer(player, killItemViewer);
     }
 
@@ -94,7 +102,9 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketEditFilter.TYPE, PacketEditFilter.STREAM_CODEC);
         registrar.play(PacketGearStateUpdate.TYPE, PacketGearStateUpdate.STREAM_CODEC);
         registrar.play(PacketGuiInteract.TYPE, PacketGuiInteract.STREAM_CODEC);
+        registrar.play(PacketEntityGuiInteract.TYPE, PacketEntityGuiInteract.STREAM_CODEC);
         registrar.play(PacketItemGuiInteract.TYPE, PacketItemGuiInteract.STREAM_CODEC);
+        registrar.play(PacketTileGuiInteractItem.TYPE, PacketTileGuiInteractItem.STREAM_CODEC);
         registrar.play(PacketKey.TYPE, PacketKey.STREAM_CODEC);
         registrar.play(PacketModeChange.TYPE, PacketModeChange.STREAM_CODEC);
         registrar.play(PacketModeChangeCurios.TYPE, PacketModeChangeCurios.STREAM_CODEC);

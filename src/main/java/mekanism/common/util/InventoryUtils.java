@@ -122,7 +122,7 @@ public final class InventoryUtils {
     /// @param itemType Item type to drop.
     /// @param amount   Amount of the item to drop.
     /// @param dropper  Called to drop the item.
-    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, final long amount, ItemDropper<POS> dropper) {
+    public static <POS> void dropStack(Level level, POS pos, @Nullable Direction side, ItemResource itemType, final long amount, ItemDropper<POS> dropper) {
         if (amount > Integer.MAX_VALUE) {
             //TODO: This never *really* would happen because of how our multiblock's inventories are currently setup... but maybe we should declare more explicit behavior?
             return;
@@ -183,6 +183,6 @@ public final class InventoryUtils {
     @FunctionalInterface
     public interface ItemDropper<POS> {
 
-        void drop(Level level, POS pos, Direction side, ItemStack stack);
+        void drop(Level level, POS pos, @Nullable Direction side, ItemStack stack);
     }
 }

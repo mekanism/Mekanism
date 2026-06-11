@@ -17,7 +17,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 
@@ -63,7 +63,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
 
     public void acceptorChanged(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
         changedAcceptors.computeIfAbsent(transmitter, t -> EnumSet.noneOf(Direction.class)).add(side);
-        TransmitterNetworkRegistry.registerChangedNetwork(transmitter.getTransmitterNetwork());
+        TransmitterNetworkRegistry.registerChangedNetwork(transmitter.getTransmitterNetworkNN());
     }
 
     public void commit() {

@@ -12,11 +12,9 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import mekanism.api.annotations.NothingNullByDefault;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 //Copy of Collections#emptyMap as EMPTY_NAVIGABLE_MAP does not short circuit checks, and also does an unchecked cast in get to Comparable
-@NothingNullByDefault
 public class EmptySequencedMap<K, V> extends AbstractMap<K, V> implements SequencedMap<K, V> {
 
     private static final SequencedMap<?, ?> EMPTY_MAP = new EmptySequencedMap<>();
@@ -75,7 +73,7 @@ public class EmptySequencedMap<K, V> extends AbstractMap<K, V> implements Sequen
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
         }

@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class to help with interacting with {@link LambdaMetafactory} without primitives causing issues in Java versions greater than Java 8

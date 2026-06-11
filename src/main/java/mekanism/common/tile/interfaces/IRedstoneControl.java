@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -48,7 +47,6 @@ public interface IRedstoneControl {
      */
     boolean supportsMode(RedstoneControl mode);
 
-    @NothingNullByDefault
     enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasEnumNameTextComponent, StringRepresentable {
         DISABLED(MekanismLang.REDSTONE_CONTROL_DISABLED),
         HIGH(MekanismLang.REDSTONE_CONTROL_HIGH),

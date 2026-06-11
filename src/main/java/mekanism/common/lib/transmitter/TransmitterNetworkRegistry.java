@@ -34,8 +34,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkTicketLevelUpdatedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class TransmitterNetworkRegistry {
@@ -312,11 +311,11 @@ public class TransmitterNetworkRegistry {
         private /*chunkpos*/ Long2BooleanMap changedTicketChunks = newL2BMap();
         private /*blockpos*/ Long2ObjectMap<Transmitter<?, ?, ?>> newOrphanTransmitters = newL2OMap();
 
-        private static @NonNull Long2ObjectRBTreeMap<Transmitter<?, ?, ?>> newL2OMap() {
+        private static Long2ObjectRBTreeMap<Transmitter<?, ?, ?>> newL2OMap() {
             return new Long2ObjectRBTreeMap<>();
         }
 
-        private static @NonNull Long2BooleanMap newL2BMap() {
+        private static Long2BooleanMap newL2BMap() {
             return new Long2BooleanRBTreeMap();
         }
 

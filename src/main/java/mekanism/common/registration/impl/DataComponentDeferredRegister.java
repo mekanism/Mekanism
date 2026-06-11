@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.component.containers.resource.AttachedResources;
@@ -28,7 +27,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-@NothingNullByDefault
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
     public DataComponentDeferredRegister(String namespace) {

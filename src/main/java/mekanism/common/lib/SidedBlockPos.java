@@ -3,6 +3,7 @@ package mekanism.common.lib;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.LongList;
+import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.WorldUtils;
@@ -20,6 +21,6 @@ public record SidedBlockPos(long pos, Direction side) {
         LongList path = destination.getPath();
         long pos = path.getLong(0);
         Direction sideOfDest = WorldUtils.sideDifference(path.getLong(1), pos);
-        return new SidedBlockPos(pos, sideOfDest);
+        return new SidedBlockPos(pos, Objects.requireNonNull(sideOfDest, "Unable to calculate side of destination " + pos));
     }
 }

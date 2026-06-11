@@ -60,7 +60,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
 
     private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> bin, BlockRegistryObject<?, ?> previousBin, TagKey<Item> circuitTag,
           TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(bin).getLowerName();
+        String tierName = Attribute.getBaseTierNN(bin).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)

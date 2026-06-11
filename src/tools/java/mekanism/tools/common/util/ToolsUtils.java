@@ -5,7 +5,6 @@ import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ToolsUtils {
 
@@ -14,7 +13,7 @@ public class ToolsUtils {
      *
      * @apiNote Only call on client
      */
-    public static void addDurability(@NotNull Consumer<Component> tooltipAdder, @NotNull ItemStack stack) {
+    public static void addDurability(Consumer<Component> tooltipAdder, ItemStack stack) {
         if (MekanismToolsConfig.toolsClient.displayDurabilityTooltips.get()) {
             tooltipAdder.accept(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamageValue()));
         }

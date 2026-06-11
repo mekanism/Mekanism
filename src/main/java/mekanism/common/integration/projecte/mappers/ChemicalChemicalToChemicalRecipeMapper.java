@@ -1,6 +1,5 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalChemicalToChemicalRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -27,7 +26,7 @@ public class ChemicalChemicalToChemicalRecipeMapper extends TypedMekanismRecipeM
                   recipe.getRightInput()
             ));
         }
-        return addConversions(mapper, recipe.getLeftInput(), recipe.getRightInput(), recipe::getOutput, ChemicalStack::isEmpty,
-              fakeGroupHelper::forChemicals, fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, contextMap);
+        return addConversions(mapper, recipe.getLeftInput(), recipe.getRightInput(), recipe::getOutput, fakeGroupHelper::forChemicals, fakeGroupHelper::forChemicals,
+              TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

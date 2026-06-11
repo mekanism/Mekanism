@@ -4,6 +4,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jspecify.annotations.Nullable;
 
 public enum TubeTier implements IStorageTier {
     BASIC(BaseTier.BASIC, 4L * FluidType.BUCKET_VOLUME, 750),
@@ -14,7 +15,9 @@ public enum TubeTier implements IStorageTier {
     private final long baseCapacity;
     private final int basePull;
     private final BaseTier baseTier;
+    @Nullable
     private CachedLongValue capacityReference;
+    @Nullable
     private CachedIntValue transferRateReference;
 
     TubeTier(BaseTier tier, long capacity, int transferRate) {

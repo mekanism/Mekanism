@@ -20,12 +20,12 @@ import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
     private final IOreInfo oreInfo = new OreInfo();
+    @Nullable
     private GuiElement inputGauge;
 
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, Inventory inv, Component title) {
@@ -48,16 +48,16 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight(), tile.getEnergySlotX());
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        renderTitleTextWithOffset(guiGraphics, inputGauge == null ? 0 : inputGauge.getRelativeRight(), tile.getEnergySlotX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     private class OreInfo implements IOreInfo {
 
+        @Nullable
         private WeakReference<ChemicalCrystallizerRecipe> cachedRecipe;
 
-        @NotNull
         @Override
         public ChemicalResource getInputChemical() {
             return tile.inputTank.resource();
@@ -82,6 +82,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             return recipe;
         }
 
+        @Nullable
         private ChemicalCrystallizerRecipe getRecipeAndCache() {
             ChemicalCrystallizerRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {

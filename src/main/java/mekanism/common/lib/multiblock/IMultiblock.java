@@ -1,7 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.UUID;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
@@ -45,6 +45,7 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
         }
     }
 
+    @Nullable
     @Override
     default Structure getStructure(MultiblockManager<?> manager) {
         if (manager.getMultiblockType() == getMultiblockType() && manager == getManager()) {

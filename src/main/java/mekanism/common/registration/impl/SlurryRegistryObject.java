@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 public class SlurryRegistryObject<DIRTY extends Chemical, CLEAN extends Chemical> extends DoubleWrappedRegistryObject<Chemical, DIRTY, Chemical, CLEAN> {
 
@@ -12,7 +11,6 @@ public class SlurryRegistryObject<DIRTY extends Chemical, CLEAN extends Chemical
         super(dirtyRO, cleanRO);
     }
 
-    @NotNull
     public DeferredHolder<Chemical, CLEAN> getCleanSlurry() {
         return secondaryRO;
     }

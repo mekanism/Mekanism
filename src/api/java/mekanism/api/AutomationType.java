@@ -1,7 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum AutomationType {
     /**

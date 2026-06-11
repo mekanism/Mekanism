@@ -2,11 +2,10 @@ package mekanism.common.content.miner;
 
 import com.google.common.base.Suppliers;
 import com.mojang.logging.LogUtils;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
@@ -31,17 +30,17 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 /**
  * Copy of PathNavigationRegion, but will force chunks to load as PathNavigationRegion won't do it (if anchor upgrade installed
  */
-@NothingNullByDefault
 public class MinerRegionCache implements CollisionGetter {
     private static final Logger LOGGER = LogUtils.getLogger();
     protected final int centerX;
     protected final int centerZ;
-    protected final ChunkAccess[][] chunks;
+    protected final @Nullable ChunkAccess[][] chunks;
     protected boolean allEmpty;
     protected final Level level;
     private final Supplier<Holder<Biome>> plains;
@@ -114,7 +113,7 @@ public class MinerRegionCache implements CollisionGetter {
 
     @Override
     public List<VoxelShape> getEntityCollisions(@Nullable Entity entity, AABB collisionBox) {
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Nullable

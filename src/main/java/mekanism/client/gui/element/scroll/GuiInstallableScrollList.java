@@ -10,8 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
 
@@ -62,7 +61,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
         }
     }
 
-    protected abstract void setSelected(TYPE newType);
+    protected abstract void setSelected(@Nullable TYPE newType);
 
     @Override
     public void clearSelection() {
@@ -84,7 +83,6 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
         drawScaledScrollingString(guiGraphics, name, 13, y, TextAlignment.LEFT, color, barXShift - 16, 0, false, scale);
     }
 
-    @NotNull
     @Override
     protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
         return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;

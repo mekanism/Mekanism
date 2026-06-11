@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
@@ -29,8 +28,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
             ChemicalStackTemplate rightOutput = basicRecipe.getRightChemicalOutput();
             return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, output -> output.left().isEmpty() || output.right().isEmpty(),
-              fakeGroupHelper::forFluids, null, ElectrolysisRecipeMapper::addConversions);
+        return addConversions(mapper, recipe.getInput(), recipe::getOutput, fakeGroupHelper::forFluids, ElectrolysisRecipeMapper::addConversions);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipeOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {

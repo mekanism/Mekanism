@@ -1,7 +1,6 @@
 package mekanism.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import net.minecraft.client.model.HumanoidModel;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
-@ParametersAreNotNullByDefault
 public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends HumanoidModel<STATE>, A extends HumanoidModel<STATE>> extends HumanoidArmorLayer<STATE, MODEL, A> {
 
     public MekanismArmorLayer(RenderLayerParent<STATE, MODEL> entityRenderer, HumanoidArmorLayer<STATE, MODEL, A> vanillaLayer, EquipmentLayerRenderer equipmentRenderer) {

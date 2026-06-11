@@ -12,8 +12,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -48,7 +48,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -76,6 +76,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public double lastProcessed;
 
     public boolean couldOperate;
+    @Nullable
     private AABB deathZone, advancementArea;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
@@ -156,7 +157,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         coilData.read(input);
         lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
@@ -164,7 +165,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         coilData.write(output);
         output.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
@@ -203,7 +204,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void kill(ServerLevel world) {
-        if (lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (deathZone != null && lastReceivedEnergy > 0 && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             DamageSource damageSource = MekanismDamageTypes.SPS.source(world, deathZone.getCenter());
             LightningBolt lightningBolt = null;
             List<ServerPlayer> nearbyPlayers = null;
@@ -225,9 +226,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                             //Trigger advancements for nearby players
                             if (nearbyPlayers == null) {
                                 nearbyPlayers = new ArrayList<>();
-                                for (ServerPlayer player : world.players()) {
-                                    if (advancementArea.contains(player.position())) {
-                                        nearbyPlayers.add(player);
+                                if (advancementArea != null) {//Should not be null unless something went wrong
+                                    for (ServerPlayer player : world.players()) {
+                                        if (advancementArea.contains(player.position())) {
+                                            nearbyPlayers.add(player);
+                                        }
                                     }
                                 }
                             }
@@ -298,7 +301,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             return ret;
         }
 
-        public void write(@NotNull ValueOutput output) {
+        public void write(ValueOutput output) {
             if (!coilMap.isEmpty()) {
                 ValueOutputList coilsOutput = output.childrenList(SerializationConstants.COILS);
                 for (CoilData data : coilMap.values()) {
@@ -310,7 +313,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             }
         }
 
-        public void read(@NotNull ValueInput input) {
+        public void read(ValueInput input) {
             coilMap.clear();
             ValueInputList coilsInput = input.childrenListOrEmpty(SerializationConstants.COILS);
             for (ValueInput coilInput : coilsInput) {
@@ -353,7 +356,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (o == this) {
                 return true;
             }

@@ -7,7 +7,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import java.util.function.Function;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -43,7 +42,6 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
-@NothingNullByDefault
 public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public static final int INACCESSIBLE_LEVEL = ChunkMap.MAX_VIEW_DISTANCE + 1;

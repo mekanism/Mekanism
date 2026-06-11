@@ -18,8 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class Attributes {
 
@@ -120,7 +119,7 @@ public class Attributes {
     public interface PathCheck {
 
         @Nullable
-        PathType getBlockPathType(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @Nullable Mob mob);
+        PathType getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, @Nullable Mob mob);
     }
 
     public record AttributeCustomPathType(Attributes.PathCheck pathCheck) implements Attribute {
@@ -138,7 +137,7 @@ public class Attributes {
             this.redstoneFunction = redstoneFunction;
         }
 
-        public int getRedstoneLevel(TILE tile, @NotNull Direction side) {
+        public int getRedstoneLevel(TILE tile, Direction side) {
             return redstoneFunction.applyAsInt(tile, side);
         }
     }

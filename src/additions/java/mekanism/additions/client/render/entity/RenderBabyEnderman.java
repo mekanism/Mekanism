@@ -4,7 +4,6 @@ import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.Vec3;
  * Copy of vanilla's enderman render, modified to use our own model/layer that is properly scaled, so that the block is held in the correct spot and the head is in the
  * proper place.
  */
-@NothingNullByDefault
 public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
     public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();

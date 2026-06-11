@@ -24,8 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IStateExtendedFluidLoggable {
 
@@ -45,57 +44,53 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IState
     }
 
     @Override
-    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
+    @Nullable
     @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
     }
 
-    @NotNull
     @Override
-    protected FluidState getFluidState(@NotNull BlockState state) {
+    protected FluidState getFluidState(BlockState state) {
         return getFluid(state);
     }
 
     @Override
-    public boolean placeLiquid(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull FluidState fluidState) {
+    public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidState) {
         return state.getValue(TYPE) != SlabType.DOUBLE && IStateExtendedFluidLoggable.super.placeLiquid(world, pos, state, fluidState);
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable LivingEntity owner, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+    public boolean canPlaceLiquid(@Nullable LivingEntity owner, BlockGetter world, BlockPos pos, BlockState state, Fluid fluid) {
         return state.getValue(TYPE) != SlabType.DOUBLE && IStateExtendedFluidLoggable.super.canPlaceLiquid(owner, world, pos, state, fluid);
     }
 
-    @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
-          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos currentPos,
+          Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         updateFluids(level, currentPos, state, scheduledTickAccess);
         return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
-    @NotNull
     @Override
-    public ItemStack pickupBlock(@Nullable LivingEntity owner, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    public ItemStack pickupBlock(@Nullable LivingEntity owner, LevelAccessor world, BlockPos pos, BlockState state) {
         //Manually declare which pickupBlock we want to be using
         return IStateExtendedFluidLoggable.super.pickupBlock(owner, world, pos, state);
     }
 
-    @NotNull
     @Override
     public Optional<SoundEvent> getPickupSound() {
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound();
     }
 
-    @NotNull
     @Override
-    public Optional<SoundEvent> getPickupSound(@NotNull BlockState state) {
+    public Optional<SoundEvent> getPickupSound(BlockState state) {
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound(state);
     }

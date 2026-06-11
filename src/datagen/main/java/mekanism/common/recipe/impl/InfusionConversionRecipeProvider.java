@@ -110,14 +110,14 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
 
     private void addInfusionConversionGoldRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)), MekanismChemicals.GOLD.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD)), MekanismChemicals.GOLD.asTemplate(10), basePath, "from_dust");
         //Enriched
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_GOLD), MekanismChemicals.GOLD.asTemplate(80), basePath, "from_enriched");
     }
 
     private void addInfusionConversionTinRecipes(RecipeOutput consumer, String basePath) {
         //Dust
-        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)), MekanismChemicals.TIN.asTemplate(10), basePath, "from_dust");
+        infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.TIN)), MekanismChemicals.TIN.asTemplate(10), basePath, "from_dust");
         //Enriched
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.ENRICHED_TIN), MekanismChemicals.TIN.asTemplate(80), basePath, "from_enriched");
     }

@@ -25,9 +25,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.PacketEntityGuiInteract;
+import mekanism.common.network.to_server.PacketEntityGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.util.ItemAccessUtils;
@@ -43,8 +44,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
@@ -74,7 +74,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
         this(gui, provider, y, null);
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, @NotNull InteractionHand hand) {
+    public GuiSecurityTab(IGuiWrapper gui, InteractionHand hand) {
         this(gui, new SecurityInfoProvider<>(IItemSecurityUtils.INSTANCE, () -> ItemAccessUtils.playerHandAccess(minecraft.player, hand)), 34, hand);
     }
 
@@ -120,28 +120,28 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
         ISecurityObject security = dataSource.securityObject();
-        if (security != null && security.ownerMatches(minecraft.player)) {
+        if (security != null && minecraft.player != null && security.ownerMatches(minecraft.player)) {
             int button = event.button();
             if (currentHand != null) {
                 PacketUtils.sendToServer(new PacketItemGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? ItemGuiInteraction.NEXT_SECURITY_MODE
-                                                                                                         : ItemGuiInteraction.PREVIOUS_SECURITY_MODE, currentHand));
+                                                                                                              : ItemGuiInteraction.PREVIOUS_SECURITY_MODE, currentHand));
             } else {
                 Object provider = dataSource.objectSupplier.get();
                 if (provider instanceof BlockEntity tile) {
                     PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
-                                                                                                         : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
+                                                                                                              : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                 } else if (provider instanceof Entity entity) {
-                    PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
-                                                                                                         : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+                    PacketUtils.sendToServer(new PacketEntityGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                                    : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                 }
             }
         }
     }
 
     @Override
-    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
@@ -152,21 +152,19 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
             this(objectSupplier, securityUtils::securityCapability, securityUtils::ownerCapability);
         }
 
+        @SuppressWarnings("Convert2Diamond")//Makes the null result provide warnings
         public static SecurityInfoProvider<BlockEntity> create(BlockEntity tile) {
-            return new SecurityInfoProvider<>(
-                  () -> tile,
-                  t -> {
-                      if (t.getLevel() == null) {
-                          return null;
-                      }
-                      return IBlockSecurityUtils.INSTANCE.securityCapability(t.getLevel(), t.getBlockPos(), t);
-                  },
-                  t -> {
-                      if (t.getLevel() == null) {
-                          return null;
-                      }
-                      return IBlockSecurityUtils.INSTANCE.ownerCapability(t.getLevel(), t.getBlockPos(), t);
-                  }
+            return new SecurityInfoProvider<BlockEntity>(() -> tile, t -> {
+                if (t.getLevel() == null) {
+                    return null;
+                }
+                return IBlockSecurityUtils.INSTANCE.securityCapability(t.getLevel(), t.getBlockPos(), t);
+            }, t -> {
+                if (t.getLevel() == null) {
+                    return null;
+                }
+                return IBlockSecurityUtils.INSTANCE.ownerCapability(t.getLevel(), t.getBlockPos(), t);
+            }
             );
         }
 

@@ -14,8 +14,7 @@ import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -69,7 +68,7 @@ public class FactoryRegistry {
      * @param holder  the holder to add methods to
      * @param subject the subject to bind to
      */
-    public static void bindTo(BoundMethodHolder holder, @NotNull Object subject) {
+    public static void bindTo(BoundMethodHolder holder, Object subject) {
         bindTo(holder, subject, subject.getClass());
     }
 
@@ -81,7 +80,7 @@ public class FactoryRegistry {
      * @param subjectClass the actual class that subject will be (or would be if null)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void bindTo(BoundMethodHolder holder, @Nullable Object subject, @NotNull Class<?> subjectClass) {
+    public static void bindTo(BoundMethodHolder holder, @Nullable Object subject, Class<?> subjectClass) {
         List<? extends ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subjectClass);
         for (ComputerMethodFactory computerMethodFactory : factoriesToBind) {
             computerMethodFactory.bindTo(subject, holder);

@@ -2,14 +2,12 @@ package mekanism.common.capabilities.proxy;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class AutomatedEnergyHandler implements EnergyHandler {
 
     @Nullable

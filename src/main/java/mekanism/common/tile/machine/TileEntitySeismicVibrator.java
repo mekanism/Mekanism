@@ -9,9 +9,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -24,16 +24,19 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
 
     public int clientPiston;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -43,12 +46,11 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, listener);
         return new BasicEnergyHolder(energyContainer, facingSupplier, BACK_ONLY);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
@@ -57,8 +59,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
+    protected void onUpdateClient(Level level) {
+        super.onUpdateClient(level);
         if (getActive()) {
             clientPiston++;
         }
@@ -66,8 +68,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
         boolean isActive = false;
         if (canFunction()) {
@@ -131,6 +133,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @ComputerMethod
     BlockState getBlockAt(int chunkRelativeX, int y, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
+        Level level = validateLevel();
         if (level.isOutsideBuildHeight(y)) {
             throw new ComputerException("Y '%d' is out of range must be between %d and %d. (Inclusive)", y, level.getMinY(), level.getMaxY());
         }
@@ -141,6 +144,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @ComputerMethod(methodDescription = "Get a column info, table key is the Y level")
     Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
+        Level level = validateLevel();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
         BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinY(), chunkRelativeZ);
         for (BlockPos pos : BlockPos.betweenClosed(minPos, new BlockPos(minPos.getX(), level.getMaxY() + 1, minPos.getZ()))) {

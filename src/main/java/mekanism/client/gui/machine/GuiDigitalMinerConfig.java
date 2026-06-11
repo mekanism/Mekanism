@@ -33,7 +33,8 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem;
+import mekanism.common.network.to_server.PacketTileGuiInteractItem.GuiInteractionItem;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -52,14 +53,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
     private static final Identifier INVERSE = MekanismUtils.getResource(ResourceType.GUI, "switch/inverse.png");
 
     private final int maxHeightLength;
-    private GuiTextField radiusField, minField, maxField;
 
     public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -102,18 +102,18 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addRenderableWidget(new TooltipToggleButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"), tile::getInverseRequiresReplacement,
               (element, _, _) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
               MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.YES), MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.NO)));
-        radiusField = addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11));
-        radiusField.setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
-        radiusField.setInputValidator(InputValidator.DIGIT);
-        radiusField.configureDigitalBorderInput(() -> setText(radiusField, GuiInteraction.SET_RADIUS));
-        minField = addRenderableWidget(new GuiTextField(this, 13, 71, 38, 11));
-        minField.setMaxLength(maxHeightLength);
-        minField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
-        minField.configureDigitalBorderInput(() -> setText(minField, GuiInteraction.SET_MIN_Y));
-        maxField = addRenderableWidget(new GuiTextField(this, 13, 98, 38, 11));
-        maxField.setMaxLength(maxHeightLength);
-        maxField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
-        maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
+        addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11))
+              .setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length())
+              .setInputValidator(InputValidator.DIGIT)
+              .configureDigitalBorderInput(text -> setText(text, GuiInteraction.SET_RADIUS));
+        addRenderableWidget(new GuiTextField(this, 13, 71, 38, 11))
+              .setMaxLength(maxHeightLength)
+              .setInputValidator(InputValidator.DIGIT_OR_NEGATIVE)
+              .configureDigitalBorderInput(text -> setText(text, GuiInteraction.SET_MIN_Y));
+        addRenderableWidget(new GuiTextField(this, 13, 98, 38, 11))
+              .setMaxLength(maxHeightLength)
+              .setInputValidator(InputValidator.DIGIT_OR_NEGATIVE)
+              .configureDigitalBorderInput(text -> setText(text, GuiInteraction.SET_MAX_Y));
         // Note: We add this after all the buttons have their warnings added so that it is further down the tracker
         // so the tracker can short circuit on this type of warning and not have to check all the filters if one of
         // the ones that are currently being shown has the warning
@@ -121,7 +121,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     private void updateInverseReplaceTarget(Item target) {
-        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
+        PacketUtils.sendToServer(new PacketTileGuiInteractItem(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
     }
 
     @Override
@@ -130,17 +130,17 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderTitleTextWithOffset(guiGraphics, 14);//Adjust spacing for back button
-        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 5);
-        drawScreenText(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 18);
-        drawScreenText(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 44);
-        drawScreenText(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 71);
+        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 0, 5);
+        drawScreenText(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 0, 18);
+        drawScreenText(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 0, 44);
+        drawScreenText(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 0, 71);
     }
 
     @Override
-    protected void onClick(IFilter<?> filter, int index) {
+    protected void onClick(@Nullable IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
             addWindow(GuiMinerItemStackFilter.edit(this, tile, (MinerItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {

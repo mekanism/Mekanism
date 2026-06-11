@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -48,7 +47,6 @@ import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
@@ -65,6 +63,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,8 +73,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -88,7 +87,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     protected BooleanSupplier[] recheckAllRecipeErrors;
     protected final ErrorTracker errorTracker;
     private final boolean[] activeStates;
-    protected ProcessInfo[] processInfoSlots;
+    protected final ProcessInfo[] processInfoSlots;
     /**
      * This Factory's tier.
      */
@@ -110,19 +109,21 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     /**
      * This machine's factory type.
      */
-    @NotNull
     protected final FactoryType type;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     protected MachineEnergyContainer<TileEntityFactory<?>> energyContainer;
     protected final List<IInventorySlot> inputSlots;
     protected final List<IInventorySlot> outputSlots;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
-        FactoryTier tier = Objects.requireNonNull(Attribute.getTier(blockProvider, FactoryTier.class));
+        FactoryTier tier = Attribute.getTierNN(blockProvider, FactoryTier.class);
         this.tier = tier;
         recipeCacheLookupMonitors = new FactoryRecipeCacheLookupMonitor[tier.processes];
+        processInfoSlots = new ProcessInfo[tier.processes];
         super(blockProvider, pos, state);
         type = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
         inputSlots = new ArrayList<>();
@@ -145,7 +146,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
-        ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         progress = new int[tier.processes];
@@ -182,7 +182,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, () -> {
             listener.onContentsChanged();
             for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
@@ -192,7 +192,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -220,8 +219,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         energySlot.fillContainerOrConvert(null);
 
         handleSecondaryFuel();
@@ -279,16 +278,16 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
      *
      * @return True if the recipe produces the given output.
      */
-    public boolean inputProducesOutput(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+    public boolean inputProducesOutput(int process, ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
         return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, false, updateCache) != null;
     }
 
     @Contract("null, _ -> false")
-    protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @NotNull ItemResource itemType);
+    protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, ItemResource itemType);
 
     @Nullable
-    private RECIPE getRecipeForInput(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+    private RECIPE getRecipeForInput(int process, ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean skipCacheLookup, boolean updateCache) {
         if (!skipCacheLookup && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //If our recipe caches are valid, grab our cached recipe and see if it is still valid
@@ -312,7 +311,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Nullable
-    protected abstract RECIPE findRecipe(@NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot);
+    protected abstract RECIPE findRecipe(ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot);
 
     protected abstract int getNeededInput(RECIPE recipe, ItemResource inputType);
 
@@ -341,12 +340,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     protected void handleSecondaryFuel() {
     }
 
-    public abstract boolean isItemValidForSlot(@NotNull ItemResource itemType);
+    public abstract boolean isItemValidForSlot(ItemResource itemType);
 
     /**
      * Like isItemValidForSlot makes no assumptions about current stored types
      */
-    public abstract boolean isValidInputItem(@NotNull ItemResource itemType);
+    public abstract boolean isValidInputItem(ItemResource itemType);
 
     public int getProgress(int cacheIndex) {
         return progress[cacheIndex];
@@ -386,7 +385,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void loadAdditional(@NotNull ValueInput input) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         Optional<int[]> optionalProgress = input.getIntArray(SerializationConstants.PROGRESS);
         if (optionalProgress.isPresent()) {
@@ -401,31 +400,31 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putIntArray(SerializationConstants.PROGRESS, Arrays.copyOf(progress, progress.length));
     }
 
     @Override
-    public void writeSustainedData(@NotNull ValueOutput output) {
+    public void writeSustainedData(ValueOutput output) {
         super.writeSustainedData(output);
         output.putBoolean(SerializationConstants.SORTING, isSorting());
     }
 
     @Override
-    public void readSustainedData(@NotNull ValueInput input) {
+    public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         sorting = input.getBooleanOr(SerializationConstants.SORTING, sorting);
     }
 
     @Override
-    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(MekanismDataComponents.SORTING, isSorting());
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         sorting = input.getOrDefault(MekanismDataComponents.SORTING, sorting);
     }
@@ -439,9 +438,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
     }
 
-    @NotNull
     @Override
-    public List<Component> getInfo(@NotNull Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
@@ -470,7 +468,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
+    public void parseUpgradeData(IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
@@ -551,7 +549,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         // And our current process has a cached recipe then set the lazily initialized per slot value
                         // Note: If something goes wrong, and we end up with zero as how much we need as an input
                         // we just bump the value up to one to make sure we properly handle it
-                        recipeProcessInfo.lazyMinPerSlot = (info, factory) -> factory.getNeededInput(info.recipe, info.item);
+                        recipeProcessInfo.lazyMinPerSlot = (info, factory) -> info.recipe == null ? 1 : factory.getNeededInput(info.recipe, info.item);
                     }
                 }
             }
@@ -695,7 +693,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
     }
 
-    public record ProcessInfo(int process, @NotNull FactoryInputInventorySlot inputSlot, @NotNull IInventorySlot outputSlot,
+    public record ProcessInfo(int process, FactoryInputInventorySlot inputSlot, IInventorySlot outputSlot,
                               @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
@@ -705,6 +703,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         private final ITEM item;
         @Nullable
         private ToIntBiFunction<RecipeProcessInfo<ITEM, RECIPE>, TileEntityFactory<RECIPE>> lazyMinPerSlot;
+        @Nullable
         private RECIPE recipe;
         private long minPerSlot = 1;
         private long totalCount;

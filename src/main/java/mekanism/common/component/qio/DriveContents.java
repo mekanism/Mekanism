@@ -12,15 +12,13 @@ import java.util.UUID;
 import java.util.function.LongBinaryOperator;
 import java.util.function.ObjLongConsumer;
 import java.util.stream.LongStream;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-
-@NothingNullByDefault//Sorted map so that the save order is consistent
+//Sorted map so that the save order is consistent
 public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
 
     public static final DriveContents EMPTY = new DriveContents(Object2LongSortedMaps.emptyMap());

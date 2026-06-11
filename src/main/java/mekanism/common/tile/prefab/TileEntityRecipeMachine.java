@@ -24,7 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -34,6 +35,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
     private final List<RecipeError> errorTypes;
     private final boolean[] trackedErrors;
 
+    @UnknownNullability//Initialized in presetVariables
     protected RecipeCacheLookupMonitor<RECIPE> recipeCacheLookupMonitor;
     @Nullable
     private IContentsListener recipeCacheSaveOnlyListener;
@@ -129,7 +131,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = ThreadLocalRandom.current().nextInt(RECIPE_CHECK_FREQUENCY);
-        return () -> !tile.playersUsing.isEmpty() && tile.hasLevel() && tile.getLevel().getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
+        return () -> !tile.playersUsing.isEmpty() && tile.getLevel() != null && tile.getLevel().getGameTime() % RECIPE_CHECK_FREQUENCY == checkOffset;
     }
 
     @Nullable
@@ -160,15 +162,17 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return null;
     }
 
+    @Nullable
     @Override
-    protected final @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected final IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         return getInitialEnergyContainer(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+    @Nullable
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
     }
 

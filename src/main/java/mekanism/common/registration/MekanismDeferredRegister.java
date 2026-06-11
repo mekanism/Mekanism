@@ -2,13 +2,11 @@ package mekanism.common.registration;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@NothingNullByDefault
 public class MekanismDeferredRegister<T> extends DeferredRegister<T> {
 
     private final Function<ResourceKey<T>, ? extends MekanismDeferredHolder<T, ?>> holderCreator;

@@ -24,15 +24,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIODriveArray extends TileEntityQIOComponent implements IQIODriveHolder {
 
@@ -41,20 +41,19 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     private static final int BITS_PER_DRIVE_STATUS = 4;//max 15 ordinals
     private static final int DRIVE_STATUS_MASK = 0xF;
 
-    private List<QIODriveSlot> driveSlots;
+    private final List<QIODriveSlot> driveSlots;
     private long driveStatus = 0;
     private long prevDriveStatus = Long.MAX_VALUE;
 
     public TileEntityQIODriveArray(BlockPos pos, BlockState state) {
+        driveSlots = new ArrayList<>();
         super(MekanismBlocks.QIO_DRIVE_ARRAY, pos, state);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         final int xSize = 176;
-        driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 6; x++) {
                 QIODriveSlot slot = new QIODriveSlot(this, y * 6 + x, this::getLevel, listener, xSize / 2 - (6 * 18 / 2) + x * 18, 70 + y * 18);
@@ -66,8 +65,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
-        boolean needsUpdate = super.onUpdateServer(frequency);
+    protected boolean onUpdateServer(ServerLevel level, @Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(level, frequency);
         if (level.getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             for (int i = 0; i < DRIVE_SLOTS; i++) {
                 QIODriveSlot slot = driveSlots.get(i);
@@ -121,7 +120,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void saveAdditional(@NotNull ValueOutput output) {
+    public void saveAdditional(ValueOutput output) {
         QIOFrequency freq = getQIOFrequency();
         if (freq != null) {
             // save all item data before we save
@@ -130,20 +129,19 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         super.saveAdditional(output);
     }
 
-    @NotNull
     @Override
     public ModelData getModelData() {
         return ModelData.of(DRIVE_STATUS_PROPERTY, driveStatus);
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putLong(SerializationConstants.DRIVES, driveStatus);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
         long status = input.getLongOr(SerializationConstants.DRIVES, driveStatus);
         if (status != driveStatus) {
@@ -227,9 +225,10 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, VALUES, ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
 
+        @Nullable
         private final Identifier model;
 
-        DriveStatus(Identifier model) {
+        DriveStatus(@Nullable Identifier model) {
             this.model = model;
         }
 
@@ -237,6 +236,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
             return ordinal() - READY.ordinal();
         }
 
+        @Nullable
         public Identifier getModel() {
             return model;
         }

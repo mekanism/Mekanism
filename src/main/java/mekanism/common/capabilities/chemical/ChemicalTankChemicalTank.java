@@ -5,7 +5,6 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -14,19 +13,17 @@ import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
-import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ChemicalTankChemicalTank extends BasicChemicalTank {
 
     public static ChemicalTankChemicalTank create(TileEntityChemicalTank tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Chemical tank tile cannot be null");
         ChemicalTankTier tier = tile.getTier();
-        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        LongSupplier gameTimeSupplier = tile::getGameTime;
         IntSupplier rateLimit = tier::getTransferRate;
         //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
         return new ChemicalTankChemicalTank(tier, ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),

@@ -6,6 +6,7 @@ import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
+import org.jspecify.annotations.Nullable;
 
 public enum ConductorTier implements ITier {
     BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, Color.rgbad(0.2, 0.2, 0.2, 1)),
@@ -18,8 +19,11 @@ public enum ConductorTier implements ITier {
     private final double baseHeatCapacity;
     private final double baseConductionInsulation;
     private final BaseTier baseTier;
+    @Nullable
     private CachedDoubleValue conductionReference;
+    @Nullable
     private CachedDoubleValue capacityReference;
+    @Nullable
     private CachedDoubleValue insulationReference;
 
     ConductorTier(BaseTier tier, double conduction, double heatCapacity, double conductionInsulation, Color color) {

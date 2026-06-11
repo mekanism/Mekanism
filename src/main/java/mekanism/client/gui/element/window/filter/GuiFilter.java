@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
@@ -32,8 +33,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
       implements GuiFilterHelper<TILE> {
@@ -71,7 +71,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, event, isDoubleClick) -> {
                     //Add the window for the filter select dialog to the parent gui
                     IGuiWrapper wrapper = element.gui();
-                    wrapper.addWindow(getFilterSelect(wrapper, this.tile));
+                    GuiFilterSelect<TILE> filterSelect = Objects.requireNonNull(getFilterSelect(wrapper, this.tile),
+                          "Returned that there was a filter select from hasFilterSelect, but didn't provide a selection window.");
+                    wrapper.addWindow(filterSelect);
                     //And close the filter
                     return close(element, event, isDoubleClick);
                 })).setTooltip(TooltipUtils.BACK);
@@ -127,7 +129,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, event, isDoubleClick) -> {
             if (origFilter != null) {
-                PacketUtils.sendToServer(new PacketEditFilter<>(this.tile.getBlockPos(), origFilter, null));
+                PacketUtils.sendToServer(PacketEditFilter.delete(this.tile.getBlockPos(), origFilter));
             }
             return close(element, event, isDoubleClick);
         }));
@@ -168,10 +170,11 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }
     }
 
-    protected static <FILTER extends SorterFilter<FILTER>> void validateAndSaveSorterFilter(GuiFilter<FILTER, ?> guiFilter, GuiTextField minField, GuiTextField maxField) {
+    protected static <FILTER extends SorterFilter<FILTER>> void validateAndSaveSorterFilter(GuiFilter<FILTER, ?> guiFilter, @Nullable GuiTextField minField,
+          @Nullable GuiTextField maxField) {
         //Note: This is here not in GuiSorterFilterHelper so that it can access the saveFilter/filterSaveFailed methods
         if (guiFilter.filter.hasFilter()) {
-            if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
+            if (minField == null || maxField == null || minField.getText().isEmpty() || maxField.getText().isEmpty()) {
                 guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_SIZE_MISSING);
             } else {
                 int min = Integer.parseInt(minField.getText());
@@ -201,18 +204,18 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         ticker = 0;
     }
 
+    @SuppressWarnings("Convert2Diamond")//Confuses IntelliJ about the nullability state
     protected void saveFilter() {
         if (isNew) {
             PacketUtils.sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            PacketUtils.sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, filter));
+            PacketUtils.sendToServer(new PacketEditFilter<FILTER>(tile.getBlockPos(), Objects.requireNonNull(origFilter), filter));
         }
         close();
     }
 
     protected abstract ILangEntry getNoFilterSaveError();
 
-    @NotNull
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override

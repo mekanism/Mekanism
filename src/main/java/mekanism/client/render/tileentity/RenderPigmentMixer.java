@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.List;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.lib.Outlines;
@@ -27,9 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer, PigmentMixerRenderState> implements IWireFrameRenderer {
 
     private static final float SHAFT_SPEED = 5F;
@@ -50,10 +48,10 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void extractRenderState(TileEntityPigmentMixer mixer, PigmentMixerRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(TileEntityPigmentMixer mixer, PigmentMixerRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(mixer, state, partialTick, cameraPosition, breakProgress);
         state.direction = mixer.getDirection();
-        state.rotation = (mixer.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360;
+        state.rotation = (mixer.getGameTime() + partialTick) * SHAFT_SPEED % 360;
     }
 
     @Override

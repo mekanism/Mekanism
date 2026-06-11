@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.example.component;
 
-import org.jetbrains.annotations.NotNull;
-
 public class CrTExampleComment implements ICrTExampleComponent {
 
     private final String[] comments;
@@ -20,7 +18,6 @@ public class CrTExampleComment implements ICrTExampleComponent {
         this.comments = comments;
     }
 
-    @NotNull
     @Override
     public String asString() {
         if (comments.length == 1) {

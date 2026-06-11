@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.Mekanism;
@@ -25,7 +24,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-@NothingNullByDefault
 public abstract class BaseEmiDefaults implements DataProvider {
 
     private static final Codec<List<Identifier>> CODEC = ExtraCodecs.nonEmptyList(Identifier.CODEC.listOf())

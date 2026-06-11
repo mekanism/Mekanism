@@ -3,7 +3,6 @@ package mekanism.common.recipe.compat;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.core.Holder;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 //TODO: Decide if we should have compat recipes go into their own data packs
-@NothingNullByDefault
 public abstract class CompatRecipeProvider implements ISubRecipeProvider {
 
     protected final HolderLookup.Provider registries;

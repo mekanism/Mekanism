@@ -10,26 +10,27 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListener {
 
     public static final ScubaTankArmor SCUBA_TANK = new ScubaTankArmor();
 
+    @Nullable
     private ModelScubaTank model;
 
     private ScubaTankArmor() {
     }
 
     @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         model = new ModelScubaTank(Minecraft.getInstance().getEntityModels());
     }
 
     @Override
     public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
           STATE state, ItemStack stack) {
-        if (!baseModel.body.visible) {
+        if (model == null || !baseModel.body.visible) {
             //If the body model shouldn't show don't bother displaying it
             return;
         }

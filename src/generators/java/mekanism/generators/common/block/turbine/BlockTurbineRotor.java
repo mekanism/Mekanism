@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, BlockTypeTile<TileEntityTurbineRotor>> {
 
@@ -25,10 +24,9 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         super(GeneratorsBlockTypes.TURBINE_ROTOR, defaultProperties(properties).mapColor(MapColor.COLOR_GRAY));
     }
 
-    @NotNull
     @Override
-    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
-          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player,
+          InteractionHand hand, BlockHitResult hit) {
         TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
@@ -36,19 +34,19 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        InteractionResult wrenchResult = tile.tryWrench(world, state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
         if (!player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
-                if (tile.addBlade(true)) {
+                if (tile.addBlade(world, true)) {
                     stack.consume(1, player);
                     return InteractionResult.SUCCESS_SERVER;
                 }
             }
         } else if (stack.isEmpty()) {
-            if (tile.removeBlade()) {
+            if (tile.removeBlade(world)) {
                 if (!player.isCreative()) {
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
                     //TODO - 26.1: I don't think this setChanged call or the one lower down are necessary anymore?
@@ -58,7 +56,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             }
         } else if (stack.getItem() instanceof ItemTurbineBlade) {
             if (stack.count() < stack.getMaxStackSize()) {
-                if (tile.removeBlade()) {
+                if (tile.removeBlade(world)) {
                     if (!player.isCreative()) {
                         stack.grow(1);
                         player.getInventory().setChanged();

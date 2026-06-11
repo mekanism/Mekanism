@@ -1,18 +1,15 @@
 package mekanism.common.capabilities.proxy;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.NonNull;
 
-@NothingNullByDefault
-public class ProxyEnergyHandler extends ProxyHandler<@NonNull IEnergyContainerHolder> implements EnergyHandler {
+public class ProxyEnergyHandler extends ProxyHandler<IEnergyContainerHolder> implements EnergyHandler {
 
     public ProxyEnergyHandler(@Nullable Direction side, IEnergyContainerHolder holder) {
         super(side, holder);

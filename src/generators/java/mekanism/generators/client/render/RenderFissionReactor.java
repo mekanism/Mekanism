@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -29,9 +28,8 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing, FissionRenderState> {
 
     private static final int GLOW_ARGB = ARGB.color(0.6F, 0x76E0EC);
@@ -50,7 +48,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
 
     @Override
     public void extractRenderState(TileEntityFissionReactorCasing reactor, FissionRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(reactor, state, partialTick, cameraPosition, breakProgress);
         FissionReactorMultiblockData multiblock = reactor.getMultiblock();
         state.gather(multiblock);
@@ -124,14 +122,12 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
 
         public List<FormedAssembly> assemblies = new ArrayList<>();
 
-        @Nullable
-        public RenderResizableCuboid.TexturePicker coolantTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker coolantTexture;
         public float coolantMaxY;
         public int coolantGlow;
         public int coolantColor;
 
-        @Nullable
-        public RenderResizableCuboid.TexturePicker heatedCoolantTexture;
+        public RenderResizableCuboid.@Nullable TexturePicker heatedCoolantTexture;
         public float heatedCoolantMaxY;
         public int heatedCoolantColor;
     }

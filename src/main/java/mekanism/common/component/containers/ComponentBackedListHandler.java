@@ -3,14 +3,12 @@ package mekanism.common.component.containers;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.type.IListContainerType;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault
 public abstract class ComponentBackedListHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>,
       CONTAINER_TYPE extends IListContainerType<TYPE, CONTAINER, ATTACHED>> extends ComponentBackedHandler<CONTAINER, ATTACHED, CONTAINER_TYPE> {
 

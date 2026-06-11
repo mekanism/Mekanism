@@ -11,7 +11,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends MekanismDeferredHolder<BlockEntityType<?>, BlockEntityType<BE>> {
 
@@ -51,8 +51,9 @@ public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends Mekani
         }
     }
 
-    record CapabilityData<BE extends BlockEntity, CAP, CONTEXT>(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
-                                                                        BooleanSupplier shouldApply) {
+    record CapabilityData<BE extends BlockEntity, CAP, CONTEXT extends @Nullable Object>(BlockCapability<CAP, CONTEXT> capability,
+                                                                                         ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
+                                                                                         BooleanSupplier shouldApply) {
 
         private void registerProvider(RegisterCapabilitiesEvent event, BlockEntityType<BE> type) {
             if (shouldApply.getAsBoolean()) {

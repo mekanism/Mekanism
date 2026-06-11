@@ -27,12 +27,11 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, MekanismTileContainer<TileEntityLogisticalSorter>> {
 
@@ -68,22 +67,22 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         // Write to info display
         renderTitleText(guiGraphics);
-        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 4);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_SINGLE_ITEM.translate(), 19);
+        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 0, 4);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_SINGLE_ITEM.translate(), 0, 19);
         drawScreenText(guiGraphics, OnOff.of(tile.getSingleItem()).getTextComponent(), 14, 32);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_ROUND_ROBIN.translate(), 49);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_ROUND_ROBIN.translate(), 0, 49);
         drawScreenText(guiGraphics, OnOff.of(tile.getRoundRobin()).getTextComponent(), 14, 62);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_AUTO_EJECT.translate(), 79);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_AUTO_EJECT.translate(), 0, 79);
         drawScreenText(guiGraphics, OnOff.of(tile.getAutoEject()).getTextComponent(), 14, 92);
-        drawScreenText(guiGraphics, MekanismLang.SORTER_DEFAULT.translate(), 109);
+        drawScreenText(guiGraphics, MekanismLang.SORTER_DEFAULT.translate(), 0, 109);
     }
 
     @Override
-    protected void onClick(IFilter<?> filter, int index) {
+    protected void onClick(@Nullable IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
             addWindow(GuiSorterItemStackFilter.edit(this, tile, (SorterItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
@@ -100,6 +99,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
 
     @Override
     protected List<ItemStack> getModIDStacks(String tagName) {
-        return TagCache.getItemModIDStacks(Minecraft.getInstance().level.registryAccess(), tagName);
+        return TagCache.getItemModIDStacks(registryAccess(), tagName);
     }
 }

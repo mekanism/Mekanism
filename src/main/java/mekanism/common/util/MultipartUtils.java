@@ -9,6 +9,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
 public final class MultipartUtils {
 
@@ -34,25 +35,25 @@ public final class MultipartUtils {
         return new RayTraceVectors(start, end);
     }
 
+    @Nullable
     public static AdvancedRayTraceResult collisionRayTrace(Entity entity, BlockPos pos, Collection<VoxelShape> boxes) {
         RayTraceVectors vecs = getRayTraceVectors(entity);
         return collisionRayTrace(pos, vecs.start(), vecs.end(), boxes);
     }
 
+    @Nullable
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3 start, Vec3 end, Collection<VoxelShape> boxes) {
         double minDistance = Double.POSITIVE_INFINITY;
         AdvancedRayTraceResult hit = null;
         int i = -1;
         for (VoxelShape shape : boxes) {
-            if (shape != null) {
-                BlockHitResult result = shape.clip(start, end, pos);
-                if (result != null) {
-                    AdvancedRayTraceResult advancedResult = new AdvancedRayTraceResult(result, shape, i);
-                    double d = advancedResult.squareDistanceTo(start);
-                    if (d < minDistance) {
-                        minDistance = d;
-                        hit = advancedResult;
-                    }
+            BlockHitResult result = shape.clip(start, end, pos);
+            if (result != null) {
+                AdvancedRayTraceResult advancedResult = new AdvancedRayTraceResult(result, shape, i);
+                double d = advancedResult.squareDistanceTo(start);
+                if (d < minDistance) {
+                    minDistance = d;
+                    hit = advancedResult;
                 }
             }
             i++;

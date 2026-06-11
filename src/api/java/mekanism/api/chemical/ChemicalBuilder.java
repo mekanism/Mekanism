@@ -2,13 +2,11 @@ package mekanism.api.chemical;
 
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.neoforged.fml.loading.FMLEnvironment;
 
-@NothingNullByDefault
 public class ChemicalBuilder {
 
     private final Identifier texture;

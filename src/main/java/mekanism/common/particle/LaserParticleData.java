@@ -11,7 +11,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public record LaserParticleData(Direction direction, double distance, float energyScale) implements ParticleOptions {
 
@@ -27,7 +26,6 @@ public record LaserParticleData(Direction direction, double distance, float ener
           LaserParticleData::new
     );
 
-    @NotNull
     @Override
     public ParticleType<?> getType() {
         return MekanismParticleTypes.LASER.get();

@@ -67,8 +67,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -142,6 +141,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private long heatedCoolantCapacity;
     private long fuelCapacity;
 
+    @Nullable
     private AABB hotZone;
 
     public float prevCoolantScale;
@@ -267,7 +267,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void readUpdateTag(@NotNull ValueInput input) {
+    public void readUpdateTag(ValueInput input) {
         super.readUpdateTag(input);
         prevCoolantScale = input.getFloatOr(SerializationConstants.SCALE, prevCoolantScale);
         prevFuelScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevFuelScale);
@@ -286,7 +286,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void writeUpdateTag(@NotNull ValueOutput output) {
+    public void writeUpdateTag(ValueOutput output) {
         super.writeUpdateTag(output);
         output.putFloat(SerializationConstants.SCALE, prevCoolantScale);
         output.putFloat(SerializationConstants.SCALE_ALT, prevFuelScale);
@@ -370,7 +370,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //Reset the heat to the default of the heat capacitor
             heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp);
             //Force sync the update to the cache that corresponds to this multiblock
-            MultiblockCache<FissionReactorMultiblockData> cache = MultiblockManager.get(getLevel(), MekanismGeneratorsMultiblocks.FISSION_REACTOR).getCache(inventoryID);
+            MultiblockCache<FissionReactorMultiblockData> cache = MultiblockManager.get(world, MekanismGeneratorsMultiblocks.FISSION_REACTOR).getCache(inventoryID);
             if (cache != null) {
                 cache.sync(this);
             }
@@ -515,13 +515,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void radiateEntities(Level world) {
-        if (RadiationManager.isGlobalRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (hotZone != null && RadiationManager.isGlobalRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
             double magnitude = lastBurnRate + wasteRadiation;
             if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
                 return;
             }
-            List<LivingEntity> entitiesToRadiate = getLevel().getEntitiesOfClass(LivingEntity.class, hotZone);
+            List<LivingEntity> entitiesToRadiate = world.getEntitiesOfClass(LivingEntity.class, hotZone);
             if (!entitiesToRadiate.isEmpty()) {
                 IRadiationManager radiationManager = IRadiationManager.INSTANCE;
                 for (LivingEntity entity : entitiesToRadiate) {

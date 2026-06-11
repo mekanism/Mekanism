@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekasuit;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.text.TextComponentUtil;
@@ -10,7 +9,6 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@ParametersAreNotNullByDefault
 public class ModuleElytraUnit implements ICustomModule<ModuleElytraUnit> {
 
     @Override

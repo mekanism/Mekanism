@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismAPITags;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
-@NothingNullByDefault
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private static final char GLASS_CHAR = 'G';
@@ -119,7 +117,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.ALLOY, Pattern.REDSTONE),
                     TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
               ).key(GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .save(output);
@@ -133,7 +131,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .save(output, MekanismGenerators.rl("generator/solar"));
         //Advanced Solar Generator
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
@@ -166,7 +164,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(ELECTROLYTIC_CORE_CHAR, MekanismItems.ELECTROLYTIC_CORE)
               .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .save(output, MekanismGenerators.rl("generator/gas_burning"));
         //Heat
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.HEAT_GENERATOR)
@@ -176,7 +174,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(COPPER_CHAR, FURNACE_CHAR, COPPER_CHAR))
               ).key(Pattern.WOOD, this.items, ItemTags.PLANKS)
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(COPPER_CHAR, this.items, Tags.Items.INGOTS_COPPER)
               .key(FURNACE_CHAR, Items.FURNACE)
               .save(output, MekanismGenerators.rl("generator/heat"));
@@ -189,7 +187,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .save(output, MekanismGenerators.rl("generator/wind"));
     }
 
@@ -201,7 +199,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
               ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.INGOT, leadIngot(this.items))
               .save(output, MekanismGenerators.rl("fission_reactor/casing"));
         // Port
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_PORT, 2)
@@ -227,7 +225,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT))
-              ).key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              ).key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .save(output, MekanismGenerators.rl("fission_reactor/fuel_assembly"));
@@ -238,7 +236,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ELITE)
-              .key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .save(output, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));
     }
@@ -265,7 +263,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private void addFusionReactorRecipes() {
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.getProcessedResource(ResourceType.DUST, PrimaryResource.GOLD), 4),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
               GeneratorsItems.HOHLRAUM.asTemplate(),
               false
@@ -296,7 +294,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, GLASS_CHAR, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(GLASS_CHAR, this.items, Tags.Items.GLASS_BLOCKS_CHEAP)
-              .key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.INGOT, leadIngot(this.items))
               .key(Pattern.STEEL, MekanismItems.ENRICHED_IRON)
               .save(output, MekanismGenerators.rl("reactor/glass"));
         //Port
@@ -358,7 +356,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.BUCKET, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.INGOT, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .key(Pattern.INGOT, tinIngot(this.items))
               .key(Pattern.BUCKET, Items.BUCKET)
               .save(output);
         //Blade
@@ -385,7 +383,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.OSMIUM, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              ).key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .save(output, MekanismGenerators.rl("turbine/casing"));
         //Valve

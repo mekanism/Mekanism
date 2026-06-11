@@ -1,19 +1,18 @@
 package mekanism.common.tile;
 
-import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -34,6 +33,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,8 +43,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
@@ -56,9 +55,12 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     private final EnergyCubeTier tier;
     private float prevScale;
 
+    @UnknownNullability//Initialized via getInitialEnergyContainer
     private EnergyCubeEnergyContainer energyContainer;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem", docPlaceholder = "charge slot")
     EnergyInventorySlot chargeSlot;
+    @UnknownNullability//Initialized via getInitialInventory
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem", docPlaceholder = "discharge slot")
     EnergyInventorySlot dischargeSlot;
 
@@ -66,21 +68,20 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
      * A block used to store and transfer electricity.
      */
     public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
-        tier = Objects.requireNonNull(Attribute.getTier(blockProvider, EnergyCubeTier.class));
-        super(blockProvider, pos, state);
+        EnergyCubeTier tier = Attribute.getTierNN(blockProvider, EnergyCubeTier.class);
+        this.tier = tier;
+        super(blockProvider, pos, state, tile -> TileComponentEjector.energy(tile, tier::getTransferRate));
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer);
-        ejectorComponent = new TileComponentEjector(this, tier::getTransferRate, false);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> canFunction());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(_ -> canFunction());
     }
 
     @Override
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = EnergyCubeEnergyContainer.create(this, listener);
         return new EnergyConfigHolder(energyContainer, this);
     }
 
-    @NotNull
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
@@ -96,8 +97,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean sendUpdatePacket = super.onUpdateServer();
+    protected boolean onUpdateServer(ServerLevel level) {
+        boolean sendUpdatePacket = super.onUpdateServer(level);
         chargeSlot.drainContainerIntoSlot(null);
         dischargeSlot.fillContainerOrConvert(null);
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
@@ -119,7 +120,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
+    public void parseUpgradeData(IUpgradeData upgradeData, Provider provider, TransactionContext transaction) {
         if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
@@ -141,7 +142,6 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         return energyContainer;
     }
 
-    @NotNull
     @Override
     public EnergyCubeUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new EnergyCubeUpgradeData(provider, redstone, getControlType(), energyContainer, chargeSlot, dischargeSlot, getComponents(), problemPath());
@@ -152,13 +152,13 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putFloat(SerializationConstants.SCALE, prevScale);
     }
 
     @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
+    public void handleUpdateTag(ValueInput input) {
         ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);
         DataType[] currentConfig = new DataType[EnumUtils.SIDES.length];
         if (config != null) {
@@ -179,7 +179,6 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         }
     }
 
-    @NotNull
     @Override
     public ModelData getModelData() {
         ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);

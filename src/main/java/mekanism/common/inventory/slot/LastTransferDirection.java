@@ -9,7 +9,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public enum LastTransferDirection implements StringRepresentable {
@@ -25,7 +24,6 @@ public enum LastTransferDirection implements StringRepresentable {
         this.serializedName = name().toLowerCase(Locale.ROOT);
     }
 
-    @NonNull
     @Override
     public String getSerializedName() {
         return serializedName;
@@ -57,14 +55,14 @@ public enum LastTransferDirection implements StringRepresentable {
         }
 
         @Override
-        public void serialize(@NonNull ValueOutput output) {
+        public void serialize(ValueOutput output) {
             if (direction != UNKNOWN) {
                 output.store(SerializationConstants.LAST_TRANSFER_DIRECTION, CODEC, direction);
             }
         }
 
         @Override
-        public void deserialize(@NonNull ValueInput input) {
+        public void deserialize(ValueInput input) {
             direction = input.read(SerializationConstants.LAST_TRANSFER_DIRECTION, CODEC).orElse(UNKNOWN);
         }
     }

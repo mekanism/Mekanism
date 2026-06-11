@@ -33,7 +33,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 //TODO: Try to come up with a better name for this class given it also handles things like modids
 public final class TagCache {
@@ -61,11 +60,11 @@ public final class TagCache {
         modIDBlacklistedElements.clear();
     }
 
-    public static List<String> getItemTags(@NotNull TypedInstance<Item> check) {
+    public static List<String> getItemTags(TypedInstance<Item> check) {
         return getTagsAsStrings(check.tags());
     }
 
-    public static List<String> getTileEntityTypeTags(@NotNull Block block) {
+    public static List<String> getTileEntityTypeTags(Block block) {
         List<String> cache = tileEntityTypeTagCache.get(block);
         if (cache == null) {
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
@@ -91,22 +90,22 @@ public final class TagCache {
         return cache;
     }
 
-    public static <TYPE> List<String> getTagsAsStrings(@NotNull Holder<TYPE> holder) {
+    public static <TYPE> List<String> getTagsAsStrings(Holder<TYPE> holder) {
         return getTagsAsStrings(holder.tags());
     }
 
-    public static <TYPE> List<String> getTagsAsStrings(@NotNull Stream<TagKey<TYPE>> tags) {
+    public static <TYPE> List<String> getTagsAsStrings(Stream<TagKey<TYPE>> tags) {
         return tags.map(tag -> tag.location().toString()).toList();
     }
 
-    public static List<ItemStack> getItemTagStacks(@NotNull String tagName) {
+    public static List<ItemStack> getItemTagStacks(String tagName) {
         return itemTagStacks.computeIfAbsent(tagName, name -> {
             Set<Item> items = collectTagStacks(BuiltInRegistries.ITEM, name, item -> !MekanismBlocks.BOUNDING_BLOCK.isSecondary(item));
             return items.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList();
         });
     }
 
-    public static MatchingStacks getBlockTagStacks(@NotNull String tagName) {
+    public static MatchingStacks getBlockTagStacks(String tagName) {
         return blockTagStacks.computeIfAbsent(tagName, name -> {
             Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> !MekanismBlocks.BOUNDING_BLOCK.is(block));
             return getMatching(blocks);
@@ -130,7 +129,7 @@ public final class TagCache {
         return new MatchingStacks(true, blocks.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
     }
 
-    public static List<ItemStack> getItemModIDStacks(@NotNull HolderLookup.Provider registries, @NotNull String modName) {
+    public static List<ItemStack> getItemModIDStacks(HolderLookup.Provider registries, String modName) {
         return itemModIDStacks.computeIfAbsent(modName, name -> {
             List<ItemStack> stacks = new ArrayList<>();
             for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
@@ -148,7 +147,7 @@ public final class TagCache {
         });
     }
 
-    public static MatchingStacks getBlockModIDStacks(@NotNull String modName) {
+    public static MatchingStacks getBlockModIDStacks(String modName) {
         return blockModIDStacks.computeIfAbsent(modName, name -> {
             Set<Block> blocks = new ReferenceOpenHashSet<>();
             for (Map.Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
@@ -161,7 +160,7 @@ public final class TagCache {
         });
     }
 
-    public static boolean tagHasMinerBlacklisted(@NotNull String tag) {
+    public static boolean tagHasMinerBlacklisted(String tag) {
         if (MINER_BLACKLIST_LOOKUP.size() == 0) {
             return false;
         }
@@ -170,7 +169,7 @@ public final class TagCache {
                                     blockTag.stream().anyMatch(element -> element.is(MekanismTags.Blocks.MINER_BLACKLIST))));
     }
 
-    public static boolean modIDHasMinerBlacklisted(@NotNull String modName) {
+    public static boolean modIDHasMinerBlacklisted(String modName) {
         if (MINER_BLACKLIST_LOOKUP.size() == 0) {
             return false;
         }

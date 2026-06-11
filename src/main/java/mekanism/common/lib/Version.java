@@ -2,6 +2,7 @@ package mekanism.common.lib;
 
 import net.neoforged.fml.ModContainer;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Version v2.0.0. Simple version handling for Mekanism.
@@ -37,6 +38,7 @@ public record Version(int major, int minor, int build) implements Comparable<Ver
      *
      * @return version if applicable, otherwise null
      */
+    @Nullable
     public static Version get(String s) {
         String[] split = s.replace('.', ':').split(":");
         if (split.length != 3) {

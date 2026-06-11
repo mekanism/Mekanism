@@ -13,7 +13,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ItemSlotData;
 import mekanism.common.lib.inventory.UUIDItemResource;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity, int typeCapacity, long totalItems, List<IScrollableSlot> items) {
 

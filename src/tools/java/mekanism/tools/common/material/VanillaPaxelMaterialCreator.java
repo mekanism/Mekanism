@@ -1,7 +1,6 @@
 package mekanism.tools.common.material;
 
 import java.util.function.Supplier;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -9,7 +8,6 @@ import mekanism.tools.common.config.ToolsConfigTranslations.VanillaPaxelMaterial
 import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@NothingNullByDefault
 public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     private final VanillaPaxelMaterial fallback;

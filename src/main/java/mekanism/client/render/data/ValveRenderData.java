@@ -1,12 +1,11 @@
 package mekanism.client.render.data;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ValveRenderData {
 
     private final Direction side;
@@ -85,7 +84,7 @@ public class ValveRenderData {
     }
 
     @Override
-    public boolean equals(Object data) {
+    public boolean equals(@Nullable Object data) {
         if (data == this) {
             return true;
         } else if (data == null) {

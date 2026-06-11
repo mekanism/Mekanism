@@ -4,7 +4,6 @@ import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
 /// A generic container for the transfer and storage of energy whether it be inserting, extracting, querying some value, etc.
-@NothingNullByDefault
 public interface IEnergyContainer extends ValueIOSerializable, EnergyHandler {
 
     /// Overrides the amount of energy in this [IEnergyContainer].

@@ -3,7 +3,6 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
@@ -24,9 +23,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWindGenerator, WindGeneratorRenderState> implements IWireFrameRenderer {
 
     private final ModelWindGenerator model;
@@ -43,7 +41,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
 
     @Override
     public void extractRenderState(TileEntityWindGenerator generator, WindGeneratorRenderState state, float partialTick, Vec3 cameraPosition,
-          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+          ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
         state.direction = generator.getDirection();
         state.rotation.angle = generator.getAngle();

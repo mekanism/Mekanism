@@ -10,6 +10,7 @@ import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
@@ -18,13 +19,12 @@ import mekanism.common.tile.TileEntityModificationStation;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class GuiModificationStation extends GuiMekanismTile<TileEntityModificationStation, MekanismTileContainer<TileEntityModificationStation>> {
 
+    @Nullable
     private IModule<?> selectedModule;
-    private MekanismButton removeButton;
 
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, Inventory inv, Component title) {
         super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
@@ -42,22 +42,23 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, _) -> {
+        MekanismButton removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, event, _) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
+            if (gui.selectedModule == null) {
+                return false;
+            }
             return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getDataHolder(), event.hasShiftDown()));
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
-        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.resource(), this::onModuleSelected));
-    }
-
-    private void onModuleSelected(@Nullable IModule<?> module) {
-        selectedModule = module;
-        removeButton.active = module != null;
+        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.resource(), (@Nullable Module<?> module) -> {
+            selectedModule = module;
+            removeButton.active = selectedModule != null;
+        }));
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 24);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

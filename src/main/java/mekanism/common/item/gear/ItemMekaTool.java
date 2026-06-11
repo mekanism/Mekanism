@@ -90,8 +90,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
@@ -107,13 +106,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+    public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         ModuleHelper.INSTANCE.dropModuleContainerContents(item, damageSource);
     }
 
     @Override
     @Deprecated
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltipAdder);
         } else {
@@ -180,9 +179,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return Math.max(moduleLevel, super.getEnchantmentLevel(instance, enchantment));
     }
 
-    @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, RegistryLookup<Enchantment> lookup) {
+    public ItemEnchantments getAllEnchantments(ItemStack stack, RegistryLookup<Enchantment> lookup) {
         ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         if (container != null) {
@@ -201,7 +199,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return enchantments;
     }
 
-    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         for (IModule<?> module : getModules(context.getItemInHand())) {
@@ -225,9 +222,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return module.getCustomInstance().onItemUse(module, context, transaction);
     }
 
-    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         IModuleContainer moduleContainer = moduleContainer(stack);
         if (moduleContainer != null) {
             ItemAccess itemAccess = ItemAccess.forStack(stack);
@@ -249,13 +245,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return super.interactLivingEntity(stack, player, entity, hand);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleInteract(IModule<MODULE> module, @NotNull Player player, @NotNull LivingEntity entity,
-          @NotNull InteractionHand hand, ItemAccess itemAccess, TransactionContext transaction) {
+    private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleInteract(IModule<MODULE> module, Player player, LivingEntity entity,
+          InteractionHand hand, ItemAccess itemAccess, TransactionContext transaction) {
         return module.getCustomInstance().onInteract(module, player, entity, hand, itemAccess, transaction);
     }
 
     @Override
-    public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack)));
         if (energyHandler == null) {
             return 0;
@@ -275,7 +271,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
+    public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity entity) {
         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack)));
         if (energyHandler != null) {
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
@@ -316,7 +312,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getEnabledModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
         if (attackAmplificationUnit != null) {
             //Note: We only have an energy cost if the damage is above base, so we can skip all those checks
@@ -407,9 +403,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         IRadialModuleContainerItem.super.adjustAttributes(event);
     }
 
-    @NotNull
     @Override
-    public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         if (!world.isClientSide()) {
             ItemAccess itemAccess = ItemAccessUtils.playerHandAccess(player, hand);
             IModule<ModuleTeleportationUnit> module = getEnabledModule(itemAccess.getResource(), MekanismModules.TELEPORTATION_UNIT);
@@ -471,12 +466,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
         return stack.has(DataComponents.ENCHANTABLE) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
-    public boolean supportsEnchantment(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return stack.has(DataComponents.ENCHANTABLE) && super.supportsEnchantment(stack, enchantment);
     }
 

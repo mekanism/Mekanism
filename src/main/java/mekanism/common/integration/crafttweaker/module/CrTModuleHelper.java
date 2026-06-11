@@ -14,6 +14,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -65,6 +66,7 @@ public class CrTModuleHelper {
      *
      * @return Module, or {@code null} if no module of the given type is installed.
      */
+    @Nullable
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, ModuleData<MODULE> type) {

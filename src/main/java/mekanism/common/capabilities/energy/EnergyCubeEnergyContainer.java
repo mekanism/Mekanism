@@ -5,25 +5,22 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.transaction.ITransactionHelper;
 import mekanism.api.transaction.RateLimitTracker;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
 
     public static EnergyCubeEnergyContainer create(TileEntityEnergyCube tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Energy cube tile cannot be null");
         EnergyCubeTier tier = tile.getTier();
-        LongSupplier gameTimeSupplier = MekanismUtils.getGameTimeSupplier(tile);
+        LongSupplier gameTimeSupplier = tile::getGameTime;
         IntSupplier rateLimit = tier::getTransferRate;
         //Only limit the internal rate to change the speed at which this can be filled or drained by an item stored in a slot
         return new EnergyCubeEnergyContainer(tier, ITransactionHelper.INSTANCE.createInternalOnlyRateLimit(gameTimeSupplier, rateLimit),

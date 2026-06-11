@@ -3,7 +3,7 @@ package mekanism.tools.common.advancements;
 import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.tools.common.MekanismTools;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ToolsAdvancements {
 

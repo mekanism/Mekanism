@@ -25,8 +25,7 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasConditionalAttributes {
 
@@ -98,7 +97,7 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     }
 
     @Override
-    default void changeMode(@NotNull Player player, @NotNull ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
+    default void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction) {
         IModuleContainer moduleContainer = moduleContainer(itemAccess);
         if (moduleContainer != null) {
             for (IModule<?> module : moduleContainer.modules()) {
@@ -111,7 +110,7 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     }
 
     @Override
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, @NotNull EquipmentSlot slotType) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, EquipmentSlot slotType) {
         if (!IModeItem.super.supportsSlotType(instance, slotType)) {
             return false;
         }
@@ -125,7 +124,7 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
 
     @Nullable
     @Override
-    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(@NotNull ITEM instance) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Component getScrollTextComponent(ITEM instance) {
         for (IModule<?> module : getModules(instance)) {
             if (module.handlesModeChange()) {
                 return getModeScrollComponent(module, instance);

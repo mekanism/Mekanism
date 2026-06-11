@@ -1,7 +1,7 @@
 package mekanism.api.radial.mode;
 
 import mekanism.api.radial.RadialData;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface representing a mode for usage in a radial menu. This mode may or may not represent a group of modes nested inside this mode.

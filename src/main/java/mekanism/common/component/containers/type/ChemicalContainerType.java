@@ -3,7 +3,6 @@ package mekanism.common.component.containers.type;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
@@ -25,7 +24,6 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public class ChemicalContainerType extends ResourceContainerType<ChemicalResource, IChemicalTank> {
 
     ChemicalContainerType() {

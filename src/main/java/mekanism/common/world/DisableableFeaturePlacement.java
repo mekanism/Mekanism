@@ -14,8 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class DisableableFeaturePlacement extends PlacementFilter {
 
@@ -42,7 +41,7 @@ public class DisableableFeaturePlacement extends PlacementFilter {
     }
 
     @Override
-    protected boolean shouldPlace(@NotNull PlacementContext context, @NotNull RandomSource random, @NotNull BlockPos pos) {
+    protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos pos) {
         if (enabledSupplier.getAsBoolean()) {
             //If we are enabled, and we are either not a retrogen feature or retrogen is enabled, generate
             return !retroGen || MekanismConfig.world.enableRegeneration.get();
@@ -50,7 +49,6 @@ public class DisableableFeaturePlacement extends PlacementFilter {
         return false;
     }
 
-    @NotNull
     @Override
     public PlacementModifierType<?> type() {
         return MekanismPlacementModifiers.DISABLEABLE.get();

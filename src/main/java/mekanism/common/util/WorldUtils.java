@@ -45,8 +45,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class WorldUtils {
 
@@ -59,7 +58,7 @@ public class WorldUtils {
      * @see #isBlockLoaded(BlockGetter, BlockPos)
      */
     @Contract("null, _ -> false")
-    public static boolean isChunkLoaded(@Nullable LevelReader world, @NotNull BlockPos pos) {
+    public static boolean isChunkLoaded(@Nullable LevelReader world, BlockPos pos) {
         return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
@@ -117,7 +116,7 @@ public class WorldUtils {
      * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
      */
     @Contract("null, _ -> false")
-    public static boolean isBlockLoaded(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static boolean isBlockLoaded(@Nullable BlockGetter world, BlockPos pos) {
         if (world == null) {
             return false;
         } else if (world instanceof LevelReader reader) {
@@ -175,7 +174,7 @@ public class WorldUtils {
      * @return True if the position is in bounds of the world or the given world is of a superclass of IWorldReader that does not have a concept of bounds.
      */
     @Contract("null, _ -> false")
-    public static boolean isBlockInBounds(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static boolean isBlockInBounds(@Nullable BlockGetter world, BlockPos pos) {
         if (world == null) {
             return false;
         } else if (world instanceof LevelReader reader) {
@@ -196,11 +195,14 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    private static ChunkAccess getChunkForPos(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+    private static BlockGetter getChunkForPos(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (!isBlockInBounds(world, pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
+        }
+        if (!(world instanceof LevelReader level)) {
+            return world;
         }
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
@@ -210,7 +212,7 @@ public class WorldUtils {
         ChunkAccess chunk = chunkMap.get(combinedChunk);
         if (chunk == null) {
             //Get the chunk but don't force load it
-            chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+            chunk = level.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
             if (chunk != null) {
                 chunkMap.put(combinedChunk, chunk);
             }
@@ -228,8 +230,7 @@ public class WorldUtils {
      *
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
-    @NotNull
-    public static Optional<BlockState> getBlockState(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the blockstate using the chunk we found/had cached
         return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -242,8 +243,7 @@ public class WorldUtils {
      *
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
-    @NotNull
-    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -260,7 +260,7 @@ public class WorldUtils {
      * @return the blockstate if found, null if not loaded
      */
     @Nullable
-    public static BlockState getBlockStateIfLoaded(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static BlockState getBlockStateIfLoaded(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return null;
@@ -278,8 +278,7 @@ public class WorldUtils {
      *
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
-    @NotNull
-    public static Optional<FluidState> getFluidState(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the fluidstate using the chunk we found/had cached
         return getFluidState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -292,8 +291,7 @@ public class WorldUtils {
      *
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
-    @NotNull
-    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -313,7 +311,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static BlockEntity getTileEntity(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -331,7 +329,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         return getTileEntity(clazz, world, chunkMap, pos, false);
     }
 
@@ -349,8 +347,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos,
-          boolean logWrongType) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos, boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
     }
@@ -383,7 +380,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _ -> null")
-    public static BlockEntity getTileEntity(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
@@ -403,7 +400,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _, _ -> null")
-    public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
+    public static <CAP, CONTEXT extends @Nullable Object> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
         return getCapability(level, cap, pos, null, null, context);
     }
 
@@ -421,7 +418,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _, _, _, _ -> null")
-    public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
+    public static <CAP, CONTEXT extends @Nullable Object> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
           @Nullable BlockEntity tile, CONTEXT context) {
         if (!isBlockLoaded(level, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return null
@@ -441,7 +438,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable BlockGetter world, @NotNull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, BlockPos pos) {
         return getTileEntity(clazz, world, pos, false);
     }
 
@@ -457,7 +454,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable BlockGetter world, @NotNull BlockPos pos, boolean logWrongType) {
+    public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, BlockPos pos, boolean logWrongType) {
         BlockEntity tile = getTileEntity(world, pos);
         if (tile == null) {
             return null;
@@ -585,6 +582,7 @@ public class WorldUtils {
      *
      * @return Direction representing the side the defined relative Coord4D is on to this
      */
+    @Nullable
     public static Direction sideDifference(BlockPos pos, BlockPos other) {
         int xDiff = pos.getX() - other.getX();
         int yDiff = pos.getY() - other.getY();
@@ -597,6 +595,7 @@ public class WorldUtils {
      *
      * @return Direction representing the side the defined relative packed BlockPos is on to this
      */
+    @Nullable
     public static Direction sideDifference(long pos, long other) {
         int xDiff = BlockPos.getX(pos) - BlockPos.getX(other);
         int yDiff = BlockPos.getY(pos) - BlockPos.getY(other);
@@ -625,7 +624,7 @@ public class WorldUtils {
             }
             //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
             // don't allow spawning on it.
-            return multiblockTile.getMultiblock().isPositionInsideBounds(multiblockTile.getStructure(), pos.above());
+            return multiblockTile.getMultiblock().isPositionInsideBounds(multiblockTile.getStructure(), reader, pos.above());
         } else if (tile instanceof IStructuralMultiblock structuralMultiblock && structuralMultiblock.hasFormedMultiblock()) {
             //Note: This isn't actually used as all our structural multiblocks are transparent and vanilla tends to not let
             // mobs spawn on glass or stuff
@@ -638,7 +637,7 @@ public class WorldUtils {
                 for (Structure structure : structuralMultiblock.getStructureMap().values()) {
                     //Manually handle the getMultiblockData logic to avoid extra lookups
                     MultiblockData data = structure.getMultiblockData();
-                    if (data != null && data.isFormed() && data.isPositionInsideBounds(structure, above)) {
+                    if (data != null && data.isFormed() && data.isPositionInsideBounds(structure, reader, above)) {
                         //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
                         // don't allow spawning on it.
                         return true;
@@ -676,7 +675,7 @@ public class WorldUtils {
      *
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(Level world, BlockPos pos) {
+    public static boolean isGettingPowered(@Nullable Level world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
             BlockPos.MutableBlockPos offset = new MutableBlockPos();
             for (Direction side : EnumUtils.DIRECTIONS) {
@@ -717,7 +716,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos... positions) {
+    public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, BlockPos... positions) {
         for (BlockPos position : positions) {
             if (!isValidReplaceableBlock(world, baseContext, position)) {
                 return false;
@@ -731,7 +730,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull Collection<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
         for (BlockPos position : positions) {
             if (!isValidReplaceableBlock(world, baseContext, position)) {
@@ -746,7 +745,7 @@ public class WorldUtils {
      *
      * @return True if the block can be replaced and is within the world's bounds.
      */
-    public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos pos) {
+    public static boolean isValidReplaceableBlock(BlockGetter world, @Nullable BlockPlaceContext baseContext, BlockPos pos) {
         Optional<BlockState> blockState = getBlockState(world, pos);
         if (blockState.isPresent()) {
             BlockState state = blockState.get();
@@ -810,7 +809,7 @@ public class WorldUtils {
      * @param pos   Position of the block
      * @param state The block state at the position
      */
-    public static void updateBlock(@Nullable Level world, @NotNull BlockPos pos, BlockState state) {
+    public static void updateBlock(@Nullable Level world, BlockPos pos, BlockState state) {
         if (isBlockLoaded(world, pos)) {
             world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }

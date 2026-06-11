@@ -1,13 +1,11 @@
 package mekanism.common.component.containers;
 
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.component.containers.type.IContainerType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jspecify.annotations.Nullable;
 
-@NothingNullByDefault
 public abstract class ComponentBackedHandler<CONTAINER extends ValueIOSerializable, ATTACHED, CONTAINER_TYPE extends IContainerType<CONTAINER, ATTACHED>> {
 
     private final CONTAINER_TYPE containerType;

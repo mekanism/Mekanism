@@ -4,9 +4,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system.
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  * @see IBlockSecurityUtils
  * @since 10.2.1
  */
-@NothingNullByDefault
 public interface ISecurityUtils {
 
     /**

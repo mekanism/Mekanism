@@ -1,7 +1,6 @@
 package mekanism.common.component.containers.resource;
 
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
 ///Similar to [net.neoforged.neoforge.transfer.ItemAccessResourceHandler] in that it scales the results based on the amount of items in the backing attached access.
-@NothingNullByDefault
 public class ComponentBackedResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>>
       extends ComponentBackedListHandler<LargeResourceStack<RESOURCE>, CONTAINER, AttachedResources<RESOURCE>, ResourceContainerType<RESOURCE, CONTAINER>>
       implements IMekanismResourceHandler<RESOURCE, CONTAINER> {

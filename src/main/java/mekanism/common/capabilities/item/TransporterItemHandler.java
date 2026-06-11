@@ -1,14 +1,12 @@
 package mekanism.common.capabilities.item;
 
 import java.util.Objects;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-@NothingNullByDefault
 public class TransporterItemHandler implements ResourceHandler<ItemResource> {
 
     private final LogisticalTransporterBase transporter;

@@ -26,7 +26,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Used for the server side transfer handling by the {@link PacketQIOFillCraftingWindow}
