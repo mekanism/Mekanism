@@ -84,9 +84,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return FormationResult.SUCCESS;
     }
 
-    /**
-     * @param pos Mutable BlockPos
-     */
+    /// @param pos Mutable BlockPos
     protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos, VoxelCuboid cuboid) {
         Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
         if (optionalState.isEmpty()) {
@@ -110,9 +108,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return FormationResult.SUCCESS;
     }
 
-    /**
-     * @param pos Mutable BlockPos
-     */
+    /// @param pos Mutable BlockPos
     protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         return state.isAir();
     }
@@ -126,9 +122,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return manager().isCompatible(tile);
     }
 
-    /**
-     * @param pos Mutable BlockPos
-     */
+    /// @param pos Mutable BlockPos
     protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame, VoxelCuboid cuboid) {
         IMultiblockBase tile = structure().getTile(pos);
         // terminate if we encounter a node that already failed this tick

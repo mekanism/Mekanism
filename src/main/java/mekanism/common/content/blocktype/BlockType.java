@@ -110,9 +110,7 @@ public class BlockType {
             return (T) this;
         }
 
-        /**
-         * This is the same as {@link #with(Attribute...)} except exists to make it more clear that we are replacing/overriding an existing attribute we added.
-         */
+        /// This is the same as [#with(Attribute...)] except exists to make it more clear that we are replacing/overriding an existing attribute we added.
         public final T replace(Attribute... attrs) {
             return with(attrs);
         }

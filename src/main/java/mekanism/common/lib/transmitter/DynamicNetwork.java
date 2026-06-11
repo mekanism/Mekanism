@@ -209,9 +209,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return world;
     }
 
-    /**
-     * @apiNote Only called on the server
-     */
+    /// @apiNote Only called on the server
     public void onUpdate() {
     }
 

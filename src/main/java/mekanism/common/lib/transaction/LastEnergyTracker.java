@@ -28,9 +28,7 @@ public class LastEnergyTracker extends GameTimeBasedJournal<Long> {
         return lastEnergyReceived;
     }
 
-    /**
-     * @apiNote For use in syncing to client
-     */
+    /// @apiNote For use in syncing to client
     public void setLastEnergyReceived(long lastEnergyReceived) {
         this.lastEnergyReceived = lastEnergyReceived;
     }

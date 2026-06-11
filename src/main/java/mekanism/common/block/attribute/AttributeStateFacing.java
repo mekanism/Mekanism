@@ -130,9 +130,9 @@ public record AttributeStateFacing(EnumProperty<Direction> facingProperty, FaceP
     }
 
     public enum FacePlacementType {
-        /** Set the face based on the player's relative location to the placement location. */
+        /// Set the face based on the player's relative location to the placement location.
         PLAYER_LOCATION,
-        /** Set the face based on the direction of the block face selected. */
+        /// Set the face based on the direction of the block face selected.
         SELECTED_FACE
     }
 }

@@ -16,12 +16,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import mekanism.builder.ComputerHandlerBuilder;
 
-/**
- * Annotation processor to generate ComputerMethodFactory subclasses for computer methods. Must only produce files directly related to the annotated elements, and not
- * based on other elements. This is due to being marked as an Isolating processor in Gradle.
- * <p>
- * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper, a manually triggered full rebuild should catch it.
- */
+/// Annotation processor to generate ComputerMethodFactory subclasses for computer methods. Must only produce files directly related to the annotated elements, and not
+/// based on other elements. This is due to being marked as an Isolating processor in Gradle.
+///
+/// Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper, a manually triggered full rebuild should catch it.
 @SupportedAnnotationTypes({
       MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
       MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,

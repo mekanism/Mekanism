@@ -15,9 +15,7 @@ import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Code taken from UE and modified to fit Mekanism.
- */
+/// Code taken from UE and modified to fit Mekanism.
 public class UnitDisplayUtils {
     //TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
@@ -225,9 +223,7 @@ public class UnitDisplayUtils {
         }
     }
 
-    /**
-     * Metric system of measurement.
-     */
+    /// Metric system of measurement.
     public enum MeasurementUnit {
         FEMTO("Femto", "f", 0.000_000_000_000_001D),
         PICO("Pico", "p", 0.000_000_000_001D),
@@ -244,19 +240,13 @@ public class UnitDisplayUtils {
         ZETTA("Zetta", "Z", 1_000_000_000_000_000_000_000D),
         YOTTA("Yotta", "Y", 1_000_000_000_000_000_000_000_000D);
 
-        /**
-         * long name for the unit
-         */
+        /// long name for the unit
         private final String name;
 
-        /**
-         * short unit version of the unit
-         */
+        /// short unit version of the unit
         private final String symbol;
 
-        /**
-         * Point by which a number is considered to be of this unit
-         */
+        /// Point by which a number is considered to be of this unit
         private final double value;
 
         MeasurementUnit(String name, String symbol, double value) {

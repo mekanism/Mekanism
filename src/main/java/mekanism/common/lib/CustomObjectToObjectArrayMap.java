@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import mekanism.api.functions.TriConsumer;
 
-/**
- * Version of array map which does a proper BiConsumer and a couple other microoptimisations.
- * Used in {@link mekanism.common.lib.frequency.TileComponentFrequency}, which is in a very hot path as EVERY mek machine uses one
- */
+/// Version of array map which does a proper BiConsumer and a couple other microoptimisations. Used in [mekanism.common.lib.frequency.TileComponentFrequency], which is in
+/// a very hot path as EVERY mek machine uses one
 public class CustomObjectToObjectArrayMap<KEY, VALUE> extends Object2ObjectArrayMap<KEY, VALUE> {
 
     public CustomObjectToObjectArrayMap() {

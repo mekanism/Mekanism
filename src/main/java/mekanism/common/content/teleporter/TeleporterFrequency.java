@@ -44,9 +44,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     private final Set<GlobalPos> activeCoords = new ObjectOpenHashSet<>();
     private EnumColor color = EnumColor.PURPLE;
 
-    /**
-     * @param uuid Should only be null if we have incomplete data that we are loading
-     */
+    /// @param uuid Should only be null if we have incomplete data that we are loading
     public TeleporterFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
         super(FrequencyTypes.TELEPORTER, n, uuid, securityMode);
     }

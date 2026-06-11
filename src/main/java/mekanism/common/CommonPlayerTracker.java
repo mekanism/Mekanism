@@ -79,9 +79,7 @@ public class CommonPlayerTracker {
         PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(player.getUUID()));
     }
 
-    /**
-     * If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the item use is not.
-     */
+    /// If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the item use is not.
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock event) {
         ItemStack itemInHand = event.getEntity().getItemInHand(event.getHand());

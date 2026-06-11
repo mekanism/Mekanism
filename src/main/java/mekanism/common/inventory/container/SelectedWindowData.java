@@ -23,9 +23,7 @@ public record SelectedWindowData(WindowType type, byte extraData) {
 
     public static final SelectedWindowData UNSPECIFIED = new SelectedWindowData(WindowType.UNSPECIFIED);
 
-    /**
-     * It is expected to only call this with a piece of extra data that is valid. If it is not valid this end up treating it as zero instead.
-     */
+    /// It is expected to only call this with a piece of extra data that is valid. If it is not valid this end up treating it as zero instead.
     public SelectedWindowData {
         Objects.requireNonNull(type);
         extraData = type.isValid(extraData) ? extraData : 0;
@@ -35,9 +33,7 @@ public record SelectedWindowData(WindowType type, byte extraData) {
         this(type, (byte) 0);
     }
 
-    /**
-     * @apiNote Only call this on the client.
-     */
+    /// @apiNote Only call this on the client.
     public void updateLastPosition(int x, int y, boolean pinned) {
         String saveName = type.getSaveName(extraData);
         if (saveName != null) {
@@ -70,9 +66,7 @@ public record SelectedWindowData(WindowType type, byte extraData) {
         return getLastPosition().pinned();
     }
 
-    /**
-     * @apiNote Only call this on the client.
-     */
+    /// @apiNote Only call this on the client.
     public WindowPosition getLastPosition() {
         String saveName = type.getSaveName(extraData);
         if (saveName != null) {
@@ -100,17 +94,13 @@ public record SelectedWindowData(WindowType type, byte extraData) {
         SIDE_CONFIG("side_config", true),
         TRANSPORTER_CONFIG("transporter_config", true),
         UPGRADE("upgrade", true),
-        /**
-         * For use by windows that don't actually have any server side specific logic required, or don't persist their position.
-         */
+        /// For use by windows that don't actually have any server side specific logic required, or don't persist their position.
         UNSPECIFIED(null, false);
 
         public static final IntFunction<WindowType> BY_ID = ByIdMap.continuous(WindowType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, WindowType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WindowType::ordinal);
 
-        /**
-         * @implNote This name needs to be lower case
-         */
+        /// @implNote This name needs to be lower case
         @Nullable
         private final String saveName;
         private final boolean canPin;

@@ -23,31 +23,27 @@ public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeMan
         super(recipeType);
     }
 
-    /**
-     * Adds a recipe that an item into a chemical.
-     * <br>
-     * If this is called from the chemical conversion recipe manager, this will be a chemical conversion recipe and be able to be used in any slots in Mekanism machines
-     * that are able to convert items to chemicals, for example in the Osmium Compressor and a variety of other machines.
-     * <br>
-     * If this is called from the oxidizing recipe manager, this will be an oxidizing recipe. Chemical Oxidizers can process this recipe type.
-     * <br>
-     * If this is called from the pigment extracting recipe manager, this will be a pigment extracting recipe. Pigment Extractors can process this recipe type.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output Chemical stack representing the output of the recipe.
-     */
+    /// Adds a recipe that an item into a chemical.
+    ///
+    /// If this is called from the chemical conversion recipe manager, this will be a chemical conversion recipe and be able to be used in any slots in Mekanism machines
+    /// that are able to convert items to chemicals, for example in the Osmium Compressor and a variety of other machines.
+    ///
+    /// If this is called from the oxidizing recipe manager, this will be an oxidizing recipe. Chemical Oxidizers can process this recipe type.
+    ///
+    /// If this is called from the pigment extracting recipe manager, this will be a pigment extracting recipe. Pigment Extractors can process this recipe type.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output Chemical stack representing the output of the recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, ICrTChemicalStack output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
-    /**
-     * Creates a recipe that an item into a chemical.
-     *
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a recipe that an item into a chemical.
+    ///
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
     public final ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }

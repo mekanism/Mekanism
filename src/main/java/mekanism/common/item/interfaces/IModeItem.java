@@ -19,14 +19,12 @@ import org.jspecify.annotations.Nullable;
 
 public interface IModeItem {
 
-    /**
-     * Changes the current mode of the item
-     *
-     * @param player        The player who made the mode change.
-     * @param itemAccess    The item access representing the item to change the mode of.
-     * @param shift         The amount to shift the mode by, may be negative for indicating the mode should decrease.
-     * @param displayChange {@code true} if a message should be displayed when the mode changes
-     */
+    /// Changes the current mode of the item
+    ///
+    /// @param player              The player who made the mode change.
+    /// @param itemAccess          The item access representing the item to change the mode of.
+    /// @param shift               The amount to shift the mode by, may be negative for indicating the mode should decrease.
+    /// @param displayChange`true` if a message should be displayed when the mode changes
     void changeMode(Player player, ItemAccess itemAccess, int shift, DisplayChange displayChange, TransactionContext transaction);
 
     default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean supportsSlotType(ITEM instance, EquipmentSlot slotType) {

@@ -7,8 +7,8 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.StructureModifier;
@@ -44,18 +44,14 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
         this.datapackRegistryName = datapackRegistryName;
     }
 
-    /**
-     * Only call this from mekanism and for custom datapack registries
-     */
+    /// Only call this from mekanism and for custom datapack registries
     public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec) {
         register(bus);
         //Create a new datapack registry using the direct codec that is created based on the serializer's codec
         bus.addListener((DataPackRegistryEvent.NewRegistry event) -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec));
     }
 
-    /**
-     * Only call this from mekanism and for custom datapack registries
-     */
+    /// Only call this from mekanism and for custom datapack registries
     public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec, Consumer<RegistryBuilder<T>> consumer) {
         register(bus);
         //Create a new datapack registry using the direct codec that is created based on the serializer's codec

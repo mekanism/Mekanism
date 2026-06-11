@@ -12,9 +12,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-/**
- * Special handling for the Chemical Tank block item.
- */
+/// Special handling for the Chemical Tank block item.
 public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank {
 
     private final boolean isCreative;

@@ -53,12 +53,9 @@ public abstract class Frequency implements IFrequency {
 
     private final FrequencyType<?> frequencyType;
 
-    /**
-     * Owner username is looked up so that we can sync it (and more importantly have it
-     * set in single player when network connections don't serialize and deserialize)
-     *
-     * @param owner Should only be null if we have incomplete data that we are loading.
-     */
+    /// Owner username is looked up so that we can sync it (and more importantly have it set in single player when network connections don't serialize and deserialize)
+    ///
+    /// @param owner Should only be null if we have incomplete data that we are loading.
     protected Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID owner, SecurityMode securityMode) {
         this(frequencyType, name, owner, MekanismUtils.getLastKnownUsername(owner), securityMode);
     }
@@ -79,16 +76,12 @@ public abstract class Frequency implements IFrequency {
         return removed;
     }
 
-    /**
-     * @return {@code true} if persistent data was changed by deactivating the block and the frequency needs to be saved.
-     */
+    /// @return `true` if persistent data was changed by deactivating the block and the frequency needs to be saved.
     public boolean onDeactivate(Level level, BlockEntity tile) {
         return false;
     }
 
-    /**
-     * @return {@code true} if persistent data was changed by updating the block and the frequency needs to be saved.
-     */
+    /// @return `true` if persistent data was changed by updating the block and the frequency needs to be saved.
     public boolean update(Level level, BlockEntity tile) {
         return false;
     }
@@ -141,10 +134,8 @@ public abstract class Frequency implements IFrequency {
         return ownerName;
     }
 
-    /**
-     * This is the hashCode that is used for determining if a frequency is dirty. Override this if your frequency type has more things that may mean it needs to be
-     * re-synced.
-     */
+    /// This is the hashCode that is used for determining if a frequency is dirty. Override this if your frequency type has more things that may mean it needs to be
+    /// re-synced.
     public int getSyncHash() {
         return hashCode();
     }

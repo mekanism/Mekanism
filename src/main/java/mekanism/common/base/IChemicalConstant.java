@@ -2,28 +2,18 @@ package mekanism.common.base;
 
 public interface IChemicalConstant {
 
-    /**
-     * @return The name of the chemical
-     */
+    /// @return The name of the chemical
     String getName();
 
-    /**
-     * @return Visual color in ARGB format
-     */
+    /// @return Visual color in ARGB format
     int getColor();
 
-    /**
-     * @return Temperature in Kelvin that the chemical exists as a liquid
-     */
+    /// @return Temperature in Kelvin that the chemical exists as a liquid
     float getTemperature();
 
-    /**
-     * @return Density as a liquid in kg/m^3
-     */
+    /// @return Density as a liquid in kg/m^3
     float getDensity();
 
-    /**
-     * @return Brightness
-     */
+    /// @return Brightness
     int getLightLevel();
 }

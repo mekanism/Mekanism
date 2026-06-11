@@ -94,9 +94,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
 
-    /**
-     * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
-     */
+    /// @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
     public static ItemStack fullyChargedStack(@Nullable TransactionContext transaction) {
         return ContainerType.ENERGY.getFilledVariant(MekanismItems.ATOMIC_DISASSEMBLER, transaction);
     }

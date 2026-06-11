@@ -18,12 +18,10 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class RadiationUtil {
 
-    /**
-     * Calculates approximately how long in ticks radiation will take to decay
-     *
-     * @param magnitude Magnitude
-     * @param source    {@code true} for if it is a {@link IRadiationSource} or an {@link IRadiationEntity} decaying
-     */
+    /// Calculates approximately how long in ticks radiation will take to decay
+    ///
+    /// @param magnitude    Magnitude
+    /// @param source`true` for if it is a [IRadiationSource] or an [IRadiationEntity] decaying
     public static long getDecayTime(double magnitude, boolean source) {
         double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
         long ticks = 0;

@@ -54,9 +54,7 @@ public class MekanismModelCache extends BaseModelCache {
         callbacks.add(callback);
     }
 
-    /**
-     * Call via {@link IModuleHelper#addMekaSuitModuleModels(Identifier)}.
-     */
+    /// Call via [IModuleHelper#addMekaSuitModuleModels(Identifier)].
     public ModuleOBJModelData registerMekaSuitModuleModel(Identifier rl) {
         ModuleOBJModelData data = register(rl, ModuleOBJModelData::new);
         mekaSuitModules.add(data);

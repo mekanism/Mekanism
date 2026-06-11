@@ -28,12 +28,10 @@ public class OutputHelper {
     private OutputHelper() {
     }
 
-    /**
-     * Wrap a chemical tank into an {@link IOutputHandler}.
-     *
-     * @param tank                Tank to wrap.
-     * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
-     */
+    /// Wrap a chemical tank into an [IOutputHandler].
+    ///
+    /// @param tank                Tank to wrap.
+    /// @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<ChemicalStackTemplate> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
@@ -50,12 +48,10 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wrap a fluid tank into an {@link IOutputHandler}.
-     *
-     * @param tank                Tank to wrap.
-     * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
-     */
+    /// Wrap a fluid tank into an [IOutputHandler].
+    ///
+    /// @param tank                Tank to wrap.
+    /// @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<FluidStackTemplate> getOutputHandler(IFluidTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
@@ -72,12 +68,10 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wrap an inventory slot into an {@link IOutputHandler}.
-     *
-     * @param slot                Slot to wrap.
-     * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
-     */
+    /// Wrap an inventory slot into an [IOutputHandler].
+    ///
+    /// @param slot                Slot to wrap.
+    /// @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<ItemStackTemplate> getOutputHandler(IInventorySlot slot, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
@@ -94,14 +88,12 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wraps two inventory slots, a "main" slot, and a "secondary" slot into an {@link IOutputHandler} for handling {@link ChanceOutput}s.
-     *
-     * @param mainSlot                         Main slot to wrap.
-     * @param secondarySlot                    Secondary slot to wrap.
-     * @param mainSlotNotEnoughSpaceError      The error to apply if the main output causes the recipe to not be able to perform any operations.
-     * @param secondarySlotNotEnoughSpaceError The error to apply if the secondary output causes the recipe to not be able to perform any operations.
-     */
+    /// Wraps two inventory slots, a "main" slot, and a "secondary" slot into an [IOutputHandler] for handling [ChanceOutput]s.
+    ///
+    /// @param mainSlot                         Main slot to wrap.
+    /// @param secondarySlot                    Secondary slot to wrap.
+    /// @param mainSlotNotEnoughSpaceError      The error to apply if the main output causes the recipe to not be able to perform any operations.
+    /// @param secondarySlotNotEnoughSpaceError The error to apply if the secondary output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<ChanceOutput> getOutputHandler(IInventorySlot mainSlot, RecipeError mainSlotNotEnoughSpaceError,
           IInventorySlot secondarySlot, RecipeError secondarySlotNotEnoughSpaceError) {
         Objects.requireNonNull(mainSlot, "Main slot cannot be null.");
@@ -151,14 +143,12 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wraps a chemical tank and an inventory slot into an {@link IOutputHandler}.
-     *
-     * @param tank                    Tank to wrap.
-     * @param slot                    Slot to wrap.
-     * @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
-     * @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
-     */
+    /// Wraps a chemical tank and an inventory slot into an [IOutputHandler].
+    ///
+    /// @param tank                    Tank to wrap.
+    /// @param slot                    Slot to wrap.
+    /// @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
+    /// @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<PressurizedReactionRecipeOutput> getOutputHandler(IInventorySlot slot, RecipeError slotNotEnoughSpaceError,
           IChemicalTank tank, RecipeError tankNotEnoughSpaceError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
@@ -187,16 +177,14 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wraps a fluid tank and an inventory slot into an {@link IOutputHandler}.
-     *
-     * @param tank                    Tank to wrap.
-     * @param slot                    Slot to wrap.
-     * @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
-     * @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
-     *
-     * @since 10.6.3
-     */
+    /// Wraps a fluid tank and an inventory slot into an [IOutputHandler].
+    ///
+    /// @param tank                    Tank to wrap.
+    /// @param slot                    Slot to wrap.
+    /// @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
+    /// @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
+    ///
+    /// @since 10.6.3
     public static IOutputHandler<FluidOptionalItemOutput> getOutputHandler(IFluidTank tank, RecipeError tankNotEnoughSpaceError,
           IInventorySlot slot, RecipeError slotNotEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
@@ -223,14 +211,12 @@ public class OutputHelper {
         };
     }
 
-    /**
-     * Wraps two chemical tanks into an {@link IOutputHandler}.
-     *
-     * @param leftTank                 Left tank to wrap.
-     * @param rightTank                Right tank to wrap.
-     * @param leftNotEnoughSpaceError  The error to apply if the left output causes the recipe to not be able to perform any operations.
-     * @param rightNotEnoughSpaceError The error to apply if the right output causes the recipe to not be able to perform any operations.
-     */
+    /// Wraps two chemical tanks into an [IOutputHandler].
+    ///
+    /// @param leftTank                 Left tank to wrap.
+    /// @param rightTank                Right tank to wrap.
+    /// @param leftNotEnoughSpaceError  The error to apply if the left output causes the recipe to not be able to perform any operations.
+    /// @param rightNotEnoughSpaceError The error to apply if the right output causes the recipe to not be able to perform any operations.
     public static IOutputHandler<ElectrolysisRecipeOutput> getOutputHandler(IChemicalTank leftTank, RecipeError leftNotEnoughSpaceError,
           IChemicalTank rightTank, RecipeError rightNotEnoughSpaceError) {
         Objects.requireNonNull(leftTank, "Left tank cannot be null.");
@@ -282,14 +268,12 @@ public class OutputHelper {
         return container.insert(toOutput, scaledAmount, transaction, AutomationType.INTERNAL) == scaledAmount;
     }
 
-    /**
-     * Calculates how many operations the output has room for and updates the given operation tracker.
-     *
-     * @param tracker        Tracker of current errors and max operations.
-     * @param tank           Output.
-     * @param toOutput       Output result.
-     * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
-     */
+    /// Calculates how many operations the output has room for and updates the given operation tracker.
+    ///
+    /// @param tracker        Tracker of current errors and max operations.
+    /// @param tank           Output.
+    /// @param toOutput       Output result.
+    /// @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, @Nullable ChemicalStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (toOutput != null) {

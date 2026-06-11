@@ -18,10 +18,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * QIO Drive merging data helper. Duplicates a fair bit of code from {@link QIODriveData}, but without requiring a {@link QIODriveKey}, and not validating the total size
- * until writing to the output item
- */
+/// QIO Drive merging data helper. Duplicates a fair bit of code from [QIODriveData], but without requiring a [QIODriveKey], and not validating the total size until
+/// writing to the output item
 public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
     //Note: We just keep track of the UUID as we know it is unique by type so there is no reason to look up the stacks for merging purposes

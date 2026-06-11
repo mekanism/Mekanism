@@ -64,9 +64,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
     private static final EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
-    /**
-     * How many ticks it takes to run an operation.
-     */
+    /// How many ticks it takes to run an operation.
     public static final int BASE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
 
@@ -74,9 +72,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;
     public int ticksRequired = BASE_TICKS_REQUIRED;
-    /**
-     * How many ticks this machine has been operating for.
-     */
+    /// How many ticks this machine has been operating for.
     public int operatingTicks;
     private boolean usedEnergy = false;
 

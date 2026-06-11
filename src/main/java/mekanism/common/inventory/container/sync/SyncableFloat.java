@@ -5,9 +5,7 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.common.network.to_client.container.property.FloatPropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling floats
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling floats
 public abstract class SyncableFloat implements ISyncableData {
 
     private float lastKnownValue;

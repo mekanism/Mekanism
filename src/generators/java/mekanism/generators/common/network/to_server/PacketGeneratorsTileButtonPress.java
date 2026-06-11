@@ -25,9 +25,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Used for informing the server that a click happened in a GUI and the gui window needs to change
- */
+/// Used for informing the server that a click happened in a GUI and the gui window needs to change
 public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton buttonClicked, BlockPos pos) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketGeneratorsTileButtonPress> TYPE = new CustomPacketPayload.Type<>(MekanismGenerators.rl("tile_button"));

@@ -44,17 +44,15 @@ public class TransporterManager {
         }
     }
 
-    /**
-     * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler at a given position, taking into account any already
-     * "in-flight" items that are being transferred to the handler.
-     *
-     * @param position                Position of the target
-     * @param side                    Side of the target we are connecting to
-     * @param handler                 The item handler the target has
-     * @param request                 Transit request
-     *
-     * @return {@link TransitResponse} of expected items to use
-     */
+    /// Gets the [TransitResponse] of what items we expect to be able to get used/inserted into the item handler at a given position, taking into account any already
+    /// "in-flight" items that are being transferred to the handler.
+    ///
+    /// @param position Position of the target
+    /// @param side     Side of the target we are connecting to
+    /// @param handler  The item handler the target has
+    /// @param request  Transit request
+    ///
+    /// @return [TransitResponse] of expected items to use
     public static TransitResponse getPredictedInsert(GlobalPos position, Direction side, ResourceHandler<ItemResource> handler, TransitRequest request,
           @Nullable TransactionContext transaction) {
         try (Transaction simulation = Transaction.open(transaction)) {

@@ -1,14 +1,12 @@
 package mekanism.api.text;
 
 import mekanism.api.MekanismAPI;
-import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
-/**
- * Lang entries declared in the API and provided by Mekanism.
- *
- * @apiNote These should only be accessed via their corresponding users, except for use in making it easier to not miss any entries in the DataGenerators
- */
+/// Lang entries declared in the API and provided by Mekanism.
+///
+/// @apiNote These should only be accessed via their corresponding users, except for use in making it easier to not miss any entries in the DataGenerators
 public enum APILang implements ILangEntry {
     //Upgrades
     UPGRADE_SPEED("upgrade", "speed"),

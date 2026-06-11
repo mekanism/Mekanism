@@ -1,6 +1,6 @@
 package mekanism.common.block.attribute;
 
-/** If we should draw a custom selection box for the block. */
+/// If we should draw a custom selection box for the block.
 public class AttributeCustomSelectionBox implements Attribute {
 
     public static final Attribute JSON = new AttributeCustomSelectionBox(false);

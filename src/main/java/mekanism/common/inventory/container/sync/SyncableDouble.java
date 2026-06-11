@@ -5,9 +5,7 @@ import java.util.function.DoubleSupplier;
 import mekanism.common.network.to_client.container.property.DoublePropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling doubles
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling doubles
 public abstract class SyncableDouble implements ISyncableData {
 
     private double lastKnownValue;

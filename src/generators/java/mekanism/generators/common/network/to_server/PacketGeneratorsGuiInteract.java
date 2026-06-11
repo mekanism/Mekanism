@@ -22,9 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/**
- * Used for informing the server that an action happened in a GUI
- */
+/// Used for informing the server that an action happened in a GUI
 public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketGeneratorsGuiInteract> TYPE = new CustomPacketPayload.Type<>(MekanismGenerators.rl("gui_interact"));

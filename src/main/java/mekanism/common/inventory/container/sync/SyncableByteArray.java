@@ -6,9 +6,7 @@ import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling byte arrays
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling byte arrays
 public class SyncableByteArray implements ISyncableData {
 
     public static SyncableByteArray create(Supplier<byte[]> getter, Consumer<byte[]> setter) {

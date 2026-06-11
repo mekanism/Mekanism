@@ -13,11 +13,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.gear.config.ModuleConfig;
 
-/**
- * Based off of {@link com.mojang.serialization.codecs.ListCodec}, but uses a list of codecs to encode each separate element in the list
- *
- * @since 10.6.0
- */
+/// Based off of [com.mojang.serialization.codecs.ListCodec], but uses a list of codecs to encode each separate element in the list
+///
+/// @since 10.6.0
 class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
 
     private final List<Codec<ModuleConfig<?>>> codecs;

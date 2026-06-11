@@ -25,9 +25,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Multi-block used by wind turbines, solar panels, and other machines
- */
+/// Multi-block used by wind turbines, solar panels, and other machines
 public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, Nameable {
 
     @Nullable

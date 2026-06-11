@@ -130,10 +130,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         addRenderableWidget(new GuiWarningTab(this, warningTracker, true));
     }
 
-    /**
-     * Called to add gui elements to the GUI. Add elements before calling super if they should be before the slots, and after if they should be after the slots. Most
-     * elements can and should be added after the slots.
-     */
+    /// Called to add gui elements to the GUI. Add elements before calling super if they should be before the slots, and after if they should be after the slots. Most
+    /// elements can and should be added after the slots.
     protected void addGuiElements() {
         if (dynamicSlots) {
             addSlots();
@@ -148,9 +146,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    /**
-     * Like {@link #addRenderableWidget(GuiEventListener)}, except doesn't add the element as narratable.
-     */
+    /// Like [#addRenderableWidget(GuiEventListener)], except doesn't add the element as narratable.
     @SuppressWarnings("unchecked")//todo AT the children list or use addWidget
     protected <T extends GuiElement> T addElement(T element) {
         renderables.add(element);
@@ -532,9 +528,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return GuiUtils.checkChildrenChar(children(), event, (child, e) -> child instanceof GuiElement && child.charTyped(e)) || super.charTyped(event);
     }
 
-    /**
-     * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
-     */
+    /// @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double mouseXOld, double mouseYOld) {
         super.mouseDragged(event, mouseXOld, mouseYOld);

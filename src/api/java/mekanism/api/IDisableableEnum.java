@@ -3,16 +3,12 @@ package mekanism.api;
 import java.util.function.Predicate;
 import mekanism.api.functions.ConstantPredicates;
 
-/**
- * Interface for enum's to make them easily incremental, while allowing for disabling various elements
- */
+/// Interface for enum's to make them easily incremental, while allowing for disabling various elements
 public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYPE>> extends IIncrementalEnum<TYPE> {
 
-    /**
-     * Used to check if a given element is enabled.
-     *
-     * @return {@code true} if the element is enabled, {@code false} otherwise.
-     */
+    /// Used to check if a given element is enabled.
+    ///
+    /// @return `true` if the element is enabled, `false` otherwise.
     boolean isEnabled();
 
     @Override

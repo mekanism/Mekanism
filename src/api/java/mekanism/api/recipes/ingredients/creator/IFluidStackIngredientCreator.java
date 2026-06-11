@@ -20,11 +20,9 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, FluidStack, FluidStackIngredient> {
 
-    /**
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
-     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
-     * @since 10.7.11
-     */
+    /// @implNote This wraps via [#from(FluidIngredient, int)] so if there are any default components it will **NOT** be included in the ingredient. If this is not
+    /// desired, manually create the ingredient via [DataComponentFluidIngredient] and call [#from(FluidIngredient, int)].
+    /// @since 10.7.11
     @Override
     @SuppressWarnings("unchecked")
     default FluidStackIngredient fromHolders(int amount, Holder<Fluid>... fluids) {
@@ -34,18 +32,14 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         return from(FluidIngredient.of(HolderSet.direct(List.of(fluids))), amount);
     }
 
-    /**
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the ingredient. If
-     * this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
-     */
+    /// @implNote This wraps via [#from(FluidIngredient, int)] so if there are any default components it will **NOT** be included in the ingredient. If this is not
+    /// desired, manually create the ingredient via [DataComponentFluidIngredient] and call [#from(FluidIngredient, int)].
     @Override
     default FluidStackIngredient fromHolder(Holder<Fluid> instance, int amount) {
         return from(FluidIngredient.of(instance.value()), amount);
     }
 
-    /**
-     * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
-     */
+    /// @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
     @Override
     default FluidStackIngredient from(FluidStack instance) {
         Objects.requireNonNull(instance, "FluidStackIngredients cannot be created from a null FluidStack.");
@@ -69,30 +63,26 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         return from(new SizedFluidIngredient(FluidIngredient.of(lookup.getOrThrow(tag)), amount));
     }
 
-    /**
-     * Creates a Fluid Stack Ingredient that matches a given ingredient and amount.
-     *
-     * @param ingredient Ingredient to match.
-     * @param amount     Amount needed.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     * @since 10.6.0
-     */
+    /// Creates a Fluid Stack Ingredient that matches a given ingredient and amount.
+    ///
+    /// @param ingredient Ingredient to match.
+    /// @param amount     Amount needed.
+    ///
+    /// @throws NullPointerException     if the given instance is null.
+    /// @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
+    /// @since 10.6.0
     default FluidStackIngredient from(FluidIngredient ingredient, int amount) {
         Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null fluid ingredient.");
         return from(new SizedFluidIngredient(ingredient, amount));
     }
 
-    /**
-     * Creates a Fluid Stack Ingredient that matches a given ingredient and amount.
-     *
-     * @param ingredient Sized ingredient to match.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty.
-     * @since 10.6.0
-     */
+    /// Creates a Fluid Stack Ingredient that matches a given ingredient and amount.
+    ///
+    /// @param ingredient Sized ingredient to match.
+    ///
+    /// @throws NullPointerException     if the given instance is null.
+    /// @throws IllegalArgumentException if the given instance is empty.
+    /// @since 10.6.0
     default FluidStackIngredient from(SizedFluidIngredient ingredient) {
         return FluidStackIngredient.of(ingredient);
     }

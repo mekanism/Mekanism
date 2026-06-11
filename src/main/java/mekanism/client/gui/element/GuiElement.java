@@ -45,8 +45,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
@@ -60,10 +60,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     protected ButtonBackground buttonBackground = ButtonBackground.NONE;
 
     private final List<GuiElement> children = new ArrayList<>();
-    /**
-     * Children that don't get drawn or checked for beyond transferring data. This is mainly a helper to make it easier to update positioning information of background
-     * helpers.
-     */
+    /// Children that don't get drawn or checked for beyond transferring data. This is mainly a helper to make it easier to update positioning information of background
+    /// helpers.
     private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
     private IGuiWrapper guiObj;
@@ -129,9 +127,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return getRelativeY() + getHeight();
     }
 
-    /**
-     * Transfers this {@link GuiElement} to a new parent {@link IGuiWrapper}, and moves elements as needed.
-     */
+    /// Transfers this [GuiElement] to a new parent [IGuiWrapper], and moves elements as needed.
     public void transferToNewGui(IGuiWrapper gui) {
         int prevLeft = getGuiLeft();
         int prevTop = getGuiTop();
@@ -209,9 +205,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         children.forEach(GuiElement::tick);
     }
 
-    /**
-     * @apiNote prevLeft and prevTop may be equal to left and top when things are being reinitialized such as when returning from viewing recipes in JEI.
-     */
+    /// @apiNote prevLeft and prevTop may be equal to left and top when things are being reinitialized such as when returning from viewing recipes in JEI.
     public void resize(int prevLeft, int prevTop, int left, int top) {
         setPosition(getX() - prevLeft + left, getY() - prevTop + top);
         for (GuiElement guiElement : children) {
@@ -498,31 +492,23 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return isMouseOver(mouseX, mouseY);
     }*/
 
-    /**
-     * Override this to render the button with a different x position than this GuiElement
-     */
+    /// Override this to render the button with a different x position than this GuiElement
     protected int getButtonX() {
         //TODO: Re-evaluate uses of relativeX and see what would be more logical to have using this/getButtonY/Width/Height and potentially just override this in more locations
         return relativeX;
     }
 
-    /**
-     * Override this to render the button with a different y position than this GuiElement
-     */
+    /// Override this to render the button with a different y position than this GuiElement
     protected int getButtonY() {
         return relativeY;
     }
 
-    /**
-     * Override this to render the button with a different width than this GuiElement
-     */
+    /// Override this to render the button with a different width than this GuiElement
     protected int getButtonWidth() {
         return width;
     }
 
-    /**
-     * Override this to render the button with a different height than this GuiElement
-     */
+    /// Override this to render the button with a different height than this GuiElement
     protected int getButtonHeight() {
         return height;
     }
@@ -532,25 +518,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, mouseX, mouseY, GuiElement::isMouseOver);
     }
 
-    /**
-     * Does the same as {@link #isMouseOver(double, double)}, but validates there is no window in the way
-     */
+    /// Does the same as [#isMouseOver(double, double)], but validates there is no window in the way
     public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
         //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
         boolean isHovering = isMouseOver(mouseX, mouseY);
         return checkWindows(mouseX, mouseY, isHovering);
     }
 
-    /**
-     * Helper to correct potentially inaccurate hovering or in bounds checks.
-     */
+    /// Helper to correct potentially inaccurate hovering or in bounds checks.
     protected final boolean checkWindows(double mouseX, double mouseY) {
         return checkWindows(mouseX, mouseY, true);
     }
 
-    /**
-     * Helper to correct potentially inaccurate hovering or in bounds checks.
-     */
+    /// Helper to correct potentially inaccurate hovering or in bounds checks.
     protected final boolean checkWindows(double mouseX, double mouseY, boolean isHovering) {
         if (isHovering) {
             //If the mouse is over this element, check if there is a window that would intercept the mouse

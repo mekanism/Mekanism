@@ -7,22 +7,18 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.core.TypedInstance;
 
-/**
- * Base class to help implement handling of either side two input recipes.
- *
- * @since 10.8.0
- */
+/// Base class to help implement handling of either side two input recipes.
+///
+/// @since 10.8.0
 public class OrderlessTwoInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, INGREDIENT extends InputIngredient<HOLDER, INPUT>, OUTPUT,
       RECIPE extends OrderlessTwoInputRecipe<HOLDER, INPUT, INGREDIENT, ?, OUTPUT>> extends TwoInputCachedRecipe<HOLDER, INPUT, INGREDIENT, HOLDER, INPUT, INGREDIENT, OUTPUT, RECIPE> {
 
-    /**
-     * @param recipe            Recipe.
-     * @param recheckAllErrors  Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
-     *                          do this every tick or if there is no one viewing recipes.
-     * @param leftInputHandler  Left input handler.
-     * @param rightInputHandler Right input handler.
-     * @param outputHandler     Output handler.
-     */
+    /// @param recipe            Recipe.
+    /// @param recheckAllErrors  Returns `true` if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not do
+    /// do this every tick or if there is no one viewing recipes.
+    /// @param leftInputHandler  Left input handler.
+    /// @param rightInputHandler Right input handler.
+    /// @param outputHandler     Output handler.
     public OrderlessTwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<HOLDER, INPUT> leftInputHandler,
           IInputHandler<HOLDER, INPUT> rightInputHandler, IOutputHandler<OUTPUT> outputHandler) {
         super(recipe, recheckAllErrors, leftInputHandler, rightInputHandler, outputHandler);

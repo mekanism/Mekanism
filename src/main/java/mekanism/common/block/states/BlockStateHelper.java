@@ -71,18 +71,14 @@ public class BlockStateHelper {
         }
     }
 
-    /**
-     * Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on which
-     * fluid a block may be fluid logged with and then use that light level instead if it is higher.
-     */
+    /// Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on which
+    /// fluid a block may be fluid logged with and then use that light level instead if it is higher.
     public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties) {
         return applyLightLevelAdjustments(properties, state -> state.getBlock() instanceof IStateFluidLoggable fluidLoggable ? fluidLoggable.getFluidLightLevel(state) : 0);
     }
 
-    /**
-     * Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on
-     * another function to allow for compounding the light values and then using that light level instead if it is higher.
-     */
+    /// Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on
+    /// another function to allow for compounding the light values and then using that light level instead if it is higher.
     public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties, ToIntFunction<BlockState> toApply) {
         //Cache what the current light level function is
         ToIntFunction<BlockState> existingLightLevelFunction = properties.lightEmission;

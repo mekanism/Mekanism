@@ -19,9 +19,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
-import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
+import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -167,9 +167,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
-    /**
-     * @apiNote Ensure that it can eject before calling this method.
-     */
+    /// @apiNote Ensure that it can eject before calling this method.
     private void eject(TransmissionType type, ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         //Used to keep track of tanks to what sides they output to
         Map<Object, Set<Direction>> outputData = null;//todo what is the point of putting it into a map??
@@ -252,9 +250,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return cache;
     }
 
-    /**
-     * @apiNote Ensure that it can eject before calling this method.
-     */
+    /// @apiNote Ensure that it can eject before calling this method.
     private void outputItems(ServerLevel level, Direction facing, ConfigInfo info, @Nullable TransactionContext transaction) {
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {

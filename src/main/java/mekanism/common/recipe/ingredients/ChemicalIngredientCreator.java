@@ -63,20 +63,16 @@ public class ChemicalIngredientCreator implements IChemicalIngredientCreator {
     private static final Codec<List<ChemicalIngredient>> LIST_CODEC_NON_EMPTY = ExtraCodecs.nonEmptyList(LIST_CODEC);
     private static final Codec<List<ChemicalIngredient>> LIST_CODEC_MULTIPLE_ELEMENTS = LIST_CODEC.validate(list -> list.size() < 2 ? DataResult.error(() -> "List must have multiple elements") : DataResult.success(list));
 
-    /**
-     * Full codec representing a gas ingredient in all possible forms.
-     * <p>
-     * Allows for arrays of gas ingredients to be read as a {@link CompoundChemicalIngredient}, as well as for the {@code type} field to be left out in case of a single
-     * gas or tag ingredient.
-     *
-     * @see #MAP_CODEC_NONEMPTY
-     */
+    /// Full codec representing a chemical ingredient in all possible forms.
+    ///
+    /// Allows for arrays of chemical ingredients to be read as a [CompoundChemicalIngredient], as well as for the `type` field to be left out in case of a single
+    /// chemical or tag ingredient.
+    ///
+    /// @see #MAP_CODEC_NONEMPTY
     private static final Codec<ChemicalIngredient> CODEC = codec(LIST_CODEC);
-    /**
-     * Same as {@link #CODEC}, except not allowing for empty ingredients ({@code []}) to be specified.
-     *
-     * @see #CODEC
-     */
+    /// Same as [#CODEC], except not allowing for empty ingredients (`[]`) to be specified.
+    ///
+    /// @see #CODEC
     private static final Codec<ChemicalIngredient> CODEC_NON_EMPTY = codec(LIST_CODEC_NON_EMPTY);
 
     private static Codec<ChemicalIngredient> codec(Codec<List<ChemicalIngredient>> listCodec) {

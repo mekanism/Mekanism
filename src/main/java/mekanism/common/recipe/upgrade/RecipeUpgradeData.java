@@ -11,14 +11,14 @@ import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.component.LockData;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
@@ -40,9 +40,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     @Nullable
     TYPE merge(TYPE other);
 
-    /**
-     * @return {@code false} if it failed to apply to the stack due to being invalid
-     */
+    /// @return `false` if it failed to apply to the stack due to being invalid
     boolean applyToStack(ItemAccess itemAccess, TransactionContext transaction);
 
     static Set<RecipeUpgradeType> getSupportedTypes(ItemAccess itemAccess) {
@@ -92,9 +90,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         return containers.isEmpty() ? null : new ResourceRecipeData<>(containerType, containers);
     }
 
-    /**
-     * Make sure to validate with getSupportedTypes before calling this
-     */
+    /// Make sure to validate with getSupportedTypes before calling this
     @Nullable
     static RecipeUpgradeData<?> getUpgradeData(RecipeUpgradeType type, ItemAccess itemAccess, TransactionContext transaction) {
         ItemResource itemType = itemAccess.getResource();

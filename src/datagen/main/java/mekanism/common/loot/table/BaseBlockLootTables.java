@@ -249,16 +249,12 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#applyExplosionCondition(ItemLike, ConditionUserBuilder)} except with a boolean for if it is explosion resistant.
-     */
+    /// Like vanilla's [BlockLootSubProvider#applyExplosionCondition(ItemLike, ConditionUserBuilder)] except with a boolean for if it is explosion resistant.
     private static <T extends ConditionUserBuilder<T>> T applyExplosionCondition(boolean explosionResistant, ConditionUserBuilder<T> condition) {
         return explosionResistant ? condition.unwrap() : condition.when(ExplosionCondition.survivesExplosion());
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#createSlabItemTable(Block)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#createSlabItemTable(Block)] except with a named pool
     @Override
     protected LootTable.Builder createSlabItemTable(Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
@@ -274,17 +270,13 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         );
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#dropOther(Block, ItemLike)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#dropOther(Block, ItemLike)] except with a named pool
     @Override
     public void dropOther(Block block, ItemLike drop) {
         add(block, createSingleItemTable(drop));
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#createSingleItemTable(ItemLike)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#createSingleItemTable(ItemLike)] except with a named pool
     @Override
     public LootTable.Builder createSingleItemTable(ItemLike item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
@@ -294,25 +286,19 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         ));
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#createSingleItemTableWithSilkTouch(Block, ItemLike, NumberProvider)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#createSingleItemTableWithSilkTouch(Block, ItemLike, NumberProvider)] except with a named pool
     @Override
     protected LootTable.Builder createSingleItemTableWithSilkTouch(Block block, ItemLike item, NumberProvider range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(range))));
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)] except with a named pool
     @Override
     protected LootTable.Builder createSilkTouchDispatchTable(Block block, LootPoolEntryContainer.Builder<?> builder) {
         return createSelfDropDispatchTable(block, hasSilkTouch(), builder);
     }
 
-    /**
-     * Like vanilla's {@link BlockLootSubProvider#createSelfDropDispatchTable(Block, LootItemCondition.Builder, LootPoolEntryContainer.Builder)} except with a named pool
-     */
+    /// Like vanilla's [BlockLootSubProvider#createSelfDropDispatchTable(Block, LootItemCondition.Builder, LootPoolEntryContainer.Builder)] except with a named pool
     protected static LootTable.Builder createSelfDropDispatchTable(Block block, LootItemCondition.Builder conditionBuilder,
           LootPoolEntryContainer.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()

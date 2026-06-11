@@ -14,9 +14,7 @@ import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base class to help implement handling of recipes with two inputs.
- */
+/// Base class to help implement handling of recipes with two inputs.
 public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>,
       HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
       OUTPUT, RECIPE extends TwoInputMekRecipe<HOLDER_A, INPUT_A, INGREDIENT_A, HOLDER_B, INPUT_B, INGREDIENT_B, ?, OUTPUT>> extends CachedRecipe<RECIPE> {
@@ -38,14 +36,12 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
     @Nullable
     private OUTPUT output;
 
-    /**
-     * @param recipe                   Recipe.
-     * @param recheckAllErrors         Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended
-     *                                 to not do this every tick or if there is no one viewing recipes.
-     * @param inputHandler             Main input handler.
-     * @param secondaryInputHandler    Secondary input handler.
-     * @param outputHandler            Output handler.
-     */
+    /// @param recipe                Recipe.
+    /// @param recheckAllErrors      Returns `true` if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+    /// to not do this every tick or if there is no one viewing recipes.
+    /// @param inputHandler          Main input handler.
+    /// @param secondaryInputHandler Secondary input handler.
+    /// @param outputHandler         Output handler.
     public TwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<HOLDER_A, INPUT_A> inputHandler,
           IInputHandler<HOLDER_B, INPUT_B> secondaryInputHandler, IOutputHandler<OUTPUT> outputHandler) {
         super(recipe, recheckAllErrors);

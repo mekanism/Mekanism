@@ -49,50 +49,42 @@ import org.jspecify.annotations.Nullable;
 
 public class WorldUtils {
 
-    /**
-     * Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @see #isBlockLoaded(BlockGetter, BlockPos)
-     */
+    /// Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @see #isBlockLoaded(BlockGetter, BlockPos)
     @Contract("null, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, BlockPos pos) {
         return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
-    /**
-     * Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
-     *
-     * @param world world
-     * @param pos   packed block position
-     *
-     * @see #isBlockLoaded(BlockGetter, BlockPos)
-     */
+    /// Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
+    ///
+    /// @param world world
+    /// @param pos   packed block position
+    ///
+    /// @see #isBlockLoaded(BlockGetter, BlockPos)
     @Contract("null, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, long pos) {
         return isChunkLoaded(world, SectionPos.blockToSectionCoord(BlockPos.getX(pos)), SectionPos.blockToSectionCoord(BlockPos.getZ(pos)));
     }
 
-    /**
-     * Checks if the chunk at the given position is loaded.
-     *
-     * @param world    world
-     * @param chunkPos Chunk position
-     */
+    /// Checks if the chunk at the given position is loaded.
+    ///
+    /// @param world    world
+    /// @param chunkPos Chunk position
     @Contract("null, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, ChunkPos chunkPos) {
         return isChunkLoaded(world, chunkPos.x(), chunkPos.z());
     }
 
-    /**
-     * Checks if the chunk at the given position is loaded.
-     *
-     * @param world  world
-     * @param chunkX Chunk X coordinate
-     * @param chunkZ Chunk Z coordinate
-     */
+    /// Checks if the chunk at the given position is loaded.
+    ///
+    /// @param world  world
+    /// @param chunkX Chunk X coordinate
+    /// @param chunkZ Chunk Z coordinate
     @Contract("null, _, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, int chunkX, int chunkZ) {
         if (world == null) {
@@ -107,14 +99,12 @@ public class WorldUtils {
         return world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false) != null;
     }
 
-    /**
-     * Checks if a position is in bounds of the world, and is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
-     */
+    /// Checks if a position is in bounds of the world, and is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
     @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable BlockGetter world, BlockPos pos) {
         if (world == null) {
@@ -140,16 +130,14 @@ public class WorldUtils {
         return x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000;
     }
 
-    /**
-     * Checks if a position is in bounds of the world, and is loaded
-     *
-     * @param world world
-     * @param pos   packed block position
-     *
-     * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
-     *
-     * @implNote the checks for world bound don't account for a mod changing the default 30,000,000 limit, but surely that's rare...
-     */
+    /// Checks if a position is in bounds of the world, and is loaded
+    ///
+    /// @param world world
+    /// @param pos   packed block position
+    ///
+    /// @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
+    ///
+    /// @implNote the checks for world bound don't account for a mod changing the default 30,000,000 limit, but surely that's rare...
     @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable BlockGetter world, long pos) {
         if (world == null) {
@@ -165,14 +153,12 @@ public class WorldUtils {
         return true;
     }
 
-    /**
-     * Checks if a position is in bounds of the world
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return True if the position is in bounds of the world or the given world is of a superclass of IWorldReader that does not have a concept of bounds.
-     */
+    /// Checks if a position is in bounds of the world
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return True if the position is in bounds of the world or the given world is of a superclass of IWorldReader that does not have a concept of bounds.
     @Contract("null, _ -> false")
     public static boolean isBlockInBounds(@Nullable BlockGetter world, BlockPos pos) {
         if (world == null) {
@@ -183,16 +169,14 @@ public class WorldUtils {
         return true;
     }
 
-    /**
-     * Gets the chunk in a given position or {@code null} if there is no world, the position is out of bounds or the chunk isn't loaded. Tries to retrieve it from our
-     * cache and if it isn't found, tries to get it from the world and adds it to our cache.
-     *
-     * @param world    world
-     * @param chunkMap cached chunk map
-     * @param pos      position
-     *
-     * @return The chunk in a given position or {@code null} if there is no world, the position is out of bounds or the chunk isn't loaded
-     */
+    /// Gets the chunk in a given position or `null` if there is no world, the position is out of bounds or the chunk isn't loaded. Tries to retrieve it from our cache
+    /// and if it isn't found, tries to get it from the world and adds it to our cache.
+    ///
+    /// @param world    world
+    /// @param chunkMap cached chunk map
+    /// @param pos      position
+    ///
+    /// @return The chunk in a given position or `null` if there is no world, the position is out of bounds or the chunk isn't loaded
     @Nullable
     @Contract("null, _, _ -> null")
     private static BlockGetter getChunkForPos(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
@@ -220,29 +204,25 @@ public class WorldUtils {
         return chunk;
     }
 
-    /**
-     * Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
-     *
-     * @param world    world
-     * @param chunkMap cached chunk map
-     * @param pos      position
-     *
-     * @return optional containing the blockstate if found, empty optional if not loaded
-     */
+    /// Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+    /// we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+    ///
+    /// @param world    world
+    /// @param chunkMap cached chunk map
+    /// @param pos      position
+    ///
+    /// @return optional containing the blockstate if found, empty optional if not loaded
     public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the blockstate using the chunk we found/had cached
         return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
     }
 
-    /**
-     * Gets a blockstate if the location is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return optional containing the blockstate if found, empty optional if not loaded
-     */
+    /// Gets a blockstate if the location is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return optional containing the blockstate if found, empty optional if not loaded
     public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
@@ -251,14 +231,12 @@ public class WorldUtils {
         return Optional.of(world.getBlockState(pos));
     }
 
-    /**
-     * Gets a blockstate if the location is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return the blockstate if found, null if not loaded
-     */
+    /// Gets a blockstate if the location is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return the blockstate if found, null if not loaded
     @Nullable
     public static BlockState getBlockStateIfLoaded(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
@@ -268,29 +246,25 @@ public class WorldUtils {
         return world.getBlockState(pos);
     }
 
-    /**
-     * Gets a fluidstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
-     *
-     * @param world    world
-     * @param chunkMap cached chunk map
-     * @param pos      position
-     *
-     * @return optional containing the fluidstate if found, empty optional if not loaded
-     */
+    /// Gets a fluidstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+    /// we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+    ///
+    /// @param world    world
+    /// @param chunkMap cached chunk map
+    /// @param pos      position
+    ///
+    /// @return optional containing the fluidstate if found, empty optional if not loaded
     public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         //Get the fluidstate using the chunk we found/had cached
         return getFluidState(getChunkForPos(world, chunkMap, pos), pos);
     }
 
-    /**
-     * Gets a fluidstate if the location is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return optional containing the fluidstate if found, empty optional if not loaded
-     */
+    /// Gets a fluidstate if the location is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return optional containing the fluidstate if found, empty optional if not loaded
     public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
@@ -299,16 +273,14 @@ public class WorldUtils {
         return Optional.of(world.getFluidState(pos));
     }
 
-    /**
-     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
-     *
-     * @param world    world
-     * @param chunkMap cached chunk map
-     * @param pos      position
-     *
-     * @return tile entity if found, null if either not found or not loaded
-     */
+    /// Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+    /// we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+    ///
+    /// @param world    world
+    /// @param chunkMap cached chunk map
+    /// @param pos      position
+    ///
+    /// @return tile entity if found, null if either not found or not loaded
     @Nullable
     @Contract("null, _, _ -> null")
     public static BlockEntity getTileEntity(@Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
@@ -316,35 +288,31 @@ public class WorldUtils {
         return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
 
-    /**
-     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
-     *
-     * @param clazz    Class type of the TileEntity we expect to be in the position
-     * @param world    world
-     * @param chunkMap cached chunk map
-     * @param pos      position
-     *
-     * @return tile entity if found, null if either not found, not loaded, or of the wrong type
-     */
+    /// Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+    /// we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+    ///
+    /// @param clazz    Class type of the TileEntity we expect to be in the position
+    /// @param world    world
+    /// @param chunkMap cached chunk map
+    /// @param pos      position
+    ///
+    /// @return tile entity if found, null if either not found, not loaded, or of the wrong type
     @Nullable
     @Contract("_, null, _, _ -> null")
     public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         return getTileEntity(clazz, world, chunkMap, pos, false);
     }
 
-    /**
-     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
-     *
-     * @param clazz        Class type of the TileEntity we expect to be in the position
-     * @param world        world
-     * @param chunkMap     cached chunk map
-     * @param pos          position
-     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
-     *
-     * @return tile entity if found, null if either not found, not loaded, or of the wrong type
-     */
+    /// Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+    /// we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+    ///
+    /// @param clazz        Class type of the TileEntity we expect to be in the position
+    /// @param world        world
+    /// @param chunkMap     cached chunk map
+    /// @param pos          position
+    /// @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
+    ///
+    /// @return tile entity if found, null if either not found, not loaded, or of the wrong type
     @Nullable
     @Contract("_, null, _, _, _ -> null")
     public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos, boolean logWrongType) {
@@ -352,14 +320,12 @@ public class WorldUtils {
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
     }
 
-    /**
-     * Gets a tile entity if the location is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return tile entity if found, null if either not found or not loaded
-     */
+    /// Gets a tile entity if the location is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return tile entity if found, null if either not found or not loaded
     @Nullable
     @Contract("null, _ -> null")
     public static BlockEntity getTileEntity(@Nullable BlockGetter world, long pos) {
@@ -370,14 +336,12 @@ public class WorldUtils {
         return world.getBlockEntity(BlockPos.of(pos));
     }
 
-    /**
-     * Gets a tile entity if the location is loaded
-     *
-     * @param world world
-     * @param pos   position
-     *
-     * @return tile entity if found, null if either not found or not loaded
-     */
+    /// Gets a tile entity if the location is loaded
+    ///
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return tile entity if found, null if either not found or not loaded
     @Nullable
     @Contract("null, _ -> null")
     public static BlockEntity getTileEntity(@Nullable BlockGetter world, BlockPos pos) {
@@ -388,34 +352,30 @@ public class WorldUtils {
         return world.getBlockEntity(pos);
     }
 
-    /**
-     * Gets the capability of a block at a given location if it is loaded
-     *
-     * @param level   Level
-     * @param cap     Capability to look up
-     * @param pos     position
-     * @param context Capability context
-     *
-     * @return capability if present, null if either not found or not loaded
-     */
+    /// Gets the capability of a block at a given location if it is loaded
+    ///
+    /// @param level   Level
+    /// @param cap     Capability to look up
+    /// @param pos     position
+    /// @param context Capability context
+    ///
+    /// @return capability if present, null if either not found or not loaded
     @Nullable
     @Contract("null, _, _, _ -> null")
     public static <CAP, CONTEXT extends @Nullable Object> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
         return getCapability(level, cap, pos, null, null, context);
     }
 
-    /**
-     * Gets the capability of a block at a given location if it is loaded
-     *
-     * @param level   Level
-     * @param cap     Capability to look up
-     * @param pos     position
-     * @param state   the block state, if known, or {@code null} if unknown
-     * @param tile    the block entity, if known, or {@code null} if unknown
-     * @param context Capability context
-     *
-     * @return capability if present, null if either not found or not loaded
-     */
+    /// Gets the capability of a block at a given location if it is loaded
+    ///
+    /// @param level   Level
+    /// @param cap     Capability to look up
+    /// @param pos     position
+    /// @param state   the block state, if known, or `null` if unknown
+    /// @param tile    the block entity, if known, or `null` if unknown
+    /// @param context Capability context
+    ///
+    /// @return capability if present, null if either not found or not loaded
     @Nullable
     @Contract("null, _, _, _, _, _ -> null")
     public static <CAP, CONTEXT extends @Nullable Object> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
@@ -427,31 +387,27 @@ public class WorldUtils {
         return level.getCapability(cap, pos, state, tile, context);
     }
 
-    /**
-     * Gets a tile entity if the location is loaded
-     *
-     * @param clazz Class type of the TileEntity we expect to be in the position
-     * @param world world
-     * @param pos   position
-     *
-     * @return tile entity if found, null if either not found, not loaded, or of the wrong type
-     */
+    /// Gets a tile entity if the location is loaded
+    ///
+    /// @param clazz Class type of the TileEntity we expect to be in the position
+    /// @param world world
+    /// @param pos   position
+    ///
+    /// @return tile entity if found, null if either not found, not loaded, or of the wrong type
     @Nullable
     @Contract("_, null, _ -> null")
     public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, BlockPos pos) {
         return getTileEntity(clazz, world, pos, false);
     }
 
-    /**
-     * Gets a tile entity if the location is loaded
-     *
-     * @param clazz        Class type of the TileEntity we expect to be in the position
-     * @param world        world
-     * @param pos          position
-     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
-     *
-     * @return tile entity if found, null if either not found or not loaded, or of the wrong type
-     */
+    /// Gets a tile entity if the location is loaded
+    ///
+    /// @param clazz        Class type of the TileEntity we expect to be in the position
+    /// @param world        world
+    /// @param pos          position
+    /// @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
+    ///
+    /// @return tile entity if found, null if either not found or not loaded, or of the wrong type
     @Nullable
     @Contract("_, null, _, _ -> null")
     public static <T extends BlockEntity> T getTileEntity(Class<T> clazz, @Nullable BlockGetter world, BlockPos pos, boolean logWrongType) {
@@ -467,16 +423,12 @@ public class WorldUtils {
         return null;
     }
 
-    /**
-     * Marks a chunk as dirty if it is currently loaded
-     */
+    /// Marks a chunk as dirty if it is currently loaded
     public static void markChunkDirty(Level world, BlockPos pos) {
         markChunkDirty(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
-    /**
-     * Marks a chunk as dirty if it is currently loaded
-     */
+    /// Marks a chunk as dirty if it is currently loaded
     public static void markChunkDirty(Level world, int chunkX, int chunkZ) {
         ChunkAccess chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
         if (chunk != null) {
@@ -484,18 +436,14 @@ public class WorldUtils {
         }
     }
 
-    /**
-     * Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
-     */
+    /// Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable Entity entity, ItemStack tool) {
         dismantleBlock(state, world, pos, getTileEntity(world, pos), entity, tool);
     }
 
-    /**
-     * Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
-     *
-     * @implNote This method ignores {@link GameRules#BLOCK_DROPS}, and does not drop experience.
-     */
+    /// Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
+    ///
+    /// @implNote This method ignores [GameRules#BLOCK_DROPS], and does not drop experience.
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         if (world instanceof ServerLevel level) {
             if (entity instanceof Player player) {
@@ -519,9 +467,7 @@ public class WorldUtils {
         world.removeBlock(pos, false);
     }
 
-    /**
-     * Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
-     */
+    /// Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
     public static List<ItemEntity> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool,
           boolean applyMomentum) {
         List<ItemStack> rawDrops = Block.getDrops(state, level, pos, tile, entity, tool);
@@ -553,9 +499,7 @@ public class WorldUtils {
         return event.getDrops();
     }
 
-    /**
-     * Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
-     */
+    /// Gets the drops from breaking the block at a given spot, including any drops added via the BlockDropsEvent
     public static List<ItemStack> getDrops(BlockState state, ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         List<ItemEntity> drops = getDrops(state, level, pos, tile, entity, tool, false);
         List<ItemStack> result = new ArrayList<>(drops.size());
@@ -568,20 +512,16 @@ public class WorldUtils {
         return result;
     }
 
-    /**
-     * Gets the distance to a defined positions.
-     *
-     * @return the distance to the defined positions
-     */
+    /// Gets the distance to a defined positions.
+    ///
+    /// @return the distance to the defined positions
     public static double distanceBetween(BlockPos start, BlockPos end) {
         return Math.sqrt(start.distSqr(end));
     }
 
-    /**
-     * A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
-     *
-     * @return Direction representing the side the defined relative Coord4D is on to this
-     */
+    /// A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
+    ///
+    /// @return Direction representing the side the defined relative Coord4D is on to this
     @Nullable
     public static Direction sideDifference(BlockPos pos, BlockPos other) {
         int xDiff = pos.getX() - other.getX();
@@ -590,11 +530,9 @@ public class WorldUtils {
         return getDirection(xDiff, yDiff, zDiff);
     }
 
-    /**
-     * A method used to find the Direction represented by the distance of the defined packed BlockPos. Most likely won't have many applicable uses.
-     *
-     * @return Direction representing the side the defined relative packed BlockPos is on to this
-     */
+    /// A method used to find the Direction represented by the distance of the defined packed BlockPos. Most likely won't have many applicable uses.
+    ///
+    /// @return Direction representing the side the defined relative packed BlockPos is on to this
     @Nullable
     public static Direction sideDifference(long pos, long other) {
         int xDiff = BlockPos.getX(pos) - BlockPos.getX(other);
@@ -650,13 +588,11 @@ public class WorldUtils {
         return tile instanceof IInternalMultiblock internalMultiblock && internalMultiblock.hasFormedMultiblock();
     }
 
-    /**
-     * Whether the provided chunk is being vibrated by a Seismic Vibrator.
-     *
-     * @param chunk chunk to check
-     *
-     * @return if the chunk is being vibrated
-     */
+    /// Whether the provided chunk is being vibrated by a Seismic Vibrator.
+    ///
+    /// @param chunk chunk to check
+    ///
+    /// @return if the chunk is being vibrated
     public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
         for (GlobalPos coord : Mekanism.activeVibrators) {
             if (coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x() &&
@@ -667,14 +603,12 @@ public class WorldUtils {
         return false;
     }
 
-    /**
-     * Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
-     *
-     * @param world the world to perform the check in
-     * @param pos   the position of the block performing the check
-     *
-     * @return if the block is indirectly getting powered by LOADED chunks
-     */
+    /// Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
+    ///
+    /// @param world the world to perform the check in
+    /// @param pos   the position of the block performing the check
+    ///
+    /// @return if the block is indirectly getting powered by LOADED chunks
     public static boolean isGettingPowered(@Nullable Level world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
             BlockPos.MutableBlockPos offset = new MutableBlockPos();
@@ -692,14 +626,12 @@ public class WorldUtils {
         return false;
     }
 
-    /**
-     * Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
-     *
-     * @param world the world to perform the check in
-     * @param pos   the BlockPos of the block to check
-     *
-     * @return if the block is directly getting powered
-     */
+    /// Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
+    ///
+    /// @param world the world to perform the check in
+    /// @param pos   the BlockPos of the block to check
+    ///
+    /// @return if the block is directly getting powered
     public static boolean isDirectlyGettingPowered(Level world, BlockPos pos) {
         BlockPos.MutableBlockPos offset = new MutableBlockPos();
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -711,11 +643,9 @@ public class WorldUtils {
         return false;
     }
 
-    /**
-     * Checks if all the positions are valid and the current block in them can be replaced.
-     *
-     * @return True if the blocks can be replaced and is within the world's bounds.
-     */
+    /// Checks if all the positions are valid and the current block in them can be replaced.
+    ///
+    /// @return True if the blocks can be replaced and is within the world's bounds.
     public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, BlockPos... positions) {
         for (BlockPos position : positions) {
             if (!isValidReplaceableBlock(world, baseContext, position)) {
@@ -725,11 +655,9 @@ public class WorldUtils {
         return true;
     }
 
-    /**
-     * Checks if all the positions are valid and the current block in them can be replaced.
-     *
-     * @return True if the blocks can be replaced and is within the world's bounds.
-     */
+    /// Checks if all the positions are valid and the current block in them can be replaced.
+    ///
+    /// @return True if the blocks can be replaced and is within the world's bounds.
     public static boolean areBlocksValidAndReplaceable(BlockGetter world, @Nullable BlockPlaceContext baseContext, Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
         for (BlockPos position : positions) {
@@ -740,11 +668,9 @@ public class WorldUtils {
         return true;
     }
 
-    /**
-     * Checks if a block is valid for a position and the current block there can be replaced.
-     *
-     * @return True if the block can be replaced and is within the world's bounds.
-     */
+    /// Checks if a block is valid for a position and the current block there can be replaced.
+    ///
+    /// @return True if the block can be replaced and is within the world's bounds.
     public static boolean isValidReplaceableBlock(BlockGetter world, @Nullable BlockPlaceContext baseContext, BlockPos pos) {
         Optional<BlockState> blockState = getBlockState(world, pos);
         if (blockState.isPresent()) {
@@ -757,12 +683,10 @@ public class WorldUtils {
         return false;
     }
 
-    /**
-     * Notifies neighboring blocks of a TileEntity change without loading chunks.
-     *
-     * @param world world to perform the operation in
-     * @param pos   BlockPos to perform the operation on
-     */
+    /// Notifies neighboring blocks of a TileEntity change without loading chunks.
+    ///
+    /// @param world world to perform the operation in
+    /// @param pos   BlockPos to perform the operation on
     public static void notifyLoadedNeighborsOfTileChange(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         BlockPos.MutableBlockPos offset = new MutableBlockPos();
@@ -786,13 +710,11 @@ public class WorldUtils {
         }
     }
 
-    /**
-     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
-     *
-     * @param world   world the change exists in
-     * @param pos     neighbor to notify
-     * @param fromPos pos of our block that updated
-     */
+    /// Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
+    ///
+    /// @param world   world the change exists in
+    /// @param pos     neighbor to notify
+    /// @param fromPos pos of our block that updated
     public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
         Optional<BlockState> blockState = getBlockState(world, pos);
         if (blockState.isPresent() && world != null) {//World can't be null here but double check it
@@ -802,35 +724,30 @@ public class WorldUtils {
         }
     }
 
-    /**
-     * Marks a block for a render update if loaded.
-     *
-     * @param world world the block is in
-     * @param pos   Position of the block
-     * @param state The block state at the position
-     */
+    /// Marks a block for a render update if loaded.
+    ///
+    /// @param world world the block is in
+    /// @param pos   Position of the block
+    /// @param state The block state at the position
     public static void updateBlock(@Nullable Level world, BlockPos pos, BlockState state) {
         if (isBlockLoaded(world, pos)) {
             world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
     }
 
-    /**
-     * Gets the skylight factor, a percentage based on the time of day and weather. Vanilla max of 1
-     * @return percentage value of float type. Normal range of 0 - 1. CAN BE HIGHER
-     */
+    /// Gets the skylight factor, a percentage based on the time of day and weather. Vanilla max of 1
+    ///
+    /// @return percentage value of float type. Normal range of 0 - 1. CAN BE HIGHER
     public static float getSunBrightness(Level level, BlockPos position) {
         return Math.max(0, level.environmentAttributes().getValue(EnvironmentAttributes.SKY_LIGHT_FACTOR, position));
     }
 
-    /**
-     * Checks to see if the block at the position can see the sky, and it is daytime.
-     *
-     * @param world World to check in.
-     * @param pos   Position to check.
-     *
-     * @return {@code true} if it can.
-     */
+    /// Checks to see if the block at the position can see the sky, and it is daytime.
+    ///
+    /// @param world World to check in.
+    /// @param pos   Position to check.
+    ///
+    /// @return `true` if it can.
     @Contract("null, _ -> false")
     public static boolean canSeeSun(@Nullable Level world, BlockPos pos) {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
@@ -839,23 +756,19 @@ public class WorldUtils {
         return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
     }
 
-    /**
-     * Converts a long representing a {@link ChunkPos} to a {@link BlockPos} without creating a temporary {@link ChunkPos} object.
-     *
-     * @param chunkPos Pos to convert.
-     */
+    /// Converts a long representing a [ChunkPos] to a [BlockPos] without creating a temporary [ChunkPos] object.
+    ///
+    /// @param chunkPos Pos to convert.
     public static BlockPos getBlockPosFromChunkPos(long chunkPos) {
         return new BlockPos((int) chunkPos, 0, (int) (chunkPos >> 32));
     }
 
-    /**
-     * Get a packed block pos on the relative side.
-     * @see BlockPos#relative(Direction)
-     *
-     * @param pos Source position
-     * @param direction direction to offset in
-     * @return the packed offset position
-     */
+    /// Get a packed block pos on the relative side.
+    /// @see BlockPos#relative(Direction)
+    ///
+    /// @param pos Source position
+    /// @param direction direction to offset in
+    /// @return the packed offset position
     public static long relativePos(long pos, Direction direction) {
         return BlockPos.asLong(BlockPos.getX(pos) + direction.getStepX(), BlockPos.getY(pos) + direction.getStepY(), BlockPos.getZ(pos) + direction.getStepZ());
     }

@@ -19,36 +19,28 @@ public class CrTChemicalDissolutionRecipe {
     private CrTChemicalDissolutionRecipe() {
     }
 
-    /**
-     * Represents whether this recipe consumes the chemical each tick.
-     */
+    /// Represents whether this recipe consumes the chemical each tick.
     @ZenCodeType.Method
     @ZenCodeType.Getter("perTickUsage")
     public static boolean isPerTickUsage(ChemicalDissolutionRecipe _this) {
         return _this.perTickUsage();
     }
 
-    /**
-     * Gets the input item ingredient.
-     */
+    /// Gets the input item ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("itemInput")
     public static IIngredientWithAmount getItemInput(ChemicalDissolutionRecipe _this) {
         return CrTUtils.toCrT(_this.getItemInput());
     }
 
-    /**
-     * Gets the input chemical ingredient.
-     */
+    /// Gets the input chemical ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicalInput")
     public static ChemicalStackIngredient getChemicalInput(ChemicalDissolutionRecipe _this) {
         return _this.getChemicalInput();
     }
 
-    /**
-     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<ICrTChemicalStack> getOutputs(ChemicalDissolutionRecipe _this) {

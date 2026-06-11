@@ -18,9 +18,7 @@ public abstract class ConfigHolder<TYPE extends @Nullable Object> implements IHo
     private static final Predicate<ISlotInfo> CAN_INPUT = ISlotInfo::canInput;
     private static final Predicate<ISlotInfo> CAN_OUTPUT = ISlotInfo::canOutput;
 
-    /**
-     * Dummy ISlotInfo used for representing we have no config
-     */
+    /// Dummy ISlotInfo used for representing we have no config
     protected static final ISlotInfo NO_CONFIG = new ISlotInfo() {
         @Override
         public boolean canInput() {

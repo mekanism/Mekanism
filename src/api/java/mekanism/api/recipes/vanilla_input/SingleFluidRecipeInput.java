@@ -3,11 +3,9 @@ package mekanism.api.recipes.vanilla_input;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of a recipe input of one fluid.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input of one fluid.
+///
+/// @since 10.6.0
 public record SingleFluidRecipeInput(FluidStack fluid) implements FluidRecipeInput {
 
     @Override

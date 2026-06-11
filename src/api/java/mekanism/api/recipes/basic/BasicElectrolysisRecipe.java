@@ -20,12 +20,10 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     protected final ChemicalStackTemplate rightChemicalOutput;
     protected final int energyMultiplier;//todo double?
 
-    /**
-     * @param input               Input.
-     * @param energyMultiplier    Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
-     * @param leftChemicalOutput  Left output.
-     * @param rightChemicalOutput Right output.
-     */
+    /// @param input               Input.
+    /// @param energyMultiplier    Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
+    /// @param leftChemicalOutput  Left output.
+    /// @param rightChemicalOutput Right output.
     public BasicElectrolysisRecipe(FluidStackIngredient input, int energyMultiplier, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;

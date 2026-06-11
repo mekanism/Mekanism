@@ -11,11 +11,9 @@ import net.minecraft.core.Holder;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base Chemical ingredient implementation that matches if all child ingredients match
- *
- * @since 10.6.0
- */
+/// Base Chemical ingredient implementation that matches if all child ingredients match
+///
+/// @since 10.6.0
 public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<IntersectionChemicalIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
@@ -24,9 +22,7 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
 
     private final List<ChemicalIngredient> children;
 
-    /**
-     * @param children Ingredients to form an intersection from.
-     */
+    /// @param children Ingredients to form an intersection from.
     @Internal
     public IntersectionChemicalIngredient(List<ChemicalIngredient> children) {
         if (children.size() < 2) {
@@ -53,9 +49,7 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
               .filter(this);
     }
 
-    /**
-     * {@return all the child ingredients that this ingredient is an intersection of}
-     */
+    /// {@return all the child ingredients that this ingredient is an intersection of}
     public final List<ChemicalIngredient> children() {
         return children;
     }

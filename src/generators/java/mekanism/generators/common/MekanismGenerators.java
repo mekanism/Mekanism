@@ -39,13 +39,9 @@ public class MekanismGenerators implements IModModule {
     @Nullable
     public static MekanismGenerators instance;
 
-    /**
-     * MekanismGenerators version number
-     */
+    /// MekanismGenerators version number
     public final Version versionNumber;
-    /**
-     * Mekanism Generators Packet Pipeline
-     */
+    /// Mekanism Generators Packet Pipeline
     private final GeneratorsPacketHandler packetHandler;
     
     public MekanismGenerators(ModContainer modContainer, IEventBus modEventBus) {

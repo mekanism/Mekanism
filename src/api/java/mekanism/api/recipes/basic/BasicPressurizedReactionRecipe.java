@@ -31,17 +31,15 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     @Nullable
     protected final ChemicalStackTemplate outputChemical;
 
-    /**
-     * @param inputSolid     Item input.
-     * @param inputFluid     Fluid input.
-     * @param inputChemical       Chemical input.
-     * @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     Item output.
-     * @param outputChemical      Chemical output.
-     *
-     * @apiNote At least one output must not be empty.
-     */
+    /// @param inputSolid     Item input.
+    /// @param inputFluid     Fluid input.
+    /// @param inputChemical  Chemical input.
+    /// @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem     Item output.
+    /// @param outputChemical Chemical output.
+    ///
+    /// @apiNote At least one output must not be empty.
     public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
           int energyRequired, int duration, @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");

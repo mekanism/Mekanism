@@ -17,9 +17,7 @@ public class CrTItemStackToEnergyRecipe {
     private CrTItemStackToEnergyRecipe() {
     }
 
-    /**
-     * Gets the input ingredient.
-     */
+    /// Gets the input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
     public static IIngredientWithAmount getInput(ItemStackToEnergyRecipe _this) {
@@ -27,9 +25,7 @@ public class CrTItemStackToEnergyRecipe {
     }
 
 
-    /**
-     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<Long> getOutput(ItemStackToEnergyRecipe _this) {

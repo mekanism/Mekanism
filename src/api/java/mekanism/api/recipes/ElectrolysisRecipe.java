@@ -13,22 +13,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Input: FluidStack
- * <br>
- * Left Output: ChemicalStack
- * <br>
- * Right Output: ChemicalStack
- *
- * @apiNote Electrolytic Separators can process this recipe type.
- */
+/// Input: FluidStack
+///
+/// Left Output: ChemicalStack
+///
+/// Right Output: ChemicalStack
+///
+/// @apiNote Electrolytic Separators can process this recipe type.
 public abstract class ElectrolysisRecipe extends FluidInputRecipe<ElectrolysisRecipeOutput> {
 
     private static final Holder<Item> ELECTROLYTIC_SEPARATOR = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"));
 
-    /**
-     * Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
-     */
+    /// Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
     public abstract int getEnergyMultiplier();
 
     @Override

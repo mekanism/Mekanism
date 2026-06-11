@@ -23,57 +23,47 @@ public class CrTChemical {
     private CrTChemical() {
     }
 
-    /**
-     * Gets the registry name of the element represented by this chemical.
-     *
-     * @return Registry name.
-     */
+    /// Gets the registry name of the element represented by this chemical.
+    ///
+    /// @return Registry name.
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static Identifier getRegistryName(Chemical _this) {
         return MekanismAPI.CHEMICAL_REGISTRY.getKey(_this);
     }
 
-    /**
-     * Get the tint for rendering the chemical
-     *
-     * @return int representation of color in AARRGGBB format
-     */
+    /// Get the tint for rendering the chemical
+    ///
+    /// @return int representation of color in AARRGGBB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("tint")
     public static int getTint(Chemical _this) {
         return _this.getTint();
     }
 
-    /**
-     * Get the color representation used for displaying in things like durability bars of chemical tanks.
-     *
-     * @return int representation of color in AARRGGBB format
-     */
+    /// Get the color representation used for displaying in things like durability bars of chemical tanks.
+    ///
+    /// @return int representation of color in AARRGGBB format
     @ZenCodeType.Method
     @ZenCodeType.Getter("colorRepresentation")
     public static int getColorRepresentation(Chemical _this) {
         return _this.getColorRepresentation();
     }
 
-    /**
-     * Creates a new {@link ICrTChemicalStack} with the given amount of chemical.
-     *
-     * @param amount The size of the stack to create.
-     *
-     * @return a new (immutable) {@link ICrTChemicalStack}
-     */
+    /// Creates a new [ICrTChemicalStack] with the given amount of chemical.
+    ///
+    /// @param amount The size of the stack to create.
+    ///
+    /// @return a new (immutable) [ICrTChemicalStack]
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     public static ICrTChemicalStack makeStack(Chemical _this, int amount) {
         return new CrTChemicalStack(new ChemicalStack(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(_this), amount));
     }
 
-    /**
-     * Gets the tags that this chemical is a part of.
-     *
-     * @return All the tags this chemical is a part of.
-     */
+    /// Gets the tags that this chemical is a part of.
+    ///
+    /// @return All the tags this chemical is a part of.
     @ZenCodeType.Method
     @ZenCodeType.Getter("tags")
     public static List<KnownTag<Chemical>> getTags(Chemical _this) {

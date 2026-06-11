@@ -59,13 +59,11 @@ public interface IBlastingItem {
         return Collections.emptyMap();
     }
 
-    /**
-     * Very watered down version of {@link VoxelShape#clip(Vec3, Vec3, BlockPos)}, that instead of creating an extra voxel shape from the bounds and then checking if it
-     * is a full side and using a quicker get nearest, we just do a single call on the overall AABB to get the direction after doing the initial check from
-     * {@link VoxelShape#clip(Vec3, Vec3, BlockPos)}. In theory this might be ever so slightly worse performance wise for a full cube, it shouldn't be noticeably worse,
-     * and for cases where there are more complex non-full block shapes, then we can skip a handful of checks as well as creating excess objects for the voxel shape and
-     * hit result as the only details we care about from the hit result is the direction we hit.
-     */
+    /// Very watered down version of [VoxelShape#clip(Vec3, Vec3, BlockPos)], that instead of creating an extra voxel shape from the bounds and then checking if it is a
+    /// full side and using a quicker get nearest, we just do a single call on the overall AABB to get the direction after doing the initial check from
+    /// [VoxelShape#clip(Vec3, Vec3, BlockPos)]. In theory this might be ever so slightly worse performance wise for a full cube, it shouldn't be noticeably worse, and
+    /// for cases where there are more complex non-full block shapes, then we can skip a handful of checks as well as creating excess objects for the voxel shape and hit
+    /// result as the only details we care about from the hit result is the direction we hit.
     @Nullable
     private static Direction getTargetSide(Level world, BlockPos targetPos, Player player) {
         RayTraceVectors rayTraceVectors = MultipartUtils.getRayTraceVectors(player);

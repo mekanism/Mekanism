@@ -23,31 +23,27 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Singl
         super(MekanismRecipeType.NUCLEOSYNTHESIZING);
     }
 
-    /**
-     * Adds a nucleosynthesizing recipe that uses a chemical and massive amounts of energy to convert an item into another item. Antiprotonic Nucleosynthesizers can
-     * process this recipe type.
-     *
-     * @param name          Name of the new recipe.
-     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param output        {@link IItemStack} representing the output of the recipe.
-     * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Adds a nucleosynthesizing recipe that uses a chemical and massive amounts of energy to convert an item into another item. Antiprotonic Nucleosynthesizers can
+    /// process this recipe type.
+    ///
+    /// @param name          Name of the new recipe.
+    /// @param itemInput     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param output        [IItemStack] representing the output of the recipe.
+    /// @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, int duration, boolean perTickUsage) {
         addRecipe(name, makeRecipe(itemInput, chemicalInput, output, duration, perTickUsage));
     }
 
-    /**
-     * Creates a nucleosynthesizing recipe that uses a chemical and massive amounts of energy to convert an item into another item.
-     *
-     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
-     * @param duration      Duration in ticks that it takes the recipe to complete. Will be validated as being greater than zero.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a nucleosynthesizing recipe that uses a chemical and massive amounts of energy to convert an item into another item.
+    ///
+    /// @param itemInput     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param output        [IItemStack] representing the output of the recipe. Will be validated as not empty.
+    /// @param duration      Duration in ticks that it takes the recipe to complete. Will be validated as being greater than zero.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public final NucleosynthesizingRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, int duration,
           boolean perTickUsage) {
         if (duration <= 0) {

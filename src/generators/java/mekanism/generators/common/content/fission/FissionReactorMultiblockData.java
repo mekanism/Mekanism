@@ -19,12 +19,12 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -377,9 +377,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    /**
-     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
-     */
+    /// @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
     private double getWasteTankRadioactivity(boolean dump) {
         ChemicalResource wasteType = wasteTank.resource();
         double wasteRadioactivity;
@@ -401,9 +399,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return wasteRadioactivity * (stored + partialWaste);
     }
 
-    /**
-     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
-     */
+    /// @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
     private double getTankRadioactivityAndDump(IChemicalTank tank) {
         if (!tank.isEmpty()) {
             double radioactivity = tank.resource().getRadioactivity() * tank.amountAsLong();

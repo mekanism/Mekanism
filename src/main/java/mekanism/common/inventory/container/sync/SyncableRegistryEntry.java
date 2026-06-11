@@ -7,9 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entries.
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling registry entries.
 public class SyncableRegistryEntry<V> implements ISyncableData {
 
     public static <V> SyncableRegistryEntry<V> create(Registry<V> registry, Supplier<V> getter, Consumer<V> setter) {

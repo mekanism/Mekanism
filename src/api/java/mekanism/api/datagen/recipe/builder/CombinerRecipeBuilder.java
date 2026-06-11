@@ -27,13 +27,11 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         return RecipeBuilder.getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Combining recipe builder.
-     *
-     * @param mainInput  Main Input.
-     * @param extraInput Extra/Secondary Input.
-     * @param output     Output.
-     */
+    /// Creates a Combining recipe builder.
+    ///
+    /// @param mainInput  Main Input.
+    /// @param extraInput Extra/Secondary Input.
+    /// @param output     Output.
     public static CombinerRecipeBuilder combining(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStackTemplate output) {
         return new CombinerRecipeBuilder(mainInput, extraInput, output);
     }
@@ -43,11 +41,9 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         return new BasicCombinerRecipe(mainInput, extraInput, output);
     }
 
-    /**
-     * Builds this recipe using the output item's name as the recipe name.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     */
+    /// Builds this recipe using the output item's name as the recipe name.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
     public void build(RecipeOutput recipeOutput) {
         save(recipeOutput, output.typeHolder());
     }

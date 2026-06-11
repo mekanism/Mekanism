@@ -26,30 +26,26 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
         super(MekanismRecipeType.SAWING);
     }
 
-    /**
-     * Adds a sawing recipe that converts an item into a chance based item output. If the weight is 100%, then it will add it as a main output, if the weight is less than
-     * 100% then it adds it as a secondary chance, if the weight is over 100% (must be below 200%) it will add it with a main output and a secondary chance based output.
-     * Precision Sawmills and Sawing Factories can process this recipe type.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output {@link Percentaged<IItemStack>} representing the secondary chance based output of the recipe and the chance that it is produced.
-     */
+    /// Adds a sawing recipe that converts an item into a chance based item output. If the weight is 100%, then it will add it as a main output, if the weight is less
+    /// than 100% then it adds it as a secondary chance, if the weight is over 100% (must be below 200%) it will add it with a main output and a secondary chance based
+    /// output. Precision Sawmills and Sawing Factories can process this recipe type.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output [Percentaged<iitemstack>] representing the secondary chance based output of the recipe and the chance that it is produced.</iitemstack>
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, Percentaged<IItemStack> output) {
         addRecipe(name, input, output.getData(), output.getPercentage());
     }
 
-    /**
-     * Adds a sawing recipe that converts an item into a chance based item output. If the weight is 100%, then it will add it as a main output, if the weight is less than
-     * 100% then it adds it as a secondary chance, if the weight is over 100% (must be below 200%) it will add it with a main output and a secondary chance based output.
-     * Precision Sawmills and Sawing Factories can process this recipe type.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output {@link IItemStack} representing the secondary chance based output of the recipe.
-     * @param chance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
-     */
+    /// Adds a sawing recipe that converts an item into a chance based item output. If the weight is 100%, then it will add it as a main output, if the weight is less
+    /// than 100% then it adds it as a secondary chance, if the weight is over 100% (must be below 200%) it will add it with a main output and a secondary chance based
+    /// output. Precision Sawmills and Sawing Factories can process this recipe type.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output [IItemStack] representing the secondary chance based output of the recipe.
+    /// @param chance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, IItemStack output, double chance) {
         if (chance < 1) {
@@ -64,64 +60,54 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInpu
         }
     }
 
-    /**
-     * Adds a sawing recipe that converts an item into another item and a chance based secondary item. Precision Sawmills and Sawing Factories can process this recipe
-     * type.
-     *
-     * @param name            Name of the new recipe.
-     * @param input           {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param mainOutput      {@link IItemStack} representing the main output of the recipe.
-     * @param secondaryOutput {@link Percentaged<IItemStack>} representing the secondary chance based output of the recipe and the chance that it is produced.
-     */
+    /// Adds a sawing recipe that converts an item into another item and a chance based secondary item. Precision Sawmills and Sawing Factories can process this recipe
+    /// type.
+    ///
+    /// @param name            Name of the new recipe.
+    /// @param input           [IIngredientWithAmount] representing the input of the recipe.
+    /// @param mainOutput      [IItemStack] representing the main output of the recipe.
+    /// @param secondaryOutput [Percentaged<iitemstack>] representing the secondary chance based output of the recipe and the chance that it is produced.</iitemstack>
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, IItemStack mainOutput, Percentaged<IItemStack> secondaryOutput) {
         addRecipe(name, input, mainOutput, secondaryOutput.getData(), secondaryOutput.getPercentage());
     }
 
-    /**
-     * Adds a sawing recipe that converts an item into another item and a chance based secondary item. Precision Sawmills and Sawing Factories can process this recipe
-     * type.
-     *
-     * @param name            Name of the new recipe.
-     * @param input           {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param mainOutput      {@link IItemStack} representing the main output of the recipe.
-     * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe.
-     * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
-     */
+    /// Adds a sawing recipe that converts an item into another item and a chance based secondary item. Precision Sawmills and Sawing Factories can process this recipe
+    /// type.
+    ///
+    /// @param name            Name of the new recipe.
+    /// @param input           [IIngredientWithAmount] representing the input of the recipe.
+    /// @param mainOutput      [IItemStack] representing the main output of the recipe.
+    /// @param secondaryOutput [IItemStack] representing the secondary chance based output of the recipe.
+    /// @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
         addRecipe(name, makeRecipe(input, mainOutput, secondaryOutput, secondaryChance));
     }
 
-    /**
-     * Creates a sawing recipe that converts an item into another item.
-     *
-     * @param input      {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param mainOutput {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a sawing recipe that converts an item into another item.
+    ///
+    /// @param input      [IIngredientWithAmount] representing the input of the recipe.
+    /// @param mainOutput [IItemStack] representing the main output of the recipe. Will be validated as not empty.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack mainOutput) {
         return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), null, 0);
     }
 
-    /**
-     * Creates a sawing recipe that converts an item into a chance based secondary item.
-     *
-     * @param input           {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe. Will be validated as not empty.
-     * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
-     */
+    /// Creates a sawing recipe that converts an item into a chance based secondary item.
+    ///
+    /// @param input           [IIngredientWithAmount] representing the input of the recipe.
+    /// @param secondaryOutput [IItemStack] representing the secondary chance based output of the recipe. Will be validated as not empty.
+    /// @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack secondaryOutput, double secondaryChance) {
         return new BasicSawmillRecipe(CrTUtils.fromCrT(input), null, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
-    /**
-     * Creates a sawing recipe that converts an item into another item and a chance based secondary item.
-     *
-     * @param input           {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param mainOutput      {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
-     * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe. Will be validated as not empty.
-     * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
-     */
+    /// Creates a sawing recipe that converts an item into another item and a chance based secondary item.
+    ///
+    /// @param input           [IIngredientWithAmount] representing the input of the recipe.
+    /// @param mainOutput      [IItemStack] representing the main output of the recipe. Will be validated as not empty.
+    /// @param secondaryOutput [IItemStack] representing the secondary chance based output of the recipe. Will be validated as not empty.
+    /// @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
     public final SawmillRecipe makeRecipe(IIngredientWithAmount input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
         return new BasicSawmillRecipe(CrTUtils.fromCrT(input), getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput),
               getAndValidateSecondaryChance(secondaryChance));

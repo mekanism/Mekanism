@@ -28,9 +28,7 @@ public class EntityBabyCreeper extends Creeper {
         return getType().getDimensions();
     }
 
-    /**
-     * Modify vanilla's explode method to half the explosion strength of baby creepers, and charged baby creepers
-     */
+    /// Modify vanilla's explode method to half the explosion strength of baby creepers, and charged baby creepers
     @Override
     protected void explodeCreeper() {
         if (level() instanceof ServerLevel serverLevel) {

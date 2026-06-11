@@ -31,39 +31,33 @@ public interface ChemicalAttributeValidator {//TODO - 26.1: Re-evaluate how this
         }
     };
 
-    /**
-     * Whether a certain attribute is considered valid by the caller.
-     *
-     * @param attribute attribute to check
-     *
-     * @return if the attribute is valid
-     *
-     * @since 10.7.11
-     */
+    /// Whether a certain attribute is considered valid by the caller.
+    ///
+    /// @param attribute attribute to check
+    ///
+    /// @return if the attribute is valid
+    ///
+    /// @since 10.7.11
     boolean validate(IChemicalAttribute attribute);
 
-    /**
-     * Determines if a Chemical is considered valid for this validator.
-     *
-     * @param chemical holder representing the chemical to test
-     *
-     * @return if the chemical is valid
-     *
-     * @since 10.7.11
-     */
+    /// Determines if a Chemical is considered valid for this validator.
+    ///
+    /// @param chemical holder representing the chemical to test
+    ///
+    /// @return if the chemical is valid
+    ///
+    /// @since 10.7.11
     default boolean process(Holder<Chemical> chemical) {
         return process(chemical.value());
     }
 
-    /**
-     * Determines if a Chemical is considered valid for this validator.
-     *
-     * @param chemical chemical to test
-     *
-     * @return if the chemical is valid
-     *
-     * @since 10.2.3
-     */
+    /// Determines if a Chemical is considered valid for this validator.
+    ///
+    /// @param chemical chemical to test
+    ///
+    /// @return if the chemical is valid
+    ///
+    /// @since 10.2.3
     default boolean process(Chemical chemical) {
         for (IChemicalAttribute chemicalAttribute : chemical.getAttributes()) {
             if (!validate(chemicalAttribute)) {
@@ -73,38 +67,32 @@ public interface ChemicalAttributeValidator {//TODO - 26.1: Re-evaluate how this
         return true;
     }
 
-    /**
-     * Determines if an instanced of a chemical is considered valid for this validator.
-     *
-     * @param instance instance to test
-     *
-     * @return if the instance is valid
-     *
-     * @since 10.2.3
-     */
+    /// Determines if an instanced of a chemical is considered valid for this validator.
+    ///
+    /// @param instance instance to test
+    ///
+    /// @return if the instance is valid
+    ///
+    /// @since 10.2.3
     default boolean process(TypedInstance<Chemical> instance) {
         return process(instance.typeHolder());
     }
 
-    /**
-     * Creates a simple attribute validator which accepts any attributes that don't require validation, and any attributes provided in the parameters.
-     *
-     * @param validAttributes attributes which can be accepted
-     *
-     * @return simple attribute validator
-     */
+    /// Creates a simple attribute validator which accepts any attributes that don't require validation, and any attributes provided in the parameters.
+    ///
+    /// @param validAttributes attributes which can be accepted
+    ///
+    /// @return simple attribute validator
     @SafeVarargs
     static ChemicalAttributeValidator create(Class<? extends IChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, true);
     }
 
-    /**
-     * Creates a simple attribute validator which accepts only attributes provided in the parameters.
-     *
-     * @param validAttributes attributes which can be accepted
-     *
-     * @return simple attribute validator
-     */
+    /// Creates a simple attribute validator which accepts only attributes provided in the parameters.
+    ///
+    /// @param validAttributes attributes which can be accepted
+    ///
+    /// @return simple attribute validator
     @SafeVarargs
     static ChemicalAttributeValidator createStrict(Class<? extends IChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, false);

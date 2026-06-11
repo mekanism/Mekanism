@@ -12,33 +12,23 @@ import mekanism.common.tile.component.config.DataType;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.
- *
- * @author AidanBrady
- */
+/// Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.
 //TODO: Make the main mekanism tile extend this directly?
 public interface ISideConfiguration {
 
-    /**
-     * Gets the tile's configuration component.
-     *
-     * @return the tile's configuration component
-     */
+    /// Gets the tile's configuration component.
+    ///
+    /// @return the tile's configuration component
     TileComponentConfig getConfig();
 
-    /**
-     * Gets this machine's current orientation.
-     *
-     * @return machine's current orientation
-     */
+    /// Gets this machine's current orientation.
+    ///
+    /// @return machine's current orientation
     Direction getDirection();
 
-    /**
-     * Gets this machine's ejector.
-     *
-     * @return this machine's ejector
-     */
+    /// Gets this machine's ejector.
+    ///
+    /// @return this machine's ejector
     TileComponentEjector getEjector();
 
     @Nullable

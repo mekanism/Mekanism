@@ -15,158 +15,123 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 
-/**
- * @since 10.6.0
- */
+/// @since 10.6.0
 public interface IChemicalIngredientCreator {
 
-    /**
-     * A codec that is used to represent basic "single chemical" or "tag" chemical ingredients directly, similar to {@link Ingredient.Value#CODEC}, except not using value
-     * subclasses and instead directly providing the corresponding {@link ChemicalIngredient}.
-     */
+    /// A codec that is used to represent basic "single chemical" or "tag" chemical ingredients directly, similar to [Ingredient.Value#CODEC], except not using value
+    /// subclasses and instead directly providing the corresponding [ChemicalIngredient].
     MapCodec<ChemicalIngredient> singleOrTagCodec();
 
-    /**
-     * A codec that represents a single {@code IChemicalIngredient} in map form; either dispatched by type or falling back to {@link #singleOrTagCodec} if no type is
-     * specified.
-     *
-     * @see Ingredient#MAP_CODEC_NONEMPTY
-     */
+    /// A codec that represents a single `IChemicalIngredient` in map form; either dispatched by type or falling back to [#singleOrTagCodec] if no type is specified.
+    ///
+    /// @see Ingredient#MAP_CODEC_NONEMPTY
     MapCodec<ChemicalIngredient> mapCodecNonEmpty();
 
-    /**
-     * Simple codec representing a list of {@code IChemicalIngredient}s.
-     *
-     * @see #listCodecNonEmpty()
-     * @see #listCodecMultipleElements()
-     */
+    /// Simple codec representing a list of `IChemicalIngredient`s.
+    ///
+    /// @see #listCodecNonEmpty()
+    /// @see #listCodecMultipleElements()
     Codec<List<ChemicalIngredient>> listCodec();
 
-    /**
-     * Simple codec representing a list of {@code IChemicalIngredient}s, that requires at least one element.
-     *
-     * @see #listCodec()
-     * @see #listCodecMultipleElements()
-     */
+    /// Simple codec representing a list of `IChemicalIngredient`s, that requires at least one element.
+    ///
+    /// @see #listCodec()
+    /// @see #listCodecMultipleElements()
     Codec<List<ChemicalIngredient>> listCodecNonEmpty();
 
-    /**
-     * Simple codec representing a list of {@code IChemicalIngredient}s, that requires at least two element.
-     *
-     * @see #listCodec()
-     * @see #listCodecNonEmpty()
-     */
+    /// Simple codec representing a list of `IChemicalIngredient`s, that requires at least two element.
+    ///
+    /// @see #listCodec()
+    /// @see #listCodecNonEmpty()
     Codec<List<ChemicalIngredient>> listCodecMultipleElements();
 
-    /**
-     * Full codec representing a chemical ingredient in all possible forms.
-     * <p>
-     * Allows for arrays of chemical ingredients to be read as a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient}, as well as for the
-     * {@code type} field to be left out in case of a single chemical or tag ingredient.
-     *
-     * @see #mapCodecNonEmpty
-     */
+    /// Full codec representing a chemical ingredient in all possible forms.
+    ///
+    /// Allows for arrays of chemical ingredients to be read as a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient], as well as for the
+    /// `type` field to be left out in case of a single chemical or tag ingredient.
+    ///
+    /// @see #mapCodecNonEmpty
     Codec<ChemicalIngredient> codec();
 
-    /**
-     * Same as {@link #codec}, except does not allow empty ingredients ({@code []}) to be specified.
-     */
+    /// Same as [#codec], except does not allow empty ingredients (`[]`) to be specified.
     Codec<ChemicalIngredient> codecNonEmpty();
 
-    /**
-     * Stream codec for syncing ingredients over the network.
-     *
-     * @implNote As all chemical ingredients are simple, it gets synced to the client as a list of supported chemicals.
-     */
+    /// Stream codec for syncing ingredients over the network.
+    ///
+    /// @implNote As all chemical ingredients are simple, it gets synced to the client as a list of supported chemicals.
     StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> streamCodec();
 
     default ChemicalIngredient empty() {
         return EmptyChemicalIngredient.INSTANCE;
     }
 
-    /**
-     * Retrieves the explicit empty instance ingredient.
-     * <p>
-     * Overload for {@link #empty()}
-     *
-     * @see mekanism.api.recipes.ingredients.chemical.EmptyChemicalIngredient
-     */
+    /// Retrieves the explicit empty instance ingredient.
+    ///
+    /// Overload for [#empty()]
+    ///
+    /// @see mekanism.api.recipes.ingredients.chemical.EmptyChemicalIngredient
     default ChemicalIngredient of() {
         return empty();
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient} matching the chemical for the given stack.
-     *
-     * @param stack Chemical to match
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient] matching the chemical for the given stack.
+    ///
+    /// @param stack Chemical to match
     default ChemicalIngredient of(ChemicalStack stack) {
         return of(stack.typeHolder());
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient} matching the chemical for the given holder.
-     *
-     * @param holder Chemical to match
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient] matching the chemical for the given holder.
+    ///
+    /// @param holder Chemical to match
     ChemicalIngredient of(Holder<Chemical> holder);
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient} matching the chemicals in the given tag.
-     *
-     * @param tag Chemical tag to match
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient] matching the chemicals in the given tag.
+    ///
+    /// @param tag Chemical tag to match
     ChemicalIngredient tag(TagKey<Chemical> tag);
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given stacks.
-     *
-     * @param chemicals Chemicals to match
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals for the given stacks.
+    ///
+    /// @param chemicals Chemicals to match
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return a [mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient].
     default ChemicalIngredient of(ChemicalStack... chemicals) {
         return of(Arrays.stream(chemicals).map(ChemicalStack::typeHolder));
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given providers.
-     *
-     * @param chemicalProviders Chemicals to match
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
-     *
-     * @since 10.7.11
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals for the given providers.
+    ///
+    /// @param chemicalProviders Chemicals to match
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return a [mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient].
+    ///
+    /// @since 10.7.11
     @SuppressWarnings("unchecked")
     default ChemicalIngredient of(Holder<Chemical>... chemicalProviders) {
         return of(Arrays.stream(chemicalProviders));
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given holders.
-     *
-     * @param chemicalHolders Chemicals to match
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
-     *
-     * @since 10.7.11
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals for the given holders.
+    ///
+    /// @param chemicalHolders Chemicals to match
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return a [mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient].
+    ///
+    /// @since 10.7.11
     default ChemicalIngredient of(Stream<? extends Holder<Chemical>> chemicalHolders) {
         return ofIngredients(chemicalHolders.map(this::of));
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals representing the union of the given ingredients.
-     *
-     * @param children Ingredients to union
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return the element.
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals representing the union of the given ingredients.
+    ///
+    /// @param children Ingredients to union
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return the element.
     default ChemicalIngredient ofIngredients(ChemicalIngredient... children) {
         if (children.length == 0) {
             return empty();
@@ -176,14 +141,12 @@ public interface IChemicalIngredientCreator {
         return compound(List.of(children));
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals representing the union of the given ingredients.
-     *
-     * @param children Ingredients to union
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return the element.
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals representing the union of the given ingredients.
+    ///
+    /// @param children Ingredients to union
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return the element.
     default ChemicalIngredient ofIngredients(List<? extends ChemicalIngredient> children) {
         if (children.isEmpty()) {
             return empty();
@@ -193,69 +156,57 @@ public interface IChemicalIngredientCreator {
         return compound(List.copyOf(children));
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals representing the union of the given ingredients.
-     *
-     * @param children Ingredients to union
-     *
-     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
-     * element, this will return the element.
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals representing the union of the given ingredients.
+    ///
+    /// @param children Ingredients to union
+    ///
+    /// @implNote This method is subtly different from [#compound(List)] as if there is no elements this method will return [#empty()], and if there is one
+    /// element, this will return the element.
     default ChemicalIngredient ofIngredients(Stream<? extends ChemicalIngredient> children) {
         return ofIngredients(children.toList());
     }
 
-    /**
-     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals representing the union of the given ingredients.
-     *
-     * @param children Ingredients to union
-     *
-     * @throws IllegalArgumentException If children is empty or contains only a single element.
-     */
+    /// Creates a [mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient] matching the chemicals representing the union of the given ingredients.
+    ///
+    /// @param children Ingredients to union
+    ///
+    /// @throws IllegalArgumentException If children is empty or contains only a single element.
     ChemicalIngredient compound(List<ChemicalIngredient> children);
 
-    /**
-     * Gets the difference of the two chemical ingredients
-     *
-     * @param base       Chemical ingredient that must be matched
-     * @param subtracted Chemical ingredient that must not be matched
-     *
-     * @return A {@link mekanism.api.recipes.ingredients.chemical.DifferenceChemicalIngredient} that matches anything contained in {@code base} that is not in
-     * {@code subtracted}
-     */
+    /// Gets the difference of the two chemical ingredients
+    ///
+    /// @param base       Chemical ingredient that must be matched
+    /// @param subtracted Chemical ingredient that must not be matched
+    ///
+    /// @return A [mekanism.api.recipes.ingredients.chemical.DifferenceChemicalIngredient] that matches anything contained in `base` that is not in
+    /// `subtracted`
     ChemicalIngredient difference(ChemicalIngredient base, ChemicalIngredient subtracted);
 
-    /**
-     * Gets an intersection chemical ingredient
-     *
-     * @param ingredients List of chemical ingredients to match
-     *
-     * @return ChemicalIngredient that only matches if all the passed ingredients match
-     *
-     * @throws IllegalArgumentException If ingredients is empty.
-     */
+    /// Gets an intersection chemical ingredient
+    ///
+    /// @param ingredients List of chemical ingredients to match
+    ///
+    /// @return ChemicalIngredient that only matches if all the passed ingredients match
+    ///
+    /// @throws IllegalArgumentException If ingredients is empty.
     ChemicalIngredient intersection(ChemicalIngredient... ingredients);
 
-    /**
-     * Gets an intersection chemical ingredient
-     *
-     * @param ingredients List of chemical ingredients to match
-     *
-     * @return ChemicalIngredient that only matches if all the passed ingredients match
-     *
-     * @throws IllegalArgumentException If ingredients is empty.
-     */
+    /// Gets an intersection chemical ingredient
+    ///
+    /// @param ingredients List of chemical ingredients to match
+    ///
+    /// @return ChemicalIngredient that only matches if all the passed ingredients match
+    ///
+    /// @throws IllegalArgumentException If ingredients is empty.
     ChemicalIngredient intersection(List<? extends ChemicalIngredient> ingredients);
 
-    /**
-     * Gets an intersection chemical ingredient
-     *
-     * @param ingredients List of chemical ingredients to match
-     *
-     * @return ChemicalIngredient that only matches if all the passed ingredients match
-     *
-     * @throws IllegalArgumentException If ingredients is empty.
-     */
+    /// Gets an intersection chemical ingredient
+    ///
+    /// @param ingredients List of chemical ingredients to match
+    ///
+    /// @return ChemicalIngredient that only matches if all the passed ingredients match
+    ///
+    /// @throws IllegalArgumentException If ingredients is empty.
     default ChemicalIngredient intersection(Stream<? extends ChemicalIngredient> ingredients) {
         return intersection(ingredients.toList());
     }

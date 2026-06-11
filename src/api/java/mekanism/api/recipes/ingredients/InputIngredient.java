@@ -5,53 +5,41 @@ import java.util.function.Predicate;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 
-/**
- * Interface describing the base methods common to all inputs of our recipes.
- */
+/// Interface describing the base methods common to all inputs of our recipes.
 public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> extends Predicate<STACK> {
 
-    /**
-     * Evaluates this predicate on the given argument, ignoring any size data.
-     *
-     * @param type Input argument.
-     *
-     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-     */
+    /// Evaluates this predicate on the given argument, ignoring any size data.
+    ///
+    /// @param type Input argument.
+    ///
+    /// @return `true` if the input argument matches the predicate, otherwise `false`
     boolean testType(TypedInstance<HOLDER_TYPE> type);
 
-    /**
-     * Gets a copy of the internal instance that matches the given argument.
-     *
-     * @param type Input argument.
-     *
-     * @return Matching instance. The returned value can be safely modified after.
-     */
+    /// Gets a copy of the internal instance that matches the given argument.
+    ///
+    /// @param type Input argument.
+    ///
+    /// @return Matching instance. The returned value can be safely modified after.
     STACK getMatchingInstance(STACK type);
 
-    /**
-     * Gets the amount of the given argument that is needed, or zero if the given argument doesn't match.
-     *
-     * @param type Input argument.
-     *
-     * @return Amount of the given argument that is needed.
-     */
+    /// Gets the amount of the given argument that is needed, or zero if the given argument doesn't match.
+    ///
+    /// @param type Input argument.
+    ///
+    /// @return Amount of the given argument that is needed.
     int getNeededAmount(TypedInstance<HOLDER_TYPE> type);
 
-    /**
-     * Checks if this ingredient has any matching instances, in most cases this should be {@code false}, but for cases like tags this may not always be the case.
-     *
-     * @return {@code true} for no matching instances, {@code false} if there are any matching instances.
-     */
+    /// Checks if this ingredient has any matching instances, in most cases this should be `false`, but for cases like tags this may not always be the case.
+    ///
+    /// @return `true` for no matching instances, `false` if there are any matching instances.
     boolean hasNoMatchingInstances();
 
     void logMissingTags();
 
-    /**
-     * Primarily for JEI, a list of valid instances of the type
-     *
-     * @return List (empty means no valid registrations found and recipe is to be hidden)
-     *
-     * @apiNote Do not modify any of the values returned by the representations
-     */
+    /// Primarily for JEI, a list of valid instances of the type
+    ///
+    /// @return List (empty means no valid registrations found and recipe is to be hidden)
+    ///
+    /// @apiNote Do not modify any of the values returned by the representations
     List<STACK> getRepresentations(ContextMap context);
 }

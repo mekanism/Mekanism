@@ -24,9 +24,7 @@ public class AttributeGui implements Attribute {
         return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile, resetMousePosition);
     }
 
-    /**
-     * @return if this GUI has another name other than the default "container."
-     */
+    /// @return if this GUI has another name other than the default "container."
     public boolean hasCustomName() {
         return customName != null;
     }

@@ -41,9 +41,7 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         return containerTag;
     }
 
-    /**
-     * Adds some containers as default and exposes it as a capability that requires the given configs if the specified bus is present.
-     */
+    /// Adds some containers as default and exposes it as a capability that requires the given configs if the specified bus is present.
     @Override
     public void addDefaultCreators(@Nullable IEventBus eventBus, Item item, Supplier<? extends IContainerCreator<CONTAINER, ATTACHED>> defaultCreator,
           IMekanismConfig... requiredConfigs) {

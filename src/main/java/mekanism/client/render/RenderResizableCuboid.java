@@ -17,14 +17,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
-/**
- * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
- */
+/// Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
 public class RenderResizableCuboid {
 
     private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
@@ -416,9 +414,7 @@ public class RenderResizableCuboid {
         }
     }
 
-    /**
-     * @implNote From Tinker's
-     */
+    /// @implNote From Tinker's
     private static float[] getBlockBounds(int delta, float start, float end) {
         float[] bounds = new float[2 + delta];
         bounds[0] = start;
@@ -430,9 +426,7 @@ public class RenderResizableCuboid {
         return bounds;
     }
 
-    /**
-     * @implNote From Tinker's
-     */
+    /// @implNote From Tinker's
     private static int calculateDelta(float min, float max) {
         //The texture can stretch over more blocks than the subtracted height is if min's decimal is bigger than max's decimal (causing UV over 1)
         // ignoring the decimals prevents this, as yd then equals exactly how many ints are between the two
@@ -644,10 +638,8 @@ public class RenderResizableCuboid {
         }
     }
 
-    /**
-     * Used to only have to calculate normals once rather than transforming based on the matrix for every vertex call. If a face shouldn't be displayed the normal vector
-     * will be zero.
-     */
+    /// Used to only have to calculate normals once rather than transforming based on the matrix for every vertex call. If a face shouldn't be displayed the normal vector
+    /// will be zero.
     private record NormalData(Vector3f front, Vector3f back) {
 
         private NormalData(Matrix3f normalMatrix, Vector3f normal, FaceDisplay faceDisplay) {

@@ -16,19 +16,17 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/**
- * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
- *
- * @param otherVariant    Chemical representing the cooled variant of this heated coolant.
- * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause boilers to require more of the chemical to produce steam. Must
- *                        be greater than zero.
- * @param conductivity    Defines the proportion of this coolant that can be used at an instant to heat up a boiler and in turn convert this coolant to its cool variant.
- *                        This value should be greater than zero, and at most one.
- * @param temperature     Defines the temperature of this heated coolant that is used in calculating the difference between the boiler's heat and the coolant when
- *                        determining how much heat can be extracted at once. This value should be greater than zero, and at most 1,000,000.
- *
- * @since 10.7.11
- */
+/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY] data map that allows defining fuel values for a chemical.
+///
+/// @param otherVariant    Chemical representing the cooled variant of this heated coolant.
+/// @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause boilers to require more of the chemical to produce steam.
+/// Must be greater than zero.
+/// @param conductivity    Defines the proportion of this coolant that can be used at an instant to heat up a boiler and in turn convert this coolant to its cool variant.
+/// This value should be greater than zero, and at most one.
+/// @param temperature     Defines the temperature of this heated coolant that is used in calculating the difference between the boiler's heat and the coolant when
+/// determining how much heat can be extracted at once. This value should be greater than zero, and at most 1,000,000.
+///
+/// @since 10.7.11
 public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity, double temperature) implements IChemicalCoolant {
 
     private static final double BASE_COOLING_EFFICIENCY = 0.4;
@@ -36,16 +34,12 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     //TODO: Evaluate if this is a reasonable max and if not or if people need it higher, potentially raise it
     private static final double MAX_COOLANT_TEMP = 1_000_000;
 
-    /**
-     * The ID of the data map.
-     *
-     * @see mekanism.api.datamaps.IMekanismDataMapTypes#heatedChemicalCoolant()
-     */
+    /// The ID of the data map.
+    ///
+    /// @see mekanism.api.datamaps.IMekanismDataMapTypes#heatedChemicalCoolant()
     public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_heated_coolant");
 
-    /**
-     * Codec for serializing and deserializing heated coolants.
-     */
+    /// Codec for serializing and deserializing heated coolants.
     public static final Codec<HeatedCoolant> CODEC = RecordCodecBuilder.create(instance -> IChemicalCoolant.createBaseCodec(instance,
           SerializationConstants.COOL_VARIANT, BASE_COOLING_EFFICIENCY
     ).and(

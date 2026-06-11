@@ -12,20 +12,6 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.FilterAware;
-import mekanism.common.component.OverflowAware;
-import mekanism.common.component.StabilizedChunks;
-import mekanism.common.component.component.AttachedEjector;
-import mekanism.common.component.component.AttachedSideConfig;
-import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.component.containers.chemical.ComponentBackedChemicalTankTank;
-import mekanism.common.component.containers.fluid.ComponentBackedFluidTankFluidTank;
-import mekanism.common.component.containers.fluid.FluidTanksBuilder;
-import mekanism.common.component.containers.heat.HeatCapacitorsBuilder;
-import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
-import mekanism.common.component.containers.item.ItemSlotsBuilder;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -53,6 +39,20 @@ import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
+import mekanism.common.component.FilterAware;
+import mekanism.common.component.OverflowAware;
+import mekanism.common.component.StabilizedChunks;
+import mekanism.common.component.component.AttachedEjector;
+import mekanism.common.component.component.AttachedSideConfig;
+import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
+import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.component.containers.chemical.ComponentBackedChemicalTankTank;
+import mekanism.common.component.containers.fluid.ComponentBackedFluidTankFluidTank;
+import mekanism.common.component.containers.fluid.FluidTanksBuilder;
+import mekanism.common.component.containers.heat.HeatCapacitorsBuilder;
+import mekanism.common.component.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.component.containers.item.ItemSlotsBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.Factory;
@@ -1119,14 +1119,12 @@ public class MekanismBlocks {
         return BLOCKS.register(name, blockCreator, (block, props) -> new ItemBlockTooltip<>(block, props.rarity(rarity)));
     }
 
-    /**
-     * Retrieves a Factory with a defined tier and recipe type.
-     *
-     * @param tier - tier to add to the Factory
-     * @param type - recipe type to add to the Factory
-     *
-     * @return factory with defined tier and recipe type
-     */
+    /// Retrieves a Factory with a defined tier and recipe type.
+    ///
+    /// @param tier tier to add to the Factory
+    /// @param type recipe type to add to the Factory
+    ///
+    /// @return factory with defined tier and recipe type
     public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> getFactory(FactoryTier tier, FactoryType type) {
         return Objects.requireNonNull(FACTORIES.get(tier, type));
     }

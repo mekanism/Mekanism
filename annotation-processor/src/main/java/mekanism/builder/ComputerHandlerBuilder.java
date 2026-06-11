@@ -43,9 +43,7 @@ import mekanism.visitors.AnnotationHelper;
 import mekanism.visitors.ParamToHelperMapper;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Heavy lifting class to generate a Factory for a single target class
- */
+/// Heavy lifting class to generate a Factory for a single target class
 public class ComputerHandlerBuilder {
 
     private static final ClassName computerMethodFactoryRaw = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerMethodFactory");
@@ -72,12 +70,10 @@ public class ComputerHandlerBuilder {
     @Nullable
     private static ParamToHelperMapper paramToHelperMapper;
 
-    /**
-     * Called from annotation processor init, sets up our common helper members.
-     *
-     * @param elementUtils Elements from processor
-     * @param typeUtils    Types from processor
-     */
+    /// Called from annotation processor init, sets up our common helper members.
+    ///
+    /// @param elementUtils Elements from processor
+    /// @param typeUtils    Types from processor
     public static void init(Elements elementUtils, Types typeUtils) {
         computerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD)).asType();
         syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD)).asType();
@@ -94,20 +90,20 @@ public class ComputerHandlerBuilder {
     private final Types typeUtils;
     private final Messager messager;
     private final Elements elementUtils;
-    /** the eventual output factory type builder */
+    /// the eventual output factory type builder
     private final TypeSpec.Builder handlerTypeSpec;
-    /** param spec for the subject provided to each method */
+    /// param spec for the subject provided to each method
     private final ParameterSpec subjectParam;
-    /** the generate Factory simple classname */
+    /// the generate Factory simple classname
     private final String handlerClassName;
-    /** class name of the subject type */
+    /// class name of the subject type
     private final ClassName containingClassName;
-    /** the constructor of the factory */
+    /// the constructor of the factory
     private final MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
-    /** stores field getter methods which internally call the method handle. Used to call by name */
+    /// stores field getter methods which internally call the method handle. Used to call by name
     private final Map<Element, MethodSpec> fieldGetters = new HashMap<>();
-    /** stores proxy methods for MethodHandle provided methods. Used to call by name */
+    /// stores proxy methods for MethodHandle provided methods. Used to call by name
     private final Map<Element, MethodSpec> methodProxies = new HashMap<>();
 
     private final Map<List<String>, FieldSpec> paramNameConstants = new HashMap<>();
@@ -131,13 +127,11 @@ public class ComputerHandlerBuilder {
         this.subjectParam = ParameterSpec.builder(containingClassName, "subject").build();
     }
 
-    /**
-     * Builds the Factory class
-     *
-     * @param annotatedElements the elements annotated with one of the supported annotations
-     *
-     * @return a build JavaFile ready for output
-     */
+    /// Builds the Factory class
+    ///
+    /// @param annotatedElements the elements annotated with one of the supported annotations
+    ///
+    /// @return a build JavaFile ready for output
     public JavaFile build(List<Element> annotatedElements) {
 
         for (Element annotatedElement : annotatedElements) {
@@ -178,15 +172,13 @@ public class ComputerHandlerBuilder {
         return JavaFile.builder(containingClassName.packageName(), factorySpec).build();
     }
 
-    /**
-     * Build method for a @WrappingComputerMethod
-     *
-     * @param annotatedElement the field or method annotated
-     * @param annotatedName    the field or method simple name
-     * @param isPrivate        modifiers checked previously
-     * @param isStatic         modifier checked previously
-     * @param annotationValues an annotation helper for this annotation's values
-     */
+    /// Build method for a @WrappingComputerMethod
+    ///
+    /// @param annotatedElement the field or method annotated
+    /// @param annotatedName    the field or method simple name
+    /// @param isPrivate        modifiers checked previously
+    /// @param isStatic         modifier checked previously
+    /// @param annotationValues an annotation helper for this annotation's values
     private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues) {
         //get the wrapper type and find its static methods
         TypeElement wrapperTypeEl;
@@ -281,13 +273,11 @@ public class ComputerHandlerBuilder {
         }
     }
 
-    /**
-     * Get a list of public static methods of the wrapper type. They should have only one param, but this is not currently checked.
-     *
-     * @param wrapperTypeEl the wrapper type to check
-     *
-     * @return a list of method elements
-     */
+    /// Get a list of public static methods of the wrapper type. They should have only one param, but this is not currently checked.
+    ///
+    /// @param wrapperTypeEl the wrapper type to check
+    ///
+    /// @return a list of method elements
     private static List<ExecutableElement> gatherWrapperMethods(TypeElement wrapperTypeEl) {
         List<ExecutableElement> wrapperMethods = new ArrayList<>();
         for (Element element : wrapperTypeEl.getEnclosedElements()) {
@@ -301,15 +291,13 @@ public class ComputerHandlerBuilder {
         return wrapperMethods;
     }
 
-    /**
-     * Generate a getter and/or setter for a field. Private fields do not support setter (currently unused anyway)
-     *
-     * @param annotatedName    the field or method simple name
-     * @param isPrivate        modifiers checked previously
-     * @param isStatic         modifier checked previously
-     * @param annotationValues an annotation helper for this annotation's values
-     * @param fieldElement     the field annotated
-     */
+    /// Generate a getter and/or setter for a field. Private fields do not support setter (currently unused anyway)
+    ///
+    /// @param annotatedName    the field or method simple name
+    /// @param isPrivate        modifiers checked previously
+    /// @param isStatic         modifier checked previously
+    /// @param annotationValues an annotation helper for this annotation's values
+    /// @param fieldElement     the field annotated
     private void handleAtSyntheticMethod(String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues, VariableElement fieldElement) {
         //get a code reference to the field, or a call of the generated getter
         CodeBlock targetReference = getReadTargetReferenceForField(annotatedName, isPrivate, isStatic, fieldElement);
@@ -357,15 +345,13 @@ public class ComputerHandlerBuilder {
         }
     }
 
-    /**
-     * Handle an @ComputerMethod annotated method
-     *
-     * @param annotatedName     the field or method simple name
-     * @param isPrivate         modifiers checked previously
-     * @param isStatic          modifier checked previously
-     * @param annotationValues  an annotation helper for this annotation's values
-     * @param executableElement the method with the annotation
-     */
+    /// Handle an @ComputerMethod annotated method
+    ///
+    /// @param annotatedName     the field or method simple name
+    /// @param isPrivate         modifiers checked previously
+    /// @param isStatic          modifier checked previously
+    /// @param annotationValues  an annotation helper for this annotation's values
+    /// @param executableElement the method with the annotation
     private void handleAtComputerMethod(String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues, ExecutableElement executableElement) {
         //bail if method isn't directly accessible for performance reasons
         if (isPrivate) {
@@ -395,16 +381,14 @@ public class ComputerHandlerBuilder {
         constructorBuilder.addStatement(registerMethodBuilder);
     }
 
-    /**
-     * Generate a CodeBlock which grabs the value of the field.
-     *
-     * @param annotatedName the simple name of the field to get
-     * @param isPrivate     if we need to use a proxy getter / method handle
-     * @param isStatic      is it a static method
-     * @param fieldElement  the element we're getting
-     *
-     * @return CodeBlock which references the field
-     */
+    /// Generate a CodeBlock which grabs the value of the field.
+    ///
+    /// @param annotatedName the simple name of the field to get
+    /// @param isPrivate     if we need to use a proxy getter / method handle
+    /// @param isStatic      is it a static method
+    /// @param fieldElement  the element we're getting
+    ///
+    /// @return CodeBlock which references the field
     private CodeBlock getReadTargetReferenceForField(String annotatedName, boolean isPrivate, boolean isStatic, VariableElement fieldElement) {
         CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
         if (isPrivate) {
@@ -424,14 +408,12 @@ public class ComputerHandlerBuilder {
         return targetFieldBuilder.build();
     }
 
-    /**
-     * Generates and adds a Proxy Method and MethodHandle field for a private/protected method Should always be called as a part of computeIfAbsent
-     *
-     * @param annotatedName     the simple name of the method
-     * @param executableElement the Element of the method
-     *
-     * @return a generated method to use as an $N parameter
-     */
+    /// Generates and adds a Proxy Method and MethodHandle field for a private/protected method Should always be called as a part of computeIfAbsent
+    ///
+    /// @param annotatedName     the simple name of the method
+    /// @param executableElement the Element of the method
+    ///
+    /// @return a generated method to use as an $N parameter
     private MethodSpec getMethodProxy(String annotatedName, ExecutableElement executableElement) {
         /* the types of the params for use as $L for the Method(Handle) lookup */
         CodeBlock.Builder paramTypes = CodeBlock.builder();
@@ -481,14 +463,12 @@ public class ComputerHandlerBuilder {
         return proxyMethod;
     }
 
-    /**
-     * Create and add a field and proxy method to access a private/protected field
-     *
-     * @param annotatedName the simple name of the field to get
-     * @param fieldElement  the Element of the referenced field
-     *
-     * @return a build method to be used as an $N value
-     */
+    /// Create and add a field and proxy method to access a private/protected field
+    ///
+    /// @param annotatedName the simple name of the field to get
+    /// @param fieldElement  the Element of the referenced field
+    ///
+    /// @return a build method to be used as an $N value
     private MethodSpec getFieldGetter(String annotatedName, VariableElement fieldElement) {
         //create and add the MethodHandle field
         FieldSpec fieldGetterHandle = FieldSpec.builder(MethodHandle.class, "fieldGetter$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
@@ -526,15 +506,13 @@ public class ComputerHandlerBuilder {
         return getterMethod;
     }
 
-    /**
-     * Generates a CodeBlock which runs the return value through BaseComputerHelper.convert()
-     *
-     * @param annotatedElement the element to point an error to when the return type is ambiguous
-     * @param returnType       the type that is returned from the target
-     * @param targetInvoker    CodeBlock which produces the value
-     *
-     * @return a CodeBlock which contains a return statement with conversions applied
-     */
+    /// Generates a CodeBlock which runs the return value through BaseComputerHelper.convert()
+    ///
+    /// @param annotatedElement the element to point an error to when the return type is ambiguous
+    /// @param returnType       the type that is returned from the target
+    /// @param targetInvoker    CodeBlock which produces the value
+    ///
+    /// @return a CodeBlock which contains a return statement with conversions applied
     private CodeBlock convertValueToReturn(Element annotatedElement, TypeMirror returnType, CodeBlock targetInvoker) {
         CodeBlock.Builder valueReturner = CodeBlock.builder();
         //void methods just insert the target and return a void result
@@ -567,15 +545,13 @@ public class ComputerHandlerBuilder {
         return valueReturner.build();
     }
 
-    /**
-     * Directly call an accessible method, pulling parameters from the BaseComputerHelper
-     *
-     * @param annotatedName the simple name of the method to call
-     * @param isStatic      is the method static
-     * @param parameters    param elements of the referenced ExecutableElement
-     *
-     * @return a CodeBlock which calls the method
-     */
+    /// Directly call an accessible method, pulling parameters from the BaseComputerHelper
+    ///
+    /// @param annotatedName the simple name of the method to call
+    /// @param isStatic      is the method static
+    /// @param parameters    param elements of the referenced ExecutableElement
+    ///
+    /// @return a CodeBlock which calls the method
     private CodeBlock callTargetMethod(String annotatedName, boolean isStatic, List<VariableElement> parameters) {
         CodeBlock.Builder methodCallArguments = CodeBlock.builder();
         //if the target method has params, add them to a CodeBlock we can insert
@@ -606,18 +582,16 @@ public class ComputerHandlerBuilder {
         return targetMethodCodeBuilder.build();
     }
 
-    /**
-     * Build a CodeBlock which calls register() for a computer exposed method
-     *
-     * @param annotationValues    the values for the annotation used. Common params are pulled from here
-     * @param parameters          the Java parameters of the method to be called. Param names/types pulled from here
-     * @param returnType          the unconverted Java return type of the method/field
-     * @param handlerMethod       the method that was generated to handle this computer method
-     * @param computerExposedName either a name override or the annotated name, exposed to a computer
-     * @param threadSafeLiteral   the value of the threadsafe annotation member (name varies in the case of synthetics)
-     *
-     * @return a CodeBlock to be added to the constructor
-     */
+    /// Build a CodeBlock which calls register() for a computer exposed method
+    ///
+    /// @param annotationValues    the values for the annotation used. Common params are pulled from here
+    /// @param parameters          the Java parameters of the method to be called. Param names/types pulled from here
+    /// @param returnType          the unconverted Java return type of the method/field
+    /// @param handlerMethod       the method that was generated to handle this computer method
+    /// @param computerExposedName either a name override or the annotated name, exposed to a computer
+    /// @param threadSafeLiteral   the value of the threadsafe annotation member (name varies in the case of synthetics)
+    ///
+    /// @return a CodeBlock to be added to the constructor
     private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod,
           String computerExposedName, boolean threadSafeLiteral, @Nullable String methodDescription) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
@@ -687,14 +661,12 @@ public class ComputerHandlerBuilder {
         return mirrors.stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", "));
     }
 
-    /**
-     * Builds a handler method with a body. Accepts 2 params: subject & helper.
-     *
-     * @param methodName the raw name to use in java
-     * @param methodBody the body of the method
-     *
-     * @return a MethodSpec to add to the TypeSpec
-     */
+    /// Builds a handler method with a body. Accepts 2 params: subject & helper.
+    ///
+    /// @param methodName the raw name to use in java
+    /// @param methodBody the body of the method
+    ///
+    /// @return a MethodSpec to add to the TypeSpec
     private MethodSpec buildHandlerMethod(String methodName, CodeBlock methodBody) {
         return MethodSpec.methodBuilder(methodName)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC)

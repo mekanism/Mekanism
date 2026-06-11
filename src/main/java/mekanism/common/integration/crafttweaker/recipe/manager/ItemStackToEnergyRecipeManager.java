@@ -19,27 +19,23 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         super(recipeType);
     }
 
-    /**
-     * Adds a recipe that an item into energy.
-     * <br>
-     * If this is called from the energy conversion recipe manager, this will be an energy conversion recipe and be able to be used in energy slots in Mekanism machines
-     * to convert items to energy.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output Energy output, must be greater than zero.
-     */
+    /// Adds a recipe that an item into energy.
+    ///
+    /// If this is called from the energy conversion recipe manager, this will be an energy conversion recipe and be able to be used in energy slots in Mekanism machines
+    /// to convert items to energy.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output Energy output, must be greater than zero.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount input, int output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
-    /**
-     * Creates a recipe that an item into energy.
-     *
-     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
-     * @param output Energy output. Will be validated as being greater than zero.
-     */
+    /// Creates a recipe that an item into energy.
+    ///
+    /// @param input  [IIngredientWithAmount] representing the input of the recipe.
+    /// @param output Energy output. Will be validated as being greater than zero.
     public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, int output) {
         if (output <= 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");

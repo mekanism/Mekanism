@@ -136,9 +136,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
 
         @Nullable
         public Direction direction;
-        /**
-         * Rotation of the shaft in degrees
-         */
+        /// Rotation of the shaft in degrees
         public float rotation;
     }
 }

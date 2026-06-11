@@ -21,9 +21,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Class for helpers that are also used by some of our recipe compat providers for convenience
- */
+/// Class for helpers that are also used by some of our recipe compat providers for convenience
 public class RecipeProviderUtil {
 
     private RecipeProviderUtil() {

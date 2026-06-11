@@ -39,49 +39,37 @@ public class CrTUtils {
 
     private static final Function<ChemicalStackTemplate, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
 
-    /**
-     * Helper method to convert a {@link Chemical} holder to an {@link ICrTChemicalStack}.
-     */
+    /// Helper method to convert a [Chemical] holder to an [ICrTChemicalStack].
     public static ICrTChemicalStack fromChemical(Holder<Chemical> chemical, int size) {
         return new CrTChemicalStack(new ChemicalStack(chemical, size));
     }
 
-    /**
-     * Converts a CrT item ingredient to one of ours.
-     */
+    /// Converts a CrT item ingredient to one of ours.
     public static ItemStackIngredient fromCrT(IIngredientWithAmount ingredient) {
         return IngredientCreatorAccess.item().from(ExpandIIngredientWithAmountNeoForge.asSizedIngredient(ingredient));
     }
 
-    /**
-     * Converts one of our item ingredients to a CrT item ingredient.
-     */
+    /// Converts one of our item ingredients to a CrT item ingredient.
     public static IIngredientWithAmount toCrT(ItemStackIngredient ingredient) {
         return ExpandSizedIngredient.asIIngredientWithAmount(ingredient.ingredient());
     }
 
-    /**
-     * Converts a CrT fluid ingredient to one of ours.
-     */
+    /// Converts a CrT fluid ingredient to one of ours.
     public static FluidStackIngredient fromCrT(CTFluidIngredient ingredient) {
         return IngredientCreatorAccess.fluid().from(ExpandCTFluidIngredientNeoForge.asSizedFluidIngredient(ingredient));
     }
 
-    /**
-     * Converts one of our fluid ingredients to a CrT fluid ingredient.
-     */
+    /// Converts one of our fluid ingredients to a CrT fluid ingredient.
     public static CTFluidIngredient toCrT(FluidStackIngredient ingredient) {
         return ExpandSizedFluidIngredient.asCTFluidIngredient(ingredient.ingredient());
     }
 
-    /**
-     * Helper method to get a single output from a recipe component if it is present.
-     *
-     * @param recipe    Decomposed recipe
-     * @param component Recipe component
-     *
-     * @throws IllegalArgumentException if component is present but result is not single.
-     */
+    /// Helper method to get a single output from a recipe component if it is present.
+    ///
+    /// @param recipe    Decomposed recipe
+    /// @param component Recipe component
+    ///
+    /// @throws IllegalArgumentException if component is present but result is not single.
     public static <C> Optional<C> getSingleIfPresent(IDecomposedRecipe recipe, IRecipeComponent<C> component) {
         List<C> values = recipe.get(component);
         if (values == null) {
@@ -99,14 +87,12 @@ public class CrTUtils {
         return Optional.of(values.getFirst());
     }
 
-    /**
-     * Helper method to get a pair based output from a recipe component if it is present.
-     *
-     * @param recipe    Decomposed recipe
-     * @param component Recipe component
-     *
-     * @throws IllegalArgumentException if component is not present or doesn't have two elements.
-     */
+    /// Helper method to get a pair based output from a recipe component if it is present.
+    ///
+    /// @param recipe    Decomposed recipe
+    /// @param component Recipe component
+    ///
+    /// @throws IllegalArgumentException if component is not present or doesn't have two elements.
     public static <C> UnaryTypePair<C> getPair(IDecomposedRecipe recipe, IRecipeComponent<C> component) {
         List<C> list = recipe.getOrThrow(component);
         if (list.size() != 2) {
@@ -121,9 +107,7 @@ public class CrTUtils {
         return new UnaryTypePair<>(list.get(0), list.get(1));
     }
 
-    /**
-     * Helper method for describing the outputs of a recipe that may have multiple outputs.
-     */
+    /// Helper method for describing the outputs of a recipe that may have multiple outputs.
     public static String describeOutputs(List<ChemicalStackTemplate> outputs) {
         if (outputs.isEmpty()) {
             return "";
@@ -131,9 +115,7 @@ public class CrTUtils {
         return describeOutputs(outputs, CHEMICAL_CONVERTER);
     }
 
-    /**
-     * Helper method for describing the outputs of a recipe that may have multiple outputs.
-     */
+    /// Helper method for describing the outputs of a recipe that may have multiple outputs.
     public static <TYPE> String describeOutputs(List<TYPE> outputs, Function<TYPE, ?> converter) {
         int size = outputs.size();
         if (size == 0) {
@@ -152,9 +134,7 @@ public class CrTUtils {
         return description.toString();
     }
 
-    /**
-     * Helper method for describing the outputs of a recipe that may have multiple outputs.
-     */
+    /// Helper method for describing the outputs of a recipe that may have multiple outputs.
     public static String describeOutputs(int[] outputs) {
         int size = outputs.length;
         if (size == 0) {
@@ -173,9 +153,7 @@ public class CrTUtils {
         return description.toString();
     }
 
-    /**
-     * Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
-     */
+    /// Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
     public static <TYPE> TagKey<TYPE> validateTagAndGet(KnownTag<TYPE> tag) {
         if (tag.exists()) {
             return tag.getTagKey();
@@ -183,16 +161,12 @@ public class CrTUtils {
         throw new IllegalArgumentException("Tag " + tag.getCommandString() + " does not exist.");
     }
 
-    /**
-     * Helper to convert a list of one type to a list of another.
-     */
+    /// Helper to convert a list of one type to a list of another.
     public static <TYPE, CRT_TYPE> List<CRT_TYPE> convert(List<TYPE> elements, Function<TYPE, CRT_TYPE> converter) {
         return elements.stream().map(converter).toList();
     }
 
-    /**
-     * Helper to convert a list of chemicals to a list of crafttweaker chemicals.
-     */
+    /// Helper to convert a list of chemicals to a list of crafttweaker chemicals.
     public static List<ICrTChemicalStack> convertChemical(List<ChemicalStackTemplate> elements) {
         if (elements.isEmpty()) {
             return Collections.emptyList();
@@ -200,37 +174,27 @@ public class CrTUtils {
         return convert(elements, CHEMICAL_CONVERTER);
     }
 
-    /**
-     * Helper to convert a list of items to a list of crafttweaker items.
-     */
+    /// Helper to convert a list of items to a list of crafttweaker items.
     public static List<IItemStack> convertItems(List<ItemStackTemplate> elements) {
         return convert(elements, stack -> IItemStack.of(stack.create()));
     }
 
-    /**
-     * Helper to convert a list of items to a list of crafttweaker items.
-     */
+    /// Helper to convert a list of items to a list of crafttweaker items.
     public static List<IFluidStack> convertFluids(List<FluidStackTemplate> elements) {
         return convert(elements, stack -> IFluidStack.of(stack.create()));
     }
 
-    /**
-     * Helper to get CraftTweaker's item tag manager.
-     */
+    /// Helper to get CraftTweaker's item tag manager.
     public static KnownTagManager<Item> itemTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.ITEM);
     }
 
-    /**
-     * Helper to get CraftTweaker's fluid tag manager.
-     */
+    /// Helper to get CraftTweaker's fluid tag manager.
     public static KnownTagManager<Fluid> fluidTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.FLUID);
     }
 
-    /**
-     * Helper to get CraftTweaker's chemical tag manager.
-     */
+    /// Helper to get CraftTweaker's chemical tag manager.
     public static KnownTagManager<Chemical> chemicalTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }

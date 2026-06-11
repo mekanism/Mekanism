@@ -36,34 +36,26 @@ import org.jspecify.annotations.Nullable;
 //TODO - 26.1: Investigate making chemicals a datapack registry
 public class Chemical implements IHasTranslationKey, IHasTextComponent {
 
-    /**
-     * A codec which can (de)encode chemical holders.
-     *
-     * @since 10.7.11
-     */
+    /// A codec which can (de)encode chemical holders.
+    ///
+    /// @since 10.7.11
     public static final Codec<Holder<Chemical>> CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec();
-    /**
-     * A stream codec which can be used to encode and decode chemical holders over the network.
-     *
-     * @since 10.7.9
-     */
+    /// A stream codec which can be used to encode and decode chemical holders over the network.
+    ///
+    /// @since 10.7.9
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Chemical>> STREAM_CODEC = ByteBufCodecs.holderRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
 
-    /**
-     * Tries to parse a chemical holder.
-     *
-     * @since 10.7.11
-     */
+    /// Tries to parse a chemical holder.
+    ///
+    /// @since 10.7.11
     public static Optional<Holder<Chemical>> parseHolder(HolderLookup.Provider lookupProvider, Tag tag) {
         return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
               .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error));
     }
 
-    /**
-     * Tries to parse a chemical, defaulting to {@link MekanismAPI#EMPTY_CHEMICAL_HOLDER} on parsing failure.
-     *
-     * @since 10.7.11
-     */
+    /// Tries to parse a chemical, defaulting to [MekanismAPI#EMPTY_CHEMICAL_HOLDER] on parsing failure.
+    ///
+    /// @since 10.7.11
     public static Holder<Chemical> parseOptionalHolder(HolderLookup.Provider lookupProvider, String tag) {
         if (tag.isEmpty()) {
             return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
@@ -111,45 +103,37 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         return translationKey;
     }
 
-    /**
-     * Helper to check if this chemical is radioactive without having to look it up from the attributes.
-     *
-     * @return {@code true} if this chemical is radioactive.
-     *
-     * @since 10.5.15
-     */
+    /// Helper to check if this chemical is radioactive without having to look it up from the attributes.
+    ///
+    /// @return `true` if this chemical is radioactive.
+    ///
+    /// @since 10.5.15
     public boolean isRadioactive() {
         return radioactivity > 0;
     }
 
-    /**
-     * {@return radiation level of this chemical, or zero if it is not radioactive}
-     *
-     * @since 10.7.11
-     */
+    /// {@return radiation level of this chemical, or zero if it is not radioactive}
+    ///
+    /// @since 10.7.11
     public double getRadioactivity() {//TODO - 26.1: Do we want this to return the baseline instead of zero if it is missing?
         return radioactivity;
     }
 
-    /**
-     * Helper to check if this chemical has any attributes that need validation.
-     *
-     * @return {@code true} if this chemical doesn't fit for {@link mekanism.api.chemical.attribute.ChemicalAttributeValidator#DEFAULT}.
-     *
-     * @since 10.5.15
-     */
+    /// Helper to check if this chemical has any attributes that need validation.
+    ///
+    /// @return `true` if this chemical doesn't fit for [mekanism.api.chemical.attribute.ChemicalAttributeValidator#DEFAULT].
+    ///
+    /// @since 10.5.15
     public boolean hasAttributesWithValidation() {
         //Note: We only treat radiation as needing validation if the radiation manager is enabled
         return hasAttributesWithValidation || isRadioactive() && IRadiationManager.INSTANCE.isRadiationEnabled();
     }
 
-    /**
-     * Gets an unmodifiable view of all attribute instances associated with this chemical type.
-     *
-     * @return collection of attribute instances.
-     *
-     * @since 10.7.11
-     */
+    /// Gets an unmodifiable view of all attribute instances associated with this chemical type.
+    ///
+    /// @return collection of attribute instances.
+    ///
+    /// @since 10.7.11
     public List<IChemicalAttribute> getAttributes() {
         return attributesView;
     }
@@ -159,29 +143,23 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         return TextComponentUtil.translate(getTranslationKey());
     }
 
-    /**
-     * Gets the resource location of the icon associated with this Chemical.
-     *
-     * @return The resource location of the icon
-     */
+    /// Gets the resource location of the icon associated with this Chemical.
+    ///
+    /// @return The resource location of the icon
     public Identifier getIcon() {
         return iconLocation;
     }
 
-    /**
-     * Get the tint for rendering the chemical
-     *
-     * @return int representation of color in AARRGGBB format
-     */
+    /// Get the tint for rendering the chemical
+    ///
+    /// @return int representation of color in AARRGGBB format
     public int getTint() {
         return tint;
     }
 
-    /**
-     * Get the color representation used for displaying in things like durability bars of chemical tanks.
-     *
-     * @return int representation of color in AARRGGBB format
-     */
+    /// Get the color representation used for displaying in things like durability bars of chemical tanks.
+    ///
+    /// @return int representation of color in AARRGGBB format
     public int getColorRepresentation() {
         return getTint();
     }
@@ -196,14 +174,12 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         trackAttribute(holder, IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
-    /**
-     * Tracks an attribute if it is present, and update any related cached states.
-     *
-     * @param holder      The reference holder for this chemical.
-     * @param dataMapType The type of the attribute to check for and track.
-     *
-     * @since 10.7.11
-     */
+    /// Tracks an attribute if it is present, and update any related cached states.
+    ///
+    /// @param holder      The reference holder for this chemical.
+    /// @param dataMapType The type of the attribute to check for and track.
+    ///
+    /// @since 10.7.11
     protected void trackAttribute(Holder<Chemical> holder, DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
         IChemicalAttribute attribute = holder.getData(dataMapType);
         if (attribute != null) {
@@ -216,17 +192,15 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         }
     }
 
-    /**
-     * Gathers any tooltips this chemical has, and adds them to the list.
-     *
-     * @param stack       Chemical stack.
-     * @param context     Current tooltip context.
-     * @param tooltips    List of tooltips to add to.
-     * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
-     *
-     * @see ChemicalStack#appendHoverText(TooltipContext, List, TooltipFlag)
-     * @since 10.7.11
-     */
+    /// Gathers any tooltips this chemical has, and adds them to the list.
+    ///
+    /// @param stack       Chemical stack.
+    /// @param context     Current tooltip context.
+    /// @param tooltips    List of tooltips to add to.
+    /// @param tooltipFlag Flag representing if advanced tooltips are to be shown.
+    ///
+    /// @see ChemicalStack#appendHoverText(TooltipContext, List, TooltipFlag)
+    /// @since 10.7.11
     protected void appendHoverText(ChemicalStack stack, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         for (IChemicalAttribute attribute : attributes) {
             attribute.collectTooltips(context, tooltips, tooltipFlag);

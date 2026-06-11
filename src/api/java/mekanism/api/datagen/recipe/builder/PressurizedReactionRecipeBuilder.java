@@ -40,15 +40,13 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return NO_DEFAULT_ID;
     }
 
-    /**
-     * Creates a Pressurized Reaction recipe builder.
-     *
-     * @param inputSolid    Item Input.
-     * @param inputFluid    Fluid Input.
-     * @param inputChemical Chemical Input.
-     * @param duration      Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem    Item Output.
-     */
+    /// Creates a Pressurized Reaction recipe builder.
+    ///
+    /// @param inputSolid    Item Input.
+    /// @param inputFluid    Fluid Input.
+    /// @param inputChemical Chemical Input.
+    /// @param duration      Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem    Item Output.
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
           int duration, ItemStackTemplate outputItem) {
         Objects.requireNonNull(outputItem, "This reaction recipe requires a non empty output item.");
@@ -56,15 +54,13 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, outputItem, null);
     }
 
-    /**
-     * Creates a Pressurized Reaction recipe builder.
-     *
-     * @param inputSolid     Item Input.
-     * @param inputFluid     Fluid Input.
-     * @param inputChemical  Chemical Input.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputChemical Chemical Output.
-     */
+    /// Creates a Pressurized Reaction recipe builder.
+    ///
+    /// @param inputSolid     Item Input.
+    /// @param inputFluid     Fluid Input.
+    /// @param inputChemical  Chemical Input.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputChemical Chemical Output.
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
           int duration, ChemicalStackTemplate outputChemical) {
         Objects.requireNonNull(outputChemical, "This reaction recipe requires a non empty output chemical.");
@@ -72,16 +68,14 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, null, outputChemical);
     }
 
-    /**
-     * Creates a Pressurized Reaction recipe builder.
-     *
-     * @param inputSolid     Item Input.
-     * @param inputFluid     Fluid Input.
-     * @param inputChemical  Chemical Input.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     Item Output.
-     * @param outputChemical Chemical Output.
-     */
+    /// Creates a Pressurized Reaction recipe builder.
+    ///
+    /// @param inputSolid     Item Input.
+    /// @param inputFluid     Fluid Input.
+    /// @param inputChemical  Chemical Input.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem     Item Output.
+    /// @param outputChemical Chemical Output.
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
           int duration, ItemStackTemplate outputItem, ChemicalStackTemplate outputChemical) {
         Objects.requireNonNull(outputItem, "This reaction recipe requires non empty item and chemical outputs.");
@@ -96,11 +90,9 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         }
     }
 
-    /**
-     * Sets the "extra" energy required for this recipe.
-     *
-     * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
-     */
+    /// Sets the "extra" energy required for this recipe.
+    ///
+    /// @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
     public PressurizedReactionRecipeBuilder energyRequired(int energyRequired) {
         if (energyRequired < 0) {
             throw new IllegalArgumentException("This reaction recipe must have a positive or zero energy requirement.");

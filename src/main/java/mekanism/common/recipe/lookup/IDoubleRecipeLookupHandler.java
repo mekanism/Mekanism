@@ -18,110 +18,90 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs.
- */
+/// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that takes two inputs.
 public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
       RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>>
       extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
-     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
-     * {@link #containsRecipeBA(TypedInstance, TypedInstance)} should be called.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given inputs.
+    ///
+    /// @param inputA Recipe input a.
+    /// @param inputB Recipe input b.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
+    ///
+    /// @apiNote See [DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)] and
+    /// [DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)]
+    /// for more details about when this method should be called versus when [#containsRecipeBA(TypedInstance, TypedInstance)] should be called.
     default boolean containsRecipeAB(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
     }
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
-     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
-     * {@link #containsRecipeAB(TypedInstance, TypedInstance)} should be called.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given inputs.
+    ///
+    /// @param inputA Recipe input a.
+    /// @param inputB Recipe input b.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
+    ///
+    /// @apiNote See [DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)] and
+    /// [DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)] for more details about when this method should be called versus when
+    /// [#containsRecipeAB(TypedInstance, TypedInstance)] should be called.
     default boolean containsRecipeBA(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
     }
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
+    ///
+    /// @param input Recipe input.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
     default boolean containsRecipeA(TypedInstance<HOLDER_A> input) {
         return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
+    ///
+    /// @param input Recipe input.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
     default boolean containsRecipeB(TypedInstance<HOLDER_B> input) {
         return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 
-    /**
-     * Finds the first recipe for the type of recipe we handle ({@link #getRecipeType()}) by looking up the given inputs against the recipe type's input cache.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     *
-     * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
-     */
+    /// Finds the first recipe for the type of recipe we handle ([#getRecipeType()]) by looking up the given inputs against the recipe type's input cache.
+    ///
+    /// @param inputA Recipe input a.
+    /// @param inputB Recipe input b.
+    ///
+    /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
     default RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
-    /**
-     * Finds the first recipe for the type of recipe we handle ({@link #getRecipeType()}) by looking up the given inputs against the recipe type's input cache.
-     *
-     * @param inputAHandler Input handler to grab the first recipe input from.
-     * @param inputBHandler Input handler to grab the second recipe input from.
-     *
-     * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
-     */
+    /// Finds the first recipe for the type of recipe we handle ([#getRecipeType()]) by looking up the given inputs against the recipe type's input cache.
+    ///
+    /// @param inputAHandler Input handler to grab the first recipe input from.
+    /// @param inputBHandler Input handler to grab the second recipe input from.
+    ///
+    /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
     default RECIPE findFirstRecipe(IInputHandler<HOLDER_A, INPUT_A> inputAHandler, IInputHandler<HOLDER_B, INPUT_B> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 
-    /**
-     * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
-     */
+    /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
     interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ItemStack>> extends
           IDoubleRecipeLookupHandler<Item, ItemStack, Item, ItemStack, RECIPE, DoubleItem<RECIPE>> {
     }
 
-    /**
-     * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
-     */
+    /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
     interface ItemChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ChemicalStack>> extends
           IDoubleRecipeLookupHandler<Item, ItemStack, Chemical, ChemicalStack, RECIPE, ItemChemical<RECIPE>> {
     }
 
-    /**
-     * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
-     */
+    /// Helper interface to make the generics that we have to pass to [IDoubleRecipeLookupHandler] not as messy.
     interface FluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<FluidStack, ChemicalStack>> extends
           IDoubleRecipeLookupHandler<Fluid, FluidStack, Chemical, ChemicalStack, RECIPE, FluidChemical<RECIPE>> {
     }

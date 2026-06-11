@@ -78,9 +78,7 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
-    /**
-     * How many ticks it takes, by default, to run an operation.
-     */
+    /// How many ticks it takes, by default, to run an operation.
     protected static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     protected final FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
@@ -88,17 +86,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     protected final ErrorTracker errorTracker;
     private final boolean[] activeStates;
     protected final ProcessInfo[] processInfoSlots;
-    /**
-     * This Factory's tier.
-     */
+    /// This Factory's tier.
     public final FactoryTier tier;
-    /**
-     * An int[] used to track all current operations' progress.
-     */
+    /// An int[] used to track all current operations' progress.
     public final int[] progress;
-    /**
-     * How many ticks it takes, with upgrades, to run an operation
-     */
+    /// How many ticks it takes, with upgrades, to run an operation
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operationsPerTick = 1;//will increase for modified upgrade multipliers
     private boolean sorting;
@@ -106,9 +98,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     //Note: We store this in a long as if the per tick is high for multiple recipes it could be over an int
     private long lastUsage = 0;
 
-    /**
-     * This machine's factory type.
-     */
+    /// This machine's factory type.
     protected final FactoryType type;
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
@@ -158,10 +148,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         errorTracker = new ErrorTracker(errorTypes, globalErrorTypes, tier.processes);
     }
 
-    /**
-     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again and recipes as needing to be rechecked. This combines with the
-     * passed in listener to allow for abstracting the comparator type checks up to the base level.
-     */
+    /// Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again and recipes as needing to be rechecked. This combines with the
+    /// passed in listener to allow for abstracting the comparator type checks up to the base level.
     protected IContentsListener markAllMonitorsChanged(IContentsListener listener) {
         return () -> {
             listener.onContentsChanged();
@@ -267,17 +255,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return sendUpdatePacket;
     }
 
-    /**
-     * Checks if the cached recipe (or recipe for current factory if the cache is out of date) can produce a specific output.
-     *
-     * @param process             Which process the cache recipe is.
-     * @param fallbackInput       Used if the cached recipe is null or to validate the cached recipe is not out of date.
-     * @param outputSlot          The output slot for this slot.
-     * @param secondaryOutputSlot The secondary output slot or null if we only have one output slot
-     * @param updateCache         True to make the cached recipe get updated if it is out of date.
-     *
-     * @return True if the recipe produces the given output.
-     */
+    /// Checks if the cached recipe (or recipe for current factory if the cache is out of date) can produce a specific output.
+    ///
+    /// @param process             Which process the cache recipe is.
+    /// @param fallbackInput       Used if the cached recipe is null or to validate the cached recipe is not out of date.
+    /// @param outputSlot          The output slot for this slot.
+    /// @param secondaryOutputSlot The secondary output slot or null if we only have one output slot
+    /// @param updateCache         True to make the cached recipe get updated if it is out of date.
+    ///
+    /// @return True if the recipe produces the given output.
     public boolean inputProducesOutput(int process, ItemResource fallbackInput, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
         return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, false, updateCache) != null;
@@ -334,17 +320,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         activeStates[cacheIndex] = state;
     }
 
-    /**
-     * Handles filling the secondary fuel tank based on the item in the extra slot
-     */
+    /// Handles filling the secondary fuel tank based on the item in the extra slot
     protected void handleSecondaryFuel() {
     }
 
     public abstract boolean isItemValidForSlot(ItemResource itemType);
 
-    /**
-     * Like isItemValidForSlot makes no assumptions about current stored types
-     */
+    /// Like isItemValidForSlot makes no assumptions about current stored types
     public abstract boolean isValidInputItem(ItemResource itemType);
 
     public int getProgress(int cacheIndex) {

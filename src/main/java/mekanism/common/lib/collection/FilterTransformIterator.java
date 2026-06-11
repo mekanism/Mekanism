@@ -43,12 +43,10 @@ public abstract class FilterTransformIterator<IN, OUT> implements Iterator<OUT> 
         }
     }
 
-    /**
-     * Filter & transform the result
-     *
-     * @param value upstream next value
-     *
-     * @return null to skip, nonnull to transform
-     */
+    /// Filter & transform the result
+    ///
+    /// @param value upstream next value
+    ///
+    /// @return null to skip, nonnull to transform
     protected abstract @Nullable OUT filterTransform(IN value);
 }

@@ -66,9 +66,7 @@ public class MekanismClient {
         }
     }
 
-    /**
-     * Reset things that aren't needed between levels or would leak
-     */
+    /// Reset things that aren't needed between levels or would leak
     public static void resetDimensionChange() {
         Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();

@@ -5,9 +5,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Constants we use throughout our CraftTweaker integration.
- */
+/// Constants we use throughout our CraftTweaker integration.
 public class CrTConstants {
 
     public static final Logger CRT_LOGGER = CraftTweakerAPI.getLogger(Mekanism.MOD_NAME);

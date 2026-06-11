@@ -8,9 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 
-/**
- * Helper class for implementing tag providers for chemicals.
- */
+/// Helper class for implementing tag providers for chemicals.
 public abstract class ChemicalTagsProvider extends IntrinsicHolderTagsProvider<Chemical> {
 
     protected ChemicalTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid) {

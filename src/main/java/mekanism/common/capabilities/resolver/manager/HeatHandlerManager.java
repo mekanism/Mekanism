@@ -7,9 +7,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 
-/**
- * Helper class to make reading instead of having as messy generics
- */
+/// Helper class to make reading instead of having as messy generics
 public class HeatHandlerManager extends CapabilityHandlerManager<IContainerHolder<IHeatCapacitor>, IHeatCapacitor, IHeatHandler> {
 
     public HeatHandlerManager(IContainerHolder<IHeatCapacitor> holder, ISidedHeatHandler baseHandler) {

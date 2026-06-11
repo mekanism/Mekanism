@@ -28,27 +28,21 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN),
     STONE_GENERATOR("stone_generator", APILang.UPGRADE_STONE_GENERATOR, APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, 1, EnumColor.ORANGE);
 
-    /**
-     * Codec for serializing upgrades based on their name.
-     *
-     * @since 10.6.0
-     */
+    /// Codec for serializing upgrades based on their name.
+    ///
+    /// @since 10.6.0
     public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
     //TODO - 26.1: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
     //TODO - 26.1: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
     private static final Codec<Map<Upgrade, Integer>> UPGRADE_MAP_CODEC = Codec.unboundedMap(CODEC, ExtraCodecs.POSITIVE_INT);
 
-    /**
-     * Gets an upgrade by index, wrapping for out of bounds indices.
-     *
-     * @since 10.6.0
-     */
+    /// Gets an upgrade by index, wrapping for out of bounds indices.
+    ///
+    /// @since 10.6.0
     public static final IntFunction<Upgrade> BY_ID = ByIdMap.continuous(Upgrade::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    /**
-     * Stream codec for syncing upgrades by index.
-     *
-     * @since 10.6.0
-     */
+    /// Stream codec for syncing upgrades by index.
+    ///
+    /// @since 10.6.0
     public static final StreamCodec<ByteBuf, Upgrade> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Upgrade::ordinal);
 
     private final String name;
@@ -65,32 +59,26 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
         this.color = color;
     }
 
-    /**
-     * Reads and builds a map of upgrades to their amounts from the given input.
-     *
-     * @param upgradeInput Stored upgrades.
-     *
-     * @return Unmodifiable map representing the installed upgrades.
-     */
+    /// Reads and builds a map of upgrades to their amounts from the given input.
+    ///
+    /// @param upgradeInput Stored upgrades.
+    ///
+    /// @return Unmodifiable map representing the installed upgrades.
     public static Map<Upgrade, Integer> buildMap(ValueInput upgradeInput) {
         return upgradeInput.read(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC).orElse(Collections.emptyMap());
     }
 
-    /**
-     * Writes a map of upgrades to their amounts to NBT.
-     *
-     * @param upgrades      Upgrades to store.
-     * @param upgradeOutput Output to write upgrades to.
-     */
+    /// Writes a map of upgrades to their amounts to NBT.
+    ///
+    /// @param upgrades      Upgrades to store.
+    /// @param upgradeOutput Output to write upgrades to.
     public static void saveMap(Map<Upgrade, Integer> upgrades, ValueOutput upgradeOutput) {
         if (!upgrades.isEmpty()) {
             upgradeOutput.store(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC, upgrades);
         }
     }
 
-    /**
-     * Gets the "raw" name of this upgrade for use in registry names.
-     */
+    /// Gets the "raw" name of this upgrade for use in registry names.
     @Override
     public String getSerializedName() {
         return name;
@@ -101,23 +89,17 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
         return langKey.getTranslationKey();
     }
 
-    /**
-     * Gets the description for this upgrade.
-     */
+    /// Gets the description for this upgrade.
     public Component getDescription() {
         return descLangKey.translate();
     }
 
-    /**
-     * Gets the max number of upgrades of this type that can be installed.
-     */
+    /// Gets the max number of upgrades of this type that can be installed.
     public int getMax() {
         return maxStack;
     }
 
-    /**
-     * Gets the color to use when rendering various information related to this upgrade.
-     */
+    /// Gets the color to use when rendering various information related to this upgrade.
     public EnumColor getColor() {
         return color;
     }

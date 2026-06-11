@@ -6,9 +6,7 @@ import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for making it easier to handle enums
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for making it easier to handle enums
 public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
 
     public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(IntFunction<ENUM> decoder, ENUM defaultValue, Supplier<ENUM> getter,

@@ -86,16 +86,12 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         changedAcceptors.clear();
     }
 
-    /**
-     * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
-     */
+    /// @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
     public ObjectIterator<Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>>> getAcceptorFastIterator() {
         return Long2ObjectMaps.fastIterator(cachedAcceptors);
     }
 
-    /**
-     * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
-     */
+    /// @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
     public Collection<Map<Direction, ACCEPTOR>> getAcceptorValues() {
         return cachedAcceptors.values();
     }

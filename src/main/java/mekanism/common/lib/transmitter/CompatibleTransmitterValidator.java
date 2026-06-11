@@ -16,9 +16,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    /**
-     * @param transmitter Orphan transmitter to check if it is valid against this validator.
-     */
+    /// @param transmitter Orphan transmitter to check if it is valid against this validator.
     public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
         return true;
     }

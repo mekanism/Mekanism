@@ -10,15 +10,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Prefab of a robit skin that requires a given advancement to be unlocked to use it.
- *
- * @param textures    Textures to use for the skin.
- * @param customModel Resource location of custom model relative to the "models" directory.
- * @param advancement Advancement to check a player for to see if they have this robit skin unlocked.
- *
- * @since 10.4.0
- */
+/// Prefab of a robit skin that requires a given advancement to be unlocked to use it.
+///
+/// @param textures    Textures to use for the skin.
+/// @param customModel Resource location of custom model relative to the "models" directory.
+/// @param advancement Advancement to check a player for to see if they have this robit skin unlocked.
+///
+/// @since 10.4.0
 public record AdvancementBasedRobitSkin(List<Identifier> textures, @Nullable Identifier customModel, Identifier advancement) implements RobitSkin {
 
     public AdvancementBasedRobitSkin {
@@ -30,12 +28,10 @@ public record AdvancementBasedRobitSkin(List<Identifier> textures, @Nullable Ide
         textures = List.copyOf(textures);
     }
 
-    /**
-     * Prefab of a robit skin that requires a given advancement to be unlocked to use it.
-     *
-     * @param textures    Textures to use for the skin.
-     * @param advancement Advancement to check a player for to see if they have this robit skin unlocked.
-     */
+    /// Prefab of a robit skin that requires a given advancement to be unlocked to use it.
+    ///
+    /// @param textures    Textures to use for the skin.
+    /// @param advancement Advancement to check a player for to see if they have this robit skin unlocked.
     public AdvancementBasedRobitSkin(List<Identifier> textures, Identifier advancement) {
         this(textures, null, advancement);
     }

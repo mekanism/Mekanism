@@ -14,11 +14,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Pos3D - a way of performing operations on objects in a three-dimensional environment.
- *
- * @author aidancbrady
- */
+/// A way of performing operations on objects in a three-dimensional environment.
 public class Pos3D extends Vec3 {
     //TODO - 1.18: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
     // Though it seems like at least our yRot method is subtly different than the Vector3D yrot method
@@ -35,11 +31,9 @@ public class Pos3D extends Vec3 {
         super(x, y, z);
     }
 
-    /**
-     * Creates a Pos3D with an entity's posX, posY, and posZ values.
-     *
-     * @param entity - entity to create the Pos3D from
-     */
+    /// Creates a Pos3D with an entity's posX, posY, and posZ values.
+    ///
+    /// @param entity entity to create the Pos3D from
     public Pos3D(Entity entity) {
         this(entity.getX(), entity.getY(), entity.getZ());
     }
@@ -75,66 +69,54 @@ public class Pos3D extends Vec3 {
         return new AABB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
-    /**
-     * Creates and returns a Pos3D with values representing the difference between this and the Pos3D in the parameters.
-     *
-     * @param vec - Vec3 to subtract
-     *
-     * @return difference of the two Pos3Ds
-     */
+    /// Creates and returns a Pos3D with values representing the difference between this and the Pos3D in the parameters.
+    ///
+    /// @param vec Vec3 to subtract
+    ///
+    /// @return difference of the two Pos3Ds
     public Pos3D diff(Vec3 vec) {
         return new Pos3D(x - vec.x, y - vec.y, z - vec.z);
     }
 
-    /**
-     * Creates a new GlobalPos representing this Pos3D in the provided dimension.
-     *
-     * @param dimension - the dimension this Pos3D is in
-     *
-     * @return GlobalPos representing this Pos3D
-     */
+    /// Creates a new GlobalPos representing this Pos3D in the provided dimension.
+    ///
+    /// @param dimension the dimension this Pos3D is in
+    ///
+    /// @return GlobalPos representing this Pos3D
     public GlobalPos getGlobalPos(ResourceKey<Level> dimension) {
         return GlobalPos.of(dimension, BlockPos.containing(x, y, z));
     }
 
-    /**
-     * Centres a block-derived Pos3D
-     */
+    /// Centres a block-derived Pos3D
     public Pos3D centre() {
         return translate(0.5, 0.5, 0.5);
     }
 
-    /**
-     * Translates this Pos3D by the defined values.
-     *
-     * @param x - amount to translate on the x-axis
-     * @param y - amount to translate on the y-axis
-     * @param z - amount to translate on the z-axis
-     *
-     * @return the translated Pos3D
-     */
+    /// Translates this Pos3D by the defined values.
+    ///
+    /// @param x amount to translate on the x-axis
+    /// @param y amount to translate on the y-axis
+    /// @param z amount to translate on the z-axis
+    ///
+    /// @return the translated Pos3D
     public Pos3D translate(double x, double y, double z) {
         return new Pos3D(this.x + x, this.y + y, this.z + z);
     }
 
-    /**
-     * Performs the same operation as translate(x, y, z), but with a Pos3D value instead.
-     *
-     * @param pos - Pos3D value to translate by
-     *
-     * @return translated Pos3D
-     */
+    /// Performs the same operation as translate(x, y, z), but with a Pos3D value instead.
+    ///
+    /// @param pos Pos3D value to translate by
+    ///
+    /// @return translated Pos3D
     public Pos3D translate(Vec3 pos) {
         return translate(pos.x, pos.y, pos.z);
     }
 
-    /**
-     * Performs the same operation as translate(x, y, z), but with multiple Pos3Ds to avoid having to create intermediary objects.
-     *
-     * @param positions - Pos3D values to translate by
-     *
-     * @return translated Pos3D
-     */
+    /// Performs the same operation as translate(x, y, z), but with multiple Pos3Ds to avoid having to create intermediary objects.
+    ///
+    /// @param positions Pos3D values to translate by
+    ///
+    /// @return translated Pos3D
     public Pos3D translate(Vec3... positions) {
         double x = this.x;
         double y = this.y;
@@ -147,16 +129,12 @@ public class Pos3D extends Vec3 {
         return new Pos3D(x, y, z);
     }
 
-    /**
-     * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
-     */
+    /// Performs the same operation as translate(x, y, z), but by a set amount in a Direction
     public Pos3D translate(Direction direction, double amount) {
         return translate(direction.getStepX() * amount, direction.getStepY() * amount, direction.getStepZ() * amount);
     }
 
-    /**
-     * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
-     */
+    /// Performs the same operation as translate(x, y, z), but by a set amount in a Direction
     public Pos3D translateExcludingSide(Direction direction, double amount) {
         double xPos = x, yPos = y, zPos = z;
         if (direction.getAxis() != Axis.X) {
@@ -171,9 +149,7 @@ public class Pos3D extends Vec3 {
         return new Pos3D(xPos, yPos, zPos);
     }
 
-    /**
-     * Adjusts the position for the given direction to match that as the entity
-     */
+    /// Adjusts the position for the given direction to match that as the entity
     public Pos3D adjustPosition(Direction direction, Entity entity) {
         if (direction.getAxis() == Axis.X) {
             return new Pos3D(entity.getX(), y, z);
@@ -183,24 +159,20 @@ public class Pos3D extends Vec3 {
         return new Pos3D(x, y, entity.getZ());
     }
 
-    /**
-     * Returns the distance between this and the defined Pos3D.
-     *
-     * @param pos - the Pos3D to find the distance to
-     *
-     * @return the distance between this and the defined Pos3D
-     */
+    /// Returns the distance between this and the defined Pos3D.
+    ///
+    /// @param pos the Pos3D to find the distance to
+    ///
+    /// @return the distance between this and the defined Pos3D
     public double distance(Vec3 pos) {
         return Mth.length(x - pos.x, y - pos.y, z - pos.z);
     }
 
-    /**
-     * Rotates this Pos3D by the defined yaw value.
-     *
-     * @param yaw - yaw to rotate by
-     *
-     * @return rotated Pos3D
-     */
+    /// Rotates this Pos3D by the defined yaw value.
+    ///
+    /// @param yaw yaw to rotate by
+    ///
+    /// @return rotated Pos3D
     @Override
     public Pos3D yRot(float yaw) {
         double yawRadians = Math.toRadians(yaw);
@@ -253,15 +225,13 @@ public class Pos3D extends Vec3 {
         return multiply(pos.x, pos.y, pos.z);
     }
 
-    /**
-     * Scales this Pos3D by the defined x, y, and z values.
-     *
-     * @param x - x value to scale by
-     * @param y - y value to scale by
-     * @param z - z value to scale by
-     *
-     * @return scaled Pos3D
-     */
+    /// Scales this Pos3D by the defined x, y, and z values.
+    ///
+    /// @param x x value to scale by
+    /// @param y y value to scale by
+    /// @param z z value to scale by
+    ///
+    /// @return scaled Pos3D
     @Override
     public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);

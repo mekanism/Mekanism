@@ -5,9 +5,7 @@ import java.util.function.IntSupplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Slightly modified version of {@link net.minecraft.world.inventory.DataSlot}
- */
+/// Slightly modified version of [net.minecraft.world.inventory.DataSlot]
 public abstract class SyncableInt implements ISyncableData {
 
     private int lastKnownValue;

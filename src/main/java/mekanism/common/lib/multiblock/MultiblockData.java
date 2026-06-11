@@ -53,13 +53,11 @@ import org.jspecify.annotations.Nullable;
 public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IContentsListener {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
-    /**
-     * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
-     * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated) This set is not
-     * synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
-     * accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
-     * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
-     */
+    /// @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
+    /// multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated) This set is not
+    /// synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
+    /// accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
+    /// replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public Map<BlockPos, ValveData> valves = new HashMap<>();
 
@@ -135,19 +133,15 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         dirty = true;
     }
 
-    /**
-     * Returns true if the multiblock's gui can be accessed via structural multiblocks, false otherwise. An example this may be false for would be on a thermal
-     * evaporation plant.
-     */
+    /// Returns true if the multiblock's gui can be accessed via structural multiblocks, false otherwise. An example this may be false for would be on a thermal
+    /// evaporation plant.
     public boolean allowsStructuralGuiAccess(TileEntityStructuralMultiblock multiblock) {
         return true;
     }
 
-    /**
-     * Tick the multiblock.
-     *
-     * @return if we need an update packet
-     */
+    /// Tick the multiblock.
+    ///
+    /// @return if we need an update packet
     public boolean tick(ServerLevel world) {
         boolean needsPacket = false;
         for (ValveData data : valves.values()) {
@@ -315,9 +309,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return bounds;
     }
 
-    /**
-     * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
-     */
+    /// Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
     public <T extends MultiblockData> boolean isPositionInsideBounds(Structure structure, BlockGetter level, BlockPos pos) {
         if (isFormed()) {
             VoxelCuboid bounds = getBounds();
@@ -341,9 +333,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return false;
     }
 
-    /**
-     * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
-     */
+    /// Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
     public boolean isPositionOutsideBounds(BlockPos pos) {
         return isFormed() && getBounds().getRelativeLocation(pos) == CuboidRelative.OUTSIDE;
     }

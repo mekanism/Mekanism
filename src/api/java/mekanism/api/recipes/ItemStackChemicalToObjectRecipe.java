@@ -9,29 +9,23 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/**
- * Base class for defining item chemical to item recipes.
- * <br>
- * Input: ItemStack
- * <br>
- * Input: Chemical
- * <br>
- * Output: OUTPUT
- *
- * @since 10.7.0
- */
+/// Base class for defining item chemical to item recipes.
+///
+/// Input: ItemStack
+///
+/// Input: Chemical
+///
+/// Output: OUTPUT
+///
+/// @since 10.7.0
 public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends TwoInputMekRecipe<Item, ItemStack, ItemStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleItemChemicalRecipeInput, OUTPUT> {
 
-    /**
-     * Represents whether this recipe consumes the chemical each tick.
-     *
-     * @since 10.7.0
-     */
+    /// Represents whether this recipe consumes the chemical each tick.
+    ///
+    /// @since 10.7.0
     public abstract boolean perTickUsage();
 
-    /**
-     * Gets the input item ingredient.
-     */
+    /// Gets the input item ingredient.
     public abstract ItemStackIngredient getItemInput();
 
     @Override
@@ -39,9 +33,7 @@ public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends TwoInputMe
         return getItemInput();
     }
 
-    /**
-     * Gets the input chemical ingredient.
-     */
+    /// Gets the input chemical ingredient.
     public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override

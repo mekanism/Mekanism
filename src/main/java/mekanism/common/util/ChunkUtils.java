@@ -6,9 +6,7 @@ import net.minecraft.world.level.ChunkPos;
 
 public class ChunkUtils {
 
-    /**
-     * Adapted from {@link ChunkPos#rangeClosed} to avoid Stream city
-     */
+    /// Adapted from [ChunkPos#rangeClosed] to avoid Stream city
     public static long[] rangeClosed(final int startX, int startZ, final int endX, final int endZ) {
         int sizeX = Math.abs(startX - endX) + 1;
         int sizeZ = Math.abs(startZ - endZ) + 1;
@@ -41,13 +39,11 @@ public class ChunkUtils {
         return positions;
     }
 
-    /**
-     * {@link ChunkPos#pack(BlockPos)} but with a packed Block pos
-     *
-     * @param packedBlock packed blockpos ({@link BlockPos#asLong()})
-     *
-     * @return a packed Chunk pos
-     */
+    /// [ChunkPos#pack(BlockPos)] but with a packed Block pos
+    ///
+    /// @param packedBlock packed blockpos ([BlockPos#asLong()])
+    ///
+    /// @return a packed Chunk pos
     public static long packedBlockToChunk(long packedBlock) {
         return ChunkPos.pack(SectionPos.blockToSectionCoord(BlockPos.getX(packedBlock)), SectionPos.blockToSectionCoord(BlockPos.getZ(packedBlock)));
     }

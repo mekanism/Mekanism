@@ -358,12 +358,10 @@ public class QIOCraftingTransferHandler {
         return recipeHelper.createInternalError();
     }
 
-    /**
-     * Loosely based on how {@link mekanism.common.content.qio.QIOServerCraftingTransferHandler}'s hasRoomToShuffle method works.
-     *
-     * @implNote As it simplifies the logic (and is what we had initially written), this simulates if we can shuffle with the player inventory before checking the
-     * frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
-     */
+    /// Loosely based on how [mekanism.common.content.qio.QIOServerCraftingTransferHandler]'s hasRoomToShuffle method works.
+    ///
+    /// @implNote As it simplifies the logic (and is what we had initially written), this simulates if we can shuffle with the player inventory before checking the
+    /// frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
     private static boolean hasRoomToShuffle(QIOCraftingTransferHelper qioTransferHelper, @Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow,
           Iterable<TransactionalSlot> playerSlots, int numPlayerSlots, Map<ItemTypeSource, List<List<SingularItemTypeSource>>> shuffleLookup) {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down

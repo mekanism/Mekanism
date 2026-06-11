@@ -21,40 +21,32 @@ import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Implementation for how Mekanism handle's FluidStack Ingredients.
- * <p>
- * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()}.
- *
- * @implNote This is a wrapper around {@link SizedFluidIngredient}
- */
+/// Implementation for how Mekanism handle's FluidStack Ingredients.
+///
+/// Create instances of this using [mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()].
+///
+/// @implNote This is a wrapper around [SizedFluidIngredient]
 public final class FluidStackIngredient implements InputIngredient<Fluid, FluidStack> {
 
-    /**
-     * A codec which can (de)encode fluid stack ingredients.
-     *
-     * @since 10.6.0
-     */
+    /// A codec which can (de)encode fluid stack ingredients.
+    ///
+    /// @since 10.6.0
     public static final Codec<FluidStackIngredient> CODEC = SizedFluidIngredient.CODEC.xmap(FluidStackIngredient::new, FluidStackIngredient::ingredient);
-    /**
-     * A stream codec which can be used to encode and decode fluid stack ingredients over the network.
-     *
-     * @since 10.6.0
-     */
+    /// A stream codec which can be used to encode and decode fluid stack ingredients over the network.
+    ///
+    /// @since 10.6.0
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> STREAM_CODEC = SizedFluidIngredient.STREAM_CODEC
           .map(FluidStackIngredient::new, FluidStackIngredient::ingredient);
 
-    /**
-     * Creates a Fluid Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()} and
-     * {@link mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator#from(SizedFluidIngredient)}.
-     *
-     * @param ingredient Sized ingredient to match.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty.
-     * @since 10.6.0
-     */
+    /// Creates a Fluid Stack Ingredient that matches a given ingredient and amount. Prefer calling via
+    /// [mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()] and
+    /// [mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator#from(SizedFluidIngredient)].
+    ///
+    /// @param ingredient Sized ingredient to match.
+    ///
+    /// @throws NullPointerException     if the given instance is null.
+    /// @throws IllegalArgumentException if the given instance is empty.
+    /// @since 10.6.0
     public static FluidStackIngredient of(SizedFluidIngredient ingredient) {
         Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null ingredient.");
         //TODO - 26.1: Figure out how to validate against empty fluid ingredients?
@@ -126,11 +118,9 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidS
         return representations;
     }
 
-    /**
-     * For use in recipe input caching. Gets the internal Neo Sized Fluid Ingredient.
-     *
-     * @since 10.6.0
-     */
+    /// For use in recipe input caching. Gets the internal Neo Sized Fluid Ingredient.
+    ///
+    /// @since 10.6.0
     @Internal
     public SizedFluidIngredient ingredient() {
         return ingredient;

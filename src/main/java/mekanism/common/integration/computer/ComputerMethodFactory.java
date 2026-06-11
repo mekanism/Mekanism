@@ -2,7 +2,11 @@ package mekanism.common.integration.computer;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,18 +15,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-/**
- * A base class for the annotation generator to extend. It's constructor will call
- * {@link #register(String, MethodRestriction, String[], boolean, Class, ComputerFunctionCaller, String[], Class[])} to set up the possible methods. These will then be
- * tested and, if not restricted, "bound" to the holder in {@link #bindTo(Object, BoundMethodHolder)} Methods with the same name must have different parameter counts.
- *
- * @param <T> the "subject" that this Factory's methods operate on.
- */
+/// A base class for the annotation generator to extend. It's constructor will call [#register(MethodData.Builder)] to set up the possible methods. These will then be
+/// tested and, if not restricted, "bound" to the holder in [#bindTo(Object, BoundMethodHolder)] Methods with the same name must have different parameter counts.
+///
+/// @param <T> the "subject" that this Factory's methods operate on.
 public class ComputerMethodFactory<T> {
 
     protected static String[] NO_STRINGS = new String[0];
@@ -54,9 +50,7 @@ public class ComputerMethodFactory<T> {
     }
 
     private final List<MethodData<T>> methods = new ArrayList<>();
-    /**
-     * Method + arg count pairs to make sure methods are unique
-     */
+    /// Method + arg count pairs to make sure methods are unique
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
     protected void register(MethodData.Builder<T> methodData) {
@@ -86,16 +80,14 @@ public class ComputerMethodFactory<T> {
     @FunctionalInterface
     public interface ComputerFunctionCaller<T> {
 
-        /**
-         * Applies this function to the given arguments.
-         *
-         * @param t the subject
-         * @param u the computer helper for the current integration
-         *
-         * @return the (converted) function result
-         *
-         * @throws ComputerException if arguments are invalid or other failure happens during processing
-         */
+        /// Applies this function to the given arguments.
+        ///
+        /// @param t the subject
+        /// @param u the computer helper for the current integration
+        ///
+        /// @return the (converted) function result
+        ///
+        /// @throws ComputerException if arguments are invalid or other failure happens during processing
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 

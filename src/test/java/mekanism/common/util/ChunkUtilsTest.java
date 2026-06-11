@@ -5,9 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * Created by Thiakil on 2/05/2025.
- */
 class ChunkUtilsTest {
 
     @Test

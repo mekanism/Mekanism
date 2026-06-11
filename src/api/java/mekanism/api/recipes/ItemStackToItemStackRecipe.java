@@ -7,18 +7,14 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 
-/**
- * Input: ItemStack
- * <br>
- * Output: ItemStack
- *
- * @apiNote There are currently three types of ItemStack to ItemStack recipe types:
- * <ul>
- *     <li>Crushing: Can be processed in Crushers and Crushing Factories.</li>
- *     <li>Enriching: Can be processed in Enrichment Chambers and Enriching Factories.</li>
- *     <li>Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.</li>
- * </ul>
- */
+/// Input: ItemStack
+///
+/// Output: ItemStack
+///
+/// @apiNote There are currently three types of ItemStack to ItemStack recipe types:
+/// - Crushing: Can be processed in Crushers and Crushing Factories.
+/// - Enriching: Can be processed in Enrichment Chambers and Enriching Factories.
+/// - Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.
 public abstract class ItemStackToItemStackRecipe extends ItemInputRecipe<ItemStackTemplate> {
 
     protected final RecipeType<ItemStackToItemStackRecipe> recipeType;

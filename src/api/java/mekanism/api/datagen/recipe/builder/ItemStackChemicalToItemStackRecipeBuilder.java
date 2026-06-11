@@ -36,66 +36,56 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
         return RecipeBuilder.getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Compressing recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input, used at a constant rate over the duration of the recipe.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Compressing recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input, used at a constant rate over the duration of the recipe.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicCompressingRecipe::new);
     }
 
-    /**
-     * Creates a Purifying recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Purifying recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicPurifyingRecipe::new);
     }
 
-    /**
-     * Creates an Injecting recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates an Injecting recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicInjectingRecipe::new);
     }
 
-    /**
-     * Creates a Metallurgic Infusing recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Infusion Input.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Metallurgic Infusing recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Infusion Input.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ItemStackChemicalToItemStackRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicMetallurgicInfuserRecipe::new);
     }
 
-    /**
-     * Creates a Painting recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Painting recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicPaintingRecipe::new);

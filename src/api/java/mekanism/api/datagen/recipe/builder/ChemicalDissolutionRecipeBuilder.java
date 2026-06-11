@@ -28,14 +28,12 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Chemical Dissolution recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Chemical Dissolution recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output, boolean perTickUsage) {
         return new ChemicalDissolutionRecipeBuilder(itemInput, chemicalInput, output, perTickUsage);
     }

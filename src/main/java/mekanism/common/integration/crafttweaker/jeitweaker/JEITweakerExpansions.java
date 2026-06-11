@@ -29,9 +29,7 @@ public class JEITweakerExpansions {
         private ICrTChemicalStackExpansion() {
         }
 
-        /**
-         * Converts an {@link ICrTChemicalStack} into its {@link ZenJeiIngredient} equivalent.
-         */
+        /// Converts an [ICrTChemicalStack] into its [ZenJeiIngredient] equivalent.
         @ZenCodeType.Caster(implicit = true)
         public static ZenJeiIngredient asJeiIngredient(final ICrTChemicalStack _this) {
             return JeiIngredients.toZenIngredient(JeiIngredient.ofZen(TYPE.get(), _this));

@@ -9,9 +9,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-/**
- * @since 10.7.0 Previously was GasToGasRecipeBuilder
- */
+/// @since 10.7.0 Previously was GasToGasRecipeBuilder
 public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ChemicalToChemicalRecipeBuilder> {
 
     private final ChemicalToChemicalRecipeBuilder.Factory factory;
@@ -29,22 +27,18 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates an Activating recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates an Activating recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ChemicalToChemicalRecipeBuilder activating(ChemicalStackIngredient input, ChemicalStackTemplate output) {
         return new ChemicalToChemicalRecipeBuilder(input, output, BasicActivatingRecipe::new);
     }
 
-    /**
-     * Creates a Centrifuging recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates a Centrifuging recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ChemicalToChemicalRecipeBuilder centrifuging(ChemicalStackIngredient input, ChemicalStackTemplate output) {
         return new ChemicalToChemicalRecipeBuilder(input, output, BasicCentrifugingRecipe::new);
     }

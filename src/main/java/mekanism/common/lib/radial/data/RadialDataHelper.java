@@ -6,9 +6,7 @@ import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadialDataHelper#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IRadialDataHelper#INSTANCE]
 public class RadialDataHelper implements IRadialDataHelper {
 
     @Override

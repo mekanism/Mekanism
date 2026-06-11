@@ -15,36 +15,28 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-/**
- * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
- * <i>requires validation</i>, meaning chemical containers won't be able to accept chemicals with this attribute by default. Radioactivity is measured in Sv/h.
- *
- * @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than {@link IRadiationManager#baselineRadiation() baseline radiation}.
- *
- * @since 10.7.11
- */
+/// A [`chemical`][MekanismAPI#CHEMICAL_REGISTRY] data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
+/// *requires validation*, meaning chemical containers won't be able to accept chemicals with this attribute by default. Radioactivity is measured in Sv/h.
+///
+/// @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than [`baseline radiation`][IRadiationManager#baselineRadiation()].
+///
+/// @since 10.7.11
 public record ChemicalRadioactivity(double radioactivity) implements IChemicalAttribute {
 
-    /**
-     * The ID of the data map.
-     *
-     * @see mekanism.api.datamaps.IMekanismDataMapTypes#chemicalRadioactivity()
-     */
+    /// The ID of the data map.
+    ///
+    /// @see mekanism.api.datamaps.IMekanismDataMapTypes#chemicalRadioactivity()
     public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_radioactivity");
 
     private static final Codec<Double> RADIATION_CODEC = Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).validate(val -> {
-        if (val == IRadiationManager.INSTANCE.baselineRadiation()) {
+        if (val <= IRadiationManager.INSTANCE.baselineRadiation()) {
             return DataResult.error(() -> "Radiation must be greater than the baseline value");
         }
         return DataResult.success(val);
     });
-    /**
-     * Compressed codec for serializing and deserializing chemical radioactivity for use over the network.
-     */
+    /// Compressed codec for serializing and deserializing chemical radioactivity for use over the network.
     public static final Codec<ChemicalRadioactivity> RADIOACTIVITY_CODEC = RADIATION_CODEC.xmap(ChemicalRadioactivity::new, ChemicalRadioactivity::radioactivity);
-    /**
-     * Codec for serializing and deserializing chemical radioactivity.
-     */
+    /// Codec for serializing and deserializing chemical radioactivity.
     public static final Codec<ChemicalRadioactivity> CODEC = Codec.withAlternative(RecordCodecBuilder.create(in -> in.group(
           RADIATION_CODEC.fieldOf(SerializationConstants.RADIOACTIVITY).forGetter(ChemicalRadioactivity::radioactivity)
     ).apply(in, ChemicalRadioactivity::new)), RADIOACTIVITY_CODEC);

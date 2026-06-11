@@ -77,9 +77,7 @@ public enum ConductorTier implements ITier {
         return baseConductionInsulation;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the ConductorTier a reference to the actual config value object
     public void setConfigReference(CachedDoubleValue conductionReference, CachedDoubleValue capacityReference, CachedDoubleValue insulationReference) {
         this.conductionReference = conductionReference;
         this.capacityReference = capacityReference;

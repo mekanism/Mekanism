@@ -93,15 +93,13 @@ public interface IJetpackItem {
         }
     }
 
-    /**
-     * Gets the first found active jetpack from an entity, if one is worn.
-     * <br>
-     * If Curios is loaded, the curio slots will be checked as well.
-     *
-     * @param entity the entity on which to look for the jetpack
-     *
-     * @return the jetpack stack if present, otherwise an empty stack
-     */
+    /// Gets the first found active jetpack from an entity, if one is worn.
+    ///
+    /// If Curios is loaded, the curio slots will be checked as well.
+    ///
+    /// @param entity the entity on which to look for the jetpack
+    ///
+    /// @return the jetpack stack if present, otherwise an empty stack
     @Nullable
     static ItemAccess getActiveJetpack(LivingEntity entity) {
         if (entity.isPassenger()) {
@@ -114,15 +112,13 @@ public interface IJetpackItem {
         return jetpack;
     }
 
-    /**
-     * Gets the first found jetpack from an entity, if one is worn. Purpose of this is to get the correct jetpack mode to use.
-     * <br>
-     * If Curios is loaded, the curio slots will be checked as well.
-     *
-     * @param entity the entity on which to look for the jetpack
-     *
-     * @return the jetpack stack if present, otherwise an empty stack
-     */
+    /// Gets the first found jetpack from an entity, if one is worn. Purpose of this is to get the correct jetpack mode to use.
+    ///
+    /// If Curios is loaded, the curio slots will be checked as well.
+    ///
+    /// @param entity the entity on which to look for the jetpack
+    ///
+    /// @return the jetpack stack if present, otherwise an empty stack
     static ItemResource getPrimaryJetpack(LivingEntity entity) {
         ItemAccess jetpack = getJetpack(entity, itemAccess -> itemAccess.getResource().getItem() instanceof IJetpackItem);
         return jetpack == null ? ItemResource.EMPTY : jetpack.getResource();
@@ -139,9 +135,7 @@ public interface IJetpackItem {
         return null;
     }
 
-    /**
-     * @return If fall distance should get reset or not
-     */
+    /// @return If fall distance should get reset or not
     static <PLAYER extends Player> boolean handleJetpackMotion(PLAYER player, JetpackMode mode, double thrust, Predicate<PLAYER> ascendingCheck) {
         Vec3 motion = player.getDeltaMovement();
         if (mode == JetpackMode.VECTOR && player.isShiftKeyDown()) {

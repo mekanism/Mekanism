@@ -187,9 +187,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         return queuedInput.value - queuedOutput.value;
     }
 
-    /**
-     * @return The energy post queue when this container next actually updates/saves to disk
-     */
+    /// @return The energy post queue when this container next actually updates/saves to disk
     @Override
     public long getAmountAsLong() {
         return cachedTotal + getQueuedChange();

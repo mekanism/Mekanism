@@ -14,22 +14,18 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Main Input: ItemStack
- * <br>
- * Secondary/Extra Input: ItemStack
- * <br>
- * Output: ItemStack
- *
- * @apiNote Combiners and Combining Factories can process this recipe type.
- */
+/// Main Input: ItemStack
+///
+/// Secondary/Extra Input: ItemStack
+///
+/// Output: ItemStack
+///
+/// @apiNote Combiners and Combining Factories can process this recipe type.
 public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStack, ItemStackIngredient, RecipeInput, ItemStackTemplate> {
 
     private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "combiner"));
 
-    /**
-     * Gets the main input ingredient.
-     */
+    /// Gets the main input ingredient.
     public abstract ItemStackIngredient getMainInput();
 
     @Override
@@ -37,9 +33,7 @@ public abstract class CombinerRecipe extends SimpleTwoInputRecipe<Item, ItemStac
         return getMainInput();
     }
 
-    /**
-     * Gets the secondary input ingredient.
-     */
+    /// Gets the secondary input ingredient.
     public abstract ItemStackIngredient getExtraInput();
 
     @Override

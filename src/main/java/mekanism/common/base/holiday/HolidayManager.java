@@ -94,9 +94,7 @@ public final class HolidayManager {
         }
     }
 
-    /**
-     * @apiNote Only call on the client side
-     */
+    /// @apiNote Only call on the client side
     public static void notify(Player player) {
         if (!holidaysNotified) {
             //Mark as notified even if messages are configured to off, so that we don't have to try notifying for the rest of the day

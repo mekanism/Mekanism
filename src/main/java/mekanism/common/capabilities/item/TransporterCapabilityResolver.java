@@ -31,9 +31,7 @@ public class TransporterCapabilityResolver implements ICapabilityResolver<@Nulla
             return SUPPORTED_CAPABILITY;
         }
 
-        /**
-         * Lazily get and cache a handler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-         */
+    /// Lazily get and cache a handler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
         @Nullable
         @Override
         public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {

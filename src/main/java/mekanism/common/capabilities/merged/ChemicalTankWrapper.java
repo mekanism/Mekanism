@@ -9,10 +9,8 @@ import mekanism.api.resource.ResourceContainerWrapper;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-/**
- * Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
- * one chemical tank of a {@link MergedTank} can have a chemical in it at any time.
- */
+/// Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
+/// one chemical tank of a [MergedTank] can have a chemical in it at any time.
 public class ChemicalTankWrapper extends ResourceContainerWrapper<ChemicalResource, IChemicalTank> implements IChemicalTank {
 
     private final BooleanSupplier insertCheck;
@@ -24,9 +22,7 @@ public class ChemicalTankWrapper extends ResourceContainerWrapper<ChemicalResour
         this.insertCheck = insertCheck;
     }
 
-    /**
-     * Gets the merged chemical tank.
-     */
+    /// Gets the merged chemical tank.
     public MergedTank getMergedTank() {
         return mergedTank;
     }

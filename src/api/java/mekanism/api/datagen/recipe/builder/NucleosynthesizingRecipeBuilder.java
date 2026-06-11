@@ -32,15 +32,13 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
         return RecipeBuilder.getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Nucleosynthesizing recipe builder.
-     *
-     * @param itemInput     Item Input.
-     * @param chemicalInput Chemical Input.
-     * @param output        Output.
-     * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a Nucleosynthesizing recipe builder.
+    ///
+    /// @param itemInput     Item Input.
+    /// @param chemicalInput Chemical Input.
+    /// @param output        Output.
+    /// @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public static NucleosynthesizingRecipeBuilder nucleosynthesizing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, int duration,
           boolean perTickUsage) {
         if (duration <= 0) {
@@ -54,11 +52,9 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
         return new BasicNucleosynthesizingRecipe(itemInput, chemicalInput, output, duration, perTickUsage);
     }
 
-    /**
-     * Builds this recipe using the output item's name as the recipe name.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     */
+    /// Builds this recipe using the output item's name as the recipe name.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
     public void build(RecipeOutput recipeOutput) {
         save(recipeOutput, output.typeHolder());
     }

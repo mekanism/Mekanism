@@ -19,8 +19,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public class BinInventorySlot extends BasicInventorySlot {
 
@@ -99,13 +99,11 @@ public class BinInventorySlot extends BasicInventorySlot {
         return null;
     }
 
-    /**
-     * Modifies the lock state of the slot.
-     *
-     * @param lock if the slot should be locked
-     *
-     * @return if the lock state was modified
-     */
+    /// Modifies the lock state of the slot.
+    ///
+    /// @param lock if the slot should be locked
+    ///
+    /// @return if the lock state was modified
     public boolean setLocked(boolean lock) {
         // Don't lock if:
         // - We are a creative bin
@@ -118,9 +116,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         return true;
     }
 
-    /**
-     * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
-     */
+    /// For use by tier installers and parsing placement data, do not use this in place of [#setLocked(boolean)]
     public void setLockType(ItemResource lockType, @Nullable TransactionContext transaction) {
         lockTypeJournal.setLockType(lockType, transaction);
     }

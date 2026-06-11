@@ -76,34 +76,24 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
-    /**
-     * How many ticks it takes to run an operation.
-     */
+    /// How many ticks it takes to run an operation.
     private static final int BASE_TICKS_REQUIRED = 19;
     public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     private static final int BASE_OUTPUT_RATE = 256;
 
-    /**
-     * This pump's tank
-     */
+    /// This pump's tank
     @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "buffer tank")
     public BasicFluidTank fluidTank;
-    /**
-     * The type of fluid this pump is pumping
-     */
+    /// The type of fluid this pump is pumping
     private FluidResource activeType = FluidResource.EMPTY;
     public int ticksRequired = BASE_TICKS_REQUIRED;
-    /**
-     * How many ticks this machine has been operating for.
-     */
+    /// How many ticks this machine has been operating for.
     public int operatingTicks;
     private boolean usedEnergy = false;
     private int outputRate = BASE_OUTPUT_RATE;
-    /**
-     * The nodes that have full sources near them or in them
-     */
+    /// The nodes that have full sources near them or in them
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
     @Nullable
     private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluidHandlerAbove;

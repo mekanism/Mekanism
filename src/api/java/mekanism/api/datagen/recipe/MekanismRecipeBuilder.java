@@ -23,9 +23,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidInstance;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base recipe builder that declares various common methods between our different builders.
- */
+/// Base recipe builder that declares various common methods between our different builders.
 @SuppressWarnings("UnusedReturnValue")
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> implements RecipeBuilder {
 
@@ -44,21 +42,17 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return (BUILDER) this;
     }
 
-    /**
-     * Adds a criterion to this recipe.
-     *
-     * @param criterion Criterion to add.
-     */
+    /// Adds a criterion to this recipe.
+    ///
+    /// @param criterion Criterion to add.
     public BUILDER unlockedBy(RecipeCriterion criterion) {
         return unlockedBy(criterion.name(), criterion.criterion());
     }
 
-    /**
-     * Adds a criterion to this recipe.
-     *
-     * @param name      Name of the criterion.
-     * @param criterion Criterion to add.
-     */
+    /// Adds a criterion to this recipe.
+    ///
+    /// @param name      Name of the criterion.
+    /// @param criterion Criterion to add.
     @Override
     public BUILDER unlockedBy(String name, Criterion<?> criterion) {
         criteria.put(name, criterion);
@@ -71,37 +65,30 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return self();
     }
 
-    /**
-     * Adds a condition to this recipe.
-     *
-     * @param condition Condition to add.
-     */
+    /// Adds a condition to this recipe.
+    ///
+    /// @param condition Condition to add.
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
         return self();
     }
 
-    /**
-     * Gets a recipe result object.
-     */
+    /// Gets a recipe result object.
     protected abstract Recipe<?> asRecipe();
 
-    /**
-     * Performs any extra validation.
-     *
-     * @param id ID of the recipe validation is being performed on.
-     * @since 10.8.0
-     */
+    /// Performs any extra validation.
+    ///
+    /// @param id ID of the recipe validation is being performed on.
+    ///
+    /// @since 10.8.0
     protected void ensureValid(ResourceKey<Recipe<?>> id) {
         //TODO - 26.1: Re-evaluate implementations, as it seems that vanilla changed what they are validating
     }
 
-    /**
-     * Builds this recipe.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     * @param id           Name of the recipe being built.
-     */
+    /// Builds this recipe.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
+    /// @param id           Name of the recipe being built.
     public void save(RecipeOutput recipeOutput, Identifier id) {
         Identifier defaultId = defaultId().identifier();
         if (id.equals(defaultId)) {
@@ -111,12 +98,10 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         }
     }
 
-    /**
-     * Builds this recipe.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     * @param id           Name of the recipe being built.
-     */
+    /// Builds this recipe.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
+    /// @param id           Name of the recipe being built.
     @Override
     public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
         ensureValid(id);
@@ -133,13 +118,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }
 
-    /**
-     * Builds this recipe basing the name on the output item.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     * @param output       Output to base the recipe name off of.
-     * @since 10.7.11
-     */
+    /// Builds this recipe basing the name on the output item.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
+    /// @param output       Output to base the recipe name off of.
+    /// @since 10.7.11
     protected void save(RecipeOutput recipeOutput, Holder<Item> output) {
         ResourceKey<Item> key = output.getKey();
         if (key == null) {

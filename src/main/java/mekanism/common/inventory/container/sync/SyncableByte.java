@@ -5,9 +5,7 @@ import mekanism.api.functions.ByteSupplier;
 import mekanism.common.network.to_client.container.property.BytePropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling bytes
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling bytes
 public abstract class SyncableByte implements ISyncableData {
 
     private byte lastKnownValue;

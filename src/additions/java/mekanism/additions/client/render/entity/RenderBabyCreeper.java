@@ -10,9 +10,7 @@ import net.minecraft.client.renderer.entity.state.CreeperRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-/**
- * Copy of vanilla's creeper render, modified to use our own model/layer that is properly scaled
- */
+/// Copy of vanilla's [creeper render][net.minecraft.client.renderer.entity.CreeperRenderer], modified to use our own model/layer that is properly scaled
 public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, CreeperRenderState, ModelBabyCreeper> {
 
     private static final Identifier CREEPER_TEXTURES = Identifier.withDefaultNamespace("textures/entity/creeper/creeper.png");

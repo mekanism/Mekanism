@@ -5,10 +5,8 @@ import mekanism.common.config.IMekanismConfig;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import org.jspecify.annotations.Nullable;
 
-/**
- * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
- * @param <REAL> The real type that the {@link ConfigValue} holds
- */
+/// @param <TYPE> The type this [CachedResolvableConfigValue] resolves to
+/// @param <REAL> The real type that the [ConfigValue] holds
 public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValue<REAL> implements Supplier<TYPE> {
 
     @Nullable

@@ -15,16 +15,12 @@ import org.jspecify.annotations.Nullable;
 public class CapabilityCache {
 
     private final Map<BlockCapability<?, @Nullable Direction>, ICapabilityResolver<@Nullable Direction>> capabilityResolvers = new IdentityHashMap<>();
-    /**
-     * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
-     */
+    /// List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
     private final List<ICapabilityResolver<?>> uniqueResolvers = new ArrayList<>();
     @Nullable
     private TileComponentConfig config;
 
-    /**
-     * Adds a capability resolver to the list of resolvers for this cache.
-     */
+    /// Adds a capability resolver to the list of resolvers for this cache.
     public void addCapabilityResolver(ICapabilityResolver<@Nullable Direction> resolver) {
         uniqueResolvers.add(resolver);
         List<BlockCapability<?, @Nullable Direction>> supportedCapabilities = resolver.getSupportedCapabilities();
@@ -38,9 +34,7 @@ public class CapabilityCache {
         }
     }
 
-    /**
-     * Adds the given config component for use in checking if capabilities are disabled on a specific side.
-     */
+    /// Adds the given config component for use in checking if capabilities are disabled on a specific side.
     public void addConfigComponent(TileComponentConfig config) {
         if (this.config != null) {
             Mekanism.logger.warn("Config component already registered. Overriding", new Exception());
@@ -48,11 +42,9 @@ public class CapabilityCache {
         this.config = config;
     }
 
-    /**
-     * Checks if the given capability is disabled for the specific side.
-     *
-     * @return {@code true} if the capability is disabled, {@code false} otherwise.
-     */
+    /// Checks if the given capability is disabled for the specific side.
+    ///
+    /// @return `true` if the capability is disabled, `false` otherwise.
     public boolean isCapabilityDisabled(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         return config != null && config.isCapabilityDisabled(capability, side);
     }
@@ -72,12 +64,10 @@ public class CapabilityCache {
         return knownResolver;
     }
 
-    /**
-     * Invalidates the given capability on the given side.
-     *
-     * @param capability Capability
-     * @param side       Side
-     */
+    /// Invalidates the given capability on the given side.
+    ///
+    /// @param capability Capability
+    /// @param side       Side
     public void invalidate(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         ICapabilityResolver<@Nullable Direction> capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver != null) {
@@ -85,11 +75,9 @@ public class CapabilityCache {
         }
     }
 
-    /**
-     * Invalidates the given capability on all sides
-     *
-     * @param capability Capability
-     */
+    /// Invalidates the given capability on all sides
+    ///
+    /// @param capability Capability
     public void invalidateAll(BlockCapability<?, @Nullable Direction> capability) {
         ICapabilityResolver<@Nullable Direction> capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver != null) {
@@ -97,9 +85,7 @@ public class CapabilityCache {
         }
     }
 
-    /**
-     * Invalidates all cached capabilities.
-     */
+    /// Invalidates all cached capabilities.
     public void invalidateAll() {
         uniqueResolvers.forEach(ICapabilityResolver::invalidateAll);
     }

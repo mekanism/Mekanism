@@ -102,9 +102,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         return SPEED * height / (level.getMaxY() + 1 - minBuildHeight);
     }
 
-    /**
-     * Determines the current output multiplier, taking sky visibility and height into account.
-     **/
+    /// Determines the current output multiplier, taking sky visibility and height into account.
     private double getMultiplier() {
         if (level != null) {
             BlockPos top = getBlockPos().above(4);

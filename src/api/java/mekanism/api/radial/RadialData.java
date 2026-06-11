@@ -7,38 +7,30 @@ import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base abstraction for providing functionality and required data to radials.
- *
- * @param <MODE> Radial Mode.
- *
- * @since 10.3.2
- */
+/// Base abstraction for providing functionality and required data to radials.
+///
+/// @param <MODE> Radial Mode.
+///
+/// @since 10.3.2
 public abstract class RadialData<MODE extends IRadialMode> {
 
     private final Identifier identifier;
 
-    /**
-     * @param identifier Identifier representing this radial data. Must be unique within the radial level if this is a nested radial element.
-     */
+    /// @param identifier Identifier representing this radial data. Must be unique within the radial level if this is a nested radial element.
     protected RadialData(Identifier identifier) {
         this.identifier = Objects.requireNonNull(identifier, "Identifier cannot be null.");
     }
 
-    /**
-     * Gets a "unique" identifier for this radial data for networking tree purposes.
-     */
+    /// Gets a "unique" identifier for this radial data for networking tree purposes.
     public final Identifier getIdentifier() {
         return identifier;
     }
 
-    /**
-     * Tries to get a nested mode from the given identifier. In the majority of cases this will return {@code null}.
-     *
-     * @param identifier Identifier of child radial data.
-     *
-     * @return Nested mode or {@code null} if this radial data doesn't support nested modes or there is no child with the matching name.
-     */
+    /// Tries to get a nested mode from the given identifier. In the majority of cases this will return `null`.
+    ///
+    /// @param identifier Identifier of child radial data.
+    ///
+    /// @return Nested mode or `null` if this radial data doesn't support nested modes or there is no child with the matching name.
     @Nullable
     public INestedRadialMode fromIdentifier(Identifier identifier) {
         for (MODE mode : getModes()) {
@@ -50,86 +42,72 @@ public abstract class RadialData<MODE extends IRadialMode> {
         return null;
     }
 
-    /**
-     * Gets the list of currently available modes. It is recommended to store this in a local variable for use in querying other methods.
-     */
+    /// Gets the list of currently available modes. It is recommended to store this in a local variable for use in querying other methods.
     public abstract List<MODE> getModes();
 
-    /**
-     * Gets the default (fallback) mode from the list of currently available modes.
-     *
-     * @param modes List of currently available modes.
-     *
-     * @return Default mode or {@code null} if there is no default.
-     */
+    /// Gets the default (fallback) mode from the list of currently available modes.
+    ///
+    /// @param modes List of currently available modes.
+    ///
+    /// @return Default mode or `null` if there is no default.
     @Nullable
     public MODE getDefaultMode(List<MODE> modes) {
         return null;
     }
 
-    /**
-     * Gets the index of the given mode for this radial data. This will be the same as the index of the element in the given list presuming that the list of modes was
-     * retrieved from {@link #getModes()}.
-     *
-     * @param modes List of currently available modes. May not be used if there is a more efficient index lookup possible.
-     * @param mode  Mode to lookup.
-     *
-     * @return Index of mode in the list of modes or {@code -1} if the mode is not part of this radial data.
-     */
+    /// Gets the index of the given mode for this radial data. This will be the same as the index of the element in the given list presuming that the list of modes was
+    /// retrieved from [#getModes()].
+    ///
+    /// @param modes List of currently available modes. May not be used if there is a more efficient index lookup possible.
+    /// @param mode  Mode to lookup.
+    ///
+    /// @return Index of mode in the list of modes or `-1` if the mode is not part of this radial data.
     public int index(List<MODE> modes, MODE mode) {
         return modes.indexOf(mode);
     }
 
-    /**
-     * Gets the index of the given mode for this radial data. This will be the same as the index of the element in the given list presuming that the list of modes was
-     * retrieved from {@link #getModes()}.
-     *
-     * @param modes List of currently available modes. May not be used if there is a more efficient index lookup possible.
-     * @param mode  Mode to lookup.
-     *
-     * @return Index of mode in the list of modes or {@code -1} if the mode is not part of this radial data.
-     *
-     * @apiNote Helper for {@link #index(List, IRadialMode)} that returns {@code -1} when the given mode is {@code null} to cut down on nesting if statements.
-     */
+    /// Gets the index of the given mode for this radial data. This will be the same as the index of the element in the given list presuming that the list of modes was
+    /// retrieved from [#getModes()].
+    ///
+    /// @param modes List of currently available modes. May not be used if there is a more efficient index lookup possible.
+    /// @param mode  Mode to lookup.
+    ///
+    /// @return Index of mode in the list of modes or `-1` if the mode is not part of this radial data.
+    ///
+    /// @apiNote Helper for [#index(List, IRadialMode)] that returns `-1` when the given mode is `null` to cut down on nesting if statements.
     public final int indexNullable(List<MODE> modes, @Nullable MODE mode) {
         return mode == null ? -1 : index(modes, mode);
     }
 
-    /**
-     * Tries to get the corresponding integer network representation for the given mode.
-     *
-     * @param mode Unchecked mode.
-     *
-     * @return An integer corresponding to the network representation of the given object or {@code -1} if the object is of the wrong type or there is no network
-     * representation.
-     *
-     * @apiNote Helper for {@link #getNetworkRepresentation(IRadialMode)} that tries to validate the type matches the type of the current radial data.
-     */
+    /// Tries to get the corresponding integer network representation for the given mode.
+    ///
+    /// @param mode Unchecked mode.
+    ///
+    /// @return An integer corresponding to the network representation of the given object or `-1` if the object is of the wrong type or there is no network
+    /// representation.
+    ///
+    /// @apiNote Helper for [#getNetworkRepresentation(IRadialMode)] that tries to validate the type matches the type of the current radial data.
     public int tryGetNetworkRepresentation(IRadialMode mode) {
         return -1;
     }
 
-    /**
-     * Get the corresponding integer network representation for the given mode.
-     *
-     * @param mode Mode.
-     *
-     * @return An integer corresponding to the network representation of the given object or {@code -1} if  there is no network representation.
-     *
-     * @implNote When implementing this method, if you are not extending {@link ClassBasedRadialData} it is important to also override
-     * {@link #tryGetNetworkRepresentation(IRadialMode)}.
-     */
+    /// Get the corresponding integer network representation for the given mode.
+    ///
+    /// @param mode Mode.
+    ///
+    /// @return An integer corresponding to the network representation of the given object or `-1` if  there is no network representation.
+    ///
+    /// @implNote When implementing this method, if you are not extending [ClassBasedRadialData] it is important to also override
+    /// [#tryGetNetworkRepresentation(IRadialMode)].
     public int getNetworkRepresentation(MODE mode) {
         return -1;
     }
 
-    /**
-     * Gets the mode corresponding to the given integer network representation.
-     *
-     * @param networkRepresentation Network representation
-     *
-     * @return Mode or {@code null} if no matching mode could be found.
-     */
+    /// Gets the mode corresponding to the given integer network representation.
+    ///
+    /// @param networkRepresentation Network representation
+    ///
+    /// @return Mode or `null` if no matching mode could be found.
     @Nullable
     public MODE fromNetworkRepresentation(int networkRepresentation) {
         return null;

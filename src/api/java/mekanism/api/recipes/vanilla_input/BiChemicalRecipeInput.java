@@ -2,11 +2,9 @@ package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.chemical.ChemicalStack;
 
-/**
- * Simple implementation of a recipe input of two chemicals.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input of two chemicals.
+///
+/// @since 10.6.0
 public record BiChemicalRecipeInput(ChemicalStack left, ChemicalStack right) implements ChemicalRecipeInput {
 
     @Override

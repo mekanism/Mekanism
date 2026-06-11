@@ -132,25 +132,19 @@ public class MekAnnotationScanner {
 
         protected abstract void collectScanData(Map<String, @Nullable Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData);
 
-        /**
-         * Gets the value of an annotation or null if it is not present. Used for getting classes
-         */
+        /// Gets the value of an annotation or null if it is not present. Used for getting classes
         @Nullable
         protected static Class<?> getAnnotationValue(Map<String, Class<?>> classNameCache, AnnotationData data, String key) {
             Type type = (Type) data.annotationData().get(key);
             return type == null ? null : getClassForName(classNameCache, type.getClassName());
         }
 
-        /**
-         * Gets the value of an annotation or falls back to the default if the key isn't present.
-         */
+        /// Gets the value of an annotation or falls back to the default if the key isn't present.
         protected static <T> T getAnnotationValue(AnnotationData data, String key, T defaultValue) {
             return (T) data.annotationData().getOrDefault(key, defaultValue);
         }
 
-        /**
-         * Gets the value of an annotation or falls back to the default if the key isn't present. Enum version
-         */
+        /// Gets the value of an annotation or falls back to the default if the key isn't present. Enum version
         protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue) {
             Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
@@ -171,9 +165,7 @@ public class MekAnnotationScanner {
             return defaultValue;
         }
 
-        /**
-         * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid
-         */
+        /// Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid
         protected static <T> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
             Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
@@ -185,9 +177,7 @@ public class MekAnnotationScanner {
             return defaultValue;
         }
 
-        /**
-         * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid. Enum version
-         */
+        /// Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid. Enum version
         protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
             Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
@@ -245,11 +235,9 @@ public class MekAnnotationScanner {
             return method;
         }
 
-        /**
-         * Goes up the various parent classes until we find a cache that matches it and returns the reference to it.
-         *
-         * @apiNote This should only be used really for read only purposes as changing it will then also adjust the parent's data.
-         */
+        /// Goes up the various parent classes until we find a cache that matches it and returns the reference to it.
+        ///
+        /// @apiNote This should only be used really for read only purposes as changing it will then also adjust the parent's data.
         protected static <DATA> DATA getData(Map<Class<?>, DATA> map, Class<?> clazz, DATA empty) {
             Class<?> current = clazz;
             while (current.getSuperclass() != null) {
@@ -265,9 +253,7 @@ public class MekAnnotationScanner {
             return empty;
         }
 
-        /**
-         * Gathers all info's into a list sorted by class name and adds any info from parent classes to it as well.
-         */
+        /// Gathers all info's into a list sorted by class name and adds any info from parent classes to it as well.
         protected static <INFO> List<ClassBasedInfo<INFO>> combineWithParents(Map<Class<?>, List<INFO>> flatMap) {
             Map<Class<?>, List<INFO>> map = new Object2ObjectOpenHashMap<>();
             for (Entry<Class<?>, List<INFO>> entry : flatMap.entrySet()) {

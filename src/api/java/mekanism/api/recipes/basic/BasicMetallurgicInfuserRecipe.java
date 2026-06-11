@@ -18,11 +18,9 @@ public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemS
 
     private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
-    /**
-     * @param itemInput     Item input.
-     * @param chemicalInput Infusion input.
-     * @param output        Output.
-     */
+    /// @param itemInput     Item input.
+    /// @param chemicalInput Infusion input.
+    /// @param output        Output.
     public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage) {
         super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value());
     }

@@ -288,18 +288,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
     //End methods IComputerTile
 
-    /**
-     * An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt of a certain item type will use a uniform probability
-     * distribution based on a predetermined 'max eject attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each item
-     * type, but not attempt every item in the frequency each operation.
-     * <p>
-     * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with the entries of the QIO's item data map when running a
-     * filterless ejection, rather than recreating the whole map each ejection operation.
-     * <p>
-     * Complexity: O(k * s), where 'k' is our max eject attempts constant and 's' is the size of the inventory.
-     *
-     * @author aidancbrady
-     */
+    /// An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt of a certain item type will use a uniform probability
+    /// distribution based on a predetermined 'max eject attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each item
+    /// type, but not attempt every item in the frequency each operation.
+    ///
+    /// Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with the entries of the QIO's item data map when running a
+    /// filterless ejection, rather than recreating the whole map each ejection operation.
+    ///
+    /// Complexity: `O(k * s)`, where `k` is our max eject attempts constant and `s` is the size of the inventory.
     private record EfficientEjector<T>(Function<T, ItemResource> typeSupplier, ToLongFunction<T> countSupplier,
                                        BiFunction<TileEntityQIOExporter, QIOFrequency, Collection<T>> ejectMapCalculator) {
 

@@ -8,9 +8,7 @@ import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.network.chat.Component;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ITooltipHelper#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [ITooltipHelper#INSTANCE]
 public class TooltipHelper implements ITooltipHelper {
 
     @Override

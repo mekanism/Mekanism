@@ -75,9 +75,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         capabilityCache.addConfigComponent(config);
     }
 
-    /**
-     * Invalidates our backing internal representations for certain capabilities in addition to actually notifying the level of capability invalidation.
-     */
+    /// Invalidates our backing internal representations for certain capabilities in addition to actually notifying the level of capability invalidation.
     public void invalidateCapabilitiesFull() {
         //Clear our internal cached capability instances and then invalidate the capabilities to the world
         // that way when queried from the invalidation listener we will ensure we can provide the up to date instance

@@ -15,9 +15,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base class to help implement handling of reaction recipes.
- */
+/// Base class to help implement handling of reaction recipes.
 public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedReactionRecipe> {
 
     private final IOutputHandler<PressurizedReactionRecipeOutput> outputHandler;
@@ -32,15 +30,13 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     @Nullable
     private PressurizedReactionRecipeOutput output;
 
-    /**
-     * @param recipe               Recipe.
-     * @param recheckAllErrors     Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
-     *                             not do this every tick or if there is no one viewing recipes.
-     * @param itemInputHandler     Item input handler.
-     * @param fluidInputHandler    Fluid input handler.
-     * @param chemicalInputHandler Chemical input handler.
-     * @param outputHandler        Output handler, handles both the item and chemical outputs.
-     */
+    /// @param recipe               Recipe.
+    /// @param recheckAllErrors     Returns `true` if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+    /// not do this every tick or if there is no one viewing recipes.
+    /// @param itemInputHandler     Item input handler.
+    /// @param fluidInputHandler    Fluid input handler.
+    /// @param chemicalInputHandler Chemical input handler.
+    /// @param outputHandler        Output handler, handles both the item and chemical outputs.
     public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemStack> itemInputHandler,
           IInputHandler<Fluid, FluidStack> fluidInputHandler, IInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
           IOutputHandler<PressurizedReactionRecipeOutput> outputHandler) {

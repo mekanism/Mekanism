@@ -117,11 +117,9 @@ public class ThreadMinerSearch extends Thread {
         }
     }
 
-    /**
-     * Special cased vanilla blocks that only have one state actually have the drop and the other one just causes it to break. This includes things like two tall flowers,
-     * beds, and doors. If a data pack modifies the loot table so that the "secondary" block also provides drops those will then be handled by the fallback we have for
-     * collecting any drops that happen from breaking the block.
-     */
+    /// Special cased vanilla blocks that only have one state actually have the drop and the other one just causes it to break. This includes things like two tall
+    /// flowers, beds, and doors. If a data pack modifies the loot table so that the "secondary" block also provides drops those will then be handled by the fallback we
+    /// have for collecting any drops that happen from breaking the block.
     private boolean shouldSkipState(BlockState state) {
         if (state.getBlock() instanceof BedBlock) {
             return state.getValue(BlockStateProperties.BED_PART) == BedPart.FOOT;

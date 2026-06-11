@@ -14,19 +14,13 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public abstract class RobitAIBase extends Goal {
 
-    /**
-     * The robit entity.
-     */
+    /// The robit entity.
     protected final EntityRobit theRobit;
 
-    /**
-     * How fast the robit can travel.
-     */
+    /// How fast the robit can travel.
     protected final float moveSpeed;
 
-    /**
-     * The ticker for updates.
-     */
+    /// The ticker for updates.
     private int timeToRecalcPath;
     private float oldWaterCost;
 
@@ -68,9 +62,7 @@ public abstract class RobitAIBase extends Goal {
         }
     }
 
-    /**
-     * Copy of {@link net.minecraft.world.entity.TamableAnimal#teleportToAroundBlockPos(BlockPos)}
-     */
+    /// Copy of [net.minecraft.world.entity.TamableAnimal#teleportToAroundBlockPos(BlockPos)]
     private void teleportToAroundBlockPos(BlockPos pos) {
         for (int i = 0; i < 10; i++) {
             int j = theRobit.getRandom().nextIntBetweenInclusive(-3, 3);
@@ -84,9 +76,7 @@ public abstract class RobitAIBase extends Goal {
         }
     }
 
-    /**
-     * Copy of {@link net.minecraft.world.entity.TamableAnimal#maybeTeleportTo(int, int, int)}
-     */
+    /// Copy of [net.minecraft.world.entity.TamableAnimal#maybeTeleportTo(int, int, int)]
     private boolean maybeTeleportTo(int x, int y, int z) {
         if (canTeleportTo(new BlockPos(x, y, z))) {
             theRobit.snapTo(x + 0.5, y, z + 0.5, theRobit.getYRot(), theRobit.getXRot());
@@ -96,9 +86,7 @@ public abstract class RobitAIBase extends Goal {
         return false;
     }
 
-    /**
-     * Copy of {@link net.minecraft.world.entity.TamableAnimal#canTeleportTo(BlockPos)}
-     */
+    /// Copy of [net.minecraft.world.entity.TamableAnimal#canTeleportTo(BlockPos)]
     private boolean canTeleportTo(BlockPos pos) {
         PathType pathtype = WalkNodeEvaluator.getPathTypeStatic(theRobit, pos);
         if (pathtype != PathType.WALKABLE) {

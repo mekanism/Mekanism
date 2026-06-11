@@ -36,42 +36,36 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         return NO_DEFAULT_ID;
     }
 
-    /**
-     * Creates a Rotary recipe builder. For converting a fluid into a chemical.
-     *
-     * @param fluidInput     Input.
-     * @param chemicalOutput Output.
-     *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)} over this method in
-     * combination with {@link #rotary(ChemicalStackIngredient, FluidStackTemplate)} if the conversion will be possible in both directions.
-     */
+    /// Creates a Rotary recipe builder. For converting a fluid into a chemical.
+    ///
+    /// @param fluidInput     Input.
+    /// @param chemicalOutput Output.
+    ///
+    /// @apiNote It is recommended to use [#rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)] over this method in
+    /// combination with [#rotary(ChemicalStackIngredient, FluidStackTemplate)] if the conversion will be possible in both directions.
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput) {
         Objects.requireNonNull(chemicalOutput, "This rotary condensentrator recipe requires a non empty chemical output.");
         return new RotaryRecipeBuilder(fluidInput, null, chemicalOutput, null);
     }
 
-    /**
-     * Creates a Rotary recipe builder. For converting a chemical into a fluid.
-     *
-     * @param chemicalInput Input.
-     * @param fluidOutput   Output.
-     *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)} over this method in
-     * combination with {@link #rotary(FluidStackIngredient, ChemicalStackTemplate)} if the conversion will be possible in both directions.
-     */
+    /// Creates a Rotary recipe builder. For converting a chemical into a fluid.
+    ///
+    /// @param chemicalInput Input.
+    /// @param fluidOutput   Output.
+    ///
+    /// @apiNote It is recommended to use [#rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)] over this method in
+    /// combination with [#rotary(FluidStackIngredient, ChemicalStackTemplate)] if the conversion will be possible in both directions.
     public static RotaryRecipeBuilder rotary(ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
         Objects.requireNonNull(fluidOutput, "This rotary condensentrator recipe requires a non empty fluid output.");
         return new RotaryRecipeBuilder(null, chemicalInput, null, fluidOutput);
     }
 
-    /**
-     * Creates a Rotary recipe builder that is capable of converting a fluid into a chemical and a chemical into a fluid.
-     *
-     * @param fluidInput     Fluid Input. (For fluid to chemical)
-     * @param chemicalInput  Chemical Input. (For chemical to fluid)
-     * @param chemicalOutput Chemical Output. (For fluid to chemical)
-     * @param fluidOutput    Fluid Output. (For chemical to fluid)
-     */
+    /// Creates a Rotary recipe builder that is capable of converting a fluid into a chemical and a chemical into a fluid.
+    ///
+    /// @param fluidInput     Fluid Input. (For fluid to chemical)
+    /// @param chemicalInput  Chemical Input. (For chemical to fluid)
+    /// @param chemicalOutput Chemical Output. (For fluid to chemical)
+    /// @param fluidOutput    Fluid Output. (For chemical to fluid)
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate chemicalOutput, FluidStackTemplate fluidOutput) {
         Objects.requireNonNull(chemicalOutput, "This rotary condensentrator recipe requires non empty chemical and fluid outputs.");
         Objects.requireNonNull(fluidOutput, "This rotary condensentrator recipe requires non empty chemical and fluid outputs.");

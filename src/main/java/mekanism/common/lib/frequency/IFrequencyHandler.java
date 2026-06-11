@@ -14,16 +14,12 @@ public interface IFrequencyHandler {
         return getFrequencyComponent().getFrequency(type);
     }
 
-    /**
-     * Sets or creates a frequency from the data using the given player as the frequency owner.
-     */
+    /// Sets or creates a frequency from the data using the given player as the frequency owner.
     default void setFrequency(FrequencyType<?> type, FrequencyIdentity data, @Nullable UUID player) {
         getFrequencyComponent().setFrequencyFromData(type, data, player);
     }
 
-    /**
-     * Removes a frequency of the given type if it exists and the given player is the frequency owner.
-     */
+    /// Removes a frequency of the given type if it exists and the given player is the frequency owner.
     default void removeFrequency(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
         getFrequencyComponent().removeFrequencyFromData(type, data, player);
     }

@@ -4,32 +4,24 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-/**
- * Expose this as a capability on your TileEntity to allow if your block to be modified by a Configurator.
- *
- * @author aidancbrady
- */
+/// Expose this as a capability on your TileEntity to allow if your block to be modified by a Configurator.
 public interface IConfigurable {
 
-    /**
-     * Called when a player shift-right clicks this block with a Configurator.
-     *
-     * @param player - the player who clicked the block
-     *
-     * @return action that was performed
-     *
-     * @apiNote Only called from the server
-     */
+    /// Called when a player shift-right clicks this block with a Configurator.
+    ///
+    /// @param player the player who clicked the block
+    ///
+    /// @return action that was performed
+    ///
+    /// @apiNote Only called from the server
     InteractionResult onSneakRightClick(Level level, Player player);
 
-    /**
-     * Called when a player right-clicks this block with a Configurator.
-     *
-     * @param player - the player who clicked the block
-     *
-     * @return action that was performed
-     *
-     * @apiNote Only called from the server
-     */
+    /// Called when a player right-clicks this block with a Configurator.
+    ///
+    /// @param player the player who clicked the block
+    ///
+    /// @return action that was performed
+    ///
+    /// @apiNote Only called from the server
     InteractionResult onRightClick(Level level, Player player);
 }

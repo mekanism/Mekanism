@@ -34,9 +34,7 @@ public enum InductionCellTier implements ITier {
         return baseMaxEnergy;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
     public void setConfigReference(CachedLongValue storageReference) {
         this.storageReference = storageReference;
     }

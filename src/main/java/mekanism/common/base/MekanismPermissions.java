@@ -71,9 +71,7 @@ public class MekanismPermissions {
         return new CommandPermissionNode(node, parent.fallbackLevel);
     }
 
-    /**
-     * @apiNote For use in sub nodes that don't know if there parent has been checked yet.
-     */
+    /// @apiNote For use in sub nodes that don't know if there parent has been checked yet.
     private static <T> PermissionNode<T> subNode(PermissionNode<T> parent, String nodeName) {
         return subNode(parent, nodeName, (player, uuid, context) -> getPermission(player, uuid, parent, context));
     }

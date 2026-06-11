@@ -31,22 +31,18 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         return ResourceKey.create(Registries.RECIPE, combinedId);
     }
 
-    /**
-     * Creates a Separating recipe builder.
-     *
-     * @param input               Input.
-     * @param leftChemicalOutput  Left Output.
-     * @param rightChemicalOutput Right Output.
-     */
+    /// Creates a Separating recipe builder.
+    ///
+    /// @param input               Input.
+    /// @param leftChemicalOutput  Left Output.
+    /// @param rightChemicalOutput Right Output.
     public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStackTemplate leftChemicalOutput, ChemicalStackTemplate rightChemicalOutput) {
         return new ElectrolysisRecipeBuilder(input, leftChemicalOutput, rightChemicalOutput);
     }
 
-    /**
-     * Sets the energy multiplier for this recipe.
-     *
-     * @param multiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be greater than or equal to one.
-     */
+    /// Sets the energy multiplier for this recipe.
+    ///
+    /// @param multiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be greater than or equal to one.
     public ElectrolysisRecipeBuilder energyMultiplier(int multiplier) {
         if (multiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be greater than or equal to one");

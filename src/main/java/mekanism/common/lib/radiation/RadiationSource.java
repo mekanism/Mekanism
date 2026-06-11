@@ -18,7 +18,7 @@ public class RadiationSource implements IRadiationSource {
     ).apply(in, RadiationSource::new));
 
     private final BlockPos pos;
-    /** In Sv/h */
+    /// In Sv/h
     private double magnitude;
 
     public RadiationSource(BlockPos pos, double magnitude) {

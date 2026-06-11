@@ -96,13 +96,11 @@ public interface QuadTransformation {
         return TransformationList.of(transforms);
     }
 
-    /**
-     * Transforms the given quad.
-     *
-     * @param quad Quad to transform.
-     *
-     * @return {@code true} if the quad was changed.
-     */
+    /// Transforms the given quad.
+    ///
+    /// @param quad Quad to transform.
+    ///
+    /// @return `true` if the quad was changed.
     boolean transform(Quad quad);
 
     default QuadTransformation and(QuadTransformation other) {

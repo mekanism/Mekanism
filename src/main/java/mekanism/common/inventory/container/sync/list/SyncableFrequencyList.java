@@ -8,9 +8,7 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequency lists
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling frequency lists
 public class SyncableFrequencyList<FREQUENCY extends Frequency> extends SyncableList<FREQUENCY> {
 
     public static <FREQUENCY extends Frequency> SyncableFrequencyList<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<? extends Collection<FREQUENCY>> getter,

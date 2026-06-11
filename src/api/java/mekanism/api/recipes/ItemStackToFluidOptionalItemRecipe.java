@@ -11,24 +11,18 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base class for defining ItemStack to fluid recipes with an optional item output.
- * <br>
- * Input: ItemStack
- * <br>
- * Output: FluidStack, Optional ItemStack
- *
- * @apiNote There is currently only one type of ItemStack to FluidStack recipe type:
- * <ul>
- *     <li>Nutritional Liquification: These cannot currently be created, but are processed in the Nutritional Liquifier.</li>
- * </ul>
- * @since 10.6.3
- */
+/// Base class for defining ItemStack to fluid recipes with an optional item output.
+///
+/// Input: ItemStack
+///
+/// Output: FluidStack, Optional ItemStack
+///
+/// @apiNote There is currently only one type of ItemStack to FluidStack recipe type:
+/// - Nutritional Liquification: These cannot currently be created, but are processed in the Nutritional Liquifier.
+/// @since 10.6.3
 public abstract class ItemStackToFluidOptionalItemRecipe extends ItemInputRecipe<FluidOptionalItemOutput> {
 
-    /**
-     * @apiNote Fluid must be present, but the item may be empty.
-     */
+    /// @apiNote Fluid must be present, but the item may be empty.
     public record FluidOptionalItemOutput(FluidStackTemplate fluid, @Nullable ItemStackTemplate optionalItem) {
 
         public static final Codec<FluidOptionalItemOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(

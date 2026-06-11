@@ -8,10 +8,9 @@ import it.unimi.dsi.fastutil.longs.LongSortedSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Like a Multimap but with long as key, using FastUtils
- * @param <V> the value type
- */
+/// Like a Multimap but with long as key, using FastUtils
+///
+/// @param <V> the value type
 public class LongMultimap<V> {
 
     private final Long2ObjectSortedMap<List<V>> map = new Long2ObjectAVLTreeMap<>();

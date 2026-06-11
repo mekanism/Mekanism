@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling lists
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling lists
 public abstract class SyncableList<TYPE> extends SyncableCollection<TYPE, List<TYPE>> {
 
     protected SyncableList(Supplier<? extends Collection<TYPE>> getter, Consumer<List<TYPE>> setter) {

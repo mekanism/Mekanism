@@ -13,10 +13,8 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     protected final ItemStackIngredient input;
     protected final int output;
 
-    /**
-     * @param input  Input.
-     * @param output Output, must be greater than zero.
-     */
+    /// @param input  Input.
+    /// @param output Output, must be greater than zero.
     public BasicItemStackToEnergyRecipe(ItemStackIngredient input, int output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         if (output <= 0) {
@@ -40,13 +38,11 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
         return output;
     }
 
-    /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
-     *
-     * @return the uncopied basic output
-     *
-     * @since 10.6.0
-     */
+    /// For Serializer use. DO NOT MODIFY RETURN VALUE.
+    ///
+    /// @return the uncopied basic output
+    ///
+    /// @since 10.6.0
     public int getOutputRaw() {
         return output;
     }

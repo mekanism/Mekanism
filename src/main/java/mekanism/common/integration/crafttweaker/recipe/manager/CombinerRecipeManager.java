@@ -22,26 +22,22 @@ public class CombinerRecipeManager extends MekanismRecipeManager<RecipeInput, Co
         super(MekanismRecipeType.COMBINING);
     }
 
-    /**
-     * Adds a combining recipe that combines multiple items into a new item. Combiners and Combining Factories can process this recipe type.
-     *
-     * @param name       Name of the new recipe.
-     * @param mainInput  {@link IIngredientWithAmount} representing the main item input of the recipe.
-     * @param extraInput {@link IIngredientWithAmount} representing the secondary item input of the recipe.
-     * @param output     {@link IItemStack} representing the output of the recipe.
-     */
+    /// Adds a combining recipe that combines multiple items into a new item. Combiners and Combining Factories can process this recipe type.
+    ///
+    /// @param name       Name of the new recipe.
+    /// @param mainInput  [IIngredientWithAmount] representing the main item input of the recipe.
+    /// @param extraInput [IIngredientWithAmount] representing the secondary item input of the recipe.
+    /// @param output     [IItemStack] representing the output of the recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount mainInput, IIngredientWithAmount extraInput, IItemStack output) {
         addRecipe(name, makeRecipe(mainInput, extraInput, output));
     }
 
-    /**
-     * Creates a combining recipe that combines multiple items into a new item.
-     *
-     * @param mainInput  {@link IIngredientWithAmount} representing the main item input of the recipe.
-     * @param extraInput {@link IIngredientWithAmount} representing the secondary item input of the recipe.
-     * @param output     {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a combining recipe that combines multiple items into a new item.
+    ///
+    /// @param mainInput  [IIngredientWithAmount] representing the main item input of the recipe.
+    /// @param extraInput [IIngredientWithAmount] representing the secondary item input of the recipe.
+    /// @param output     [IItemStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicCombinerRecipe makeRecipe(IIngredientWithAmount mainInput, IIngredientWithAmount extraInput, IItemStack output) {
         return new BasicCombinerRecipe(CrTUtils.fromCrT(mainInput), CrTUtils.fromCrT(extraInput), getAndValidateNotEmpty(output));
     }

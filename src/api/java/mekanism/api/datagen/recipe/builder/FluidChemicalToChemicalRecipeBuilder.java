@@ -26,13 +26,11 @@ public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Washing recipe builder.
-     *
-     * @param fluidInput    Fluid Input.
-     * @param chemicalInput Chemical Input.
-     * @param output        Output.
-     */
+    /// Creates a Washing recipe builder.
+    ///
+    /// @param fluidInput    Fluid Input.
+    /// @param chemicalInput Chemical Input.
+    /// @param output        Output.
     public static FluidChemicalToChemicalRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
         return new FluidChemicalToChemicalRecipeBuilder(fluidInput, chemicalInput, output);
     }

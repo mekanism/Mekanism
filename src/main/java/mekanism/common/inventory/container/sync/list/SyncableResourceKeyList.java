@@ -7,9 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entry based lists
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling registry entry based lists
 public class SyncableResourceKeyList<V> extends SyncableList<ResourceKey<V>> {
 
     public static <V> SyncableResourceKeyList<V> create(ResourceKey<? extends Registry<V>> registry, Supplier<List<ResourceKey<V>>> getter,

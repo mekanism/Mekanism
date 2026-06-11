@@ -34,13 +34,11 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
         return false;
     }
 
-    /**
-     * Gets the fluids this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water and lava logging to supporting
-     * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that
-     * {@link BlockState#getFluidState()} has position information.
-     *
-     * @return BlockState property for representing fluid loggable blocks
-     */
+    /// Gets the fluids this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water and lava logging to supporting
+    /// specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that
+    /// [BlockState#getFluidState()] has position information.
+    ///
+    /// @return BlockState property for representing fluid loggable blocks
     default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
         return BlockStateHelper.FLUID_LOGGED;
     }
@@ -92,9 +90,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
         return state;
     }
 
-    /**
-     * Overwritten to check against canContainFluid instead of inlining the check to water directly.
-     */
+    /// Overwritten to check against canContainFluid instead of inlining the check to water directly.
     @Override
     default boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidState) {
         Fluid fluid = fluidState.getType();

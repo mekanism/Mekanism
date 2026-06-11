@@ -24,14 +24,12 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     protected final ItemStackTemplate secondaryOutput;
     protected final double secondaryChance;
 
-    /**
-     * @param input           Input.
-     * @param mainOutput      Main Output.
-     * @param secondaryOutput Secondary Output (chance based).
-     * @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
-     *
-     * @apiNote At least one output must not be empty.
-     */
+    /// @param input           Input.
+    /// @param mainOutput      Main Output.
+    /// @param secondaryOutput Secondary Output (chance based).
+    /// @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
+    ///
+    /// @apiNote At least one output must not be empty.
     public BasicSawmillRecipe(ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput, @Nullable ItemStackTemplate secondaryOutput, double secondaryChance) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         if (mainOutput == null && secondaryOutput == null) {
@@ -76,20 +74,16 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         return input;
     }
 
-    /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
-     *
-     * @return the uncopied basic output, or empty if the value is ItemStack.EMPTY
-     */
+    /// For Serializer use. DO NOT MODIFY RETURN VALUE.
+    ///
+    /// @return the uncopied basic output, or empty if the value is ItemStack.EMPTY
     public Optional<ItemStackTemplate> getMainOutputRaw() {
         return Optional.ofNullable(this.mainOutput);
     }
 
-    /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
-     *
-     * @return the uncopied basic output
-     */
+    /// For Serializer use. DO NOT MODIFY RETURN VALUE.
+    ///
+    /// @return the uncopied basic output
     public Optional<ItemStackTemplate> getSecondaryOutputRaw() {
         return Optional.ofNullable(this.secondaryOutput);
     }

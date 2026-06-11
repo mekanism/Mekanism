@@ -109,9 +109,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         );
     }
 
-    /**
-     * Copy of vanilla's skeleton drops
-     */
+    /// Copy of vanilla's skeleton drops
     private LootTable.Builder skeletonDrops() {
         return LootTable.lootTable()
               .withPool(LootPool.lootPool()

@@ -69,11 +69,9 @@ public class ItemMekanismPaxel extends Item implements IsMekanismTool {
         return PAXEL_ACTIONS.contains(action);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Merged version of {@link net.minecraft.world.item.AxeItem#useOn(UseOnContext)} and {@link net.minecraft.world.item.ShovelItem#useOn(UseOnContext)}
-     */
+    /// {@inheritDoc}
+    ///
+    /// Merged version of [net.minecraft.world.item.AxeItem#useOn(UseOnContext)] and [net.minecraft.world.item.ShovelItem#useOn(UseOnContext)]
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();

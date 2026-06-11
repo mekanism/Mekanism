@@ -108,9 +108,7 @@ public class QIOCraftingWindow implements IContentsListener {
         return outputSlot;
     }
 
-    /**
-     * Checks if the stack is equivalent to the current output.
-     */
+    /// Checks if the stack is equivalent to the current output.
     public boolean isOutput(ItemResource resource) {
         return outputSlot.resource().equals(resource);
     }
@@ -137,9 +135,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    /**
-     * @apiNote Only call on server
-     */
+    /// @apiNote Only call on server
     private void updateOutputSlot(Level world, @Nullable TransactionContext transaction) {
         if (world.getServer() != null) {
             CraftingInput craftingInput = asCraftingInput().input();
@@ -227,9 +223,7 @@ public class QIOCraftingWindow implements IContentsListener {
         return true;
     }
 
-    /**
-     * Calculates absolute maximum of an output to attempt to craft, this may be higher than how much we have materials for
-     */
+    /// Calculates absolute maximum of an output to attempt to craft, this may be higher than how much we have materials for
     private int calculateMaxCraftAmount(ItemResource itemType, int outputSize, @Nullable QIOFrequency frequency) {
         //Note: We start at the absolute max stack size, rather than at integer max value just to be a little more accurate
         int inputSize = Item.ABSOLUTE_MAX_STACK_SIZE;
@@ -264,9 +258,7 @@ public class QIOCraftingWindow implements IContentsListener {
         return maxToCraft;
     }
 
-    /**
-     * @apiNote Only call from the server
-     */
+    /// @apiNote Only call from the server
     public void emptyTo(boolean toPlayerInv, Iterable<TransactionalSlot> playerInventory, @Nullable TransactionContext transaction) {
         QIOFrequency frequency = holder.getFrequency();
         for (IInventorySlot inputSlot : inputSlots) {
@@ -295,9 +287,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    /**
-     * @apiNote For use with shift clicking
-     */
+    /// @apiNote For use with shift clicking
     public void performCraft(Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         try (Transaction transaction = Transaction.openRoot()) {
             performCraft(player, hotBarSlots, mainInventorySlots, transaction);
@@ -581,9 +571,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    /**
-     * Used for helping keep track of were we were for inserting
-     */
+    /// Used for helping keep track of were we were for inserting
     private static class LastInsertTarget {
 
         private boolean wasHotBar = true;
@@ -607,12 +595,10 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        /**
-         * Based on {@link MekanismContainer#insertItem(Iterable, ItemResource, int, TransactionContext, boolean, SelectedWindowData)} except with extra handling to keep
-         * track of where we last were.
-         *
-         * @return Amount inserted
-         */
+        /// Based on [MekanismContainer#insertItem(Iterable, ItemResource, int, TransactionContext, boolean, SelectedWindowData)] except with extra handling to keep track
+        /// of where we last were.
+        ///
+        /// @return Amount inserted
         private <SLOT extends Slot & ITransactionalSlot> int insertItem(List<SLOT> slots, ItemResource itemType, final int amount, boolean ignoreEmpty, boolean isHotBar,
               @Nullable SelectedWindowData selectedWindow, TransactionContext transaction) {
             if (itemType.isEmpty() || amount == 0) {

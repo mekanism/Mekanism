@@ -211,9 +211,7 @@ public abstract class BlockMekanism extends Block {
         return getDestroyProgress(state, player, blockGetter, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(blockGetter, pos) : null);
     }
 
-    /**
-     * Like {@link BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)} except also passes the tile to only have to get it once.
-     */
+    /// Like [BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)] except also passes the tile to only have to get it once.
     protected float getDestroyProgress(BlockState state, Player player, BlockGetter blockGetter, BlockPos pos,
           @Nullable BlockEntity tile) {
         Level level = tile == null ? null : tile.getLevel();

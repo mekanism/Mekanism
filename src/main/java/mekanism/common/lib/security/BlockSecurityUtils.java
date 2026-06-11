@@ -17,9 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jspecify.annotations.Nullable;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IBlockSecurityUtils#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IBlockSecurityUtils#INSTANCE]
 public class BlockSecurityUtils implements IBlockSecurityUtils {
 
     private static final BlockCapability<IOwnerObject, @Nullable Void> OWNER_CAPABILITY = BlockCapability.createVoid(Capabilities.OWNER_OBJECT_NAME, IOwnerObject.class);
@@ -74,12 +72,10 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
         }
     }
 
-    /**
-     * Used to allow caching the block state and block entity lookup between security capability and owner capability lookup. That way if the block queried does not
-     * expose a security capability at the given position we don't have to do more world lookups when querying if the block exposes an owner capability.
-     *
-     * @implNote As this caches the security and owner objects, this is not suitable for persisting between calls.
-     */
+    /// Used to allow caching the block state and block entity lookup between security capability and owner capability lookup. That way if the block queried does not
+    /// expose a security capability at the given position we don't have to do more world lookups when querying if the block exposes an owner capability.
+    ///
+    /// @implNote As this caches the security and owner objects, this is not suitable for persisting between calls.
     private static class CachingCapabilityLookup {
 
         private record BlockTarget(BlockState state, @Nullable BlockEntity blockEntity) {

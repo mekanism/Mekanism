@@ -12,38 +12,28 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Immutable class representing a color based module config (name and int value).
- *
- * @since 10.6.0
- */
+/// Immutable class representing a color based module config (name and int value).
+///
+/// @since 10.6.0
 public class ModuleColorConfig extends ModuleConfig<Integer> {
 
-    /**
-     * Codec for (de)serializing ARGB based color module configs.
-     */
+    /// Codec for (de)serializing ARGB based color module configs.
     public static final Codec<ModuleColorConfig> ARGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
           .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleColorConfig::argb));
-    /**
-     * Stream codec for encoding and decoding ARGB based color module configs over the network.
-     */
+    /// Stream codec for encoding and decoding ARGB based color module configs over the network.
     public static final StreamCodec<ByteBuf, ModuleColorConfig> ARGB_STREAM_CODEC = StreamCodec.composite(
           Identifier.STREAM_CODEC, ModuleConfig::name,
           //Note: We don't do var-int as we include alpha data
           ByteBufCodecs.INT, ModuleConfig::get,
           ModuleColorConfig::argb
     );
-    /**
-     * Codec for (de)serializing RGB based color module configs.
-     */
+    /// Codec for (de)serializing RGB based color module configs.
     public static final Codec<ModuleColorConfig> RGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
           .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           //If we don't handle alpha make sure we do have the alpha component present
           .apply(instance, ModuleColorConfig::rgb));
-    /**
-     * Stream codec for encoding and decoding RGB based color module configs over the network.
-     */
+    /// Stream codec for encoding and decoding RGB based color module configs over the network.
     public static final StreamCodec<ByteBuf, ModuleColorConfig> RGB_STREAM_CODEC = StreamCodec.composite(
           Identifier.STREAM_CODEC, ModuleConfig::name,
           //Note: We can use var int here and just not send the alpha data over the network
@@ -51,42 +41,34 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
           ModuleColorConfig::rgb
     );
 
-    /**
-     * Creates a new {@link ModuleColorConfig} that supports alpha and has a default value of white.
-     *
-     * @implNote Color format is ARGB.
-     */
+    /// Creates a new [ModuleColorConfig] that supports alpha and has a default value of white.
+    ///
+    /// @implNote Color format is ARGB.
     public static ModuleColorConfig argb(Identifier name) {
         return argb(name, CommonColors.WHITE);
     }
 
-    /**
-     * Creates a new {@link ModuleColorConfig} that supports alpha and has the given default color.
-     *
-     * @param defaultColor Default color.
-     *
-     * @implNote Color format is ARGB.
-     */
+    /// Creates a new [ModuleColorConfig] that supports alpha and has the given default color.
+    ///
+    /// @param defaultColor Default color.
+    ///
+    /// @implNote Color format is ARGB.
     public static ModuleColorConfig argb(Identifier name, int defaultColor) {
         return new ModuleColorConfig(name, true, defaultColor);
     }
 
-    /**
-     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has a default value of white.
-     *
-     * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
-     */
+    /// Creates a new [ModuleColorConfig] that doesn't support alpha and has a default value of white.
+    ///
+    /// @implNote Color format is ARGB with the alpha component being locked to `0xFF`.
     public static ModuleColorConfig rgb(Identifier name) {
         return rgb(name, CommonColors.WHITE);
     }
 
-    /**
-     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has the given default color.
-     *
-     * @param defaultColor Default color.
-     *
-     * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
-     */
+    /// Creates a new [ModuleColorConfig] that doesn't support alpha and has the given default color.
+    ///
+    /// @param defaultColor Default color.
+    ///
+    /// @implNote Color format is ARGB with the alpha component being locked to `0xFF`.
     public static ModuleColorConfig rgb(Identifier name, int defaultColor) {
         //If we don't handle alpha make sure we do have the alpha component present
         return new ModuleColorConfig(name, false, defaultColor);
@@ -102,11 +84,9 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
         this.value = this.supportsAlpha ? value : ARGB.opaque(value);
     }
 
-    /**
-     * Gets whether this module config supports alpha, if it does not the color returned will fully opaque.
-     *
-     * @return {@code true} if this data can handle alpha.
-     */
+    /// Gets whether this module config supports alpha, if it does not the color returned will fully opaque.
+    ///
+    /// @return `true` if this data can handle alpha.
     public boolean supportsAlpha() {
         return supportsAlpha;
     }
@@ -121,9 +101,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
         return ByteBufCodecs.VAR_INT.map(val -> rgb(name, val), module -> module.get() & 0x00FFFFFF);
     }
 
-    /**
-     * @implNote If this config does not support alpha, the alpha component is locked to {@code 0xFF} instead of being missing.
-     */
+    /// @implNote If this config does not support alpha, the alpha component is locked to `0xFF` instead of being missing.
     @Override
     public Integer get() {
         return value;

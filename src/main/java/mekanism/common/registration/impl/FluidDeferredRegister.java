@@ -166,11 +166,10 @@ public class FluidDeferredRegister {
         return color;
     }
 
-    /**
-     * <a href="http://www.compuphase.com/cmetric.htm">Color Metric</a>
-     * <a href="http://stackoverflow.com/a/6334454">Stack Overflow</a>
-     * Returns 0 for equal colors, nonzero for colors that look different. The return value is farther from 0 the more different the colors look.
-     */
+    /// [Color Metric](http://www.compuphase.com/cmetric.htm)
+    /// [Stack Overflow](http://stackoverflow.com/a/6334454)
+    ///
+    /// {@return 0 for equal colors, nonzero for colors that look different. The return value is farther from 0 the more different the colors look}
     private static double perceptualColorDistanceSquared(int red1, int green1, int blue1, int red2, int green2, int blue2) {
         int redMean = (red1 + red2) >> 1;
         int r = red1 - red2;

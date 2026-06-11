@@ -91,13 +91,11 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         }
     }
 
-    /**
-     * Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen. Does not check whether the chestplate can store hydrogen.
-     *
-     * @param chest the chestplate to check
-     *
-     * @return whether the given chestplate should be filled with hydrogen.
-     */
+    /// Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen. Does not check whether the chestplate can store hydrogen.
+    ///
+    /// @param chest the chestplate to check
+    ///
+    /// @return whether the given chestplate should be filled with hydrogen.
     private <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean checkChestPlate(ITEM chest) {
         if (chest.is(MekanismItems.MEKASUIT_BODYARMOR)) {
             return IModuleHelper.INSTANCE.getModule(chest, MekanismModules.JETPACK_UNIT) != null;

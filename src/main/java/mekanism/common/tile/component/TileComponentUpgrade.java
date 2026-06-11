@@ -35,24 +35,16 @@ import org.jspecify.annotations.Nullable;
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
 public class TileComponentUpgrade implements ITileComponent, ISpecificContainerTracker {
 
-    /**
-     * How long it takes this machine to install an upgrade.
-     */
+    /// How long it takes this machine to install an upgrade.
     private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    /**
-     * How many upgrade ticks have progressed.
-     */
+    /// How many upgrade ticks have progressed.
     private int upgradeTicks;
-    /**
-     * TileEntity implementing this component.
-     */
+    /// TileEntity implementing this component.
     private final TileEntityMekanism tile;
     @SyntheticComputerMethod(getter = "getInstalledUpgrades")
     private final Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
     private final Set<Upgrade> supported;
-    /**
-     * The inventory slot the upgrade slot of this component occupies.
-     */
+    /// The inventory slot the upgrade slot of this component occupies.
     private final UpgradeInventorySlot upgradeSlot;
     private final UpgradeInventorySlot upgradeOutputSlot;
     private boolean canCheckUpgrades = true;
@@ -118,16 +110,14 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return upgrades.getOrDefault(upgrade, 0);
     }
 
-    /**
-     * Assumes that it has been checked if the given upgrade is supported or not
-     *
-     * @param upgrade      Upgrade type.
-     * @param maxAvailable Max number of upgrades to install.
-     *
-     * @return Actual number of upgrades installed.
-     *
-     * @apiNote Call from the server
-     */
+    /// Assumes that it has been checked if the given upgrade is supported or not
+    ///
+    /// @param upgrade      Upgrade type.
+    /// @param maxAvailable Max number of upgrades to install.
+    ///
+    /// @return Actual number of upgrades installed.
+    ///
+    /// @apiNote Call from the server
     public int addUpgrades(Upgrade upgrade, int maxAvailable) {
         int installed = getUpgrades(upgrade);
         int toAdd = getUpgradesToAdd(upgrade, installed, maxAvailable);

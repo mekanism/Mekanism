@@ -23,12 +23,10 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates an Evaporating recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates an Evaporating recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static FluidToFluidRecipeBuilder evaporating(FluidStackIngredient input, FluidStackTemplate output) {
         return new FluidToFluidRecipeBuilder(input, output);
     }

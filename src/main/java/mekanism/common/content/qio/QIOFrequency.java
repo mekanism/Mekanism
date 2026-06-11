@@ -125,9 +125,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     private EnumColor color = EnumColor.INDIGO;
 
-    /**
-     * @param uuid Should only be null if we have incomplete data that we are loading
-     */
+    /// @param uuid Should only be null if we have incomplete data that we are loading
     public QIOFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
         super(FrequencyTypes.QIO, n, uuid, securityMode);
     }
@@ -136,11 +134,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         super(FrequencyTypes.QIO, name, owner, ownerName, securityMode);
     }
 
-    /**
-     * Dangerous function. Don't mess with this map.
-     *
-     * @return core item data map, tracking item types + their respective counts and containing drives
-     */
+    /// Dangerous function. Don't mess with this map.
+    ///
+    /// @return core item data map, tracking item types + their respective counts and containing drives
     public Map<ItemResource, QIOItemTypeData> getItemDataMap() {
         return itemDataMap;
     }
@@ -181,9 +177,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return inserted;
     }
 
-    /**
-     * @return Amount inserted
-     */
+    /// @return Amount inserted
     public int addItem(ItemResource itemType, int amount, TransactionContext transaction) {
         //Note: As the passed in amount is an int, this should always be able to be easily cast to an int
         // We clamp it just in case though
@@ -392,9 +386,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return true;
     }
 
-    /**
-     * @return {@code true} if any wildcards were added.
-     */
+    /// @return `true` if any wildcards were added.
     private boolean buildWildcardMapping(SetMultimap<String, String> wildcardCache, String wildcard, Set<String> entries) {
         boolean added = false;
         for (String entry : entries) {

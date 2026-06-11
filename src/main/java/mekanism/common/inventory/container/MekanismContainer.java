@@ -82,17 +82,13 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     private final Iterable<TransactionalSlot> playerSlots = Iterables.concat(hotBarSlots, mainInventorySlots);
     private final List<ISyncableData> trackedData = new ArrayList<>();
     private final Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
-    /**
-     * Keeps track of which window the player has open. Only used on the client, so doesn't need to keep track of other players.
-     *
-     * @apiNote Don't set this directly use the {@link #setSelectedWindow(SelectedWindowData)} instead, this is just protected so that the QIO item viewer container can
-     * copy it directly to the new container.
-     */
+    /// Keeps track of which window the player has open. Only used on the client, so doesn't need to keep track of other players.
+    ///
+    /// @apiNote Don't set this directly use the [#setSelectedWindow(SelectedWindowData)] instead, this is just protected so that the QIO item viewer container can copy
+    /// it directly to the new container.
     @Nullable
     protected SelectedWindowData selectedWindow;
-    /**
-     * Only used on the server
-     */
+    /// Only used on the server
     private final Map<UUID, SelectedWindowData> selectedWindows;
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv) {
@@ -135,9 +131,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return slot;
     }
 
-    /**
-     * Adds slots and opens, must be called at end of extending classes constructors
-     */
+    /// Adds slots and opens, must be called at end of extending classes constructors
     protected void addSlotsAndOpen() {
         addSlots();
         addInventorySlots(inv);
@@ -258,9 +252,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return Iterables.unmodifiableIterable(playerSlots);
     }
 
-    /**
-     * @return The contents in this slot AFTER transferring items away.
-     */
+    /// @return The contents in this slot AFTER transferring items away.
     @Override
     public ItemStack quickMoveStack(Player player, int slotID) {
         Slot currentSlot = getSlot(slotID);
@@ -316,17 +308,15 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    /**
-     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
-     *
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
-     *
-     * @return Amount inserted
-     */
+    /// Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
+    ///
+    /// @param slots          Slots to insert into
+    /// @param itemType       Type of item to insert.
+    /// @param amount         Amount of the item to insert.
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
+    ///
+    /// @return Amount inserted
     public static <SLOT extends Slot & ITransactionalSlot> int insertItem(Iterable<SLOT> slots, ItemResource itemType, int amount, TransactionContext transaction,
           @Nullable SelectedWindowData selectedWindow) {
         int inserted = 0;
@@ -336,18 +326,16 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return inserted;
     }
 
-    /**
-     * @param slots          Slots to insert into
-     * @param itemType       Type of item to insert.
-     * @param amount         Amount of the item to insert.
-     * @param transaction    The transaction that this operation is part of.
-     * @param ignoreEmpty    {@code true} to ignore/skip empty slots.
-     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
-     *
-     * @return Amount inserted
-     *
-     * @see mekanism.api.resource.IMekanismResourceHandler#insert(Resource, int, TransactionContext, AutomationType)
-     */
+    /// @param slots             Slots to insert into
+    /// @param itemType          Type of item to insert.
+    /// @param amount            Amount of the item to insert.
+    /// @param transaction       The transaction that this operation is part of.
+    /// @param ignoreEmpty`true` to ignore/skip empty slots.
+    /// @param selectedWindow    Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
+    ///
+    /// @return Amount inserted
+    ///
+    /// @see mekanism.api.resource.IMekanismResourceHandler#insert(Resource, int, TransactionContext, AutomationType)
     public static <SLOT extends Slot & ITransactionalSlot> int insertItem(Iterable<SLOT> slots, ItemResource itemType, final int amount, TransactionContext transaction,
           boolean ignoreEmpty, @Nullable SelectedWindowData selectedWindow) {
         int inserted = 0;
@@ -380,25 +368,19 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return newStack;
     }
 
-    /**
-     * @apiNote Only call on client
-     */
+    /// @apiNote Only call on client
     @Nullable
     public SelectedWindowData getSelectedWindow() {
         return selectedWindow;
     }
 
-    /**
-     * @apiNote Only call on server
-     */
+    /// @apiNote Only call on server
     @Nullable
     public SelectedWindowData getSelectedWindow(UUID player) {
         return selectedWindows.get(player);
     }
 
-    /**
-     * @apiNote Only call on client
-     */
+    /// @apiNote Only call on client
     public void setSelectedWindow(@Nullable SelectedWindowData selectedWindow) {
         if (!Objects.equals(this.selectedWindow, selectedWindow)) {
             this.selectedWindow = selectedWindow;
@@ -406,9 +388,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    /**
-     * @apiNote Only call on server
-     */
+    /// @apiNote Only call on server
     public void setSelectedWindow(UUID player, @Nullable SelectedWindowData selectedWindow) {
         if (selectedWindow == null) {
             clearSelectedWindow(player);
@@ -417,9 +397,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    /**
-     * @apiNote Only call on server
-     */
+    /// @apiNote Only call on server
     private void clearSelectedWindow(UUID player) {
         selectedWindows.remove(player);
     }

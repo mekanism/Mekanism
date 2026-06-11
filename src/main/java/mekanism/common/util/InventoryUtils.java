@@ -42,9 +42,7 @@ public final class InventoryUtils {
     private InventoryUtils() {
     }
 
-    /**
-     * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
-     */
+    /// Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
         Level level = entity.level();
@@ -141,14 +139,12 @@ public final class InventoryUtils {
         }
     }
 
-    /**
-     * Like {@link ItemStack#isSameItemSameComponents(ItemStack, ItemStack)} but empty stacks mean equal (either param). Thiakil: not sure why.
-     *
-     * @param toInsert stack a
-     * @param inSlot   stack b
-     *
-     * @return true if they are compatible
-     */
+    /// Like [ItemStack#isSameItemSameComponents(ItemStack, ItemStack)] but empty stacks mean equal (either param). Thiakil: not sure why.
+    ///
+    /// @param toInsert stack a
+    /// @param inSlot   stack b
+    ///
+    /// @return true if they are compatible
     public static boolean areItemsStackable(ItemStack toInsert, ItemResource inSlot) {
         if (toInsert.isEmpty() || inSlot.isEmpty()) {
             return true;

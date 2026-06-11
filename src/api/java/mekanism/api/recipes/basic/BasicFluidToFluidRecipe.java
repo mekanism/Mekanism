@@ -18,10 +18,8 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     protected final FluidStackIngredient input;
     protected final FluidStackTemplate output;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicFluidToFluidRecipe(FluidStackIngredient input, FluidStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

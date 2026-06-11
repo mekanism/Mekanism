@@ -33,9 +33,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private BasicEnergyContainer energyContainer;
 
-    /**
-     * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
-     */
+    /// Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
     public TileEntityGenerator(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }

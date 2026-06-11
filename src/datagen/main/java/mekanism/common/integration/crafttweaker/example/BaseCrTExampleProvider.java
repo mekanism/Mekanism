@@ -207,13 +207,11 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     protected abstract void addExamples(HolderLookup.Provider registries);
 
-    /**
-     * Creates and adds a CraftTweaker example script builder with the file located by data/modid/scripts/fileName.json
-     *
-     * @param fileName Name of the file, must be a valid resource location path.
-     *
-     * @return Builder
-     */
+    /// Creates and adds a CraftTweaker example script builder with the file located by data/modid/scripts/fileName.json
+    ///
+    /// @param fileName Name of the file, must be a valid resource location path.
+    ///
+    /// @return Builder
     protected CrTExampleBuilder<?> exampleBuilder(String fileName) {
         Objects.requireNonNull(fileName, "Example Builder ID cannot be null.");
         if (!Identifier.isValidPath(fileName)) {

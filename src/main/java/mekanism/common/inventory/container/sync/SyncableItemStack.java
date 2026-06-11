@@ -8,9 +8,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling item stacks
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling item stacks
 public class SyncableItemStack implements ISyncableData {
 
     public static SyncableItemStack create(Supplier<ItemStack> getter, Consumer<ItemStack> setter) {

@@ -16,10 +16,8 @@ public abstract class BasicItemStackToFluidRecipe extends ItemStackToFluidRecipe
     protected final ItemStackIngredient input;
     protected final FluidStackTemplate output;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicItemStackToFluidRecipe(ItemStackIngredient input, FluidStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");

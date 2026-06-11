@@ -11,13 +11,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Input: FluidStack
- * <br>
- * Output: FluidStack
- *
- * @apiNote Thermal Evaporation Towers can process this recipe type.
- */
+/// Input: FluidStack
+///
+/// Output: FluidStack
+///
+/// @apiNote Thermal Evaporation Towers can process this recipe type.
 public abstract class FluidToFluidRecipe extends FluidInputRecipe<FluidStackTemplate> {
 
     private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));

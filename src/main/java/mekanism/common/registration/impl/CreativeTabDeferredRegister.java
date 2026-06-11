@@ -39,16 +39,12 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         bus.addListener(addToExistingTabs);
     }
 
-    /**
-     * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
-     */
+    /// @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
     public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, Holder<Item> icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(getNamespace(), title, icon, operator);
     }
 
-    /**
-     * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
-     */
+    /// @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
     public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, Holder<Item> icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(name, () -> {
             CreativeModeTab.Builder builder = CreativeModeTab.builder()

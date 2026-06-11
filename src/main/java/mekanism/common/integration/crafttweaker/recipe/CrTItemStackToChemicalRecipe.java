@@ -17,18 +17,14 @@ public class CrTItemStackToChemicalRecipe {
     private CrTItemStackToChemicalRecipe() {
     }
 
-    /**
-     * Gets the input ingredient.
-     */
+    /// Gets the input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
     public static IIngredientWithAmount getInput(ItemStackToChemicalRecipe _this) {
         return CrTUtils.toCrT(_this.getInput());
     }
 
-    /**
-     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<ICrTChemicalStack> getOutputs(ItemStackToChemicalRecipe _this) {

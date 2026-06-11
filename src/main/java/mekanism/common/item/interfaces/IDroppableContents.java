@@ -18,11 +18,9 @@ public interface IDroppableContents {
         return itemAccess.getAmount();
     }
 
-    /**
-     * Helper to get the inventory slots that should have their contents dropped into the world
-     *
-     * @apiNote Server side only.
-     */
+    /// Helper to get the inventory slots that should have their contents dropped into the world
+    ///
+    /// @apiNote Server side only.
     List<LargeResourceStack<ItemResource>> getDroppedSlots(ItemAccess itemAccess, TransactionContext transaction);
 
     @FunctionalInterface

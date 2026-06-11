@@ -21,9 +21,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Extension of FluidInventorySlot to make it be able to handle raw items as fuels
- */
+/// Extension of FluidInventorySlot to make it be able to handle raw items as fuels
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     private static final ResourceKey<Fluid> EMPTY_KEY = ResourceKey.create(Registries.FLUID, Identifier.withDefaultNamespace("empty"));
@@ -62,9 +60,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         this.fuelValue = fuelValue;
     }
 
-    /**
-     * Fills tank from slot, allowing for the item to also be converted to fluid if need be
-     */
+    /// Fills tank from slot, allowing for the item to also be converted to fluid if need be
     public void fillOrBurn(@Nullable TransactionContext transaction) {
         if (!isEmpty()) {
             int needed = fluidTank.getNeededAsInt(FluidResource.EMPTY);

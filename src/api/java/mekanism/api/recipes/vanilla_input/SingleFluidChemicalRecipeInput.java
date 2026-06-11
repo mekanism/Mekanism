@@ -4,11 +4,9 @@ import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of a recipe input of one fluid and one chemical.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input of one fluid and one chemical.
+///
+/// @since 10.6.0
 public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack chemical) implements FluidChemicalRecipeInput {
 
     @Override

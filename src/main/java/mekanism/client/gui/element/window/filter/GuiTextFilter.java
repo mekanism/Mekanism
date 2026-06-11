@@ -56,8 +56,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         };
     }
 
-    /**
-     * @return {@code true} if it was able to set the text because it is valid, {@code false} if an error occurred.
-     */
+    /// @return `true` if it was able to set the text because it is valid, `false` if an error occurred.
     protected abstract boolean setText(GuiTextField text);
 }

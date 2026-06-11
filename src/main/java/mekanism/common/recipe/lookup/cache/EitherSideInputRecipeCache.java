@@ -14,9 +14,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Similar in concept to {@link DoubleInputRecipeCache} except that it requires both input types to be the same and also allows for them to be in any order.
- */
+/// Similar in concept to [DoubleInputRecipeCache] except that it requires both input types to be the same and also allows for them to be in any order.
 public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>, RECIPE extends MekanismRecipe<?> & BiPredicate<STACK, STACK>,
       CACHE extends IInputCache<TYPE, STACK, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
@@ -40,14 +38,12 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         complexRecipes.clear();
     }
 
-    /**
-     * Checks if there is a matching recipe that has the given input.
-     *
-     * @param world World.
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
+    /// Checks if there is a matching recipe that has the given input.
+    ///
+    /// @param world World.
+    /// @param input Recipe input.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
     public boolean containsInput(@Nullable Level world, TypedInstance<TYPE> input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
@@ -65,20 +61,18 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         return false;
     }
 
-    /**
-     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB} and
-     * {@link DoubleInputRecipeCache#containsInputBA} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type
-     * and that the order doesn't matter we just have one method and require the inputs to be passed in the corresponding order instead.
-     *
-     * @param world  World.
-     * @param inputA Recipe input A.
-     * @param inputB Recipe input B.
-     *
-     * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
-     *
-     * @apiNote Pass the input you are trying to insert as inputA and the input you already have as inputB.
-     */
+    /// Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty
+    /// and inputB is empty without doing any extra validation on inputA. This is similar to [DoubleInputRecipeCache#containsInputAB] and
+    /// [DoubleInputRecipeCache#containsInputBA] except that because [EitherSideInputRecipeCache] assumes both inputs are the same type and that the order doesn't matter
+    /// we just have one method and require the inputs to be passed in the corresponding order instead.
+    ///
+    /// @param world  World.
+    /// @param inputA Recipe input A.
+    /// @param inputB Recipe input B.
+    ///
+    /// @return `true` if there is a match or if inputA is not empty and inputB is empty.
+    ///
+    /// @apiNote Pass the input you are trying to insert as inputA and the input you already have as inputB.
     public boolean containsInput(@Nullable Level world, TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB) {
         if (cache.isEmpty(inputA)) {
             //Note: We don't bother checking if b is empty here as it will be verified in containsInputB
@@ -110,15 +104,13 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         return false;
     }
 
-    /**
-     * Finds the first recipe that matches the given inputs.
-     *
-     * @param world  World.
-     * @param inputA Recipe input A.
-     * @param inputB Recipe input B.
-     *
-     * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
-     */
+    /// Finds the first recipe that matches the given inputs.
+    ///
+    /// @param world  World.
+    /// @param inputA Recipe input A.
+    /// @param inputB Recipe input B.
+    ///
+    /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
     public RECIPE findFirstRecipe(@Nullable Level world, STACK inputA, STACK inputB) {
         if (cache.isEmpty(inputA) || cache.isEmpty(inputB)) {

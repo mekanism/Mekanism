@@ -178,14 +178,12 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         return super.getRenderBoundingBox(tile);
     }
 
-    /**
-     * Combines the sides that should be rendered for each chunk's position into a list of pieces that should be rendered. This allows for doing less draw calls and
-     * overall better performance.
-     *
-     * @param allRenderSides 3D array of ROW, COLUMN, RENDER
-     *
-     * @return List of render pieces.
-     */
+    /// Combines the sides that should be rendered for each chunk's position into a list of pieces that should be rendered. This allows for doing less draw calls and
+    /// overall better performance.
+    ///
+    /// @param allRenderSides 3D array of ROW, COLUMN, RENDER
+    ///
+    /// @return List of render pieces.
     private List<RenderPiece> calculateRenderPieces(boolean[][][] allRenderSides) {
         //Keep track of the minimal amount of data that is needed to match in order to merge two column pieces across rows
         record MinimalColumnPieceData(int z, int zLength, boolean renderNorth, boolean renderSouth) {

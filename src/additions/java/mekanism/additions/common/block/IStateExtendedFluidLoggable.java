@@ -17,10 +17,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Helper interface for implementation of smashing vanilla's water logging system with our own fluid logging system to allow easier implementation on blocks that extend
- * something that is already water loggable (fences, stairs, slabs)
- */
+/// Helper interface for implementation of smashing vanilla's water logging system with our own fluid logging system to allow easier implementation on blocks that extend
+/// something that is already water loggable (fences, stairs, slabs)
 public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
 
     EnumProperty<ExtendedFluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged_extension", ExtendedFluidLogType.class);

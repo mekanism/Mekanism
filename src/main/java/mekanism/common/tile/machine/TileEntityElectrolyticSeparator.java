@@ -89,31 +89,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
           NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    /**
-     * The maximum amount of gas this block can store.
-     */
+    /// The maximum amount of gas this block can store.
     public static final long MAX_GAS = 2_400;
     public static final long MAX_FLUID = 24L * FluidType.BUCKET_VOLUME;
     private static final int BASE_DUMP_RATE = 8;
     private static final IntObjectToIntFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR = (base, tile) -> base * tile.getRecipeEnergyMultiplier();
 
-    /**
-     * This separator's water slot.
-     */
+    /// This separator's water slot.
     @UnknownNullability//Initialized via getInitialFluidTanks
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                      "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public BasicFluidTank fluidTank;
-    /**
-     * The amount of oxygen this block is storing.
-     */
+    /// The amount of oxygen this block is storing.
     @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded",
                                                                                         "getLeftOutputFilledPercentage"}, docPlaceholder = "left output tank")
     public IChemicalTank leftTank;
-    /**
-     * The amount of hydrogen this block is storing.
-     */
+    /// The amount of hydrogen this block is storing.
     @UnknownNullability//Initialized via getInitialChemicalTanks
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded",
                                                                                         "getRightOutputFilledPercentage"}, docPlaceholder = "right output tank")

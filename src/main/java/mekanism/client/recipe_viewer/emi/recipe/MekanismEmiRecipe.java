@@ -201,10 +201,8 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         return () -> RecipeViewerUtils.getCurrent(stacks);
     }
 
-    /**
-     * @apiNote x and y are based on the values set in the tile, as the GUI then shifts the slots by one to account for the border. This method is mostly meant as a
-     * helper to make keeping track of the positioning numbers easier.
-     */
+    /// @apiNote x and y are based on the values set in the tile, as the GUI then shifts the slots by one to account for the border. This method is mostly meant as a
+    /// helper to make keeping track of the positioning numbers easier.
     protected SlotWidget addSlot(WidgetHolder widgetHolder, SlotType type, int x, int y, EmiIngredient ingredient) {
         GuiSlot slot = addSlot(widgetHolder, type, x, y);
         return initItem(widgetHolder, slot.getX(), slot.getY(), ingredient);

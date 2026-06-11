@@ -20,31 +20,25 @@ public class InputHelper {
     private InputHelper() {
     }
 
-    /**
-     * Wrap an inventory slot into an {@link IInputHandler}.
-     *
-     * @param slot           Slot to wrap.
-     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
-     */
+    /// Wrap an inventory slot into an [IInputHandler].
+    ///
+    /// @param slot           Slot to wrap.
+    /// @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
     public static IInputHandler<Item, ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         return new ItemInputHandler(slot, notEnoughError);
     }
 
-    /**
-     * Wrap a chemical tank into an {@link IInputHandler}.
-     *
-     * @param tank           Tank to wrap.
-     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
-     */
+    /// Wrap a chemical tank into an [IInputHandler].
+    ///
+    /// @param tank           Tank to wrap.
+    /// @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
     public static IInputHandler<Chemical, ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
         return new ChemicalInputHandler(tank, notEnoughError);
     }
 
-    /**
-     * Wrap a chemical tank for constant usage into an {@link IInputHandler}.
-     *
-     * @param tank Tank to wrap.
-     */
+    /// Wrap a chemical tank for constant usage into an [IInputHandler].
+    ///
+    /// @param tank Tank to wrap.
     public static IInputHandler<Chemical, ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
         //TODO - 26.1: Should this use the normal get input handler for if the recipe isn't per tick chemical usage? Or how do we do handling for that
         return new ChemicalInputHandler(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
@@ -57,12 +51,10 @@ public class InputHelper {
         };
     }
 
-    /**
-     * Wrap a fluid tank into an {@link IInputHandler}.
-     *
-     * @param tank           Tank to wrap.
-     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
-     */
+    /// Wrap a fluid tank into an [IInputHandler].
+    ///
+    /// @param tank           Tank to wrap.
+    /// @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
     public static IInputHandler<Fluid, FluidStack> getInputHandler(IFluidTank tank, RecipeError notEnoughError) {
         return new FluidInputHandler(tank, notEnoughError);
     }

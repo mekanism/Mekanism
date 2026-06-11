@@ -22,8 +22,8 @@ import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -33,12 +33,10 @@ import org.jspecify.annotations.Nullable;
 
 public class QIOCraftingTransferHelper {
 
-    /**
-     * A map of {@link ItemResource}s to the item's sources for stored items in the frequency, the selected crafting grid, and the player's inventory. Any UUID distinct
-     * items get merged into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyway so makes do without it.
-     *
-     * @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks, so we may as well remove some unneeded copies.
-     */
+    /// A map of [ItemResource]s to the item's sources for stored items in the frequency, the selected crafting grid, and the player's inventory. Any UUID distinct items
+    /// get merged into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyway so makes do without it.
+    ///
+    /// @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks, so we may as well remove some unneeded copies.
     public final Map<ItemResource, ItemTypeSource> reverseLookup;
     private byte emptyInventorySlots;
     private boolean isValid;
@@ -270,9 +268,7 @@ public class QIOCraftingTransferHelper {
         }
     }
 
-    /**
-     * Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
-     */
+    /// Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
     public abstract static class BaseSimulatedInventory {//TODO - 26.1: Can we remove this and replace it with usage of transactions?
 
         private final ItemResource[] inventory;
@@ -303,16 +299,12 @@ public class QIOCraftingTransferHelper {
             }
         }
 
-        /**
-         * @return The remaining number of items in the slot.
-         */
+        /// @return The remaining number of items in the slot.
         protected abstract int getRemaining(int slot, ItemStack currentStored);
 
-        /**
-         * Tries to shuffle an item into the inventory.
-         *
-         * @return The amount of the item that couldn't fit into the inventory.
-         */
+        /// Tries to shuffle an item into the inventory.
+        ///
+        /// @return The amount of the item that couldn't fit into the inventory.
         public int shuffleItem(ItemResource type, int amount) {
             if (amount == 0) {
                 return 0;

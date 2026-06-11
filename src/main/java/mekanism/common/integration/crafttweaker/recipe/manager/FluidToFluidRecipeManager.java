@@ -21,26 +21,22 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Si
         super(recipeType);
     }
 
-    /**
-     * Adds a recipe that converts a fluid into another fluid.
-     * <br>
-     * If this is called from the evaporating recipe manager, this will be an evaporating recipe and able to be processed in a thermal evaporation plant.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link CTFluidIngredient} representing the input of the recipe.
-     * @param output {@link IFluidStack} representing the output of the recipe.
-     */
+    /// Adds a recipe that converts a fluid into another fluid.
+    ///
+    /// If this is called from the evaporating recipe manager, this will be an evaporating recipe and able to be processed in a thermal evaporation plant.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [CTFluidIngredient] representing the input of the recipe.
+    /// @param output [IFluidStack] representing the output of the recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, CTFluidIngredient input, IFluidStack output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
-    /**
-     * Creates a recipe that converts a fluid into another fluid.
-     *
-     * @param input  {@link CTFluidIngredient} representing the input of the recipe.
-     * @param output {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a recipe that converts a fluid into another fluid.
+    ///
+    /// @param input  [CTFluidIngredient] representing the input of the recipe.
+    /// @param output [IFluidStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicFluidToFluidRecipe makeRecipe(CTFluidIngredient input, IFluidStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }

@@ -8,47 +8,41 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_BRACKET_VALIDATORS)
 public class CrTBracketValidators {
 
-    /**
-     * Validates if there is a {@link Chemical} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
+    /// Validates if there is a [Chemical] with the given registry name.
+    ///
+    /// @param tokens The resource location to validate.
+    ///
+    /// @return `true` if valid, `false` otherwise.
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_CHEMICAL)
     public static boolean validateChemicalStack(String tokens) {
         return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
-    /**
-     * Validates if there is a {@link mekanism.api.robit.RobitSkin} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
+    /// Validates if there is a [mekanism.api.robit.RobitSkin] with the given registry name.
+    ///
+    /// @param tokens The resource location to validate.
+    ///
+    /// @return `true` if valid, `false` otherwise.
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_ROBIT_SKIN)
     public static boolean validateRobitSkin(String tokens) {
         return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     }
 
-    /**
-     * Validates if there is a {@link mekanism.api.gear.ModuleData} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
+    /// Validates if there is a [mekanism.api.gear.ModuleData] with the given registry name.
+    ///
+    /// @param tokens The resource location to validate.
+    ///
+    /// @return `true` if valid, `false` otherwise.
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_MODULE_DATA)
     public static boolean validateModuleData(String tokens) {

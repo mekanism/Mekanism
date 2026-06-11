@@ -33,24 +33,20 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         return RecipeBuilder.getDefaultRecipeId(template);
     }
 
-    /**
-     * Creates a Sawing recipe builder.
-     *
-     * @param input      Input.
-     * @param mainOutput Main Output.
-     */
+    /// Creates a Sawing recipe builder.
+    ///
+    /// @param input      Input.
+    /// @param mainOutput Main Output.
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStackTemplate mainOutput) {
         Objects.requireNonNull(mainOutput, "This sawing recipe requires a non empty output.");
         return new SawmillRecipeBuilder(input, mainOutput, null, 0);
     }
 
-    /**
-     * Creates a Sawing recipe builder.
-     *
-     * @param input           Input.
-     * @param secondaryOutput Secondary Output.
-     * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and less than one.
-     */
+    /// Creates a Sawing recipe builder.
+    ///
+    /// @param input           Input.
+    /// @param secondaryOutput Secondary Output.
+    /// @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and less than one.
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStackTemplate secondaryOutput, double secondaryChance) {
         Objects.requireNonNull(secondaryOutput, "This sawing recipe requires a non empty secondary output.");
         if (secondaryChance <= 0 || secondaryChance > 1) {
@@ -61,14 +57,12 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         return new SawmillRecipeBuilder(input, null, secondaryOutput, secondaryChance);
     }
 
-    /**
-     * Creates a Sawing recipe builder.
-     *
-     * @param input           Input.
-     * @param mainOutput      Main Output.
-     * @param secondaryOutput Secondary Output.
-     * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
-     */
+    /// Creates a Sawing recipe builder.
+    ///
+    /// @param input           Input.
+    /// @param mainOutput      Main Output.
+    /// @param secondaryOutput Secondary Output.
+    /// @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStackTemplate mainOutput, ItemStackTemplate secondaryOutput, double secondaryChance) {
         Objects.requireNonNull(mainOutput, "This sawing recipe requires a non empty output.");
         Objects.requireNonNull(secondaryOutput, "This sawing recipe requires a non empty secondary output.");

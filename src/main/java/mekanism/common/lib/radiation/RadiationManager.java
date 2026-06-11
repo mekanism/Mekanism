@@ -9,8 +9,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -33,37 +33,13 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
-/**
- * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
- * equivalent dose. For reference, here are examples of equivalent dose (credit: wikipedia)
- * <ul>
- * <li>100 nSv: baseline dose (banana equivalent dose)</li>
- * <li>250 nSv: airport security screening</li>
- * <li>1 mSv: annual total civilian dose equivalent</li>
- * <li>50 mSv: annual total occupational equivalent dose limit</li>
- * <li>250 mSv: total dose equivalent from 6-month trip to mars</li>
- * <li>1 Sv: maximum allowed dose allowed for NASA astronauts over their careers</li>
- * <li>5 Sv: dose required to (50% chance) kill human if received over 30-day period</li>
- * <li>50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown</li>
- * </ul>
- * For defining rate of accumulation, we use _sieverts per hour_ (Sv/h). Here are examples of dose accumulation rates.
- * <ul>
- * <li>100 nSv/h: max recommended human irradiation</li>
- * <li>2.7 uSv/h: irradiation from airline at cruise altitude</li>
- * <li>190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, _20 miles away_, 3 hours after detonation</li>
- * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
- * </ul>
- *
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadiationManager#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IRadiationManager#INSTANCE]
 public final class RadiationManager implements IRadiationManager {
 
-    /**
-     * RadiationManager for handling radiation across all dimensions
-     */
+    /// RadiationManager for handling radiation across all dimensions
     public static RadiationManager get() {
         return (RadiationManager) INSTANCE;
     }

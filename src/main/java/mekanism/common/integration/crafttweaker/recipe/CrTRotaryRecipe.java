@@ -20,9 +20,7 @@ public class CrTRotaryRecipe {
     private CrTRotaryRecipe() {
     }
 
-    /**
-     * Gets the chemical to fluid conversion this rotary recipe has or {@code null} if it only has a fluid to chemical conversion.
-     */
+    /// Gets the chemical to fluid conversion this rotary recipe has or `null` if it only has a fluid to chemical conversion.
     @Nullable
     @ZenCodeType.Nullable
     @ZenCodeType.Method
@@ -34,9 +32,7 @@ public class CrTRotaryRecipe {
         return null;
     }
 
-    /**
-     * Gets the fluid to chemical conversion this rotary recipe has or {@code null} if it only has a chemical to fluid conversion.
-     */
+    /// Gets the fluid to chemical conversion this rotary recipe has or `null` if it only has a chemical to fluid conversion.
     @Nullable
     @ZenCodeType.Nullable
     @ZenCodeType.Method
@@ -48,20 +44,16 @@ public class CrTRotaryRecipe {
         return null;
     }
 
-    /**
-     * @param input   Input ingredient.
-     * @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// @param input   Input ingredient.
+    /// @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_CHEMICAL_TO_FLUID)
     public record ChemicalToFluid(@ZenCodeType.Getter("input") ChemicalStackIngredient input,
                                   @ZenCodeType.Getter("outputs") List<IFluidStack> outputs) {
     }
 
-    /**
-     * @param input   Input ingredient.
-     * @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// @param input   Input ingredient.
+    /// @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_FLUID_TO_CHEMICAL)
     public record FluidToChemical(@ZenCodeType.Getter("input") CTFluidIngredient input,

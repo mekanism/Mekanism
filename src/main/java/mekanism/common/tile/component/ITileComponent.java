@@ -36,15 +36,11 @@ public interface ITileComponent extends ValueIOSerializable {
     default void addRemapEntries(List<DataComponentType<?>> remapEntries) {
     }
 
-    /**
-     * Called when the tile is removed, both permanently and during unloads.
-     */
+    /// Called when the tile is removed, both permanently and during unloads.
     default void invalidate() {
     }
 
-    /**
-     * Called when the tile is permanently removed
-     */
+    /// Called when the tile is permanently removed
     default void removed() {
     }
 

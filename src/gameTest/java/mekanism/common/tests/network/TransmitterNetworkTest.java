@@ -91,10 +91,8 @@ public class TransmitterNetworkTest {
         );
     }
 
-    /**
-     * This test represents the issue that was reported in <a href="https://github.com/mekanism/Mekanism/issues/7428">Issue 7428</a> and most likely is also the last
-     * remaining cause of <a href="https://github.com/mekanism/Mekanism/issues/6356">Issue 6356</a>.
-     */
+    /// This test represents the issue that was reported in [Issue 7428](https://github.com/mekanism/Mekanism/issues/7428) and most likely is also the last remaining
+    /// cause of [Issue 6356](https://github.com/mekanism/Mekanism/issues/6356).
     @GameTest(template = STRAIGHT_CABLE, batch = "2")
     @TestHolder(description = "Tests that when part of a network becomes inaccessible but still loaded, "
                               + "we are able to properly remove the transmitters and then recover when the chunk becomes accessible again.")

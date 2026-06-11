@@ -12,13 +12,11 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Input: Chemical
- * <br>
- * Output: ItemStack
- *
- * @apiNote Chemical Crystallizers can process this recipe type.
- */
+/// Input: Chemical
+///
+/// Output: ItemStack
+///
+/// @apiNote Chemical Crystallizers can process this recipe type.
 public abstract class ChemicalCrystallizerRecipe extends ChemicalInputRecipe<ItemStackTemplate> {
 
     private static final Holder<Item> CHEMICAL_CRYSTALLIZER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"));

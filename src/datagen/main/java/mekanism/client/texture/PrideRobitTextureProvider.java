@@ -97,12 +97,10 @@ public class PrideRobitTextureProvider implements DataProvider {
         }, Util.backgroundExecutor());
     }
 
-    /**
-     * @param stripeIndex Stripe Index on the chain.
-     * @param chainIndex  The chain index (bottom, front(left), top, back(right)). It starts on the bottom to hide a potential seam on the bottom/back connection
-     *
-     * @return Color at that position
-     */
+    /// @param stripeIndex Stripe Index on the chain.
+    /// @param chainIndex  The chain index (bottom, front(left), top, back(right)). It starts on the bottom to hide a potential seam on the bottom/back connection
+    ///
+    /// @return Color at that position
     private int argb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
         //offset it by 12, so the pride flag always starts at the top by default
         int index = stripeIndex + rotationIndex + 12;

@@ -34,9 +34,7 @@ public enum InductionProviderTier implements ITier {
         return baseOutput;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the InductionProviderTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the InductionProviderTier a reference to the actual config value object
     public void setConfigReference(CachedLongValue outputReference) {
         this.outputReference = outputReference;
     }

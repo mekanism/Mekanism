@@ -7,19 +7,15 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import net.minecraft.world.level.Level;
 
-/**
- * Base class for defining chemical+chemical to chemical recipes.
- * <br>
- * Input: Two chemicals. The order of them does not matter.
- * <br>
- * Output: ChemicalStack
- *
- * @apiNote There are currently two types of Chemical+Chemical to Chemical recipe types:
- * <ul>
- *     <li>Chemical Infusing: Can be processed in a Chemical Infuser.</li>
- *     <li>Pigment Mixing: Can be processed in a Pigment Mixer.</li>
- * </ul>
- */
+/// Base class for defining chemical+chemical to chemical recipes.
+///
+/// Input: Two chemicals. The order of them does not matter.
+///
+/// Output: ChemicalStack
+///
+/// @apiNote There are currently two types of Chemical+Chemical to Chemical recipe types:
+/// - Chemical Infusing: Can be processed in a Chemical Infuser.
+/// - Pigment Mixing: Can be processed in a Pigment Mixer.
 public abstract class ChemicalChemicalToChemicalRecipe extends OrderlessTwoInputRecipe<Chemical, ChemicalStack, ChemicalStackIngredient, BiChemicalRecipeInput, ChemicalStackTemplate> {
 
     @Override

@@ -215,11 +215,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return cachedRecipes;
     }
 
-    /**
-     * Get a list of recipes directly from the manager
-     *
-     * @param recipeMap The recipes map
-     */
+    /// Get a list of recipes directly from the manager
+    ///
+    /// @param recipeMap The recipes map
     private Collection<RecipeHolder<RECIPE>> getRecipesUncached(RecipeMap recipeMap) {
         Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {
@@ -280,9 +278,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return RecipeMap.EMPTY;
     }
 
-    /**
-     * Helper for getting a recipe from a world's recipe manager.
-     */
+    /// Helper for getting a recipe from a world's recipe manager.
     public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input,
           Level level) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
@@ -291,9 +287,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
               /*.filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete())*/;
     }
 
-    /**
-     * Helper for getting a recipe from a world's recipe manager.
-     */
+    /// Helper for getting a recipe from a world's recipe manager.
     @Nullable
     public static RecipeHolder<?> byKey(Level level, ResourceKey<Recipe<?>> id) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types

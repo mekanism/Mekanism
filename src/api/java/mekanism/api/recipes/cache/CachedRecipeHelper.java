@@ -11,25 +11,21 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.core.TypedInstance;
 
-/**
- * Helper class for implementing simple variants of calculateOperationsThisTick
- */
+/// Helper class for implementing simple variants of calculateOperationsThisTick
 public class CachedRecipeHelper {
 
     private CachedRecipeHelper() {
     }
 
-    /**
-     * Calculates the operations that would occur this tick for recipes with one input.
-     *
-     * @param tracker         Tracker of current errors and max operations.
-     * @param inputHandler    Input handler.
-     * @param inputIngredient Supplier of the recipe's input ingredient.
-     * @param inputSetter     Consumer to set a cached value of the input to not have to recalculate it again.
-     * @param outputHandler   Output handler.
-     * @param outputGetter    Gets the recipe's output when given the corresponding input.
-     * @param outputSetter    Consumer to set the cached value of the output to not have to recalculate it again.
-     */
+    /// Calculates the operations that would occur this tick for recipes with one input.
+    ///
+    /// @param tracker         Tracker of current errors and max operations.
+    /// @param inputHandler    Input handler.
+    /// @param inputIngredient Supplier of the recipe's input ingredient.
+    /// @param inputSetter     Consumer to set a cached value of the input to not have to recalculate it again.
+    /// @param outputHandler   Output handler.
+    /// @param outputGetter    Gets the recipe's output when given the corresponding input.
+    /// @param outputSetter    Consumer to set the cached value of the output to not have to recalculate it again.
     public static <INPUT_HOLDER, INPUT extends TypedInstance<INPUT_HOLDER>, OUTPUT> void oneInputCalculateOperationsThisTick(OperationTracker tracker,
           IInputHandler<INPUT_HOLDER, INPUT> inputHandler, Supplier<? extends InputIngredient<INPUT_HOLDER, INPUT>> inputIngredient, Consumer<INPUT> inputSetter,
           IOutputHandler<OUTPUT> outputHandler, Function<INPUT, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter) {
@@ -53,19 +49,17 @@ public class CachedRecipeHelper {
         }
     }
 
-    /**
-     * Calculates the operations that would occur this tick for recipes with two inputs.
-     *
-     * @param tracker          Tracker of current errors and max operations.
-     * @param inputAHandler    Primary input handler.
-     * @param inputAIngredient Supplier of the recipe's primary input ingredient.
-     * @param inputBHandler    Secondary input handler.
-     * @param inputBIngredient Supplier of the recipe's secondary input ingredient.
-     * @param inputsSetter     Consumer to set the cached values of the inputs to not have to recalculate them again.
-     * @param outputHandler    Output handler.
-     * @param outputGetter     Gets the recipe's output when given the corresponding inputs.
-     * @param outputSetter     Consumer to set the cached value of the output to not have to recalculate it again.
-     */
+    /// Calculates the operations that would occur this tick for recipes with two inputs.
+    ///
+    /// @param tracker          Tracker of current errors and max operations.
+    /// @param inputAHandler    Primary input handler.
+    /// @param inputAIngredient Supplier of the recipe's primary input ingredient.
+    /// @param inputBHandler    Secondary input handler.
+    /// @param inputBIngredient Supplier of the recipe's secondary input ingredient.
+    /// @param inputsSetter     Consumer to set the cached values of the inputs to not have to recalculate them again.
+    /// @param outputHandler    Output handler.
+    /// @param outputGetter     Gets the recipe's output when given the corresponding inputs.
+    /// @param outputSetter     Consumer to set the cached value of the output to not have to recalculate it again.
     public static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> void twoInputCalculateOperationsThisTick(
           OperationTracker tracker, IInputHandler<HOLDER_A, INPUT_A> inputAHandler, Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputAIngredient,
           IInputHandler<HOLDER_B, INPUT_B> inputBHandler, Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter,

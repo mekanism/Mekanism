@@ -11,9 +11,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekCodecs;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Defines the format of a "table" (Map) format of a Mekanism data structure
- */
+/// Defines the format of a "table" (Map) format of a Mekanism data structure
 public record TableType(String description, String humanName, Map<String, FieldType> fields, @Nullable Class<?> extendedFrom) {
 
     public static Codec<TableType> CODEC = RecordCodecBuilder.create(instance -> instance.group(

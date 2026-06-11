@@ -59,9 +59,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         return sendUpdatePacket;
     }
 
-    /**
-     * Only call on the server side
-     */
+    /// Only call on the server side
     public void toggleOverride() {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
@@ -73,9 +71,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
-    /**
-     * Validates access for anyone who might be accessing a GUI that changed security modes
-     */
+    /// Validates access for anyone who might be accessing a GUI that changed security modes
     private void validateAccess() {
         if (level != null) {
             MinecraftServer server = level.getServer();

@@ -29,32 +29,26 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         return RecipeBuilder.getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Crushing recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates a Crushing recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToItemStackRecipeBuilder crushing(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicCrushingRecipe::new);
     }
 
-    /**
-     * Creates an Enriching recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates an Enriching recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicEnrichingRecipe::new);
     }
 
-    /**
-     * Creates a Smelting recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates a Smelting recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicSmeltingRecipe::new);
     }
@@ -64,11 +58,9 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         return factory.create(input, output);
     }
 
-    /**
-     * Builds this recipe using the output item's name as the recipe name.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     */
+    /// Builds this recipe using the output item's name as the recipe name.
+    ///
+    /// @param recipeOutput Finished Recipe Consumer.
     public void build(RecipeOutput recipeOutput) {
         save(recipeOutput, output.typeHolder());
     }

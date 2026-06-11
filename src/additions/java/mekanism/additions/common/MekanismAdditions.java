@@ -46,14 +46,10 @@ public class MekanismAdditions implements IModModule {
     @Nullable
     public static MekanismAdditions instance;
 
-    /**
-     * MekanismTools version number
-     */
+    /// MekanismTools version number
     public final Version versionNumber;
 
-    /**
-     * The VoiceServer manager for walkie-talkies
-     */
+    /// The VoiceServer manager for walkie-talkies
     @Nullable
     public static VoiceServerManager voiceManager;
 

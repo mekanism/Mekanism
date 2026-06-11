@@ -33,9 +33,7 @@ public abstract class CachedMapConfigValue<KEY, VALUE> extends CachedResolvableC
         return encodeStatic(values, this::encode);
     }
 
-    /**
-     * Helper method for use in encoding defaults.
-     */
+    /// Helper method for use in encoding defaults.
     protected static <KEY, VALUE> List<? extends String> encodeStatic(Map<KEY, VALUE> values, ValueEncoder<KEY, VALUE> encoder) {
         List<String> encoded = new ArrayList<>(values.size());
         for (Map.Entry<KEY, VALUE> entry : values.entrySet()) {

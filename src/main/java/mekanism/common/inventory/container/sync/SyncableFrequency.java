@@ -10,9 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequencies
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling frequencies
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
 
     public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<@Nullable FREQUENCY> getter, Consumer<@Nullable FREQUENCY> setter) {

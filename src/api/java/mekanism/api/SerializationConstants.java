@@ -1,10 +1,8 @@
 package mekanism.api;
 
-/**
- * Class for storing constants that are used in various serialization related storage, to reduce the chances of typos
- *
- * @since 10.6.0 - Previously was split between NBTConstants and JsonConstants
- */
+/// Class for storing constants that are used in various serialization related storage, to reduce the chances of typos
+///
+/// @since 10.6.0 - Previously was split between NBTConstants and JsonConstants
 public final class SerializationConstants {
 
     private SerializationConstants() {
@@ -22,9 +20,7 @@ public final class SerializationConstants {
     //Ingredients
     public static final String AMOUNT = "amount";
     public static final String BASE = "base";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String CHEMICAL = "chemical";
     public static final String CHILDREN = "children";
     public static final String FLUID = "fluid";
@@ -48,24 +44,16 @@ public final class SerializationConstants {
     public static final String FLUID_INPUT = "fluid_input";
     public static final String ITEM_INPUT = "item_input";
     public static final String OUTPUT = "output";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String PER_TICK_USAGE = "per_tick_usage";
     public static final String MAIN_OUTPUT = "main_output";
     public static final String SECONDARY_OUTPUT = "secondary_output";
     public static final String SECONDARY_CHANCE = "secondary_chance";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String CHEMICAL_OUTPUT = "chemical_output";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String LEFT_CHEMICAL_OUTPUT = "left_chemical_output";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String RIGHT_CHEMICAL_OUTPUT = "right_chemical_output";
     public static final String ITEM_OUTPUT = "item_output";
     public static final String FLUID_OUTPUT = "fluid_output";
@@ -105,9 +93,7 @@ public final class SerializationConstants {
     public static final String VOLUME = "volume";
 
     //Generic constants
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String ABSORPTION = "absorption";
     public static final String ACTIVE_COOLED = "active_cooled";
     public static final String ACTIVE_NODES = "active_nodes";
@@ -115,9 +101,7 @@ public final class SerializationConstants {
     public static final String ADVANCEMENT = "advancement";
     public static final String ALLOW_DEFAULT = "allow_default";
     public static final String AGE = "age";
-    /**
-     * @since 10.7.4
-     */
+    /// @since 10.7.4
     public static final String ALIASES = "aliases";
     public static final String ASSEMBLIES = "assemblies";
     public static final String AUTO = "auto";
@@ -132,9 +116,7 @@ public final class SerializationConstants {
     public static final String CACHE = "cache";
     public static final String CHANCE = "chance";
     public static final String CHANNEL = "channel";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String CHEMICAL_TANKS = "chemical_tanks";
     public static final String CHUNK_SET = "chunk_set";
     public static final String COILS = "coils";
@@ -146,9 +128,7 @@ public final class SerializationConstants {
     public static final String COMPONENT_UPGRADE = "component_upgrade";
     public static final String COMPONENTS = "components";
     public static final String CONDITION = "condition";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String CONDUCTIVITY = "conductivity";
     public static final String CONFIG = "config";
     public static final String CONNECTION = "connection";
@@ -156,9 +136,7 @@ public final class SerializationConstants {
     ///@since 10.8.0
     public static final String CONTAINERS = "containers";
     public static final String CONTROL_TYPE = "control_type";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String COOL_VARIANT = "cool_variant";
     public static final String COULD_OPERATE = "could_operate";
     public static final String CURRENT_REDSTONE = "current_redstone";
@@ -195,13 +173,9 @@ public final class SerializationConstants {
     public static final String FOLLOW = "follow";
     public static final String FREQUENCY_LIST = "freq_list";
     public static final String FUZZY = "fuzzy";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String CHEMICAL_STORED_ALT = "chemical_1";
-    /**
-     * @since 10.7.0
-     */
+    /// @since 10.7.0
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
@@ -209,9 +183,7 @@ public final class SerializationConstants {
     public static final String HEAT_CAPACITY = "heat_capacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "home_location";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String HOT_VARIANT = "hot_variant";
     public static final String HUMAN_NAME = "human_name";
     public static final String IDENTITY = "identity";
@@ -263,9 +235,7 @@ public final class SerializationConstants {
     public static final String PERSONAL_STORAGE_ID = "personal_storage_id";
     public static final String PICKUP_DROPS = "pickup_drops";
     public static final String PLASMA_TEMP = "plasma_temp";
-    /**
-     * @since 10.7.15
-     */
+    /// @since 10.7.15
     public static final String POS = "pos";
     public static final String POSITION = "position";
     public static final String PREVIOUS = "previous";
@@ -274,18 +244,14 @@ public final class SerializationConstants {
     public static final String PULL = "pull";
     public static final String PULSE = "pulse";
     public static final String RADIATION = "radiation";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";
     public static final String REPLACE_TARGET = "replace_target";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String REPRESENTATION = "representation";
     public static final String REQUIRES_REPLACEMENT = "requires_replacement";
     public static final String REQUIRES_PUBLIC_SECURITY = "requires_public_security";
@@ -315,9 +281,7 @@ public final class SerializationConstants {
     public static final String TEMPERATURE = "temperature";
     public static final String TEXT = "text";
     public static final String TEXTURES = "textures";
-    /**
-     * @since 10.7.11
-     */
+    /// @since 10.7.11
     public static final String THERMAL_ENTHALPY = "thermal_enthalpy";
     public static final String TIME = "time";
     public static final String TRUSTED = "trusted";

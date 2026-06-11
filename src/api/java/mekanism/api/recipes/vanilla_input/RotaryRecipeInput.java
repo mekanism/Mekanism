@@ -5,11 +5,9 @@ import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of a recipe input of for {@link mekanism.api.recipes.RotaryRecipe}.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input of for [mekanism.api.recipes.RotaryRecipe].
+///
+/// @since 10.6.0
 public record RotaryRecipeInput(Either<FluidStack, ChemicalStack> input) implements FluidChemicalRecipeInput {
 
     @Override

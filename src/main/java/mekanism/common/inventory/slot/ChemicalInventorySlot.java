@@ -42,9 +42,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         return !conversion.isEmpty() && simulateCanInsert(chemicalTank, conversion, AutomationType.MANUAL);
     }
 
-    /**
-     * Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
-     */
+    /// Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
     public static ChemicalInventorySlot rotary(IChemicalTank chemicalTank, BooleanSupplier isProcessingResource, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(isProcessingResource, "The supplier that determines whether the resource is being processed cannot be null");
@@ -52,29 +50,23 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
               (itemType, automationType) -> automationType.isInternal() || canRotaryInsert(chemicalTank, itemType, Capabilities.CHEMICAL.item(), isProcessingResource), listener, x, y);
     }
 
-    /**
-     * Fills the tank from this item
-     */
+    /// Fills the tank from this item
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canFill(chemicalTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.CHEMICAL.item()),
               (itemType, automationType) -> automationType.isInternal() || canFill(chemicalTank, ItemAccessUtils.sideEffectFreeAccess(itemType), Capabilities.CHEMICAL.item()), listener, x, y);
     }
 
-    /**
-     * Accepts any items that can be filled with the current contents of the chemical tank, or if it is a chemical tank container and the tank is currently empty
-     * <p>
-     * Drains the tank into this item.
-     */
+    /// Accepts any items that can be filled with the current contents of the chemical tank, or if it is a chemical tank container and the tank is currently empty
+    ///
+    /// Drains the tank into this item.
     public static ChemicalInventorySlot drain(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         return new ChemicalInventorySlot(chemicalTank, (itemType, automationType) -> !automationType.isExternal() || !canDrain(chemicalTank, itemType, Capabilities.CHEMICAL.item()),
               (itemType, automationType) -> automationType.isInternal() || canDrain(chemicalTank, itemType, Capabilities.CHEMICAL.item()), listener, x, y);
     }
 
-    /**
-     * Fills the tank from this item OR converts the given item to a gas
-     */
+    /// Fills the tank from this item OR converts the given item to a gas
     public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<@Nullable Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
@@ -99,9 +91,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         this.worldSupplier = worldSupplier;
     }
 
-    /**
-     * Fills tank from slot, allowing for the item to also be converted to chemical if need be
-     */
+    /// Fills tank from slot, allowing for the item to also be converted to chemical if need be
     public void fillTankOrConvert(@Nullable TransactionContext transaction) {
         //Fill the tank from the item
         if (!fillTankFromSlot(transaction)) {
@@ -140,9 +130,7 @@ public class ChemicalInventorySlot extends ResourceHandlerSlot {
         fillContainerFromSlot(chemicalTank, outputSlot, ContainerType.CHEMICAL, transaction);
     }
 
-    /**
-     * Drains tank into slot
-     */
+    /// Drains tank into slot
     public boolean drainTankIntoSlot(@Nullable TransactionContext transaction) {
         return drainContainerIntoSlot(chemicalTank, ContainerType.CHEMICAL, transaction);
     }

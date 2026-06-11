@@ -38,14 +38,14 @@ import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.integration.computer.TableType.Builder;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.core.Holder;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,13 +60,9 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Provides methods to get parameters from a computer integration and return converted values back. NB: new conversions should have an entry added to
- * {@link #convertType(Class)}
- *
- * getX methods may throw an exception if the param index does not exist or param is the wrong type. convert methods should not wrap results, as they will be used to
- * convert lists/maps
- */
+/// Provides methods to get parameters from a computer integration and return converted values back. NB: new conversions should have an entry added to
+/// [#convertType(Class)] getX methods may throw an exception if the param index does not exist or param is the wrong type. convert methods should not wrap results, as
+/// they will be used to convert lists/maps
 public abstract class BaseComputerHelper {
 
     public static final Lazy<Map<Class<?>, TableType>> BUILTIN_TABLES = Lazy.of(BaseComputerHelper::getBuiltInTables);
@@ -78,16 +74,14 @@ public abstract class BaseComputerHelper {
         return value;
     }
 
-    /**
-     * Get an enum by string value
-     *
-     * @param param     param index
-     * @param enumClazz Enum class
-     *
-     * @return the enum value
-     *
-     * @throws ComputerException if the param index does not exist, enum value doesn't exist or param is the wrong type.
-     */
+    /// Get an enum by string value
+    ///
+    /// @param param     param index
+    /// @param enumClazz Enum class
+    ///
+    /// @return the enum value
+    ///
+    /// @throws ComputerException if the param index does not exist, enum value doesn't exist or param is the wrong type.
     public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
         return requireNonNull(param, SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param)));
     }
@@ -112,41 +106,35 @@ public abstract class BaseComputerHelper {
 
     public abstract Map<?, ?> getMap(int param) throws ComputerException;
 
-    /**
-     * Convert a Map to an IFilter instance of the expected type
-     *
-     * @param param        param index
-     * @param expectedType expected filter class (usually parent)
-     *
-     * @return the constructed filter, or null if conversion was invalid
-     *
-     * @throws ComputerException if the param index does not exist or param is the wrong type. (from getMap)
-     */
+    /// Convert a Map to an IFilter instance of the expected type
+    ///
+    /// @param param        param index
+    /// @param expectedType expected filter class (usually parent)
+    ///
+    /// @return the constructed filter, or null if conversion was invalid
+    ///
+    /// @throws ComputerException if the param index does not exist or param is the wrong type. (from getMap)
     @Nullable
     public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
         return SpecialConverters.convertMapToFilter(expectedType, getMap(param));
     }
 
-    /**
-     * @param param param index
-     *
-     * @return Identifier parsed from String or null
-     *
-     * @throws ComputerException if the param index does not exist or param is the wrong type.
-     */
+    /// @param param param index
+    ///
+    /// @return Identifier parsed from String or null
+    ///
+    /// @throws ComputerException if the param index does not exist or param is the wrong type.
     public Identifier getIdentifier(int param) throws ComputerException {
         return requireNonNull(param, Identifier.tryParse(getString(param)));
     }
 
-    /**
-     * Get an Item instance from the registry by Resource Location (string)
-     *
-     * @param param param index
-     *
-     * @return Item instance or {@link Items#AIR} if item not found
-     *
-     * @throws ComputerException if the param index does not exist or param is the wrong type.
-     */
+    /// Get an Item instance from the registry by Resource Location (string)
+    ///
+    /// @param param param index
+    ///
+    /// @return Item instance or [Items#AIR] if item not found
+    ///
+    /// @throws ComputerException if the param index does not exist or param is the wrong type.
     public Item getItem(int param) throws ComputerException {
         Identifier itemName = getIdentifier(param);
         return getItemFromResourceLocation(itemName).value();
@@ -191,11 +179,9 @@ public abstract class BaseComputerHelper {
         }
     }
 
-    /**
-     * Signals that the method did not return a result (i.e. is void)
-     *
-     * @return Computer platform dependent.
-     */
+    /// Signals that the method did not return a result (i.e. is void)
+    ///
+    /// @return Computer platform dependent.
     public abstract Object voidResult();
 
     public Object convert(int i) {
@@ -504,13 +490,11 @@ public abstract class BaseComputerHelper {
         return helpData;
     }
 
-    /**
-     * Convert a type to the converted version (what is exposed to the computer). Used on OpenComputers2
-     *
-     * @param clazz the unconverted type
-     *
-     * @return the converted type, or clazz if no conversion needed
-     */
+    /// Convert a type to the converted version (what is exposed to the computer). Used on OpenComputers2
+    ///
+    /// @param clazz the unconverted type
+    ///
+    /// @return the converted type, or clazz if no conversion needed
     public static Class<?> convertType(Class<?> clazz) {
         if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return String.class;

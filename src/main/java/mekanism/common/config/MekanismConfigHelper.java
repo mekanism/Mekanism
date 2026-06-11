@@ -16,9 +16,7 @@ public class MekanismConfigHelper {
 
     public static final Path CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(Mekanism.MOD_NAME));
 
-    /**
-     * Creates and register a mod config, and track it so that we can properly clear cached values.
-     */
+    /// Creates and register a mod config, and track it so that we can properly clear cached values.
     public static void registerConfig(Map<IConfigSpec, IMekanismConfig> knownConfigs, ModContainer modContainer, IMekanismConfig config) {
         modContainer.registerConfig(config.getConfigType(), config.getConfigSpec(), Mekanism.MOD_NAME + "/" + config.getFileName() + ".toml");
         knownConfigs.put(config.getConfigSpec(), config);

@@ -23,13 +23,11 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     private final int duration;
     private final boolean perTickUsage;
 
-    /**
-     * @param itemInput     Item input.
-     * @param chemicalInput Chemical input.
-     * @param output        Output.
-     * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// @param itemInput     Item input.
+    /// @param chemicalInput Chemical input.
+    /// @param output        Output.
+    /// @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, int duration, boolean perTickUsage) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");

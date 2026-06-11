@@ -10,9 +10,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-/**
- * Like {@link ChemicalTankWrapper}
- */
+/// Like [ChemicalTankWrapper]
 public class FluidTankWrapper extends ResourceContainerWrapper<FluidResource, IFluidTank> implements IFluidTank {
 
     private final IChemicalTank chemicalTank;

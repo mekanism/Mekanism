@@ -14,38 +14,32 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Immutable class representing an enum based module config (name and enum value).
- *
- * @param <TYPE> Type of the data stored by this config.
- *
- * @since 10.6.0
- */
+/// Immutable class representing an enum based module config (name and enum value).
+///
+/// @param <TYPE> Type of the data stored by this config.
+///
+/// @since 10.6.0
 public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> extends ModuleConfig<TYPE> {
 
-    /**
-     * Codec for (de)serializing enum module configs, with no limits on what options are valid.
-     *
-     * @param enumCodec Codec for (de)serializing the enum value.
-     * @param <TYPE>    Type of the data stored by this config.
-     */
+    /// Codec for (de)serializing enum module configs, with no limits on what options are valid.
+    ///
+    /// @param enumCodec Codec for (de)serializing the enum value.
+    /// @param <TYPE>    Type of the data stored by this config.
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> Codec<ModuleEnumConfig<TYPE>> codec(Codec<TYPE> enumCodec) {
         return RecordCodecBuilder.create(instance -> baseCodec(instance)
               .and(enumCodec.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
               .apply(instance, ModuleEnumConfig::new));
     }
 
-    /**
-     * Codec for (de)serializing enum module configs, limited to the specified range of values.
-     *
-     * @param enumCodec       Codec for (de)serializing the enum value.
-     * @param enumClass       Enum class
-     * @param selectableCount The number of selectable elements.
-     * @param <TYPE>          Type of the data stored by this config.
-     *
-     * @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
-     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #codec(Codec)} was called instead.
-     */
+    /// Codec for (de)serializing enum module configs, limited to the specified range of values.
+    ///
+    /// @param enumCodec       Codec for (de)serializing the enum value.
+    /// @param enumClass       Enum class
+    /// @param selectableCount The number of selectable elements.
+    /// @param <TYPE>          Type of the data stored by this config.
+    ///
+    /// @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
+    /// @implNote If selectedCount is equal to the number of elements in the enum, this acts as if [#codec(Codec)] was called instead.
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> Codec<ModuleEnumConfig<TYPE>> codec(Codec<TYPE> enumCodec, Class<TYPE> enumClass, int selectableCount) {
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
@@ -63,12 +57,10 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
               .apply(instance, (name, value) -> new ModuleEnumConfig<>(name, value, enumConstants)));
     }
 
-    /**
-     * Stream codec for encoding and decoding enum module configs, with no limits on what options are valid, over the network.
-     *
-     * @param enumCodec Stream codec for encoding and decoding the enum value.
-     * @param <TYPE>    Type of the data stored by this config.
-     */
+    /// Stream codec for encoding and decoding enum module configs, with no limits on what options are valid, over the network.
+    ///
+    /// @param enumCodec Stream codec for encoding and decoding the enum value.
+    /// @param <TYPE>    Type of the data stored by this config.
     public static <BUF extends ByteBuf, TYPE extends Enum<TYPE> & IHasTextComponent> StreamCodec<BUF, ModuleEnumConfig<TYPE>> streamCodec(StreamCodec<BUF, TYPE> enumCodec) {
         return StreamCodec.composite(
               Identifier.STREAM_CODEC, ModuleConfig::name,
@@ -77,17 +69,15 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         );
     }
 
-    /**
-     * Stream codec for encoding and decoding enum module configs, limited to the specified range of values, over the network
-     *
-     * @param enumCodec       Stream codec for encoding and decoding the enum value.
-     * @param enumClass       Enum class
-     * @param selectableCount The number of selectable elements.
-     * @param <TYPE>          Type of the data stored by this config.
-     *
-     * @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
-     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #streamCodec(StreamCodec)} was called instead.
-     */
+    /// Stream codec for encoding and decoding enum module configs, limited to the specified range of values, over the network
+    ///
+    /// @param enumCodec       Stream codec for encoding and decoding the enum value.
+    /// @param enumClass       Enum class
+    /// @param selectableCount The number of selectable elements.
+    /// @param <TYPE>          Type of the data stored by this config.
+    ///
+    /// @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
+    /// @implNote If selectedCount is equal to the number of elements in the enum, this acts as if [#streamCodec(StreamCodec)] was called instead.
     public static <BUF extends ByteBuf, TYPE extends Enum<TYPE> & IHasTextComponent> StreamCodec<BUF, ModuleEnumConfig<TYPE>> streamCodec(StreamCodec<BUF, TYPE> enumCodec,
           Class<TYPE> enumClass, int selectableCount) {
         if (selectableCount <= 0) {
@@ -106,27 +96,23 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         );
     }
 
-    /**
-     * Creates a new enum module config with the given name, value, and no limits on what options are valid.
-     *
-     * @param name   Name of the config option.
-     * @param value  Value of the config option.
-     * @param <TYPE> Type of the data stored by this config.
-     */
+    /// Creates a new enum module config with the given name, value, and no limits on what options are valid.
+    ///
+    /// @param name   Name of the config option.
+    /// @param value  Value of the config option.
+    /// @param <TYPE> Type of the data stored by this config.
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> create(Identifier name, TYPE value) {
         return new ModuleEnumConfig<>(name, value);
     }
 
-    /**
-     * Creates a new enum module config with the given name, value, and is limited to the specified range of values.
-     *
-     * @param name            Name of the config option.
-     * @param value           Value of the config option.
-     * @param selectableCount The number of selectable elements.
-     * @param <TYPE>          Type of the data stored by this config.
-     *
-     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #create(Identifier, Enum)} was called instead.
-     */
+    /// Creates a new enum module config with the given name, value, and is limited to the specified range of values.
+    ///
+    /// @param name            Name of the config option.
+    /// @param value           Value of the config option.
+    /// @param selectableCount The number of selectable elements.
+    /// @param <TYPE>          Type of the data stored by this config.
+    ///
+    /// @implNote If selectedCount is equal to the number of elements in the enum, this acts as if [#create(Identifier, Enum)] was called instead.
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> createBounded(Identifier name, TYPE value, int selectableCount) {
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
@@ -178,9 +164,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         return value;
     }
 
-    /**
-     * {@return an immutable list of enum constants that this config supports}
-     */
+    /// {@return an immutable list of enum constants that this config supports}
     public List<TYPE> getEnumConstants() {
         return enumConstants;
     }
@@ -196,15 +180,13 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         return new ModuleEnumConfig<>(name(), value);
     }
 
-    /**
-     * Creates a new immutable enum module config object that has a value equal to the nth enum value.
-     *
-     * @param index Enum index of the desired value.
-     *
-     * @return A new module config using the value with the specific index.
-     *
-     * @throws IllegalArgumentException If the specified value is not valid in the range of constants this config supports (used for invalid packets)
-     */
+    /// Creates a new immutable enum module config object that has a value equal to the nth enum value.
+    ///
+    /// @param index Enum index of the desired value.
+    ///
+    /// @return A new module config using the value with the specific index.
+    ///
+    /// @throws IllegalArgumentException If the specified value is not valid in the range of constants this config supports (used for invalid packets)
     public ModuleEnumConfig<TYPE> with(int index) {
         if (index < 0 || index >= enumConstants.size()) {
             throw new IllegalArgumentException("Invalid value, it is out of range of the selectable values.");

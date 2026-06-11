@@ -10,29 +10,17 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import org.jspecify.annotations.Nullable;
 
 public enum MethodRestriction implements Predicate<Object> {
-    /**
-     * No restrictions
-     */
+    /// No restrictions
     NONE(ConstantPredicates.alwaysTrue()),
-    /**
-     * Handler is a directional tile that is actually directional.
-     */
+    /// Handler is a directional tile that is actually directional.
     DIRECTIONAL(handler -> handler instanceof ITileDirectional directional && directional.isDirectional()),
-    /**
-     * Handler is an energy handler that can handle energy.
-     */
+    /// Handler is an energy handler that can handle energy.
     ENERGY(handler -> handler instanceof TileEntityMekanism energyHandler && energyHandler.canHandleEnergy()),
-    /**
-     * Handler is a multiblock that can expose the multiblock.
-     */
+    /// Handler is a multiblock that can expose the multiblock.
     MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock<?> multiblock && multiblock.exposesMultiblockToComputer()),
-    /**
-     * Handler is a tile that can support redstone.
-     */
+    /// Handler is a tile that can support redstone.
     REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone redstone && redstone.supportsRedstone()),
-    /**
-     * Handler is a tile that has comparator support.
-     */
+    /// Handler is a tile that has comparator support.
     COMPARATOR(handler -> handler instanceof IComparatorSupport comparatorSupport && comparatorSupport.supportsComparator());
 
     private final Predicate<@Nullable Object> validator;

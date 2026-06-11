@@ -5,10 +5,8 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.recipes.MekanismRecipe;
 
-/**
- * Registers some "unused" and non instantiatable classes to ZenCode so that they can be resolved when ZenCode is resolving generics even if they don't need to be used on
- * the ZenCode side and are just there to make the Java side easier to manage.
- */
+/// Registers some "unused" and non instantiatable classes to ZenCode so that they can be resolved when ZenCode is resolving generics even if they don't need to be used
+/// on the ZenCode side and are just there to make the Java side easier to manage.
 public class DummyCrTNatives {
 
     private DummyCrTNatives() {

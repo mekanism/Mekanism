@@ -19,11 +19,9 @@ public class BasicCombinerRecipe extends CombinerRecipe {
     protected final ItemStackIngredient extraInput;
     protected final ItemStackTemplate output;
 
-    /**
-     * @param mainInput  Main input.
-     * @param extraInput Secondary/extra input.
-     * @param output     Output.
-     */
+    /// @param mainInput  Main input.
+    /// @param extraInput Secondary/extra input.
+    /// @param output     Output.
     public BasicCombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStackTemplate output) {
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");

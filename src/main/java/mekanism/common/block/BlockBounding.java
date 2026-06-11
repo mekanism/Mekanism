@@ -141,9 +141,9 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
     }
 
-    /**
-     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(LevelReader, BlockPos, BlockState, boolean, Player)}.
-     */
+    /// {@inheritDoc}
+    ///
+    /// Delegate to main [Block#getCloneItemStack(LevelReader, BlockPos, BlockState, boolean, Player)].
     @Override
     public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData, Player player) {
         BlockPos mainPos = getMainBlockPos(world, pos);

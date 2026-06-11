@@ -14,11 +14,9 @@ import org.jspecify.annotations.Nullable;
 
 public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> {
 
-    /**
-     * Gets the registry name of the element represented by this provider.
-     *
-     * @return Registry name.
-     */
+    /// Gets the registry name of the element represented by this provider.
+    ///
+    /// @return Registry name.
     default Identifier getRegistryName() {
         return getRecipeType().getRegistryName();
     }
@@ -29,7 +27,7 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
         return getRecipeType().getInputCache();
     }
 
-    /** Use only when you have no way of getting a Level or RecipeManager */
+    /// Use only when you have no way of getting a Level or RecipeManager
     default List<RecipeHolder<RECIPE>> getRecipes() {
         return getRecipeType().getRecipes((Level) null);
     }
@@ -46,9 +44,7 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
         return getRecipes(world).stream();
     }
 
-    /**
-     * Finds the first recipe that matches the given criteria, or null if no matching recipe is found. Prefer using the find recipe methods in {@link #getInputCache()}.
-     */
+    /// Finds the first recipe that matches the given criteria, or null if no matching recipe is found. Prefer using the find recipe methods in [#getInputCache()].
     @Nullable
     default RECIPE findFirst(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
         for (RecipeHolder<RECIPE> recipeRecipeHolder : getRecipes(world)) {
@@ -60,9 +56,7 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
         return null;
     }
 
-    /**
-     * Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in {@link #getInputCache()}.
-     */
+    /// Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in [#getInputCache()].
     default boolean contains(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
         for (RecipeHolder<RECIPE> holder : getRecipes(world)) {
             if (matchCriteria.test(holder.value())) {

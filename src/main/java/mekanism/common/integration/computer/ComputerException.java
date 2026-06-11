@@ -2,9 +2,7 @@ package mekanism.common.integration.computer;
 
 import java.util.Locale;
 
-/**
- * Specialized exception for use in computer methods that doesn't spend time filling in the stack trace as we only really care about the message.
- */
+/// Specialized exception for use in computer methods that doesn't spend time filling in the stack trace as we only really care about the message.
 public class ComputerException extends Exception {
 
     public ComputerException(String message) {

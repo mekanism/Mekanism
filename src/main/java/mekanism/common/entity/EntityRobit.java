@@ -168,9 +168,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     private int textureIndex;
     private int progress;
 
-    /**
-     * The players currently using this robit.
-     */
+    /// The players currently using this robit.
     private final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
     private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe> recipeCacheLookupMonitor;
@@ -732,9 +730,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return true;
     }
 
-    /**
-     * @apiNote Only call on the client.
-     */
+    /// @apiNote Only call on the client.
     public Identifier getModelTexture() {
         Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkinId();

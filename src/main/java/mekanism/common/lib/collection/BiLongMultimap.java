@@ -14,10 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import org.jspecify.annotations.NullUnmarked;
 
-/**
- * Like {@link BiMultimap} but with long as key, using FastUtils
- * @param <V> the value type
- */
+/// Like [BiMultimap] but with long as key, using FastUtils
+///
+/// @param <V> the value type
 public class BiLongMultimap<V> {
 
     private final Long2ObjectSortedMap<Set<V>> map = new Long2ObjectAVLTreeMap<>();

@@ -7,9 +7,8 @@ import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 
-/**
- * Base class for helping wrap our recipes into IRecipes.
- *///TODO - 26.1 implement display()?
+/// Base class for helping wrap our recipes into IRecipes.
+//TODO - 26.1 implement display()?
 public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
     //TODO: Should we make implementations override equals and hashcode?
 

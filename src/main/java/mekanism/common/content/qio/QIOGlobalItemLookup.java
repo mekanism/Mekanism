@@ -33,9 +33,7 @@ public class QIOGlobalItemLookup {
     private QIOGlobalItemLookup() {
     }
 
-    /**
-     * Note: This should only be called from the server side
-     */
+    /// Note: This should only be called from the server side
     public static void serverLoad(MinecraftServer server) {
         INSTANCE = server.getDataStorage().computeIfAbsent(TYPE);
     }
@@ -68,9 +66,7 @@ public class QIOGlobalItemLookup {
         // we only don't store them as such for the generic so that we don't have to create extra objects for purposes
         // of getting the uuid for a given item type
         private final BiMap<UUID, ItemResource> itemCache = HashBiMap.create();
-        /**
-         * Map of "No longer valid" -> "New Id"
-         */
+        /// Map of "No longer valid" -> "New Id"
         private final Map<UUID, UUID> mergedIds;
 
         private QIOGlobalItemLookupDataHandler() {
@@ -115,9 +111,7 @@ public class QIOGlobalItemLookup {
             return itemCache.inverse().get(item);
         }
 
-        /**
-         * @apiNote Only call this with non-raw hashed items
-         */
+        /// @apiNote Only call this with non-raw hashed items
         public UUID getOrTrackUUID(ItemResource item) {
             BiMap<ItemResource, UUID> inverseCache = itemCache.inverse();
             UUID uuid = inverseCache.get(item);

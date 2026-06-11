@@ -118,9 +118,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     private List<IFluidTank> fluidTanks;
     private List<IHeatCapacitor> heatCapacitors;
 
-    /**
-     * @param uuid Should only be null if we have incomplete data that we are loading
-     */
+    /// @param uuid Should only be null if we have incomplete data that we are loading
     public InventoryFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
         super(FrequencyTypes.INVENTORY, n, uuid, securityMode);
         presetVariables();

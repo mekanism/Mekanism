@@ -49,9 +49,7 @@ public enum PipeTier implements IStorageTier {//TODO - 26.1: Do we want to chang
         return baseTransferRate;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the PipeTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the PipeTier a reference to the actual config value object
     public void setConfigReference(CachedLongValue capacityReference, CachedIntValue transferRateReference) {
         this.capacityReference = capacityReference;
         this.transferRateReference = transferRateReference;

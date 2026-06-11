@@ -17,27 +17,21 @@ public class CrTCombinerRecipe {
     private CrTCombinerRecipe() {
     }
 
-    /**
-     * Gets the main input ingredient.
-     */
+    /// Gets the main input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("mainInput")
     public static IIngredientWithAmount getMainInput(CombinerRecipe _this) {
         return CrTUtils.toCrT(_this.getMainInput());
     }
 
-    /**
-     * Gets the secondary input ingredient.
-     */
+    /// Gets the secondary input ingredient.
     @ZenCodeType.Method
     @ZenCodeType.Getter("extraInput")
     public static IIngredientWithAmount getExtraInput(CombinerRecipe _this) {
         return CrTUtils.toCrT(_this.getExtraInput());
     }
 
-    /**
-     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-     */
+    /// Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<IItemStack> getOutputs(CombinerRecipe _this) {

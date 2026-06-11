@@ -23,12 +23,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy Cube 3: Ultimate Energy Cube 4: Creative Energy
- * Cube
- *
- * @author AidanBrady
- */
 public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machine<TileEntityEnergyCube>> {
 
     private static final VoxelShape[] bounds = new VoxelShape[256];
@@ -119,9 +113,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
         }
     }
 
-    /**
-     * 0 for an input is equivalent to false, 1 is equivalent to true
-     */
+    /// 0 for an input is equivalent to false, 1 is equivalent to true
     private static int getIndex(int top, int bottom, int front, int back, int left, int right, boolean rotateVertical, boolean rotateHorizontal) {
         return ((((((top | bottom << 1) | front << 2) | back << 3) | left << 4) | right << 5) | (rotateVertical ? 1 : 0) << 6) | (rotateHorizontal ? 1 : 0) << 7;
     }
@@ -169,9 +161,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
         return bounds[index];
     }
 
-    /**
-     * @return 1 if the side is enabled, 0 otherwise
-     */
+    /// @return 1 if the side is enabled, 0 otherwise
     private static int isSideEnabled(ConfigInfo energyConfig, @Nullable Direction facing, Direction side) {
         if (facing == null) {
             //If something went wrong, and we don't have a facing direction return nothing is enabled

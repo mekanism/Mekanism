@@ -5,11 +5,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of a recipe input for {@link mekanism.api.recipes.PressurizedReactionRecipe}.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input for [mekanism.api.recipes.PressurizedReactionRecipe].
+///
+/// @since 10.6.0
 public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStack chemical) implements FluidRecipeInput, ChemicalRecipeInput {
 
     @Override

@@ -46,21 +46,17 @@ public class AcceptorCache<ACCEPTOR> {
         return new CacheBasedInfo<>(cache);
     }
 
-    /**
-     * @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
-     */
+    /// @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
     @Nullable
     public ACCEPTOR getCachedAcceptor(Direction side) {
         return Transmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : null;
     }
 
-    /**
-     * Gets all our cached acceptors for the given sides.
-     *
-     * @param sides The sides of to look up, assumes that all the given sides are currently connected to acceptors and not other transmitters and is not set to none.
-     *
-     * @implNote Grabs the acceptors from cache
-     */
+    /// Gets all our cached acceptors for the given sides.
+    ///
+    /// @param sides The sides of to look up, assumes that all the given sides are currently connected to acceptors and not other transmitters and is not set to none.
+    ///
+    /// @implNote Grabs the acceptors from cache
     public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides) {
         List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
         for (Direction side : sides) {
@@ -72,19 +68,15 @@ public class AcceptorCache<ACCEPTOR> {
         return acceptors;
     }
 
-    /**
-     * @apiNote Only call this from the server side
-     * @implNote Grabs the acceptors from cache
-     */
+    /// @apiNote Only call this from the server side
+    /// @implNote Grabs the acceptors from cache
     @Nullable
     public ACCEPTOR getConnectedAcceptor(Direction side) {
         CacheBasedInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
         return acceptorInfo == null ? null : acceptorInfo.acceptor();
     }
 
-    /**
-     * Gets the listener that will refresh connections on a given side.
-     */
+    /// Gets the listener that will refresh connections on a given side.
     private RefreshListener getRefreshListener(Direction side) {
         RefreshListener listener = cachedListeners.get(side);
         //noinspection Java8MapApi - Capturing lambda
@@ -115,11 +107,9 @@ public class AcceptorCache<ACCEPTOR> {
             this.side = side;
         }
 
-        /**
-         * Used to check if this listener is still valid
-         *
-         * @return {@code true} if still valid.
-         */
+        /// Used to check if this listener is still valid
+        ///
+        /// @return `true` if still valid.
         @Override
         public boolean getAsBoolean() {
             //Note: We could get away with just returning true here and letting GC fully handle removing this listener,
@@ -127,9 +117,7 @@ public class AcceptorCache<ACCEPTOR> {
             return tile.get() != null;
         }
 
-        /**
-         * Called if this listener is still valid to run the cache invalidation logic.
-         */
+        /// Called if this listener is still valid to run the cache invalidation logic.
         @Override
         public void run() {
             TileEntityTransmitter transmitterTile = tile.get();

@@ -63,14 +63,13 @@ public class MekanismRenderer {
     private static final Map<TextureAtlasSprite, RenderResizableCuboid.TexturePicker> SINGLE_TEXTURE_PICKERS = new IdentityHashMap<>();
     private static final Map<Fluid, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new HashMap<>();
 
-    /**
-     * Get a fluid texture when a stack does not exist.
-     *
-     * @param fluid the fluid to get
-     * @param type  Still or Flowing
-     *
-     * @return the sprite, or missing sprite if not found
-     *///TODO - 26.1 - is this still what should be done?
+    /// Get a fluid texture when a stack does not exist.
+    ///
+    /// @param fluid the fluid to get
+    /// @param type  Still or Flowing
+    ///
+    /// @return the sprite, or missing sprite if not found
+    //TODO - 26.1 - is this still what should be done?
     public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {

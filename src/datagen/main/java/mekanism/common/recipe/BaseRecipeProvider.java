@@ -43,11 +43,9 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     protected abstract void addRecipes(HolderLookup.Provider registries);
 
-    /**
-     * Gets all the sub/offloaded recipe providers that this recipe provider has.
-     *
-     * @implNote This is only called once per provider so there is no need to bother caching the list that this returns
-     */
+    /// Gets all the sub/offloaded recipe providers that this recipe provider has.
+    ///
+    /// @implNote This is only called once per provider so there is no need to bother caching the list that this returns
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
         return Collections.emptyList();
     }

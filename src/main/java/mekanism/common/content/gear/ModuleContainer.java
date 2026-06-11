@@ -38,8 +38,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModules, ItemEnchantments enchantments) implements IModuleContainer {
 
@@ -279,11 +279,9 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return false;
     }
 
-    /**
-     * @param toInstall Number of modules to try and install.
-     *
-     * @return number installed
-     */
+    /// @param toInstall Number of modules to try and install.
+    ///
+    /// @return number installed
     public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemAccess itemAccess, Holder<ModuleData<?>> typeProvider, int toInstall,
           TransactionContext transaction) {
         ModuleData<?> type = typeProvider.value();

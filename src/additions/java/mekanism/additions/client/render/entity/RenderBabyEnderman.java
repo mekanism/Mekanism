@@ -16,10 +16,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Copy of vanilla's enderman render, modified to use our own model/layer that is properly scaled, so that the block is held in the correct spot and the head is in the
- * proper place.
- */
+/// Copy of vanilla's [enderman render][net.minecraft.client.renderer.entity.EndermanRenderer], modified to use our own model/layer that is properly scaled, so that the
+/// block is held in the correct spot and the head is in the proper place.
 public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
     public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();

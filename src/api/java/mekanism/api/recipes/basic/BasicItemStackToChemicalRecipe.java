@@ -18,10 +18,8 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
     protected final ChemicalStackTemplate output;
     private final RecipeType<ItemStackToChemicalRecipe> recipeType;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicItemStackToChemicalRecipe(ItemStackIngredient input, ChemicalStackTemplate output, RecipeType<ItemStackToChemicalRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");

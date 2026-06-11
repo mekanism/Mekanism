@@ -93,11 +93,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
     public BasicFluidTank fluidTank;
-    /**
-     * True: fluid -> chemical
-     * <p>
-     * False: chemical -> fluid
-     */
+    /// True: fluid -> chemical
+    ///
+    /// False: chemical -> fluid
     private boolean mode;
 
     private final IOutputHandler<ChemicalStackTemplate> gasOutputHandler;

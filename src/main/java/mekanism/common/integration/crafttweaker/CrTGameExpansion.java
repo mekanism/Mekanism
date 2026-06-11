@@ -15,27 +15,21 @@ import org.openzen.zencode.java.ZenCodeType;
 @TypedExpansion(Game.class)
 public class CrTGameExpansion {
 
-    /**
-     * Gets all registered chemicals.
-     */
+    /// Gets all registered chemicals.
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicals")
     public static Collection<Chemical> getChemicals(Game _this) {
         return MekanismAPI.CHEMICAL_REGISTRY.stream().toList();
     }
 
-    /**
-     * Gets all registered module types.
-     */
+    /// Gets all registered module types.
     @ZenCodeType.Method
     @ZenCodeType.Getter("modules")
     public static Collection<ModuleData<?>> getModules(Game _this) {
         return MekanismAPI.MODULE_REGISTRY.stream().toList();
     }
 
-    /**
-     * Gets all registered robit skins.
-     */
+    /// Gets all registered robit skins.
     @ZenCodeType.Method
     @ZenCodeType.Getter("robitSkins")
     public static Collection<RobitSkin> getRobitSkins(Game _this) {

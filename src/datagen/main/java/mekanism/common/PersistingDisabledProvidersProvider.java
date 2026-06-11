@@ -32,9 +32,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Used for helping to persist specific integrations we have that aren't updated yet.
- */
+/// Used for helping to persist specific integrations we have that aren't updated yet.
 public class PersistingDisabledProvidersProvider implements DataProvider {
 
     @Nullable

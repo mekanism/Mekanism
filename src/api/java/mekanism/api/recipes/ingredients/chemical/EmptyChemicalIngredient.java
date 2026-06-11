@@ -7,16 +7,14 @@ import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base Chemical ingredient implementation for a singleton that represents an empty chemical ingredient.
- * <p>
- * This is the only instance of an <b>explicitly</b> empty ingredient, and may be used as a fallback in ChemicalIngredient convenience methods (such as when trying to
- * create an ingredient from an empty list).
- *
- * @see mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#empty()
- * @see ChemicalIngredient#isEmpty()
- * @since 10.6.0
- */
+/// Base Chemical ingredient implementation for a singleton that represents an empty chemical ingredient.
+///
+/// This is the only instance of an **explicitly** empty ingredient, and may be used as a fallback in ChemicalIngredient convenience methods (such as when trying to
+/// create an ingredient from an empty list).
+///
+/// @see mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#empty()
+/// @see ChemicalIngredient#isEmpty()
+/// @since 10.6.0
 public final class EmptyChemicalIngredient extends ChemicalIngredient {
 
     public static final EmptyChemicalIngredient INSTANCE = new EmptyChemicalIngredient();

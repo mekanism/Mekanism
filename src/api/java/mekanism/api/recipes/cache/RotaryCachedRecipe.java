@@ -19,9 +19,7 @@ import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base class to help implement handling of rotary recipes.
- */
+/// Base class to help implement handling of rotary recipes.
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
     private final IOutputHandler<ChemicalStackTemplate> chemicalOutputHandler;
@@ -45,16 +43,14 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     @Nullable
     private ChemicalStackTemplate chemicalOutput;
 
-    /**
-     * @param recipe                Recipe.
-     * @param recheckAllErrors      Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
-     *                              not do this every tick or if there is no one viewing recipes.
-     * @param fluidInputHandler     Fluid input handler.
-     * @param chemicalInputHandler  Chemical input handler.
-     * @param chemicalOutputHandler Chemical output handler.
-     * @param fluidOutputHandler    Fluid output handler.
-     * @param modeSupplier          Machine handling mode. Returns {@code true} for fluid to chemical, and {@code false} for chemical to fluid.
-     */
+    /// @param recipe                Recipe.
+    /// @param recheckAllErrors      Returns `true` if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+    /// not do this every tick or if there is no one viewing recipes.
+    /// @param fluidInputHandler     Fluid input handler.
+    /// @param chemicalInputHandler  Chemical input handler.
+    /// @param chemicalOutputHandler Chemical output handler.
+    /// @param fluidOutputHandler    Fluid output handler.
+    /// @param modeSupplier          Machine handling mode. Returns `true` for fluid to chemical, and `false` for chemical to fluid.
     public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<Fluid, FluidStack> fluidInputHandler,
           IInputHandler<Chemical, ChemicalStack> chemicalInputHandler, IOutputHandler<ChemicalStackTemplate> chemicalOutputHandler,
           IOutputHandler<FluidStackTemplate> fluidOutputHandler, BooleanSupplier modeSupplier) {

@@ -412,9 +412,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void sideChanged(Direction side, ConnectionType old, ConnectionType type) {
     }
 
-    /**
-     * Called if the transmitter handles redstone and the redstone activity state has changed.
-     */
+    /// Called if the transmitter handles redstone and the redstone activity state has changed.
     public void redstoneChanged(boolean powered) {
     }
 

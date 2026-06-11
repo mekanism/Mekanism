@@ -93,10 +93,8 @@ public class ResourceRecipeData<RESOURCE extends Resource> implements RecipeUpgr
         return inserted;
     }
 
-    /**
-     * Similar to {@link IResourceContainer#insert(Resource, int, TransactionContext, AutomationType)} except directly sets the contents ignoring any rate limits, and
-     * supporting if the amount is greater than max long.
-     */
+    /// Similar to [IResourceContainer#insert(Resource, int, TransactionContext, AutomationType)] except directly sets the contents ignoring any rate limits, and
+    /// supporting if the amount is greater than max long.
     private long insertInto(IResourceContainer<RESOURCE> container, RESOURCE resource, final long amount, TransactionContext transaction) {
         //TODO - 26.1: Evaluate if any containers ever get passed to this that override insert that we potentially need bonus logic? In general as it is
         // just component backed slots, most likely the answer is no. Maybe if someone added a recipe to make creative bins would be the only case

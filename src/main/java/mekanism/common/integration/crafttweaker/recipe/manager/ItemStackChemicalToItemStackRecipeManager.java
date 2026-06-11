@@ -27,46 +27,41 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends Mekanism
         super(recipeType);
     }
 
-    /**
-     * Adds a recipe that converts an item and a chemical into an item.
-     * <br>
-     * If this is called from the compressing recipe manager, this will be a compressing recipe and the chemical input must be a {@link ChemicalStackIngredient} that will
-     * be used at a constant rate over the duration of the recipe. Osmium Compressors and Compressing Factories can process this recipe type.
-     * <br>
-     * If this is called from the injecting recipe manager, this will be an injecting recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
-     * used at a near constant rate over the duration of the recipe. Chemical Injection Chambers and Injecting Factories can process this recipe type.
-     * <br>
-     * If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
-     * used at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
-     * <br>
-     * If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an
-     * {@link ChemicalStackIngredient} that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe
-     * type.
-     * <br>
-     * If this is called from the painting recipe manager, this will be a painting recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
-     * consumed at the end along with the item input. Painting Machines can process this recipe type.
-     *
-     * @param name          Name of the new recipe.
-     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
-     *                      called from.
-     * @param output        {@link IItemStack} representing the output of the recipe.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Adds a recipe that converts an item and a chemical into an item.
+    ///
+    /// If this is called from the compressing recipe manager, this will be a compressing recipe and the chemical input must be a [ChemicalStackIngredient] that will be
+    /// used at a constant rate over the duration of the recipe. Osmium Compressors and Compressing Factories can process this recipe type.
+    ///
+    /// If this is called from the injecting recipe manager, this will be an injecting recipe and the chemical input must be a [ChemicalStackIngredient] that will be used
+    /// at a near constant rate over the duration of the recipe. Chemical Injection Chambers and Injecting Factories can process this recipe type.
+    ///
+    /// If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a [ChemicalStackIngredient] that will be used
+    /// at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
+    ///
+    /// If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an
+    /// [ChemicalStackIngredient] that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe type.
+    ///
+    /// If this is called from the painting recipe manager, this will be a painting recipe and the chemical input must be a [ChemicalStackIngredient] that will be
+    /// consumed at the end along with the item input. Painting Machines can process this recipe type.
+    ///
+    /// @param name          Name of the new recipe.
+    /// @param itemInput     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is called
+    /// called from.
+    /// @param output        [IItemStack] representing the output of the recipe.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
         addRecipe(name, makeRecipe(itemInput, chemicalInput, output, perTickUsage));
     }
 
-    /**
-     * Creates a recipe that converts an item and a chemical into an item.
-     *
-     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
-     *                      called from.
-     * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// Creates a recipe that converts an item and a chemical into an item.
+    ///
+    /// @param itemInput     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
+    ///                      called from.
+    /// @param output        [IItemStack] representing the output of the recipe. Will be validated as not empty.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public final ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
         return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output), perTickUsage);
     }

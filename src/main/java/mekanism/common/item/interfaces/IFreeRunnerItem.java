@@ -80,15 +80,13 @@ public interface IFreeRunnerItem {
         }
     }
 
-    /**
-     * Gets the first found active pair (pair with energy) of free runners for an entity, if any are worn.
-     * <br>
-     * If Curios is loaded, the curio slots will be checked as well.
-     *
-     * @param entity the entity on which to look for the free runners
-     *
-     * @return the free runners stack if present, otherwise an empty stack
-     */
+    /// Gets the first found active pair (pair with energy) of free runners for an entity, if any are worn.
+    ///
+    /// If Curios is loaded, the curio slots will be checked as well.
+    ///
+    /// @param entity the entity on which to look for the free runners
+    ///
+    /// @return the free runners stack if present, otherwise an empty stack
     @Nullable
     static ItemAccess getActiveFreeRunners(LivingEntity entity) {
         return getFreeRunners(entity, itemAccess -> {
@@ -100,15 +98,13 @@ public interface IFreeRunnerItem {
         });
     }
 
-    /**
-     * Gets the first found free runners from an entity, if one is worn. Purpose of this is to get the correct free runner mode to use.
-     * <br>
-     * If Curios is loaded, the curio slots will be checked as well.
-     *
-     * @param entity the entity on which to look for the free runners
-     *
-     * @return the free runners stack if present, otherwise an empty stack
-     */
+    /// Gets the first found free runners from an entity, if one is worn. Purpose of this is to get the correct free runner mode to use.
+    ///
+    /// If Curios is loaded, the curio slots will be checked as well.
+    ///
+    /// @param entity the entity on which to look for the free runners
+    ///
+    /// @return the free runners stack if present, otherwise an empty stack
     static ItemResource getPrimaryFreeRunners(LivingEntity entity) {
         ItemAccess freeRunners = getFreeRunners(entity, itemAccess -> itemAccess.getResource().getItem() instanceof IFreeRunnerItem);
         return freeRunners == null ? ItemResource.EMPTY : freeRunners.getResource();

@@ -7,9 +7,6 @@ import mekanism.common.registries.MekanismSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.StringRepresentable;
 
-/**
- * Created by Thiakil on 4/05/2025.
- */
 public enum RadiationScale implements StringRepresentable {
     NONE,
     LOW,
@@ -18,9 +15,7 @@ public enum RadiationScale implements StringRepresentable {
     HIGH,
     EXTREME;
 
-    /**
-     * Get the corresponding RadiationScale from an equivalent dose rate (Sv/h)
-     */
+    /// Get the corresponding RadiationScale from an equivalent dose rate (Sv/h)
     public static RadiationScale get(double magnitude) {
         if (magnitude < 0.00001) { // 10 uSv/h
             return NONE;
@@ -36,9 +31,7 @@ public enum RadiationScale implements StringRepresentable {
         return EXTREME;
     }
 
-    /**
-     * For both Sv and Sv/h.
-     */
+    /// For both Sv and Sv/h.
     public static EnumColor getSeverityColor(double magnitude) {
         if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
             return EnumColor.BRIGHT_GREEN;
@@ -59,9 +52,7 @@ public enum RadiationScale implements StringRepresentable {
     private static final double SCALE = LOG_MAX - LOG_BASELINE;
     public static final Codec<RadiationScale> CODEC = StringRepresentable.fromEnum(RadiationScale::values);
 
-    /**
-     * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
-     */
+    /// Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
     public static double getScaledDoseSeverity(double magnitude) {
         if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
             return 0;

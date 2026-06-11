@@ -11,20 +11,16 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker
- */
+/// Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker
 public class CrTContentUtils {
 
     @Nullable
     private static Map<Identifier, Chemical> queuedChemicals = new HashMap<>();
 
-    /**
-     * Queues a {@link Chemical} to be registered with the given registry name.
-     *
-     * @param registryName Registry name to give the {@link Chemical}.
-     * @param chemical          {@link Chemical} to queue for registration.
-     */
+    /// Queues a [Chemical] to be registered with the given registry name.
+    ///
+    /// @param registryName Registry name to give the [Chemical].
+    /// @param chemical     [Chemical] to queue for registration.
     public static void queueChemicalForRegistration(Identifier registryName, Chemical chemical) {
         //Only queue our chemicals for registration on the first run of our loader
         if (queuedChemicals != null) {

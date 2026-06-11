@@ -17,14 +17,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 public class BoltRenderer {
 
-    /** Amount of times per tick we refresh. 3 implies 60 Hz. */
+    /// Amount of times per tick we refresh. 3 implies 60 Hz.
     private static final float REFRESH_TIME = 3F;
-    /** We will keep track of an owner's render data for 5 seconds after there are no bolts remaining. */
+    /// We will keep track of an owner's render data for 5 seconds after there are no bolts remaining.
     private static final double MAX_OWNER_TRACK_TIME = 5 * SharedConstants.TICKS_PER_SECOND;
 
     private Timestamp refreshTimestamp = new Timestamp();

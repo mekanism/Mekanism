@@ -32,9 +32,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     private final Map<MultiblockManager<?>, Structure> structures = new Reference2ObjectArrayMap<>(2);
     private final Structure invalidStructure = Structure.INVALID;
     private final MultiblockData defaultMultiblock = new MultiblockData(this);
-    /**
-     * Used to mark that the multiblock is currently being removed/unloaded, so we can skip updating the backing maps.
-     */
+    /// Used to mark that the multiblock is currently being removed/unloaded, so we can skip updating the backing maps.
     private boolean removing;
     private boolean hasFormedMultiblock = false;
     private boolean canAccessGui = false;

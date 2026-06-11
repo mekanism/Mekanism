@@ -18,22 +18,18 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = EntityRobit.class, zenCodeName = CrTConstants.CLASS_ROBIT)
 public class ExpandEntityRobit {
 
-    /**
-     * Gets the skin this Robit currently is using.
-     *
-     * @return Current skin.
-     */
+    /// Gets the skin this Robit currently is using.
+    ///
+    /// @return Current skin.
     @ZenCodeType.Method
     @ZenCodeType.Getter("skin")
     public static RobitSkin getSkin(EntityRobit internal) {
         return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkinId()).skin();
     }
 
-    /**
-     * Gets the name of the skin this Robit currently is using.
-     *
-     * @return Current skin.
-     */
+    /// Gets the name of the skin this Robit currently is using.
+    ///
+    /// @return Current skin.
     @ZenCodeType.Method
     @ZenCodeType.Getter("skinName")
     public static Identifier getSkinName(EntityRobit internal) {
@@ -41,17 +37,15 @@ public class ExpandEntityRobit {
         return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkinId()).identifier();
     }
 
-    /**
-     * Tries to set this Robit's skin to the given skin.
-     *
-     * @param skin   The skin to set.
-     * @param player The player who is trying to set the skin of the robit, or null if the player is unknown.
-     *
-     * @return {@code true} if the Robit's skin was set, or false if the player does not have security clearance or doesn't have the skin unlocked
-     * ({@link RobitSkin#isUnlocked(Player)}).
-     *
-     * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
-     */
+    /// Tries to set this Robit's skin to the given skin.
+    ///
+    /// @param skin   The skin to set.
+    /// @param player The player who is trying to set the skin of the robit, or null if the player is unknown.
+    ///
+    /// @return `true` if the Robit's skin was set, or false if the player does not have security clearance or doesn't have the skin unlocked
+    /// ([RobitSkin#isUnlocked(Player)]).
+    ///
+    /// @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
     @ZenCodeType.Method
     public static boolean setSkin(EntityRobit internal, RobitSkin skin, @Nullable @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
@@ -62,17 +56,15 @@ public class ExpandEntityRobit {
         return internal.setSkin(ResourceKey.create(registryName, skinName), player);
     }
 
-    /**
-     * Tries to set this Robit's skin to the given skin.
-     *
-     * @param skin   The skin to set.
-     * @param player The player who is trying to set the skin of the robit, or null if the player is unknown.
-     *
-     * @return {@code true} if the Robit's skin was set, or false if the player does not have security clearance or doesn't have the skin unlocked
-     * ({@link RobitSkin#isUnlocked(Player)}).
-     *
-     * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
-     */
+    /// Tries to set this Robit's skin to the given skin.
+    ///
+    /// @param skin   The skin to set.
+    /// @param player The player who is trying to set the skin of the robit, or null if the player is unknown.
+    ///
+    /// @return `true` if the Robit's skin was set, or false if the player does not have security clearance or doesn't have the skin unlocked
+    /// ([RobitSkin#isUnlocked(Player)]).
+    ///
+    /// @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
     @ZenCodeType.Method
     public static boolean setSkin(EntityRobit internal, Identifier skin, @Nullable @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;

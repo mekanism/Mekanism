@@ -12,9 +12,7 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling large resource stacks
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling large resource stacks
 public final class SyncableLargeResourceStack<RESOURCE extends Resource> implements ISyncableData {
 
     public static <RESOURCE extends Resource> SyncableLargeResourceStack<RESOURCE> create(IResourceContainer<RESOURCE> handler) {

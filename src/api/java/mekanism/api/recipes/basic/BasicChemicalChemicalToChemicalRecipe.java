@@ -20,13 +20,11 @@ public abstract class BasicChemicalChemicalToChemicalRecipe extends ChemicalChem
     protected final ChemicalStackIngredient rightInput;
     protected final ChemicalStackTemplate output;
 
-    /**
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     *
-     * @apiNote The order of the inputs does not matter.
-     */
+    /// @param leftInput  Left input.
+    /// @param rightInput Right input.
+    /// @param output     Output.
+    ///
+    /// @apiNote The order of the inputs does not matter.
     public BasicChemicalChemicalToChemicalRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output,
           RecipeType<ChemicalChemicalToChemicalRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");

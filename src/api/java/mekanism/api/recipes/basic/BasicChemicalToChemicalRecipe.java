@@ -18,10 +18,8 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
     protected final ChemicalStackTemplate output;
     private final ChemicalStackIngredient input;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicChemicalToChemicalRecipe(ChemicalStackIngredient input, ChemicalStackTemplate output, RecipeType<ChemicalToChemicalRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
@@ -49,11 +47,9 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
         return output;
     }
 
-    /**
-     * For Serializer usage only. Do not modify the returned stack!
-     *
-     * @return the uncopied output definition
-     */
+    /// For Serializer usage only. Do not modify the returned stack!
+    ///
+    /// @return the uncopied output definition
     public ChemicalStackTemplate getOutputRaw() {
         return output;
     }

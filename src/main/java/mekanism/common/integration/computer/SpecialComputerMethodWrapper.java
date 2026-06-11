@@ -11,10 +11,8 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod.Wr
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-/**
- * Helper class to hold classes that then can wrap one return type into multiple methods. Everything in this class must be public, static, and exist on both server and
- * client (no bytecode OnlyIn hacks).
- */
+/// Helper class to hold classes that then can wrap one return type into multiple methods. Everything in this class must be public, static, and exist on both server and
+/// client (no bytecode OnlyIn hacks).
 public class SpecialComputerMethodWrapper {
 
     public static class ComputerChemicalTankWrapper extends SpecialComputerMethodWrapper {

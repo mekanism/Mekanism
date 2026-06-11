@@ -10,10 +10,8 @@ public interface IStructuralMultiblock extends IMultiblockBase {
 
     boolean hasFormedMultiblock();
 
-    /**
-     * Returns true if the multiblock's gui can be accessed via structural multiblocks, false otherwise. An example this may be false for would be on a thermal
-     * evaporation plant.
-     */
+    /// Returns true if the multiblock's gui can be accessed via structural multiblocks, false otherwise. An example this may be false for would be on a thermal
+    /// evaporation plant.
     boolean structuralGuiAccessAllowed();
 
     void multiblockUnformed(Structure structure);

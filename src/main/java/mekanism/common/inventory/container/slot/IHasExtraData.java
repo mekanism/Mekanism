@@ -6,8 +6,6 @@ import net.minecraft.world.entity.player.Player;
 
 public interface IHasExtraData {
 
-    /**
-     * @param player "Owner" of the inventory
-     */
+    /// @param player "Owner" of the inventory
     void addTrackers(Player player, Consumer<ISyncableData> tracker);
 }

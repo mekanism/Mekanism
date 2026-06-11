@@ -26,9 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
-    /**
-     * The number of filters that can be displayed
-     */
+    /// The number of filters that can be displayed
     private static final int FILTER_COUNT = 3;
 
     @Nullable

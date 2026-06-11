@@ -57,9 +57,7 @@ public enum TransporterTier implements ITier {
         return baseSpeed;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the TransporterTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the TransporterTier a reference to the actual config value object
     public void setConfigReference(CachedIntValue pullReference, CachedIntValue speedReference) {
         this.pullReference = pullReference;
         this.speedReference = speedReference;

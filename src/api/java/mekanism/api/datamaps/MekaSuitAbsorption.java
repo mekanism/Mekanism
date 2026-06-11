@@ -6,26 +6,20 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import net.minecraft.resources.Identifier;
 
-/**
- * A {@link net.minecraft.core.registries.Registries#DAMAGE_TYPE damage type} data map that allows changing how much damage of a given type the meka suit should absorb.
- *
- * @param absorption how much damage will be absorbed. Must be between zero and one inclusive.
- *
- * @since 10.5.0
- */
+/// A [`damage type`][net.minecraft.core.registries.Registries#DAMAGE_TYPE] data map that allows changing how much damage of a given type the meka suit should absorb.
+///
+/// @param absorption how much damage will be absorbed. Must be between zero and one inclusive.
+///
+/// @since 10.5.0
 public record MekaSuitAbsorption(float absorption) {
 
-    /**
-     * The ID of the data map.
-     *
-     * @see mekanism.api.datamaps.IMekanismDataMapTypes#mekaSuitAbsorption()
-     */
+    /// The ID of the data map.
+    ///
+    /// @see mekanism.api.datamaps.IMekanismDataMapTypes#mekaSuitAbsorption()
     public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mekasuit_absorption");
 
     private static final Codec<Float> ABSORPTION_CODEC = Codec.floatRange(0, 1);
-    /**
-     * Codec for serializing and deserializing MekaSuit damage absorption values.
-     */
+    /// Codec for serializing and deserializing MekaSuit damage absorption values.
     public static final Codec<MekaSuitAbsorption> CODEC = Codec.withAlternative(RecordCodecBuilder.create(in -> in.group(
                 ABSORPTION_CODEC.fieldOf(SerializationConstants.ABSORPTION).forGetter(MekaSuitAbsorption::absorption)
           ).apply(in, MekaSuitAbsorption::new)

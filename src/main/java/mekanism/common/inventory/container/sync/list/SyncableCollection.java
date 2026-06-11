@@ -10,9 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling Collections
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling Collections
 public abstract class SyncableCollection<TYPE, COLLECTION extends Collection<TYPE>> implements ISyncableData {
 
     private final Supplier<? extends Collection<TYPE>> getter;

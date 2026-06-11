@@ -119,11 +119,9 @@ public class PacketUtils {
         return WorldUtils.getTileEntity(context.player().level(), pos);
     }
 
-    /**
-     * Send this message to the server.
-     *
-     * @param message - the message to send
-     */
+    /// Send this message to the server.
+    ///
+    /// @param message the message to send
     public static <MSG extends CustomPacketPayload> boolean sendToServer(MSG message) {
         ClientPacketDistributor.sendToServer(message);
         return true;
@@ -139,10 +137,8 @@ public class PacketUtils {
         }
     }
 
-    /**
-     * Based on home {@link PacketDistributor#sendToPlayersTrackingChunk(ServerLevel, ChunkPos, CustomPacketPayload, CustomPacketPayload...)} finds players to send to,
-     * without the immutable list.
-     */
+    /// Based on home [PacketDistributor#sendToPlayersTrackingChunk(ServerLevel, ChunkPos, CustomPacketPayload, CustomPacketPayload...)] finds players to send to, without
+    /// the immutable list.
     public static boolean hasPlayersTracking(ServerLevel level, BlockPos pos) {
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());

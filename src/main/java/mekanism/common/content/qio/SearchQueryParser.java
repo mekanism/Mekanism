@@ -20,22 +20,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
-/**
- * Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.
- *
- * @author aidancbrady
- */
+/// Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.
 public class SearchQueryParser {
 
     private static final Set<Character> TERMINATORS = Set.of('|', '(', '\"', '\'');
 
-    /**
-     * @param query Expected to be lower case
-     */
-    public static ISearchQuery parse(String query) {
+    /// @param query Expected to be lower case
+    public static ISearchQuery parse(@Nullable String query) {
         if (query == null || query.isEmpty()) {
             return ISearchQuery.INVALID;
         }
@@ -43,7 +38,7 @@ public class SearchQueryParser {
     }
 
     @VisibleForTesting
-    public static ISearchQuery parseOrdered(String query) {
+    public static ISearchQuery parseOrdered(@Nullable String query) {
         if (query == null || query.isEmpty()) {
             return ISearchQuery.INVALID;
         }
@@ -252,6 +247,7 @@ public class SearchQueryParser {
             }
         }
 
+        @NullUnmarked//Note: This is NullUnmarked as get is not annotated as nullable: https://github.com/vigna/fastutil/pull/375
         public static QueryType get(char prefix) {
             return charLookupMap.get(prefix);
         }

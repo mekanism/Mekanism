@@ -23,9 +23,7 @@ public class MekanismTools implements IModModule {
     @Nullable
     public static MekanismTools instance;
 
-    /**
-     * MekanismTools version number
-     */
+    /// MekanismTools version number
     public final Version versionNumber;
 
     public MekanismTools(ModContainer modContainer, IEventBus modEventBus) {

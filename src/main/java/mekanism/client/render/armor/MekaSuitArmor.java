@@ -510,9 +510,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     //TODO - 26.1 models - predicate needs to be RenderState based?
     private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<LivingEntity> isActive) {
 
-        /**
-         * Score closest to zero is considered best, negative one for no match at all.
-         */
+        /// Score closest to zero is considered best, negative one for no match at all.
         public int score(String name) {
             return name.indexOf(this.name + "_");
         }
@@ -530,9 +528,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         return part.replaceFirst(OVERRIDDEN_TAG, "").replaceFirst(name + "_", "");
     }
 
-    /**
-     * Call via {@link IModuleHelper#addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)}.
-     */
+    /// Call via [IModuleHelper#addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)].
     @Internal
     public static void registerModule(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
         moduleModelSpec.put(slotType, moduleData, new ModuleModelSpec(moduleData.value(), slotType, name, isActive));

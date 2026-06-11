@@ -355,10 +355,8 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
 
     private record MethodParameter(String name, Type type) {
 
-        /**
-         * Helper to get a method parameter (name, type pair) either using the existing parameter, or if there is a subclass, and the parameter was a generic, using the
-         * more specific type if possible.
-         */
+        /// Helper to get a method parameter (name, type pair) either using the existing parameter, or if there is a subclass, and the parameter was a generic, using the
+        /// more specific type if possible.
         private static MethodParameter get(Parameter parameter, Type genericParameterType, Lazy<Map<String, Type>> lazyLocalTypeLookup,
               Lazy<Map<String, Type>> lazyMethodTypeLookup) {
             Type type = null;

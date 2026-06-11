@@ -33,9 +33,7 @@ public abstract class BoundMethodHolder {
 
 
     protected final ListMultimap<String, BoundMethodData<?>> methods = ArrayListMultimap.create();
-    /**
-     * Method + arg count pairs to make sure methods are unique
-     */
+    /// Method + arg count pairs to make sure methods are unique
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
     protected Lazy<String[]> methodNames = Lazy.of(() -> this.methods.keys().toArray(new String[0]));

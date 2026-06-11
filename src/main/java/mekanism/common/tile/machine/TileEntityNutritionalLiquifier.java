@@ -218,9 +218,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         return energyContainer;
     }
 
-    /**
-     * @apiNote Do not modify the returned stack.
-     */
+    /// @apiNote Do not modify the returned stack.
     public ItemStack getRenderStack() {
         return lastPasteItem.toStack();
     }

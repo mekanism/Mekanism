@@ -20,23 +20,17 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
         super(tile, transmissionTypes);
     }
 
-    /**
-     * @apiNote Only call from the server side
-     */
+    /// @apiNote Only call from the server side
     protected abstract void pullFromAcceptors(ServerLevel level);
 
     public abstract long getCapacity();
 
-    /**
-     * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
-     *
-     * @return The transmitter's buffer, or if null the network's buffer.
-     */
+    /// If the transmitter does not have a buffer this will try to fallback on the network's buffer.
+    ///
+    /// @return The transmitter's buffer, or if null the network's buffer.
     public abstract BUFFER getBufferWithFallback();
 
-    /**
-     * @return True if the buffer with fallback is null (or empty)
-     */
+    /// @return True if the buffer with fallback is null (or empty)
     public abstract boolean noBufferOrFallback();
 
     protected boolean canHaveIncompatibleNetworks() {
@@ -186,16 +180,12 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
         network.updateCapacity();
     }
 
-    /**
-     * @return Gets and releases the transmitter's buffer.
-     *
-     * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
-     */
+    /// @return Gets and releases the transmitter's buffer.
+    ///
+    /// @apiNote Should only be `null`, if the buffer type supports null. So things like fluid's should use the empty variant.
     public abstract BUFFER releaseShare();
 
-    /**
-     * @return Gets the transmitter's buffer.
-     */
+    /// @return Gets the transmitter's buffer.
     public abstract BUFFER getShare();
 
     @Override

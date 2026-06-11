@@ -140,9 +140,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return getInitialChemicalTanks(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
+    /// @apiNote Do not call directly, only override implementation
     @Nullable
     protected IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
@@ -154,9 +152,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return getInitialFluidTanks(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
+    /// @apiNote Do not call directly, only override implementation
     @Nullable
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
@@ -168,9 +164,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return getInitialEnergyContainer(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
+    /// @apiNote Do not call directly, only override implementation
     @Nullable
     protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
@@ -182,9 +176,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return getInitialInventory(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
+    /// @apiNote Do not call directly, only override implementation
     @Nullable
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
@@ -196,9 +188,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return getInitialHeatCapacitors(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener), ambientTemperature);
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
+    /// @apiNote Do not call directly, only override implementation
     @Nullable
     protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener, CachedAmbientTemperature ambientTemperature) {
         return null;

@@ -14,9 +14,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Shim type to reuse code which expects an AST parameter where one doesn't actually exist yet.
- */
+/// Shim type to reuse code which expects an AST parameter where one doesn't actually exist yet.
 public class FakeParameter implements VariableElement {
 
     private final TypeMirror type;

@@ -43,61 +43,51 @@ public class BoltEffect {
         this.segments = segments;
     }
 
-    /**
-     * Set the amount of bolts to render for this single bolt instance.
-     *
-     * @param count amount of bolts to render
-     *
-     * @return this
-     */
+    /// Set the amount of bolts to render for this single bolt instance.
+    ///
+    /// @param count amount of bolts to render
+    ///
+    /// @return this
     public BoltEffect count(int count) {
         this.count = count;
         return this;
     }
 
-    /**
-     * Set the starting size (or width) of bolt segments.
-     *
-     * @param size starting size of bolt segments
-     *
-     * @return this
-     */
+    /// Set the starting size (or width) of bolt segments.
+    ///
+    /// @param size starting size of bolt segments
+    ///
+    /// @return this
     public BoltEffect size(float size) {
         this.size = size;
         return this;
     }
 
-    /**
-     * Define the {@link SpawnFunction} for this bolt effect.
-     *
-     * @param spawnFunction spawn function to use
-     *
-     * @return this
-     */
+    /// Define the [SpawnFunction] for this bolt effect.
+    ///
+    /// @param spawnFunction spawn function to use
+    ///
+    /// @return this
     public BoltEffect spawn(SpawnFunction spawnFunction) {
         this.spawnFunction = spawnFunction;
         return this;
     }
 
-    /**
-     * Define the {@link FadeFunction} for this bolt effect.
-     *
-     * @param fadeFunction fade function to use
-     *
-     * @return this
-     */
+    /// Define the [FadeFunction] for this bolt effect.
+    ///
+    /// @param fadeFunction fade function to use
+    ///
+    /// @return this
     public BoltEffect fade(FadeFunction fadeFunction) {
         this.fadeFunction = fadeFunction;
         return this;
     }
 
-    /**
-     * Define the lifespan (in ticks) of this bolt, at the end of which the bolt will expire.
-     *
-     * @param lifespan lifespan to use in ticks
-     *
-     * @return this
-     */
+    /// Define the lifespan (in ticks) of this bolt, at the end of which the bolt will expire.
+    ///
+    /// @param lifespan lifespan to use in ticks
+    ///
+    /// @return this
     public BoltEffect lifespan(int lifespan) {
         this.lifespan = lifespan;
         return this;
@@ -212,58 +202,40 @@ public class BoltEffect {
         }
     }
 
-    /**
-     * A SpreadFunction defines how far bolt segments can stray from the straight-line vector, based on parallel 'progress' from start to finish.
-     *
-     * @author aidancbrady
-     */
+    /// A SpreadFunction defines how far bolt segments can stray from the straight-line vector, based on parallel 'progress' from start to finish.
     @FunctionalInterface
     public interface SpreadFunction {
 
-        /** A steady linear increase in perpendicular noise. */
+        /// A steady linear increase in perpendicular noise.
         SpreadFunction LINEAR_ASCENT = progress -> progress;
-        /**
-         * A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point.
-         */
+        /// A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point.
         SpreadFunction LINEAR_ASCENT_DESCENT = progress -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
-        /** Represents a unit sine wave from 0 to PI, scaled by progress. */
+        /// Represents a unit sine wave from 0 to PI, scaled by progress.
         SpreadFunction SINE = progress -> (float) Math.sin(Math.PI * progress);
 
         float getMaxSpread(float progress);
     }
 
-    /**
-     * A RandomFunction defines the behavior of the RNG used in various bolt generation calculations.
-     *
-     * @author aidancbrady
-     */
+    /// A RandomFunction defines the behavior of the RNG used in various bolt generation calculations.
     @FunctionalInterface
     public interface RandomFunction {
 
-        /** Uniform probability distribution. */
+        /// Uniform probability distribution.
         RandomFunction UNIFORM = RandomSource::nextFloat;
-        /** Gaussian probability distribution. */
+        /// Gaussian probability distribution.
         RandomFunction GAUSSIAN = rand -> (float) rand.nextGaussian();
 
         float getRandom(RandomSource rand);
     }
 
-    /**
-     * A SegmentSpreader defines how successive bolt segments are arranged in the bolt generation calculation, based on previous state.
-     *
-     * @author aidancbrady
-     */
+    /// A SegmentSpreader defines how successive bolt segments are arranged in the bolt generation calculation, based on previous state.
     @FunctionalInterface
     public interface SegmentSpreader {
 
-        /**
-         * Don't remember where the last segment left off, just randomly move from the straight-line vector.
-         */
+        /// Don't remember where the last segment left off, just randomly move from the straight-line vector.
         SegmentSpreader NO_MEMORY = (_, randVec, maxDiff, _, _, rand) -> randVec.scale(maxDiff * rand);
 
-        /**
-         * Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement.
-         */
+        /// Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement.
         static SegmentSpreader memory(float memoryFactor) {
             return (perpendicularDist, randVec, maxDiff, _, _, rand) -> {
                 double nextDiff = maxDiff * (1 - memoryFactor) * rand;
@@ -280,19 +252,15 @@ public class BoltEffect {
         Vec3 getSegmentAdd(Vec3 perpendicularDist, Vec3 randVec, float maxDiff, float scale, float progress, double rand);
     }
 
-    /**
-     * A bolt's spawn function defines its spawn behavior (handled by the renderer). A spawn function generates a lower and upper bound on a spawn delay (via
-     * getSpawnDelayBounds()), for which an intermediate value is chosen randomly from a uniform distribution (getSpawnDelay()). Spawn functions can also be defined as
-     * 'consecutive,' in which cases the Bolt Renderer will always begin rendering a new bolt instance when one expires.
-     *
-     * @author aidancbrady
-     */
+    /// A bolt's spawn function defines its spawn behavior (handled by the renderer). A spawn function generates a lower and upper bound on a spawn delay (via
+    /// getSpawnDelayBounds()), for which an intermediate value is chosen randomly from a uniform distribution (getSpawnDelay()). Spawn functions can also be defined as
+    /// 'consecutive,' in which cases the Bolt Renderer will always begin rendering a new bolt instance when one expires.
     @FunctionalInterface
     public interface SpawnFunction {
 
-        /** Allow for bolts to be spawned each update call without any delay. */
+        /// Allow for bolts to be spawned each update call without any delay.
         SpawnFunction NO_DELAY = new SpawnDelayBounds(0F, 0F);
-        /** Will re-spawn a bolt each time one expires. */
+        /// Will re-spawn a bolt each time one expires.
         SpawnFunction CONSECUTIVE = new SpawnFunction() {
             private final SpawnDelayBounds BOUNDS = new SpawnDelayBounds(0F, 0F);
 
@@ -307,14 +275,12 @@ public class BoltEffect {
             }
         };
 
-        /** Spawn bolts with a specified constant delay. */
+        /// Spawn bolts with a specified constant delay.
         static SpawnFunction delay(float delay) {
             return new SpawnDelayBounds(delay, delay);
         }
 
-        /**
-         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
-         */
+        /// Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
         static SpawnFunction noise(float delay, float noise) {
             return new SpawnDelayBounds(delay - noise, delay + noise);
         }
@@ -339,21 +305,15 @@ public class BoltEffect {
         }
     }
 
-    /**
-     * A bolt's fade function allows one to define lower and upper bounds on the bolt segments rendered based on lifespan. This allows for dynamic 'fade-in' and
-     * 'fade-out' effects.
-     *
-     * @author aidancbrady
-     */
+    /// A bolt's fade function allows one to define lower and upper bounds on the bolt segments rendered based on lifespan. This allows for dynamic 'fade-in' and
+    /// 'fade-out' effects.
     @FunctionalInterface
     public interface FadeFunction {
 
-        /** No fade; render the bolts entirely throughout their lifespan. */
+        /// No fade; render the bolts entirely throughout their lifespan.
         FadeFunction NONE = (totalBolts, _) -> new RenderBounds(0, totalBolts);
 
-        /**
-         * Render bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
-         */
+        /// Render bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
         static FadeFunction fade(float fade) {
             return (totalBolts, lifeScale) -> {
                 int start = lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
@@ -373,16 +333,14 @@ public class BoltEffect {
         public static final BoltRenderInfo DEFAULT = new BoltRenderInfo();
         public static final BoltRenderInfo ELECTRICITY = electricity();
 
-        /** How much variance is allowed in segment lengths (parallel to straight line). */
+        /// How much variance is allowed in segment lengths (parallel to straight line).
         private float parallelNoise = 0.1F;
-        /**
-         * How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function.
-         */
+        /// How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function.
         private float spreadFactor = 0.1F;
 
-        /** The chance of creating an additional branch after a certain segment. */
+        /// The chance of creating an additional branch after a certain segment.
         private float branchInitiationFactor = 0.0F;
-        /** The chance of a branch continuing (post-initiation). */
+        /// The chance of a branch continuing (post-initiation).
         private float branchContinuationFactor = 0.0F;
 
         private Color color = Color.rgbad(0.45F, 0.45F, 0.5F, 0.8F);

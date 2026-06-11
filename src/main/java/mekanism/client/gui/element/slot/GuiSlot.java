@@ -84,9 +84,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         return this;
     }
 
-    /**
-     * @apiNote For use when there is no validity check and this is a "fake" slot in that the container screen doesn't render the item by default.
-     */
+    /// @apiNote For use when there is no validity check and this is a "fake" slot in that the container screen doesn't render the item by default.
     public GuiSlot stored(Supplier<ItemStack> storedStackSupplier) {
         this.storedStackSupplier = storedStackSupplier;
         return this;

@@ -29,9 +29,7 @@ import org.jspecify.annotations.Nullable;
 
 public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQIOCraftingWindowHolder {
 
-    /**
-     * @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
-     */
+    /// @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
     private final QIOCraftingWindow[] craftingWindows;
     private boolean insertIntoFrequency = true;
     private boolean recipesChecked = false;

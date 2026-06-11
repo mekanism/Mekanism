@@ -20,15 +20,13 @@ public class StructureHelper {
     private StructureHelper() {
     }
 
-    /**
-     * Fetch a cuboid with all 6 sides present. Quicker than using the below algorithm with all sides.
-     *
-     * @param structure structure to check
-     * @param minBounds minimum size of the cuboid
-     * @param maxBounds maximum size of the cuboid
-     *
-     * @return found cuboid, or null if it doesn't exist
-     */
+    /// Fetch a cuboid with all 6 sides present. Quicker than using the below algorithm with all sides.
+    ///
+    /// @param structure structure to check
+    /// @param minBounds minimum size of the cuboid
+    /// @param maxBounds maximum size of the cuboid
+    ///
+    /// @return found cuboid, or null if it doesn't exist
     @Nullable
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
         VoxelCuboid prev = null;
@@ -61,18 +59,16 @@ public class StructureHelper {
         return prev;
     }
 
-    /**
-     * Fetch a cuboid with a defined amount of sides. At least two sides should be provided; otherwise it's impossible to discern the overall dimensions about the
-     * cuboid.
-     *
-     * @param structure structure to check
-     * @param minBounds minimum size of the cuboid
-     * @param maxBounds maximum size of the cuboid
-     * @param sides     sides to check
-     * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
-     *
-     * @return found cuboid, or null if it doesn't exist
-     */
+    /// Fetch a cuboid with a defined amount of sides. At least two sides should be provided; otherwise it's impossible to discern the overall dimensions about the
+    /// cuboid.
+    ///
+    /// @param structure structure to check
+    /// @param minBounds minimum size of the cuboid
+    /// @param maxBounds maximum size of the cuboid
+    /// @param sides     sides to check
+    /// @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
+    ///
+    /// @return found cuboid, or null if it doesn't exist
     @Nullable
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, Set<CuboidSide> sides, int tolerance) {
         // make sure we have enough sides to create cuboidal dimensions
@@ -125,15 +121,13 @@ public class StructureHelper {
         return ret;
     }
 
-    /**
-     * Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the positive cuboid direction (Top,
-     * South, East).
-     *
-     * @param minorAxisMap Map of minor planes.
-     * @param majorKey     Position of major plane.
-     *
-     * @return {@code true} if there are minor planes sticking out.
-     */
+    /// Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the positive cuboid direction (Top,
+    /// South, East).
+    ///
+    /// @param minorAxisMap Map of minor planes.
+    /// @param majorKey     Position of major plane.
+    ///
+    /// @return `true` if there are minor planes sticking out.
     private static boolean hasOutOfBoundsPositiveMinor(Int2ObjectSortedMap<VoxelPlane> minorAxisMap, int majorKey) {
         ObjectSortedSet<Int2ObjectMap.Entry<VoxelPlane>> entries = minorAxisMap.int2ObjectEntrySet();
         ObjectBidirectionalIterator<Int2ObjectMap.Entry<VoxelPlane>> iterator = entries.iterator(entries.last());
@@ -154,15 +148,13 @@ public class StructureHelper {
         return false;
     }
 
-    /**
-     * Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the negative cuboid direction (Bottom,
-     * North, West).
-     *
-     * @param minorAxisMap Map of minor planes.
-     * @param majorKey     Position of major plane.
-     *
-     * @return {@code true} if there are minor planes sticking out.
-     */
+    /// Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the negative cuboid direction (Bottom,
+    /// North, West).
+    ///
+    /// @param minorAxisMap Map of minor planes.
+    /// @param majorKey     Position of major plane.
+    ///
+    /// @return `true` if there are minor planes sticking out.
     private static boolean hasOutOfBoundsNegativeMinor(Int2ObjectSortedMap<VoxelPlane> minorAxisMap, int majorKey) {
         for (ObjectIterator<Int2ObjectMap.Entry<VoxelPlane>> iterator = Int2ObjectMaps.fastIterator(minorAxisMap); iterator.hasNext(); ) {
             Int2ObjectMap.Entry<VoxelPlane> minorEntry = iterator.next();

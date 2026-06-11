@@ -44,14 +44,12 @@ public interface ISecurityTile extends ISecurityObject {
         }
     }
 
-    /**
-     * Called from {@link #setSecurityMode(SecurityMode, TransactionContext)} when the security mode changes.
-     *
-     * @param old  The old security mode.
-     * @param mode The new security mode.
-     *
-     * @apiNote It is on the implementer to call this method if it is useful to them.
-     */
+    /// Called from [#setSecurityMode(SecurityMode, TransactionContext)] when the security mode changes.
+    ///
+    /// @param old  The old security mode.
+    /// @param mode The new security mode.
+    ///
+    /// @apiNote It is on the implementer to call this method if it is useful to them.
     default void onSecurityChanged(SecurityMode old, SecurityMode mode) {
     }
 

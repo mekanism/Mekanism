@@ -95,14 +95,12 @@ public class Color {
         return new int[]{r(), g(), b()};
     }
 
-    /**
-     * Blends this color into another, by a given scale.
-     *
-     * @param to    color to blend with
-     * @param scale a scale (0 -> 1) defining the effect of the second color
-     *
-     * @return blended color
-     */
+    /// Blends this color into another, by a given scale.
+    ///
+    /// @param to    color to blend with
+    /// @param scale a scale (0 -> 1) defining the effect of the second color
+    ///
+    /// @return blended color
     public Color blend(Color to, double scale) {
         return rgbad(r + (to.r - r) * scale,
               g + (to.g - g) * scale,

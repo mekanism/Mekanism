@@ -4,40 +4,30 @@ import net.neoforged.fml.ModContainer;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Version v2.0.0. Simple version handling for Mekanism.
- *
- * @param major Major number for version
- * @param minor Minor number for version
- * @param build Build number for version
- *
- * @author AidanBrady
- */
+/// Version v2.0.0. Simple version handling for Mekanism.
+///
+/// @param major Major number for version
+/// @param minor Minor number for version
+/// @param build Build number for version
 public record Version(int major, int minor, int build) implements Comparable<Version> {
 
-    /**
-     * Builds a Version object from an Artifact Version
-     *
-     * @implNote We don't currently include the artifact version's build number as we classify our version by major, minor, build
-     */
+    /// Builds a Version object from an Artifact Version
+    ///
+    /// @implNote We don't currently include the artifact version's build number as we classify our version by major, minor, build
     public Version(ArtifactVersion artifactVersion) {
         this(artifactVersion.getMajorVersion(), artifactVersion.getMinorVersion(), artifactVersion.getIncrementalVersion());
     }
 
-    /**
-     * Helper to make it so this is the only class with weird errors in IntelliJ (that don't actually exist), instead of having our main class also have "errors"
-     */
+    /// Helper to make it so this is the only class with weird errors in IntelliJ (that don't actually exist), instead of having our main class also have "errors"
     public Version(ModContainer container) {
         this(container.getModInfo().getVersion());
     }
 
-    /**
-     * Gets a version object from a string.
-     *
-     * @param s - string object
-     *
-     * @return version if applicable, otherwise null
-     */
+    /// Gets a version object from a string.
+    ///
+    /// @param s string object
+    ///
+    /// @return version if applicable, otherwise null
     @Nullable
     public static Version get(String s) {
         String[] split = s.replace('.', ':').split(":");

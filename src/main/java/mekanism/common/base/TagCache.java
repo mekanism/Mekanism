@@ -177,9 +177,7 @@ public final class TagCache {
               .anyMatch(holder -> holder.is(MekanismTags.Blocks.MINER_BLACKLIST) && WildcardMatcher.matches(name, holder.key().identifier().getNamespace())));
     }
 
-    /**
-     * @apiNote hasMatch might be true even if stacks is empty in the case there are blocks without a corresponding item form.
-     */
+    /// @apiNote hasMatch might be true even if stacks is empty in the case there are blocks without a corresponding item form.
     public record MatchingStacks(boolean hasMatch, List<ItemStack> stacks) {
 
         private static final MatchingStacks NONE = new MatchingStacks(false, Collections.emptyList());

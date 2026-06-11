@@ -25,9 +25,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
- */
+/// Interface used to describe and implement custom modules. Instances of this should be returned via the [ModuleData].
 public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /// Called each tick on the server side when installed in a MekaSuit and set to enabled.
@@ -81,28 +79,24 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
           Player player, Consumer<IHUDElement> hudElementAdder) {
     }
 
-    /**
-     * Called to check if this module can change modes when disabled or if it should be skipped. This should be overridden for modules where the mode change key toggles
-     * whether the module is active.
-     *
-     * @param module Module instance.
-     *
-     * @return {@code true} if this module can change modes when disabled.
-     */
+    /// Called to check if this module can change modes when disabled or if it should be skipped. This should be overridden for modules where the mode change key toggles
+    /// whether the module is active.
+    ///
+    /// @param module Module instance.
+    ///
+    /// @return `true` if this module can change modes when disabled.
     default boolean canChangeModeWhenDisabled(IModule<MODULE> module) {
         return false;
     }
 
-    /**
-     * Called to check if this module has any radial modes that can be changed when disabled or if it should be skipped. This should be overridden for modules where the
-     * radial menu allows toggling whether the module is active.
-     *
-     * @param module Module instance.
-     *
-     * @return {@code true} if this module has radial modes that can be changed while disabled.
-     *
-     * @since 10.3.2
-     */
+    /// Called to check if this module has any radial modes that can be changed when disabled or if it should be skipped. This should be overridden for modules where the
+    /// radial menu allows toggling whether the module is active.
+    ///
+    /// @param module Module instance.
+    ///
+    /// @return `true` if this module has radial modes that can be changed while disabled.
+    ///
+    /// @since 10.3.2
     default boolean canChangeRadialModeWhenDisabled(IModule<MODULE> module) {
         return false;
     }
@@ -183,14 +177,12 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
         return false;
     }
 
-    /**
-     * Called when this module is enabled to modify the attributes of the item this module is installed on. (MekaSuit or Meka-Tool)
-     *
-     * @param module Module instance.
-     * @param event  Event that provides helper to use to modify the attributes on the stack.
-     *
-     * @since 10.6.3
-     */
+    /// Called when this module is enabled to modify the attributes of the item this module is installed on. (MekaSuit or Meka-Tool)
+    ///
+    /// @param module Module instance.
+    /// @param event  Event that provides helper to use to modify the attributes on the stack.
+    ///
+    /// @since 10.6.3
     default void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
     }
 
@@ -231,14 +223,12 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     default void onRemoved(IModule<MODULE> module, ItemAccess itemAccess, boolean wasLast, TransactionContext transaction) {
     }
 
-    /**
-     * Gets information about if and how this module blocks a given type of damage.
-     *
-     * @param module       Module instance.
-     * @param damageSource Source of the damage.
-     *
-     * @return Information about how damage can be absorbed, or {@code null} if the given damage type cannot be absorbed.
-     */
+    /// Gets information about if and how this module blocks a given type of damage.
+    ///
+    /// @param module       Module instance.
+    /// @param damageSource Source of the damage.
+    ///
+    /// @return Information about how damage can be absorbed, or `null` if the given damage type cannot be absorbed.
     @Nullable
     default ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<MODULE> module, DamageSource damageSource) {
         return null;

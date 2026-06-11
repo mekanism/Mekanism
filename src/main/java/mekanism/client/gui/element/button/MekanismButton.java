@@ -12,9 +12,7 @@ import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
- */
+/// Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
 public class MekanismButton extends GuiElement {
 
     private final IClickable onLeftClick;

@@ -27,10 +27,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
- * improve the performance of markDirty by not firing neighbor updates unless the markDirtyComparator method is overridden.
- */
+/// Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
+/// improve the performance of markDirty by not firing neighbor updates unless the markDirtyComparator method is overridden.
 public abstract class TileEntityUpdateable extends BlockEntity implements ITileWrapper {
 
     @Nullable
@@ -46,22 +44,16 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         this.worldPositionLong = pos.asLong();
     }
 
-    /**
-     * Collects all data component types that should be persisted to the dropped item. Override this for any conditionally applied component types.
-     */
+    /// Collects all data component types that should be persisted to the dropped item. Override this for any conditionally applied component types.
     public List<DataComponentType<?>> getRemapEntries() {
         return new ArrayList<>(collectComponents().keySet());
     }
 
-    /**
-     * Called when block is placed in world
-     */
+    /// Called when block is placed in world
     public void onAdded(Level level) {
     }
 
-    /**
-     * Call this for tiles that we may call {@link #getTileGlobalPos()} a fair amount on to cache the coord when position/world information changes.
-     */
+    /// Call this for tiles that we may call [#getTileGlobalPos()] a fair amount on to cache the coord when position/world information changes.
     protected void cacheCoord() {
         //Mark that we want to cache the coord and then update the coord if needed
         cacheCoord = true;
@@ -78,20 +70,17 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return Objects.requireNonNull(level, "isRemote called before world set").isClientSide();
     }
 
-    /**
-     * Called when the tile is permanently removed
-     *
-     * @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
-     *///TODO - 26.1: verify this works as intended - does the drop contain the contents?
+    /// Called when the tile is permanently removed
+    ///
+    /// @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
+    //TODO - 26.1: verify this works as intended - does the drop contain the contents?
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
     }
 
-    /**
-     * Used for checking if we need to update comparators.
-     *
-     * @apiNote Only call on the server
-     */
+    /// Used for checking if we need to update comparators.
+    ///
+    /// @apiNote Only call on the server
     public void markDirtyComparator() {
     }
 
@@ -141,9 +130,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         writeReducedUpdatedTag(output);
     }
 
-    /**
-     * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
-     */
+    /// Similar to [#getUpdateTag(HolderLookup.Provider)] but with reduced information for when we are doing our own syncing.
     public void writeReducedUpdatedTag(ValueOutput output) {
     }
 

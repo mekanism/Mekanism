@@ -20,14 +20,10 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
     @Nullable
     Identifier icon();
 
-    /**
-     * Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
-     */
+    /// Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
     int xOffset();
 
-    /**
-     * Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
-     */
+    /// Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
     int yOffset();
 
     int width();

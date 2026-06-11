@@ -27,32 +27,26 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Chemical Conversion recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates a Chemical Conversion recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalConversionRecipe::new);
     }
 
-    /**
-     * Creates an Oxidizing recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates an Oxidizing recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToChemicalRecipeBuilder oxidizing(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalOxidizerRecipe::new);
     }
 
-    /**
-     * Creates a Pigment Extracting recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// Creates a Pigment Extracting recipe builder.
+    ///
+    /// @param input  Input.
+    /// @param output Output.
     public static ItemStackToChemicalRecipeBuilder pigmentExtracting(ItemStackIngredient input, ChemicalStackTemplate output) {
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicPigmentExtractingRecipe::new);
     }

@@ -118,10 +118,8 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             return with(capability, provider, ConstantPredicates.ALWAYS_TRUE);
         }
 
-        /**
-         * @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it
-         *                    based on loaded mods or a block's attributes.
-         */
+        /// @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it
+        /// based on loaded mods or a block's attributes.
         public <CAP, CONTEXT extends @Nullable Object> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
               BooleanSupplier shouldApply) {
             capabilityProviders.add(new CapabilityData<>(capability, provider, shouldApply));

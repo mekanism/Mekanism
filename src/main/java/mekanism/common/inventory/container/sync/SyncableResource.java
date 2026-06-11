@@ -12,9 +12,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling resources
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling resources
 public class SyncableResource<RESOURCE extends Resource> implements ISyncableData {
 
     public static SyncableResource<ItemResource> createItem(Supplier<ItemResource> getter, Consumer<ItemResource> setter) {

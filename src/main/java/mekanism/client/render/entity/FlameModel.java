@@ -21,9 +21,7 @@ public class FlameModel extends EntityModel<FlameRenderState> {
         super(root, MekanismRenderType.FLAME);
     }
 
-    /**
-     * @implNote Based off vanilla's {@link net.minecraft.client.model.object.projectile.ArrowModel#createBodyLayer()}
-     */
+    /// @implNote Based off vanilla's [net.minecraft.client.model.object.projectile.ArrowModel#createBodyLayer()]
     public static LayerDefinition createLayerDefinition() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();

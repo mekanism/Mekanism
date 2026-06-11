@@ -14,12 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 
-/**
- * MapCodec where the element type is dependent on another field
- *
- * @param <ELEMENT>    the end result of this MapCodec
- * @param <DEPENDENCY> the extra data needed to determine the type of ELEMENT
- */
+/// MapCodec where the element type is dependent on another field
+///
+/// @param <ELEMENT>    the end result of this MapCodec
+/// @param <DEPENDENCY> the extra data needed to determine the type of ELEMENT
 public class DependentMapCodec<ELEMENT, DEPENDENCY> extends MapCodec<ELEMENT> {
 
     private final String fieldName;
@@ -27,12 +25,10 @@ public class DependentMapCodec<ELEMENT, DEPENDENCY> extends MapCodec<ELEMENT> {
     private final MapCodec<DEPENDENCY> dependencyMapCodec;
     private final Function<ELEMENT, DEPENDENCY> dependencyGetter;
 
-    /**
-     * @param fieldName          the name of the field for ELEMENT
-     * @param elementCodecGetter Supplies the correct Codec for the value of ELEMENT
-     * @param dependencyMapCodec MapCodec for the extra data (determines its field name and element codec)
-     * @param dependencyGetter   Supplies the extra data for the supplied input
-     */
+    /// @param fieldName          the name of the field for ELEMENT
+    /// @param elementCodecGetter Supplies the correct Codec for the value of ELEMENT
+    /// @param dependencyMapCodec MapCodec for the extra data (determines its field name and element codec)
+    /// @param dependencyGetter   Supplies the extra data for the supplied input
     public DependentMapCodec(final String fieldName, final Function<DEPENDENCY, Codec<ELEMENT>> elementCodecGetter, MapCodec<DEPENDENCY> dependencyMapCodec, Function<ELEMENT, DEPENDENCY> dependencyGetter) {
         this.fieldName = fieldName;
         this.elementCodecGetter = elementCodecGetter;

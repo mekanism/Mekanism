@@ -25,9 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 public class TileComponentSecurity implements ITileComponent {
 
-    /**
-     * TileEntity implementing this component.
-     */
+    /// TileEntity implementing this component.
     public final TileEntityMekanism tile;
 
     @Nullable

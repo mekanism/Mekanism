@@ -17,13 +17,11 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
 
     private static final Holder<Item> CHEMICAL_INFUSER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_infuser"));
 
-    /**
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     *
-     * @apiNote The order of the inputs does not matter.
-     */
+    /// @param leftInput  Left input.
+    /// @param rightInput Right input.
+    /// @param output     Output.
+    ///
+    /// @apiNote The order of the inputs does not matter.
     public BasicChemicalInfuserRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
         super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value());
     }

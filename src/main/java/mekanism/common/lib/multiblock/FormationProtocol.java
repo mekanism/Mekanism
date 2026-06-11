@@ -42,9 +42,7 @@ public class FormationProtocol<T extends MultiblockData> {
 
     public static final int MAX_SIZE = 18;
 
-    /**
-     * The original block the calculation is getting run from.
-     */
+    /// The original block the calculation is getting run from.
     private final IMultiblock<T> pointer;
     private final Structure structure;
     private final MultiblockManager<T> manager;
@@ -81,9 +79,7 @@ public class FormationProtocol<T extends MultiblockData> {
         return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
 
-    /**
-     * Runs the protocol and updates all nodes that make a part of the multiblock.
-     */
+    /// Runs the protocol and updates all nodes that make a part of the multiblock.
     public FormationResult doUpdate() {
         IStructureValidator<T> validator = multiblockType.createValidator();
         Level world = pointer.getLevel();

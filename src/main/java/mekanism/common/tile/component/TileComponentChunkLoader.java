@@ -37,9 +37,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final TicketController TICKET_CONTROLLER = new TicketController(Mekanism.rl("chunk_loader"), ChunkValidationCallback.INSTANCE);
 
-    /**
-     * TileEntity implementing this component.
-     */
+    /// TileEntity implementing this component.
     private final T tile;
     private final LongSet chunkSet = new LongOpenHashSet();
     private final boolean forceTicks;
@@ -99,27 +97,21 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         hasRegistered = true;
     }
 
-    /**
-     * Release and re-register tickets, call when chunk set changes
-     */
+    /// Release and re-register tickets, call when chunk set changes
     public void refreshChunkTickets() {
         refreshChunkTickets(tile.getLevel(), tile.getBlockPos());
     }
 
-    /**
-     * Release and re-register tickets, call when chunk set changes
-     */
+    /// Release and re-register tickets, call when chunk set changes
     public void refreshChunkTickets(@Nullable Level level, BlockPos pos) {
         if (level != null && !level.isClientSide()) {
             refreshChunkTickets((ServerLevel) level, pos, true);
         }
     }
 
-    /**
-     * @param ticketsChanged {@code true} if the chunk set of our tile changed, and we need to force adjusting our registered tickets.
-     *
-     * @apiNote Only call server side
-     */
+    /// @param ticketsChanged`true` if the chunk set of our tile changed, and we need to force adjusting our registered tickets.
+    ///
+    /// @apiNote Only call server side
     private void refreshChunkTickets(ServerLevel world, BlockPos pos, boolean ticketsChanged) {
         boolean canOperate = canOperate();
         if (MekanismAPI.debug) {

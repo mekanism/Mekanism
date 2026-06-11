@@ -6,18 +6,12 @@ import org.jspecify.annotations.Nullable;
 
 public class RobitAIFollow extends RobitAIBase {
 
-    /**
-     * The Robit's owner.
-     */
+    /// The Robit's owner.
     @Nullable
     private Player theOwner;
-    /**
-     * The distance between the owner the robit must be at in order for the protocol to begin.
-     */
+    /// The distance between the owner the robit must be at in order for the protocol to begin.
     private final float maxDist;
-    /**
-     * The distance between the owner the robit must reach before it stops the protocol.
-     */
+    /// The distance between the owner the robit must reach before it stops the protocol.
     private final float minDist;
 
     public RobitAIFollow(EntityRobit entityRobit, float speed, float min, float max) {

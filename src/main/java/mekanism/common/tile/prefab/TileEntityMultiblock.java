@@ -54,19 +54,13 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private final T defaultMultiblock = createMultiblock();
 
-    /**
-     * This multiblock's previous "has structure" state.
-     */
+    /// This multiblock's previous "has structure" state.
     private boolean prevStructure;
 
-    /**
-     * Whether this multiblock segment is rendering the structure.
-     */
+    /// Whether this multiblock segment is rendering the structure.
     private boolean isMaster;
 
-    /**
-     * This multiblock segment's cached inventory ID
-     */
+    /// This multiblock segment's cached inventory ID
     @Nullable
     private UUID cachedID = null;
 
@@ -159,9 +153,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         return needsPacket;
     }
 
-    /**
-     * @return if we need an update packet
-     */
+    /// @return if we need an update packet
     protected boolean onUpdateServer(ServerLevel level, T multiblock) {
         return false;
     }
@@ -293,9 +285,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         prevStructure = multiblock.isFormed();
     }
 
-    /**
-     * Only call on the client
-     */
+    /// Only call on the client
     private void doMultiblockSparkle(T multiblock) {
         if (level != null && level.isClientSide() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles

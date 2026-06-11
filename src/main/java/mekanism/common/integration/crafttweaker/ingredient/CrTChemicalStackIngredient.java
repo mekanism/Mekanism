@@ -31,13 +31,11 @@ public class CrTChemicalStackIngredient {
     private CrTChemicalStackIngredient() {
     }
 
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches a given chemical stack.
-     *
-     * @param instance Chemical stack to match
-     *
-     * @return A {@link ChemicalStackIngredient} that matches a given chemical stack.
-     */
+    /// Creates a [ChemicalStackIngredient] that matches a given chemical stack.
+    ///
+    /// @param instance Chemical stack to match
+    ///
+    /// @return A [ChemicalStackIngredient] that matches a given chemical stack.
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(ICrTChemicalStack instance) {
         if (instance.isEmpty()) {
@@ -46,14 +44,12 @@ public class CrTChemicalStackIngredient {
         return IngredientCreatorAccess.chemicalStack().from(instance.getImmutableInternal());
     }
 
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches the given chemicals and amount.
-     *
-     * @param amount    Amount needed
-     * @param chemicals Chemicals to match
-     *
-     * @return A {@link ChemicalStackIngredient} that matches the given chemicals and amount.
-     */
+    /// Creates a [ChemicalStackIngredient] that matches the given chemicals and amount.
+    ///
+    /// @param amount    Amount needed
+    /// @param chemicals Chemicals to match
+    ///
+    /// @return A [ChemicalStackIngredient] that matches the given chemicals and amount.
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(int amount, ICrTChemicalStack... chemicals) {
         return from(amount, Arrays.stream(chemicals).map(ICrTChemicalStack::getChemicalHolder));
@@ -73,13 +69,11 @@ public class CrTChemicalStackIngredient {
         return IngredientCreatorAccess.chemicalStack().fromHolders(amount, chemicals);
     }
 
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches the given chemical stacks. The first stack's size will be used for this ingredient.
-     *
-     * @param chemicals Chemical stacks to match
-     *
-     * @return A {@link ChemicalStackIngredient} that matches a given chemical stack.
-     */
+    /// Creates a [ChemicalStackIngredient] that matches the given chemical stacks. The first stack's size will be used for this ingredient.
+    ///
+    /// @param chemicals Chemical stacks to match
+    ///
+    /// @return A [ChemicalStackIngredient] that matches a given chemical stack.
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(ICrTChemicalStack... chemicals) {
         if (chemicals == null || chemicals.length == 0) {
@@ -99,14 +93,12 @@ public class CrTChemicalStackIngredient {
         return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), amount);
     }
 
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches a given chemical tag with a given amount.
-     *
-     * @param chemicalTag Tag to match
-     * @param amount      Amount needed
-     *
-     * @return A {@link ChemicalStackIngredient} that matches a given chemical tag with a given amount.
-     */
+    /// Creates a [ChemicalStackIngredient] that matches a given chemical tag with a given amount.
+    ///
+    /// @param chemicalTag Tag to match
+    /// @param amount      Amount needed
+    ///
+    /// @return A [ChemicalStackIngredient] that matches a given chemical tag with a given amount.
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, int amount) {
         assertValidAmount(amount);
@@ -114,70 +106,58 @@ public class CrTChemicalStackIngredient {
         return IngredientCreatorAccess.chemicalStack().from(MekanismAPI.CHEMICAL_REGISTRY, tag, amount);
     }
 
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches a given chemical tag with amount.
-     *
-     * @param chemicalTag Tag and amount to match
-     *
-     * @return A {@link ChemicalStackIngredient} that matches a given chemical tag with amount.
-     */
+    /// Creates a [ChemicalStackIngredient] that matches a given chemical tag with amount.
+    ///
+    /// @param chemicalTag Tag and amount to match
+    ///
+    /// @return A [ChemicalStackIngredient] that matches a given chemical tag with amount.
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(Many<KnownTag<Chemical>> chemicalTag) {
         return from(chemicalTag.getData(), chemicalTag.getAmount());
     }
 
-    /**
-     * Converts this {@link ChemicalStackIngredient} into JSON ({@link IData}).
-     *
-     * @return {@link ChemicalStackIngredient} as JSON.
-     */
+    /// Converts this [ChemicalStackIngredient] into JSON ([IData]).
+    ///
+    /// @return [ChemicalStackIngredient] as JSON.
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(ChemicalStackIngredient _this) {
         return IngredientCreatorAccess.chemicalStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
-    /**
-     * Checks if a given {@link ICrTChemicalStack} has a type match for this {@link ChemicalStackIngredient}. Type matches ignore stack size.
-     *
-     * @param type Type to check for a match
-     *
-     * @return {@code true} if the type is supported by this {@link ChemicalStackIngredient}.
-     */
+    /// Checks if a given [ICrTChemicalStack] has a type match for this [ChemicalStackIngredient]. Type matches ignore stack size.
+    ///
+    /// @param type Type to check for a match
+    ///
+    /// @return `true` if the type is supported by this [ChemicalStackIngredient].
     @ZenCodeType.Method
     public static boolean testType(ChemicalStackIngredient _this, ICrTChemicalStack type) {
         return _this.testType(type.getInternal());
     }
 
-    /**
-     * Checks if a given {@link ICrTChemicalStack} matches this {@link ChemicalStackIngredient}. (Checks size for >=)
-     *
-     * @param stack Stack to check for a match
-     *
-     * @return {@code true} if the stack fulfills the requirements for this {@link ChemicalStackIngredient}.
-     */
+    /// Checks if a given [ICrTChemicalStack] matches this [ChemicalStackIngredient]. (Checks size for >=)
+    ///
+    /// @param stack Stack to check for a match
+    ///
+    /// @return `true` if the stack fulfills the requirements for this [ChemicalStackIngredient].
     @ZenCodeType.Method
     public static boolean test(ChemicalStackIngredient _this, ICrTChemicalStack stack) {
         return _this.test(stack.getInternal());
     }
 
-    /**
-     * Gets a list of valid instances for this {@link ChemicalStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
-     * internal version is mostly used for JEI display purposes.
-     */
+    /// Gets a list of valid instances for this [ChemicalStackIngredient], may not include all or may be empty depending on how complex the ingredient is as the internal
+    /// version is mostly used for JEI display purposes.
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTChemicalStack> getRepresentations(ChemicalStackIngredient _this) {
         return CrTUtils.convertChemical(_this.getRepresentations());
     }
 
-    /**
-     * OR's this {@link ChemicalStackIngredient} with another {@link ChemicalStackIngredient} to create a multi {@link ChemicalStackIngredient}
-     *
-     * @param other {@link ChemicalStackIngredient} to combine with.
-     *
-     * @return Multi {@link ChemicalStackIngredient} that matches both the source {@link ChemicalStackIngredient} and the OR'd {@link ChemicalStackIngredient}.
-     */
+    /// OR's this [ChemicalStackIngredient] with another [ChemicalStackIngredient] to create a multi [ChemicalStackIngredient]
+    ///
+    /// @param other [ChemicalStackIngredient] to combine with.
+    ///
+    /// @return Multi [ChemicalStackIngredient] that matches both the source [ChemicalStackIngredient] and the OR'd [ChemicalStackIngredient].
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static ChemicalStackIngredient or(ChemicalStackIngredient _this, ChemicalStackIngredient other) {
@@ -190,9 +170,7 @@ public class CrTChemicalStackIngredient {
         return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), _this.amount());
     }
 
-    /**
-     * Validates that the amount is greater than zero. If it is not it throws an error.
-     */
+    /// Validates that the amount is greater than zero. If it is not it throws an error.
     private static void assertValidAmount(int amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("ChemicalStackIngredients can only be created with a size of at least one. Received size was: " + amount);

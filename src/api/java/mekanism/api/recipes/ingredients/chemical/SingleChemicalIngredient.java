@@ -10,14 +10,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base Chemical ingredient implementation that only matches the given chemical.
- * <p>
- * Unlike with ingredients, this is an explicit "type" of chemical ingredient, though it may still be written without a type field, see
- * {@link mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#mapCodecNonEmpty}
- *
- * @since 10.6.0
- */
+/// Base Chemical ingredient implementation that only matches the given chemical.
+///
+/// Unlike with ingredients, this is an explicit "type" of chemical ingredient, though it may still be written without a type field, see
+/// [mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#mapCodecNonEmpty]
+///
+/// @since 10.6.0
 public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 26.1: Refactor this to be more like SimpleFluidIngredient
 
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalInstance.CHEMICAL_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
@@ -26,9 +24,7 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//T
     private final Holder<Chemical> chemical;
     private final ResourceKey<Chemical> myKey;
 
-    /**
-     * @param chemical Holder for the chemical to match.
-     */
+    /// @param chemical Holder for the chemical to match.
     public SingleChemicalIngredient(Holder<Chemical> chemical) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalStateException("SingleChemicalIngredient must not be constructed with mekanism:empty, use IChemicalIngredientCreator.empty() instead!");
@@ -47,9 +43,7 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//T
         return Stream.of(chemical);
     }
 
-    /**
-     * {@return holder for the chemical to match}
-     */
+    /// {@return holder for the chemical to match}
     public final Holder<Chemical> chemical() {
         return chemical;
     }

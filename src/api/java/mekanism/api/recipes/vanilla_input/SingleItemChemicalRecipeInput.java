@@ -4,11 +4,9 @@ import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of a recipe input of one item and one chemical.
- *
- * @since 10.6.0
- */
+/// Simple implementation of a recipe input of one item and one chemical.
+///
+/// @since 10.6.0
 public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemical) implements ItemChemicalRecipeInput {
 
     @Override

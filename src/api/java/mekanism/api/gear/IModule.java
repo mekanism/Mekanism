@@ -14,69 +14,55 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Interface that describes various methods that modules have.
- *
- * @apiNote This interface should not be directly implemented as it is mostly used to expose various parts of a module to the implemented {@link ICustomModule}.
- */
+/// Interface that describes various methods that modules have.
+///
+/// @apiNote This interface should not be directly implemented as it is mostly used to expose various parts of a module to the implemented [ICustomModule].
 public interface IModule<MODULE extends ICustomModule<MODULE>> {
 
-    /**
-     * Gets the data/module type of this module instance.
-     */
+    /// Gets the data/module type of this module instance.
     @SuppressWarnings("unchecked")
     default ModuleData<MODULE> getData() {
         return (ModuleData<MODULE>) getUntypedData();
     }
 
-    /**
-     * Gets the data/module type of this module instance.
-     *
-     * @since 10.7.11
-     */
+    /// Gets the data/module type of this module instance.
+    ///
+    /// @since 10.7.11
     ModuleData<?> getUntypedData();
 
-    /**
-     * Gets the holder for the data/module type of this module instance.
-     *
-     * @since 10.7.11
-     */
+    /// Gets the holder for the data/module type of this module instance.
+    ///
+    /// @since 10.7.11
     Holder<ModuleData<?>> getDataHolder();
 
-    /**
-     * Gets the config with the given name.
-     *
-     * @param name Name of the config to look up.
-     *
-     * @return Immutable config instance, or {@code null} if no config was found with the given name.
-     *
-     * @since 10.6.0
-     */
+    /// Gets the config with the given name.
+    ///
+    /// @param name Name of the config to look up.
+    ///
+    /// @return Immutable config instance, or `null` if no config was found with the given name.
+    ///
+    /// @since 10.6.0
     @Nullable
     <TYPE> ModuleConfig<TYPE> getConfig(Identifier name);
 
-    /**
-     * Gets the value of a boolean config with the given name.
-     *
-     * @param name Name of the config to look up.
-     *
-     * @return The value of the stored config, or {@code false} if the config does not exist.
-     *
-     * @since 10.6.0
-     */
+    /// Gets the value of a boolean config with the given name.
+    ///
+    /// @param name Name of the config to look up.
+    ///
+    /// @return The value of the stored config, or `false` if the config does not exist.
+    ///
+    /// @since 10.6.0
     default boolean getBooleanConfigOrFalse(Identifier name) {
         ModuleConfig<Boolean> config = getConfig(name);
         return config != null && config.get();
     }
 
-    /**
-     * {@return the config with the given name}
-     *
-     * @param name Name of the config to look up.
-     *
-     * @throws IllegalArgumentException If this module does not contain a config with the given name.
-     * @since 10.6.0
-     */
+    /// {@return the config with the given name}
+    ///
+    /// @param name Name of the config to look up.
+    ///
+    /// @throws IllegalArgumentException If this module does not contain a config with the given name.
+    /// @since 10.6.0
     default <TYPE> ModuleConfig<TYPE> getConfigOrThrow(Identifier name) {
         ModuleConfig<TYPE> config = getConfig(name);
         if (config == null) {
@@ -85,55 +71,41 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
         return config;
     }
 
-    /**
-     * Gets the custom module implementation this module references.
-     */
+    /// Gets the custom module implementation this module references.
     MODULE getCustomInstance();
 
-    /**
-     * Gets the number of installed modules of this type.
-     */
+    /// Gets the number of installed modules of this type.
     int getInstalledCount();
 
-    /**
-     * Gets if this module is currently enabled in the Module Tweaker.
-     *
-     * @return {@code true} if this module is enabled.
-     */
+    /// Gets if this module is currently enabled in the Module Tweaker.
+    ///
+    /// @return `true` if this module is enabled.
     boolean isEnabled();
 
-    /**
-     * Gets if this module type ({@link #getData()}) can currently handle mode changes and if this module is configured to handle mode changes in the Module Tweaker.
-     *
-     * @return {@code true} if this module can handle mode changes.
-     */
+    /// Gets if this module type ([#getData()]) can currently handle mode changes and if this module is configured to handle mode changes in the Module Tweaker.
+    ///
+    /// @return `true` if this module can handle mode changes.
     boolean handlesModeChange();
 
-    /**
-     * Gets if this module type ({@link #getData()}) can currently handle radial mode changes.
-     *
-     * @return {@code true} if this module can handle radial mode changes.
-     *
-     * @since 10.3.2
-     */
+    /// Gets if this module type ([#getData()]) can currently handle radial mode changes.
+    ///
+    /// @return `true` if this module can handle radial mode changes.
+    ///
+    /// @since 10.3.2
     boolean handlesRadialModeChange();
 
-    /**
-     * Gets if this module type ({@link #getData()}) can currently handle mode changes, either via radial means or other.
-     *
-     * @return {@code true} if this module can handle mode changes.
-     *
-     * @since 10.5.0
-     */
+    /// Gets if this module type ([#getData()]) can currently handle mode changes, either via radial means or other.
+    ///
+    /// @return `true` if this module can handle mode changes.
+    ///
+    /// @since 10.5.0
     boolean handlesAnyModeChange();
 
-    /**
-     * Helper to display the mode change message.
-     *
-     * @param player   Player to send the message to.
-     * @param modeName Name of the mode being changed.
-     * @param mode     New mode value.
-     */
+    /// Helper to display the mode change message.
+    ///
+    /// @param player   Player to send the message to.
+    /// @param modeName Name of the mode being changed.
+    /// @param mode     New mode value.
     void displayModeChange(Player player, Component modeName, IHasTextComponent mode);
 
     /// Helper to toggle the enabled state of this module and send a message saying the given module was enabled or disabled.

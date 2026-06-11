@@ -17,10 +17,8 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     protected final ItemStackIngredient input;
     protected final ItemStackTemplate output;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStackTemplate output, RecipeType<ItemStackToItemStackRecipe> recipeType) {
         super(recipeType);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");

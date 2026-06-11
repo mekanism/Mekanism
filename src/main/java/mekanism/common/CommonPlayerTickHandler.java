@@ -233,9 +233,7 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    /**
-     * Based on the values and calculations that happen in {@link LivingEntity#calculateFallDamage(double, float)}
-     */
+    /// Based on the values and calculations that happen in [LivingEntity#calculateFallDamage(double, float)]
     @SubscribeEvent
     public void livingFall(LivingFallEvent event) {
         LivingEntity entity = event.getEntity();
@@ -319,9 +317,7 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    /**
-     * @return null if free runners are not being worn, or they don't have an energy container for some reason
-     */
+    /// @return null if free runners are not being worn, or they don't have an energy container for some reason
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemAccess feetAccess = ItemAccessUtils.forEntitySlot(base, EquipmentSlot.FEET);

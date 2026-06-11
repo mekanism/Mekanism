@@ -56,9 +56,7 @@ public enum EnergyCubeTier implements IStorageTier, StringRepresentable {
         return baseTransferRate;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
     public void setConfigReference(CachedLongValue capacityReference, CachedIntValue transferRateReference) {
         this.capacityReference = capacityReference;
         this.transferRateReference = transferRateReference;

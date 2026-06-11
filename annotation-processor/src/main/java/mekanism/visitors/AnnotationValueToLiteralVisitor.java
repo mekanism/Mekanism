@@ -11,9 +11,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Converts an annotation value to a format suitable for a CodeBlock's $L formatter
- */
+/// Converts an annotation value to a format suitable for a CodeBlock's $L formatter
 public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisitor14<@Nullable Object, TypeMirror> {
 
     AnnotationValueToLiteralVisitor() {

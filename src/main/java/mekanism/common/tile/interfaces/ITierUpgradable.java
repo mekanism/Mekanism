@@ -8,9 +8,7 @@ public interface ITierUpgradable {
 
     boolean canBeUpgraded();
 
-    /**
-     * @return The upgrade data for this block or null if something went wrong
-     */
+    /// @return The upgrade data for this block or null if something went wrong
     @Nullable
     default IUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return null;

@@ -13,67 +13,55 @@ import net.minecraft.core.TypedInstance;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are
- * valid in either slot/tank.
- */
+/// Helper expansion of [IRecipeLookupHandler] for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are valid
+/// in either slot/tank.
 public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
       INPUT_CACHE extends EitherSideInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given input.
+    ///
+    /// @param input Recipe input.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
     default boolean containsRecipe(TypedInstance<TYPE> input) {
         return getRecipeType().getInputCache().containsInput(getLevel(), input);
     }
 
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
-     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, INPUT, INPUT)} for more details about what order to pass the inputs.
-     */
+    /// Checks if there is a matching recipe of type [#getRecipeType()] that has the given inputs.
+    ///
+    /// @param inputA Recipe input a.
+    /// @param inputB Recipe input b.
+    ///
+    /// @return `true` if there is a match, `false` if there isn't.
+    ///
+    /// @apiNote See [EitherSideInputRecipeCache#containsInput(Level, INPUT, INPUT)] for more details about what order to pass the inputs.
     default boolean containsRecipe(TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB) {
         return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
     }
 
-    /**
-     * Finds the first recipe for the type of recipe we handle ({@link #getRecipeType()}) by looking up the given inputs against the recipe type's input cache.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     *
-     * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
-     */
+    /// Finds the first recipe for the type of recipe we handle ([#getRecipeType()]) by looking up the given inputs against the recipe type's input cache.
+    ///
+    /// @param inputA Recipe input a.
+    /// @param inputB Recipe input b.
+    ///
+    /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
     default RECIPE findFirstRecipe(INPUT inputA, INPUT inputB) {
         return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
-    /**
-     * Finds the first recipe for the type of recipe we handle ({@link #getRecipeType()}) by looking up the given inputs against the recipe type's input cache.
-     *
-     * @param inputAHandler Input handler to grab the first recipe input from.
-     * @param inputBHandler Input handler to grab the second recipe input from.
-     *
-     * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
-     */
+    /// Finds the first recipe for the type of recipe we handle ([#getRecipeType()]) by looking up the given inputs against the recipe type's input cache.
+    ///
+    /// @param inputAHandler Input handler to grab the first recipe input from.
+    /// @param inputBHandler Input handler to grab the second recipe input from.
+    ///
+    /// @return Recipe matching the given inputs, or `null` if no recipe matches.
     @Nullable
     default RECIPE findFirstRecipe(IInputHandler<TYPE, INPUT> inputAHandler, IInputHandler<TYPE, INPUT> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 
-    /**
-     * Helper interface to make the generics that we have to pass to {@link IEitherSideRecipeLookupHandler} not as messy.
-     */
+    /// Helper interface to make the generics that we have to pass to [IEitherSideRecipeLookupHandler] not as messy.
     interface EitherSideChemicalRecipeLookupHandler<RECIPE extends ChemicalChemicalToChemicalRecipe> extends
           IEitherSideRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, EitherSideChemical<RECIPE>> {
     }

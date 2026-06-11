@@ -10,19 +10,16 @@ import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Basic implementation of {@link ItemStackToFluidOptionalItemRecipe}
- * @since 10.6.3
- */
+/// Basic implementation of [ItemStackToFluidOptionalItemRecipe]
+///
+/// @since 10.6.3
 public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackToFluidOptionalItemRecipe {
 
     protected final ItemStackIngredient input;
     protected final FluidOptionalItemOutput output;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicItemStackToFluidOptionalItemRecipe(ItemStackIngredient input, FluidOptionalItemOutput output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

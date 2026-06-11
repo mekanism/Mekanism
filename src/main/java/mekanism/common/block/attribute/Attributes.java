@@ -36,28 +36,24 @@ public class Attributes {
     private Attributes() {
     }
 
-    /** If a block supports security. */
+    /// If a block supports security.
     public static class AttributeSecurity implements Attribute {
 
         private AttributeSecurity() {
         }
     }
 
-    /**
-     * If a block has an inventory. Optionally allows for custom loot table providing. DelayedLootItemBuilder generic is due to the builder being in the Datagen source
-     * set.
-     */
+    /// If a block has an inventory. Optionally allows for custom loot table providing. DelayedLootItemBuilder generic is due to the builder being in the Datagen source
+    /// set.
     public static class AttributeInventory<DelayedLootItemBuilder extends ConditionUserBuilder<DelayedLootItemBuilder> & FunctionUserBuilder<DelayedLootItemBuilder>> implements Attribute {
 
         @Nullable
         private final Predicate<DelayedLootItemBuilder> customLootBuilder;
 
-        /**
-         * Create an Inventory attribute with custom loot function handling
-         *
-         * @param customLootBuilder consumes the Builders and returns `hasContents` for use in
-         *                          {@link mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)}
-         */
+        /// Create an Inventory attribute with custom loot function handling
+        ///
+        /// @param customLootBuilder consumes the Builders and returns `hasContents` for use in
+        /// [mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)]
         @SuppressWarnings("JavadocReference")
         public AttributeInventory(@Nullable Predicate<DelayedLootItemBuilder> customLootBuilder) {
             this.customLootBuilder = customLootBuilder;
@@ -72,25 +68,25 @@ public class Attributes {
         }
     }
 
-    /** If a block supports comparators. */
+    /// If a block supports comparators.
     public static class AttributeComparator implements Attribute {
 
         private AttributeComparator() {
         }
     }
 
-    /** If a block supports integration with computers. */
+    /// If a block supports integration with computers.
     public record AttributeComputerIntegration(String name) implements Attribute {
     }
 
-    /** If a block has a redstone input configuration. */
+    /// If a block has a redstone input configuration.
     public static class AttributeRedstone implements Attribute {
 
         private AttributeRedstone() {
         }
     }
 
-    /** If mobs can spawn on the block. */
+    /// If mobs can spawn on the block.
     public static class AttributeMobSpawn implements Attribute {
 
         public static final StateArgumentPredicate<EntityType<?>> NEVER_PREDICATE = (_, _, _, _) -> false;
@@ -128,7 +124,7 @@ public class Attributes {
               WorldUtils.isInsideFormedMultiblock(level, pos, mob) ? PathType.FENCE : null);
     }
 
-    /** If a block can emit redstone. */
+    /// If a block can emit redstone.
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
         private final ToIntBiFunction<TILE, Direction> redstoneFunction;
@@ -142,11 +138,11 @@ public class Attributes {
         }
     }
 
-    /** Custom explosion resistance attribute. */
+    /// Custom explosion resistance attribute.
     public record AttributeCustomResistance(float resistance) implements Attribute {//TODO: Adjust properties instead of having the override?
     }
 
-    /** Light value attribute. */
+    /// Light value attribute.
     public static class AttributeLight implements Attribute {
 
         private final int light;

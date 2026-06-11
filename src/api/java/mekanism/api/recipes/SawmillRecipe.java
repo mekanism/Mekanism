@@ -16,32 +16,26 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Input: ItemStack
- * <br>
- * Primary Output: ItemStack (can be empty if secondary output is not empty)
- * <br>
- * Secondary Output: Chance based ItemStack (can be empty/zero chance if primary output is not empty)
- *
- * @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
- */
+/// Input: ItemStack
+///
+/// Primary Output: ItemStack (can be empty if secondary output is not empty)
+///
+/// Secondary Output: Chance based ItemStack (can be empty/zero chance if primary output is not empty)
+///
+/// @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
 public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
 
     protected static final RandomSource RANDOM = RandomSource.create();
     private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
 
-    /**
-     * For JEI, gets the main output representations to display.
-     *
-     * @return Representation of the main output, <strong>MUST NOT</strong> be modified.
-     */
+    /// For JEI, gets the main output representations to display.
+    ///
+    /// @return Representation of the main output, **MUST NOT** be modified.
     public abstract List<ItemStackTemplate> getMainOutputDefinition();
 
-    /**
-     * For JEI, gets the secondary output representations to display.
-     *
-     * @return Representation of the secondary output, <strong>MUST NOT</strong> be modified.
-     */
+    /// For JEI, gets the secondary output representations to display.
+    ///
+    /// @return Representation of the secondary output, **MUST NOT** be modified.
     public abstract List<ItemStackTemplate> getSecondaryOutputDefinition();
 
     @Override
@@ -51,9 +45,7 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         return Collections.emptyList();
     }
 
-    /**
-     * Gets the chance (between 0 and 1) of the secondary output being produced.
-     */
+    /// Gets the chance (between 0 and 1) of the secondary output being produced.
     public abstract double getSecondaryChance();
 
     @Override
@@ -66,43 +58,31 @@ public abstract class SawmillRecipe extends ItemInputRecipe<ChanceOutput> {
         return new ItemStack(PRECISION_SAWMILL);
     }
 
-    /**
-     * Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be
-     * created.
-     */
+    /// Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be
+    /// created.
     public interface ChanceOutput {
 
-        /**
-         * Gets a copy of the main output of this recipe. This may be null if there is only a secondary chance based output.
-         *
-         */
+        /// Gets a copy of the main output of this recipe. This may be null if there is only a secondary chance based output.
         @Nullable
         ItemStackTemplate getMainOutput();
 
-        /**
-         * Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
-         * output for purposes of seeing if we have space to process.
-         *
-         */
+        /// Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
+        /// output for purposes of seeing if we have space to process.
         @Nullable
         ItemStackTemplate getMaxSecondaryOutput();
 
-        /**
-         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
-         * an empty stack.
-         *
-         * @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in {@link #getMaxSecondaryOutput()}
-         */
+        /// Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
+        /// an empty stack.
+        ///
+        /// @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in [#getMaxSecondaryOutput()]
         @Nullable
         ItemStackTemplate getSecondaryOutput();
 
-        /**
-         * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
-         * multiple operations at once.
-         *
-         * @implNote return a new copy or {@code null}
-         * @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in {@link #getMaxSecondaryOutput()}
-         */
+        /// Similar to [#getSecondaryOutput()] except that this calculates a new random number to act as if this was another chance output for purposes of handling
+        /// multiple operations at once.
+        ///
+        /// @implNote return a new copy or `null`
+        /// @implSpec It is expected that if this doesn't return null that the type is the same as the type returned in [#getMaxSecondaryOutput()]
         @Nullable
         ItemStackTemplate nextSecondaryOutput();
     }

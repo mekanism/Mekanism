@@ -54,12 +54,10 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
         }
     }
 
-    /**
-     * Writes the item map in a compact form to the stack. This compact form is a single long array tag that stores the data in partitions of three. The first partition
-     * stores the most significant bits of the UUID that represents the stack, the second partition stores the least significant bits, and the final partition stores the
-     * amount of the item that is stored in the drive. This maxes out at using {@code 3 * types per drive size * bytes per long + bytes per int} bytes to store just the
-     * array of items to in the drive. For our max drive size this is equivalent to {@code 3 * 8,192 * 8 + 4 = 196,612} bytes.
-     */
+    /// Writes the item map in a compact form to the stack. This compact form is a single long array tag that stores the data in partitions of three. The first partition
+    /// stores the most significant bits of the UUID that represents the stack, the second partition stores the least significant bits, and the final partition stores the
+    /// amount of the item that is stored in the drive. This maxes out at using `3 * types per drive size * bytes per long + bytes per int` bytes to store just the array
+    /// of items to in the drive. For our max drive size this is equivalent to `3 * 8,192 * 8 + 4 = 196,612` bytes.
     private long[] serializeItemMap() {
         int i = 0;
         long[] serializedItemMap = new long[3 * namedItemMap.size()];

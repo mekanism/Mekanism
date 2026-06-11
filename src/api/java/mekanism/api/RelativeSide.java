@@ -21,23 +21,17 @@ public enum RelativeSide implements IHasEnumNameTranslationKey, StringRepresenta
     TOP(APILang.TOP),
     BOTTOM(APILang.BOTTOM);
 
-    /**
-     * Codec for serializing sides based on their name.
-     *
-     * @since 10.6.0
-     */
+    /// Codec for serializing sides based on their name.
+    ///
+    /// @since 10.6.0
     public static final Codec<RelativeSide> CODEC = StringRepresentable.fromEnum(RelativeSide::values);
-    /**
-     * Gets a side by index, wrapping for out of bounds indices.
-     *
-     * @since 10.6.0
-     */
+    /// Gets a side by index, wrapping for out of bounds indices.
+    ///
+    /// @since 10.6.0
     public static final IntFunction<RelativeSide> BY_ID = ByIdMap.continuous(RelativeSide::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    /**
-     * Stream codec for syncing sides by index.
-     *
-     * @since 10.6.0
-     */
+    /// Stream codec for syncing sides by index.
+    ///
+    /// @since 10.6.0
     public static final StreamCodec<ByteBuf, RelativeSide> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RelativeSide::ordinal);
 
     private final String serializedName;
@@ -53,13 +47,11 @@ public enum RelativeSide implements IHasEnumNameTranslationKey, StringRepresenta
         return langEntry.getTranslationKey();
     }
 
-    /**
-     * Gets the {@link Direction} from the block based on what side it is facing.
-     *
-     * @param facing The direction the block is facing.
-     *
-     * @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
-     */
+    /// Gets the [Direction] from the block based on what side it is facing.
+    ///
+    /// @param facing The direction the block is facing.
+    ///
+    /// @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
     public Direction getDirection(Direction facing) {
         return switch (this) {
             case FRONT -> facing;
@@ -79,16 +71,14 @@ public enum RelativeSide implements IHasEnumNameTranslationKey, StringRepresenta
         };
     }
 
-    /**
-     * Gets the {@link RelativeSide} based on a side, and the facing direction of a block.
-     *
-     * @param facing The direction the block is facing.
-     * @param side   The side of the block we want to know what {@link RelativeSide} it is.
-     *
-     * @return the {@link RelativeSide} based on a side, and the facing direction of a block.
-     *
-     * @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis
-     */
+    /// Gets the [RelativeSide] based on a side, and the facing direction of a block.
+    ///
+    /// @param facing The direction the block is facing.
+    /// @param side   The side of the block we want to know what [RelativeSide] it is.
+    ///
+    /// @return the [RelativeSide] based on a side, and the facing direction of a block.
+    ///
+    /// @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis
     public static RelativeSide fromDirections(Direction facing, Direction side) {
         if (side == facing) {
             return FRONT;

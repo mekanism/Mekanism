@@ -69,11 +69,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
- *
- * @author AidanBrady
- */
+/// Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
 public class ClientTickHandler {
 
     private static final Minecraft minecraft = Minecraft.getInstance();

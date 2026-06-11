@@ -225,9 +225,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         }
     }
 
-    /**
-     * @apiNote Only used if not a {@link #isFocusOverlay()}
-     */
+    /// @apiNote Only used if not a [#isFocusOverlay()]
     protected int getTitlePadStart() {
         if (windowData.type().canPin()) {
             return 14 + GuiPinButton.WIDTH;
@@ -235,9 +233,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         return 12;
     }
 
-    /**
-     * @apiNote Only used if not a {@link #isFocusOverlay()}
-     */
+    /// @apiNote Only used if not a [#isFocusOverlay()]
     protected int getTitlePadEnd() {
         return 0;
     }

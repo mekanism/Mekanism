@@ -49,9 +49,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     public static final ModelProperty<CubeSideState[]> SIDE_STATE_PROPERTY = new ModelProperty<>();
 
-    /**
-     * This Energy Cube's tier.
-     */
+    /// This Energy Cube's tier.
     private final EnergyCubeTier tier;
     private float prevScale;
 
@@ -64,9 +62,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem", docPlaceholder = "discharge slot")
     EnergyInventorySlot dischargeSlot;
 
-    /**
-     * A block used to store and transfer electricity.
-     */
+    /// A block used to store and transfer electricity.
     public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         EnergyCubeTier tier = Attribute.getTierNN(blockProvider, EnergyCubeTier.class);
         this.tier = tier;

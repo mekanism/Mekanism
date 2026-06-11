@@ -17,8 +17,8 @@ import mekanism.common.component.containers.type.EnergyContainerType;
 import mekanism.common.util.MekanismUtils;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
 
 /// @implNote This container does not take the backing item access into account. None of the methods for interacting with this resource container scale the inputs based
 /// on the backing item access' size.
@@ -68,9 +68,7 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
         return ContainerType.ENERGY;
     }
 
-    /**
-     * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
-     */
+    /// @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
     @Override
     public long getAmountAsLong() {
         return getAttached();

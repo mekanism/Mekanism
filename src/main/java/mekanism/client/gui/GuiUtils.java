@@ -16,8 +16,8 @@ import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 public class GuiUtils {
 
@@ -211,25 +211,15 @@ public class GuiUtils {
         guiGraphics.verticalLine(x + boxWidth, y, y + boxHeight, color);
     }
 
-    /**
-     * Represents which direction our tiling is done when extending past the max size.
-     */
+    /// Represents which direction our tiling is done when extending past the max size.
     public enum TilingDirection {
-        /**
-         * Textures are being tiled/filled from top left to bottom right.
-         */
+        /// Textures are being tiled/filled from top left to bottom right.
         DOWN_RIGHT(true, true),
-        /**
-         * Textures are being tiled/filled from top right to bottom left.
-         */
+        /// Textures are being tiled/filled from top right to bottom left.
         DOWN_LEFT(true, false),
-        /**
-         * Textures are being tiled/filled from bottom left to top right.
-         */
+        /// Textures are being tiled/filled from bottom left to top right.
         UP_RIGHT(false, true),
-        /**
-         * Textures are being tiled/filled from bottom right to top left.
-         */
+        /// Textures are being tiled/filled from bottom right to top left.
         UP_LEFT(false, false);
 
         private final boolean down;

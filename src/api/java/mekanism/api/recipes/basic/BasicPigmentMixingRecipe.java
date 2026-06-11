@@ -17,13 +17,11 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
 
     private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
 
-    /**
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     *
-     * @apiNote The order of the inputs does not matter.
-     */
+    /// @param leftInput  Left input.
+    /// @param rightInput Right input.
+    /// @param output     Output.
+    ///
+    /// @apiNote The order of the inputs does not matter.
     public BasicPigmentMixingRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
         super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value());
     }

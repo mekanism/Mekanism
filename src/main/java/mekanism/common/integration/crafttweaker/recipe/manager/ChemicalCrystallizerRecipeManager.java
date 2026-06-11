@@ -22,24 +22,20 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Sin
         super(MekanismRecipeType.CRYSTALLIZING);
     }
 
-    /**
-     * Adds a crystallizing recipe that converts a chemical into an item. Chemical Crystallizers can process this recipe type.
-     *
-     * @param name   Name of the new recipe.
-     * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
-     * @param output {@link IItemStack} representing the output of the recipe.
-     */
+    /// Adds a crystallizing recipe that converts a chemical into an item. Chemical Crystallizers can process this recipe type.
+    ///
+    /// @param name   Name of the new recipe.
+    /// @param input  [ChemicalStackIngredient] representing the input of the recipe.
+    /// @param output [IItemStack] representing the output of the recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, ChemicalStackIngredient input, IItemStack output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
-    /**
-     * Creates a crystallizing recipe that converts a chemical into an item.
-     *
-     * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
-     * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a crystallizing recipe that converts a chemical into an item.
+    ///
+    /// @param input  [ChemicalStackIngredient] representing the input of the recipe.
+    /// @param output [IItemStack] representing the output of the recipe. Will be validated as not empty.
     public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient input, IItemStack output) {
         return new BasicChemicalCrystallizerRecipe(input, getAndValidateNotEmpty(output));
     }

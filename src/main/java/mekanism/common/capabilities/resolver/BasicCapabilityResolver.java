@@ -13,9 +13,7 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT extends @Nullable Objec
         return new BasicCapabilityResolver<>(supportedCapability, supplier);
     }
 
-    /**
-     * Creates a capability resolver that strongly caches the result of the supplier. Persisting the calculated value through capability invalidation.
-     */
+    /// Creates a capability resolver that strongly caches the result of the supplier. Persisting the calculated value through capability invalidation.
     public static <CAPABILITY, CONTEXT extends @Nullable Object> BasicCapabilityResolver<CAPABILITY, CONTEXT> persistent(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
           Supplier<CAPABILITY> supplier) {
         return create(supportedCapability, supplier instanceof Lazy ? supplier : Lazy.of(supplier));

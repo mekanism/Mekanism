@@ -18,9 +18,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -326,10 +326,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    /**
-     * @implNote This is slightly different from read and write as we don't bother syncing the ejecting status. We can skip syncing the ejecting status as the client only
-     * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
-     */
+    /// @implNote This is slightly different from read and write as we don't bother syncing the ejecting status. We can skip syncing the ejecting status as the client
+    /// only needs that information when in the gui see [#getSpecificSyncableData()] for where we sync ejecting status while in GUIs.
     @Override
     public void addToUpdateTag(ValueOutput output) {
         String key = getComponentKey();

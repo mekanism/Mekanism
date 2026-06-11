@@ -559,11 +559,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         updateTargetChunk(null);
     }
 
-    /**
-     * @param filter Filter that was matched, if in inverse mode this will be null
-     *
-     * @return false if unsuccessful
-     */
+    /// @param filter Filter that was matched, if in inverse mode this will be null
+    ///
+    /// @return false if unsuccessful
     private boolean setReplace(ServerLevel level, BlockState state, BlockPos pos, @Nullable MinerFilter<?> filter, TransactionContext transaction) {
         Item replaceTarget;
         ItemStack stack;
@@ -789,9 +787,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return filterManager.anyEnabledMatch(target, MinerFilter::replaceTargetMatches);
     }
 
-    /**
-     * @apiNote Assumes that inverse is checked before this is called
-     */
+    /// @apiNote Assumes that inverse is checked before this is called
     private boolean inverseReplaceTargetMatches(ItemResource target) {
         return inverseReplaceTarget != Items.AIR && target.is(inverseReplaceTarget);
     }
@@ -1113,9 +1109,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return chunkLoaderComponent;
     }
 
-    /**
-     * @apiNote Should only be called on the server, but probably won't cause major issues if called on the client
-     */
+    /// @apiNote Should only be called on the server, but probably won't cause major issues if called on the client
     private void updateTargetChunk(@Nullable ChunkPos target) {
         if (!Objects.equals(targetChunk, target)) {
             //Only update the target if it has changed

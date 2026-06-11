@@ -44,9 +44,7 @@ public enum CableTier implements ITier {
         return baseCapacity;
     }
 
-    /**
-     * ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object
-     */
+    /// ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object
     public void setConfigReference(CachedLongValue capacityReference) {
         this.capacityReference = capacityReference;
     }

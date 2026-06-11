@@ -65,9 +65,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
         return "%" + storedIndex + "$" + ending;
     }
 
-    /**
-     * Reverses order of inner arguments of a MessageFormat styled formatting code
-     */
+    /// Reverses order of inner arguments of a MessageFormat styled formatting code
     private static String convertMessageFormatCode(MessageFormatComponent component) {
         String formatStyle = component.getFormatStyle();
         if (formatStyle != null && component.isChoice()) {

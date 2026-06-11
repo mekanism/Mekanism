@@ -8,9 +8,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.collection.HashList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling filter lists
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling filter lists
 public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableCollection<FILTER, Collection<FILTER>> {
 
     public static <FILTER extends IFilter<?>> SyncableFilterList<FILTER> create(Supplier<Collection<FILTER>> getter, Consumer<Collection<FILTER>> setter) {

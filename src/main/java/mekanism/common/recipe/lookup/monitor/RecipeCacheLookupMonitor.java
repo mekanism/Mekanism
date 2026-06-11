@@ -49,9 +49,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
         shouldUnpause = true;
     }
 
-    /**
-     * Helper that wraps {@link #updateAndProcess()} inside of a brief check to calculate how much energy actually got used.
-     */
+    /// Helper that wraps [#updateAndProcess()] inside of a brief check to calculate how much energy actually got used.
     public int updateAndProcess(IEnergyContainer energyContainer) {
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call

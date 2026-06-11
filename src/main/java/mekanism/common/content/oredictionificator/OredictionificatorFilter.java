@@ -127,9 +127,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
         return filterLocation == null ? "" : filterLocation.location().toString();
     }
 
-    /**
-     * This method should only be called if the filter is valid or if it isn't the validity should be rechecked afterwards
-     */
+    /// This method should only be called if the filter is valid or if it isn't the validity should be rechecked afterwards
     public final void setFilter(@Nullable Identifier location) {
         filterLocation = location == null ? null : TagKey.create(getRegistry().key(), location);
         flushCachedTag();
@@ -144,9 +142,7 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
         setFilter(tag);
     }
 
-    /**
-     * Only publicly exposed for creating via ComputerCraft
-     */
+    /// Only publicly exposed for creating via ComputerCraft
     public final void setSelectedOutput(Holder<TYPE> output) {
         this.selectedOutput = output;
         //Invalidate cached stack

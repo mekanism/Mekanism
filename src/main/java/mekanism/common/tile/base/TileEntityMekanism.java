@@ -146,14 +146,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected static final Set<RelativeSide> BACK_ONLY = Set.of(RelativeSide.BACK);
 
-    /**
-     * The players currently using this block.
-     */
+    /// The players currently using this block.
     public final Set<Player> playersUsing = new HashSet<>();
 
-    /**
-     * A timer used to send packets to clients.
-     */
+    /// A timer used to send packets to clients.
     public int ticker;
     private final List<ITileComponent> components = new ArrayList<>();
 
@@ -194,9 +190,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //TODO: Move these to private variables?
     protected boolean redstone = false;
     private boolean redstoneLastTick = false;
-    /**
-     * This machine's current RedstoneControl type.
-     */
+    /// This machine's current RedstoneControl type.
     private RedstoneControl controlType = RedstoneControl.DISABLED;
     //End variables ITileRedstone
 
@@ -252,9 +246,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     protected SoundEvent lastSoundEvent;
 
-    /**
-     * Only used on the client
-     */
+    /// Only used on the client
     @Nullable
     private SoundInstance activeSound;
     private int playSoundCooldown = 0;
@@ -341,12 +333,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         nameable = hasGui() && !Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).hasCustomName();
     }
 
-    /**
-     * Sets variables up, called immediately after {@link #setSupportedTypes(Holder)} but before any things start being created.
-     *
-     * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run too late to set things up properly in our
-     * constructor.
-     */
+    /// Sets variables up, called immediately after [#setSupportedTypes(Holder)] but before any things start being created.
+    ///
+    /// @implNote This method should be used for setting any variables that would normally be set directly, except that gets run too late to set things up properly in our
+    /// constructor.
     protected void presetVariables() {
     }
 
@@ -354,23 +344,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return blockProvider;
     }
 
-    /**
-     * Should data related to the given type be persisted in this tile save
-     */
+    /// Should data related to the given type be persisted in this tile save
     public boolean persists(IContainerType<?, ?> type) {
         return type.canHandle(this);
     }
 
-    /**
-     * Should data related to the given type be transferred to the item
-     */
+    /// Should data related to the given type be transferred to the item
     public boolean persistsToItem(IContainerType<?, ?> type) {
         return persists(type);
     }
 
-    /**
-     * Should data related to the given type be synced to the client in the GUI
-     */
+    /// Should data related to the given type be synced to the client in the GUI
     public boolean syncs(IContainerType<?, ?> type) {
         return persists(type);
     }
@@ -424,13 +408,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsComputers;
     }
 
-    /**
-     * Used to check if this tile actually has an inventory.
-     *
-     * @return True if we are actually an inventory.
-     *
-     * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
-     */
+    /// Used to check if this tile actually has an inventory.
+    ///
+    /// @return True if we are actually an inventory.
+    ///
+    /// @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
     public final boolean hasInventory() {
         return itemHandlerManager != null;
     }
@@ -497,11 +479,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    /**
-     * This should return false if naming it would be pointless, in order to save on NBT data on both the tile entity and the block item.
-     *
-     * @return if the tile entity can be named
-     */
+    /// This should return false if naming it would be pointless, in order to save on NBT data on both the tile entity and the block item.
+    ///
+    /// @return if the tile entity can be named
     public boolean isNameable() {
         return nameable;
     }
@@ -707,17 +687,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    /**
-     * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
-     */
+    /// Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
     protected void onUpdateClient(Level level) {
     }
 
-    /**
-     * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
-     *
-     * @return {@code true} if an update packet needs to be sent to the client.
-     */
+    /// Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
+    ///
+    /// @return `true` if an update packet needs to be sent to the client.
     protected boolean onUpdateServer(ServerLevel level) {
         return false;
     }
@@ -1138,11 +1114,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return Redstone.SIGNAL_NONE;
     }
 
-    /**
-     * @param type Type of container that got updated
-     *
-     * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
-     */
+    /// @param type Type of container that got updated
+    ///
+    /// @implNote It can be assumed [#supportsComparator()] is true before this is called.
     protected boolean makesComparatorDirty(IContainerType<?, ?> type) {
         //Assume that items make it dirty unless otherwise overridden, as we use this before we can call hasInventory
         // and if we aren't using an inventory as our comparator thing we will be overriding this method anyway
@@ -1216,9 +1190,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return canHandleChemicals();
     }
 
-    /**
-     * @apiNote Only call on server.
-     */
+    /// @apiNote Only call on server.
     private boolean updateRadiationScale() {
         if (shouldDumpRadiation()) {
             float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks());
@@ -1398,16 +1370,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing ITileSound
 
-    /**
-     * Used to check if this tile should attempt to play its sound
-     */
+    /// Used to check if this tile should attempt to play its sound
     protected boolean canPlaySound() {
         return getActive();
     }
 
-    /**
-     * Only call this from the client
-     */
+    /// Only call this from the client
     private void updateSound(Level level) {
         // If machine sounds are disabled, noop
         if (!hasSound() || !MekanismConfig.client.enableMachineSounds.get() || soundEvent == null) {

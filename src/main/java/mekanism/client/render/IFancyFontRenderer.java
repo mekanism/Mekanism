@@ -14,8 +14,8 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 //TODO - 1.21: Document this class
 //TODO - 26.1 fixme
@@ -27,9 +27,7 @@ public interface IFancyFontRenderer {
         return Minecraft.getInstance().font;
     }
 
-    /**
-     * Time the gui was opened in ms, or zero if the time is unknown (scrolling text will just use the current time then)
-     */
+    /// Time the gui was opened in ms, or zero if the time is unknown (scrolling text will just use the current time then)
     default long getTimeOpened() {
         //TODO: Try and improve how we handle the time opened concept for test in scrollable elements
         //TODO: Gui elements that are part of a GuiWindow, should use the window's time instead of the gui's time
@@ -171,14 +169,13 @@ public interface IFancyFontRenderer {
         }
     }
 
-    /**
-     * Based off the logic for calculating the scissor area and draw target that vanilla does in
-     * {@link ActiveTextCollector#defaultScrollingHelper(Component, int, int, int, int, int, int, int, Parameters)}
-     *
-     * @param visibleDuration Time in ms that this string has been visible for.
-     *
-     * @apiNote Call {@link GuiGraphicsExtractor#disableScissor()} after using this method
-     */
+    /// Based off the logic for calculating the scissor area and draw target that vanilla does in:
+    ///
+    /// [ActiveTextCollector#defaultScrollingHelper(Component, int, int, int, int, int, int, int, Parameters)]
+    ///
+    /// @param visibleDuration Time in ms that this string has been visible for.
+    ///
+    /// @apiNote Call [GuiGraphicsExtractor#disableScissor()] after using this method
     private static float prepScrollingString(GuiGraphicsExtractor graphics, Font font, float textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
         graphics.enableScissor(minX, minY, maxX, maxY);
         //TODO: Re-evaluate this, as for text (especially scaled text) when moving very slowly near the edges, it makes the text a bit blurry
@@ -225,9 +222,7 @@ public interface IFancyFontRenderer {
         LEFT,
         CENTER,
         RIGHT,
-        /**
-         * Represents that for left to right languages this will be left aligned, and for right to left it will be right aligned.
-         */
+        /// Represents that for left to right languages this will be left aligned, and for right to left it will be right aligned.
         RELATIVE;//TODO: Make use of this in various spots that make sense
 
         public float getTarget(Font font, int minX, int maxX, float textWidth) {

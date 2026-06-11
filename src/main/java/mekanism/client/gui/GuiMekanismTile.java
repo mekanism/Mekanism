@@ -16,9 +16,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
     protected final TILE tile;
-    /**
-     * May be null if init hasn't been called yet. Will be null if the tile doesn't support upgrades.
-     */
+    /// May be null if init hasn't been called yet. Will be null if the tile doesn't support upgrades.
     @UnknownNullability
     private GuiUpgradeWindowTab upgradeWindowTab;
 

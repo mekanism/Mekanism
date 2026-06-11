@@ -16,8 +16,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -41,19 +41,15 @@ public class GenHandler {
     @Nullable
     private static List<MekFeature> cachedFeatures;
 
-    /**
-     * Call to clear the cached holder lookup of placed features.
-     */
+    /// Call to clear the cached holder lookup of placed features.
     public static void reset() {
         cachedFeatures = null;
     }
 
-    /**
-     * @return {@code true} if some retro-generation happened.
-     *
-     * @apiNote Only call this method if the chunk at the given position is loaded.
-     * @implNote Adapted from {@link ChunkGenerator#applyBiomeDecoration(WorldGenLevel, ChunkAccess, StructureManager)}.
-     */
+    /// @return `true` if some retro-generation happened.
+    ///
+    /// @apiNote Only call this method if the chunk at the given position is loaded.
+    /// @implNote Adapted from [ChunkGenerator#applyBiomeDecoration(WorldGenLevel, ChunkAccess, StructureManager)].
     public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
         boolean generated = false;
         if (!SharedConstants.debugVoidTerrain(chunkPos)) {

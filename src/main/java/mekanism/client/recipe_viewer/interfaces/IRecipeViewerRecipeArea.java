@@ -9,9 +9,7 @@ import org.jspecify.annotations.Nullable;
 
 public interface IRecipeViewerRecipeArea<ELEMENT extends GuiElement> extends GuiEventListener {
 
-    /**
-     * @return null if not an active recipe area, otherwise the category
-     */
+    /// @return null if not an active recipe area, otherwise the category
     IRecipeViewerRecipeType<?> @Nullable [] getRecipeCategories();
 
     default boolean isRecipeViewerAreaActive() {

@@ -84,12 +84,11 @@ public class LRU<T extends @Nullable Object> extends AbstractCollection<T> {
         }
     }
 
-    /**
-     * Get the first element, like {@link Queue#element()}
-     *
-     * @return the first element
-     * @throws NoSuchElementException when there are no items in the LRU
-     */
+    /// Get the first element, like [Queue#element()]
+    ///
+    /// @return the first element
+    ///
+    /// @throws NoSuchElementException when there are no items in the LRU
     public T head() {
         //head.next is never null as it will be tail when empty
         if (head.next.value == null) {
@@ -98,11 +97,9 @@ public class LRU<T extends @Nullable Object> extends AbstractCollection<T> {
         return head.next.value;
     }
 
-    /**
-     * Like {@link Queue#peek()}
-     *
-     * @return the head of this LRU, or null if this LRU is empty
-     */
+    /// Like [Queue#peek()]
+    ///
+    /// @return the head of this LRU, or null if this LRU is empty
     @Nullable
     public T peek() {
         return head.next.value;

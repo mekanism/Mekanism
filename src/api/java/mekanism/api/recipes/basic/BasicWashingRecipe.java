@@ -32,11 +32,9 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     protected final ChemicalStackIngredient chemicalInput;
     protected final ChemicalStackTemplate output;
 
-    /**
-     * @param fluidInput    Fluid input.
-     * @param chemicalInput Chemical input.
-     * @param output        Output.
-     */
+    /// @param fluidInput    Fluid input.
+    /// @param chemicalInput Chemical input.
+    /// @param output        Output.
     public BasicWashingRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate output) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");

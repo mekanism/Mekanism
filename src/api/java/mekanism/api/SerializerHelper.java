@@ -20,17 +20,15 @@ public class SerializerHelper {
     private SerializerHelper() {
     }
 
-    /**
-     * Generate a RecordCodecBuilder which is required only if the 'primary' is present. If this field is present, it will be returned regardless. Does not eat errors
-     *
-     * @param primaryField    the field which determines the required-ness. MUST be an Optional
-     * @param dependentCodec  the codec for <strong>this</strong> field
-     * @param dependentGetter the getter for this field (what you'd use on {@link MapCodec#forGetter(Function)})
-     * @param <SOURCE>        the resulting type that both fields exist on
-     * @param <THIS_TYPE>     the value type of this dependent field
-     *
-     * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
-     */
+    /// Generate a RecordCodecBuilder which is required only if the `primary` is present. If this field is present, it will be returned regardless. Does not eat errors
+    ///
+    /// @param primaryField    the field which determines the required-ness. MUST be an Optional
+    /// @param dependentCodec  the codec for **this** field
+    /// @param dependentGetter the getter for this field (what you'd use on [MapCodec#forGetter(Function)])
+    /// @param <SOURCE>        the resulting type that both fields exist on
+    /// @param <THIS_TYPE>     the value type of this dependent field
+    ///
+    /// @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
     public static <SOURCE, THIS_TYPE> RecordCodecBuilder<SOURCE, Optional<THIS_TYPE>> dependentOptionality(RecordCodecBuilder<SOURCE, ? extends Optional<?>> primaryField,
           MapCodec<Optional<THIS_TYPE>> dependentCodec, Function<SOURCE, Optional<THIS_TYPE>> dependentGetter) {
         Implementation<Optional<THIS_TYPE>> dependentRequired = new Implementation<>() {
@@ -56,17 +54,15 @@ public class SerializerHelper {
         return primaryField.dependent(dependentGetter, dependentCodec, primaryValue -> primaryValue.isEmpty() ? dependentCodec : dependentRequired);
     }
 
-    /**
-     * Generate a RecordCodecBuilder which is REQUIRED only if the 'other' is NOT present. When the other field is present, this one is OPTIONAL. Does not eat errors.
-     *
-     * @param otherField      the field which determines the required-ness. MUST be an Optional
-     * @param dependentCodec  the codec for <strong>this</strong> field
-     * @param dependentGetter the getter for this field (what you'd use on {@link MapCodec#forGetter(Function)})
-     * @param <SOURCE>        the resulting type that both fields exist on
-     * @param <THIS_TYPE>     the value type of this dependent field
-     *
-     * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
-     */
+    /// Generate a RecordCodecBuilder which is REQUIRED only if the `other` is NOT present. When the other field is present, this one is OPTIONAL. Does not eat errors.
+    ///
+    /// @param otherField      the field which determines the required-ness. MUST be an Optional
+    /// @param dependentCodec  the codec for **this** field
+    /// @param dependentGetter the getter for this field (what you'd use on [MapCodec#forGetter(Function)])
+    /// @param <SOURCE>        the resulting type that both fields exist on
+    /// @param <THIS_TYPE>     the value type of this dependent field
+    ///
+    /// @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
     public static <SOURCE, THIS_TYPE> RecordCodecBuilder<SOURCE, Optional<THIS_TYPE>> oneRequired(RecordCodecBuilder<SOURCE, ? extends Optional<?>> otherField,
           MapCodec<Optional<THIS_TYPE>> dependentCodec, Function<SOURCE, Optional<THIS_TYPE>> dependentGetter) {
         Implementation<Optional<THIS_TYPE>> dependentRequired = new Implementation<>() {

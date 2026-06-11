@@ -8,14 +8,14 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.BlockData;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyResourceHandler;
+import mekanism.common.component.BlockData;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.ResourceContainerType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IMultiblockContents;
@@ -45,9 +45,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Utils for simplifying the code for interacting with various mods that you look at things for (TOP, and Hwyla)
- */
+/// Utils for simplifying the code for interacting with various mods that you look at things for (TOP, and Hwyla)
 public class LookingAtUtils {
 
     public static final Identifier ENERGY = Mekanism.rl("energy");

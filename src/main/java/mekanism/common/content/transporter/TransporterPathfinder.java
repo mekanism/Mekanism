@@ -307,9 +307,7 @@ public final class TransporterPathfinder {
             this(path.path(), ret, path.cost());
         }
 
-        /**
-         * @apiNote Expects list to be unmodifiable/immutable (at the very least not mutated after being passed).
-         */
+        /// @apiNote Expects list to be unmodifiable/immutable (at the very least not mutated after being passed).
         public Destination(LongList path, @Nullable TransitResponse ret, double gScore) {
             this.path = path;
             this.cachedHash = this.path.hashCode();
@@ -468,11 +466,9 @@ public final class TransporterPathfinder {
             return false;
         }
 
-        /**
-         * Checks if we have a valid connection to the destination and are able to emit to it. If we are this updates the side and results to the proper values.
-         *
-         * @return True if we found a valid connection to the destination and can insert into it, false otherwise
-         */
+        /// Checks if we have a valid connection to the destination and are able to emit to it. If we are this updates the side and results to the proper values.
+        ///
+        /// @return True if we found a valid connection to the destination and can insert into it, false otherwise
         private boolean isValidDestination(BlockPos start, @Nullable LogisticalTransporterBase startTransporter, Direction direction, BlockPos neighbor,
               Long2ObjectMap<ChunkAccess> chunkMap, @Nullable TransactionContext transaction) {
             //Check to make sure that it is the destination

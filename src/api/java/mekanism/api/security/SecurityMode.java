@@ -15,42 +15,28 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
-/**
- * Simple security enum for defining different access levels.
- *
- * @since 10.2.1
- */
+/// Simple security enum for defining different access levels.
+///
+/// @since 10.2.1
 public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumNameTextComponent, StringRepresentable {
-    /**
-     * Public Security: Everyone is allowed access.
-     */
+    /// Public Security: Everyone is allowed access.
     PUBLIC(APILang.PUBLIC, EnumColor.BRIGHT_GREEN),
-    /**
-     * Private Security: Only the owner is allowed access.
-     */
+    /// Private Security: Only the owner is allowed access.
     PRIVATE(APILang.PRIVATE, EnumColor.RED),
-    /**
-     * Trusted Security: The owner and anyone they mark as trusted in their security desk are allowed access.
-     */
+    /// Trusted Security: The owner and anyone they mark as trusted in their security desk are allowed access.
     TRUSTED(APILang.TRUSTED, EnumColor.INDIGO);
 
-    /**
-     * Codec for serializing security modes based on their name.
-     *
-     * @since 10.6.0
-     */
+    /// Codec for serializing security modes based on their name.
+    ///
+    /// @since 10.6.0
     public static final Codec<SecurityMode> CODEC = StringRepresentable.fromEnum(SecurityMode::values);
-    /**
-     * Gets a security mode by index, wrapping for out of bounds indices.
-     *
-     * @since 10.6.0
-     */
+    /// Gets a security mode by index, wrapping for out of bounds indices.
+    ///
+    /// @since 10.6.0
     public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    /**
-     * Stream codec for syncing security modes by index.
-     *
-     * @since 10.6.0
-     */
+    /// Stream codec for syncing security modes by index.
+    ///
+    /// @since 10.6.0
     public static final StreamCodec<ByteBuf, SecurityMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SecurityMode::ordinal);
 
     private final String serializedName;

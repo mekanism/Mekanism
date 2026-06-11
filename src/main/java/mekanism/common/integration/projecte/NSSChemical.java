@@ -14,9 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-/**
- * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Chemical}s.
- */
+/// Implementation of [NormalizedSimpleStack] and [moze_intel.projecte.api.nss.NSSTag] for representing [Chemical]s.
 public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
     public static final MapCodec<NSSChemical> CODEC = createCodec(MekanismAPI.CHEMICAL_REGISTRY, false, NSSChemical::new);
@@ -25,17 +23,13 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
         super(resourceLocation, isTag);
     }
 
-    /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link ChemicalStack}
-     */
+    /// Helper method to create an [NSSChemical] representing a chemical from a [ChemicalStack]
     public static NSSChemical createChemical(TypedInstance<Chemical> stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createChemical(stack.typeHolder());
     }
 
-    /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Holder}.
-     */
+    /// Helper method to create an [NSSChemical] representing a chemical from a [Holder].
     public static NSSChemical createChemical(Holder<Chemical> chemical) {
         ResourceKey<Chemical> key = chemical.getKey();
         if (key == null) {
@@ -52,9 +46,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
         return createChemical(key.identifier());
     }
 
-    /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Identifier}
-     */
+    /// Helper method to create an [NSSChemical] representing a chemical from a [Identifier]
     public static NSSChemical createChemical(Identifier chemicalId) {
         if (chemicalId.equals(MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey())) {
             throw new IllegalArgumentException("Can't make NSSChemical with an empty chemical");
@@ -62,16 +54,12 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
         return new NSSChemical(chemicalId, false);
     }
 
-    /**
-     * Helper method to create an {@link NSSChemical} representing a tag from a {@link Identifier}
-     */
+    /// Helper method to create an [NSSChemical] representing a tag from a [Identifier]
     public static NSSChemical createTag(Identifier tagId) {
         return new NSSChemical(tagId, true);
     }
 
-    /**
-     * Helper method to create an {@link NSSChemical} representing a tag from a {@link TagKey}&lt;{@link Chemical}&gt;
-     */
+    /// Helper method to create an [NSSChemical] representing a tag from a [TagKey]<[Chemical]>
     public static NSSChemical createTag(TagKey<Chemical> tag) {
         return createTag(tag.location());
     }

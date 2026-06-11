@@ -11,9 +11,7 @@ import mekanism.common.integration.projecte.NSSChemical;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import org.openzen.zencode.java.ZenCodeType;
 
-/**
- * Expand ProjectE's NSSResolver CraftTweaker class to add helpers for creating {@link NormalizedSimpleStack} for our various chemicals.
- */
+/// Expand ProjectE's NSSResolver CraftTweaker class to add helpers for creating [NormalizedSimpleStack] for our various chemicals.
 @ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
 @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_NSS_RESOLVER)
 public class CrTNSSResolverExpansion {
@@ -21,13 +19,11 @@ public class CrTNSSResolverExpansion {
     private CrTNSSResolverExpansion() {
     }
 
-    /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTChemicalStack}.
-     *
-     * @param stack Chemical Stack to represent
-     *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTChemicalStack}.
-     */
+    /// Create a [NormalizedSimpleStack] representing a given [ICrTChemicalStack].
+    ///
+    /// @param stack Chemical Stack to represent
+    ///
+    /// @return A [NormalizedSimpleStack] representing a given [ICrTChemicalStack].
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(ICrTChemicalStack stack) {
         if (stack.isEmpty()) {
@@ -37,13 +33,11 @@ public class CrTNSSResolverExpansion {
         return NSSChemical.createChemical(stack.getInternal());
     }
 
-    /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag}&lt;{@link Chemical}&gt;.
-     *
-     * @param tag Chemical Tag to represent
-     *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag}&lt;{@link Chemical}&gt;.
-     */
+    /// Create a [NormalizedSimpleStack] representing a given [KnownTag]<[Chemical]>.
+    ///
+    /// @param tag Chemical Tag to represent
+    ///
+    /// @return A [NormalizedSimpleStack] representing a given [KnownTag]<[Chemical]>.
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemicalTag(KnownTag<Chemical> tag) {
         return NSSChemical.createTag(CrTUtils.validateTagAndGet(tag));

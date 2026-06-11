@@ -34,14 +34,11 @@ public abstract class SingleInputRecipe<HOLDER_TYPE, STACK extends TypedInstance
         return getInput().test(stack);
     }
 
-    /**
-     * Helper to test this recipe against an instance but ignoring size.
-     *
-     * @param instance Input instance.
-     *
-     * @return {@code true} if the instance's type matches the input.
-     *
-     */
+    /// Helper to test this recipe against an instance but ignoring size.
+    ///
+    /// @param instance Input instance.
+    ///
+    /// @return `true` if the instance's type matches the input.
     public final boolean testType(TypedInstance<HOLDER_TYPE> instance) {
         return getInput().testType(instance);
     }

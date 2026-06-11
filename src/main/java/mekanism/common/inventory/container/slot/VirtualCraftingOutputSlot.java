@@ -17,9 +17,7 @@ import org.jspecify.annotations.Nullable;
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
     private final QIOCraftingWindow craftingWindow;
-    /**
-     * @apiNote For use on client side to store if we can craft or not. On the server side we check it directly
-     */
+    /// @apiNote For use on client side to store if we can craft or not. On the server side we check it directly
     private boolean canCraft;
     private int amountCrafted;
 
@@ -89,9 +87,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return extracted;
     }
 
-    /**
-     * @implNote We override this similar to how {@link net.minecraft.world.inventory.ResultSlot} does, but this never actually ends up getting called for our slots.
-     */
+    /// @implNote We override this similar to how [net.minecraft.world.inventory.ResultSlot] does, but this never actually ends up getting called for our slots.
     @Override
     protected void onQuickCraft(ItemStack stack, int amount) {
         amountCrafted += amount;

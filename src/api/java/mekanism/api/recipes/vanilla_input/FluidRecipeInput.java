@@ -4,11 +4,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/**
- * Represents a recipe input that for fluid inputs.
- *
- * @since 10.6.0
- */
+/// Represents a recipe input that for fluid inputs.
+///
+/// @since 10.6.0
 public interface FluidRecipeInput extends RecipeInput {
 
     @Override
@@ -16,13 +14,11 @@ public interface FluidRecipeInput extends RecipeInput {
         return ItemStack.EMPTY;
     }
 
-    /**
-     * Gets the fluid with the given index.
-     *
-     * @param index Index to lookup.
-     *
-     * @return Fluid.
-     */
+    /// Gets the fluid with the given index.
+    ///
+    /// @param index Index to lookup.
+    ///
+    /// @return Fluid.
     FluidStack getFluid(int index);
 
     @Override

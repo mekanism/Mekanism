@@ -27,16 +27,14 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     @Nullable
     private final ChemicalStackTemplate chemicalOutput;
 
-    /**
-     * Rotary recipe that converts a fluid into a chemical.
-     *
-     * @param fluidInput     Fluid input.
-     * @param chemicalOutput Chemical output.
-     *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)} over this constructor in
-     * combination with {@link #BasicRotaryRecipe(ChemicalStackIngredient, FluidStackTemplate)} and making two separate recipes if the conversion will be possible in both
-     * directions.
-     */
+    /// Rotary recipe that converts a fluid into a chemical.
+    ///
+    /// @param fluidInput     Fluid input.
+    /// @param chemicalOutput Chemical output.
+    ///
+    /// @apiNote It is recommended to use [#BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)] over this
+    /// constructor in combination with [#BasicRotaryRecipe(ChemicalStackIngredient, FluidStackTemplate)] and making two separate recipes if the conversion will be
+    /// possible in both directions.
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStackTemplate chemicalOutput) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalOutput = Objects.requireNonNull(chemicalOutput, "Chemical output cannot be null.");
@@ -44,16 +42,14 @@ public class BasicRotaryRecipe extends RotaryRecipe {
         this.fluidOutput = null;
     }
 
-    /**
-     * Rotary recipe that converts a chemical into a fluid.
-     *
-     * @param chemicalInput Chemical input.
-     * @param fluidOutput   Fluid output.
-     *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)} over this constructor in
-     * combination with {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackTemplate)} and making two separate recipes if the conversion will be possible in both
-     * directions.
-     */
+    /// Rotary recipe that converts a chemical into a fluid.
+    ///
+    /// @param chemicalInput Chemical input.
+    /// @param fluidOutput   Fluid output.
+    ///
+    /// @apiNote It is recommended to use [#BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStackTemplate, FluidStackTemplate)] over this
+    /// constructor in combination with [#BasicRotaryRecipe(FluidStackIngredient, ChemicalStackTemplate)] and making two separate recipes if the conversion will be
+    /// possible in both directions.
     public BasicRotaryRecipe(ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.fluidOutput = Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
@@ -61,17 +57,15 @@ public class BasicRotaryRecipe extends RotaryRecipe {
         this.chemicalOutput = null;
     }
 
-    /**
-     * Rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
-     *
-     * @param fluidInput     Fluid input.
-     * @param chemicalInput  Chemical input.
-     * @param chemicalOutput Chemical output.
-     * @param fluidOutput    Fluid output.
-     *
-     * @apiNote It is recommended to use this constructor over using {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackTemplate)} and
-     * {@link #BasicRotaryRecipe(ChemicalStackIngredient, FluidStackTemplate)} in combination and creating two recipes if the conversion will be possible in both directions.
-     */
+    /// Rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
+    ///
+    /// @param fluidInput     Fluid input.
+    /// @param chemicalInput  Chemical input.
+    /// @param chemicalOutput Chemical output.
+    /// @param fluidOutput    Fluid output.
+    ///
+    /// @apiNote It is recommended to use this constructor over using [#BasicRotaryRecipe(FluidStackIngredient, ChemicalStackTemplate)] and
+    /// [#BasicRotaryRecipe(ChemicalStackIngredient, FluidStackTemplate)] in combination and creating two recipes if the conversion will be possible in both directions.
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStackTemplate chemicalOutput, FluidStackTemplate fluidOutput) {
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
@@ -133,38 +127,30 @@ public class BasicRotaryRecipe extends RotaryRecipe {
         return Objects.requireNonNull(fluidOutput, "This recipe has no chemical to fluid conversion.");
     }
 
-    /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
-     *
-     * @return the uncopied basic input or an empty optional if the recipe doesn't support chemical to fluid recipes.
-     */
+    /// For Serializer use. DO NOT MODIFY RETURN VALUE.
+    ///
+    /// @return the uncopied basic input or an empty optional if the recipe doesn't support chemical to fluid recipes.
     public Optional<ChemicalStackIngredient> getChemicalInputRaw() {
         return Optional.ofNullable(chemicalInput);
     }
 
-    /**
-     * For Serializer use.
-     *
-     * @return the uncopied basic output
-     */
+    /// For Serializer use.
+    ///
+    /// @return the uncopied basic output
     public Optional<ChemicalStackTemplate> getChemicalOutputRaw() {
         return Optional.ofNullable(chemicalOutput);
     }
 
-    /**
-     * For Serializer use. DO NOT MODIFY RETURN VALUE.
-     *
-     * @return the uncopied basic input or an empty optional if the recipe doesn't support fluid to chemical recipes.
-     */
+    /// For Serializer use. DO NOT MODIFY RETURN VALUE.
+    ///
+    /// @return the uncopied basic input or an empty optional if the recipe doesn't support fluid to chemical recipes.
     public Optional<FluidStackIngredient> getFluidInputRaw() {
         return Optional.ofNullable(fluidInput);
     }
 
-    /**
-     * For Serializer use.
-     *
-     * @return the uncopied basic output
-     */
+    /// For Serializer use.
+    ///
+    /// @return the uncopied basic output
     public Optional<FluidStackTemplate> getFluidOutputRaw() {
         return Optional.ofNullable(fluidOutput);
     }

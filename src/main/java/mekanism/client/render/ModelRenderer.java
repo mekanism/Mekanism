@@ -23,9 +23,7 @@ public final class ModelRenderer {
         return Math.min(stages - 1, (int) (scale * (stages - 1)));
     }
 
-    /**
-     * @apiNote If the data is gaseous then scale is ignored
-     */
+    /// @apiNote If the data is gaseous then scale is ignored
     public static float getMaxY(int multiblockHeight, double scale, boolean gaseous) {
         int maxStages = getMaxStages(multiblockHeight);
         int stage = getStage(scale, maxStages, multiblockHeight, gaseous);

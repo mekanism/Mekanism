@@ -95,9 +95,7 @@ public class Meltdown {
         return ticksExisted >= DURATION;
     }
 
-    /**
-     * Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
-     */
+    /// Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
     private void createExplosion(ServerLevel world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
         MeltdownDamageCalculator damageCalculator = new MeltdownDamageCalculator();
         //nb damage source is defaulted in ServerExplosion when null

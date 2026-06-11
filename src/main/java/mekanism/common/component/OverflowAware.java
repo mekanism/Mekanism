@@ -19,9 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-/**
- * @param overflow Note: Sorted map to ensure each call to save is in the same order so that there is more uniformity
- */
+/// @param overflow Note: Sorted map to ensure each call to save is in the same order so that there is more uniformity
 public record OverflowAware(Object2IntSortedMap<ItemResource> overflow) {
 
     public static final OverflowAware EMPTY = new OverflowAware(Object2IntSortedMaps.emptyMap());

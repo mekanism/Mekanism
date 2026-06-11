@@ -5,9 +5,7 @@ import mekanism.api.functions.ShortSupplier;
 import mekanism.common.network.to_client.container.property.ShortPropertyData;
 import net.minecraft.core.RegistryAccess;
 
-/**
- * Version of {@link net.minecraft.world.inventory.DataSlot} for handling shorts
- */
+/// Version of [net.minecraft.world.inventory.DataSlot] for handling shorts
 public abstract class SyncableShort implements ISyncableData {
 
     private short lastKnownValue;

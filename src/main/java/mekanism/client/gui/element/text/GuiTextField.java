@@ -29,11 +29,7 @@ import net.minecraft.util.StringUtil;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
-/**
- * GuiElement wrapper of TextFieldWidget for more control
- *
- * @author aidancbrady
- */
+/// GuiElement wrapper of TextFieldWidget for more control
 public class GuiTextField extends GuiElement {
 
     public static final int DEFAULT_BORDER_COLOR = CommonColors.LIGHT_GRAY;

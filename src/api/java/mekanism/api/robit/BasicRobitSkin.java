@@ -6,14 +6,12 @@ import java.util.Objects;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Prefab of a robit skin that is always unlocked.
- *
- * @param textures    Textures to use for the skin.
- * @param customModel Resource location of custom model relative to the "models" directory.
- *
- * @since 10.4.0
- */
+/// Prefab of a robit skin that is always unlocked.
+///
+/// @param textures    Textures to use for the skin.
+/// @param customModel Resource location of custom model relative to the "models" directory.
+///
+/// @since 10.4.0
 public record BasicRobitSkin(List<Identifier> textures, @Nullable Identifier customModel) implements RobitSkin {
 
     public BasicRobitSkin {
@@ -24,11 +22,9 @@ public record BasicRobitSkin(List<Identifier> textures, @Nullable Identifier cus
         textures = List.copyOf(textures);
     }
 
-    /**
-     * Prefab of a robit skin that is always unlocked.
-     *
-     * @param textures Textures to use for the skin.
-     */
+    /// Prefab of a robit skin that is always unlocked.
+    ///
+    /// @param textures Textures to use for the skin.
     public BasicRobitSkin(List<Identifier> textures) {
         this(textures, null);
     }

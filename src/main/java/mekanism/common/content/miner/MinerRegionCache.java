@@ -33,9 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-/**
- * Copy of PathNavigationRegion, but will force chunks to load as PathNavigationRegion won't do it (if anchor upgrade installed
- */
+/// Copy of PathNavigationRegion, but will force chunks to load as PathNavigationRegion won't do it (if anchor upgrade installed
 public class MinerRegionCache implements CollisionGetter {
     private static final Logger LOGGER = LogUtils.getLogger();
     protected final int centerX;

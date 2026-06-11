@@ -23,15 +23,17 @@ import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTranslationKey, IHasTextComponent {
@@ -47,9 +49,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     @Nullable
     private String descriptionTranslationKey;
 
-    /**
-     * Creates a new module data from the given builder.
-     */
+    /// Creates a new module data from the given builder.
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
         this.constructor = builder.constructor;
         this.itemHolder = builder.itemHolder;
@@ -77,102 +77,84 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         }
     }
 
-    /**
-     * Gets the holder for the item that this module type corresponds to and is used in the Modification Station to install this module type.
-     *
-     * @since 10.7.11
-     */
+    /// Gets the holder for the item that this module type corresponds to and is used in the Modification Station to install this module type.
+    ///
+    /// @since 10.7.11
     public final Holder<Item> getItemHolder() {
         return itemHolder;
     }
 
-    /**
-     * Gets a new instance of the custom module this data is for.
-     *
-     * @since 10.6.0
-     */
+    /// Gets a new instance of the custom module this data is for.
+    ///
+    /// @since 10.6.0
     public final MODULE create(IModule<MODULE> module) {
         return constructor.apply(module);
     }
 
-    /**
-     * Gets the max stack size for this module type. This determines how many modules of this type can be installed on any piece of gear.
-     */
+    /// Gets the max stack size for this module type. This determines how many modules of this type can be installed on any piece of gear.
     public final int getMaxStackSize() {
         return maxStackSize;
     }
 
-    /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
-     *
-     * @param mask Mask of all {@link ExclusiveFlag flags} to check exclusivity against.
-     *
-     * @return {@code true} if this module type is exclusive of the given flags
-     *
-     * @since 10.2.3
-     */
+    /// Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+    ///
+    /// @param mask Mask of all [`flags`][ExclusiveFlag] to check exclusivity against.
+    ///
+    /// @return `true` if this module type is exclusive of the given flags
+    ///
+    /// @since 10.2.3
     public final boolean isExclusive(int mask) {
         return (exclusive & mask) != 0;
     }
 
-    /**
-     * Gets the mask of {@link ExclusiveFlag} for this module type.
-     *
-     * @since 10.2.3
-     */
+    /// Gets the mask of [ExclusiveFlag] for this module type.
+    ///
+    /// @since 10.2.3
     public final int getExclusiveFlags() {
         return exclusive;
     }
 
-    /**
-     * Retrieves the codec for (de)serializing configs on modules of this type, when there are the given number of them installed.
-     *
-     * @param installed Number of installed modules.
-     *
-     * @throws IllegalArgumentException If the number of installed modules is less than one.
-     * @since 10.6.0
-     */
+    /// Retrieves the codec for (de)serializing configs on modules of this type, when there are the given number of them installed.
+    ///
+    /// @param installed Number of installed modules.
+    ///
+    /// @throws IllegalArgumentException If the number of installed modules is less than one.
+    /// @since 10.6.0
     public final Codec<List<ModuleConfig<?>>> configCodecs(int installed) {
         return getConfigData(installed).codec();
     }
 
-    /**
-     * Retrieves the stream codec for encoding and decoding configs on modules of this type, when there are the given number of them installed.
-     *
-     * @param installed Number of installed modules.
-     *
-     * @throws IllegalArgumentException If the number of installed modules is less than one.
-     * @since 10.6.0
-     */
+    /// Retrieves the stream codec for encoding and decoding configs on modules of this type, when there are the given number of them installed.
+    ///
+    /// @param installed Number of installed modules.
+    ///
+    /// @throws IllegalArgumentException If the number of installed modules is less than one.
+    /// @since 10.6.0
     public final StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> configStreamCodecs(int installed) {
         return getConfigData(installed).streamCodec();
     }
 
-    /**
-     * Retrieves the default configs for modules of this type, when there are the given number of them installed.
-     *
-     * @param installed Number of installed modules.
-     *
-     * @return Default configs.
-     *
-     * @throws IllegalArgumentException If the number of installed modules is less than one.
-     * @since 10.6.0
-     */
+    /// Retrieves the default configs for modules of this type, when there are the given number of them installed.
+    ///
+    /// @param installed Number of installed modules.
+    ///
+    /// @return Default configs.
+    ///
+    /// @throws IllegalArgumentException If the number of installed modules is less than one.
+    /// @since 10.6.0
     public final List<ModuleConfig<?>> defaultConfigs(int installed) {
         return getConfigData(installed).configs();
     }
 
-    /**
-     * Retrieves the default config that has the given name.
-     *
-     * @param installed Number of installed modules to lookup the default configs for.
-     * @param name      Name of the module.
-     *
-     * @return Default config, or {@code null} if no config with the given name was found.
-     *
-     * @throws IllegalArgumentException If the number of installed modules is less than one.
-     * @since 10.6.0
-     */
+    /// Retrieves the default config that has the given name.
+    ///
+    /// @param installed Number of installed modules to lookup the default configs for.
+    /// @param name      Name of the module.
+    ///
+    /// @return Default config, or `null` if no config with the given name was found.
+    ///
+    /// @throws IllegalArgumentException If the number of installed modules is less than one.
+    /// @since 10.6.0
     @Nullable
     public final ModuleConfig<?> getNamedConfig(int installed, Identifier name) {
         for (ModuleConfig<?> config : getConfigData(installed).configs()) {
@@ -183,9 +165,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         return null;
     }
 
-    /**
-     * Helper to clamp the number of installed modules to within the max stack size in case it is for some reason greater.
-     */
+    /// Helper to clamp the number of installed modules to within the max stack size in case it is for some reason greater.
     private ConstructedConfigData getConfigData(int installed) {
         if (installed < 1) {
             throw new IllegalArgumentException("Installed number must be at least 1");
@@ -193,11 +173,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         return this.configData.get(Math.min(installed, maxStackSize));
     }
 
-    /**
-     * Gets if this module type can be disabled via the Module Tweaker.
-     *
-     * @return {@code false} if this module type can be disabled.
-     */
+    /// Gets if this module type can be disabled via the Module Tweaker.
+    ///
+    /// @return `false` if this module type can be disabled.
     public final boolean isNoDisable() {
         return noDisable;
     }
@@ -215,9 +193,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         return TextComponentUtil.translate(getTranslationKey());
     }
 
-    /**
-     * Gets the translation key for the description of this module type.
-     */
+    /// Gets the translation key for the description of this module type.
     public final String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
             descriptionTranslationKey = Util.makeDescriptionId("description", MekanismAPI.MODULE_REGISTRY.getKeyOrNull(this));
@@ -280,9 +256,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         }
     }
 
-    /**
-     * Builder for setting various values of {@link ModuleData}.
-     */
+    /// Builder for setting various values of [ModuleData].
     public static class ModuleDataBuilder<MODULE extends ICustomModule<MODULE>> {
 
         private static final ModuleConfig<Boolean> ENABLED_BY_DEFAULT = ModuleBooleanConfig.create(ModuleConfig.ENABLED_KEY, true);
@@ -297,46 +271,40 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         private static final MarkerModule MARKER_MODULE = new MarkerModule();
         private static final Function<IModule<MarkerModule>, MarkerModule> MARKER_MODULE_SUPPLIER = module -> MARKER_MODULE;
 
-        /**
-         * Helper creator for creating a module that has no special implementation details and is only used mainly as a marker for if it is installed and how many are
-         * installed.
-         *
-         * @param item Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @since 10.7.11
-         */
+        /// Helper creator for creating a module that has no special implementation details and is only used mainly as a marker for if it is installed and how many are
+        /// installed.
+        ///
+        /// @param item Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
+        ///
+        /// @since 10.7.11
         @SuppressWarnings({"rawtypes", "unchecked"})
         public static ModuleDataBuilder<?> marker(Holder<Item> item) {
             //Note: We don't use customInstanced, so that we have the same instance between all our marker modules
             return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, item, true);
         }
 
-        /**
-         * Helper creator for creating a custom module. The given module supports no custom config options, and the returned instance should be immutable, and will be
-         * re-used for every instance of this module.
-         *
-         * @param customModule Constructor/factory for the custom module this data is for.
-         * @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @since 10.7.11
-         */
+        /// Helper creator for creating a custom module. The given module supports no custom config options, and the returned instance should be immutable, and will be
+        /// re-used for every instance of this module.
+        ///
+        /// @param customModule Constructor/factory for the custom module this data is for.
+        /// @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
+        ///
+        /// @since 10.7.11
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<MODULE> customModule, Holder<Item> item) {
             MODULE customModuleInstance = customModule.get();
             Function<IModule<MODULE>, MODULE> function = module -> customModuleInstance;
             return new ModuleDataBuilder<>(function, item, true);
         }
 
-        /**
-         * Helper creator for creating a custom module. The given module constructor should return an immutable instance for the custom module that is used to store any
-         * custom config options. It is safe to retrieve and locally store the config values in this instance, as the constructor will be called again if any config
-         * values change. If the module does not use any config values besides the builtin three (enabled, handles mode change, render hud), it is safe to always return
-         * the same module instance.
-         *
-         * @param customModule Constructor/factory for the custom module this data is for.
-         * @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @since 10.7.11
-         */
+        /// Helper creator for creating a custom module. The given module constructor should return an immutable instance for the custom module that is used to store any
+        /// custom config options. It is safe to retrieve and locally store the config values in this instance, as the constructor will be called again if any config
+        /// values change. If the module does not use any config values besides the builtin three (enabled, handles mode change, render hud), it is safe to always return
+        /// the same module instance.
+        ///
+        /// @param customModule Constructor/factory for the custom module this data is for.
+        /// @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
+        ///
+        /// @since 10.7.11
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, MODULE> customModule, Holder<Item> item) {
             return new ModuleDataBuilder<>(customModule, item, false);
         }
@@ -359,11 +327,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             this.isInstanced = isInstanced;
         }
 
-        /**
-         * Sets the max stack size for this module type. This determines how many modules of this type can be installed on any piece of gear.
-         *
-         * @param maxStackSize Max stack size.
-         */
+        /// Sets the max stack size for this module type. This determines how many modules of this type can be installed on any piece of gear.
+        ///
+        /// @param maxStackSize Max stack size.
         public ModuleDataBuilder<MODULE> maxStackSize(int maxStackSize) {
             if (maxStackSize <= 0) {
                 throw new IllegalArgumentException("Max stack size must be at least one.");
@@ -374,33 +340,28 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
-         *
-         * @param mask {@link ExclusiveFlag} mask
-         *
-         * @since 10.2.3
-         */
+        /// Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+        ///
+        /// @param mask [ExclusiveFlag] mask
+        ///
+        /// @since 10.2.3
         public ModuleDataBuilder<MODULE> exclusive(int mask) {
             exclusive = mask;
             return this;
         }
 
-        /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
-         *
-         * @param flags {@link ExclusiveFlag} flags for the exclusive mask
-         *
-         * @since 10.2.3
-         */
+        /// Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+        ///
+        /// @param flags [ExclusiveFlag] flags for the exclusive mask
+        ///
+        /// @since 10.2.3
         public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
             return exclusive(flags.length == 0 ? ExclusiveFlag.ANY : ExclusiveFlag.getCompoundMask(flags));
         }
 
-        /**
-         * Marks this module type as being able to handle mode changes. In addition to using this method
-         * {@link ICustomModule#changeMode(IModule, Player, IModuleContainer, ItemStack, int, boolean)} should be implemented.
-         */
+        /// Marks this module type as being able to handle mode changes.
+        ///
+        /// @implSpec In addition to using this method [ICustomModule#changeMode(IModule, Player, ItemAccess, int, boolean, TransactionContext)] should be implemented.
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             if (!configData.isEmpty()) {
                 throw new IllegalStateException("Mode change behavior must be set before adding any configs.");
@@ -409,11 +370,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Marks this module type as having mode change disabled by default. Requires {@link #handlesModeChange()} to be set first.
-         *
-         * @since 10.3.6
-         */
+        /// Marks this module type as having mode change disabled by default. Requires [#handlesModeChange()] to be set first.
+        ///
+        /// @since 10.3.6
         public ModuleDataBuilder<MODULE> modeChangeDisabledByDefault() {
             if (!handlesModeChange) {
                 throw new IllegalStateException("Cannot have a module type that has mode change disabled by default but doesn't support changing modes.");
@@ -446,30 +405,26 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             }
         }
 
-        /**
-         * Helper to add a boolean based module config option that is always present.
-         *
-         * @param defaultConfig Default value for the config option.
-         *
-         * @throws IllegalStateException if this module type is instanced based.
-         * @since 10.6.0
-         */
+        /// Helper to add a boolean based module config option that is always present.
+        ///
+        /// @param defaultConfig Default value for the config option.
+        ///
+        /// @throws IllegalStateException if this module type is instanced based.
+        /// @since 10.6.0
         public ModuleDataBuilder<MODULE> addConfig(ModuleBooleanConfig defaultConfig) {
             return addConfig(defaultConfig, ModuleBooleanConfig.CODEC, ModuleBooleanConfig.STREAM_CODEC);
         }
 
-        /**
-         * Adds a module config option that is always present.
-         *
-         * @param defaultConfig Default value for the config option.
-         * @param codec         Codec for (de)serializing the config.
-         * @param streamCodec   Stream codec for encoding and decoding the config over the network.
-         * @param <TYPE>        Type of the config object that is being stored.
-         * @param <CONFIG>      Config object type.
-         *
-         * @throws IllegalStateException if this module type is instanced based.
-         * @since 10.6.0
-         */
+        /// Adds a module config option that is always present.
+        ///
+        /// @param defaultConfig Default value for the config option.
+        /// @param codec         Codec for (de)serializing the config.
+        /// @param streamCodec   Stream codec for encoding and decoding the config over the network.
+        /// @param <TYPE>        Type of the config object that is being stored.
+        /// @param <CONFIG>      Config object type.
+        ///
+        /// @throws IllegalStateException if this module type is instanced based.
+        /// @since 10.6.0
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addConfig(CONFIG defaultConfig, Codec<CONFIG> codec,
               StreamCodec<? super RegistryFriendlyByteBuf, CONFIG> streamCodec) {
             if (isInstanced) {
@@ -485,58 +440,52 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Adds a module config option that is dependent on the number of modules installed (mostly useful for {@link mekanism.api.gear.config.ModuleEnumConfig}).
-         *
-         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
-         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
-         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
-         *                      installed.
-         * @param <TYPE>        Type of the config object that is being stored.
-         * @param <CONFIG>      Config object type.
-         *
-         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
-         * @since 10.6.0
-         */
+        /// Adds a module config option that is dependent on the number of modules installed (mostly useful for [mekanism.api.gear.config.ModuleEnumConfig]).
+        ///
+        /// @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+        /// @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+        /// @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+        /// installed.
+        /// @param <TYPE>        Type of the config object that is being stored.
+        /// @param <CONFIG>      Config object type.
+        ///
+        /// @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+        /// @since 10.6.0
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addInstalledCountConfig(IntFunction<CONFIG> defaultConfig,
               IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
             return addInstalledCountConfig(installed -> true, defaultConfig, codec, streamCodec);
         }
 
-        /**
-         * Helper to add a module config option that is dependent on the number of modules installed (mostly useful for
-         * {@link mekanism.api.gear.config.ModuleEnumConfig}), but that is only added when the max number of modules is installed.
-         *
-         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
-         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
-         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
-         *                      installed.
-         * @param <TYPE>        Type of the config object that is being stored.
-         * @param <CONFIG>      Config object type.
-         *
-         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
-         * @since 10.6.0
-         */
+        /// Helper to add a module config option that is dependent on the number of modules installed (mostly useful for [mekanism.api.gear.config.ModuleEnumConfig]), but
+        /// that is only added when the max number of modules is installed.
+        ///
+        /// @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+        /// @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+        /// @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+        /// installed.
+        /// @param <TYPE>        Type of the config object that is being stored.
+        /// @param <CONFIG>      Config object type.
+        ///
+        /// @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+        /// @since 10.6.0
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addMaxInstalledConfig(IntFunction<CONFIG> defaultConfig,
               IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
             return addInstalledCountConfig(installed -> installed == maxStackSize, defaultConfig, codec, streamCodec);
         }
 
-        /**
-         * Adds a module config option that is dependent on the number of modules installed (mostly useful for {@link mekanism.api.gear.config.ModuleEnumConfig}). The
-         * config option is only added if the given int predicate is met.
-         *
-         * @param shouldAdd     Predicate that determines whether the config should be added for the given install count.
-         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
-         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
-         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
-         *                      installed.
-         * @param <TYPE>        Type of the config object that is being stored.
-         * @param <CONFIG>      Config object type.
-         *
-         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
-         * @since 10.6.0
-         */
+        /// Adds a module config option that is dependent on the number of modules installed (mostly useful for [mekanism.api.gear.config.ModuleEnumConfig]). The config
+        /// option is only added if the given int predicate is met.
+        ///
+        /// @param shouldAdd     Predicate that determines whether the config should be added for the given install count.
+        /// @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+        /// @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+        /// @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+        /// installed.
+        /// @param <TYPE>        Type of the config object that is being stored.
+        /// @param <CONFIG>      Config object type.
+        ///
+        /// @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+        /// @since 10.6.0
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addInstalledCountConfig(IntPredicate shouldAdd,
               IntFunction<CONFIG> defaultConfig, IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
             if (isInstanced) {
@@ -569,11 +518,10 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Marks this module type as having HUD elements to render. In addition to using this method
-         * {@link ICustomModule#addHUDElements(IModule, IModuleContainer, ItemStack, Player, Consumer)} or
-         * {@link ICustomModule#addHUDStrings(IModule, IModuleContainer, ItemStack, Player, Consumer)} should be implemented.
-         */
+        /// Marks this module type as having HUD elements to render.
+        ///
+        /// @implSpec In addition to using this method [ICustomModule#addHUDElements(IModule, IModuleContainer, TypedInstance, Player, Consumer)] or
+        /// [ICustomModule#addHUDStrings(IModule, IModuleContainer, TypedInstance, Player, Consumer)] should be implemented.
         public ModuleDataBuilder<MODULE> rendersHUD() {
             if (!configData.isEmpty()) {
                 throw new IllegalStateException("Whether the module renders a hud must be done before adding any configs.");
@@ -582,11 +530,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Marks this module type as not being able to be disabled via the Module Tweaker.
-         *
-         * @apiNote Cannot be used in conjunction with {@link #disabledByDefault()}.
-         */
+        /// Marks this module type as not being able to be disabled via the Module Tweaker.
+        ///
+        /// @apiNote Cannot be used in conjunction with [#disabledByDefault()].
         public ModuleDataBuilder<MODULE> noDisable() {
             if (disabledByDefault) {
                 throw new IllegalStateException("Cannot have a module type that is unable to be disabled and also disabled by default.");
@@ -595,11 +541,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
             return this;
         }
 
-        /**
-         * Marks this module type as disabled by default in the Module Tweaker.
-         *
-         * @apiNote Cannot be used in conjunction with {@link #noDisable()}.
-         */
+        /// Marks this module type as disabled by default in the Module Tweaker.
+        ///
+        /// @apiNote Cannot be used in conjunction with [#noDisable()].
         public ModuleDataBuilder<MODULE> disabledByDefault() {
             if (noDisable) {
                 throw new IllegalStateException("Cannot have a module type that is unable to be disabled and also disabled by default.");
@@ -611,64 +555,42 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
         }
     }
 
-    /**
-     * Enum of flags for module exclusivity channels
-     *
-     * @since 10.2.3
-     */
+    /// Enum of flags for module exclusivity channels
+    ///
+    /// @since 10.2.3
     public enum ExclusiveFlag {
-        /**
-         * This flag indicates that this module uses interaction without a target
-         */
+        /// This flag indicates that this module uses interaction without a target
         INTERACT_EMPTY,
-        /**
-         * This flag indicates that this module uses interaction with an entity
-         */
+        /// This flag indicates that this module uses interaction with an entity
         INTERACT_ENTITY,
-        /**
-         * This flag indicates that this module uses interaction with a block
-         */
+        /// This flag indicates that this module uses interaction with a block
         INTERACT_BLOCK,
-        /**
-         * This flag indicates that this module changes what pressing jump does
-         */
+        /// This flag indicates that this module changes what pressing jump does
         OVERRIDE_JUMP,
-        /**
-         * This flag indicates that this module changes what blocks drop
-         */
+        /// This flag indicates that this module changes what blocks drop
         OVERRIDE_DROPS;
 
-        /**
-         * Gets the mask for this flag
-         */
+        /// Gets the mask for this flag
         public int getMask() {
             return 1 << ordinal();
         }
 
-        /**
-         * Helper to get the mask of the combination of the given input flags
-         *
-         * @param flags {@link ExclusiveFlag Flags} to combine into a mask.
-         *
-         * @return Mask representing all the given {@link ExclusiveFlag flags}.
-         */
+        /// Helper to get the mask of the combination of the given input flags
+        ///
+        /// @param flags [`Flags`][ExclusiveFlag] to combine into a mask.
+        ///
+        /// @return Mask representing all the given [`flags`][ExclusiveFlag].
         public static int getCompoundMask(ExclusiveFlag... flags) {
             return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(NONE, (result, mask) -> result | mask);
         }
 
-        /**
-         * The mask for no flags
-         */
+        /// The mask for no flags
         public static final int NONE = 0;
 
-        /**
-         * The mask for the combination of all flags
-         */
+        /// The mask for the combination of all flags
         public static final int ANY = -1;
 
-        /**
-         * The mask for the combination of all interact flags
-         */
+        /// The mask for the combination of all interact flags
         public static final int INTERACT_ANY = getCompoundMask(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
     }
 }

@@ -10,17 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/**
- * Base class for defining fluid chemical to chemical recipes.
- * <br>
- * Input: FluidStack
- * <br>
- * Input: Chemical
- * <br>
- * Output: ChemicalStack
- *
- * @apiNote Chemical Washers can process this recipe type.
- */
+/// Base class for defining fluid chemical to chemical recipes.
+///
+/// Input: FluidStack
+///
+/// Input: Chemical
+///
+/// Output: ChemicalStack
+///
+/// @apiNote Chemical Washers can process this recipe type.
 public abstract class FluidChemicalToChemicalRecipe extends TwoInputMekRecipe<Fluid, FluidStack, FluidStackIngredient, Chemical, ChemicalStack, ChemicalStackIngredient, SingleFluidChemicalRecipeInput, ChemicalStackTemplate> {
 
     @Override
@@ -29,9 +27,7 @@ public abstract class FluidChemicalToChemicalRecipe extends TwoInputMekRecipe<Fl
         return !isIncomplete() && test(input.fluid(), input.chemical());
     }
 
-    /**
-     * Gets the input fluid ingredient.
-     */
+    /// Gets the input fluid ingredient.
     public abstract FluidStackIngredient getFluidInput();
 
     @Override
@@ -39,9 +35,7 @@ public abstract class FluidChemicalToChemicalRecipe extends TwoInputMekRecipe<Fl
         return getFluidInput();
     }
 
-    /**
-     * Gets the input chemical ingredient.
-     */
+    /// Gets the input chemical ingredient.
     public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override

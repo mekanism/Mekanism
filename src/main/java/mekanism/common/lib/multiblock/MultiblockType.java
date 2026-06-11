@@ -13,9 +13,8 @@ public record MultiblockType<DATA extends MultiblockData>(
       Supplier<IStructureValidator<DATA>> validatorSupplier,
       Supplier<Holder<AttachmentType<MultiblockManager<DATA>>>> attachmentSupplier
 ) {
-    /**
-     * Note: It is important that callers also call {@link MultiblockManager#trackCache(UUID, MultiblockCache)} after initializing any data the cache might require.
-     */
+
+    /// Note: It is important that callers also call [MultiblockManager#trackCache(UUID, MultiblockCache)] after initializing any data the cache might require.
     public MultiblockCache<DATA> createCache() {
         return cacheSupplier.get();
     }

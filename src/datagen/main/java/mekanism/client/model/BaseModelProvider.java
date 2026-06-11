@@ -132,9 +132,7 @@ public abstract class BaseModelProvider extends ModelProvider {
         return modelLocation;
     }
 
-    /**
-     * @deprecated use {@link #modLocation(String)} instead
-     */
+    /// @deprecated use [#modLocation(String)] instead
     @Deprecated
     protected Identifier modLoc(String path) {
         return modLocation(path);

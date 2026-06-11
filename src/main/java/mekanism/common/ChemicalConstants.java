@@ -3,12 +3,10 @@ package mekanism.common;
 import mekanism.common.base.IChemicalConstant;
 import net.minecraft.util.CommonColors;
 
-/**
- * Contains various information about different chemicals.
- *
- * @implNote This is used os that we can then have them get rounded for purposes of use in things like FluidType.Properties, but so that we have accurate data if at some
- * point they start supporting more accurate data, without us having to look any of the data back up.
- */
+/// Contains various information about different chemicals.
+///
+/// @implNote This is used os that we can then have them get rounded for purposes of use in things like FluidType.Properties, but so that we have accurate data if at some
+/// point they start supporting more accurate data, without us having to look any of the data back up.
 public enum ChemicalConstants implements IChemicalConstant {
     HYDROGEN("hydrogen", CommonColors.WHITE, 0, 20.28F, 70.85F),
     OXYGEN("oxygen", 0xFF6CE2FF, 0, 90.19F, 1_141),
@@ -35,13 +33,11 @@ public enum ChemicalConstants implements IChemicalConstant {
     private final float temperature;
     private final float density;
 
-    /**
-     * @param name        The name of the chemical
-     * @param color       Visual color in ARGB format
-     * @param lightLevel  Light level
-     * @param temperature Temperature in Kelvin that the chemical exists as a liquid
-     * @param density     Density as a liquid in kg/m^3
-     */
+    /// @param name        The name of the chemical
+    /// @param color       Visual color in ARGB format
+    /// @param lightLevel  Light level
+    /// @param temperature Temperature in Kelvin that the chemical exists as a liquid
+    /// @param density     Density as a liquid in kg/m^3
     ChemicalConstants(String name, int color, int lightLevel, float temperature, float density) {
         this.name = name;
         this.color = color;

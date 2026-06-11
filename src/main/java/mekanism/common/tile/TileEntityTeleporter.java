@@ -120,9 +120,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Nullable
     private EnumColor color;
 
-    /**
-     * This teleporter's current status.
-     */
+    /// This teleporter's current status.
     public TeleporterStatus status = TeleporterStatus.NO_FREQUENCY;
 
     private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
@@ -254,13 +252,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
-    /**
-     * Checks whether, or why not, this teleporter can teleport entities.
-     *
-     * @return A teleport info with 1: yes, 2: no frame, 3: no link found, 4: not enough electricity. If it is one, then closest coords and to teleport will be present
-     *
-     * @apiNote Only call on server
-     */
+    /// Checks whether, or why not, this teleporter can teleport entities.
+    ///
+    /// @return A teleport info with 1: yes, 2: no frame, 3: no link found, 4: not enough electricity. If it is one, then closest coords and to teleport will be present
+    ///
+    /// @apiNote Only call on server
     private TeleportInfo canTeleport(@Nullable TeleporterFrequency frequency, TransactionContext transaction) {
         Direction direction = getFrameDirection();
         if (direction == null) {
@@ -318,9 +314,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return worldPosition.relative(frameDirection);
     }
 
-    /**
-     * @apiNote Only call this from the server
-     */
+    /// @apiNote Only call this from the server
     public void sendTeleportParticles() {
         BlockPos teleporterTargetPos = getTeleporterTargetPos();
         Direction offsetDirection;
@@ -333,9 +327,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         PacketUtils.sendToAllTracking(new PacketPortalFX(teleporterTargetPos, offsetDirection), level, teleporterTargetPos);
     }
 
-    /**
-     * @apiNote Only call this from the server
-     */
+    /// @apiNote Only call this from the server
     private void teleport(TeleporterFrequency frequency, TeleportInfo teleportInfo, TransactionContext transaction) {
         if (teleportInfo.closest == null || level == null || teleportInfo.toTeleport.isEmpty()) {
             return;
@@ -477,11 +469,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return level.getEntitiesOfClass(Entity.class, teleportBounds, sameDimension ? SAME_DIMENSION_TARGET : entity -> canTeleportEntity(entity, destinationLevel));
     }
 
-    /**
-     * @return energy cost or -1 if invalid.
-     *
-     * @apiNote Only call from the server side
-     */
+    /// @return energy cost or -1 if invalid.
+    ///
+    /// @apiNote Only call from the server side
     public static int calculateEnergyCost(Entity entity, GlobalPos pos) {
         if (entity.level() instanceof ServerLevel level) {
             Level targetWorld = level.getServer().getLevel(pos.dimension());
@@ -539,11 +529,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
-    /**
-     * Checks in what direction there is a frame.
-     *
-     * @return in what direction there is a frame, null if none.
-     */
+    /// Checks in what direction there is a frame.
+    ///
+    /// @return in what direction there is a frame, null if none.
     @Nullable
     public Direction getFrameDirection() {
         //Cache the chunks we are looking up to check the frames of
@@ -565,14 +553,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return null;
     }
 
-    /**
-     * Checks whether this Teleporter has a Frame in the given Direction.
-     *
-     * @param direction the direction from the Teleporter block in which the frame should be.
-     * @param rotated   whether the frame is rotated by 90 degrees.
-     *
-     * @return whether the frame exists.
-     */
+    /// Checks whether this Teleporter has a Frame in the given Direction.
+    ///
+    /// @param direction the direction from the Teleporter block in which the frame should be.
+    /// @param rotated   whether the frame is rotated by 90 degrees.
+    ///
+    /// @return whether the frame exists.
     private boolean hasFrame(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos.MutableBlockPos pos, Object2BooleanMap<BlockPos> cachedIsFrame, Direction direction,
           boolean rotated) {
         int alternatingX = 0;
@@ -619,11 +605,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return isFrame;
     }
 
-    /**
-     * Gets the direction from the teleporter in which the frame is.
-     *
-     * @return the direction of the frame.
-     */
+    /// Gets the direction from the teleporter in which the frame is.
+    ///
+    /// @return the direction of the frame.
     @Nullable
     public Direction frameDirection() {
         if (frameDirection == null) {
@@ -632,11 +616,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameDirection;
     }
 
-    /**
-     * Gets whether the frame is rotated by 90 degrees around the direction axis.
-     *
-     * @return whether the frame is rotated by 90 degrees.
-     */
+    /// Gets whether the frame is rotated by 90 degrees around the direction axis.
+    ///
+    /// @return whether the frame is rotated by 90 degrees.
     public boolean frameRotated() {
         return frameRotated;
     }

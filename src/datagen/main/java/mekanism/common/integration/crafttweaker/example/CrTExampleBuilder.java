@@ -101,9 +101,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return self();
     }
 
-    /**
-     * If specified goes where it is specified, if not goes at the top.
-     */
+    /// If specified goes where it is specified, if not goes at the top.
     public BUILDER_TYPE imports() {
         //TODO: Figure out the handling of this when in the snip component builder
         if (importsComponent.hasImports()) {

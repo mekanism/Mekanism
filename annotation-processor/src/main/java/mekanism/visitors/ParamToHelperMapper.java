@@ -11,9 +11,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor14;
 import javax.lang.model.util.Types;
 
-/**
- * Builds a CodeBlock which will use the BaseComputerHelper parameter to get an argument value
- */
+/// Builds a CodeBlock which will use the BaseComputerHelper parameter to get an argument value
 public class ParamToHelperMapper extends SimpleTypeVisitor14<CodeBlock, Integer> {
 
     private final ParameterSpec helperParam;

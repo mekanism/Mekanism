@@ -1,14 +1,11 @@
 package mekanism.common.integration.computer;
 
+import java.util.function.BiFunction;
 import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import java.util.function.BiFunction;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Wrapper type for a method which may return a different static type at runtime. Ensures that the result can still be converted.
- */
+/// Wrapper type for a method which may return a different static type at runtime. Ensures that the result can still be converted.
 public final class Convertable<RAW> {
 
     private final RAW value;

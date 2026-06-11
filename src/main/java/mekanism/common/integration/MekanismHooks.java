@@ -19,11 +19,7 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-/**
- * Hooks for Mekanism. Use to grab items or blocks out of different mods.
- *
- * @author AidanBrady
- */
+/// Hooks for Mekanism. Use to grab items or blocks out of different mods.
 public final class MekanismHooks {
 
     //Note: These have to be static for use in CraftTweaker/Mod entrypoint annotations
@@ -142,9 +138,7 @@ public final class MekanismHooks {
         return emi.isLoaded() || jei.isLoaded();
     }
 
-    /**
-     * @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues
-     */
+    /// @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues
     private void sendDarkModeEverywhereIMC() {
         List<Supplier<String>> methodBlacklist = List.of(
               //Used for drawing fluids and chemicals in various GUIs including JEI as well as similar styled things

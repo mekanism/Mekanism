@@ -5,12 +5,10 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.FactoryRegistry;
 
-/**
- * Wrap a filter as a copy that can be modified by instance methods on the CC side. Clones the filter on creation and output to ensure the filter is not modified while in
- * use.
- *
- * @param <FILTER> the filter Parent type
- */
+/// Wrap a filter as a copy that can be modified by instance methods on the CC side. Clones the filter on creation and output to ensure the filter is not modified while
+/// in use.
+///
+/// @param <FILTER> the filter Parent type
 public class CCFilterWrapper<FILTER extends IFilter<?>> extends CCMethodCaller implements IDynamicLuaObject {
 
     private final FILTER filter;

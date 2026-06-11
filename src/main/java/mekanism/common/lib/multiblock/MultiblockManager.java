@@ -32,9 +32,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
 
     private final MultiblockType<T> multiblockType;
 
-    /**
-     * A map containing references to all multiblock inventory caches.
-     */
+    /// A map containing references to all multiblock inventory caches.
     private final Map<UUID, MultiblockCache<T>> caches = new HashMap<>();
 
     private final Queue<T> multiblocksTicked = new ArrayDeque<>();
@@ -48,9 +46,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         return multiblockType;
     }
 
-    /**
-     * Adds a cache as tracked and marks the manager as dirty.
-     */
+    /// Adds a cache as tracked and marks the manager as dirty.
     public void trackCache(UUID id, MultiblockCache<T> cache) {
         caches.put(id, cache);
         //markDirty();
@@ -73,9 +69,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         return false;
     }
 
-    /**
-     * Replaces and invalidates all the caches with the given ids with a new cache with the given id.
-     */
+    /// Replaces and invalidates all the caches with the given ids with a new cache with the given id.
     public void replaceCaches(Set<UUID> staleIds, UUID id, MultiblockCache<T> cache) {
         for (UUID staleId : staleIds) {
             caches.remove(staleId);
@@ -104,11 +98,9 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         multiblocksTicked.add(multiblock);
     }
 
-    /**
-     * Grabs a unique inventory ID for a multiblock.
-     *
-     * @return unique inventory ID
-     */
+    /// Grabs a unique inventory ID for a multiblock.
+    ///
+    /// @return unique inventory ID
     public UUID getUniqueInventoryID() {
         return UUID.randomUUID();
     }
@@ -136,9 +128,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         });
     }
 
-    /**
-     * syncs any multiblocks if they're dirty
-     */
+    /// syncs any multiblocks if they're dirty
     private void endOfTick() {
         T item;
         while ((item = multiblocksTicked.poll()) != null) {

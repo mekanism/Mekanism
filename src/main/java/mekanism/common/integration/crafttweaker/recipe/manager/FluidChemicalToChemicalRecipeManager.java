@@ -22,28 +22,24 @@ public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecip
         super(recipeType);
     }
 
-    /**
-     * Adds a recipe that converts a fluid and chemical to another chemical.
-     * <br>
-     * If this is called from the washing recipe manager, this will be a washing recipe and able to be processed in a chemical washer.
-     *
-     * @param name          Name of the new recipe.
-     * @param fluidInput    {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
-     * @param output        {@link ICrTChemicalStack} representing the output of the recipe.
-     */
+    /// Adds a recipe that converts a fluid and chemical to another chemical.
+    ///
+    /// If this is called from the washing recipe manager, this will be a washing recipe and able to be processed in a chemical washer.
+    ///
+    /// @param name          Name of the new recipe.
+    /// @param fluidInput    [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the slurry input of the recipe.
+    /// @param output        [ICrTChemicalStack] representing the output of the recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
         addRecipe(name, makeRecipe(fluidInput, chemicalInput, output));
     }
 
-    /**
-     * Creates a recipe that converts a fluid and chemical to another chemical.
-     *
-     * @param fluidInput    {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param chemicalInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
-     * @param output        {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
-     */
+    /// Creates a recipe that converts a fluid and chemical to another chemical.
+    ///
+    /// @param fluidInput    [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param chemicalInput [ChemicalStackIngredient] representing the slurry input of the recipe.
+    /// @param output        [ICrTChemicalStack] representing the output of the recipe. Will be validated as not empty.
     public final FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
         return makeRecipe(fluidInput, chemicalInput, getAndValidateNotEmpty(output));
     }

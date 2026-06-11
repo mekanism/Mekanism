@@ -50,9 +50,7 @@ public class FormatSplitter {
         return List.copyOf(splitMessageFormatInternal(text));
     }
 
-    /**
-     * @apiNote Can return two TextComponents neighboring each other it doesn't bother combining them
-     */
+    /// @apiNote Can return two TextComponents neighboring each other it doesn't bother combining them
     private static List<Component> splitMessageFormatInternal(String text) {
         //TODO: Eventually if needed make it combine the neighboring TextComponents
         List<Component> components = new ArrayList<>();
@@ -157,14 +155,10 @@ public class FormatSplitter {
         }
     }
 
-    /**
-     * Represents information about a MessageFormat formatting code. Valid MessageFormat styles:
-     * <ul>
-     * <li> { ArgumentIndex }
-     * <li> { ArgumentIndex, FormatType }
-     * <li> { ArgumentIndex, FormatType, FormatStyle }
-     * </ul>
-     */
+    /// Represents information about a MessageFormat formatting code. Valid MessageFormat styles:
+    /// - { ArgumentIndex }
+    /// - { ArgumentIndex, FormatType }
+    /// - { ArgumentIndex, FormatType, FormatStyle }
     public static class MessageFormatComponent extends FormatComponent {
 
         private final int argumentIndex;
@@ -186,9 +180,7 @@ public class FormatSplitter {
             return argumentIndex;
         }
 
-        /**
-         * @apiNote This will not be null if {@link #getFormatStyle()} is not null
-         */
+        /// @apiNote This will not be null if [#getFormatStyle()] is not null
         @Nullable
         public String getFormatType() {
             return formatType;
@@ -203,14 +195,11 @@ public class FormatSplitter {
             return isChoice;
         }
 
-        /**
-         * @param contents Contents to create a {@link MessageFormatComponent} from.
-         *
-         * @return A {@link MessageFormatComponent} representing the given contents, or {@code null} if the contents do not represent a valid
-         * {@link MessageFormatComponent}
-         *
-         * @see net.neoforged.fml.i18n.FMLTranslations
-         */
+        /// @param contents Contents to create a [MessageFormatComponent] from.
+        ///
+        /// @return A [MessageFormatComponent] representing the given contents, or `null` if the contents do not represent a valid [MessageFormatComponent]
+        ///
+        /// @see net.neoforged.fml.i18n.FMLTranslations
         @Nullable
         private static MessageFormatComponent fromContents(String contents) {
             int length = contents.length();

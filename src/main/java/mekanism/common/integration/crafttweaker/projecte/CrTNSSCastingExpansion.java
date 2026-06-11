@@ -10,9 +10,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import org.openzen.zencode.java.ZenCodeType;
 
-/**
- * Helper class to allow implicit casting various chemical types into the custom ProjectE {@link NormalizedSimpleStack} types we create.
- */
+/// Helper class to allow implicit casting various chemical types into the custom ProjectE [NormalizedSimpleStack] types we create.
 public class CrTNSSCastingExpansion {
 
     private CrTNSSCastingExpansion() {
@@ -25,9 +23,7 @@ public class CrTNSSCastingExpansion {
         private ICrTChemicalStackExpansion() {
         }
 
-        /**
-         * Allows for casting {@link ICrTChemicalStack}s to {@link NormalizedSimpleStack} without needing to specify the cast.
-         */
+        /// Allows for casting [ICrTChemicalStack]s to [NormalizedSimpleStack] without needing to specify the cast.
         @ZenCodeType.Caster(implicit = true)
         public static NormalizedSimpleStack asNormalizedSimpleStack(ICrTChemicalStack _this) {
             return CrTNSSResolverExpansion.fromChemical(_this);
@@ -41,9 +37,7 @@ public class CrTNSSCastingExpansion {
         private ChemicalTagExpansion() {
         }
 
-        /**
-         * Allows for casting {@link KnownTag<Chemical>}s to {@link NormalizedSimpleStack} without even needing to specify the cast.
-         */
+        /// Allows for casting [KnownTag<chemical>]s to [NormalizedSimpleStack] without even needing to specify the cast.</chemical>
         @ZenCodeType.Caster(implicit = true)
         public static NormalizedSimpleStack asNormalizedSimpleStack(KnownTag<Chemical> _this) {
             return CrTNSSResolverExpansion.fromChemicalTag(_this);

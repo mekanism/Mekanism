@@ -12,9 +12,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Inventory for Personal Storages when an item. Handled by the Block when placed in world.
- */
+/// Inventory for Personal Storages when an item. Handled by the Block when placed in world.
 public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInventory {
 
     public static final Codec<PersonalStorageItemInventory> CODEC = SlotData.CODEC

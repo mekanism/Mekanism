@@ -30,113 +30,101 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
         super(MekanismRecipeType.REACTION);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another item. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name           Name of the new recipe.
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     {@link IItemStack} representing the item output of the recipe.
-     * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
-     *                       recipe.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another item. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name           Name of the new recipe.
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem     [IItemStack] representing the item output of the recipe.
+    /// @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
+    /// recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem, int energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), null, energyRequired);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another item. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name          Name of the new recipe.
-     * @param inputSolid    {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid    {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration      Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem    {@link IItemStack} representing the item output of the recipe.
-     *
-     * @apiNote {@code energyRequired} (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
-     * will default to zero.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another item. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name          Name of the new recipe.
+    /// @param inputSolid    [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid    [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration      Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem    [IItemStack] representing the item output of the recipe.
+    ///
+    /// @apiNote `energyRequired` (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
+    /// will default to zero.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem) {
         addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), null, 0);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another chemical. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name           Name of the new recipe.
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputChemical {@link ICrTChemicalStack} representing the chemical output of the recipe.
-     * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
-     *                       recipe.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another chemical. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name           Name of the new recipe.
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputChemical [ICrTChemicalStack] representing the chemical output of the recipe.
+    /// @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
+    ///                       recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           ICrTChemicalStack outputChemical, int energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputChemical, duration, null, getAndValidateNotEmpty(outputChemical), energyRequired);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another chemical. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name           Name of the new recipe.
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputChemical {@link ICrTChemicalStack} representing the chemical output of the recipe.
-     *
-     * @apiNote {@code energyRequired} (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
-     * will default to zero.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another chemical. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name           Name of the new recipe.
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputChemical [ICrTChemicalStack] representing the chemical output of the recipe.
+    ///
+    /// @apiNote `energyRequired` (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
+    /// will default to zero.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           ICrTChemicalStack outputChemical) {
         addRecipe(name, inputSolid, inputFluid, inputChemical, duration, null, getAndValidateNotEmpty(outputChemical), 0);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name           Name of the new recipe.
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     {@link IItemStack} representing the item output of the recipe.
-     * @param outputChemical {@link ICrTChemicalStack} representing the chemical output of the recipe.
-     * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
-     *                       recipe.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name           Name of the new recipe.
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem     [IItemStack] representing the item output of the recipe.
+    /// @param outputChemical [ICrTChemicalStack] representing the chemical output of the recipe.
+    /// @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
+    ///                       recipe.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem, ICrTChemicalStack outputChemical, int energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputChemical, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputChemical), energyRequired);
     }
 
-    /**
-     * Adds a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param name           Name of the new recipe.
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     {@link IItemStack} representing the item output of the recipe.
-     * @param outputChemical {@link ICrTChemicalStack} representing the chemical output of the recipe.
-     *
-     * @apiNote {@code energyRequired} (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
-     * will default to zero.
-     */
+    /// Adds a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param name           Name of the new recipe.
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+    /// @param outputItem     [IItemStack] representing the item output of the recipe.
+    /// @param outputChemical [ICrTChemicalStack] representing the chemical output of the recipe.
+    ///
+    /// @apiNote `energyRequired` (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
+    /// will default to zero.
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
           IItemStack outputItem, ICrTChemicalStack outputChemical) {
@@ -148,20 +136,18 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
         addRecipe(name, makeRecipe(inputSolid, inputFluid, inputChemical, duration, outputItem, outputChemical, energyRequired));
     }
 
-    /**
-     * Creates a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
-     *
-     * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputChemical  {@link ChemicalStackIngredient} representing the chemical input of the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Will be validated as being greater than zero.
-     * @param outputItem     {@link IItemStack} representing the item output of the recipe. It will be validated that at least one of this and outputChemical is not
-     *                       empty.
-     * @param outputChemical {@link ICrTChemicalStack} representing the chemical output of the recipe. It will be validated that at least one of this and outputItem is
-     *                       not empty.
-     * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
-     *                       recipe.
-     */
+    /// Creates a reaction recipe that converts an item, fluid, and chemical into another item and chemical. Pressurized Reaction Chambers can process this recipe type.
+    ///
+    /// @param inputSolid     [IIngredientWithAmount] representing the item input of the recipe.
+    /// @param inputFluid     [CTFluidIngredient] representing the fluid input of the recipe.
+    /// @param inputChemical  [ChemicalStackIngredient] representing the chemical input of the recipe.
+    /// @param duration       Base duration in ticks that this recipe takes to complete. Will be validated as being greater than zero.
+    /// @param outputItem     [IItemStack] representing the item output of the recipe. It will be validated that at least one of this and outputChemical is not
+    ///                       empty.
+    /// @param outputChemical [ICrTChemicalStack] representing the chemical output of the recipe. It will be validated that at least one of this and outputItem is
+    ///                       not empty.
+    /// @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
+    ///                       recipe.
     public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputChemical,
           int duration, @Nullable ItemStackTemplate outputItem, @Nullable ChemicalStackTemplate outputChemical, int energyRequired) {
         if (duration <= 0) {

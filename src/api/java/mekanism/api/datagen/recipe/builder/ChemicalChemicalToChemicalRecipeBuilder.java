@@ -29,25 +29,21 @@ public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuild
         return getDefaultRecipeId(output);
     }
 
-    /**
-     * Creates a Chemical Infusing recipe builder.
-     *
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     */
+    /// Creates a Chemical Infusing recipe builder.
+    ///
+    /// @param leftInput  Left input.
+    /// @param rightInput Right input.
+    /// @param output     Output.
     public static ChemicalChemicalToChemicalRecipeBuilder chemicalInfusing(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
           ChemicalStackTemplate output) {
         return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicChemicalInfuserRecipe::new);
     }
 
-    /**
-     * Creates a Pigment Mixing recipe builder.
-     *
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     */
+    /// Creates a Pigment Mixing recipe builder.
+    ///
+    /// @param leftInput  Left input.
+    /// @param rightInput Right input.
+    /// @param output     Output.
     public static ChemicalChemicalToChemicalRecipeBuilder pigmentMixing(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStackTemplate output) {
         return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicPigmentMixingRecipe::new);
     }

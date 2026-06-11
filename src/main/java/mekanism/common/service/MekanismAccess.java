@@ -14,9 +14,7 @@ import mekanism.common.recipe.ingredients.creator.ChemicalStackIngredientCreator
 import mekanism.common.recipe.ingredients.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredients.creator.ItemStackIngredientCreator;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IMekanismAccess#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IMekanismAccess#INSTANCE]
 public class MekanismAccess implements IMekanismAccess {
 
     @Override

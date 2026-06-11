@@ -13,9 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import org.jspecify.annotations.Nullable;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IEntitySecurityUtils#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IEntitySecurityUtils#INSTANCE]
 public class EntitySecurityUtils implements IEntitySecurityUtils {
 
     private static final EntityCapability<IOwnerObject, @Nullable Void> OWNER_CAPABILITY = EntityCapability.createVoid(Capabilities.OWNER_OBJECT_NAME, IOwnerObject.class);

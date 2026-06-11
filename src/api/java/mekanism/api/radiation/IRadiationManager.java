@@ -18,151 +18,119 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.Nullable;
 
-/**
- * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
- * equivalent dose.
- *
- * <br><br>
- * For reference, here are examples of equivalent dose (credit: wikipedia)
- * <ul>
- * <li>100 nSv: baseline dose (banana equivalent dose)</li>
- * <li>250 nSv: airport security screening</li>
- * <li>1 mSv: annual total civilian dose equivalent</li>
- * <li>50 mSv: annual total occupational equivalent dose limit</li>
- * <li>250 mSv: total dose equivalent from 6-month trip to mars</li>
- * <li>1 Sv: maximum allowed dose allowed for NASA astronauts over their careers</li>
- * <li>5 Sv: dose required to (50% chance) kill human if received over 30-day period</li>
- * <li>50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown</li>
- * </ul>
- * For defining rate of accumulation, we use _sieverts per hour_ (Sv/h). Here are examples of dose accumulation rates.
- * <ul>
- * <li>100 nSv/h: max recommended human irradiation</li>
- * <li>2.7 uSv/h: irradiation from airline at cruise altitude</li>
- * <li>190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, _20 miles away_, 3 hours after detonation</li>
- * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
- * </ul>
- *
- * @see IRadiationManager#INSTANCE
- */
+/// The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in *sieverts*, defining a rate of accumulation of
+/// equivalent dose.
+///
+/// For reference, here are examples of equivalent dose (credit: wikipedia)
+/// - 100 nSv: baseline dose (banana equivalent dose)
+/// - 250 nSv: airport security screening
+/// - 1 mSv: annual total civilian dose equivalent
+/// - 50 mSv: annual total occupational equivalent dose limit
+/// - 250 mSv: total dose equivalent from 6-month trip to mars
+/// - 1 Sv: maximum allowed dose allowed for NASA astronauts over their careers
+/// - 5 Sv: dose required to (50% chance) kill human if received over 30-day period
+/// - 50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown
+///
+/// For defining rate of accumulation, we use *sieverts per hour* (Sv/h). Here are examples of dose accumulation rates.
+/// - 100 nSv/h: max recommended human irradiation
+/// - 2.7 uSv/h: irradiation from airline at cruise altitude
+/// - 190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, *20 miles away*, 3 hours after detonation
+/// - ~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)
+///
+/// @see IRadiationManager#INSTANCE
 public interface IRadiationManager {
 
-    /**
-     * Provides access to Mekanism's implementation of {@link IRadiationManager}.
-     *
-     * @since 10.4.0
-     */
+    /// Provides access to Mekanism's implementation of [IRadiationManager].
+    ///
+    /// @since 10.4.0
     IRadiationManager INSTANCE = MekanismAPI.getService(IRadiationManager.class);
 
-    /**
-     * Helper to expose the ability to check if Mekanism's radiation system is enabled in the config.
-     */
+    /// Helper to expose the ability to check if Mekanism's radiation system is enabled in the config.
     boolean isRadiationEnabled();
 
-    /**
-     * {@return the baseline radiation level (inclusive) of the world and all things in it}
-     *
-     * @implNote 100 nSv/h
-     * @since 10.7.11
-     */
+    /// {@return the baseline radiation level (inclusive) of the world and all things in it}
+    ///
+    /// @implNote 100 nSv/h
+    /// @since 10.7.11
     double baselineRadiation();
 
-    /**
-     * {@return the minimum radiation level that has a noticeable effect on entities}
-     *
-     * @implNote 10 uSv/h
-     * @since 10.7.11
-     */
+    /// {@return the minimum radiation level that has a noticeable effect on entities}
+    ///
+    /// @implNote 10 uSv/h
+    /// @since 10.7.11
     double minRadiationMagnitude();
 
-    /**
-     * Helper to access Mekanism's internal radiation damage source.
-     *
-     * @param registryAccess Registry access to create the damage source with.
-     *
-     * @return Damage source used for radiation.
-     */
+    /// Helper to access Mekanism's internal radiation damage source.
+    ///
+    /// @param registryAccess Registry access to create the damage source with.
+    ///
+    /// @return Damage source used for radiation.
     DamageSource getRadiationDamageSource(RegistryAccess registryAccess);
 
-    /**
-     * Helper to access Mekanism's internal radiation damage type's resource key.
-     *
-     * @return Resource key of the damage type used for radiation.
-     *
-     * @since 10.4.0
-     */
+    /// Helper to access Mekanism's internal radiation damage type's resource key.
+    ///
+    /// @return Resource key of the damage type used for radiation.
+    ///
+    /// @since 10.4.0
     ResourceKey<DamageType> getRadiationDamageTypeKey();
 
-    /**
-     * Get the radiation level (in Sv/h) at a certain location.
-     *
-     * @param level the level to check
-     * @param pos   Location
-     *
-     * @return radiation level (in Sv/h).
-     *
-     * @since 10.7.15
-     */
+    /// Get the radiation level (in Sv/h) at a certain location.
+    ///
+    /// @param level the level to check
+    /// @param pos   Location
+    ///
+    /// @return radiation level (in Sv/h).
+    ///
+    /// @since 10.7.15
     double getRadiationLevel(Level level, BlockPos pos);
 
-    /**
-     * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use
-     * {@link mekanism.api.radiation.capability.IRadiationEntity#getRadiation()}.
-     *
-     * @param entity - Entity to get the radiation level at.
-     *
-     * @return Radiation level (in Sv/h).
-     */
+    /// Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use
+    /// [mekanism.api.radiation.capability.IRadiationEntity#getRadiation()].
+    ///
+    /// @param entity Entity to get the radiation level at.
+    ///
+    /// @return Radiation level (in Sv/h).
     double getRadiationLevel(Entity entity);
 
-    /**
-     * Gets a list of the radiation sources with a source point in the chunk. Minimise calling in hot paths.
-     *
-     * @param level  The level to check
-     * @param chunkX The X position of the Chunk
-     * @param chunkZ The Z position of the Chunk
-     *
-     * @return A new list containing the relevant sources, or {@link Collections#emptyList()} when there are none.
-     *
-     * @since 10.7.15
-     */
+    /// Gets a list of the radiation sources with a source point in the chunk. Minimise calling in hot paths.
+    ///
+    /// @param level  The level to check
+    /// @param chunkX The X position of the Chunk
+    /// @param chunkZ The Z position of the Chunk
+    ///
+    /// @return A new list containing the relevant sources, or [Collections#emptyList()] when there are none.
+    ///
+    /// @since 10.7.15
     List<IRadiationSource> getRadiationSources(Level level, int chunkX, int chunkZ);
 
-    /**
-     * Removes all radiation sources in a given chunk.
-     *
-     * @since 10.7.15
-     */
+    /// Removes all radiation sources in a given chunk.
+    ///
+    /// @since 10.7.15
     void removeRadiationSources(Level level, int chunkX, int chunkZ);
 
-    /**
-     * Removes the radiation source at the given location.
-     *
-     * @param level The level on which to act
-     * @param pos   The location on which to act
-     *
-     * @since 10.7.15
-     */
+    /// Removes the radiation source at the given location.
+    ///
+    /// @param level The level on which to act
+    /// @param pos   The location on which to act
+    ///
+    /// @since 10.7.15
     void removeRadiationSource(Level level, BlockPos pos);
 
-    /**
-     * Applies a radiation source (Sv) of the given magnitude to a given location.
-     *
-     * @param level     The level on which to act
-     * @param pos       Location to release radiation.
-     * @param magnitude Amount of radiation to apply (Sv).
-     *
-     * @since 10.7.15
-     */
+    /// Applies a radiation source (Sv) of the given magnitude to a given location.
+    ///
+    /// @param level     The level on which to act
+    /// @param pos       Location to release radiation.
+    /// @param magnitude Amount of radiation to apply (Sv).
+    ///
+    /// @since 10.7.15
     void radiate(Level level, BlockPos pos, double magnitude);
 
-    /**
-     * Applies an additional magnitude of radiation (Sv) to the given entity after taking into account the radiation resistance provided to the entity by its armor.
-     *
-     * @param entity    The entity to radiate.
-     * @param magnitude Dosage of radiation to apply before radiation resistance (Sv).
-     *
-     * @implNote This method does not add any radiation to players in creative or spectator.
-     */
+    /// Applies an additional magnitude of radiation (Sv) to the given entity after taking into account the radiation resistance provided to the entity by its armor.
+    ///
+    /// @param entity    The entity to radiate.
+    /// @param magnitude Dosage of radiation to apply before radiation resistance (Sv).
+    ///
+    /// @implNote This method does not add any radiation to players in creative or spectator.
     void radiate(LivingEntity entity, double magnitude);
 
     /// Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.

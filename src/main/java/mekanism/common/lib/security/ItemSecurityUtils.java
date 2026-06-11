@@ -25,9 +25,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IItemSecurityUtils#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IItemSecurityUtils#INSTANCE]
 public class ItemSecurityUtils implements IItemSecurityUtils {
 
     private static final ItemCapability<IOwnerObject, ItemAccess> OWNER_CAPABILITY = ItemCapability.create(Capabilities.OWNER_OBJECT_NAME, IOwnerObject.class, ItemAccess.class);

@@ -13,9 +13,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Utility class to help with interacting with {@link LambdaMetafactory} without primitives causing issues in Java versions greater than Java 8
- */
+/// Utility class to help with interacting with [LambdaMetafactory] without primitives causing issues in Java versions greater than Java 8
 public class LambdaMetaFactoryUtil {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();

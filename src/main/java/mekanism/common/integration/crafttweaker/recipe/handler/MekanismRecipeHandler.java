@@ -81,9 +81,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return commandString.append(");").toString();
     }
 
-    /**
-     * Super simplified/watered down version of BaseCrTExampleProvider#getConversionRepresentations
-     */
+    /// Super simplified/watered down version of BaseCrTExampleProvider#getConversionRepresentations
     private String convertParam(Object param) {
         if (param instanceof CommandStringDisplayable displayable) {
             return displayable.getCommandString();
@@ -151,9 +149,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT + ".from(" + amount + ", " + representation + ")";
     }
 
-    /**
-     * Helper to generically decompose data into the proper recipe components.
-     */
+    /// Helper to generically decompose data into the proper recipe components.
     protected Optional<IDecomposedRecipe> decompose(Object... importantData) {
         TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient> inputs = new TypeData<>();
         TypeData<IItemStack, IFluidStack, ChemicalStackTemplate> outputs = new TypeData<>();

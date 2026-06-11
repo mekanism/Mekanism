@@ -367,14 +367,12 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         dummy.cleanupFakePlayer(level);
     }
 
-    /**
-     * @param from   Where the laser is firing from
-     * @param damage Damage to do
-     *
-     * @return The amount of damage that was blocked
-     *
-     * @implNote most logic copied from {@link net.minecraft.world.entity.LivingEntity#applyItemBlocking}
-     */
+    /// @param from   Where the laser is firing from
+    /// @param damage Damage to do
+    ///
+    /// @return The amount of damage that was blocked
+    ///
+    /// @implNote most logic copied from [net.minecraft.world.entity.LivingEntity#applyItemBlocking]
     private float damageShield(Level level, LivingEntity livingEntity, Pos3D from, float damage) {
         DamageSource source = MekanismDamageTypes.LASER.source(level, from);
         //Absorb part of the damage based on the given absorption ratio

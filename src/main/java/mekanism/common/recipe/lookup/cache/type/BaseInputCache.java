@@ -12,16 +12,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base input cache that implements the backend handling and lookup of a single basic key based input.
- */
+/// Base input cache that implements the backend handling and lookup of a single basic key based input.
 public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGREDIENT extends InputIngredient<KEY, INPUT>, RECIPE extends MekanismRecipe<?>>
       implements IInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
-    /**
-     * Map of keys representing inputs to a set of the recipes that contain said input. This allows for quick contains checking by checking if a key exists, as well as
-     * quicker recipe lookup.
-     */
+    /// Map of keys representing inputs to a set of the recipes that contain said input. This allows for quick contains checking by checking if a key exists, as well as
+    /// quicker recipe lookup.
     private final Map<KEY, List<RECIPE>> inputCache = new HashMap<>();
 
     @Override
@@ -60,12 +56,10 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
         return inputCache.getOrDefault(input.typeHolder().value(), Collections.emptyList());
     }
 
-    /**
-     * Adds a given recipe to the input cache using the corresponding key.
-     *
-     * @param input  Key representing the input.
-     * @param recipe Recipe to add.
-     */
+    /// Adds a given recipe to the input cache using the corresponding key.
+    ///
+    /// @param input  Key representing the input.
+    /// @param recipe Recipe to add.
     protected void addInputCache(KEY input, RECIPE recipe) {
         if (!inputCache.containsKey(input)) {
             inputCache.put(input, Collections.singletonList(recipe));
@@ -81,12 +75,10 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
         }
     }
 
-    /**
-     * Adds a given recipe to the input cache using the corresponding key.
-     *
-     * @param input  Key representing the input.
-     * @param recipe Recipe to add.
-     */
+    /// Adds a given recipe to the input cache using the corresponding key.
+    ///
+    /// @param input  Key representing the input.
+    /// @param recipe Recipe to add.
     protected void addInputCache(Holder<KEY> input, RECIPE recipe) {
         addInputCache(input.value(), recipe);
     }

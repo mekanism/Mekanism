@@ -18,71 +18,61 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.context.ContextMap;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Base implementation for a ChemicalIngredient with an amount.
- *
- * <p>{@link ChemicalIngredient}, like its item counterpart, explicitly does not perform count checks,
- * so this class is used to (a) wrap a standard ChemicalIngredient with an amount and (b) provide a standard serialization format for mods to use.
- *
- * @see net.neoforged.neoforge.common.crafting.SizedIngredient
- */
+/// Base implementation for a ChemicalIngredient with an amount.
+///
+/// [ChemicalIngredient], like its item counterpart, explicitly does not perform count checks, so this class is used to (a) wrap a standard ChemicalIngredient with an
+/// amount and (b) provide a standard serialization format for mods to use.
+///
+/// @see net.neoforged.neoforge.common.crafting.SizedIngredient
 public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalStack> {
 
-    /**
-     * The "flat" codec for {@link ChemicalStackIngredient}.
-     *
-     * <p>The amount is serialized inline with the rest of the ingredient, for example:
-     *
-     * <pre>{@code
-     * {
-     *     "chemical": "mekanism:hydrogen",
-     *     "amount": 250
-     * }
-     * }</pre>
-     * <p>
-     * Compound chemical ingredients are always serialized using the map codec, i.e.
-     *
-     * <pre>{@code
-     * {
-     *     "type": "mekanism:compound",
-     *     "ingredients": [
-     *         { "chemical": "mekanism:hydrogen" },
-     *         { "chemical": "mekanism:oxygen" }
-     *     ],
-     *     "amount": 500
-     * }
-     * }</pre>
-     *
-     * @since 10.6.0
-     */
+    /// The "flat" codec for [ChemicalStackIngredient].
+    ///
+    /// The amount is serialized inline with the rest of the ingredient, for example:
+    /// ```json
+    /// {
+    ///     "chemical": "mekanism:hydrogen",
+    ///     "amount": 250
+    /// }
+    /// ```
+    ///
+    /// Compound chemical ingredients are always serialized using the map codec, i.e.
+    /// ```json
+    /// {
+    ///     "type": "mekanism:compound",
+    ///     "ingredients": [
+    ///         { "chemical": "mekanism:hydrogen" },
+    ///         { "chemical": "mekanism:oxygen" }
+    ///     ],
+    ///     "amount": 500
+    /// }
+    /// ```
+    ///
+    /// @since 10.6.0
     public static final Codec<ChemicalStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.chemical().mapCodecNonEmpty().forGetter(ChemicalStackIngredient::ingredient),
           ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
     ).apply(instance, ChemicalStackIngredient::new));
 
-    /**
-     * A stream codec for sending {@link ChemicalStackIngredient}s over the network.
-     *
-     * @since 10.6.0
-     */
+    /// A stream codec for sending [ChemicalStackIngredient]s over the network.
+    ///
+    /// @since 10.6.0
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStackIngredient> STREAM_CODEC = StreamCodec.composite(
           IngredientCreatorAccess.chemical().streamCodec(), ChemicalStackIngredient::ingredient,
           ByteBufCodecs.VAR_INT, ChemicalStackIngredient::amount,
           ChemicalStackIngredient::new
     );
 
-    /**
-     * Creates a Chemical Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} and
-     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(ChemicalIngredient, int)}.
-     *
-     * @param ingredient Ingredient to match.
-     * @param amount     Amount to match.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty.
-     * @since 10.6.0
-     */
+    /// Creates a Chemical Stack Ingredient that matches a given ingredient and amount. Prefer calling via
+    /// [mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()] and
+    /// [mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(ChemicalIngredient, int)].
+    ///
+    /// @param ingredient Ingredient to match.
+    /// @param amount     Amount to match.
+    ///
+    /// @throws NullPointerException     if the given instance is null.
+    /// @throws IllegalArgumentException if the given instance is empty.
+    /// @since 10.6.0
     public static ChemicalStackIngredient of(ChemicalIngredient ingredient, int amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         if (ingredient.isEmpty()) {
@@ -115,15 +105,13 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
         return testType(stack.typeHolder());
     }
 
-    /**
-     * Evaluates this predicate on the given argument, ignoring any size data.
-     *
-     * @param chemical Input argument.
-     *
-     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-     *
-     * @since 10.7.11
-     */
+    /// Evaluates this predicate on the given argument, ignoring any size data.
+    ///
+    /// @param chemical Input argument.
+    ///
+    /// @return `true` if the input argument matches the predicate, otherwise `false`
+    ///
+    /// @since 10.7.11
     public boolean testType(Holder<Chemical> chemical) {
         Objects.requireNonNull(chemical);
         return ingredient.test(chemical);
@@ -160,20 +148,16 @@ public final class ChemicalStackIngredient implements InputIngredient<Chemical, 
         return representations;
     }
 
-    /**
-     * For use in recipe input caching. Gets the internal Chemical Ingredient.
-     *
-     * @since 10.6.0
-     */
+    /// For use in recipe input caching. Gets the internal Chemical Ingredient.
+    ///
+    /// @since 10.6.0
     public ChemicalIngredient ingredient() {
         return ingredient;
     }
 
-    /**
-     * For use in recipe input caching. Gets the internal amount this ingredient represents.
-     *
-     * @since 10.6.0
-     */
+    /// For use in recipe input caching. Gets the internal amount this ingredient represents.
+    ///
+    /// @since 10.6.0
     public int amount() {
         return amount;
     }

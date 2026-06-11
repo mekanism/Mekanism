@@ -27,9 +27,7 @@ import org.jspecify.annotations.Nullable;
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
 
-    /**
-     * The number of filters that can be displayed
-     */
+    /// The number of filters that can be displayed
     private static final int FILTER_COUNT = 4;
     @Nullable
     private GuiInnerScreen leftScreen;

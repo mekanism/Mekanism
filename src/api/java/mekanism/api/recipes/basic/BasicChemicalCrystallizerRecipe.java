@@ -19,10 +19,8 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     protected final ChemicalStackIngredient input;
     protected final ItemStackTemplate output;
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
+    /// @param input  Input.
+    /// @param output Output.
     public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.output = Objects.requireNonNull(output, "Output cannot be null.");
@@ -44,11 +42,9 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
         return input;
     }
 
-    /**
-     * For Serializer usage only. Do not modify the returned stack!
-     *
-     * @return the uncopied output definition
-     */
+    /// For Serializer usage only. Do not modify the returned stack!
+    ///
+    /// @return the uncopied output definition
     public ItemStackTemplate getOutputRaw() {
         return this.output;
     }

@@ -55,8 +55,8 @@ import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Re-evaluate this extending AbstractContainerEventHandler
 public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventHandler implements IRecipeCategory<RECIPE>, IGuiWrapper {
@@ -131,10 +131,8 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         }
     }
 
-    /**
-     * @apiNote x and y are based on the values set in the tile, as the GUI then shifts the slots by one to account for the border. This method is mostly meant as a
-     * helper to make keeping track of the positioning numbers easier.
-     */
+    /// @apiNote x and y are based on the values set in the tile, as the GUI then shifts the slots by one to account for the border. This method is mostly meant as a
+    /// helper to make keeping track of the positioning numbers easier.
     protected GuiSlot addSlot(SlotType type, int x, int y) {
         return addElement(new GuiSlot(type, this, x - 1, y - 1));
     }

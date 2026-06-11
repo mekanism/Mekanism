@@ -144,9 +144,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return containerTypeMapping.getOrDefault(container, new ArrayList<>());
     }
 
-    /**
-     * @return The new data type
-     */
+    /// @return The new data type
     public DataType incrementDataType(RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
@@ -157,9 +155,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return current;
     }
 
-    /**
-     * @return The new data type
-     */
+    /// @return The new data type
     public DataType decrementDataType(RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {

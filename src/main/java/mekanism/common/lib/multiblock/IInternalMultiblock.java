@@ -10,9 +10,7 @@ public interface IInternalMultiblock {
     @Nullable
     UUID getMultiblockUUID();
 
-    /**
-     * Only valid on the server
-     */
+    /// Only valid on the server
     @Nullable
     MultiblockData getMultiblock();
 

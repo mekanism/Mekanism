@@ -22,12 +22,10 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
     protected final ItemStackTemplate output;
     private final boolean perTickUsage;
 
-    /**
-     * @param itemInput     Item input.
-     * @param chemicalInput Chemical input.
-     * @param output        Output.
-     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
-     */
+    /// @param itemInput     Item input.
+    /// @param chemicalInput Chemical input.
+    /// @param output        Output.
+    /// @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
     public BasicItemStackChemicalToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage,
           RecipeType<? extends ItemStackChemicalToItemStackRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");

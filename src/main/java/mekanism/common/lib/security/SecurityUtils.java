@@ -21,22 +21,18 @@ import net.neoforged.neoforge.server.permission.PermissionAPI;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-/**
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ISecurityUtils#INSTANCE}
- */
+/// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [ISecurityUtils#INSTANCE]
 public final class SecurityUtils implements ISecurityUtils {
 
     public static SecurityUtils get() {
         return (SecurityUtils) INSTANCE;
     }
 
-    /**
-     * Whether ops can bypass security and a given player is considered an Op.
-     *
-     * @param p - player to check
-     *
-     * @return if the player has operator privileges
-     */
+    /// Whether ops can bypass security and a given player is considered an Op.
+    ///
+    /// @param p player to check
+    ///
+    /// @return if the player has operator privileges
     private boolean isOp(Player p) {
         Objects.requireNonNull(p, "Player may not be null.");
         return MekanismConfig.general.opsBypassRestrictions.get() && p instanceof ServerPlayer player &&

@@ -7,15 +7,11 @@ import org.jspecify.annotations.Nullable;
 
 public interface IRecipeViewerGhostTarget {
 
-    /**
-     * @return {@code null} if it doesn't actually currently support ghost handling
-     */
+    /// @return `null` if it doesn't actually currently support ghost handling
     @Nullable
     IGhostIngredientConsumer getGhostHandler();
 
-    /**
-     * Number of pixels on each side that make up the border, and should be ignored when creating the target area.
-     */
+    /// Number of pixels on each side that make up the border, and should be ignored when creating the target area.
     default int borderSize() {
         return 0;
     }

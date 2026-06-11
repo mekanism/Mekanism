@@ -55,21 +55,17 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
         return this;
     }
 
-    /**
-     * Sets the tint to apply to this chemical when rendering.
-     *
-     * @param tint Color in AARRGGBB format
-     */
+    /// Sets the tint to apply to this chemical when rendering.
+    ///
+    /// @param tint Color in AARRGGBB format
     public JsonChemicalBuilder tint(int tint) {
         return baseData(builder -> builder.tint(tint));
     }
 
-    /**
-     * Sets the color representation to apply to this chemical when used for things like durability bars. Mostly for use in combination with custom textures that are not
-     * tinted.
-     *
-     * @param color Color in AARRGGBB format
-     */
+    /// Sets the color representation to apply to this chemical when used for things like durability bars. Mostly for use in combination with custom textures that are not
+    /// tinted.
+    ///
+    /// @param color Color in AARRGGBB format
     public JsonChemicalBuilder colorRepresentation(int color) {
         colorRepresentation = color;
         return this;
