@@ -160,16 +160,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, Direction side) {
-        //TODO - 26.1 (heat): Should this be filtered out via getAdjacent instead?
-        if (tempToTransfer > 0 && hasTransmitterNetwork()) {
-            HeatNetwork transmitterNetwork = getTransmitterNetworkNN();
-            ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getBlockPos().relative(side));
-            if (adjacent != null) {
-                //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
-                return currentAdjacentTransfer;
-            }
-        }
-        return ITileHeatHandler.super.incrementAdjacentTransfer(currentAdjacentTransfer, tempToTransfer, side);
+    public boolean countsAsAdjacent(Direction side) {
+        //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
+        return !hasTransmitterNetwork() || getTransmitterNetworkNN().getTransmitter(getBlockPos().relative(side)) != null;
     }
 }

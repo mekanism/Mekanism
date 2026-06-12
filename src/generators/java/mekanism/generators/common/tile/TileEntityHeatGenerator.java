@@ -198,7 +198,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        return side == Direction.DOWN ? getAdjacentUnchecked(side) : null;
+        //Only allow adjacent heat transfer through the bottom face
+        return side == Direction.DOWN ? super.getAdjacent(side) : null;
     }
 
     @Override

@@ -16,6 +16,8 @@ public interface ITileHeatHandler {
     /// @param side The side of this [ITileHeatHandler] to look on.
     ///
     /// @return The [IHeatHandler] adjacent to this [ITileHeatHandler], otherwise returns `null`.
+    ///
+    /// @implSpec If this method is called it can be assumed the handler has been checked as supporting heat.
     @Nullable
     default IHeatHandler getAdjacent(Direction side) {
         return null;
@@ -64,6 +66,7 @@ public interface ITileHeatHandler {
             if (heatCapacitor == null) {
                 continue;
             }
+            //Note: We can safely call getAdjacent as we know we supuport heat transfers on the side due to having a heat capacitor
             IHeatHandler sink = getAdjacent(side);
             if (sink == null) {
                 continue;
@@ -95,12 +98,16 @@ public interface ITileHeatHandler {
             double heatToTransfer = tempToTransfer * heatCapacity;
             heatCapacitor.handleHeat(-heatToTransfer);
             sink.handleHeat(heatToTransfer);
-            adjacentTransfer = incrementAdjacentTransfer(adjacentTransfer, tempToTransfer, side);
+            //TODO - 26.1 (heat): Validate != 0 makes sense, conductors used to compare it against > 0, but I think that was just to skip looking up the transmitter
+            // to see if it was in the same network, I think it is more correct as != 0?
+            if (tempToTransfer != 0 && countsAsAdjacent(side)) {
+                adjacentTransfer += tempToTransfer;
+            }
         }
         return adjacentTransfer;
     }
 
-    default double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, Direction side) {
-        return currentAdjacentTransfer + tempToTransfer;
+    default boolean countsAsAdjacent(Direction side) {
+        return true;
     }
 }
