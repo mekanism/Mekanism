@@ -188,7 +188,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                return rejectIfSameFreq(getAdjacentUnchecked(side));
+                return rejectIfSameFreq(super.getAdjacent(side));
             }
         }
         return null;
@@ -209,9 +209,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @Nullable
     @SuppressWarnings("unchecked")
     public <HANDLER> HANDLER getCachedCapability(ServerLevel level, Direction side, TransmissionType transmissionType) {
-        if (transmissionType == TransmissionType.HEAT) {
-            return (HANDLER) getAdjacentUnchecked(side);
-        } else if (transmissionType == TransmissionType.ITEM) {
+        if (transmissionType == TransmissionType.HEAT || transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
         }

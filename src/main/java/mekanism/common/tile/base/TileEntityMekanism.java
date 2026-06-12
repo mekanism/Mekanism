@@ -1263,14 +1263,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        if (getHeatCapacitor(side) != null) {
-            return getAdjacentUnchecked(side);
-        }
-        return null;
-    }
-
-    @Nullable
-    protected IHeatHandler getAdjacentUnchecked(Direction side) {
         BlockCapabilityCache<IHeatHandler, @Nullable Direction> cache = adjacentHeatCaps.get(side);
         if (cache == null) {
             cache = BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(side), side.getOpposite());
