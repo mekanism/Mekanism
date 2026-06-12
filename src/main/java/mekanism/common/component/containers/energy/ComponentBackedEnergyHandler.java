@@ -42,7 +42,7 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<IEnergy
         }
         //Scale the stored amount by how many items are in the backing access
         //Note: We get the contents directly rather than via super.getAmountAsLong to avoid skipping looking up the backing containers
-        return MathUtils.multiplyClamped(attachedAccess.getAmount(), getAttached());
+        return MathUtils.multiplyClamped(attachedAccess.getAmount(), containerType().getOrZero(attachedAccess));
     }
 
     @Override

@@ -2,13 +2,14 @@ package mekanism.common.capabilities.heat;
 
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
-public interface ITileHeatHandler extends IMekanismHeatHandler {
+@FunctionalInterface
+public interface ITileHeatHandler {
 
     /// Gets the [IHeatHandler] adjacent to this [ITileHeatHandler].
     ///
@@ -17,8 +18,17 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
     /// @return The [IHeatHandler] adjacent to this [ITileHeatHandler], otherwise returns `null`.
     @Nullable
     default IHeatHandler getAdjacent(Direction side) {
+        //TODO - 26.1 (heat): Re-evaluate implementations because if anything is doing an instanceof check, they might not be checking it via the proxy handler
         return null;
     }
+
+    /// Returns the [IHeatCapacitor] that has the given index from the list of capacitors on the given side.
+    ///
+    /// @param side The side we are interacting with the handler from (null for internal).
+    ///
+    /// @return The [IHeatCapacitor] that has the given index from the list of capacitors on the given side.
+    @Nullable
+    IHeatCapacitor getHeatCapacitor(@Nullable Direction side);
 
     /// Simulate heat transfers
     default HeatTransfer simulate() {
@@ -32,12 +42,16 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
     default double simulateEnvironment() {
         double environmentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
-            double heatCapacity = getTotalHeatCapacity(side);
+            IHeatCapacitor heatCapacitor = getHeatCapacitor(side);
+            if (heatCapacitor == null) {
+                continue;
+            }
+            double heatCapacity = heatCapacitor.getHeatCapacity();
             //transfer to air otherwise
-            double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
+            double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + heatCapacitor.getInverseInsulation() + heatCapacitor.getInverseConduction();
             //transfer heat difference based on environment temperature (ambient)
-            double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
-            handleHeat(-tempToTransfer * heatCapacity, side);
+            double tempToTransfer = (heatCapacitor.getTemperature() - getAmbientTemperature(side)) / invConduction;
+            heatCapacitor.handleHeat(-tempToTransfer * heatCapacity);
             if (tempToTransfer > 0) {
                 //Only count it towards environmental loss if it is hotter than the ambient temperature
                 environmentTransfer += tempToTransfer;
@@ -49,37 +63,42 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
     default double simulateAdjacent() {
         double adjacentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
-            IHeatHandler sink = getAdjacent(side);
-            if (sink != null) {
-                //double heatCapacity = getTotalHeatCapacity(side);
-                //double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                //double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
-                double temp = getTotalTemperature(side);
-                double sinkTemp = sink.getTotalTemperature();
-                if (temp <= sinkTemp) {
-                    //If our temperature is lower than the sink, we skip calculating what the adjacent loss to the sink
-                    // is as if the sink is able to have heat transferred away from it (which is a bit of a weird concept
-                    // in relation to thermodynamics, but makes some sense with our implementation), it will be handled by
-                    // the sink when the sink simulates adjacent heat transfers. This also prevents us from having heat
-                    // transfers effectively happen "twice" per tick rather than just once
-                    // Note: We also skip if our temp is equal to the sink's temperature so that we can short circuit
-                    // past the following logic
-                    continue;
-                }
-                //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
-                // but it seems to nerf the heat system quite a bit so needs more review than being able
-                // to be done just before a release is made
-                double heatCapacity = getTotalHeatCapacity(side);
-                double sinkHeatCapacity = sink.getTotalHeatCapacity();
-                //Calculate the target temperature using calorimetry
-                double finalTemp = (temp * heatCapacity + sinkTemp * sinkHeatCapacity) / (heatCapacity + sinkHeatCapacity);
-                double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double tempToTransfer = (temp - finalTemp) / invConduction;
-                double heatToTransfer = tempToTransfer * heatCapacity;
-                handleHeat(-heatToTransfer, side);
-                sink.handleHeat(heatToTransfer);
-                adjacentTransfer = incrementAdjacentTransfer(adjacentTransfer, tempToTransfer, side);
+            IHeatCapacitor heatCapacitor = getHeatCapacitor(side);
+            if (heatCapacitor == null) {
+                continue;
             }
+            IHeatHandler sink = getAdjacent(side);
+            if (sink == null) {
+                continue;
+            }
+            //double heatCapacity = heatCapacitor.getHeatCapacity();
+            //double invConduction = sink.getInverseConduction() + heatCapacitor.getInverseConduction();
+            //double tempToTransfer = (heatCapacitor.getTemperature() - getAmbientTemperature(side)) / invConduction;
+            double temp = heatCapacitor.getTemperature();
+            double sinkTemp = sink.getTemperature();
+            if (temp <= sinkTemp) {
+                //If our temperature is lower than the sink, we skip calculating what the adjacent loss to the sink
+                // is as if the sink is able to have heat transferred away from it (which is a bit of a weird concept
+                // in relation to thermodynamics, but makes some sense with our implementation), it will be handled by
+                // the sink when the sink simulates adjacent heat transfers. This also prevents us from having heat
+                // transfers effectively happen "twice" per tick rather than just once
+                // Note: We also skip if our temp is equal to the sink's temperature so that we can short circuit
+                // past the following logic
+                continue;
+            }
+            //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
+            // but it seems to nerf the heat system quite a bit so needs more review than being able
+            // to be done just before a release is made
+            double heatCapacity = heatCapacitor.getHeatCapacity();
+            double sinkHeatCapacity = sink.getHeatCapacity();
+            //Calculate the target temperature using calorimetry
+            double finalTemp = (temp * heatCapacity + sinkTemp * sinkHeatCapacity) / (heatCapacity + sinkHeatCapacity);
+            double invConduction = sink.getInverseConduction() + heatCapacitor.getInverseConduction();
+            double tempToTransfer = (temp - finalTemp) / invConduction;
+            double heatToTransfer = tempToTransfer * heatCapacity;
+            heatCapacitor.handleHeat(-heatToTransfer);
+            sink.handleHeat(heatToTransfer);
+            adjacentTransfer = incrementAdjacentTransfer(adjacentTransfer, tempToTransfer, side);
         }
         return adjacentTransfer;
     }

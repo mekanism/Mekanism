@@ -23,7 +23,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -31,7 +30,6 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyHandlerTarget;
@@ -64,7 +62,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements ITileHeatHandler, IContentsListener {
+public class InventoryFrequency extends Frequency implements IContentsListener {
 
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
@@ -116,7 +114,6 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     private List<IInventorySlot> inventorySlots;
     private List<IChemicalTank> chemicalTanks;
     private List<IFluidTank> fluidTanks;
-    private List<IHeatCapacitor> heatCapacitors;
 
     /// @param uuid Should only be null if we have incomplete data that we are loading
     public InventoryFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
@@ -134,8 +131,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this);
-        heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
-              1_000, null, this));
+        storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION, 1_000, null, this);
     }
 
     public List<IInventorySlot> getInventorySlots() {
@@ -154,13 +150,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         return storedEnergy;
     }
 
-    public List<IHeatCapacitor> getHeatCapacitors() {
-        return heatCapacitors;
-    }
-
-    @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return heatCapacitors;
+    public BasicHeatCapacitor getHeatCapacitor() {
+        return storedHeat;
     }
 
     @Override

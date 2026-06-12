@@ -20,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
@@ -94,7 +95,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync
     private final IEnergyContainer energyContainer;
-    private final IHeatCapacitor heatCapacitor;
+    //TODO - 26.1 (heat): Should we do this rather than exposing lastCaseTemperature to the computer?
+    //@WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getCaseTemperature", docPlaceholder = "fusion reactor case")
+    final BasicHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded",
@@ -165,14 +168,18 @@ public class FusionReactorMultiblockData extends MultiblockData {
         chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, chemical -> chemical.is(MekanismChemicals.STEAM), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this);
-        heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
-              () -> inverseInsulation, () -> biomeAmbientTemp, this));
+        heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient, () -> inverseInsulation, () -> biomeAmbientTemp, this);
         inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
     @Override
     public IEnergyContainer energyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
     }
 
     @Override

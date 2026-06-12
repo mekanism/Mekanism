@@ -3,14 +3,15 @@ package mekanism.common.component.containers.type;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
-import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
+import mekanism.common.component.containers.energy.ComponentBackedEnergyHandler;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.ItemAccessUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -22,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 public final class EnergyContainerType extends CapableContainerType<IEnergyContainer, Long, EnergyHandler> implements ISingleContainerType<IEnergyContainer, Long> {
 
     EnergyContainerType() {
-        super(MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINERS, Capabilities.ENERGY, 0L);
+        super(MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINER, Capabilities.ENERGY);
     }
 
     @Nullable
@@ -127,5 +128,13 @@ public final class EnergyContainerType extends CapableContainerType<IEnergyConta
     /// @implNote This caps the returned value at `1`
     public double divideToLevel(EnergyHandler container) {
         return MathUtils.divideToLevel(container.getAmountAsLong(), container.getCapacityAsLong());
+    }
+
+    public long getOrZero(ItemAccess itemAccess) {
+        return getOrZero(itemAccess.getResource());
+    }
+
+    public long getOrZero(DataComponentGetter componentGetter) {
+        return componentGetter.getOrDefault(getComponentType(), 0L);
     }
 }

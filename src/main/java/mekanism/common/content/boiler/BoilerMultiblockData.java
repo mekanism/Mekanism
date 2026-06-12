@@ -16,6 +16,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -87,7 +88,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public IChemicalTank steamTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "boiler")
-    public VariableHeatCapacitor heatCapacitor;
+    VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     @ContainerSync
@@ -133,7 +134,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         Collections.addAll(chemicalTanks, steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = VariableHeatCapacitor.create(CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT, () -> CASING_INVERSE_INSULATION_COEFFICIENT,
               () -> biomeAmbientTemp, this);
-        heatCapacitors.add(heatCapacitor);
+    }
+
+    @Override
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
     }
 
     @Override
@@ -159,7 +164,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
-        hotMap.put(inventoryID, getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
+        hotMap.put(inventoryID, getTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
         // handle coolant heat transfer
@@ -169,7 +174,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 try (Transaction transaction = Transaction.openRoot()) {
                     ChemicalResource heatedTankType = superheatedCoolantTank.resource();
                     double portionToCool = coolantType.conductivity() * superheatedCoolantTank.amountAsLong();
-                    int toCool = Ints.saturatedCast(Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature())));
+                    int toCool = Ints.saturatedCast(Math.round(portionToCool * (1 - getTemperature() / coolantType.temperature())));
                     ChemicalResource cooledCoolant = coolantType.cool();
                     int amountCooled = cooledCoolantTank.insert(cooledCoolant, toCool, transaction, AutomationType.INTERNAL);
                     if (amountCooled > 0 && superheatedCoolantTank.extract(heatedTankType, amountCooled, transaction, AutomationType.INTERNAL) == amountCooled) {
@@ -180,7 +185,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             }
         }
         // handle water heat transfer
-        if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
+        if (getTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.resource();
@@ -244,6 +249,10 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         return true;
     }
 
+    public double getTemperature() {
+        return heatCapacitor.getTemperature();
+    }
+
     public List<IChemicalTank> getChemicalTanks(BoilerValveMode mode) {
         return switch (mode) {
             case INPUT -> inputTanks;
@@ -286,14 +295,14 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     private double getHeatAvailable() {
-        double heatAvailable = (heatCapacitor.getTemperature() - HeatUtils.BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
+        double heatAvailable = (getTemperature() - HeatUtils.BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
         return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);
     }
 
     @Override
     public double simulateEnvironment() {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
-        double tempToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
+        double tempToTransfer = (getTemperature() - biomeAmbientTemp) / invConduction;
         heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity());
         return Math.max(tempToTransfer, 0);
     }

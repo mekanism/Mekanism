@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.MathUtils;
@@ -12,7 +13,7 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
@@ -85,7 +86,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    protected abstract IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener);
+    protected abstract ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener);
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {

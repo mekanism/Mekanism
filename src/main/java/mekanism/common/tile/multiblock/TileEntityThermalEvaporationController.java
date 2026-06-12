@@ -3,7 +3,7 @@ package mekanism.common.tile.multiblock;
 import mekanism.api.IContentsListener;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
@@ -32,7 +32,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nullable
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return null;//it's a screen, mostly
     }
 

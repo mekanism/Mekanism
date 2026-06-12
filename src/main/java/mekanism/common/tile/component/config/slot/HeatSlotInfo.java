@@ -1,19 +1,16 @@
 package mekanism.common.tile.component.config.slot;
 
-import java.util.List;
 import mekanism.api.heat.IHeatCapacitor;
+import org.jspecify.annotations.Nullable;
 
 public class HeatSlotInfo extends BaseSlotInfo {
 
-    private final List<IHeatCapacitor> capacitors;
+    @Nullable
+    private final IHeatCapacitor capacitor;
 
-    protected HeatSlotInfo(boolean canInput, boolean canOutput, IHeatCapacitor... capacitors) {
-        this(canInput, canOutput, List.of(capacitors));
-    }
-
-    public HeatSlotInfo(boolean canInput, boolean canOutput, List<IHeatCapacitor> capacitors) {
+    public HeatSlotInfo(boolean canInput, boolean canOutput, @Nullable IHeatCapacitor capacitor) {
         super(canInput, canOutput);
-        this.capacitors = capacitors;
+        this.capacitor = capacitor;
     }
 
     @Override
@@ -21,7 +18,8 @@ public class HeatSlotInfo extends BaseSlotInfo {
         return false;
     }
 
-    public List<IHeatCapacitor> getHeatCapacitors() {
-        return capacitors;
+    @Nullable
+    public IHeatCapacitor getCapacitor() {
+        return capacitor;
     }
 }

@@ -4,13 +4,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.ProxiedSingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
@@ -36,9 +37,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
-        return ProxiedEnergyContainerHolder.create(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getEnergyContainer());
+        return ProxiedSingleContainerHolder.energy(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getEnergyContainer());
     }
 
     @Override

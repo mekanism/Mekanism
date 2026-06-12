@@ -86,7 +86,6 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     private final BiPredicate<Object, AutomationType> formedBiPred = (_, _) -> isFormed();
     private final BiPredicate<Object, AutomationType> notExternalFormedBiPred = (_, automationType) -> !automationType.isExternal() && isFormed();
@@ -398,9 +397,21 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return isFormed() || isRemote() ? energyContainer() : null;
     }
 
+    @Nullable
+    protected IHeatCapacitor heatCapacitor() {
+        return null;
+    }
+
+    @Nullable
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return isFormed() || isRemote() ? heatCapacitors : Collections.emptyList();
+    public IHeatCapacitor getHeatCapacitor() {
+        return isFormed() || isRemote() ? heatCapacitor() : null;
+    }
+
+    @Nullable
+    @Override
+    public IHeatCapacitor getHeatCapacitor(@Nullable Direction side) {
+        return getHeatCapacitor();
     }
 
     public boolean isKnownLocation(BlockPos pos) {

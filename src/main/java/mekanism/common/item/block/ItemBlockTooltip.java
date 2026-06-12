@@ -18,7 +18,7 @@ import mekanism.common.component.IComponentAware;
 import mekanism.common.component.component.UpgradeAware;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
-import mekanism.common.component.containers.energy.EnergyContainersBuilder;
+import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -173,7 +173,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         AttributeEnergy attributeEnergy = Attribute.getOrThrow(block, AttributeEnergy.class);
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-            return EnergyContainersBuilder.creator(attachedAccess -> {
+            return EnergyContainerBuilder.creator(attachedAccess -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedAccess, maxEnergy);
                 return new ComponentBackedEnergyContainer(attachedAccess, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
@@ -181,7 +181,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return EnergyContainersBuilder.basicCreator(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
+        return EnergyContainerBuilder.basicCreator(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -24,14 +23,17 @@ import mekanism.common.capabilities.holder.QEConfigHolder;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.container.QEContainerHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.energy.QEEnergyHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.QEEnergyHolder;
+import mekanism.common.capabilities.holder.single.QESingleContainerHolder;
+import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.capabilities.proxy.ProxyHandler;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -92,11 +94,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
-            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> {
+            heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new HeatProxy(true, false, () -> {
                 InventoryFrequency freq = getFreq();
-                return isFrequencyValid(freq) ? freq.getHeatCapacitors() : Collections.emptyList();
-            };
-            heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new HeatProxy(true, false, capacitorSupplier));
+                return isFrequencyValid(freq) ? freq.getHeatCapacitor() : null;
+            }));
             heatConfig.setCanEject(false);
         }
 
@@ -130,13 +131,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         return new QEEnergyHolder(this);
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return new QEContainerHolder<>(this, TransmissionType.HEAT, MekContainerHelper.HEAT_SLOT_PARSER, InventoryFrequency::getHeatCapacitors);
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return new QESingleContainerHolder<>(this, TransmissionType.HEAT, SingleConfigHolder.HEAT_SLOT_PARSER, InventoryFrequency::getHeatCapacitor);
     }
 
     @Override
@@ -328,9 +329,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency().getChemicalTanks().getFirst();
     }
 
-    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
-    double getTemperature() throws ComputerException {
-        return getFrequency().getTotalTemperature();
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "frequency")
+    IHeatCapacitor getFrequencyCapacitor() throws ComputerException {
+        return getFrequency().getHeatCapacitor();
     }
     //End methods IComputerTile
 }

@@ -7,7 +7,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
@@ -28,7 +28,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     public TileEntityUniversalCable(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(new EnergyHandlerManager(new IEnergyContainerHolder() {
+        addCapabilityResolver(new EnergyHandlerManager(new ISingleContainerHolder<>() {
             @Nullable
             @Override
             public IEnergyContainer getContainer(@Nullable Direction direction) {

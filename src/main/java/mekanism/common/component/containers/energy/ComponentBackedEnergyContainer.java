@@ -59,11 +59,6 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
     }
 
     @Override
-    protected boolean isEmpty(Long value) {
-        return value <= 0L;
-    }
-
-    @Override
     protected EnergyContainerType containerType() {
         return ContainerType.ENERGY;
     }
@@ -71,7 +66,7 @@ public class ComponentBackedEnergyContainer extends SimpleComponentBackedContain
     /// @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
     @Override
     public long getAmountAsLong() {
-        return getAttached();
+        return containerType().getOrZero(attachedAccess);
     }
 
     @Override

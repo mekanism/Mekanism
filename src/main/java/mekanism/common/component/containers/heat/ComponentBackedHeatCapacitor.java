@@ -1,61 +1,52 @@
 package mekanism.common.component.containers.heat;
 
+import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.HeatCapacitorWrapper;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.component.containers.ComponentBackedContainer;
+import mekanism.common.component.containers.SimpleComponentBackedContainer;
 import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
+import mekanism.common.component.containers.type.HeatContainerType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatCapacitorData, AttachedHeat> implements IHeatCapacitor {
+public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer<HeatCapacitorData> implements IHeatCapacitor {
 
     private final double inverseConductionCoefficient;
     private final double inverseInsulationCoefficient;
     private final HeatCapacitorData defaultData;
 
-    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, int slotIndex, double inverseConductionCoefficient, double inverseInsulationCoefficient,
-          double defaultHeatCapacity) {
-        super(attachedAccess, slotIndex);
+    public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
+        super(attachedAccess);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
-        this.defaultData = new HeatCapacitorData(defaultHeatCapacity);
-    }
-
-    protected boolean setContents(AttachedHeat attached, HeatCapacitorData value) {
-        return setContents(attached, value, null, true);
-    }
-
-    @Override
-    protected boolean isEmpty(HeatCapacitorData value) {
-        return value.equals(defaultData);
+        //TODO - 26.1 (heat): Re-evaluate throwing like this? Can we somehow handle it more gracefully?
+        // Theoretically we could keep requiring passing in the default capacity
+        this.defaultData = Objects.requireNonNull(attachedAccess.getResource().getItem().components().get(containerType().getComponentType()),
+              "Attempted to create a component backed heat capacitor for an item that doesn't support heat data");
     }
 
     @Override
-    protected IContainerType<?, AttachedHeat> containerType() {
+    protected HeatContainerType containerType() {
         return ContainerType.HEAT;
     }
 
-    @Override
-    protected HeatCapacitorData getContents(AttachedHeat attached) {
-        if (containerIndex < 0 || containerIndex >= attached.size()) {
-            return defaultData;
-        }
-        return attached.get(containerIndex);
+    @Nullable
+    protected HeatCapacitorData getCurrent() {
+        return containerType().get(attachedAccess.getResource());
     }
 
-    /// @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
-    protected HeatCapacitorData getData() {
-        return getContents(getAttached());
+    protected HeatCapacitorData getCurrentOrDefault() {
+        return Objects.requireNonNullElse(getCurrent(), defaultData);
     }
 
     @Override
     public double getTemperature() {
-        return getData().temperature();
+        return getCurrentOrDefault().temperature();
     }
 
     @Override
@@ -70,61 +61,86 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     public double getHeatCapacity() {
-        return getData().capacity();
+        return getCurrentOrDefault().capacity();
     }
 
     @Override
     public double getHeat() {
-        return getData().heatOrAmbient();
+        return getCurrentOrDefault().heatOrAmbient();
     }
 
     @Override
     public void setHeat(double heat) {
-        AttachedHeat attachedHeat = getAttached();
-        setContents(attachedHeat, getContents(attachedHeat).withHeat(Math.max(0D, heat)));
+        HeatCapacitorData current = getCurrent();
+        HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);;
+        //Note: withHeat handles clamping to zero
+        HeatCapacitorData newData = existing.withHeat(heat);
+        if (current != newData) {
+            //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat
+            setContents(newData, null);
+        }
     }
 
     @Override
     public void handleHeat(double transfer) {
+        //TODO: Do we want to remove the comparison to zero check as comparing to epsilon should cover it
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
-            AttachedHeat attachedHeat = getAttached();
-            if (!attachedHeat.isEmpty()) {
-                HeatCapacitorData stored = getContents(attachedHeat);
-                setContents(attachedHeat, stored.withHeat(Math.max(0D, stored.heatOrAmbient() + transfer)));
+            HeatCapacitorData current = getCurrent();
+            HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);;
+            //Note: withHeat handles clamping to zero
+            HeatCapacitorData newData = existing.withHeat(existing.heatOrAmbient() + transfer);
+            if (current != newData) {
+                //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat
+                setContents(newData, null);
             }
         }
     }
 
     @Override
     public boolean isAmbientTemperature() {
-        return getData().heat().isEmpty();
+        return getCurrentOrDefault().heat().isEmpty();
     }
 
     @Override
     public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
-        AttachedHeat attachedHeat = getAttached();
-        setContents(attachedHeat, new HeatCapacitorData(other.getHeat(), other.getHeatCapacity()), transaction, true);
+        if (other instanceof HeatCapacitorWrapper wrapper) {
+            other = wrapper.getInternal();
+        }
+        HeatCapacitorData otherData;
+        if (other instanceof ComponentBackedHeatCapacitor otherCapacitor) {
+            otherData = otherCapacitor.getCurrentOrDefault();
+        } else {
+            otherData = new HeatCapacitorData(other.getHeat(), other.getHeatCapacity());
+        }
+        if (!otherData.equals(getCurrent())) {
+            setContents(otherData, transaction);
+        }
     }
 
     @Override
     public void serialize(ValueOutput output) {
-        HeatCapacitorData data = getData();
-        if (data.heat().isPresent()) {
-            output.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
+        HeatCapacitorData data = getCurrent();
+        if (data != null) {
+            if (data.heat().isPresent()) {
+                output.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
+            }
+            output.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
         }
-        output.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
     }
 
     @Override
     public void deserialize(ValueInput input) {
+        //TODO - 26.1 (heat): Re-evaluate this
         HeatCapacitorData data;
-        double capacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, defaultData.capacity());
         double stored = input.getDoubleOr(SerializationConstants.STORED, -1);
+        double capacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, defaultData.capacity());
         if (stored == -1) {
             data = new HeatCapacitorData(capacity);
         } else {
             data = new HeatCapacitorData(stored, capacity);
         }
-        setContents(getAttached(), data);
+        if (!data.equals(getCurrent())) {
+            setContents(data, null);
+        }
     }
 }

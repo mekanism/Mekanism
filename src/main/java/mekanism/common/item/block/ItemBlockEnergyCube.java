@@ -13,7 +13,7 @@ import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.component.containers.creator.IContainerCreator;
-import mekanism.common.component.containers.energy.EnergyContainersBuilder;
+import mekanism.common.component.containers.energy.EnergyContainerBuilder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -129,6 +129,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     protected IContainerCreator<IEnergyContainer, Long> getDefaultEnergyContainer() {
-        return EnergyContainersBuilder.ENERGY_CUBE;
+        return EnergyContainerBuilder.ENERGY_CUBE;
     }
 }

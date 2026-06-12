@@ -10,6 +10,7 @@ import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -28,6 +29,7 @@ import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -83,7 +85,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public BasicFluidTank outputTank;
     @ContainerSync
-    public VariableHeatCapacitor heatCapacitor;
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "thermal evaporation plant")
+    VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     private double tempMultiplier;
@@ -132,7 +135,12 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 152, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
-        heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, () -> biomeAmbientTemp, this));
+        heatCapacitor = VariableHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, () -> biomeAmbientTemp, this);
+    }
+
+    @Override
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
     }
 
     @Override
@@ -234,7 +242,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return 0;
     }
 
-    @ComputerMethod
     public double getTemperature() {
         return heatCapacitor.getTemperature();
     }

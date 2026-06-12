@@ -21,8 +21,9 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
 
     protected abstract IContainerType<?, ATTACHED> containerType();
 
+    @Nullable
     protected ATTACHED getAttached() {
-        return containerType().getOrEmpty(attachedAccess.getResource());
+        return containerType().get(attachedAccess.getResource());
     }
 
     protected abstract TYPE getContents(ATTACHED attached);
@@ -37,7 +38,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
         if (attached.isEmpty()) {
             //If we don't have an attachment, attempt to create a new one
             attached = containerType().createNewAttachment(attachedTo);
-            if (attached.isEmpty()) {
+            if (attached == null || attached.isEmpty()) {
                 //If we can't figure out how to handle the attachment for the item, just exit
                 // Note: We don't need to consider removing an existing attachment as we know we don't have one
                 return false;
