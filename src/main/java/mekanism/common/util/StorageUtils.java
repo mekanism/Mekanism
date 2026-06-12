@@ -221,15 +221,15 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         container.setEnergy(MathUtils.addClamped(container.getAmountAsLong(), mergeContainer.getAmountAsLong()), transaction);
     }
 
-    public static void mergeHeatCapacitors(List<IHeatCapacitor> capacitors, List<IHeatCapacitor> toAdd) {
-        validateSizeMatches(capacitors, toAdd, "heat capacitor");
-        for (int i = 0; i < toAdd.size(); i++) {
-            IHeatCapacitor capacitor = capacitors.get(i);
-            IHeatCapacitor mergeCapacitor = toAdd.get(i);
-            capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
-            if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
-                heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
-            }
+    public static void mergeHeatCapacitors(@Nullable IHeatCapacitor capacitor, @Nullable IHeatCapacitor mergeCapacitor) {
+        if (capacitor == null || mergeCapacitor == null) {
+            //Nothing to do here
+            //TODO: Do we want to error if they are different nullabilities?
+            return;
+        }
+        capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
+        if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+            heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
         }
     }
 

@@ -15,6 +15,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.resource.IResourceContainer;
@@ -111,7 +112,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                                                                                         "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
     public final IChemicalTank wasteTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "reactor")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "fission reactor")
     public final VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
@@ -171,7 +172,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         Collections.addAll(chemicalTanks, fuelTank, heatedCoolantTank, wasteTank, coolantTank.getChemicalTank());
         heatCapacitor = VariableHeatCapacitor.create(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
               () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp, this);
-        heatCapacitors.add(heatCapacitor);
+    }
+
+    @Override
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
     }
 
     @Override
@@ -664,7 +669,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    double getHeatCapacity() {
+    public double getHeatCapacity() {
+        //TODO - 26.1 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
         return heatCapacitor.getHeatCapacity();
     }
     //End computer related methods

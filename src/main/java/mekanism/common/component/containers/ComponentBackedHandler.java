@@ -23,10 +23,6 @@ public abstract class ComponentBackedHandler<CONTAINER extends ValueIOSerializab
         return containerType;
     }
 
-    protected ATTACHED getAttached() {
-        return containerType.getOrEmpty(attachedAccess.getResource());
-    }
-
     protected boolean isAccessInvalid() {
         //If the amount available via the attached access is now zero, or if we validate the initial type and the item type has changed since we were created
         // consider this handler invalid and have the methods that interact with it NO-OP

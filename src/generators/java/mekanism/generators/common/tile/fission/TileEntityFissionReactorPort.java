@@ -13,11 +13,12 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
@@ -54,7 +55,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
+        if (getHeatCapacitor(side) != null) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT))
                   .isPresent()) {
@@ -75,8 +76,8 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return _ -> getMultiblock().getHeatCapacitors();
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return _ -> getMultiblock().getHeatCapacitor();
     }
 
     @Override

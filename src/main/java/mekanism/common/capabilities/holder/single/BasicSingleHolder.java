@@ -1,31 +1,30 @@
-package mekanism.common.capabilities.holder.energy;
+package mekanism.common.capabilities.holder.single;
 
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.holder.BasicHolder;
 import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
-public class BasicEnergyHolder extends BasicHolder implements IEnergyContainerHolder {
+public class BasicSingleHolder<CONTAINER> extends BasicHolder implements ISingleContainerHolder<CONTAINER> {
 
-    private static final Set<RelativeSide> ALL_SIDES = EnumSet.allOf(RelativeSide.class);
+    protected static final Set<RelativeSide> ALL_SIDES = EnumSet.allOf(RelativeSide.class);
     private final Set<RelativeSide> supportedSides;
-    private final IEnergyContainer container;
+    private final CONTAINER container;
 
-    public BasicEnergyHolder(IEnergyContainer container, Supplier<Direction> facingSupplier, Set<RelativeSide> supportedSides) {
+    public BasicSingleHolder(CONTAINER container, Supplier<Direction> facingSupplier, Set<RelativeSide> supportedSides) {
         this(container, facingSupplier, null, null, supportedSides);
     }
 
-    public BasicEnergyHolder(IEnergyContainer container, Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
+    public BasicSingleHolder(CONTAINER container, Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
           @Nullable Predicate<RelativeSide> extractPredicate) {
         this(container, facingSupplier, insertPredicate, extractPredicate, ALL_SIDES);
     }
 
-    public BasicEnergyHolder(IEnergyContainer container, Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
+    public BasicSingleHolder(CONTAINER container, Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
           @Nullable Predicate<RelativeSide> extractPredicate, Set<RelativeSide> supportedSides) {
         super(facingSupplier, insertPredicate, extractPredicate);
         this.container = container;
@@ -34,7 +33,7 @@ public class BasicEnergyHolder extends BasicHolder implements IEnergyContainerHo
 
     @Nullable
     @Override
-    public IEnergyContainer getContainer(@Nullable Direction side) {
+    public CONTAINER getContainer(@Nullable Direction side) {
         if (side == null || supportedSides.contains(RelativeSide.fromDirections(facingSupplier.get(), side))) {
             //If we want the internal OR we are contained within our side specification, give all of our containers
             return container;

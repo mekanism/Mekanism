@@ -19,9 +19,8 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
 
     protected final MultiTypeCapability<HANDLER> capability;
 
-    protected CapableContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, MultiTypeCapability<HANDLER> capability,
-          ATTACHED emptyAttachment) {
-        super(component, containerTag, emptyAttachment);
+    protected CapableContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, MultiTypeCapability<HANDLER> capability) {
+        super(component, containerTag);
         this.capability = capability;
     }
 

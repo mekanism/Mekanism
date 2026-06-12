@@ -1,15 +1,15 @@
 package mekanism.generators.common.registries;
 
 import java.util.function.Function;
-import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
-import mekanism.common.component.containers.fluid.FluidTanksBuilder;
-import mekanism.common.component.containers.heat.HeatCapacitorsBuilder;
-import mekanism.common.component.containers.item.ItemSlotsBuilder;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.component.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.component.containers.fluid.FluidTanksBuilder;
+import mekanism.common.component.containers.heat.HeatCapacitorBuilder;
+import mekanism.common.component.containers.item.ItemSlotsBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.BlockDeferredRegister;
@@ -65,10 +65,9 @@ public class GeneratorsBlocks {
                       .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
                             .addBasic(MekanismGeneratorsConfig.generators.heatTankCapacity, fluid -> fluid.is(FluidTags.LAVA))
                             .build()
-                      ).addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorsBuilder.builder()
-                            .addBasic(TileEntityHeatGenerator.HEAT_CAPACITY, TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT)
-                            .build()
-                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      ).addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorBuilder.basicCreator(
+                            TileEntityHeatGenerator.HEAT_CAPACITY, TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT
+                      )).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addBasic(1)//todo - 26.1: is this really needed? .addFluidFuelSlot(0, itemType -> itemType.toStack().getBurnTime(null) != 0)
                             .addEnergy()
                             .build()

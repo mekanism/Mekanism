@@ -36,6 +36,7 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
     }
 
     public HeatCapacitorData withHeat(double heat) {
+        heat = Math.max(0D, heat);
         if (Mth.equal(heatOrAmbient(), heat)) {
             return this;
         }

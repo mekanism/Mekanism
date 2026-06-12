@@ -1,67 +1,47 @@
 package mekanism.common.component.containers.type;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.component.containers.heat.AttachedHeat;
-import mekanism.common.component.containers.heat.HeatCapacitorData;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.component.containers.heat.HeatCapacitorData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, AttachedHeat> implements IListContainerType<HeatCapacitorData, IHeatCapacitor, AttachedHeat> {
+public final class HeatContainerType extends AbstractContainerType<IHeatCapacitor, HeatCapacitorData> implements ISingleContainerType<IHeatCapacitor, HeatCapacitorData> {
 
     HeatContainerType() {
-        super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, AttachedHeat.EMPTY);
+        super(MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITOR);
+    }
+
+    @Nullable
+    @Override
+    public IHeatCapacitor getContainer(TileEntityMekanism tile) {
+        return tile.getHeatCapacitor();
     }
 
     @Override
-    public List<IHeatCapacitor> getContainers(TileEntityMekanism tile) {
-        return tile.getHeatCapacitors();
-    }
-
-    @Override
-    public void copyToContainers(List<IHeatCapacitor> capacitors, AttachedHeat attached) {
-        List<HeatCapacitorData> stored = attached.containers();
-        int size = stored.size();
-        if (size == capacitors.size()) {
-            for (int i = 0; i < size; i++) {
-                IHeatCapacitor capacitor = capacitors.get(i);
-                HeatCapacitorData data = stored.get(i);
-                if (data.heat().isPresent()) {
-                    capacitor.setHeat(data.heat().getAsDouble());
-                }
-                if (capacitor instanceof BasicHeatCapacitor basic) {
-                    basic.setHeatCapacity(data.capacity(), false);
-                }
-            }
+    public void copyToContainer(IHeatCapacitor capacitor, HeatCapacitorData data) {
+        if (data.heat().isPresent()) {
+            capacitor.setHeat(data.heat().getAsDouble());
+        }
+        if (capacitor instanceof BasicHeatCapacitor basic) {//TODO - 26.1 (heat): Do we need to handle setting it for component backed capacitors?
+            basic.setHeatCapacity(data.capacity(), false);
         }
     }
 
     @Override
-    public AttachedHeat attachedCopyOf(List<IHeatCapacitor> capacitors) {
-        List<HeatCapacitorData> stored = new ArrayList<>(capacitors.size());
-        for (IHeatCapacitor capacitor : capacitors) {
-            if (capacitor.isAmbientTemperature()) {
-                stored.add(new HeatCapacitorData(capacitor.getHeatCapacity()));
-            } else {
-                stored.add(new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity()));
-            }
+    public HeatCapacitorData attachedCopyOf(IHeatCapacitor capacitor) {
+        if (capacitor.isAmbientTemperature()) {
+            return new HeatCapacitorData(capacitor.getHeatCapacity());
         }
-        return new AttachedHeat(stored);
+        return new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity());
     }
 
     @Override
     public boolean canHandle(TileEntityMekanism tile) {
         return tile.canHandleHeat();
-    }
-
-    @Override
-    protected boolean shouldAddAttachment(AttachedHeat attached) {
-        return !attached.isEmpty();
     }
 
     @Override

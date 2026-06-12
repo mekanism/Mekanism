@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.component.containers.creator.IContainerCreator;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.Item;
@@ -21,14 +20,12 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
 
     private final Map<Item, Lazy<? extends IContainerCreator<CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
     private final DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component;
-    private final ATTACHED emptyAttachment;
     private final String containerTag;
 
-    protected AbstractContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, ATTACHED emptyAttachment) {
+    protected AbstractContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag) {
         ContainerType.TYPES_INTERNAL.add(this);
         this.component = component;
         this.containerTag = containerTag;
-        this.emptyAttachment = emptyAttachment;
     }
 
     @Override
@@ -60,15 +57,11 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
         return creator == null ? 0 : creator.totalContainers();
     }
 
+    @Nullable
     @Override
     public ATTACHED createNewAttachment(ItemResource itemType) {
         IContainerCreator<CONTAINER, ATTACHED> containerCreator = getCreator(itemType.getItem());
-        return containerCreator == null ? emptyAttachment : containerCreator.initStorage();
-    }
-
-    @Override
-    public ATTACHED getOrEmpty(DataComponentGetter stack) {
-        return stack.getOrDefault(getComponentType(), emptyAttachment);
+        return containerCreator == null ? null : containerCreator.initStorage();
     }
 
     @Override

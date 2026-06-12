@@ -8,49 +8,20 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public interface IHeatCapacitor extends ValueIOSerializable {
+public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
 
-    /// Returns the temperature of this capacitor.
-    ///
-    /// @return Temperature of this capacitor. Always bounded by absolute zero (0 degrees kelvin).
-    double getTemperature();
-
-    /// Returns the inverse conduction coefficient of this capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
-    /// can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
-    ///
-    /// @return Inverse conduction coefficient of this capacitor.
-    ///
-    /// @apiNote Must be greater than `0`
-    double getInverseConduction();
-
-    /// Returns the inverse insulation coefficient for this. The larger the value the less heat dissipates into the environment.
-    ///
-    /// @return Inverse insulation coefficient of this capacitor.
+    /// {@return the inverse insulation coefficient for this capacitor} The larger the value the less heat dissipates into the environment.
     double getInverseInsulation();
 
-    /// Returns the heat capacity of this capacitor. This number can be thought of as specific heat x mass of the capacitor itself.
-    ///
-    /// @return Heat capacity of this capacitor.
-    ///
-    /// @apiNote Must be at least `1`
-    double getHeatCapacity();
-
-    /// Returns the heat stored in this capacitor.
-    ///
-    /// @return Heat stored in this capacitor.
-    double getHeat();
+    /// {@return heat stored in this capacitor}
+    double getHeat();//TODO - 26.1 (heat): Should this be moved into IHeatHandler?
 
     /// Overrides the amount of heat in this [IHeatCapacitor].
     ///
-    /// @param heat Heat to set this capacitor's storage to (may be `0`).
+    /// @param heat Heat to set this capacitor's storage to. May be `0`.
     ///
-    /// @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
+    /// @implSpec If a value less than zero is passed, it should be clamped to zero.
     void setHeat(double heat);
-
-    /// Handles a change of heat in this capacitor. Can be positive or negative.
-    ///
-    /// @param transfer The amount being transferred.
-    void handleHeat(double transfer);
 
     /// Checks if this heat capacitor is currently at the ambient temperature of its surroundings.
     ///
@@ -78,6 +49,7 @@ public interface IHeatCapacitor extends ValueIOSerializable {
     /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @see HeatCapacitorWrapper#getInternal() Getting the internal capacitor when wrapped if instance checks are necessary.
     /// @since 10.8.0
     default void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
         setHeat(other.getHeat());

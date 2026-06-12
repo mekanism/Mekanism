@@ -82,6 +82,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     public void onContentsChanged(double originalState) {
+        //TODO - 26.1 (heat): Do we want to switch to transactions purely so that this only gets fired on root commit, even if we most likely never roll back?
         if (listener != null) {
             listener.onContentsChanged();
         }
@@ -89,8 +90,9 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void handleHeat(double transfer) {
-        initStoredHeat();
+        //TODO - 26.1 (heat): Do we want to remove the comparison to zero check as comparing to epsilon should cover it
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
+            //Note: Getting the original heat will initialize the stored heat if necessary
             double originalState = getHeat();
             storedHeat = Math.max(0D, storedHeat + transfer);
             onContentsChanged(originalState);
@@ -105,7 +107,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Override
     public void deserialize(ValueInput input) {
         storedHeat = Math.max(0D, input.getDoubleOr(SerializationConstants.STORED, storedHeat));
-        setHeatCapacity(input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, heatCapacity), false);
+        heatCapacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, heatCapacity);
     }
 
     @Override
@@ -132,16 +134,17 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
+        heatCapacity = other.getHeatCapacity();
         IHeatCapacitor.super.copyContents(other, transaction);
-        //TODO - 26.1: Should heat capacity be copied before or after?
-        setHeatCapacity(other.getHeatCapacity(), false);
     }
 
+    //TODO - 26.1 (heat): Should we move this method to the heat capacitor interface, so that we can remove our instance checks for BasicHeatCapacitor and let HeatCapacitorWrapper properly wrap this method?
     public void setHeatCapacity(double newCapacity, boolean updateHeat) {
         if (updateHeat && storedHeat != -1) {
             setHeat(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature());
         }
         heatCapacity = newCapacity;
+        //TODO - 26.1 (heat): Should we be firing onContentsChanged?
     }
 
     public void setHeatCapacityFromPacket(double newCapacity) {

@@ -59,15 +59,16 @@ public interface IProxiedSlotInfo extends ISlotInfo {
 
     class HeatProxy extends HeatSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IHeatCapacitor>> capacitorSupplier;
+        private final Supplier<@Nullable IHeatCapacitor> capacitorSupplier;
 
-        public HeatProxy(boolean canInput, boolean canOutput, Supplier<List<IHeatCapacitor>> capacitorSupplier) {
-            super(canInput, canOutput);
+        public HeatProxy(boolean canInput, boolean canOutput, Supplier<@Nullable IHeatCapacitor> capacitorSupplier) {
+            super(canInput, canOutput, null);
             this.capacitorSupplier = capacitorSupplier;
         }
 
+        @Nullable
         @Override
-        public List<IHeatCapacitor> getHeatCapacitors() {
+        public IHeatCapacitor getCapacitor() {
             return capacitorSupplier.get();
         }
     }

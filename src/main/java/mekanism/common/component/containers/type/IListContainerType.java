@@ -1,5 +1,6 @@
 package mekanism.common.component.containers.type;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.common.component.containers.IAttachedContainers;
@@ -19,7 +20,8 @@ public interface IListContainerType<TYPE, CONTAINER extends ValueIOSerializable,
     List<CONTAINER> getContainers(TileEntityMekanism tile);
 
     default List<TYPE> getAttachedContents(DataComponentGetter componentGetter) {
-        return getOrEmpty(componentGetter).containers();
+        ATTACHED attached = get(componentGetter);
+        return attached == null ? Collections.emptyList() : attached.containers();
     }
 
     @Override

@@ -17,7 +17,7 @@
                 "mekanism:owner",
                 "mekanism:security",
                 "mekanism:items",
-                "mekanism:heat_data"
+                "mekanism:heat"
               ],
               "source": "block_entity"
             }

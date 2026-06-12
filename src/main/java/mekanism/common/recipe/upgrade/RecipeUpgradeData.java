@@ -96,7 +96,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         ItemResource itemType = itemAccess.getResource();
         return switch (type) {
             case ENERGY -> {
-                long energy = ContainerType.ENERGY.getOrEmpty(itemType);
+                long energy = ContainerType.ENERGY.getOrZero(itemType);
                 yield energy == 0 ? null : new EnergyRecipeData(energy);
             }
             case FLUID -> getContainerUpgradeData(itemType, ContainerType.FLUID);
