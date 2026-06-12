@@ -18,15 +18,12 @@ public interface ITileHeatHandler {
     /// @return The [IHeatHandler] adjacent to this [ITileHeatHandler], otherwise returns `null`.
     @Nullable
     default IHeatHandler getAdjacent(Direction side) {
-        //TODO - 26.1 (heat): Re-evaluate implementations because if anything is doing an instanceof check, they might not be checking it via the proxy handler
         return null;
     }
 
-    /// Returns the [IHeatCapacitor] that has the given index from the list of capacitors on the given side.
+    /// {@return the [IHeatCapacitor] on the given side}
     ///
     /// @param side The side we are interacting with the handler from (null for internal).
-    ///
-    /// @return The [IHeatCapacitor] that has the given index from the list of capacitors on the given side.
     @Nullable
     IHeatCapacitor getHeatCapacitor(@Nullable Direction side);
 
