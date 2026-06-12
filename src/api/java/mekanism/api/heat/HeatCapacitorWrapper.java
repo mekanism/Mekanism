@@ -54,13 +54,23 @@ public abstract class HeatCapacitorWrapper implements IHeatCapacitor {
     }
 
     @Override
-    public void setHeat(double heat) {
-        internal.setHeat(heat);
+    public void setHeat(double heat, @Nullable TransactionContext transaction) {
+        internal.setHeat(heat, transaction);
     }
 
     @Override
-    public void handleHeat(double transfer) {
-        internal.handleHeat(transfer);
+    public void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction) {
+        internal.setHeatCapacity(newCapacity, transaction);
+    }
+
+    @Override
+    public void setHeatAndCapacity(double heat, double heatCapacity, @Nullable TransactionContext transaction) {
+        internal.setHeatAndCapacity(heat, heatCapacity, transaction);
+    }
+
+    @Override
+    public void handleHeat(double transfer, TransactionContext transaction) {
+        internal.handleHeat(transfer, transaction);
     }
 
     @Override

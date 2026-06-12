@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock {
@@ -26,7 +27,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public double simulateAdjacent() {
+    public double simulateAdjacent(TransactionContext transaction) {
         return 0;//it's a screen, mostly
     }
 

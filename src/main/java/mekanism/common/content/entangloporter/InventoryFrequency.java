@@ -80,8 +80,7 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
         frequency.storedFluid.setContents(fluid, null);
         frequency.storedChemical.setContents(chemical, null);
         frequency.storedItem.setContents(item, null);
-        frequency.storedHeat.setHeat(heat);
-        frequency.storedHeat.setHeatCapacity(heatCapacity, false);
+        frequency.storedHeat.setHeatAndCapacity(heat, heatCapacity, null);
         return frequency;
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
@@ -96,7 +95,7 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
               frequency.storedFluid.setContents(fluid, null);
               frequency.storedChemical.setContents(chemical, null);
               frequency.storedItem.setContents(item, null);
-              frequency.storedHeat.setHeat(heat);
+              frequency.storedHeat.setHeat(heat, null);
               return frequency;
           }
     );
@@ -178,14 +177,14 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
         return changedData;
     }
 
-    public void handleEject(long gameTime) {
+    public void handleEject(long gameTime, TransactionContext transaction) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
             Map<TransmissionType, Target<?, ?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
             List<TargetExecution> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
-            try (Transaction simulation = Transaction.openRoot()) {
+            try (Transaction simulation = Transaction.open(transaction)) {
                 addEnergyTransferHandler(typesToEject, transferHandlers, expected, simulation);
                 addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.FLUID, storedFluid, simulation);
                 addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.CHEMICAL, storedChemical, simulation);
@@ -222,11 +221,11 @@ public class InventoryFrequency extends Frequency implements IContentsListener {
                 //Run all our transfer handlers that we have
                 for (TargetExecution transferHandler : transferHandlers) {
                     if (transferHandler.getHandlerCount() > 0) {
-                        try (Transaction transaction = Transaction.openRoot()) {
-                            if (transferHandler.extract(transaction)) {
+                        try (Transaction subTransaction = Transaction.open(transaction)) {
+                            if (transferHandler.extract(subTransaction)) {
                                 //If we were able to extract everything we thought we would be able to and had tried to send
                                 // then commit all the changes
-                                transaction.commit();
+                                subTransaction.commit();
                             }
                         }
                     }

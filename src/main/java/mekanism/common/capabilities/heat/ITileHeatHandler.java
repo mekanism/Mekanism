@@ -6,6 +6,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 @FunctionalInterface
@@ -30,15 +31,15 @@ public interface ITileHeatHandler {
     IHeatCapacitor getHeatCapacitor(@Nullable Direction side);
 
     /// Simulate heat transfers
-    default HeatTransfer simulate() {
-        return new HeatTransfer(simulateAdjacent(), simulateEnvironment());
+    default HeatTransfer simulate(TransactionContext transaction) {
+        return new HeatTransfer(simulateAdjacent(transaction), simulateEnvironment(transaction));
     }
 
     default double getAmbientTemperature(Direction side) {
         return HeatAPI.AMBIENT_TEMP;
     }
 
-    default double simulateEnvironment() {
+    default double simulateEnvironment(TransactionContext transaction) {
         double environmentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatCapacitor heatCapacitor = getHeatCapacitor(side);
@@ -50,7 +51,7 @@ public interface ITileHeatHandler {
             double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + heatCapacitor.getInverseInsulation() + heatCapacitor.getInverseConduction();
             //transfer heat difference based on environment temperature (ambient)
             double tempToTransfer = (heatCapacitor.getTemperature() - getAmbientTemperature(side)) / invConduction;
-            heatCapacitor.handleHeat(-tempToTransfer * heatCapacity);
+            heatCapacitor.handleHeat(-tempToTransfer * heatCapacity, transaction);
             if (tempToTransfer > 0) {
                 //Only count it towards environmental loss if it is hotter than the ambient temperature
                 environmentTransfer += tempToTransfer;
@@ -59,7 +60,7 @@ public interface ITileHeatHandler {
         return environmentTransfer;
     }
 
-    default double simulateAdjacent() {
+    default double simulateAdjacent(TransactionContext transaction) {
         double adjacentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatCapacitor heatCapacitor = getHeatCapacitor(side);
@@ -96,8 +97,8 @@ public interface ITileHeatHandler {
             double invConduction = sink.getInverseConduction() + heatCapacitor.getInverseConduction();
             double tempToTransfer = (temp - finalTemp) / invConduction;
             double heatToTransfer = tempToTransfer * heatCapacity;
-            heatCapacitor.handleHeat(-heatToTransfer);
-            sink.handleHeat(heatToTransfer);
+            heatCapacitor.handleHeat(-heatToTransfer, transaction);
+            sink.handleHeat(heatToTransfer, transaction);
             //TODO - 26.1 (heat): Validate != 0 makes sense, conductors used to compare it against > 0, but I think that was just to skip looking up the transmitter
             // to see if it was in the same network, I think it is more correct as != 0?
             if (tempToTransfer != 0 && countsAsAdjacent(side)) {

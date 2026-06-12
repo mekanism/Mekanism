@@ -88,19 +88,19 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public void parseUpgradeData(ThermodynamicConductorUpgradeData data, TransactionContext transaction) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        buffer.setHeat(data.heat);
+        buffer.setHeat(data.heat, transaction);
     }
 
     @Override
     public void write(ValueOutput output) {
         super.write(output);
-        ContainerType.HEAT.saveTo(output, getHeatCapacitor(null));
+        ContainerType.HEAT.saveTo(output, buffer);
     }
 
     @Override
     public void read(ValueInput input) {
         super.read(input);
-        ContainerType.HEAT.readFrom(input, getHeatCapacitor(null));
+        ContainerType.HEAT.readFrom(input, buffer);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
-        buffer.setHeat(input.getDoubleOr(SerializationConstants.TEMPERATURE, buffer.getHeat()));
+        buffer.setHeat(input.getDoubleOr(SerializationConstants.TEMPERATURE, buffer.getHeat()), null);
         return refreshModelData;
     }
 

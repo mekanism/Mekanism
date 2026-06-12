@@ -1,5 +1,7 @@
 package mekanism.api.heat;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 public interface IHeatHandler {
 
     /// {@return temperature of the handler}
@@ -25,5 +27,5 @@ public interface IHeatHandler {
     /// Handles a change of heat in this handler. Can be positive or negative.
     ///
     /// @param transfer The amount being transferred.
-    void handleHeat(double transfer);//TODO - 26.1 (heat): Is there any benefit to making this support transactions?
+    void handleHeat(double transfer, TransactionContext transaction);//TODO - 26.1 (heat): Do we want this to have any sort of return value?
 }

@@ -80,7 +80,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Energy
             StorageUtils.mergeEnergyContainers(getEnergyContainer(), mergeCache.getEnergyContainer(), transaction);
             // Heat
-            StorageUtils.mergeHeatCapacitors(getHeatCapacitor(), mergeCache.getHeatCapacitor());
+            StorageUtils.mergeHeatCapacitors(getHeatCapacitor(), mergeCache.getHeatCapacitor(), transaction);
             transaction.commit();
         }
     }

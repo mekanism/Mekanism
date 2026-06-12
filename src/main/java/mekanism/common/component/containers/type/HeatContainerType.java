@@ -2,7 +2,6 @@ package mekanism.common.component.containers.type;
 
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.component.containers.heat.HeatCapacitorData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,10 +23,10 @@ public final class HeatContainerType extends AbstractContainerType<IHeatCapacito
     @Override
     public void copyToContainer(IHeatCapacitor capacitor, HeatCapacitorData data) {
         if (data.heat().isPresent()) {
-            capacitor.setHeat(data.heat().getAsDouble());
-        }
-        if (capacitor instanceof BasicHeatCapacitor basic) {//TODO - 26.1 (heat): Do we need to handle setting it for component backed capacitors?
-            basic.setHeatCapacity(data.capacity(), false);
+            capacitor.setHeatAndCapacity(data.heat().getAsDouble(), data.capacity(), null);
+        } else {
+            //TODO - 26.1 (heat): Do we need to handle setting it for component backed capacitors to no heat data and just capacity data?
+            capacitor.setHeatCapacity(data.capacity(), null);
         }
     }
 

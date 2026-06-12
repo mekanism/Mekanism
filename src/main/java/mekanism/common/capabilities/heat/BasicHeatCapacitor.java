@@ -5,18 +5,19 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
+import mekanism.common.lib.transaction.SimpleDoubleJournal;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class BasicHeatCapacitor implements IHeatCapacitor {
+public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeatCapacitor {
 
     @Nullable
     private final IContentsListener listener;
 
-    private double heatCapacity;
+    private final SimpleDoubleJournal heatCapacity;
 
     @Nullable
     private final DoubleSupplier ambientTempSupplier;
@@ -43,7 +44,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     protected BasicHeatCapacitor(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
-        this.heatCapacity = heatCapacity;
+        this.heatCapacity = new SimpleDoubleJournal(heatCapacity);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
         this.ambientTempSupplier = ambientTempSupplier;
@@ -53,7 +54,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     private void initStoredHeat() {
         if (storedHeat == -1) {
             //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
-            storedHeat = Math.max(0D, heatCapacity * getAmbientTemperature());
+            storedHeat = Math.max(0D, getHeatCapacity() * getAmbientTemperature());
         }
     }
 
@@ -63,6 +64,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public double getTemperature() {
+        //TODO - 26.1 (heat): Do we want to define this as the default in IHeatCapacitor? Also should we validate the capacity is non-zero
         return getHeat() / getHeatCapacity();
     }
 
@@ -77,25 +79,22 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public double getHeatCapacity() {
-        return heatCapacity;
+    public final double getHeatCapacity() {
+        return heatCapacity.value;
     }
 
     public void onContentsChanged(double originalState) {
-        //TODO - 26.1 (heat): Do we want to switch to transactions purely so that this only gets fired on root commit, even if we most likely never roll back?
         if (listener != null) {
             listener.onContentsChanged();
         }
     }
 
     @Override
-    public void handleHeat(double transfer) {
-        //TODO - 26.1 (heat): Do we want to remove the comparison to zero check as comparing to epsilon should cover it
-        if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
-            //Note: Getting the original heat will initialize the stored heat if necessary
-            double originalState = getHeat();
+    public void handleHeat(double transfer, TransactionContext transaction) {
+        if (Math.abs(transfer) > HeatAPI.EPSILON) {
+            initStoredHeat();
+            updateSnapshots(transaction);
             storedHeat = Math.max(0D, storedHeat + transfer);
-            onContentsChanged(originalState);
         }
     }
 
@@ -106,14 +105,9 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void deserialize(ValueInput input) {
+        //TODO - 26.1: Re-evaluate this. It is equivalent to super, except skips the contents change call
         storedHeat = Math.max(0D, input.getDoubleOr(SerializationConstants.STORED, storedHeat));
-        heatCapacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, heatCapacity);
-    }
-
-    @Override
-    public void serialize(ValueOutput output) {
-        IHeatCapacitor.super.serialize(output);
-        output.putDouble(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
+        heatCapacity.value = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
     }
 
     @Override
@@ -123,31 +117,62 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public void setHeat(double heat) {
+    public void setHeat(double heat, @Nullable TransactionContext transaction) {
+        //TODO - 26.1 (heat): Do we want to strictly deny values less than zero instead of just clamping to zero?
         heat = Math.max(0D, heat);
         double originalState = getHeat();
         if (!Mth.equal(heat, originalState)) {
-            storedHeat = heat;
-            onContentsChanged(originalState);
+            if (transaction == null) {
+                storedHeat = heat;
+                onContentsChanged(originalState);
+            } else {
+                updateSnapshots(transaction);
+                storedHeat = heat;
+            }
+        }
+    }
+
+    public void updateHeatAndCapacity(double newCapacity, @Nullable TransactionContext transaction) {
+        if (storedHeat == -1) {
+            //If heat hasn't been initialized yet, just update the capacity
+            setHeatCapacity(newCapacity, transaction);
+        } else {
+            //Otherwise calculate the value the heat should have, and also update the capacity
+            setHeatAndCapacity(storedHeat + (newCapacity - getHeatCapacity()) * getAmbientTemperature(), newCapacity, transaction);
         }
     }
 
     @Override
-    public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
-        heatCapacity = other.getHeatCapacity();
-        IHeatCapacitor.super.copyContents(other, transaction);
-    }
-
-    //TODO - 26.1 (heat): Should we move this method to the heat capacitor interface, so that we can remove our instance checks for BasicHeatCapacitor and let HeatCapacitorWrapper properly wrap this method?
-    public void setHeatCapacity(double newCapacity, boolean updateHeat) {
-        if (updateHeat && storedHeat != -1) {
-            setHeat(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature());
+    public void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction) {
+        //TODO - 26.1 (heat): Sanitize heat capacity?
+        if (transaction != null) {
+            //If we are in a transactional context, update the snapshot of the heat capacity before updating the value
+            heatCapacity.updateSnapshots(transaction);
         }
-        heatCapacity = newCapacity;
+        heatCapacity.value = newCapacity;
         //TODO - 26.1 (heat): Should we be firing onContentsChanged?
     }
 
-    public void setHeatCapacityFromPacket(double newCapacity) {
-        heatCapacity = newCapacity;
+    @Override
+    protected Double createSnapshot() {
+        //TODO - 26.1: Should we force init the heat here? Or in updateSnapshots? Or just trust it is done correctly
+        return storedHeat;
+    }
+
+    @Override
+    protected void revertToSnapshot(Double snapshot) {
+        //Bypass contents change check
+        storedHeat = snapshot;
+    }
+
+    @Override
+    protected void onRootCommit(Double originalState) {
+        super.onRootCommit(originalState);
+        //TODO - 26.1 (heat): Should this use Mth#equal? I suspect no? Then tiny changes would potentially never get saved,
+        // as it compares against last value rather than last saved value and we are checking the Mth#equal in the setHeat method
+        if (storedHeat != originalState) {
+            //Fire content change listeners during root commit if the final state is different from the original one
+            onContentsChanged(originalState);
+        }
     }
 }

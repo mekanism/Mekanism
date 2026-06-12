@@ -49,6 +49,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -122,27 +123,30 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        energySlot.drainContainerIntoSlot(null);
-        fuelSlot.fillOrBurn(null);
-        long prev = energyContainer().getAmountAsLong();
-        heatCapacitor.handleHeat(getBoost());
-        FluidResource lavaResource = lavaTank.resource();
-        boolean isActive = false;
-        if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
-            int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
-            try (Transaction transaction = Transaction.openRoot()) {
-                if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
-                    isActive = true;
-                    heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get());
-                    transaction.commit();
+        try (Transaction transaction = Transaction.openRoot()) {
+            energySlot.drainContainerIntoSlot(transaction);
+            fuelSlot.fillOrBurn(transaction);
+            long prev = energyContainer().getAmountAsLong();
+            heatCapacitor.handleHeat(getBoost(), transaction);
+            FluidResource lavaResource = lavaTank.resource();
+            boolean isActive = false;
+            if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
+                    if (lavaTank.extract(lavaResource, fluidRate, subTransaction, AutomationType.INTERNAL) == fluidRate) {
+                        isActive = true;
+                        heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get(), subTransaction);
+                        subTransaction.commit();
+                    }
                 }
             }
+            setActive(isActive);
+            HeatTransfer loss = simulate(transaction);
+            lastTransferLoss = loss.adjacentTransfer();
+            lastEnvironmentLoss = loss.environmentTransfer();
+            producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().getAmountAsLong() - prev));
+            transaction.commit();
         }
-        setActive(isActive);
-        HeatTransfer loss = simulate();
-        lastTransferLoss = loss.adjacentTransfer();
-        lastEnvironmentLoss = loss.environmentTransfer();
-        producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().getAmountAsLong() - prev));
         return sendUpdatePacket;
     }
 
@@ -180,19 +184,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public HeatTransfer simulate() {
+    public HeatTransfer simulate(TransactionContext transaction) {
         double ambientTemp = Objects.requireNonNull(ambientTemperature, "Tile cannot simulate temperature before initialization").getAsDouble();
         double temp = getTemperature();
         // 1 - Qc / Qh
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
-        heatCapacitor.handleHeat(-heatLost);
+        heatCapacitor.handleHeat(-heatLost, transaction);
         int energyFromHeat = MathUtils.clampToInt(Math.abs(heatLost) * carnotEfficiency);
-        try (Transaction transaction = Transaction.openRoot()) {
-            energyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsInt()), transaction, AutomationType.INTERNAL);
-            transaction.commit();
-        }
-        return super.simulate();
+        energyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsInt()), transaction, AutomationType.INTERNAL);
+        return super.simulate(transaction);
     }
 
     @Nullable

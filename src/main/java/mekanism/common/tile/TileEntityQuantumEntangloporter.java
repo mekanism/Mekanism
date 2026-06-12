@@ -62,6 +62,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
@@ -150,10 +151,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         boolean sendUpdatePacket = super.onUpdateServer(level);
         InventoryFrequency freq = getFreq();
         if (freq != null && freq.isValid() && !freq.isRemoved()) {
-            freq.handleEject(level.getGameTime());
-            HeatTransfer loss = simulate();
-            lastTransferLoss = loss.adjacentTransfer();
-            lastEnvironmentLoss = loss.environmentTransfer();
+            try (Transaction transaction = Transaction.openRoot()) {
+                freq.handleEject(level.getGameTime(), transaction);
+                HeatTransfer loss = simulate(transaction);
+                lastTransferLoss = loss.adjacentTransfer();
+                lastEnvironmentLoss = loss.environmentTransfer();
+                transaction.commit();
+            }
         } else {
             lastTransferLoss = 0;
             lastEnvironmentLoss = 0;

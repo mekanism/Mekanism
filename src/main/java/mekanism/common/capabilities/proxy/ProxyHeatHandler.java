@@ -5,6 +5,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class ProxyHeatHandler extends ProxyHandler<ISingleContainerHolder<IHeatCapacitor>> implements IHeatHandler {
@@ -38,7 +39,7 @@ public class ProxyHeatHandler extends ProxyHandler<ISingleContainerHolder<IHeatC
     }
 
     @Override
-    public void handleHeat(double transfer) {
+    public void handleHeat(double transfer, TransactionContext transaction) {
         if (!readOnly) {
             if (transfer > 0 && readOnlyInsert()) {
                 return;
@@ -47,7 +48,7 @@ public class ProxyHeatHandler extends ProxyHandler<ISingleContainerHolder<IHeatC
             }
             IHeatCapacitor heatCapacitor = getHeatCapacitor();
             if (heatCapacitor != null) {
-                heatCapacitor.handleHeat(transfer);
+                heatCapacitor.handleHeat(transfer, transaction);
             }
         }
     }

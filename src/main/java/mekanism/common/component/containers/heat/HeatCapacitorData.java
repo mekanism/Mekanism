@@ -43,6 +43,15 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
         return new HeatCapacitorData(heat, capacity);
     }
 
+    public HeatCapacitorData withCapacity(double capacity) {
+        //TODO - 26.1 (heat): Evaluate what validation logic we want here
+        capacity = Math.max(0D, capacity);
+        if (Mth.equal(capacity(), capacity)) {
+            return this;
+        }
+        return new HeatCapacitorData(heat, capacity);
+    }
+
     public double temperature() {
         if (heat.isPresent()) {
             return heat.getAsDouble() / capacity;
