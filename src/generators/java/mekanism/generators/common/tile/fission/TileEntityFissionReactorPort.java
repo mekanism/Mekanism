@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -22,7 +21,6 @@ import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
-import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -50,19 +48,6 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
         delaySupplier = NO_DELAY;
-    }
-
-    @Nullable
-    @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        if (getHeatCapacitor(side) != null) {
-            if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
-                  .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT))
-                  .isPresent()) {
-                return getAdjacentUnchecked(side);
-            }
-        }
-        return null;
     }
 
     @Override

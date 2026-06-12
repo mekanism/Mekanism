@@ -9,17 +9,15 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
-import mekanism.common.component.containers.type.ContainerType;
-import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.component.containers.type.ContainerType;
+import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -90,19 +88,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
             energyCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
-    }
-
-    @Nullable
-    @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        if (getHeatCapacitor(side) != null) {
-            if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
-                  .filter(state -> !state.is(GeneratorsBlocks.FUSION_REACTOR_PORT))
-                  .isPresent()) {
-                return getAdjacentUnchecked(side);
-            }
-        }
-        return null;
     }
 
     @Override
