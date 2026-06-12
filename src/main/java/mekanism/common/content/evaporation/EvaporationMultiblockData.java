@@ -64,6 +64,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
@@ -148,7 +150,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
+        heatCapacitor.updateHeatAndCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), null);
         updateSolars(world);
     }
 
@@ -164,13 +166,16 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         // external heat dissipation
-        lastEnvironmentLoss = simulateEnvironment();
-        // update our temperature multiplier
-        // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
-                         ((double) height() / MAX_HEIGHT);
-        inputOutputSlot.drainTankIntoSlot(outputOutputSlot, null);
-        inputInputSlot.fillTankFromSlot(outputInputSlot, null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            lastEnvironmentLoss = simulateEnvironment(transaction);
+            // update our temperature multiplier
+            // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
+            tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
+                             ((double) height() / MAX_HEIGHT);
+            inputOutputSlot.drainTankIntoSlot(outputOutputSlot, transaction);
+            inputInputSlot.fillTankFromSlot(outputInputSlot, transaction);
+            transaction.commit();
+        }
         recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (!Mth.equal(scale, prevScale)) {
@@ -223,18 +228,18 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public double simulateEnvironment() {
+    public double simulateEnvironment(TransactionContext transaction) {
         double currentTemperature = getTemperature();
         double heatCapacity = heatCapacitor.getHeatCapacity();
-        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity);
+        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity, transaction);
         if (Math.abs(currentTemperature - biomeAmbientTemp) < 0.001) {
-            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat());
+            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat(), transaction);
         } else {
             double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(currentTemperature - biomeAmbientTemp));
             if (currentTemperature > biomeAmbientTemp) {
                 incr = -incr;
             }
-            heatCapacitor.handleHeat(heatCapacity * incr);
+            heatCapacitor.handleHeat(heatCapacity * incr, transaction);
             if (incr < 0) {
                 return -incr;
             }

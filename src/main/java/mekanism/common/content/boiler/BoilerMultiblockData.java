@@ -53,6 +53,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -146,7 +147,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
+        heatCapacitor.updateHeatAndCapacity(CASING_HEAT_CAPACITY * locations.size(), null);
     }
 
     @Override
@@ -166,7 +167,10 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         boolean needsPacket = super.tick(world);
         hotMap.put(inventoryID, getTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
         // external heat dissipation
-        lastEnvironmentLoss = simulateEnvironment();
+        try (Transaction transaction = Transaction.openRoot()) {
+            lastEnvironmentLoss = simulateEnvironment(transaction);
+            transaction.commit();
+        }
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
             HeatedCoolant coolantType = getHeatedCoolant();
@@ -178,7 +182,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                     ChemicalResource cooledCoolant = coolantType.cool();
                     int amountCooled = cooledCoolantTank.insert(cooledCoolant, toCool, transaction, AutomationType.INTERNAL);
                     if (amountCooled > 0 && superheatedCoolantTank.extract(heatedTankType, amountCooled, transaction, AutomationType.INTERNAL) == amountCooled) {
-                        heatCapacitor.handleHeat(amountCooled * coolantType.thermalEnthalpy());
+                        heatCapacitor.handleHeat(amountCooled * coolantType.thermalEnthalpy(), transaction);
                         transaction.commit();
                     }
                 }
@@ -196,7 +200,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                     int amountToBoil = Math.min(lastMaxBoil, steamTank.getNeededAsInt(ChemicalResource.EMPTY));
                     int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
                     if (boiled > 0 && steamTank.insert(MekanismChemicals.STEAM.asResource(), boiled, transaction, AutomationType.INTERNAL) == boiled) {
-                        heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
+                        heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency(), transaction);
                         transaction.commit();
                     }
                     lastBoilRate = boiled;
@@ -300,10 +304,10 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    public double simulateEnvironment() {
+    public double simulateEnvironment(TransactionContext transaction) {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
         double tempToTransfer = (getTemperature() - biomeAmbientTemp) / invConduction;
-        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity());
+        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity(), transaction);
         return Math.max(tempToTransfer, 0);
     }
 

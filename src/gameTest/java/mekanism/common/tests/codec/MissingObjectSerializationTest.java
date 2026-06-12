@@ -245,7 +245,7 @@ public class MissingObjectSerializationTest {
         helper.succeedIfSerializationCycle(InventoryFrequency.CODEC, help -> {
                   InventoryFrequency frequency = new InventoryFrequency("test", null, SecurityMode.PUBLIC);
                   frequency.getEnergyContainer().setEnergy(100, null);
-                  frequency.getHeatCapacitor().setHeat(1_000);
+                  frequency.getHeatCapacitor().setHeat(1_000, null);
                   frequency.getChemicalTanks().getFirst().setContents(help.failureChemicalType(), 1, null);
                   frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME, null);
                   frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1, null);

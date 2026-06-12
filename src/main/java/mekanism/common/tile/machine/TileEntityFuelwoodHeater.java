@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
@@ -67,20 +68,22 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        if (burnTime == 0) {
-            maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues(), null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (burnTime == 0) {
+                maxBurnTime = fuelSlot.burn(level.fuelValues(), transaction);
+                burnTime = maxBurnTime;
+            }
+            setActive(burnTime > 0);
+            if (burnTime > 0) {
+                int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());
+                burnTime -= ticks;
+                heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get() * ticks, transaction);
+            }
+            HeatTransfer loss = simulate(transaction);
+            lastEnvironmentLoss = loss.environmentTransfer();
+            lastTransferLoss = loss.adjacentTransfer();
+            transaction.commit();
         }
-        boolean isActive = false;
-        if (burnTime > 0) {
-            int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());
-            burnTime -= ticks;
-            heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get() * ticks);
-            isActive = true;
-        }
-        setActive(isActive);
-        HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.environmentTransfer();
-        lastTransferLoss = loss.adjacentTransfer();
         return sendUpdatePacket;
     }
 

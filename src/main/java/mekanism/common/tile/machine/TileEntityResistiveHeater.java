@@ -91,23 +91,23 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        energySlot.fillContainerOrConvert(null);
-        int toUse = 0;
-        if (canFunction()) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
-                if (toUse > 0) {
-                    heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
-                    transaction.commit();
+        try (Transaction transaction = Transaction.openRoot()) {
+            energySlot.fillContainerOrConvert(transaction);
+            if (canFunction()) {
+                clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
+                if (clientEnergyUsed > 0) {
+                    heatCapacitor.handleHeat(clientEnergyUsed * MekanismConfig.general.resistiveHeaterEfficiency.get(), transaction);
                 }
+            } else {
+                clientEnergyUsed = 0;
             }
+            setActive(clientEnergyUsed > 0);
+            HeatTransfer transfer = simulate(transaction);
+            lastEnvironmentLoss = transfer.environmentTransfer();
+            lastTransferLoss = transfer.adjacentTransfer();
+            transaction.commit();
         }
-        setActive(toUse > 0);
-        clientEnergyUsed = toUse;
-        HeatTransfer transfer = simulate();
-        lastEnvironmentLoss = transfer.environmentTransfer();
-        lastTransferLoss = transfer.adjacentTransfer();
-        float newSoundScale = (float) (toUse / 100_000D);
+        float newSoundScale = (float) (clientEnergyUsed / 100_000D);
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket = true;

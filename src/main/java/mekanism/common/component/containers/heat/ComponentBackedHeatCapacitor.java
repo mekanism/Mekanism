@@ -1,6 +1,7 @@
 package mekanism.common.component.containers.heat;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatCapacitorWrapper;
@@ -69,30 +70,37 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
         return getCurrentOrDefault().heatOrAmbient();
     }
 
-    @Override
-    public void setHeat(double heat) {
+    //Note: While callers create capturing lambda's, as these methods are not really being used in item form anyway, it shouldn't have that big a performance impact
+    private void updateContents(UnaryOperator<HeatCapacitorData> transformer, @Nullable TransactionContext transaction) {
         HeatCapacitorData current = getCurrent();
-        HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);;
+        HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);
         //Note: withHeat handles clamping to zero
-        HeatCapacitorData newData = existing.withHeat(heat);
+        HeatCapacitorData newData = transformer.apply(existing);
         if (current != newData) {
-            //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat
-            setContents(newData, null);
+            //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat and withCapacity
+            setContents(newData, transaction);
         }
     }
 
     @Override
-    public void handleHeat(double transfer) {
-        //TODO: Do we want to remove the comparison to zero check as comparing to epsilon should cover it
-        if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
-            HeatCapacitorData current = getCurrent();
-            HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);;
-            //Note: withHeat handles clamping to zero
-            HeatCapacitorData newData = existing.withHeat(existing.heatOrAmbient() + transfer);
-            if (current != newData) {
-                //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat
-                setContents(newData, null);
-            }
+    public void setHeat(double heat, @Nullable TransactionContext transaction) {
+        updateContents(existing -> existing.withHeat(heat), transaction);
+    }
+
+    @Override
+    public void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction) {
+        updateContents(existing -> existing.withCapacity(newCapacity), transaction);
+    }
+
+    @Override
+    public void setHeatAndCapacity(double heat, double heatCapacity, @Nullable TransactionContext transaction) {
+        updateContents(existing -> existing.withHeat(heat).withCapacity(heatCapacity), transaction);
+    }
+
+    @Override
+    public void handleHeat(double transfer, TransactionContext transaction) {
+        if (Math.abs(transfer) > HeatAPI.EPSILON) {
+            updateContents(existing -> existing.withHeat(existing.heatOrAmbient() + transfer), transaction);
         }
     }
 

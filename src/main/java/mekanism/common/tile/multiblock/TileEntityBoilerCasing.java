@@ -16,6 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> {
 
@@ -55,7 +56,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     protected boolean onUpdateServer(ServerLevel level, BoilerMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(level, multiblock);
         if (multiblock.isFormed()) {
-            simulateAdjacent();
+            try (Transaction transaction = Transaction.openRoot()) {
+                simulateAdjacent(transaction);
+                transaction.commit();
+            }
         }
         return needsPacket;
     }

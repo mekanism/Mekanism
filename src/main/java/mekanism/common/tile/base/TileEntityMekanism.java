@@ -44,7 +44,6 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
@@ -912,10 +911,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {
             IHeatCapacitor capacitor = getHeatCapacitor();
             if (capacitor != null) {
-                container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
-                if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
-                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
-                }
+                container.track(SyncableDouble.create(capacitor::getHeat, heat -> capacitor.setHeat(heat, null)));
+                container.track(SyncableDouble.create(capacitor::getHeatCapacity, heat -> capacitor.setHeatCapacity(heat, null)));
             }
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {

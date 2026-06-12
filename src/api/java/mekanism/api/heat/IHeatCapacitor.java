@@ -5,6 +5,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -18,10 +19,25 @@ public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
 
     /// Overrides the amount of heat in this [IHeatCapacitor].
     ///
-    /// @param heat Heat to set this capacitor's storage to. May be `0`.
-    ///
+    /// @param heat        Heat to set this capacitor's storage to. May be `0`.
+    /// @param transaction The transaction that this operation is part of if any.
     /// @implSpec If a value less than zero is passed, it should be clamped to zero.
-    void setHeat(double heat);
+    ///
+    /// @since 10.8.0
+    void setHeat(double heat, @Nullable TransactionContext transaction);
+
+    //TODO - 26.1 (heat): Docs
+    void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction);
+
+    //TODO - 26.1 (heat): Docs
+    default void setHeatAndCapacity(double heat, double heatCapacity, @Nullable TransactionContext transaction) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            setHeatCapacity(heatCapacity, subTransaction);
+            setHeat(heat, subTransaction);
+            //Ensure that no onContentsChange is fired until after both have been updated
+            subTransaction.commit();
+        }
+    }
 
     /// Checks if this heat capacitor is currently at the ambient temperature of its surroundings.
     ///
@@ -35,12 +51,14 @@ public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
 
     @Override
     default void serialize(ValueOutput output) {
+        output.putDouble(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
         output.putDouble(SerializationConstants.STORED, getHeat());
     }
 
     @Override
     default void deserialize(ValueInput input) {
-        setHeat(input.getDoubleOr(SerializationConstants.STORED, getHeat()));
+        setHeatAndCapacity(input.getDoubleOr(SerializationConstants.STORED, getHeat()),
+              input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, getHeatCapacity()), null);
     }
 
     /// Helper method to copy all pertinent data from another [`heat capacitor`][IHeatCapacitor] to this one without requiring a serialization, deserialization cycle.
@@ -52,6 +70,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
     /// @see HeatCapacitorWrapper#getInternal() Getting the internal capacitor when wrapped if instance checks are necessary.
     /// @since 10.8.0
     default void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
-        setHeat(other.getHeat());
+        setHeatAndCapacity(other.getHeat(), other.getHeatCapacity(), transaction);
     }
 }

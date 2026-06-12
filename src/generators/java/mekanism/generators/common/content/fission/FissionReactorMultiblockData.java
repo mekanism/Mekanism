@@ -184,49 +184,50 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
+        heatCapacitor.updateHeatAndCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), null);
         hotZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }
 
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
-        // burn reactor fuel, create energy
-        if (isActive()) {
-            burnFuel(world);
-        } else {
-            lastBurnRate = 0;
-        }
-        if (isBurning() != clientBurning) {
-            needsPacket = true;
-            clientBurning = isBurning();
-        }
-        // handle coolant heating (water -> steam)
-        handleCoolant();
-        if (!chemicalOutputTargets.isEmpty()) {
-            if (!heatedCoolantTank.isEmpty()) {
-                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank, null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            // burn reactor fuel, create energy
+            if (isActive()) {
+                burnFuel(world, transaction);
+            } else {
+                lastBurnRate = 0;
             }
-            if (!wasteTank.isEmpty()) {
-                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_WASTE), wasteTank, null);
+            // handle coolant heating (water -> steam)
+            handleCoolant(transaction);
+            if (!chemicalOutputTargets.isEmpty()) {
+                if (!heatedCoolantTank.isEmpty()) {
+                    ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank, transaction);
+                }
+                if (!wasteTank.isEmpty()) {
+                    ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_WASTE), wasteTank, transaction);
+                }
             }
+            // external heat dissipation
+            lastEnvironmentLoss = simulateEnvironment(transaction);
+            transaction.commit();
         }
-        // external heat dissipation
-        lastEnvironmentLoss = simulateEnvironment();
         handleDamage(world);
         radiateEntities(world);
 
         // update scales
+        boolean burning = isBurning();
         float coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getCurrentContainer());
         float fuelScale = MekanismUtils.getScale(prevFuelScale, fuelTank);
         float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, wasteTank);
-        if (MekanismUtils.scaleChanged(coolantScale, prevCoolantScale) || MekanismUtils.scaleChanged(fuelScale, prevFuelScale) ||
+        if (burning != clientBurning || MekanismUtils.scaleChanged(coolantScale, prevCoolantScale) || MekanismUtils.scaleChanged(fuelScale, prevFuelScale) ||
             MekanismUtils.scaleChanged(steamScale, prevHeatedCoolantScale) || MekanismUtils.scaleChanged(wasteScale, prevWasteScale)) {
             needsPacket = true;
             prevCoolantScale = coolantScale;
             prevFuelScale = fuelScale;
             prevHeatedCoolantScale = steamScale;
             prevWasteScale = wasteScale;
+            clientBurning = burning;
         }
         return needsPacket;
     }
@@ -262,10 +263,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public double simulateEnvironment() {
+    public double simulateEnvironment(TransactionContext transaction) {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (INVERSE_INSULATION_COEFFICIENT + INVERSE_CONDUCTION_COEFFICIENT);
         double tempToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
-        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity());
+        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity(), transaction);
         return Math.max(tempToTransfer, 0);
     }
 
@@ -371,7 +372,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //Reset the partial waste as we just irradiated it and there is not much sense having it exist in limbo
             partialWaste = 0;
             //Reset the heat to the default of the heat capacitor
-            heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp);
+            heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp, null);
             //Force sync the update to the cache that corresponds to this multiblock
             MultiblockCache<FissionReactorMultiblockData> cache = MultiblockManager.get(world, MekanismGeneratorsMultiblocks.FISSION_REACTOR).getCache(inventoryID);
             if (cache != null) {
@@ -420,7 +421,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
     }
 
-    private void handleCoolant() {
+    private void handleCoolant(TransactionContext transaction) {
         CurrentType currentType = this.coolantTank.getCurrentType();
         if (currentType == CurrentType.EMPTY) {
             lastBoilRate = 0;
@@ -452,14 +453,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         double caseCoolantHeat = heat * coolantConductivity;
         lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantEnthalpy, coolantTank.amountAsInt());
         if (lastBoilRate > 0) {
-            try (Transaction transaction = Transaction.openRoot()) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 //Note: The fluid resource should not be empty here
-                if (tryExtractCoolant(coolantTank, lastBoilRate, transaction)) {// extra steam is dumped
+                if (tryExtractCoolant(coolantTank, lastBoilRate, subTransaction)) {// extra steam is dumped
                     //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
-                    heatedCoolantTank.insert(heatedCoolant, lastBoilRate, transaction, AutomationType.INTERNAL);
+                    heatedCoolantTank.insert(heatedCoolant, lastBoilRate, subTransaction, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * coolantEnthalpy;
-                    heatCapacitor.handleHeat(-caseCoolantHeat);
-                    transaction.commit();
+                    heatCapacitor.handleHeat(-caseCoolantHeat, subTransaction);
+                    subTransaction.commit();
                 } else {
                     //Failed to actually boil
                     lastBoilRate = 0;
@@ -476,7 +477,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return Math.clamp(MathUtils.clampToInt(heated), 0, stored);
     }
 
-    private void burnFuel(Level world) {
+    private void burnFuel(Level world, TransactionContext transaction) {
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.amountAsLong() + burnRemaining;
@@ -484,19 +485,16 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.resource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
-        fuelTank.setContents(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)), null);
+        fuelTank.setContents(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)), transaction);
         burnRemaining = storedFuel % 1;
-        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
+        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get(), transaction);
         // handle waste
         partialWaste += toBurn;
         int newWaste = Mth.floor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
             ChemicalResource waste = MekanismChemicals.NUCLEAR_WASTE.asResource();
-            try (Transaction transaction = Transaction.openRoot()) {
-                newWaste -= wasteTank.insert(waste, newWaste, transaction, AutomationType.INTERNAL);
-                transaction.commit();
-            }
+            newWaste -= wasteTank.insert(waste, newWaste, transaction, AutomationType.INTERNAL);
             if (newWaste > 0 && RadiationManager.isGlobalRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
                 //Note: We query the radioactivity from the chemical instead of the stack so that we don't multiply it by the stack's size

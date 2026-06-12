@@ -16,6 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<EvaporationMultiblockData> {
@@ -62,7 +63,10 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     protected boolean onUpdateServer(ServerLevel level, EvaporationMultiblockData multiblock) {
         boolean packet = super.onUpdateServer(level, multiblock);
         if (multiblock.isFormed()) {
-            simulateAdjacent();
+            try (Transaction transaction = Transaction.openRoot()) {
+                simulateAdjacent(transaction);
+                transaction.commit();
+            }
         }
         return packet;
     }
