@@ -9,13 +9,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
-import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.ComputerException;
@@ -61,13 +58,8 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return _ -> getMultiblock().getHeatCapacitor();
-    }
-
-    @Override
     public boolean persists(IContainerType<?, ?> type) {
-        if (type == ContainerType.HEAT || type == ContainerType.CHEMICAL || type == ContainerType.FLUID) {
+        if (type == ContainerType.CHEMICAL || type == ContainerType.FLUID) {
             return false;
         }
         return super.persists(type);
