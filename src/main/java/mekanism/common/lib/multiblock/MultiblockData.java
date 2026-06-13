@@ -48,6 +48,7 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IContentsListener {
@@ -187,7 +188,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return false;
     }
 
-    public void onCreated(Level world) {
+    public void onCreated(Level world, TransactionContext transaction) {
         for (BlockPos pos : internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IInternalMultiblock internalMultiblock) {
@@ -203,18 +204,18 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
 
         if (shouldCache(MultiblockCache.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
-                ContainerType.FLUID.clampContents(tank, null);
+                ContainerType.FLUID.clampContents(tank, transaction);
             }
         }
         if (shouldCache(MultiblockCache.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks()) {
-                ContainerType.CHEMICAL.clampContents(tank, null);
+                ContainerType.CHEMICAL.clampContents(tank, transaction);
             }
         }
         if (shouldCache(MultiblockCache.ENERGY)) {
             IEnergyContainer container = getEnergyContainer();
             if (container != null) {
-                ContainerType.ENERGY.clampContents(container, null);
+                ContainerType.ENERGY.clampContents(container, transaction);
             }
         }
         updateEjectors(world);
