@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-02T17:07:55.3837788	Loot Tables
+// 26.1.2	2026-06-13T10:31:49.7640468	Loot Tables
 2add19cb98cfd3f3ca417b9c365e771147facb9d data/mekanism/loot_table/blocks/advanced_bin.json
 82507e14fd13f5ede2ee079987b087c29f2006d4 data/mekanism/loot_table/blocks/advanced_chemical_tank.json
 c7c2e7e4ac1e8392c57f95273411c883351cee88 data/mekanism/loot_table/blocks/advanced_combining_factory.json
@@ -109,7 +109,7 @@ ba0cb9f7a688c1450c2d9b2e44c77bfb509bfbeb data/mekanism/loot_table/blocks/energiz
 6e376fca7c4682bbdda53647dc546bc300b98b9e data/mekanism/loot_table/blocks/fluidic_plenisher.json
 4b06648ffedba79039444cab8c6f246cf69370c8 data/mekanism/loot_table/blocks/fluorite_ore.json
 c73a3a855150e288debd99ed725b1155d379db69 data/mekanism/loot_table/blocks/formulaic_assemblicator.json
-5d5657c6572b3c2d794ee6f8769dba037a807acf data/mekanism/loot_table/blocks/fuelwood_heater.json
+38d5a4219c3a29172c9f6650c58144530bb8512e data/mekanism/loot_table/blocks/fuelwood_heater.json
 d280ac21c58c4b5277e6e5963482b81d084d705f data/mekanism/loot_table/blocks/induction_casing.json
 9cded3dd1d6b274b819bc31b33c95fb3043e9419 data/mekanism/loot_table/blocks/induction_port.json
 a33ba7225c3418983089c61fe7926b2bc3b7a7e7 data/mekanism/loot_table/blocks/industrial_alarm.json
@@ -141,7 +141,7 @@ e76ae52a9fe8cb29cf3d5584bd090ba8cb675351 data/mekanism/loot_table/blocks/qio_imp
 2c52933ed09ba9fd8671116b721bd95cc0ac9a38 data/mekanism/loot_table/blocks/qio_redstone_adapter.json
 6ac697e6e6a669b9168d215d7fe5448ad298acea data/mekanism/loot_table/blocks/quantum_entangloporter.json
 0689613db9ba9e0f3bd8e110cd5dfc7b3a7ce447 data/mekanism/loot_table/blocks/radioactive_waste_barrel.json
-158759b6de6262a3b829ed1843cb1415baf78f08 data/mekanism/loot_table/blocks/resistive_heater.json
+27b9343081a52765ff49cbb4d5894506e7941906 data/mekanism/loot_table/blocks/resistive_heater.json
 354838cf33780c27e749c4f0e7828ed764db3375 data/mekanism/loot_table/blocks/restrictive_transporter.json
 17de0ac4ff5ed881c9d3f7de597873ac2c84772e data/mekanism/loot_table/blocks/rotary_condensentrator.json
 4f7787192eb05d39861f629372d0493f1f509251 data/mekanism/loot_table/blocks/security_desk.json

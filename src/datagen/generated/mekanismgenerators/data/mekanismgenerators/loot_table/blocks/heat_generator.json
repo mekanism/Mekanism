@@ -21,7 +21,7 @@
                 "mekanism:energy",
                 "mekanism:items",
                 "mekanism:fluids",
-                "mekanism:heat_data"
+                "mekanism:heat"
               ],
               "source": "block_entity"
             }
