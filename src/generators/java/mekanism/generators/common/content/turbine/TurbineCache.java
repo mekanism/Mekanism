@@ -6,6 +6,7 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
@@ -18,14 +19,14 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     }
 
     @Override
-    public void apply(TurbineMultiblockData data) {
-        super.apply(data);
+    public void apply(TurbineMultiblockData data, TransactionContext transaction) {
+        super.apply(data, transaction);
         data.dumpMode = dumpMode;
     }
 
     @Override
-    public void sync(TurbineMultiblockData data) {
-        super.sync(data);
+    public void sync(TurbineMultiblockData data, TransactionContext transaction) {
+        super.sync(data, transaction);
         dumpMode = data.dumpMode;
     }
 

@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 public class FormationProtocol<T extends MultiblockData> {
@@ -148,15 +149,18 @@ public class FormationProtocol<T extends MultiblockData> {
                 cache = multiblockType.createCache();
             }
 
-            cache.apply(structureFound);
-            structureFound.inventoryID = idToUse;
-            structureFound.onCreated(world);
-            if (trackCache) {
-                //If it is a new fresh cache we need to make sure to then sync the multiblock back to the cache
-                // so that we don't save it with empty data as otherwise we may end up with crashes in when merging multiblock caches
-                cache.sync(structureFound);
-                // and then we let the manager start tracking the cache so that it gets saved to the manager and can be used by multiblocks
-                manager.trackCache(idToUse, cache);
+            try (Transaction transaction = Transaction.openRoot()) {
+                cache.apply(structureFound, transaction);
+                structureFound.inventoryID = idToUse;
+                structureFound.onCreated(world);
+                if (trackCache) {
+                    //If it is a new fresh cache we need to make sure to then sync the multiblock back to the cache
+                    // so that we don't save it with empty data as otherwise we may end up with crashes in when merging multiblock caches
+                    cache.sync(structureFound, transaction);
+                    // and then we let the manager start tracking the cache so that it gets saved to the manager and can be used by multiblocks
+                    manager.trackCache(idToUse, cache);
+                }
+                transaction.commit();
             }
             //TODO: Do we want to validate against overfilled tanks here?
             return FormationResult.SUCCESS;

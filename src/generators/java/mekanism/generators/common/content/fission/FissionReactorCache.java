@@ -5,6 +5,7 @@ import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -36,8 +37,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void apply(FissionReactorMultiblockData data) {
-        super.apply(data);
+    public void apply(FissionReactorMultiblockData data, TransactionContext transaction) {
+        super.apply(data, transaction);
         data.reactorDamage = reactorDamage;
         data.rateLimit = Math.clamp(getRateLimit(), 0, data.getMaxBurnRate());
         data.burnRemaining = burnRemaining;
@@ -51,8 +52,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void sync(FissionReactorMultiblockData data) {
-        super.sync(data);
+    public void sync(FissionReactorMultiblockData data, TransactionContext transaction) {
+        super.sync(data, transaction);
         reactorDamage = data.reactorDamage;
         rateLimit = data.rateLimit;
         burnRemaining = data.burnRemaining;

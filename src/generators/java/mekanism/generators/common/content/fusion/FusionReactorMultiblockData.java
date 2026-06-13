@@ -136,8 +136,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
 
-    private double plasmaTemperature;
-
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
     final BasicInventorySlot reactorSlot;
 
@@ -157,7 +155,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
-        plasmaTemperature = biomeAmbientTemp;
+        plasmaJournal.temperature = biomeAmbientTemp;
         chemicalTanks.add(deuteriumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               chemical -> chemical.is(GeneratorTags.Chemicals.DEUTERIUM), this));
         chemicalTanks.add(tritiumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
@@ -208,10 +206,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public void addTemperatureFromEnergyInput(long energyAdded, TransactionContext transaction) {
-        if (isBurning()) {
-            plasmaJournal.incrementPlasmaTemperature((double) energyAdded / plasmaHeatCapacity, transaction);
-        } else {
-            plasmaJournal.incrementPlasmaTemperature(((double) energyAdded / plasmaHeatCapacity) * 10, transaction);
+        if (energyAdded > 0) {
+            plasmaJournal.updateSnapshots(transaction);
+            if (isBurning()) {
+                plasmaJournal.temperature += (double) energyAdded / plasmaHeatCapacity;
+            } else {
+                plasmaJournal.temperature += ((double) energyAdded / plasmaHeatCapacity) * 10;
+            }
         }
     }
 
@@ -308,6 +309,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
                     int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), subTransaction);
                     if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, subTransaction, AutomationType.INTERNAL) == availableFuel) {
+                        //TODO - 26.1 (heat): Re-evaluate why this is set mid way through the transaction
                         lastPlasmaTemperature = getPlasmaTemp();
                         ContainerType.ITEM.clearContents(reactorSlot, subTransaction);
                         setBurning(true);
@@ -348,15 +350,17 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (fuelUsed < fuelBurned) {//Failed to actually burn anything
             return 0;
         }
-        plasmaJournal.incrementPlasmaTemperature(MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity, transaction);
+        plasmaJournal.updateSnapshots(transaction);
+        plasmaJournal.temperature += MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity;
         return fuelBurned;
     }
 
     private void transferHeat(TransactionContext transaction) {
         //Transfer from plasma to casing
-        double plasmaCaseHeat = plasmaCaseConductivity * (plasmaTemperature - heatCapacitor.getTemperature());
+        double plasmaCaseHeat = plasmaCaseConductivity * (getPlasmaTemp() - heatCapacitor.getTemperature());
         if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
-            plasmaJournal.decrementPlasmaTemperature(plasmaCaseHeat / plasmaHeatCapacity, transaction);
+            plasmaJournal.updateSnapshots(transaction);
+            plasmaJournal.temperature -= plasmaCaseHeat / plasmaHeatCapacity;
             heatCapacitor.handleHeat(plasmaCaseHeat, transaction);
         }
 
@@ -421,14 +425,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public double getPlasmaTemp() {
-        return plasmaTemperature;
+        return plasmaJournal.temperature;
     }
 
-    public void setPlasmaTemp(double temp) {
-        if (!Mth.equal(plasmaTemperature, temp)) {
-            plasmaTemperature = temp;
-            markDirty();
-        }
+    public void setPlasmaTemp(double temp, TransactionContext transaction) {
+        plasmaJournal.updateSnapshots(transaction);
+        plasmaJournal.temperature = temp;
     }
 
     @ComputerMethod
@@ -557,32 +559,23 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private class PlasmaJournal extends SnapshotJournal<Double> {
 
-        private double temperatureDiff;
-
-        public void decrementPlasmaTemperature(double temperatureDiff, TransactionContext transaction) {
-            incrementPlasmaTemperature(-temperatureDiff, transaction);
-        }
-
-        public void incrementPlasmaTemperature(double temperatureDiff, TransactionContext transaction) {
-            updateSnapshots(transaction);
-            this.temperatureDiff += temperatureDiff;
-        }
+        private double temperature;
 
         @Override
         protected Double createSnapshot() {
-            return temperatureDiff;
+            return temperature;
         }
 
         @Override
         protected void revertToSnapshot(Double snapshot) {
-            temperatureDiff = snapshot;
+            temperature = snapshot;
         }
 
         @Override
         protected void onRootCommit(Double originalState) {
             super.onRootCommit(originalState);
-            if (!Mth.equal(originalState, temperatureDiff)) {
-                setPlasmaTemp(getPlasmaTemp() + temperatureDiff);
+            if (!Mth.equal(originalState, temperature)) {
+                markDirty();
             }
         }
     }
