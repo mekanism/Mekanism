@@ -6,19 +6,19 @@ import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
 import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationRenderState> {
+public class ModelWindGenerator extends Model<WindGeneratorRotationRenderState> {
 
     public static final ModelLayerLocation GENERATOR_LAYER = new ModelLayerLocation(MekanismGenerators.rl("wind_generator"), "main");
     private static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
@@ -105,11 +105,11 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
           PartPose.offsetAndRotation(0F, -46F, 0F, -0.0347321F, 0F, -0.0347321F));
 
     public static LayerDefinition createLayerDefinition() {
-        return createLayerDefinition(128, 128, HEAD, PLATE_CONNECTOR_2, PLATE_CONNECTOR, PLATE, BLADE_CAP, BLADE_CENTER, BASE_RIM, BASE, WIRE,
+        return MekanismJavaModel.createLayerDefinition(128, 128, HEAD, PLATE_CONNECTOR_2, PLATE_CONNECTOR, PLATE, BLADE_CAP, BLADE_CENTER, BASE_RIM, BASE, WIRE,
               REAR_PLATE_1, REAR_PLATE_2, BLADE_1A, BLADE_2A, BLADE_3A, BLADE_1B, BLADE_2B, BLADE_3B, POST_1A, POST_1B, POST_1C, POST_1D);
     }
 
-    public final RenderType RENDER_TYPE = RenderTypes.entitySolid(GENERATOR_TEXTURE);
+    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(GENERATOR_TEXTURE);
     private final ModelPart blade1a;
     private final ModelPart blade1b;
     private final ModelPart blade2a;
@@ -120,7 +120,7 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
     private final ModelPart bladeCenter;
 
     public ModelWindGenerator(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(GENERATOR_LAYER));
+        super(entityModelSet.bakeLayer(GENERATOR_LAYER), RenderTypes::entitySolid);
         blade1a = BLADE_1A.getFromRoot(root);
         blade1b = BLADE_1B.getFromRoot(root);
         blade2a = BLADE_2A.getFromRoot(root);
@@ -131,15 +131,9 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    @Override
-    public void collect(WindGeneratorRotationRenderState windGeneratorRotationRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
-        setupAnim(windGeneratorRotationRenderState);
-        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
-    }
-
     public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, WindGeneratorRotationRenderState state, boolean isHighContrast) {
         setupAnim(state);
-        renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder, isHighContrast);
+        MekanismJavaModel.renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder, isHighContrast);
     }
 
     @Override

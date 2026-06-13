@@ -70,7 +70,7 @@ public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGenerat
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
-        windGenerator.collect(argument, matrix, submitNodeCollector, lightCoords, overlayCoords, hasFoil);
+        submitNodeCollector.submitModel(windGenerator, argument, matrix, ModelWindGenerator.RENDER_TYPE, lightCoords, overlayCoords, 0, null);
         matrix.popPose();
     }
 
