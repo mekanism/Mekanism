@@ -309,8 +309,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
                     int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), subTransaction);
                     if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, subTransaction, AutomationType.INTERNAL) == availableFuel) {
-                        //TODO - 26.1 (heat): Re-evaluate why this is set mid way through the transaction
-                        lastPlasmaTemperature = getPlasmaTemp();
                         ContainerType.ITEM.clearContents(reactorSlot, subTransaction);
                         setBurning(true);
                         subTransaction.commit();
@@ -345,7 +343,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             //Nothing to burn
             return 0;
         }
-        int fuelBurned = Math.clamp(MathUtils.clampToInt((lastPlasmaTemperature - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
+        int fuelBurned = Math.clamp(MathUtils.clampToInt((getPlasmaTemp() - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
         int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
         if (fuelUsed < fuelBurned) {//Failed to actually burn anything
             return 0;
