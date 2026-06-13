@@ -35,7 +35,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
         if (plasmaTemperature >= 0) {
             data.setPlasmaTemp(plasmaTemperature, transaction);
         }
-        data.setInjectionRate(getInjectionRate());
+        data.setInjectionRate(getInjectionRate(), transaction);
         data.setBurning(burning);
         data.updateTemperatures();
     }
