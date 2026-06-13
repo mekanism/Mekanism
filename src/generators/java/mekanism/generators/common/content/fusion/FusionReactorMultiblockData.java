@@ -62,6 +62,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -303,12 +304,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private void vaporiseHohlraum(TransactionContext transaction) {
         if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
             ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess()));
-            if (handler != null) {
+            if (handler != null && ResourceHandlerUtil.isFull(handler)) {
                 //Validate that the handler has some fusion fuel in it
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
-                    int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), subTransaction);
-                    if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, subTransaction, AutomationType.INTERNAL) == availableFuel) {
+                    int needed = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
+                    int availableFuel = needed == 0 ? 0 : handler.extract(fuelType, needed, subTransaction);
+                    //If we don't need any fuel, we can't try to transfer any, so just work
+                    if (needed == 0 || availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, subTransaction, AutomationType.INTERNAL) == availableFuel) {
                         ContainerType.ITEM.clearContents(reactorSlot, subTransaction);
                         setBurning(true);
                         subTransaction.commit();
