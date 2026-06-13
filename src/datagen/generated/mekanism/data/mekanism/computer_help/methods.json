@@ -2728,7 +2728,7 @@
       }
     },
     {
-      "description": "Get the temperature of the reactor in Kelvin.",
+      "description": "Get the temperature of the fission reactor in Kelvin.",
       "methodName": "getTemperature",
       "returns": {
         "type": "Number (double)",
@@ -5842,7 +5842,7 @@
       }
     },
     {
-      "description": "Requires a frequency to be selected",
+      "description": "Get the temperature of the frequency in Kelvin.",
       "methodName": "getTemperature",
       "returns": {
         "type": "Number (double)",
@@ -6661,6 +6661,7 @@
       }
     },
     {
+      "description": "Get the temperature of the thermal evaporation plant in Kelvin.",
       "methodName": "getTemperature",
       "returns": {
         "type": "Number (double)",
