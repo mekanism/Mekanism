@@ -138,10 +138,9 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 26.1 (heat): Re-evaluate this
         HeatCapacitorData data;
-        double stored = input.getDoubleOr(SerializationConstants.STORED, -1);
         double capacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, defaultData.capacity());
+        double stored = input.getDoubleOr(SerializationConstants.STORED, -1);
         if (stored == -1) {
             data = new HeatCapacitorData(capacity);
         } else {
