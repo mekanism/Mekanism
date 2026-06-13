@@ -389,7 +389,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat, transaction);
             lastEnvironmentLoss = caseAirHeat;
-            energyContainer.insert(MathUtils.clampToInt(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), transaction, AutomationType.INTERNAL);
+            int powerGen = MathUtils.clampToInt(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get());
+            if (powerGen > 0) {
+                energyContainer.insert(powerGen, transaction, AutomationType.INTERNAL);
+            }
         }
     }
 
