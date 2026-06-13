@@ -23,8 +23,8 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     private float lastY;
     private float lastZ;
 
-    private float fadeUpStep = 0.1f;
-    private float fadeDownStep = 0.1f;
+    private float fadeUpStep = 0.1F;
+    private float fadeDownStep = 0.1F;
     private int consecutiveTicks;
 
     public PlayerSound(Player player, SoundEventRegistryObject<?> sound) {
@@ -41,10 +41,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
         this.lastZ = (float) player.getZ();
         this.looping = true;
         this.delay = 0;
-
-        // N.B. the volume must be > 0 on first time it's processed by sound system or else it will not
-        // get registered for tick events.
-        this.volume = 0.1F;
+        this.volume = 0;
     }
 
     @Nullable
