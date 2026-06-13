@@ -132,7 +132,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IChemicalTank fuelTank;
-    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate")
     private int injectionRate = 2;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
@@ -439,6 +439,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return injectionRate;
     }
 
+    //Note: This method is called by the container sync stuff
+    public void setInjectionRate(int rate) {
+        setInjectionRate(rate, null);
+    }
+
     public void setInjectionRate(int rate, @Nullable TransactionContext transaction) {
         if (injectionRate != rate) {
             injectionRate = rate;
@@ -471,11 +476,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
             burning = burn;
             markDirty();
         }
-    }
-
-    public double getCaseTemp() {
-        //TODO - 26.1 (heat): Should the callers of this instead be calling getCaseTemperature ?
-        return heatCapacitor.getTemperature();
     }
 
     @Override
@@ -544,7 +544,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             //Validate it is even
             throw new ComputerException("Injection Rate '%d' must be an even number between 0 and %d. (Inclusive)", rate, MAX_INJECTION);
         }
-        setInjectionRate(rate, null);
+        setInjectionRate(rate);
     }
 
     @ComputerMethod
