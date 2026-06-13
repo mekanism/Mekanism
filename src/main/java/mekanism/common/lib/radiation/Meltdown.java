@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidRelative;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -52,6 +53,7 @@ public class Meltdown {
 
     private static final int DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
 
+    private final MeltdownDamageCalculator damageCalculator;
     private final VoxelCuboid bounds;
     private final BlockPos minPos, maxPos;
     private final double magnitude, chance;
@@ -73,6 +75,7 @@ public class Meltdown {
         this.radius = radius;
         this.multiblockID = multiblockID;
         this.ticksExisted = ticksExisted;
+        this.damageCalculator = new MeltdownDamageCalculator(this.bounds);
     }
 
     public boolean update(ServerLevel world) {
@@ -84,7 +87,7 @@ public class Meltdown {
             int y = Mth.nextInt(random, minPos.getY(), maxPos.getY());
             int z = Mth.nextInt(random, minPos.getZ(), maxPos.getZ());
             Explosion.BlockInteraction mode = world.getGameRules().get(GameRules.BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY
-                                                                                                                         : Explosion.BlockInteraction.DESTROY;
+                                                                                                             : Explosion.BlockInteraction.DESTROY;
             createExplosion(world, x, y, z, radius, true, mode);
         }
 
@@ -97,7 +100,6 @@ public class Meltdown {
 
     /// Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
     private void createExplosion(ServerLevel world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
-        MeltdownDamageCalculator damageCalculator = new MeltdownDamageCalculator();
         //nb damage source is defaulted in ServerExplosion when null
         MeltdownExplosion explosion = new MeltdownExplosion(world, null, damageCalculator, new Vec3(x, y, z), radius, causesFire, mode, multiblockID);
 
@@ -117,17 +119,8 @@ public class Meltdown {
         for (ServerPlayer player : level.players()) {
             if (player.distanceToSqr(explosion.center()) < 4096.0) {
                 Optional<Vec3> playerKnockback = Optional.ofNullable(explosion.getHitPlayers().get(player));
-                player.connection.send(
-                      new ClientboundExplodePacket(
-                            explosion.center(),
-                            explosion.radius(),
-                            blockCount,
-                            playerKnockback,
-                            explosionParticle,
-                            SoundEvents.GENERIC_EXPLODE,
-                            Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES
-                      )
-                );
+                player.connection.send(new ClientboundExplodePacket(explosion.center(), explosion.radius(), blockCount, playerKnockback, explosionParticle,
+                      SoundEvents.GENERIC_EXPLODE, Level.DEFAULT_EXPLOSION_BLOCK_PARTICLES));
             }
         }
     }
@@ -158,21 +151,22 @@ public class Meltdown {
         /// Override explode to ensure we always contain one wall block
         @Override
         public int explode() {
-            this.level().gameEvent(this.getDirectSourceEntity(), GameEvent.EXPLODE, this.center());
+            level().gameEvent(getDirectSourceEntity(), GameEvent.EXPLODE, center());
             List<BlockPos> toBlow = Collections.emptyList();
+            //TODO - 26.1: Re-evaluate if there is a concern of this not exiting, even with the damage calculator persisting the wall explosion state between ticks
             while (!damageCalculator.wallExploded) {
-                toBlow = this.calculateExplodedPositions();
+                toBlow = calculateExplodedPositions();
             }
-            this.hurtEntities(toBlow);
-            if (this.interactsWithBlocks()) {
+            hurtEntities(toBlow);
+            if (interactsWithBlocks()) {
                 ProfilerFiller profiler = Profiler.get();
                 profiler.push("explosion_blocks");
-                this.interactWithBlocks(toBlow);
+                interactWithBlocks(toBlow);
                 profiler.pop();
             }
 
             if (this.fire) {
-                this.createFire(toBlow);
+                createFire(toBlow);
             }
 
             return toBlow.size();
@@ -180,10 +174,15 @@ public class Meltdown {
     }
 
     @NullMarked
-    private class MeltdownDamageCalculator extends ExplosionDamageCalculator {
+    private static class MeltdownDamageCalculator extends ExplosionDamageCalculator {
 
+        private final VoxelCuboid bounds;
         private boolean wasCanceled = false;
         protected boolean wallExploded = false;
+
+        private MeltdownDamageCalculator(VoxelCuboid bounds) {
+            this.bounds = bounds;
+        }
 
         public void setCancelled(boolean wasCanceled) {
             this.wasCanceled = wasCanceled;
@@ -191,17 +190,16 @@ public class Meltdown {
 
         @Override
         public boolean shouldBlockExplode(Explosion explosion, BlockGetter level, BlockPos pos, BlockState state, float power) {
-            boolean isPartOfMultiblock = minPos.getX() <= pos.getX() &&
-                                         minPos.getY() <= pos.getY() &&
-                                         minPos.getZ() <= pos.getZ() &&
-                                         pos.getX() <= maxPos.getX() &&
-                                         pos.getY() <= maxPos.getY() &&
-                                         pos.getZ() <= maxPos.getZ();
-            if (isPartOfMultiblock && bounds.isWall(pos)) {
+            if (!super.shouldBlockExplode(explosion, level, pos, state, power)) {
+                //Note: Super currently always returns false from this, but in case that changes at some point, check it
+                return false;
+            }
+            CuboidRelative relative = bounds.getRelativeLocation(pos);
+            if (relative == CuboidRelative.WALLS) {
                 wallExploded = true;
             }
             //restrict it to the multiblock if was cancelled
-            return !wasCanceled || isPartOfMultiblock;
+            return !wasCanceled || relative != CuboidRelative.WALLS;
         }
     }
 }
