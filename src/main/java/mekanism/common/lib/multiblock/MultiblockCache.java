@@ -28,6 +28,7 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
@@ -40,15 +41,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
     @Nullable
     private IHeatCapacitor heatCapacitor;
 
-    public void apply(T data) {
+    public void apply(T data, TransactionContext transaction) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
-            type.apply(data, this);
+            type.apply(data, this, transaction);
         }
     }
 
-    public void sync(T data) {
+    public void sync(T data, TransactionContext transaction) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
-            type.sync(data, this);
+            type.sync(data, this, transaction);
         }
     }
 
@@ -210,13 +211,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             return containerType.getTag() + "_stored";
         }
 
-        public void copy(ELEMENT from, ELEMENT to) {
-            containerType.copy(from, to, null);
+        public void copy(ELEMENT from, ELEMENT to, TransactionContext transaction) {
+            containerType.copy(from, to, transaction);
         }
 
-        public abstract <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache);
+        public abstract <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction);
 
-        public abstract <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache);
+        public abstract <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction);
 
         public abstract void preHandleMerge(MultiblockCache<?> cache, MultiblockCache<?> merge);
 
@@ -239,25 +240,25 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         protected abstract List<ELEMENT> containerList(IMultiblockContents handler);
 
         @Override
-        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             List<ELEMENT> containers = containerList(data);
             List<ELEMENT> cacheContainers = containerList(cache);
             for (int i = 0; i < cacheContainers.size(); i++) {
                 if (i < containers.size()) {
-                    copy(cacheContainers.get(i), containers.get(i));
+                    copy(cacheContainers.get(i), containers.get(i), transaction);
                 }
             }
         }
 
         @Override
-        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             List<ELEMENT> containersToCopy = containerList(data);
             List<ELEMENT> cacheContainers = containerList(cache);
             if (cacheContainers.isEmpty()) {
                 prefab(cache, containersToCopy.size());
             }
             for (int i = 0; i < containersToCopy.size(); i++) {
-                copy(containersToCopy.get(i), cacheContainers.get(i));
+                copy(containersToCopy.get(i), cacheContainers.get(i), transaction);
             }
         }
 
@@ -313,21 +314,21 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
 
         @Override
-        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             ELEMENT container = container(data);
             if (container != null) {
                 ELEMENT cacheContainer = container(cache);
                 if (cacheContainer != null) {
-                    copy(cacheContainer, container);
+                    copy(cacheContainer, container, transaction);
                 }
             }
         }
 
         @Override
-        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             ELEMENT container = container(data);
             if (container != null) {
-                copy(container, containerOrInit(cache));
+                copy(container, containerOrInit(cache), transaction);
             }
         }
 

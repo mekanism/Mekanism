@@ -5,6 +5,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
 
@@ -26,8 +27,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void apply(SPSMultiblockData data) {
-        super.apply(data);
+    public void apply(SPSMultiblockData data, TransactionContext transaction) {
+        super.apply(data, transaction);
         data.progress = progress;
         data.inputProcessed = inputProcessed;
         data.couldOperate = couldOperate;
@@ -36,8 +37,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void sync(SPSMultiblockData data) {
-        super.sync(data);
+    public void sync(SPSMultiblockData data, TransactionContext transaction) {
+        super.sync(data, transaction);
         progress = data.progress;
         inputProcessed = data.inputProcessed;
         couldOperate = data.couldOperate;
