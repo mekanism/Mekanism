@@ -152,7 +152,7 @@ public class FormationProtocol<T extends MultiblockData> {
             try (Transaction transaction = Transaction.openRoot()) {
                 cache.apply(structureFound, transaction);
                 structureFound.inventoryID = idToUse;
-                structureFound.onCreated(world);
+                structureFound.onCreated(world, transaction);
                 if (trackCache) {
                     //If it is a new fresh cache we need to make sure to then sync the multiblock back to the cache
                     // so that we don't save it with empty data as otherwise we may end up with crashes in when merging multiblock caches

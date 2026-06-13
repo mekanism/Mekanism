@@ -180,8 +180,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void onCreated(Level world) {
-        super.onCreated(world);
+    public void onCreated(Level world, TransactionContext transaction) {
+        super.onCreated(world, transaction);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }

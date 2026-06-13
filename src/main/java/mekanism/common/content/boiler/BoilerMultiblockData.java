@@ -143,11 +143,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    public void onCreated(Level world) {
-        super.onCreated(world);
+    public void onCreated(Level world, TransactionContext transaction) {
+        super.onCreated(world, transaction);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
-        heatCapacitor.updateHeatAndCapacity(CASING_HEAT_CAPACITY * locations.size(), null);
+        heatCapacitor.updateHeatAndCapacity(CASING_HEAT_CAPACITY * locations.size(), transaction);
     }
 
     @Override
