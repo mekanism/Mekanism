@@ -229,13 +229,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     @Override
     public double simulateEnvironment(TransactionContext transaction) {
-        double currentTemperature = getTemperature();
         double heatCapacity = heatCapacitor.getHeatCapacity();
         heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity, transaction);
-        if (Math.abs(currentTemperature - biomeAmbientTemp) < 0.001) {
+        double currentTemperature = getTemperature();
+        double temperatureDifference = Math.abs(currentTemperature - biomeAmbientTemp);
+        if (temperatureDifference < 0.001) {
             heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat(), transaction);
         } else {
-            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(currentTemperature - biomeAmbientTemp));
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(temperatureDifference);
             if (currentTemperature > biomeAmbientTemp) {
                 incr = -incr;
             }
