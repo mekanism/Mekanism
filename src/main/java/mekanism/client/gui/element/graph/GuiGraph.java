@@ -6,7 +6,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.graph.GuiGraph.GraphDataHandler;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,6 +14,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
@@ -60,18 +60,12 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             //RenderSystem.enableBlend();
             //RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            MekanismRenderer.color(CommonColors.WHITE, 0.2F + 0.8F * i / size);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT, ARGB.color(0.2F + 0.8F * i / size, CommonColors.WHITE));
 
             int hoverIndex = mouseX - getX();
             if (hoverIndex == i && mouseY >= getY() && mouseY < getY() + height) {
-                MekanismRenderer.color(CommonColors.WHITE, 0.5F);
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-                MekanismRenderer.resetColor(guiGraphics);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT, ARGB.color(0.5F, CommonColors.WHITE));
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-            } else {
-                //Note: We can skip resetting the color if we enter the above if as it will reset it already
-                MekanismRenderer.resetColor(guiGraphics);
             }
 
             //RenderSystem.disableBlend();
