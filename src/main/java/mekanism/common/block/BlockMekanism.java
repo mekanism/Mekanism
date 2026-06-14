@@ -134,6 +134,7 @@ public abstract class BlockMekanism extends Block {
         if (hasBounding != null) {
             hasBounding.removeBoundingBlocks(level, pos, state);
         }
+        //TODO - 26.1: I believe this theoretically only needs to happen if it supports comparators?
         Containers.updateNeighboursAfterDestroy(state, level, pos);
 
     }

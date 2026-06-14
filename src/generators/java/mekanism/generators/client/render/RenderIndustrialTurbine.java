@@ -39,16 +39,15 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         super.extractRenderState(turbine, state, partialTick, cameraPosition, breakProgress);
         TurbineMultiblockData multiblock = turbine.getMultiblock();
         state.gather(multiblock);
-        float steamScale = multiblock.prevSteamScale;
         state.steamTexture = null;
-        if (!multiblock.chemicalTank.isEmpty() && multiblock.length() > 0) {
+        ChemicalResource steam = multiblock.chemicalTank.resource();
+        if (!steam.isEmpty() && multiblock.length() > 0) {
             int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
             state.height = height;
             if (height > 0) {
-                ChemicalResource chemicalType = multiblock.chemicalTank.resource();
-                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
-                state.steamMaxY = ModelRenderer.getMaxY(state.height, steamScale, chemicalType.is(MekanismAPITags.Chemicals.GASEOUS));
-                state.steamColor = MekanismRenderer.getColorARGB(chemicalType, steamScale);
+                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(steam));
+                state.steamMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevSteamScale, steam.is(MekanismAPITags.Chemicals.GASEOUS));
+                state.steamColor = MekanismRenderer.getColorARGB(steam, multiblock.prevSteamScale);
             }
         }
     }
@@ -56,7 +55,9 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
     @Override
     public void submit(TurbineRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.steamTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
+                  0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
+                  OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
     }
 

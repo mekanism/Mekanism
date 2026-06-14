@@ -678,7 +678,7 @@ public class WorldUtils {
             if (baseContext == null) {
                 return state.canBeReplaced();
             }
-            return state.canBeReplaced(BlockPlaceContext.at(baseContext, pos, baseContext.getClickedFace()));
+            return BlockPlaceContext.at(baseContext, pos, baseContext.getClickedFace()).replacingClickedOnBlock();
         }
         return false;
     }

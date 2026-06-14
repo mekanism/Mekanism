@@ -70,7 +70,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         return parts;
     }
 
-    protected static LayerDefinition createLayerDefinition(int textureWidth, int textureHeight, ModelPartData... parts) {
+    public static LayerDefinition createLayerDefinition(int textureWidth, int textureHeight, ModelPartData... parts) {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition partDefinition = mesh.getRoot();
         for (ModelPartData part : parts) {
@@ -79,7 +79,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
-    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, boolean isHighContrast) {
+    public static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, VertexConsumer vertexConsumer, boolean isHighContrast) {
         //tmp variables to avoid allocating for each model part
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();

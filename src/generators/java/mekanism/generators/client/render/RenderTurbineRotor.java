@@ -41,8 +41,8 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
     public void extractRenderState(TileEntityTurbineRotor rotor, TurbineRotorRenderState state, float partialTick, Vec3 cameraPosition,
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(rotor, state, partialTick, cameraPosition, breakProgress);
-        int housedBlades = rotor.getHousedBlades();
-        if (housedBlades == 0) {
+        state.housedBlades = rotor.getHousedBlades();
+        if (state.housedBlades == 0) {
             return;
         }
         UUID multiblockUUID = rotor.getMultiblockUUID();

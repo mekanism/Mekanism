@@ -48,24 +48,21 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         BoilerMultiblockData multiblock = boiler.getMultiblock();
         state.gather(multiblock);
 
-        float waterScale = multiblock.waterTank.isEmpty() ? 0 : multiblock.prevWaterScale;
-        float steamScale = multiblock.steamTank.isEmpty() ? 0 : multiblock.prevSteamScale;
-
-        if (multiblock.renderLocation == null || multiblock.upperRenderLocation == null) {
+        FluidResource water = multiblock.waterTank.resource();
+        ChemicalResource steam = multiblock.steamTank.resource();
+        if (water.isEmpty() && steam.isEmpty() || multiblock.renderLocation == null || multiblock.upperRenderLocation == null) {
             return;
         }
 
-        int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
-        if (height > 0) {
-            FluidResource fluid = multiblock.waterTank.resource();
-            state.height = height;
-            state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
-            state.valveTexture = MekanismRenderer.getValveTexture(fluid);
-            state.waterGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, fluid);
-            state.waterColor = MekanismRenderer.getColorARGB(fluid, waterScale);
-            state.waterMaxY = ModelRenderer.getMaxY(state.height, waterScale, MekanismUtils.lighterThanAirGas(fluid));
+        state.height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
+        if (state.height > 0 && !water.isEmpty()) {
+            state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(water, MekanismRenderer.FluidTextureType.STILL));
+            state.valveTexture = MekanismRenderer.getValveTexture(water);
+            state.waterGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, water);
+            state.waterColor = MekanismRenderer.getColorARGB(water, multiblock.prevWaterScale);
+            state.waterMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevWaterScale, MekanismUtils.lighterThanAirGas(water));
             state.valves.clear();
-            if (waterScale > 0) {
+            if (multiblock.prevWaterScale > 0) {
                 for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
                     state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.waterMaxY - 0.01F, state.renderLocation, state.height));
                 }
@@ -75,14 +72,12 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
             state.valveTexture = null;
         }
 
-        int steamHeight = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
-        state.steamHeight = steamHeight;
-        if (steamHeight > 0) {
+        state.steamHeight = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
+        if (state.steamHeight > 0 && !steam.isEmpty()) {
             state.upperRenderLocation = multiblock.upperRenderLocation.offset(1, 0, 1);
-            ChemicalResource chemicalType = multiblock.steamTank.resource();
-            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
-            state.steamColor = MekanismRenderer.getColorARGB(chemicalType, steamScale);
-            state.steamMaxY = ModelRenderer.getMaxY(steamHeight, steamScale, chemicalType.is(MekanismAPITags.Chemicals.GASEOUS));
+            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(steam));
+            state.steamColor = MekanismRenderer.getColorARGB(steam, multiblock.prevSteamScale);
+            state.steamMaxY = ModelRenderer.getMaxY(state.steamHeight, multiblock.prevSteamScale, steam.is(MekanismAPITags.Chemicals.GASEOUS));
         } else {
             state.steamTexture = null;
         }
@@ -92,11 +87,18 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
     public void submit(BoilerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         RenderType renderType = Sheets.translucentBlockSheet();
         if (state.waterTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.waterMaxY, state.width - 0.02F, state.waterTexture, OverlayTexture.NO_OVERLAY, state.waterGlow, state.waterColor, state.blockPos, state.renderLocation, state.length, state.width);
-            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.renderLocation, state.length, state.width, state.height, state.waterColor, state.waterGlow, state.waterMaxY - 0.01F);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
+                  0.01F, 0.01F, 0.01F, state.length - 0.02F, state.waterMaxY, state.width - 0.02F, state.waterTexture,
+                  OverlayTexture.NO_OVERLAY, state.waterGlow, state.waterColor, state.blockPos, state.renderLocation, state.length, state.width);
+            if (state.valveTexture != null) {
+                RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture,
+                      state.blockPos, state.renderLocation, state.length, state.width, state.height, state.waterColor, state.waterGlow, state.waterMaxY - 0.01F);
+            }
         }
         if (state.steamTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES, 0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
+                  0.01F, 0.01F, 0.01F, state.length - 0.02F, state.steamMaxY, state.width - 0.02F, state.steamTexture,
+                  OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.steamColor, state.blockPos, state.upperRenderLocation, state.length, state.width);
         }
     }
 

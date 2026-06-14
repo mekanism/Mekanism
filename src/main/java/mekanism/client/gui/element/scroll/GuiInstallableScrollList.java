@@ -3,12 +3,12 @@ package mekanism.client.gui.element.scroll;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
@@ -110,14 +110,8 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
                 j = 0;
             }
             EnumColor color = getColor(type);
-            if (color != null) {
-                MekanismRenderer.color(color);
-            }
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, textureWidth,
-                  elementHeight, textureWidth, textureHeight);
-            if (color != null) {
-                MekanismRenderer.resetColor(guiGraphics);
-            }
+                  elementHeight, textureWidth, textureHeight, color == null ? CommonColors.WHITE : color.getPackedColor());
         }
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up

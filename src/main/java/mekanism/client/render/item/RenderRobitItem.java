@@ -48,15 +48,14 @@ public class RenderRobitItem implements SpecialModelRenderer<BakeResult> {
     @Nullable
     @Override
     public BakeResult extractArgument(ItemStack stack) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            Mekanism.logger.error("Failed to get robit item skin. No registry access available");
+            return null;
+        }
         try {
             ResourceKey<RobitSkin> skinKey = stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE);
-            ClientLevel level = Minecraft.getInstance().level;
-            RobitSkin skin;
-            if (level == null) {
-                skin = MekanismRobitSkins.BASE_HOLDER.value();//not sure if this will work tbh, but this shouldn't happen anyway
-            } else {
-                skin = MekanismRobitSkins.get(level.registryAccess(), skinKey);
-            }
+            RobitSkin skin = MekanismRobitSkins.get(level.registryAccess(), skinKey);
 
             List<Identifier> textures = skin.textures();
 

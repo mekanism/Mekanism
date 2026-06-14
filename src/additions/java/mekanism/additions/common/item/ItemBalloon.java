@@ -115,7 +115,7 @@ public class ItemBalloon extends Item {
                       entity.getX() + 0.2, entity.getY() + entity.getBbHeight() + 4, entity.getZ() + 0.2);
                 List<EntityBalloon> balloonsNear = level.getEntitiesOfClass(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
-                    if (balloon.latchedEntity == entity) {
+                    if (balloon.isLatchedTo(entity)) {
                         return InteractionResult.SUCCESS;
                     }
                 }
@@ -154,7 +154,7 @@ public class ItemBalloon extends Item {
                 List<EntityBalloon> balloonsNear = source.level().getEntitiesOfClass(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
                 for (EntityBalloon balloon : balloonsNear) {
-                    if (balloon.latchedEntity == entity) {
+                    if (balloon.isLatchedTo(entity)) {
                         hasBalloon = true;
                         break;
                     }

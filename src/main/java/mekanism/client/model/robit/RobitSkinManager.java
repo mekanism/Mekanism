@@ -91,13 +91,16 @@ public class RobitSkinManager {
     }
 
     public Vector3fc[] getExtents() {
-        BakeResult defaultModel = getBaked(MekanismRobitSkins.BASE_HOLDER.value(), MekanismRobitSkins.BASE_SKIN_TEXTURE);
+        BakeResult defaultModel = getBaked(BASE_ROBIT_MODEL, MekanismRobitSkins.BASE_SKIN_TEXTURE);
         return CuboidItemModelWrapper.computeExtents(defaultModel.model.getFirst().getQuads(null));
     }
 
     public BakeResult getBaked(RobitSkin skin, @Nullable Identifier activeTexture) {
         Identifier model = Objects.requireNonNullElse(skin.customModel(), BASE_ROBIT_MODEL);
+        return getBaked(model, activeTexture);
+    }
 
+    private BakeResult getBaked(Identifier model, @Nullable Identifier activeTexture) {
         BakeResult cached = bakedCache.get(model, activeTexture);
         if (cached != null) {
             return cached;

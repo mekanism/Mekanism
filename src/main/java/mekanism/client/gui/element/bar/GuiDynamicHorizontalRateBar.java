@@ -2,7 +2,6 @@ package mekanism.client.gui.element.bar;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -33,16 +32,15 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         if (displayInt > 0) {
             for (int i = 0; i < displayInt; i++) {
                 float level = i / (float) (width - 2);
-                MekanismRenderer.color(colorFunction.getColor(level));
+                int color = colorFunction.getColor(level).argb();
                 if (i == 0) {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, 0, 0, 1, texHeight, texWidth, texHeight, color);
                 } else if (i == displayInt - 1) {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight, color);
                 } else {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1 + i, relativeY + 1, 1, 0, 1, texHeight, texWidth, texHeight, color);
                 }
             }
-            MekanismRenderer.resetColor(guiGraphics);
         }
     }
 }
