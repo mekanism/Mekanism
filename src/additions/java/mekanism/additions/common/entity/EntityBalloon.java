@@ -1,7 +1,6 @@
 package mekanism.additions.common.entity;
 
 import java.util.Optional;
-import java.util.UUID;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -14,7 +13,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,20 +43,11 @@ import org.jspecify.annotations.Nullable;
 
 public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
-    private static final EntityDataAccessor<Byte> IS_LATCHED = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Integer> LATCHED_X = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> LATCHED_Y = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> LATCHED_Z = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> LATCHED_ID = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<BlockPos>> LATCHED_POS = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> LATCHED_ENTITY = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     public static final float OFFSET = -0.275F;
 
     private EnumColor color = EnumColor.DARK_BLUE;
-    @Nullable
-    private BlockPos latched;
-    @Nullable
-    public LivingEntity latchedEntity;
-    @Nullable
-    private UUID cachedEntityUUID;
 
     public EntityBalloon(EntityType<EntityBalloon> type, Level world) {
         super(type, world);
@@ -83,13 +73,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         if (balloon == null) {
             return null;
         }
-        balloon.latchedEntity = entity;
-        float height = balloon.latchedEntity.getBbHeight();
-        balloon.absSnapTo(balloon.latchedEntity.getX(), balloon.latchedEntity.getY() + height + 1.7F, balloon.latchedEntity.getZ());
+        float height = entity.getBbHeight();
+        balloon.absSnapTo(entity.getX(), entity.getY() + height + 1.7F, entity.getZ());
 
         balloon.color = c;
-        balloon.entityData.set(IS_LATCHED, (byte) 2);
-        balloon.entityData.set(LATCHED_ID, entity.getId());
+        balloon.entityData.set(LATCHED_ENTITY, Optional.of(EntityReference.of(entity)));
         return balloon;
     }
 
@@ -99,14 +87,9 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         if (balloon == null) {
             return null;
         }
-        balloon.latched = pos;
-        balloon.absSnapTo(balloon.latched.getX() + 0.5F, balloon.latched.getY() + 1.8F, balloon.latched.getZ() + 0.5F);
-
+        balloon.absSnapTo(pos.getX() + 0.5F, pos.getY() + 1.8F, pos.getZ() + 0.5F);
         balloon.color = c;
-        balloon.entityData.set(IS_LATCHED, (byte) 1);
-        balloon.entityData.set(LATCHED_X, balloon.latched.getX());
-        balloon.entityData.set(LATCHED_Y, balloon.latched.getY());
-        balloon.entityData.set(LATCHED_Z, balloon.latched.getZ());
+        balloon.entityData.set(LATCHED_POS, Optional.of(pos.immutable()));
         return balloon;
     }
 
@@ -126,78 +109,26 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             return;
         }
 
-        if (level().isClientSide()) {
-            if (entityData.get(IS_LATCHED) == 1) {
-                latched = new BlockPos(entityData.get(LATCHED_X), entityData.get(LATCHED_Y), entityData.get(LATCHED_Z));
-            } else {
-                latched = null;
-            }
-            if (entityData.get(IS_LATCHED) == 2) {
-                latchedEntity = (LivingEntity) level().getEntity(entityData.get(LATCHED_ID));
-            } else {
-                latchedEntity = null;
-            }
-        } else {
-            if (cachedEntityUUID != null) {
-                if (level() instanceof ServerLevel serverLevel) {
-                    Entity entity = serverLevel.getEntity(cachedEntityUUID);
-                    if (entity instanceof LivingEntity) {
-                        latchedEntity = (LivingEntity) entity;
-                    }
-                }
-                cachedEntityUUID = null;
-            }
-            if (tickCount == 1) {
-                byte isLatched;
-                if (latched != null) {
-                    isLatched = 1;
-                } else if (latchedEntity != null) {
-                    isLatched = 2;
-                } else {
-                    isLatched = 0;
-                }
-                entityData.set(IS_LATCHED, isLatched);
-                entityData.set(LATCHED_X, latched == null ? 0 : latched.getX());
-                entityData.set(LATCHED_Y, latched == null ? 0 : latched.getY());
-                entityData.set(LATCHED_Z, latched == null ? 0 : latched.getZ());
-                entityData.set(LATCHED_ID, latchedEntity == null ? -1 : latchedEntity.getId());
-            }
-        }
+        LivingEntity latchedEntity = latchedEntity();
 
         if (!level().isClientSide()) {
-            if (latched != null) {
-                Optional<BlockState> blockState = WorldUtils.getBlockState(level(), latched);
+            BlockPos latchedPos = latchedPos();
+            if (latchedPos != null) {
+                Optional<BlockState> blockState = WorldUtils.getBlockState(level(), latchedPos);
                 if (blockState.isPresent() && blockState.get().isAir()) {
-                    latched = null;
-                    entityData.set(IS_LATCHED, (byte) 0);
+                    //If the block this balloon was attached to is no longer present, mark the balloon as not being latched to a block
+                    entityData.set(LATCHED_POS, Optional.empty());
                 }
             }
             if (latchedEntity != null && !latchedEntity.isAlive()) {
                 latchedEntity = null;
-                entityData.set(IS_LATCHED, (byte) 0);
+                entityData.set(LATCHED_ENTITY, Optional.empty());
             }
         }
 
-        if (!isLatched()) {
-            Vec3 motion = getDeltaMovement();
-            setDeltaMovement(motion.x(), Math.min(motion.y() * 1.02F, 0.2F), motion.z());
-
-            move(MoverType.SELF, getDeltaMovement());
-
-            //Note: move may adjust the delta movement, so we need to requery it
-            motion = getDeltaMovement();
-            motion = motion.multiply(0.98, 0, 0.98);
-
-            if (onGround()) {
-                motion = motion.multiply(0.7, 0, 0.7);
-            }
-            if (motion.y() == 0) {
-                motion = motion.add(0, 0.04, 0);
-            }
-            setDeltaMovement(motion);
-        } else if (latched != null) {
+        if (isLatchedToPos()) {
             setDeltaMovement(0, 0, 0);
-        } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
+        } else if (latchedEntity != null && latchedEntity.isAlive()) {
             if (!isFlying(latchedEntity)) {
                 //If an entity is flying (creative flight), don't adjust the height they are at
                 Vec3 motion = latchedEntity.getDeltaMovement();
@@ -217,6 +148,23 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                 }
             }
             setPos(latchedEntity.getX(), latchedEntity.getY() + getAddedHeight(latchedEntity), latchedEntity.getZ());
+        } else {
+            Vec3 motion = getDeltaMovement();
+            setDeltaMovement(motion.x(), Math.min(motion.y() * 1.02F, 0.2F), motion.z());
+
+            move(MoverType.SELF, getDeltaMovement());
+
+            //Note: move may adjust the delta movement, so we need to requery it
+            motion = getDeltaMovement();
+            motion = motion.multiply(0.98, 0, 0.98);
+
+            if (onGround()) {
+                motion = motion.multiply(0.7, 0, 0.7);
+            }
+            if (motion.y() == 0) {
+                motion = motion.add(0, 0.04, 0);
+            }
+            setDeltaMovement(motion);
         }
     }
 
@@ -266,7 +214,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public boolean isPushable() {
-        return latched == null;
+        return !isLatchedToPos();
     }
 
     @Override
@@ -281,27 +229,22 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(IS_LATCHED, (byte) 0);
-        builder.define(LATCHED_X, 0);
-        builder.define(LATCHED_Y, 0);
-        builder.define(LATCHED_Z, 0);
-        builder.define(LATCHED_ID, -1);
+        builder.define(LATCHED_POS, Optional.empty());
+        builder.define(LATCHED_ENTITY, Optional.empty());
     }
 
     @Override
     public void readAdditionalSaveData(ValueInput input) {
         NBTUtils.setEnumIfPresent(input, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
-        input.read(SerializationConstants.LATCHED, BlockPos.CODEC).ifPresent(pos -> latched = pos);
-        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> cachedEntityUUID = uuid);
+        entityData.set(LATCHED_POS, input.read(SerializationConstants.LATCHED, BlockPos.CODEC));
+        entityData.set(LATCHED_ENTITY, input.read(SerializationConstants.LATCHED_ENTITY, EntityReference.codec()));
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
-        output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latched);
-        if (latchedEntity != null) {
-            output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, latchedEntity.getUUID());
-        }
+        output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latchedPos());
+        output.storeNullable(SerializationConstants.LATCHED_ENTITY, EntityReference.codec(), entityData.get(LATCHED_ENTITY).orElse(null));
     }
 
     @Override
@@ -316,33 +259,17 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeEnum(color);
-        if (latched != null) {
-            buffer.writeByte((byte) 1);
-            buffer.writeBlockPos(latched);
-        } else if (latchedEntity != null) {
-            buffer.writeByte((byte) 2);
-            buffer.writeVarInt(latchedEntity.getId());
-        } else {
-            buffer.writeByte((byte) 0);
-        }
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
         color = buffer.readEnum(EnumColor.class);
-        byte type = buffer.readByte();
-        if (type == 1) {
-            latched = buffer.readBlockPos();
-        } else if (type == 2) {
-            latchedEntity = (LivingEntity) level().getEntity(buffer.readVarInt());
-        } else {
-            latched = null;
-        }
     }
 
     @Override
     public void remove(RemovalReason reason) {
         super.remove(reason);
+        LivingEntity latchedEntity = latchedEntity();
         if (latchedEntity != null) {
             latchedEntity.needsSync = false;
         }
@@ -379,16 +306,32 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return true;
     }
 
-
-    public boolean isLatched() {
-        if (level().isClientSide()) {
-            return entityData.get(IS_LATCHED) > 0;
-        }
-        return latched != null || latchedEntity != null;
+    @Nullable
+    private BlockPos latchedPos() {
+        return entityData.get(LATCHED_POS).orElse(null);
     }
 
-    public boolean isLatchedToEntity() {
-        return entityData.get(IS_LATCHED) == 2 && latchedEntity != null;
+    public boolean isLatchedToPos() {
+        return entityData.get(LATCHED_POS).isPresent();
+    }
+
+    @Nullable
+    public LivingEntity latchedEntity() {
+        Optional<EntityReference<LivingEntity>> reference = entityData.get(LATCHED_ENTITY);
+        //noinspection OptionalIsPresent - capturing lambda
+        if (reference.isPresent()) {
+            return reference.get().getEntity(level(), LivingEntity.class);
+        }
+        return null;
+    }
+
+    public boolean isLatchedTo(LivingEntity entity) {
+        Optional<EntityReference<LivingEntity>> reference = entityData.get(LATCHED_ENTITY);
+        //noinspection OptionalIsPresent - capturing lambda
+        if (reference.isPresent()) {
+            return reference.get().matches(entity);
+        }
+        return false;
     }
 
     @Override

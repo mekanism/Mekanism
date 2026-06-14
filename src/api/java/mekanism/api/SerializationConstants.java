@@ -204,6 +204,8 @@ public final class SerializationConstants {
     /// @since 10.8.0
     public static final String LAST_TRANSFER_DIRECTION = "last_transfer_direction";
     public static final String LATCHED = "latched";
+    /// @since 10.8.0
+    public static final String LATCHED_ENTITY = "latched_entity";
     public static final String LEVEL = "level";
     /// @since 10.8.0
     public static final String LOCK_TYPE = "lock_type";

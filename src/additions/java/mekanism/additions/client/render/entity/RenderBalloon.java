@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -38,14 +39,19 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
     public void extractRenderState(EntityBalloon balloon, BalloonRenderState state, float partialTick) {
         super.extractRenderState(balloon, state, partialTick);
         state.tint[0] = balloon.getColor().getPackedColor();
-        boolean latched = balloon.isLatched();
-        if (balloon.isLatchedToEntity()) {
+        BaseModelCache.BlockStateModelPartHelper model;
+        LivingEntity latchedEntity = balloon.latchedEntity();
+        if (latchedEntity != null) {
             //Shift the rendering of the balloon to be over the entity
-            Vec3 latchedLerp = Mth.lerp(partialTick, balloon.latchedEntity.oldPosition(), balloon.latchedEntity.position());
+            Vec3 latchedLerp = Mth.lerp(partialTick, latchedEntity.oldPosition(), latchedEntity.position());
             Vec3 balloonLerp = Mth.lerp(partialTick, balloon.oldPosition(), balloon.position());
             state.latchedAdjustment = latchedLerp.subtract(balloonLerp);
+            model = AdditionsModelCache.INSTANCE.BALLOON;
+        } else if (balloon.isLatchedToPos()) {
+            model = AdditionsModelCache.INSTANCE.BALLOON;
+        } else {
+            model = AdditionsModelCache.INSTANCE.BALLOON_FREE;
         }
-        BaseModelCache.BlockStateModelPartHelper model = latched ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
         state.model = model.getBakedModel();
     }
 
