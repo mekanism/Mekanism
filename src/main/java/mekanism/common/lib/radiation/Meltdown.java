@@ -2,7 +2,6 @@ package mekanism.common.lib.radiation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,14 +47,14 @@ public class Meltdown {
           Codec.DOUBLE.fieldOf(SerializationConstants.CHANCE).forGetter(meltdown -> meltdown.chance),
           Codec.FLOAT.fieldOf(SerializationConstants.RADIUS).forGetter(meltdown -> meltdown.radius),
           UUIDUtil.CODEC.fieldOf(SerializationConstants.INVENTORY_ID).forGetter(meltdown -> meltdown.multiblockID),
-          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.AGE).forGetter(meltdown -> meltdown.ticksExisted)
+          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.AGE).forGetter(meltdown -> meltdown.ticksExisted),
+          Codec.BOOL.optionalFieldOf(SerializationConstants.EXPLODED, false).forGetter(meltdown -> meltdown.damageCalculator.wallExploded)
     ).apply(in, Meltdown::new));
 
     private static final int DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
 
     private final MeltdownDamageCalculator damageCalculator;
     private final VoxelCuboid bounds;
-    private final BlockPos minPos, maxPos;
     private final double magnitude, chance;
     private final UUID multiblockID;
     private final float radius;
@@ -63,24 +62,24 @@ public class Meltdown {
     private int ticksExisted;
 
     public Meltdown(VoxelCuboid bounds, double magnitude, double chance, float radius, UUID multiblockID) {
-        this(bounds, magnitude, chance, radius, multiblockID, 0);
+        this(bounds, magnitude, chance, radius, multiblockID, 0, false);
     }
 
-    private Meltdown(VoxelCuboid bounds, double magnitude, double chance, float radius, UUID multiblockID, int ticksExisted) {
+    private Meltdown(VoxelCuboid bounds, double magnitude, double chance, float radius, UUID multiblockID, int ticksExisted, boolean wallExploded) {
         this.bounds = bounds;
-        this.minPos = bounds.getMinPos();
-        this.maxPos = bounds.getMaxPos();
         this.magnitude = magnitude;
         this.chance = chance;
         this.radius = radius;
         this.multiblockID = multiblockID;
         this.ticksExisted = ticksExisted;
-        this.damageCalculator = new MeltdownDamageCalculator(this.bounds);
+        this.damageCalculator = new MeltdownDamageCalculator(bounds, wallExploded);
     }
 
     public boolean update(ServerLevel world) {
         ticksExisted++;
 
+        BlockPos minPos = bounds.getMinPos();
+        BlockPos maxPos = bounds.getMaxPos();
         RandomSource random = world.getRandom();
         if (random.nextInt() % MekanismUtils.TICKS_PER_HALF_SECOND == 0 && random.nextDouble() < magnitude * chance) {
             int x = Mth.nextInt(random, minPos.getX(), maxPos.getX());
@@ -152,10 +151,18 @@ public class Meltdown {
         @Override
         public int explode() {
             level().gameEvent(getDirectSourceEntity(), GameEvent.EXPLODE, center());
-            List<BlockPos> toBlow = Collections.emptyList();
-            //TODO - 26.1: Re-evaluate if there is a concern of this not exiting, even with the damage calculator persisting the wall explosion state between ticks
-            while (!damageCalculator.wallExploded) {
-                toBlow = calculateExplodedPositions();
+            List<BlockPos> toBlow = calculateExplodedPositions();
+            if (!damageCalculator.wallExploded) {
+                //If a wall hasn't been blown up yet, add one to the positions that need to be destroyed
+                BlockPos minPos = damageCalculator.bounds.getMinPos();
+                BlockPos maxPos = damageCalculator.bounds.getMaxPos();
+                Vec3 center = center();
+                int xWall = getCloserWall(center.x(), minPos.getX(), maxPos.getX());
+                int yWall = getCloserWall(center.y(), minPos.getY(), maxPos.getY());
+                int zWall = getCloserWall(center.z(), minPos.getZ(), maxPos.getZ());
+                BlockPos wallPos = new BlockPos(xWall, yWall, zWall);
+                assert damageCalculator.bounds.isWall(wallPos) : "Position " + wallPos + " is not a wall";
+                toBlow.add(wallPos);
             }
             hurtEntities(toBlow);
             if (interactsWithBlocks()) {
@@ -171,6 +178,13 @@ public class Meltdown {
 
             return toBlow.size();
         }
+
+        private int getCloserWall(double center, int min, int max) {
+            if (Math.abs(center - min) <= Math.abs(max - center)) {
+                return min;
+            }
+            return max;
+        }
     }
 
     @NullMarked
@@ -178,10 +192,11 @@ public class Meltdown {
 
         private final VoxelCuboid bounds;
         private boolean wasCanceled = false;
-        protected boolean wallExploded = false;
+        protected boolean wallExploded;
 
-        private MeltdownDamageCalculator(VoxelCuboid bounds) {
+        private MeltdownDamageCalculator(VoxelCuboid bounds, boolean wallExploded) {
             this.bounds = bounds;
+            this.wallExploded = wallExploded;
         }
 
         public void setCancelled(boolean wasCanceled) {
@@ -198,8 +213,8 @@ public class Meltdown {
             if (relative == CuboidRelative.WALLS) {
                 wallExploded = true;
             }
-            //restrict it to the multiblock if was cancelled
-            return !wasCanceled || relative != CuboidRelative.WALLS;
+            //restrict it to the multiblock if it was cancelled
+            return !wasCanceled || relative != CuboidRelative.OUTSIDE;
         }
     }
 }

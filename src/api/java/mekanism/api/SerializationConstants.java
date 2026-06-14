@@ -164,6 +164,8 @@ public final class SerializationConstants {
     public static final String ENERGY = "energy";
     public static final String ENERGY_USAGE = "energy_usage";
     public static final String ENUMS = "enums";
+    /// @since 10.8.0
+    public static final String EXPLODED = "exploded";
     public static final String EXTENDS = "extends";
     public static final String FIELDS = "fields";
     public static final String FILTER = "filter";
