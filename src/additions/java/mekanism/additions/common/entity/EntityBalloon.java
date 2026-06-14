@@ -99,9 +99,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void tick() {
-        xo = getX();
-        yo = getY();
-        zo = getZ();
+        setOldPos();
 
         //TODO - 26.1: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
         if (getY() >= level().getMaxY() + 1) {
