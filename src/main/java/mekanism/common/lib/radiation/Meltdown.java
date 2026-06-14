@@ -163,6 +163,7 @@ public class Meltdown {
                 BlockPos wallPos = new BlockPos(xWall, yWall, zWall);
                 assert damageCalculator.bounds.isWall(wallPos) : "Position " + wallPos + " is not a wall";
                 toBlow.add(wallPos);
+                damageCalculator.wallExploded = true;
             }
             hurtEntities(toBlow);
             if (interactsWithBlocks()) {
