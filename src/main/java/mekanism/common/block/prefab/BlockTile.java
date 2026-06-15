@@ -23,8 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -104,6 +106,17 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
             if (tile != null) {
                 tile.onNeighborChange(level, neighborPos);
+            }
+        }
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+        if (!level.isClientSide()) {
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
+            if (tile != null) {
+                tile.updatePower(level);
             }
         }
     }

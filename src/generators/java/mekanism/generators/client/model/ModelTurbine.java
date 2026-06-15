@@ -1,24 +1,23 @@
 package mekanism.generators.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
 import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import org.joml.Vector3f;
 
-public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
+public class ModelTurbine extends Model<TurbineBladeRenderState> {
 
     public static final ModelLayerLocation TURBINE_LAYER = new ModelLayerLocation(MekanismGenerators.rl("turbine"), "main");
     private static final Identifier TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
@@ -56,7 +55,7 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
           PartPose.offsetAndRotation(0, 20, 0, BLADE_ROTATE, 0, 0));
 
     public static LayerDefinition createLayerDefinition() {
-        return createLayerDefinition(16, 16, EXTENSION_NORTH, EXTENSION_EAST, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_NORTH, BLADE_EAST, BLADE_SOUTH,
+        return MekanismJavaModel.createLayerDefinition(16, 16, EXTENSION_NORTH, EXTENSION_EAST, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_NORTH, BLADE_EAST, BLADE_SOUTH,
               BLADE_WEST);
     }
 
@@ -67,7 +66,7 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
     private final ModelPart bladeSouth;
 
     public ModelTurbine(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(TURBINE_LAYER));
+        super(entityModelSet.bakeLayer(TURBINE_LAYER), RenderTypes::entitySolid);
         bladeWest = BLADE_WEST.getFromRoot(root);
         bladeEast = BLADE_EAST.getFromRoot(root);
         bladeNorth = BLADE_NORTH.getFromRoot(root);
@@ -81,31 +80,19 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
     @Override
     public void setupAnim(TurbineBladeRenderState state) {
         super.setupAnim(state);
-        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
-        root().rotateBy(Axis.YP.rotationDegrees(state.rotation));
+        root.rotateBy(Axis.YP.rotationDegrees(5 * state.index));
         float scale = state.index * 0.5F;
         float adjustedScale = scale / 16;
-        setupAnim(bladeWest, state.index, scale, adjustedScale, -0.25F, 0);
-        setupAnim(bladeEast, state.index, scale, adjustedScale, 0.25F, 0);
-        setupAnim(bladeNorth, state.index, adjustedScale, scale, 0, -0.25F);
-        setupAnim(bladeSouth, state.index, adjustedScale, scale, 0, 0.25F);
+        float transAmount = 2f;
+        setupAnim(bladeWest, state.index, scale, adjustedScale, -transAmount, 0);
+        setupAnim(bladeEast, state.index, scale, adjustedScale, transAmount, 0);
+        setupAnim(bladeNorth, state.index, adjustedScale, scale, 0, -transAmount);
+        setupAnim(bladeSouth, state.index, adjustedScale, scale, 0, transAmount);
     }
 
     private void setupAnim(ModelPart blade, int index, float scaleX, float scaleZ, float transX, float transZ) {
-        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
-        blade.rotateBy(Axis.YP.rotationDegrees(5 * index));
-        //TODO - 26.1: Validate that this is equivalent to the transforms that we previously had
-        /*poseStack.translate(transX, 0, transZ);
-        poseStack.scale(1 + scaleX, 1, 1 + scaleZ);
-        poseStack.translate(-transX, 0, -transZ);*/
-        blade.offsetRotation(new Vector3f(-transX * scaleX, 0, -transZ * scaleZ));
+        blade.offsetPos(new Vector3f(-transX * index, 0, -transZ * index));
         blade.offsetScale(new Vector3f(scaleX, 0, scaleZ));
-    }
-
-    @Override
-    public void collect(TurbineBladeRenderState turbineBladeRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
-        setupAnim(turbineBladeRenderState);
-        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 
     public static class TurbineBladeRenderState {
