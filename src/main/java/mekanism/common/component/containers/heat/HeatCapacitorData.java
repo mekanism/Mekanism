@@ -30,12 +30,18 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
     );
 
     public HeatCapacitorData(double heat, double capacity) {
-        MekanismPreconditions.checkNonNegative(heat);
         this(OptionalDouble.of(heat), capacity);
     }
 
     public HeatCapacitorData(double capacity) {
         this(OptionalDouble.empty(), capacity);
+    }
+
+    public HeatCapacitorData {
+        if (heat.isPresent()) {
+            MekanismPreconditions.checkNonNegative(heat.getAsDouble());
+        }
+        MekanismPreconditions.checkHeatCapacity(capacity);
     }
 
     public HeatCapacitorData withHeat(double heat) {
