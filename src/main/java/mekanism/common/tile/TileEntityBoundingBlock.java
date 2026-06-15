@@ -80,7 +80,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return main != null && main.triggerBoundingEvent(worldPosition.subtract(getMainPos()), id, param) || handled;
     }
 
-    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
+    public void onNeighborChange(LevelReader level) {
         if (!level.isClientSide()) {
             int power = level.getBestNeighborSignal(getBlockPos());
             if (currentRedstoneLevel != power) {

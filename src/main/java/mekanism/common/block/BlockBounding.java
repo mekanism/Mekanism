@@ -35,6 +35,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -227,15 +228,24 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighborPos) {
+        BlockPos mainPos = getMainBlockPos(level, pos);
+        if (mainPos != null) {
+            level.getBlockState(mainPos).onNeighborChange(level, mainPos, neighborPos);
+        }
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         if (!level.isClientSide()) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, pos);
             if (tile != null) {
-                tile.onNeighborChange(level, neighborPos);
+                tile.onNeighborChange(level);
             }
         }
         BlockPos mainPos = getMainBlockPos(level, pos);
         if (mainPos != null) {
-            level.getBlockState(mainPos).onNeighborChange(level, mainPos, neighborPos);
+            BlockState mainState = level.getBlockState(mainPos);
+            mainState.handleNeighborChanged(level, mainPos, mainState.getBlock(), orientation, movedByPiston);
         }
     }
 
