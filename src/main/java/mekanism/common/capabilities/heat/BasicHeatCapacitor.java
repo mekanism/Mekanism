@@ -2,12 +2,11 @@ package mekanism.common.capabilities.heat;
 
 import java.util.function.DoubleSupplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.lib.transaction.SimpleDoubleJournal;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -33,9 +32,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
 
     public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
-        if (heatCapacity < 1) {
-            throw new IllegalArgumentException("Heat capacity must be at least one");
-        }
+        MekanismPreconditions.checkHeatCapacity(heatCapacity);
         if (inverseConductionCoefficient < 1) {
             throw new IllegalArgumentException("Inverse conduction coefficient must be at least one");
         }
@@ -51,21 +48,8 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
         this.listener = listener;
     }
 
-    private void initStoredHeat() {
-        if (storedHeat == -1) {
-            //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
-            storedHeat = Math.max(0D, getHeatCapacity() * getAmbientTemperature());
-        }
-    }
-
     protected double getAmbientTemperature() {
         return ambientTempSupplier == null ? HeatAPI.AMBIENT_TEMP : ambientTempSupplier.getAsDouble();
-    }
-
-    @Override
-    public double getTemperature() {
-        //TODO - 26.1 (heat): Do we want to define this as the default in IHeatCapacitor? Also should we validate the capacity is non-zero
-        return getHeat() / getHeatCapacity();
     }
 
     @Override
@@ -92,9 +76,9 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
     @Override
     public void handleHeat(double transfer, TransactionContext transaction) {
         if (Math.abs(transfer) > HeatAPI.EPSILON) {
-            initStoredHeat();
+            double heat = getHeat();
             updateSnapshots(transaction);
-            storedHeat = Math.max(0D, storedHeat + transfer);
+            storedHeat = Math.max(0D, heat + transfer);
         }
     }
 
@@ -103,27 +87,27 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
         return Mth.equal(getTemperature(), getAmbientTemperature());
     }
 
-    @Override
-    public void deserialize(ValueInput input) {
-        //TODO - 26.1: Re-evaluate this. It is equivalent to super, except skips the contents change call
-        storedHeat = Math.max(0D, input.getDoubleOr(SerializationConstants.STORED, storedHeat));
-        heatCapacity.value = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
+    private boolean isHeatInitialized() {
+        return storedHeat != -1;
     }
 
     @Override
-    public double getHeat() {
-        initStoredHeat();
+    public final double getHeat() {
+        if (!isHeatInitialized()) {
+            //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
+            storedHeat = Math.max(0D, getHeatCapacity() * getAmbientTemperature());
+        }
         return storedHeat;
     }
 
     @Override
     public void setHeat(double heat, @Nullable TransactionContext transaction) {
-        //TODO - 26.1 (heat): Do we want to strictly deny values less than zero instead of just clamping to zero?
-        heat = Math.max(0D, heat);
+        MekanismPreconditions.checkNonNegative(heat);
         double originalState = getHeat();
         if (!Mth.equal(heat, originalState)) {
             if (transaction == null) {
                 storedHeat = heat;
+                //TODO - 26.1: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one but it might be useful to have
                 onContentsChanged(originalState);
             } else {
                 updateSnapshots(transaction);
@@ -133,18 +117,18 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
     }
 
     public void updateHeatAndCapacity(double newCapacity, @Nullable TransactionContext transaction) {
-        if (storedHeat == -1) {
+        if (isHeatInitialized()) {
+            //If the heat has been initialized, calculate the value the heat should have, and also update the capacity
+            setHeatAndCapacity(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature(), newCapacity, transaction);
+        } else {
             //If heat hasn't been initialized yet, just update the capacity
             setHeatCapacity(newCapacity, transaction);
-        } else {
-            //Otherwise calculate the value the heat should have, and also update the capacity
-            setHeatAndCapacity(storedHeat + (newCapacity - getHeatCapacity()) * getAmbientTemperature(), newCapacity, transaction);
         }
     }
 
     @Override
     public void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction) {
-        //TODO - 26.1 (heat): Sanitize heat capacity?
+        MekanismPreconditions.checkHeatCapacity(newCapacity);
         if (transaction != null) {
             //If we are in a transactional context, update the snapshot of the heat capacity before updating the value
             heatCapacity.updateSnapshots(transaction);
@@ -155,8 +139,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
 
     @Override
     protected Double createSnapshot() {
-        //TODO - 26.1: Should we force init the heat here? Or in updateSnapshots? Or just trust it is done correctly
-        return storedHeat;
+        return getHeat();
     }
 
     @Override

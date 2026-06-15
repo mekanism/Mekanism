@@ -106,13 +106,13 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public void writeReducedUpdatedTag(ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        output.putDouble(SerializationConstants.TEMPERATURE, buffer.getHeat());
+        output.putDouble(SerializationConstants.HEAT_STORED, buffer.getHeat());
     }
 
     @Override
     public boolean handleUpdateTag(ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
-        buffer.setHeat(input.getDoubleOr(SerializationConstants.TEMPERATURE, buffer.getHeat()), null);
+        buffer.setHeat(input.getDoubleOr(SerializationConstants.HEAT_STORED, buffer.getHeat()), null);
         return refreshModelData;
     }
 
