@@ -80,24 +80,18 @@ public class ModelTurbine extends Model<TurbineBladeRenderState> {
     @Override
     public void setupAnim(TurbineBladeRenderState state) {
         super.setupAnim(state);
-        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
-        root().rotateBy(Axis.YP.rotationDegrees(state.rotation));
+        root.rotateBy(Axis.YP.rotationDegrees(5 * state.index));
         float scale = state.index * 0.5F;
         float adjustedScale = scale / 16;
-        setupAnim(bladeWest, state.index, scale, adjustedScale, -0.25F, 0);
-        setupAnim(bladeEast, state.index, scale, adjustedScale, 0.25F, 0);
-        setupAnim(bladeNorth, state.index, adjustedScale, scale, 0, -0.25F);
-        setupAnim(bladeSouth, state.index, adjustedScale, scale, 0, 0.25F);
+        float transAmount = 2f;
+        setupAnim(bladeWest, state.index, scale, adjustedScale, -transAmount, 0);
+        setupAnim(bladeEast, state.index, scale, adjustedScale, transAmount, 0);
+        setupAnim(bladeNorth, state.index, adjustedScale, scale, 0, -transAmount);
+        setupAnim(bladeSouth, state.index, adjustedScale, scale, 0, transAmount);
     }
 
     private void setupAnim(ModelPart blade, int index, float scaleX, float scaleZ, float transX, float transZ) {
-        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
-        blade.rotateBy(Axis.YP.rotationDegrees(5 * index));
-        //TODO - 26.1: Validate that this is equivalent to the transforms that we previously had
-        /*poseStack.translate(transX, 0, transZ);
-        poseStack.scale(1 + scaleX, 1, 1 + scaleZ);
-        poseStack.translate(-transX, 0, -transZ);*/
-        blade.offsetRotation(new Vector3f(-transX * scaleX, 0, -transZ * scaleZ));
+        blade.offsetPos(new Vector3f(-transX * index, 0, -transZ * index));
         blade.offsetScale(new Vector3f(scaleX, 0, scaleZ));
     }
 

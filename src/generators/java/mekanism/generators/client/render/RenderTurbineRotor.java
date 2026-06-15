@@ -1,6 +1,7 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import java.util.UUID;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
@@ -74,9 +75,11 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (state.housedBlades == 0) {//No blades, nothing to render
             return;
         }
+
         //Bottom blade
         poseStack.pushPose();
         poseStack.translate(0.5, -1, 0.5);
+        poseStack.mulPose(Axis.YP.rotationDegrees(state.lowerBlade.rotation));
         submitBlade(state, state.lowerBlade, poseStack, nodeCollector);
         poseStack.popPose();
 
@@ -84,6 +87,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (state.housedBlades == 2) {
             poseStack.pushPose();
             poseStack.translate(0.5, -0.5, 0.5);
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.upperBlade.rotation));
             submitBlade(state, state.upperBlade, poseStack, nodeCollector);
             poseStack.popPose();
         }
