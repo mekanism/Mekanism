@@ -95,9 +95,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 poseStack.mulPose(Axis.ZP.rotationDegrees(90));
             }
         }
-        //TODO - 26.1: Validate this render type and that the texture is accessible
-        //TODO - 26.1 crumble - add support to MekJavaModel if it's needed
-        this.model.collect(state.modelState, poseStack, nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false);
+        nodeCollector.submitModel(this.model, state.modelState, poseStack, this.model.getRenderType(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
         RenderType renderType = this.model.getRenderType();
         nodeCollector.submitModelPart(
               this.lightBox,
