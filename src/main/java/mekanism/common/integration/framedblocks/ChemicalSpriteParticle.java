@@ -7,7 +7,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
@@ -65,7 +64,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
 
     @Override
     public int getLightCoords(float partialTick) {
-        int light = WorldUtils.isChunkLoaded(level, pos) ? LevelRenderer.getLightCoords(level, pos) : 0;
+        int light = WorldUtils.isChunkLoaded(level, pos) ? LightCoordsUtil.getLightCoords(level, pos) : 0;
         int block = Math.max(brightness, LightCoordsUtil.block(light));
         return LightCoordsUtil.pack(block, LightCoordsUtil.sky(light));
     }

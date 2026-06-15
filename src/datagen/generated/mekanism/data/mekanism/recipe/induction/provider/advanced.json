@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanism:advanced_energy_cube",
     "C": "#c:circuits/advanced",

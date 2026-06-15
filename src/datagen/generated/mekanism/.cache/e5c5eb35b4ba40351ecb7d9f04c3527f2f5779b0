@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-02T17:07:55.4032188	Advancements
+// 26.2-rc-2	2026-06-15T14:53:18.6710962	Advancements
 cc0f85f030befc152798d57b040f40fe7b1e67be data/mekanism/advancement/advanced_control_circuit.json
 e00a71a74d7c77c23cd21bbb6af2460c9035af75 data/mekanism/advancement/advanced_qio_drive.json
 c6b503463ec0aa67902a2d9e498b907d2d1702aa data/mekanism/advancement/alarm.json
@@ -71,7 +71,7 @@ bbb4ad5b0a064ffff37dbf2fdec82f889640186a data/mekanism/advancement/radiation_poi
 51cb4b392547b22f2533af12d9ab4286d9447862 data/mekanism/advancement/radiation_prevention.json
 3a7382585a049932447c37810a3c163f414a8e03 data/mekanism/advancement/reinforced_alloy.json
 41952118881cb852859520f14d07e398e83ffcab data/mekanism/advancement/restrictive_item_transport.json
-c11ff173414c3f1445f7e25c7cbc627ac9aefa92 data/mekanism/advancement/robit.json
+5e23e2a047f086cae5200f7ddb6895ad45e32a9b data/mekanism/advancement/robit.json
 b28aef0151f8790f959895daed13d3412306c035 data/mekanism/advancement/robit_aesthetics.json
 5e4e118a79e6ff832e0aa66450e32139111d8b13 data/mekanism/advancement/root.json
 f5cc3f59083bc20aa4d84d62503312e39aa12e39 data/mekanism/advancement/running_free.json

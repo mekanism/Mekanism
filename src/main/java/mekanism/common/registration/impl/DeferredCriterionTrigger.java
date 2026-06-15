@@ -1,9 +1,9 @@
 package mekanism.common.registration.impl;
 
 import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.resources.ResourceKey;
 
 public class DeferredCriterionTrigger<INSTANCE extends CriterionTriggerInstance, TRIGGER extends CriterionTrigger<INSTANCE>> extends MekanismDeferredHolder<CriterionTrigger<?>, TRIGGER> {

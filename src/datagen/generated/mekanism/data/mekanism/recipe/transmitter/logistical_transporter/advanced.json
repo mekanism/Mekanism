@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": "#mekanism:alloys/infused",
     "P": "mekanism:basic_logistical_transporter"

@@ -32,7 +32,6 @@
               "type": "minecraft:item",
               "functions": [
                 {
-                  "add": false,
                   "count": {
                     "type": "minecraft:uniform",
                     "max": 4.0,

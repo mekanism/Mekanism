@@ -32,13 +32,13 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.EntityTypePredicate;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.PlayerTrigger;
-import net.minecraft.advancements.criterion.SummonedEntityTrigger;
-import net.minecraft.advancements.criterion.UsingItemTrigger;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntityTypePredicate;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.PlayerTrigger;
+import net.minecraft.advancements.triggers.SummonedEntityTrigger;
+import net.minecraft.advancements.triggers.UsingItemTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -46,6 +46,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
@@ -436,15 +437,15 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_MOOSHROOM)
               .display(Items.MOOSHROOM_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.MOOSHROOM))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.MOOSHROOM))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_PIG)
               .display(Items.PIG_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.PIG))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.PIG))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_VILLAGER)
               .display(Items.VILLAGER_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.VILLAGER))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.VILLAGER))
               .save(consumer);
     }
 }

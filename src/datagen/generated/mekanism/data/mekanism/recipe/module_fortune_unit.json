@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "#c:storage_blocks/refined_glowstone",
     "A": "#c:alloys/elite",

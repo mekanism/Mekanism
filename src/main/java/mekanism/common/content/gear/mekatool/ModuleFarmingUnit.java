@@ -17,7 +17,7 @@ import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemAccessUtils;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -387,7 +387,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
 
         @Override
         public Vec3 getLightningPos(BlockPos pos) {
-            return pos.getCenter().add(offset);
+            return Vec3.atCenterOf(pos).add(offset);
         }
     }
 }

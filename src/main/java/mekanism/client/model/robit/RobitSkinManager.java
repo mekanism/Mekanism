@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.common.Mekanism;
@@ -44,8 +42,8 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.model.standalone.UnbakedStandaloneModel;
-import org.jspecify.annotations.Nullable;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 public class RobitSkinManager {
 
@@ -82,7 +80,8 @@ public class RobitSkinManager {
     private RobitSkinManager(ModelBakery bakery, ModelBakery.MissingModels missingModels) {
         this.resolvedModelMap = bakery.resolvedModels;
         missingModelPart = missingModels.blockPart();
-        this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockSheet());
+        //TODO - 26.2: Validate this render sheet
+        this.bakedMissingModel = new BakeResult(Collections.singletonList(missingModelPart), Sheets.cutoutBlockItemSheet());
         modelBaker = bakery.new ModelBakerImpl(new RobitLateMaterialBaker(), new ModelBakery.InternerImpl(), missingModels);
     }
 
@@ -158,30 +157,20 @@ public class RobitSkinManager {
     /// @param renderType Render type to use - the one for missing will be different, this lets the renderer not care
     public record BakeResult(List<BlockStateModelPart> model, RenderType renderType) {}
 
-    public static class RobitLateMaterialBaker implements MaterialBaker {
+    public static class RobitLateMaterialBaker extends MaterialBaker {
 
-        private final Map<Material, Material.Baked> bakedMaterials = new ConcurrentHashMap<>();
-        private final Function<Material, Material.Baked> bakerFunction = this::bake;
-        private final Material.Baked bakedMissing = new Material.Baked(RobitSpriteUploader.getAtlas().missingSprite(), false);
+        public RobitLateMaterialBaker() {
+            super(RobitSpriteUploader.getAtlas().missingSprite());
+        }
 
-        private Material.Baked bake(Material material) {
+        @Override
+        public Material.@Nullable Baked bake(Material material) {
             TextureAtlasSprite sprite = RobitSpriteUploader.getSprite(material.sprite());
-            if (sprite == bakedMissing.sprite()) {
+            if (sprite == RobitSpriteUploader.getAtlas().missingSprite()) {
                 Mekanism.logger.error("Missing sprite: {}", material.sprite());
-                return bakedMissing;
+                return replacementForMissingMaterial(material);
             }
             return new Material.Baked(sprite, material.forceTranslucent());
-        }
-
-        @Override
-        public Material.Baked get(Material material, ModelDebugName name) {
-            return bakedMaterials.computeIfAbsent(material, bakerFunction);
-        }
-
-        @Override
-        public Material.Baked reportMissingReference(String reference, ModelDebugName name) {
-            Mekanism.logger.warn("Missing texture references in model {}:\\n{}", reference, name.debugName());
-            return bakedMissing;
         }
     }
 

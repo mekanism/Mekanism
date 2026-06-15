@@ -15,7 +15,6 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -28,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -74,7 +74,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             Optional<BlockState> blockState = WorldUtils.getBlockState(level, coverPos);
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(level, coverPos, state.facing.getOpposite())) {
                 //Calculate lighting based on the light at the block the bin is facing
-                state.lightCoords = LevelRenderer.getLightCoords(level, coverPos);
+                state.lightCoords = LightCoordsUtil.getLightCoords(level, coverPos);
                 //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
                 int seed = Ints.saturatedCast(state.blockPos.asLong());
                 //TODO - 26.1: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item

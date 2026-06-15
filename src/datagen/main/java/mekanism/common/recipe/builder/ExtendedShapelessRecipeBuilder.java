@@ -21,6 +21,14 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         super(result, count);
     }
 
+    public static ExtendedShapelessRecipeBuilder shapelessRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result) {
+        return shapelessRecipe(lookup, result, 1);
+    }
+
+    public static ExtendedShapelessRecipeBuilder shapelessRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result, int count) {
+        return shapelessRecipe(lookup.getOrThrow(result), count);
+    }
+
     public static ExtendedShapelessRecipeBuilder shapelessRecipe(Holder<Item> result) {
         return shapelessRecipe(result, 1);
     }
@@ -45,12 +53,12 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return addIngredient(Ingredient.of(tag), quantity);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Item item) {
-        return addIngredient(item, 1);
+    public ExtendedShapelessRecipeBuilder addIngredient(HolderGetter<Item> lookup, ResourceKey<Item> id) {
+        return addIngredient(lookup, id, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Item item, int quantity) {
-        return addIngredient(Ingredient.of(item), quantity);
+    public ExtendedShapelessRecipeBuilder addIngredient(HolderGetter<Item> lookup, ResourceKey<Item> id, int quantity) {
+        return addIngredient(lookup.getOrThrow(id), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(BlockRegistryObject<?, ?> block) {

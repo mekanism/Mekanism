@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanismadditions:dark_red_plastic",
     "R": "#c:rods/plastic"

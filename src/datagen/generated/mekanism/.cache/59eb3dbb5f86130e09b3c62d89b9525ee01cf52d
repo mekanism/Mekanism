@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-02T17:07:55.3837788	Loot Tables
+// 26.2-rc-2	2026-06-15T14:53:18.6480966	Loot Tables
 2add19cb98cfd3f3ca417b9c365e771147facb9d data/mekanism/loot_table/blocks/advanced_bin.json
 82507e14fd13f5ede2ee079987b087c29f2006d4 data/mekanism/loot_table/blocks/advanced_chemical_tank.json
 c7c2e7e4ac1e8392c57f95273411c883351cee88 data/mekanism/loot_table/blocks/advanced_combining_factory.json
@@ -52,7 +52,7 @@ ffb9db8f08e961fabaa28b9e935cbfc5bca12ece data/mekanism/loot_table/blocks/block_o
 f2af457febbda716576b137d59f0c443350c2b72 data/mekanism/loot_table/blocks/block_raw_uranium.json
 6393a20db6db3da98f726ba1c99f9d00a2a9883c data/mekanism/loot_table/blocks/block_refined_glowstone.json
 8d0ba0ab72f4b09ac91c8d1ee4d6ffbb0546fd46 data/mekanism/loot_table/blocks/block_refined_obsidian.json
-233ffb47c2ba3b891057fcac6377f32376ca58f0 data/mekanism/loot_table/blocks/block_salt.json
+09b127d31878ec2918427d778420a12b326eac27 data/mekanism/loot_table/blocks/block_salt.json
 c8915294769480140de3cfffae2da31df8ac5003 data/mekanism/loot_table/blocks/block_steel.json
 045d16879a05f1e74a92bbba4f1d9bec6496a25d data/mekanism/loot_table/blocks/block_tin.json
 ddd796aafb23e6ca96a0dea000d6f353015d2a4a data/mekanism/loot_table/blocks/block_uranium.json
@@ -72,7 +72,7 @@ f94a851be4840f871a000c951095749831ae1d97 data/mekanism/loot_table/blocks/chemica
 95c63e0bae685aeabf2a97a2763dc23654d4eb85 data/mekanism/loot_table/blocks/creative_energy_cube.json
 bc2586d23c649a0aaa5b4cb949dfa56e205d2978 data/mekanism/loot_table/blocks/creative_fluid_tank.json
 88eb70e2134797e6f53c12cbec18c879f4d96911 data/mekanism/loot_table/blocks/crusher.json
-09b3aa0206a715effb64d6a2cf4aaa19bcdad417 data/mekanism/loot_table/blocks/deepslate_fluorite_ore.json
+2e8991b9033126572abca42a1d999bfd922f6534 data/mekanism/loot_table/blocks/deepslate_fluorite_ore.json
 f14b24e75d6e202ed5badb1e57f095e2673e583b data/mekanism/loot_table/blocks/deepslate_lead_ore.json
 8fd7b7a639a95adcbe9e27879518758de868ffca data/mekanism/loot_table/blocks/deepslate_osmium_ore.json
 b456de06644e4dbd9c01648d4b3fa6630fe89ddd data/mekanism/loot_table/blocks/deepslate_tin_ore.json
@@ -107,7 +107,7 @@ f74b1d60906c8882a185736f655a1fe90a3f6f82 data/mekanism/loot_table/blocks/elite_s
 ba0cb9f7a688c1450c2d9b2e44c77bfb509bfbeb data/mekanism/loot_table/blocks/energized_smelter.json
 3c0fa5ae76f46142c9fb396fe667994b5972bb10 data/mekanism/loot_table/blocks/enrichment_chamber.json
 6e376fca7c4682bbdda53647dc546bc300b98b9e data/mekanism/loot_table/blocks/fluidic_plenisher.json
-4b06648ffedba79039444cab8c6f246cf69370c8 data/mekanism/loot_table/blocks/fluorite_ore.json
+2a575f46ff85492625f68a2dd8dbee9c9800d280 data/mekanism/loot_table/blocks/fluorite_ore.json
 c73a3a855150e288debd99ed725b1155d379db69 data/mekanism/loot_table/blocks/formulaic_assemblicator.json
 5d5657c6572b3c2d794ee6f8769dba037a807acf data/mekanism/loot_table/blocks/fuelwood_heater.json
 d280ac21c58c4b5277e6e5963482b81d084d705f data/mekanism/loot_table/blocks/induction_casing.json

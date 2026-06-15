@@ -114,11 +114,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             armPos.translate(baseModel, poseStack, state);
             PoseStack.Pose last = poseStack.last();
             if (hasOpaqueArm) {
-                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, MekanismRenderType.MEKASUIT, false, stack.hasFoil());
+                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, MekanismRenderType.MEKASUIT, false);
                 putQuads(armorQuads.opaqueQuads().get(armPos), builder, last, lightCoords, getColor(stack));
             }
             if (hasTransparentArm) {
-                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS), false, stack.hasFoil());
+                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS), false);
                 putQuads(armorQuads.transparentQuads().get(armPos), builder, last, lightCoords, Color.WHITE);
             }
             poseStack.popPose();
@@ -133,17 +133,17 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             float f1 = 1.0F / BABY_MODEL_TRANSFORM.babyBodyScale();
             poseStack.scale(f1, f1, f1);
             poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.bodyYOffset() / 16.0F, 0.0D);
-            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), stack.hasFoil(), state);
+            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), state);
             poseStack.popPose();
         } else {
-            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), stack.hasFoil(), state);
+            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), state);
         }
     }
 
     private <STATE extends HumanoidRenderState> void renderMekaSuit(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector,
-          int lightCoords, Color color, boolean hasEffect, STATE state) {
+          int lightCoords, Color color, STATE state) {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
-        render(baseModel, nodeCollector, poseStack, lightCoords, color, hasEffect, state, armorQuads.opaqueQuads(), false);
+        render(baseModel, nodeCollector, poseStack, lightCoords, color, state, armorQuads.opaqueQuads(), false);
 
         if (type == EquipmentSlot.CHEST) {
             //TODO - 26.1 models
@@ -165,11 +165,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
 
         //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, nodeCollector, poseStack, lightCoords, Color.WHITE, hasEffect, state, armorQuads.transparentQuads(), true);
+        render(baseModel, nodeCollector, poseStack, lightCoords, Color.WHITE, state, armorQuads.transparentQuads(), true);
     }
 
     private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
-          Color color, boolean hasEffect, STATE state, Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
+          Color color, STATE state, Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
         //TODO - 26.1 models
         /*if (!quadMap.isEmpty()) {
             RenderType renderType = transparent ? RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS) : MekanismRenderType.MEKASUIT;

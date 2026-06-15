@@ -83,7 +83,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return -1;
         } else if (tanks > 1) {
             //Cycle through multiple tanks every second, to save some space if multiple tanks are present
-            return (Minecraft.getInstance().gui.getGuiTicks() / SharedConstants.TICKS_PER_SECOND) % tanks;
+            return (Minecraft.getInstance().gui.hud.getGuiTicks() / SharedConstants.TICKS_PER_SECOND) % tanks;
         }
         return 0;
     }

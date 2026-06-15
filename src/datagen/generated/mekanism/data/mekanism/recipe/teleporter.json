@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "#c:circuits/basic",
     "T": "mekanism:teleportation_core",

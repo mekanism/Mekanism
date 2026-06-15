@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "C": "#c:circuits/basic",
     "E": "mekanism:energy_tablet",

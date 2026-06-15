@@ -12,10 +12,10 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
@@ -100,7 +100,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     this.items,
                     ItemTags.PLANKS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Items.BAMBOO_MOSAIC
+                    BlockItemIds.BAMBOO_MOSAIC.item()
               ), 20),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
@@ -122,7 +122,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     this.items,
                     ItemTags.WOODEN_SLABS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Items.BAMBOO_MOSAIC_SLAB
+                    BlockItemIds.BAMBOO_MOSAIC_SLAB.item()
               )),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
@@ -135,7 +135,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     this.items,
                     ItemTags.WOODEN_STAIRS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Items.BAMBOO_MOSAIC_STAIRS
+                    BlockItemIds.BAMBOO_MOSAIC_STAIRS.item()
               )),
               IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 15),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 15),

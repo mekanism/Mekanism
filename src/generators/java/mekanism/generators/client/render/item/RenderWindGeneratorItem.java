@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGeneratorRotationRenderState> {
 
     private static final int SPEED = 16;
-    private static int lastTicksUpdated = 0;
+    private static long lastTicksUpdated = 0;
     private static int angle = 0;
     private final ModelWindGenerator windGenerator;
     private static final WindGeneratorRotationRenderState ZERO_ANGLE = new WindGeneratorRotationRenderState(0);
@@ -41,7 +41,7 @@ public class RenderWindGeneratorItem implements SpecialModelRenderer<WindGenerat
                 //If the dimension is blacklisted, don't try to tick it at all
                 tickingNormally = false;
             } else {
-                int ticks = Minecraft.getInstance().levelRenderer.getTicks();
+                long ticks = Minecraft.getInstance().gameRenderer.gameRenderState().levelRenderState.gameTime;
                 if (lastTicksUpdated != ticks) {
                     angle = (angle + SPEED) % 360;
                     lastTicksUpdated = ticks;

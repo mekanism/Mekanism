@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_bogged"
+              "minecraft:entity_type": "mekanismadditions:baby_bogged"
             }
           }
         ]
@@ -22,7 +22,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_creeper"
+              "minecraft:entity_type": "mekanismadditions:baby_creeper"
             }
           }
         ]
@@ -36,7 +36,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_enderman"
+              "minecraft:entity_type": "mekanismadditions:baby_enderman"
             }
           }
         ]
@@ -50,7 +50,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_skeleton"
+              "minecraft:entity_type": "mekanismadditions:baby_skeleton"
             }
           }
         ]
@@ -64,7 +64,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_stray"
+              "minecraft:entity_type": "mekanismadditions:baby_stray"
             }
           }
         ]
@@ -78,7 +78,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanismadditions:baby_wither_skeleton"
+              "minecraft:entity_type": "mekanismadditions:baby_wither_skeleton"
             }
           }
         ]

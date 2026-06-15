@@ -1,10 +1,9 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.FaceInfo;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -45,26 +44,26 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
 
     @Override
     @NullMarked
-    public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack poseStack, boolean translucentPass, LevelRenderState levelRenderState) {
-        if (renderState.isTranslucent() == translucentPass) {
-            Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-            TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
-            VertexConsumer buffer = renderer.getBuffer(RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS));
-            poseStack.pushPose();
-            poseStack.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
+    public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack poseStack, LevelRenderState levelRenderState) {
+        //TODO - 26.2: Figure out if we need an equivalent to this
+        //if (renderState.isTranslucent() == translucentPass) {
+        Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+        poseStack.pushPose();
+        poseStack.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
 
-            //if top/bottom face, try to rotate so the bottom is as close to screen bottom as we can get
-            if (face == Direction.UP || face == Direction.DOWN) {
-                Direction cameraFacing = Direction.fromYRot(levelRenderState.cameraRenderState.yRot);
-                if (cameraFacing != Direction.NORTH) {
-                    poseStack.rotateAround(V_ROT[cameraFacing.ordinal() - V_ROT_OFFSET], 0.5F, 1, 0.5F);
-                }
+        //if top/bottom face, try to rotate so the bottom is as close to screen bottom as we can get
+        if (face == Direction.UP || face == Direction.DOWN) {
+            Direction cameraFacing = Direction.fromYRot(levelRenderState.cameraRenderState.yRot);
+            if (cameraFacing != Direction.NORTH) {
+                poseStack.rotateAround(V_ROT[cameraFacing.ordinal() - V_ROT_OFFSET], 0.5F, 1, 0.5F);
             }
+        }
 
-            PoseStack.Pose pose = poseStack.last();
+        //TODO - 26.2: Is custom geometry the correct way to do this?
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.eyes(TextureAtlas.LOCATION_BLOCKS), (pose, buffer) -> {
+            TextureAtlasSprite sprite = MekanismRenderer.overlays.get(type);
             Vector3f normal = pose.transformNormal(face.getUnitVec3f(), new Vector3f());
             Matrix4f matrix = pose.pose();
-
             //face draw code donated by XFactHD
             FaceInfo faceInfo = FaceInfo.fromFacing(face);
             for (int vertex = 0; vertex < 4; vertex++) {
@@ -81,9 +80,10 @@ class ConfiguratorOverlayHandler implements CustomBlockOutlineRenderer {
                       .setLight(LightCoordsUtil.FULL_BRIGHT)
                       .setNormal(normal.x, normal.y, normal.z);
             }
+        });
 
-            poseStack.popPose();
-        }
+        poseStack.popPose();
+        //}
         return false;
     }
 

@@ -178,6 +178,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelType;
@@ -528,7 +529,7 @@ public class ClientRegistration {
         for (PlayerModelType skin : event.getSkins()) {
             AvatarRenderer<AbstractClientPlayer> playerRenderer = event.getPlayerRenderer(skin);
             if (playerRenderer != null) {
-                addCustomLayers(EntityType.PLAYER, playerRenderer, event.getContext());
+                addCustomLayers(EntityTypes.PLAYER, playerRenderer, event.getContext());
             }
         }
         //Add our own custom armor and elytra layer to everything that has an armor layer

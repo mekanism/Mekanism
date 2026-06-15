@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": "#c:gems/fluorite",
     "C": "#c:circuits/ultimate",

@@ -11,6 +11,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -111,35 +112,35 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "phantom_membrane"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Items.RED_WOOL),
+              IngredientCreatorAccess.item().from(Items.WOOL.red()),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
               new ItemStackTemplate(Items.REDSTONE_BLOCK),
               500,
               false
         ).save(consumer, Mekanism.rl(basePath + "redstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Items.YELLOW_WOOL),
+              IngredientCreatorAccess.item().from(Items.WOOL.yellow()),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
               new ItemStackTemplate(Items.GLOWSTONE),
               500,
               false
         ).save(consumer, Mekanism.rl(basePath + "glowstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Items.BLUE_WOOL),
+              IngredientCreatorAccess.item().from(Items.WOOL.blue()),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
               new ItemStackTemplate(Items.LAPIS_BLOCK),
               500,
               false
         ).save(consumer, Mekanism.rl(basePath + "lapis_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Items.LIGHT_GRAY_WOOL),
+              IngredientCreatorAccess.item().from(Items.WOOL.lightGray()),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
               new ItemStackTemplate(Items.QUARTZ_BLOCK),
               500,
               false
         ).save(consumer, Mekanism.rl(basePath + "quartz_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(this.items, ItemTags.SMALL_FLOWERS),
+              IngredientCreatorAccess.item().from(this.items, BlockItemTags.SMALL_FLOWERS.item()),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
               new ItemStackTemplate(Items.CHORUS_FLOWER),
               500,

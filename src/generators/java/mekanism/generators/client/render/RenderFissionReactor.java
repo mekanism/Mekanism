@@ -100,21 +100,24 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                 poseStack.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 poseStack.scale(1, assembly.height() + 0.625F, 1);
+                //TODO - 26.2: Validate this render sheet
                 RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.HORIZONTAL, 0.05F, 0.01F, 0.05F, 0.95F, 0.99F, 0.95F,
-                      poseStack, Sheets.translucentBlockSheet(), nodeCollector, GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+                      poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
                       RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(assemblyPos), MekanismRenderer.WHITE_ICON_GETTER);
                 poseStack.popPose();
             }
             //profiler.pop();
         }
         if (state.coolantTexture != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.coolantMaxY, state.width - 0.02F, state.coolantTexture,
                   OverlayTexture.NO_OVERLAY, state.coolantGlow, state.coolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }
         if (state.heatedCoolantTexture != null) {
             //uses a slightly shrunken version of the model to prevent z-fighting
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.02F, 0.02F, 0.02F, state.length - 0.03F, state.heatedCoolantMaxY, state.width - 0.03F, state.heatedCoolantTexture,
                   OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_SKY, state.heatedCoolantColor, state.blockPos, state.renderLocation, state.length, state.width);
         }

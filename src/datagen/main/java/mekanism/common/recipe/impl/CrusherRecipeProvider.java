@@ -15,6 +15,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.HoneycombItem;
@@ -578,7 +579,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "short_grass", 1, 1, Items.DRY_SHORT_GRASS, Items.SHORT_GRASS);
         biofuel(consumer, basePath, "shroomlight", 4, 1, Items.SHROOMLIGHT);
         biofuel(consumer, basePath, "small_dripleaf", 1, 1, Items.SMALL_DRIPLEAF);
-        biofuel(consumer, basePath, "small_flowers", 1, 1, ItemTags.SMALL_FLOWERS);
+        biofuel(consumer, basePath, "small_flowers", 1, 1, BlockItemTags.SMALL_FLOWERS.item());
         biofuel(consumer, basePath, "pink_petals", 1, 1, Items.PINK_PETALS);//not in small_flowers tag
         biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);

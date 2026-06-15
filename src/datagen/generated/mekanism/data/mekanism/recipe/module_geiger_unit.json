@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanism:geiger_counter",
     "A": "#c:alloys/advanced",

@@ -85,7 +85,8 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
     @Override
     public void submit(BoilerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        RenderType renderType = Sheets.translucentBlockSheet();
+        //TODO - 26.2: Validate this render sheet
+        RenderType renderType = Sheets.translucentBlockItemSheet();
         if (state.waterTexture != null) {
             RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
                   0.01F, 0.01F, 0.01F, state.length - 0.02F, state.waterMaxY, state.width - 0.02F, state.waterTexture,

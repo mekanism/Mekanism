@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanism:dye_base",
     "A": "#mekanism:alloys/infused",

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "#c:circuits/basic",
     "G": "#c:glass_blocks/cheap",

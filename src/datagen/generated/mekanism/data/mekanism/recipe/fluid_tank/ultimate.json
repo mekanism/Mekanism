@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "I": "#c:ingots/iron",

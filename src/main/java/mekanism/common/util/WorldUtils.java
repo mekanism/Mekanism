@@ -23,7 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -473,7 +473,7 @@ public class WorldUtils {
         List<ItemStack> rawDrops = Block.getDrops(state, level, pos, tile, entity, tool);
         List<ItemEntity> initialDrops = new ArrayList<>(rawDrops.size());
         if (!rawDrops.isEmpty()) {
-            double itemHeight = EntityType.ITEM.getHeight() / 2.0;
+            double itemHeight = EntityTypes.ITEM.getHeight() / 2.0;
             for (ItemStack rawDrop : rawDrops) {
                 if (!rawDrop.isEmpty()) {//Probably won't have empty stacks, but just in case
                     double x = pos.getX() + 0.5;

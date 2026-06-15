@@ -42,7 +42,7 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
         }
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        this.model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, stack.hasFoil());
+        this.model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

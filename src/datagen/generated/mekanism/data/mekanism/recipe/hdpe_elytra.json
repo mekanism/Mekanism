@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": "#mekanism:alloys/atomic",
     "H": "mekanism:hdpe_sheet",

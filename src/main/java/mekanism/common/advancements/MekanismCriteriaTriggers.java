@@ -14,9 +14,9 @@ import mekanism.common.advancements.triggers.UseTierInstallerTrigger;
 import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.registration.impl.DeferredCriterionTrigger;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.criterion.PlayerTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
+import net.minecraft.advancements.triggers.PlayerTrigger;
 import net.minecraft.core.registries.Registries;
 
 public class MekanismCriteriaTriggers {

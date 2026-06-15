@@ -126,7 +126,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     }
 
     private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, Vec3 center) {
-        Vec3 start = data.coilPos.relative(data.side).getCenter();
+        Vec3 start = Vec3.atCenterOf(data.coilPos.relative(data.side));
         start = start.add(Vec3.atLowerCornerOf(data.side.getUnitVec3i()).scale(0.5));
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;

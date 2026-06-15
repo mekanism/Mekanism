@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "E": "mekanism:energy_tablet",
     "S": "#c:ingots/steel"

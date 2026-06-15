@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanism:alloy_atomic",
     "A": "#c:pellets/antimatter",

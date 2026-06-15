@@ -12,17 +12,16 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.RegistryUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -117,7 +116,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         armor(BOOTS, boots, ingot).save(output, MekanismTools.rl(baseArmorPath + "boots"));
         ExtendedShapedRecipeBuilder.shapedRecipe(shield)
               .pattern(SHIELD)
-              .key(Pattern.PREVIOUS, Items.SHIELD)
+              .key(Pattern.PREVIOUS, this.items, ItemIds.SHIELD)
               .key(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .save(output, MekanismTools.rl(name + "/shield"));
@@ -144,26 +143,26 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void registerVanillaPaxels() {
-        registerVanillaPaxel(ToolsItems.WOOD_PAXEL, Items.WOODEN_AXE, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, null);
-        registerVanillaPaxel(ToolsItems.STONE_PAXEL, Items.STONE_AXE, Items.STONE_PICKAXE, Items.STONE_SHOVEL, null);
-        registerVanillaPaxel(ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_NUGGET.builtInRegistryHolder());
-        registerVanillaPaxel(ToolsItems.GOLD_PAXEL, Items.GOLDEN_AXE, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLD_NUGGET.builtInRegistryHolder());
-        registerVanillaPaxel(ToolsItems.DIAMOND_PAXEL, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, null);
+        registerVanillaPaxel(ToolsItems.WOOD_PAXEL, ItemIds.WOODEN_AXE, ItemIds.WOODEN_PICKAXE, ItemIds.WOODEN_SHOVEL, null);
+        registerVanillaPaxel(ToolsItems.STONE_PAXEL, ItemIds.STONE_AXE, ItemIds.STONE_PICKAXE, ItemIds.STONE_SHOVEL, null);
+        registerVanillaPaxel(ToolsItems.IRON_PAXEL, ItemIds.IRON_AXE, ItemIds.IRON_PICKAXE, ItemIds.IRON_SHOVEL, ItemIds.IRON_NUGGET);
+        registerVanillaPaxel(ToolsItems.GOLD_PAXEL, ItemIds.GOLDEN_AXE, ItemIds.GOLDEN_PICKAXE, ItemIds.GOLDEN_SHOVEL, ItemIds.GOLD_NUGGET);
+        registerVanillaPaxel(ToolsItems.DIAMOND_PAXEL, ItemIds.DIAMOND_AXE, ItemIds.DIAMOND_PICKAXE, ItemIds.DIAMOND_SHOVEL, null);
         ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).save(output);
     }
 
-    private void registerVanillaPaxel(Holder<Item> paxel, Item axe, Item pickaxe, Item shovel, @Nullable Holder<Item> nugget) {
+    private void registerVanillaPaxel(Holder<Item> paxel, ResourceKey<Item> axe, ResourceKey<Item> pickaxe, ResourceKey<Item> shovel, @Nullable ResourceKey<Item> nugget) {
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
-              .key(AXE_CHAR, axe)
-              .key(PICKAXE_CHAR, pickaxe)
-              .key(SHOVEL_CHAR, shovel)
+              .key(AXE_CHAR, this.items, axe)
+              .key(PICKAXE_CHAR, this.items, pickaxe)
+              .key(SHOVEL_CHAR, this.items, shovel)
               .key(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .save(output);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = RegistryUtils.getName(nugget, BuiltInRegistries.ITEM).getPath() + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(output, createIngredient(paxel), nugget, 0.1F, 200,
+            String baseNuggetFrom = nugget.identifier().getPath() + "_from_";
+            RecipeProviderUtil.addSmeltingBlastingRecipes(output, createIngredient(paxel), items.getOrThrow(nugget), 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }

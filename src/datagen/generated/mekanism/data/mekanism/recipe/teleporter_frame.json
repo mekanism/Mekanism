@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "G": "#c:ingots/refined_glowstone",
     "I": "#c:ingots/refined_obsidian"

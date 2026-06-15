@@ -12,9 +12,10 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
@@ -82,41 +83,41 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
         //Brown
-        largeDye(consumer, basePath, Items.BROWN_DYE, EnumColor.BROWN, BOPItems.CATTAIL);
+        largeDye(consumer, basePath, ItemIds.DYE.brown(), EnumColor.BROWN, BOPItems.CATTAIL);
         //Red
-        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPItems.ORIGIN_ROSE, BOPItems.WATERLILY);
+        dye(consumer, basePath, ItemIds.DYE.red(), EnumColor.RED, BOPItems.ORIGIN_ROSE, BOPItems.WATERLILY);
         //Green
-        dye(consumer, basePath, Items.GREEN_DYE, EnumColor.DARK_GREEN, BOPItems.TINY_CACTUS);
+        dye(consumer, basePath, ItemIds.DYE.green(), EnumColor.DARK_GREEN, BOPItems.TINY_CACTUS);
         //Purple
-        dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.VIOLET, BOPItems.LAVENDER);
-        largeDye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.TALL_LAVENDER);
+        dye(consumer, basePath, ItemIds.DYE.purple(), EnumColor.PURPLE, BOPItems.VIOLET, BOPItems.LAVENDER);
+        largeDye(consumer, basePath, ItemIds.DYE.purple(), EnumColor.PURPLE, BOPItems.TALL_LAVENDER);
         //Magenta
-        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPItems.PURPLE_WILDFLOWERS);
+        dye(consumer, basePath, ItemIds.DYE.magenta(), EnumColor.PINK, BOPItems.PURPLE_WILDFLOWERS);
         //Orange
-        dye(consumer, basePath, Items.ORANGE_DYE, EnumColor.ORANGE, BOPItems.ORANGE_COSMOS, BOPItems.BURNING_BLOSSOM);
+        dye(consumer, basePath, ItemIds.DYE.orange(), EnumColor.ORANGE, BOPItems.ORANGE_COSMOS, BOPItems.BURNING_BLOSSOM);
         //Pink
-        dye(consumer, basePath, Items.PINK_DYE, EnumColor.BRIGHT_PINK, BOPItems.PINK_DAFFODIL, BOPItems.PINK_HIBISCUS);
+        dye(consumer, basePath, ItemIds.DYE.pink(), EnumColor.BRIGHT_PINK, BOPItems.PINK_DAFFODIL, BOPItems.PINK_HIBISCUS);
         //Cyan
-        dye(consumer, basePath, Items.CYAN_DYE, EnumColor.DARK_AQUA, BOPItems.GLOWFLOWER);
+        dye(consumer, basePath, ItemIds.DYE.cyan(), EnumColor.DARK_AQUA, BOPItems.GLOWFLOWER);
         //Gray
-        dye(consumer, basePath, Items.GRAY_DYE, EnumColor.DARK_GRAY, BOPItems.WILTED_LILY);
+        dye(consumer, basePath, ItemIds.DYE.gray(), EnumColor.DARK_GRAY, BOPItems.WILTED_LILY);
         //Light Blue
-        dye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPItems.BLUE_HYDRANGEA);
-        largeDye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPItems.ICY_IRIS);
+        dye(consumer, basePath, ItemIds.DYE.lightBlue(), EnumColor.INDIGO, BOPItems.BLUE_HYDRANGEA);
+        largeDye(consumer, basePath, ItemIds.DYE.lightBlue(), EnumColor.INDIGO, BOPItems.ICY_IRIS);
         //Light Gray
-        dye(consumer, basePath, Items.LIGHT_GRAY_DYE, EnumColor.GRAY, BOPItems.ENDBLOOM);
+        dye(consumer, basePath, ItemIds.DYE.lightGray(), EnumColor.GRAY, BOPItems.ENDBLOOM);
         //White
-        dye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPItems.WHITE_LAVENDER, BOPItems.WHITE_PETALS);
-        largeDye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPItems.TALL_WHITE_LAVENDER);
+        dye(consumer, basePath, ItemIds.DYE.white(), EnumColor.WHITE, BOPItems.WHITE_LAVENDER, BOPItems.WHITE_PETALS);
+        largeDye(consumer, basePath, ItemIds.DYE.white(), EnumColor.WHITE, BOPItems.TALL_WHITE_LAVENDER);
         //Yellow
-        dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPItems.GOLDENROD);
+        dye(consumer, basePath, ItemIds.DYE.yellow(), EnumColor.YELLOW, BOPItems.GOLDENROD);
     }
 
-    private void dye(RecipeOutput consumer, String basePath, Item output, EnumColor color, Item... inputs) {
+    private void dye(RecipeOutput consumer, String basePath, ResourceKey<Item> output, EnumColor color, Item... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
-                    new ItemStackTemplate(output, 2)
+                    new ItemStackTemplate(this.items.getOrThrow(output), 2)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
@@ -128,11 +129,11 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
 
-    private void largeDye(RecipeOutput consumer, String basePath, Item output, EnumColor color, Item... inputs) {
+    private void largeDye(RecipeOutput consumer, String basePath, ResourceKey<Item> output, EnumColor color, Item... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
-                    new ItemStackTemplate(output, 4)
+                    new ItemStackTemplate(this.items.getOrThrow(output), 4)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)

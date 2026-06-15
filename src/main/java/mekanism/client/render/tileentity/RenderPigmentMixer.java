@@ -1,8 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.List;
 import mekanism.client.model.MekanismModelCache;
@@ -19,7 +17,9 @@ import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,9 +70,10 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(shift, 0, shift);
         poseStack.mulPose(Axis.YN.rotationDegrees(state.rotation));
         poseStack.translate(-shift, 0, -shift);
+        //TODO - 26.2: Validate this render sheet
         nodeCollector.submitBlockModel(
               poseStack,
-              Sheets.cutoutBlockSheet(),
+              Sheets.cutoutBlockItemSheet(),
               MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(),
               BlockModelRenderState.EMPTY_TINTS,
               state.lightCoords,
@@ -104,25 +105,25 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack poseStack, VertexConsumer buffer, boolean isHighContrast) {
+    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState, boolean isHighContrast) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
             if (lines == null) {
                 lines = Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel());
             }
-            poseStack.pushPose();
+            matrix.pushPose();
             switch (mixer.getDirection()) {
-                case NORTH -> poseStack.translate(7 / 16F, 0, 6 / 16F);
-                case SOUTH -> poseStack.translate(7 / 16F, 0, 0.5F);
-                case WEST -> poseStack.translate(6 / 16F, 0, 7 / 16F);
-                case EAST -> poseStack.translate(0.5F, 0, 7 / 16F);
+                case NORTH -> matrix.translate(7 / 16F, 0, 6 / 16F);
+                case SOUTH -> matrix.translate(7 / 16F, 0, 0.5F);
+                case WEST -> matrix.translate(6 / 16F, 0, 7 / 16F);
+                case EAST -> matrix.translate(0.5F, 0, 7 / 16F);
             }
             float shift = 1 / 16F;
-            poseStack.translate(shift, 0, shift);
-            poseStack.mulPose(Axis.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
-            poseStack.translate(-shift, 0, -shift);
-            Pose pose = poseStack.last();
-            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
-            poseStack.popPose();
+            matrix.translate(shift, 0, shift);
+            matrix.mulPose(Axis.YN.rotationDegrees((levelRenderState.gameTime + partialTick) * SHAFT_SPEED % 360));
+            matrix.translate(-shift, 0, -shift);
+            //TODO - 26.2: Is custom geometry the correct way to do this?
+            submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, isHighContrast));
+            matrix.popPose();
         }
     }
 

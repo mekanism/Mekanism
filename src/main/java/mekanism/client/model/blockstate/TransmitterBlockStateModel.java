@@ -298,27 +298,23 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
     }
 
-    private abstract static class DelegateMaterialBaker implements MaterialBaker {
+    private abstract static class DelegateMaterialBaker extends MaterialBaker {
 
         private final MaterialBaker upstream;
 
         private DelegateMaterialBaker(MaterialBaker upstream) {
+            super(upstream.missingSprite.sprite());
             this.upstream = upstream;
         }
 
         @Override
-        public Material.Baked get(Material material, ModelDebugName name) {
-            return upstream.get(material, name);
-        }
-
-        @Override
-        public Material.Baked reportMissingReference(String reference, ModelDebugName name) {
-            return upstream.reportMissingReference(reference, name);
+        public Material.@Nullable Baked bake(Material material) {
+            return upstream.bake(material);
         }
 
         @Override
         public Material.Baked resolveSlot(TextureSlots slots, String id, ModelDebugName name) {
-            return MaterialBaker.super.resolveSlot(slots, remapReference(id), name);
+            return super.resolveSlot(slots, remapReference(id), name);
         }
 
         protected abstract String remapReference(String id);

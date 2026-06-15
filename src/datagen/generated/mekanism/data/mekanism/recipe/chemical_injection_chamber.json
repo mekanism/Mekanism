@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "#": "mekanism:purification_chamber",
     "A": "#mekanism:alloys/reinforced",

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanismgenerators:advanced_solar_generator",
     "A": "#c:alloys/elite",

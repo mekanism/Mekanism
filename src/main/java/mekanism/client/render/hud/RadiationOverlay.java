@@ -34,8 +34,8 @@ public class RadiationOverlay implements GuiLayer {
             double radiation = player.getData(MekanismAttachmentTypes.RADIATION);
             double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
             //Only update the previous radiation level at most once a tick
-            if (lastTick != minecraft.gui.getGuiTicks()) {
-                lastTick = minecraft.gui.getGuiTicks();
+            if (lastTick != minecraft.gui.hud.getGuiTicks()) {
+                lastTick = minecraft.gui.hud.getGuiTicks();
                 if (prevRadiation < severity) {
                     prevRadiation = Math.min(severity, prevRadiation + 0.01);
                 }

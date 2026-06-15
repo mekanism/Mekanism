@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "#": "mekanism:basic_fluid_tank",
     "C": "#c:circuits/basic",

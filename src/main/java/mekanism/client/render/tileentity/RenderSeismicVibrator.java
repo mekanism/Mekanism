@@ -1,8 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -17,7 +15,9 @@ import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -57,9 +57,10 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
         poseStack.pushPose();
         poseStack.translate(0, 0.625 * state.piston, 0);
         //TODO - 26.1: Test crumbling
+        //TODO - 26.2: Validate this render sheet
         nodeCollector.submitBlockModel(
               poseStack,
-              Sheets.cutoutBlockSheet(),
+              Sheets.cutoutBlockItemSheet(),
               MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
               BlockModelRenderState.EMPTY_TINTS,
               state.lightCoords,
@@ -80,17 +81,17 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack poseStack, VertexConsumer buffer, boolean isHighContrast) {
+    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState, boolean isHighContrast) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
             if (lines == null) {
                 lines = Outlines.extract(MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel());
             }
-            poseStack.pushPose();
+            matrix.pushPose();
             float piston = Math.max(0, (float) Math.sin((vibrator.clientPiston + (vibrator.getActive() ? partialTick : 0)) / 5F));
-            poseStack.translate(0, piston * 0.625, 0);
-            Pose pose = poseStack.last();
-            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
-            poseStack.popPose();
+            matrix.translate(0, piston * 0.625, 0);
+            //TODO - 26.2: Is custom geometry the correct way to do this?
+            submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, isHighContrast));
+            matrix.popPose();
         }
     }
 

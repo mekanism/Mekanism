@@ -56,7 +56,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
             poseStack.translate(0, 0, 0.06);
             poseStack.scale(1.02F, 1.02F, 1.02F);
             poseStack.translate(-0.1375, -0.75, -0.0625);
-            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, stack.hasFoil());
+            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
         poseStack.popPose();

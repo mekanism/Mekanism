@@ -40,6 +40,14 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return shapedRecipe(result.getItemHolder(), count);
     }
 
+    public static ExtendedShapedRecipeBuilder shapedRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result) {
+        return shapedRecipe(lookup, result, 1);
+    }
+
+    public static ExtendedShapedRecipeBuilder shapedRecipe(HolderGetter<Item> lookup, ResourceKey<Item> result, int count) {
+        return shapedRecipe(lookup.getOrThrow(result), count);
+    }
+
     public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result) {
         return shapedRecipe(result, 1);
     }
@@ -62,16 +70,16 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
+    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, ResourceKey<Item> id) {
+        return key(symbol, lookup.getOrThrow(id));
+    }
+
     public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, TagKey<Item> tag) {
         return key(symbol, lookup.getOrThrow(tag));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderSet<Item> tag) {
         return key(symbol, Ingredient.of(tag));
-    }
-
-    public ExtendedShapedRecipeBuilder key(char symbol, Item item) {
-        return key(symbol, Ingredient.of(item));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, BlockRegistryObject<?, ?> block) {

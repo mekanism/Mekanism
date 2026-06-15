@@ -1,9 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -35,9 +31,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
-import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 //TODO: Do we Automatically want to go through nested things if there is only one option and potentially not even allow opening it?
 // For now no as it might be confusing to people what the menu is relating to especially on the Meka-Tool but it is worth thinking more about
@@ -255,7 +250,7 @@ public class GuiRadialSelector extends Screen {
         //RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode
         if (false) {
-            BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            /*BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             Matrix4f matrix4f = null;//FIXME guiGraphics.pose().last().pose();
             float draws = DRAWS * (sizeAngle / 360F);
             for (int i = 0; i <= draws; i++) {
@@ -267,7 +262,7 @@ public class GuiRadialSelector extends Screen {
                       .setColor(red, green, blue, alpha);
                 vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
                       .setColor(red, green, blue, alpha);
-            }
+            }*/
             //BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
         }
     }

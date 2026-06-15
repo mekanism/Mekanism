@@ -1,7 +1,6 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
@@ -16,6 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,18 +81,22 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack poseStack, VertexConsumer buffer, boolean isHighContrast) {
+    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState, boolean isHighContrast) {
         if (tile instanceof TileEntityWindGenerator generator) {
-            poseStack.pushPose();
-            poseStack.translate(0.5, 1.5, 0.5);
-            MekanismRenderer.rotate(poseStack, generator.getDirection(), 0, 180, 90, 270);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-            float angle = generator.getAngle();
+            matrix.pushPose();
+            matrix.translate(0.5, 1.5, 0.5);
+            MekanismRenderer.rotate(matrix, generator.getDirection(), 0, 180, 90, 270);
+            matrix.mulPose(Axis.ZP.rotationDegrees(180));
+            float angle;
             if (generator.getActive() && partialTick > 0) {
-                angle = (angle + generator.getHeightSpeedRatio() * partialTick) % 360;
+                angle = (generator.getAngle() + generator.getHeightSpeedRatio() * partialTick) % 360;
+            } else {
+                angle = generator.getAngle();
             }
-            model.renderWireFrame(poseStack, buffer, new WindGeneratorRotationRenderState(angle), isHighContrast);
-            poseStack.popPose();
+            //TODO - 26.2: Is custom geometry the correct way to do this?
+            // Should we be submitting it as model parts?
+            //submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> model.renderWireFrame(pose, buffer, new WindGeneratorRotationRenderState(angle), isHighContrast));
+            matrix.popPose();
         }
     }
 

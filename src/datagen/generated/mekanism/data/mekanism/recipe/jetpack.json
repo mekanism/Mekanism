@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "C": "#c:circuits/basic",
     "I": "#c:ingots/tin",

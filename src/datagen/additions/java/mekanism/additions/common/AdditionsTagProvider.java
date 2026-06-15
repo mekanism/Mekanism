@@ -13,15 +13,15 @@ import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -69,12 +69,12 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsEntityTypes.BABY_STRAY
         );
         getBuilder(AdditionsTags.Entities.BOGGED)
-              .addIntrinsic(BuiltInRegistries.ENTITY_TYPE, EntityType.BOGGED)
+              .add(EntityTypeIds.BOGGED)
               .add(AdditionsEntityTypes.BABY_BOGGED);
         getBuilder(MekanismTags.Entities.CREEPERS)
               .add(AdditionsEntityTypes.BABY_CREEPER);
         getBuilder(AdditionsTags.Entities.ENDERMEN)
-              .addIntrinsic(BuiltInRegistries.ENTITY_TYPE, EntityType.ENDERMAN)
+              .add(EntityTypeIds.ENDERMAN)
               .add(AdditionsEntityTypes.BABY_ENDERMAN);
         getBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(AdditionsEntityTypes.BABY_STRAY);
         getBuilder(PVI_COMPAT).add(
@@ -110,7 +110,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addToTags(AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, AdditionsTags.Blocks.SLABS_PLASTIC_TRANSPARENT, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS);
         getBuilder(AdditionsTags.Items.SLABS_PLASTIC).add(AdditionsTags.Items.SLABS_PLASTIC_NORMAL, AdditionsTags.Items.SLABS_PLASTIC_GLOW, AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT);
         getBuilder(AdditionsTags.Items.COMMON_SLABS_PLASTIC).add(AdditionsTags.Items.SLABS_PLASTIC);
-        getBuilder(ItemTags.SLABS).add(AdditionsTags.Items.COMMON_SLABS_PLASTIC);
+        getBuilder(BlockItemTags.SLABS.item()).add(AdditionsTags.Items.COMMON_SLABS_PLASTIC);
         getBuilder(BlockTags.SLABS).add(AdditionsTags.Blocks.SLABS_PLASTIC, AdditionsTags.Blocks.SLABS_PLASTIC_GLOW, AdditionsTags.Blocks.SLABS_PLASTIC_TRANSPARENT);
     }
 
@@ -120,7 +120,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addToTags(AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, AdditionsTags.Blocks.STAIRS_PLASTIC_TRANSPARENT, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
         getBuilder(AdditionsTags.Items.STAIRS_PLASTIC).add(AdditionsTags.Items.STAIRS_PLASTIC_NORMAL, AdditionsTags.Items.STAIRS_PLASTIC_GLOW, AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT);
         getBuilder(AdditionsTags.Items.COMMON_STAIRS_PLASTIC).add(AdditionsTags.Items.STAIRS_PLASTIC);
-        getBuilder(ItemTags.STAIRS).add(AdditionsTags.Items.COMMON_STAIRS_PLASTIC);
+        getBuilder(BlockItemTags.STAIRS.item()).add(AdditionsTags.Items.COMMON_STAIRS_PLASTIC);
         getBuilder(BlockTags.STAIRS).add(AdditionsTags.Blocks.STAIRS_PLASTIC, AdditionsTags.Blocks.STAIRS_PLASTIC_GLOW, AdditionsTags.Blocks.STAIRS_PLASTIC_TRANSPARENT);
     }
 
@@ -130,8 +130,8 @@ public class AdditionsTagProvider extends BaseTagProvider {
         getBuilder(AdditionsTags.Items.COMMON_FENCES_PLASTIC).add(AdditionsTags.Items.FENCES_PLASTIC);
         getBuilder(Tags.Items.FENCES).add(AdditionsTags.Items.COMMON_FENCES_PLASTIC);
         getBuilder(Tags.Blocks.FENCES).add(AdditionsTags.Blocks.FENCES_PLASTIC);
-        getBuilder(ItemTags.FENCES).add(AdditionsTags.Items.COMMON_FENCES_PLASTIC);
-        getBuilder(BlockTags.FENCES).add(AdditionsTags.Blocks.FENCES_PLASTIC);
+        getBuilder(BlockItemTags.FENCES.item()).add(AdditionsTags.Items.COMMON_FENCES_PLASTIC);
+        getBuilder(BlockItemTags.FENCES.block()).add(AdditionsTags.Blocks.FENCES_PLASTIC);
     }
 
     private void addFenceGates() {

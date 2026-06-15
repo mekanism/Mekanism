@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "B": "#c:buckets/lava",
     "C": "#c:circuits/basic",

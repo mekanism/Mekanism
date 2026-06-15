@@ -157,7 +157,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         Player player = makeMockPlayer();
         BlockPos targetPos = absolutePos(relativePos);
         player.setPos(Vec3.upFromBottomCenterOf(targetPos.relative(direction.getOpposite()), -player.getEyeHeight()));
-        player.lookAt(EntityAnchorArgument.Anchor.EYES, targetPos.getCenter());
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(targetPos));
         return player;
     }
 
@@ -190,7 +190,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     //TODO: Do we want to PR the more accurate hit result location stuff to Neo?
     private BlockHitResult createHitResult(BlockPos relativePos, Direction direction, boolean inside) {
         BlockPos absolutePos = absolutePos(relativePos);
-        return new BlockHitResult(absolutePos.getCenter().relative(direction, 0.5), direction, absolutePos, inside);
+        return new BlockHitResult(Vec3.atCenterOf(absolutePos).relative(direction, 0.5), direction, absolutePos, inside);
     }
 
     public <TYPE> TYPE cycleSerialization(Codec<TYPE> codec, TYPE sourceObject, Function<String, String> rawJsonReplacer) {

@@ -11,8 +11,8 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
@@ -43,7 +43,7 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismBlocks.THERMAL_EVAPORATION_BLOCK)
               .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
-              .key(Pattern.BUCKET, Items.BUCKET)
+              .key(Pattern.BUCKET, this.items, ItemIds.BUCKET)
               .key(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
               .save(consumer, Mekanism.rl(basePath + "controller"));
         //Valve

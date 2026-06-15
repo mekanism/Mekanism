@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "mekanism:robit"
+              "minecraft:entity_type": "mekanism:robit"
             }
           }
         ]

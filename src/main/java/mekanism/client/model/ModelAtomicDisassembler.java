@@ -96,10 +96,10 @@ public class ModelAtomicDisassembler extends MekanismJavaModel.NoState {
 
     //TODO should this give render type with or without texture?
     @Override
-    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
         setupAnim();
-        collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, -1, null, hasFoil);//TODO - 26.1 What color? vanilla seems to pass -1 when not specified
-        collectParts(bladeParts, poseStack, BLADE_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0xBFFFFFFF, null, hasFoil);
+        collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, -1, null);//TODO - 26.1 What color? vanilla seems to pass -1 when not specified
+        collectParts(bladeParts, poseStack, BLADE_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0xBFFFFFFF, null);
     }
 
     /*@Override

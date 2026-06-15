@@ -29,9 +29,10 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
@@ -176,7 +177,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(COPPER_CHAR, this.items, Tags.Items.INGOTS_COPPER)
-              .key(FURNACE_CHAR, Items.FURNACE)
+              .key(FURNACE_CHAR, this.items, BlockItemIds.FURNACE.item())
               .save(output, MekanismGenerators.rl("generator/heat"));
         //Wind
         MekDataShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
@@ -357,7 +358,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, tinIngot(this.items))
-              .key(Pattern.BUCKET, Items.BUCKET)
+              .key(Pattern.BUCKET, this.items, ItemIds.BUCKET)
               .save(output);
         //Blade
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.TURBINE_BLADE)
@@ -402,7 +403,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, IRON_BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .key(IRON_BARS_CHAR, Items.IRON_BARS)
+              .key(IRON_BARS_CHAR, this.items, BlockItemIds.IRON_BARS.item())
               .save(output, MekanismGenerators.rl("turbine/vent"));
     }
 }

@@ -45,7 +45,7 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
@@ -83,13 +83,13 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 public class RenderTickHandler {
 
@@ -170,7 +170,7 @@ public class RenderTickHandler {
 
     @SubscribeEvent
     public void renderCrosshair(RenderGuiLayerEvent.Pre event) {
-        if (event.getName().equals(VanillaGuiLayers.CROSSHAIR) && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
+        if (event.getName().equals(VanillaGuiLayers.CROSSHAIR) && minecraft.gui.screen() instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
             //Hide the crosshair if we have a radial menu open and are drawing the back button
             event.setCanceled(true);
         }
@@ -426,11 +426,6 @@ public class RenderTickHandler {
         profiler.pop();
     }
 
-    private void renderQuadsWireFrame(VertexConsumer buffer, PoseStack matrix, List<Line> lines, boolean isHighContrast) {
-        PoseStack.Pose pose = matrix.last();
-        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
-    }
-
     private static List<Line> getOutlinesFromModel(ClientLevel level, BlockPos pos, BlockState state) {
         List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {
@@ -441,11 +436,11 @@ public class RenderTickHandler {
         return lines;
     }
 
-    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, boolean isHighContrast) {
+    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, PoseStack.Pose pose, boolean isHighContrast) {
         //tmp variables to avoid allocating each loop
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();
-        renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal, isHighContrast);
+        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), pos, normal, isHighContrast);
     }
 
     public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal, boolean isHighContrast) {
@@ -495,20 +490,19 @@ public class RenderTickHandler {
         }
 
         @Override
-        public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack matrix, boolean translucentPass, LevelRenderState levelRenderState) {
-            if (renderState.isTranslucent() == translucentPass) {
-                matrix.pushPose();
-                Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-                matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
-                //0.4 Alpha
-                VertexConsumer buffer = renderer.getBuffer(RenderTypes.lines());
-                //0.4 Alpha
-                if (outlinesFromModel != null) {
-                    renderQuadsWireFrame(buffer, matrix, outlinesFromModel, isHighContrast);
-                }
-                wireFrameRenderer.renderWireFrame(tile, blockState, MekanismRenderer.getPartialTick(), matrix, buffer, isHighContrast);
-                matrix.popPose();
+        public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState) {
+            //TODO - 26.2: Figure out if we need an equivalent to this
+            //if (renderState.isTranslucent() == translucentPass) {
+            matrix.pushPose();
+            Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+            matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
+            //TODO - 26.2: Is custom geometry the correct way to do this?
+            if (outlinesFromModel != null) {
+                submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> renderVertexWireFrame(outlinesFromModel, buffer, pose, isHighContrast));
             }
+            wireFrameRenderer.renderWireFrame(tile, blockState, MekanismRenderer.getPartialTick(), submitNodeCollector, matrix, levelRenderState, isHighContrast);
+            matrix.popPose();
+            //}
             return true;
         }
     }
@@ -527,15 +521,17 @@ public class RenderTickHandler {
         }
 
         @Override
-        public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack matrix, boolean translucentPass, LevelRenderState levelRenderState) {
-            if (renderState.isTranslucent() == translucentPass) {
-                matrix.pushPose();
-                Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
-                matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
-                //0.4 Alpha
-                renderQuadsWireFrame(renderer.getBuffer(RenderTypes.lines()), matrix, outlinesFromModel, isHighContrast);
-                matrix.popPose();
-            }
+        public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack matrix, LevelRenderState levelRenderState) {
+            //TODO - 26.2: Figure out if we need an equivalent to this
+            //if (renderState.isTranslucent() == translucentPass) {
+            matrix.pushPose();
+            Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+            matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
+            //0.4 Alpha
+            //TODO - 26.2: Is custom geometry the correct way to do this?
+            submitNodeCollector.submitCustomGeometry(matrix, RenderTypes.lines(), (pose, buffer) -> renderVertexWireFrame(outlinesFromModel, buffer, pose, isHighContrast));
+            matrix.popPose();
+            //}
             return true;
         }
     }

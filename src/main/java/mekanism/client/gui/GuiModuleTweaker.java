@@ -31,7 +31,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -234,7 +234,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         @Override
         public LivingEntity get() {
             if (preview == null) {
-                preview = new ArmorStand(EntityType.ARMOR_STAND, gui.getLevel());
+                preview = new ArmorStand(EntityTypes.ARMOR_STAND, gui.getLevel());
                 preview.setNoBasePlate(true);
                 //Copy the player's current armor when we first initialize this
                 for (Entry<EquipmentSlot, Supplier<ItemStack>> entry : lazyItems.entrySet()) {

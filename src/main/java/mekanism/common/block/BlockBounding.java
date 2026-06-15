@@ -117,7 +117,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     private BlockHitResult withHitResultForMain(BlockHitResult hit, BlockPos mainPos) {
-        Vec3 location = mainPos.getCenter().relative(hit.getDirection(), 0.5);
+        Vec3 location = Vec3.atCenterOf(mainPos).relative(hit.getDirection(), 0.5);
         if (hit.getType() == Type.MISS) {
             //I don't know if this ever can be the case, but if it is, just return a proper one for it
             return BlockHitResult.miss(location, hit.getDirection(), mainPos);

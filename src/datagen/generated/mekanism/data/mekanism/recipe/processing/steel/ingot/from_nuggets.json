@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "#c:nuggets/steel",
     "P": "mekanism:nugget_steel"

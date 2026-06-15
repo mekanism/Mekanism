@@ -17,9 +17,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 class StorageRecipeProvider implements ISubRecipeProvider {
 
@@ -61,7 +61,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         //Charcoal
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
-              .key(Pattern.CONSTANT, Items.CHARCOAL)
+              .key(Pattern.CONSTANT, this.items, ItemIds.CHARCOAL)
               .save(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
         //Salt
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SALT_BLOCK)

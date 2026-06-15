@@ -169,7 +169,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     maxY = 1;
                 }
             }
-            RenderResizableCuboid.renderCube(sideRenderCheck, minX, minY, minZ, maxX, maxY, maxZ, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderCube(sideRenderCheck, minX, minY, minZ, maxX, maxY, maxZ, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
+                  state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
 
         {//render core cube
@@ -182,7 +184,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 min = 0.5F - stageRatio / 2;
                 max = 0.5F + stageRatio / 2;
             }
-            RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderCube(state.coreSideRender, min, 0.25F + OFFSET, min, max, 0.25F + OFFSET + stageRatio, max, poseStack,
+                  Sheets.translucentItemSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT,
+                  camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
 
         //todo - 26.1: rendering

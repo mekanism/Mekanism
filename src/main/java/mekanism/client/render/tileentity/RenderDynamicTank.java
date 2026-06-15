@@ -80,7 +80,8 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         if (state.tankTexture == null) {
             return;
         }
-        RenderType renderType = Sheets.translucentBlockSheet();
+        //TODO - 26.2: Validate this render sheet
+        RenderType renderType = Sheets.translucentBlockItemSheet();
         RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, RenderResizableCuboid.SideRender.ALL_FACES,
               0.01F, 0.01F, 0.01F, state.length - 0.02F, state.tankMaxY, state.width - 0.02F, state.tankTexture,
               OverlayTexture.NO_OVERLAY, state.tankGlow, state.tankColor, state.blockPos, state.renderLocation, state.length, state.width);

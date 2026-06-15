@@ -25,7 +25,8 @@ public class RenderScubaTank implements NoDataSpecialModelRenderer {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        this.scubaTank.collect(poseStack, nodeCollector, lightCoords, overlayCoords, hasFoil);
+        //TODO - 26.2: Figure out foil
+        this.scubaTank.collect(poseStack, nodeCollector, lightCoords, overlayCoords);
         poseStack.popPose();
     }
 

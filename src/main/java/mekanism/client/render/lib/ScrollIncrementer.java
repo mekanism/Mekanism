@@ -14,7 +14,7 @@ public class ScrollIncrementer {
     }
 
     public int scroll(double delta) {
-        long time = Minecraft.getInstance().gui.getGuiTicks();
+        long time = Minecraft.getInstance().gui.hud.getGuiTicks();
         if (time - lastScrollTime > SharedConstants.TICKS_PER_SECOND) {
             scrollDelta = 0;
         }

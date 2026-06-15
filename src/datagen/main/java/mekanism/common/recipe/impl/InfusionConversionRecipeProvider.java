@@ -14,8 +14,9 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 //TODO: Try to cleanup some of the duplicate code in this class?
@@ -58,7 +59,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               this.items,
               MekanismTags.Items.DUSTS_CHARCOAL,
-              Items.CHARCOAL
+              ItemIds.CHARCOAL
         )), MekanismChemicals.CARBON.asTemplate(20), basePath, "from_charcoal");
 
         //Coal Block
@@ -67,7 +68,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               this.items,
               MekanismTags.Items.DUSTS_COAL,
-              Items.COAL
+              ItemIds.COAL
         )), MekanismChemicals.CARBON.asTemplate(10), basePath, "from_coal");
 
         //Enriched
@@ -87,8 +88,8 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
               this.items,
               Tags.Items.MUSHROOMS,
               //TODO: If these get added to the mushroom tag then we can remove them from here
-              Items.WARPED_FUNGUS,
-              Items.CRIMSON_FUNGUS
+              BlockItemIds.WARPED_FUNGUS.item(),
+              BlockItemIds.CRIMSON_FUNGUS.item()
         )), MekanismChemicals.FUNGI.asTemplate(10), basePath, "from_mushrooms");
     }
 

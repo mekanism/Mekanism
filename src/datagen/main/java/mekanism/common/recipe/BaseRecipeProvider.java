@@ -15,6 +15,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -50,8 +51,9 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Collections.emptyList();
     }
 
-    public static Ingredient createIngredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, Item... items) {
-        return Ingredient.of(new OrHolderSet<>(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(Item::builtInRegistryHolder).toList())));
+    @SafeVarargs
+    public static Ingredient createIngredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, ResourceKey<Item>... items) {
+        return Ingredient.of(new OrHolderSet<>(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(lookup::getOrThrow).toList())));
     }
 
     @SafeVarargs

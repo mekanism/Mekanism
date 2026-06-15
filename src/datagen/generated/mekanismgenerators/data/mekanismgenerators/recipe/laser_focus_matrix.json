@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "G": "mekanismgenerators:reactor_glass",
     "R": "#c:storage_blocks/redstone"

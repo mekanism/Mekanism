@@ -32,19 +32,19 @@ public class MekanismStatusOverlay implements GuiLayer {
     @Override
     public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (modeSwitchTimer > 1 && minecraft.player != null && !minecraft.player.isSpectator() && !minecraft.options.hideGui) {
+        if (modeSwitchTimer > 1 && minecraft.player != null && !minecraft.player.isSpectator() && !minecraft.gui.hud.isHidden()) {
             ItemStack stack = minecraft.player.getMainHandItem();
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
                 if (scrollTextComponent != null) {
                     Color color = Color.rgbad(1, 1, 1, modeSwitchTimer / (float) BASE_TIMER);
-                    Font font = minecraft.gui.getFont();
+                    Font font = minecraft.gui.hud.getFont();
                     int componentWidth = font.width(scrollTextComponent);
-                    int targetShift = Math.max(59, Math.max(minecraft.gui.leftHeight, minecraft.gui.rightHeight));
+                    int targetShift = Math.max(59, Math.max(minecraft.gui.hud.leftHeight, minecraft.gui.hud.rightHeight));
                     if (minecraft.gameMode != null && !minecraft.gameMode.canHurtPlayer()) {
                         //Same shift as done in Gui#renderSelectedItemName
                         targetShift -= 14;
-                    } else if (minecraft.gui.overlayMessageTime > 0) {
+                    } else if (minecraft.gui.hud.overlayMessageTime > 0) {
                         //If we are in survival though that means our thing will end up intersecting the subtitle text if there is any,
                         // so we need to check if there is, and if so shift our target further
                         targetShift += 14;
@@ -60,8 +60,8 @@ public class MekanismStatusOverlay implements GuiLayer {
                 }
             }
             //Only decrement the switch timer once a tick
-            if (lastTick != minecraft.gui.getGuiTicks()) {
-                lastTick = minecraft.gui.getGuiTicks();
+            if (lastTick != minecraft.gui.hud.getGuiTicks()) {
+                lastTick = minecraft.gui.hud.getGuiTicks();
                 modeSwitchTimer--;
             }
         }

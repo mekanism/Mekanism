@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "#c:nuggets/bronze",
     "P": "mekanism:nugget_bronze"

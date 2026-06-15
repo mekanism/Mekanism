@@ -44,7 +44,7 @@ public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListen
         }
         baseModel.head.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.01);
-        model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, stack.hasFoil());
+        model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

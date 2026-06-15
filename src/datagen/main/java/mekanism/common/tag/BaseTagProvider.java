@@ -73,7 +73,7 @@ public abstract class BaseTagProvider implements DataProvider {
             supportedTagTypes.values().forEach(Map::clear);
             registerTags(registries);
             return registries;
-        }).thenCompose(registries -> {
+        }).thenCompose(_ -> {
             for (DeferredHolder<Block, ?> blockProvider : getAllBlocks()) {
                 Block block = blockProvider.value();
                 if (block.defaultBlockState().requiresCorrectToolForDrops() && !knownHarvestRequirements.contains(block)) {

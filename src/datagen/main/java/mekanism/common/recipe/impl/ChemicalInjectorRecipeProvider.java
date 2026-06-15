@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ColorCollection;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.neoforged.neoforge.common.Tags;
 
@@ -69,31 +70,12 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addChemicalInjectorConcreteRecipes(RecipeOutput consumer, String basePath) {
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.BLACK_CONCRETE_POWDER, Items.BLACK_CONCRETE, "black");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.BLUE_CONCRETE_POWDER, Items.BLUE_CONCRETE, "blue");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.BROWN_CONCRETE_POWDER, Items.BROWN_CONCRETE, "brown");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.CYAN_CONCRETE_POWDER, Items.CYAN_CONCRETE, "cyan");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.GRAY_CONCRETE_POWDER, Items.GRAY_CONCRETE, "gray");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.GREEN_CONCRETE_POWDER, Items.GREEN_CONCRETE, "green");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.LIGHT_BLUE_CONCRETE, "light_blue");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.LIGHT_GRAY_CONCRETE_POWDER, Items.LIGHT_GRAY_CONCRETE, "light_gray");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.LIME_CONCRETE_POWDER, Items.LIME_CONCRETE, "lime");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.MAGENTA_CONCRETE_POWDER, Items.MAGENTA_CONCRETE, "magenta");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.ORANGE_CONCRETE_POWDER, Items.ORANGE_CONCRETE, "orange");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.PINK_CONCRETE_POWDER, Items.PINK_CONCRETE, "pink");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.PURPLE_CONCRETE_POWDER, Items.PURPLE_CONCRETE, "purple");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.RED_CONCRETE_POWDER, Items.RED_CONCRETE, "red");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.WHITE_CONCRETE_POWDER, Items.WHITE_CONCRETE, "white");
-        addChemicalInjectorConcreteRecipe(consumer, basePath, Items.YELLOW_CONCRETE_POWDER, Items.YELLOW_CONCRETE, "yellow");
-    }
-
-    private void addChemicalInjectorConcreteRecipe(RecipeOutput consumer, String basePath, Item powder, Item concrete, String name) {
-        ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(powder),
+        ColorCollection.VALUES.forEach(color -> ItemStackChemicalToItemStackRecipeBuilder.injecting(
+              IngredientCreatorAccess.item().from(Items.CONCRETE_POWDER.pick(color)),
               IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 1),
-              new ItemStackTemplate(concrete),
+              new ItemStackTemplate(Items.CONCRETE.pick(color)),
               true
-        ).save(consumer, Mekanism.rl(basePath + name));
+        ).save(consumer, Mekanism.rl(basePath + color)));
     }
 
     private void addChemicalInjectorCoralRevivalRecipes(RecipeOutput consumer, String basePath) {

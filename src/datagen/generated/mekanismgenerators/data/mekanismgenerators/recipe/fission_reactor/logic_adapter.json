@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "F": "mekanismgenerators:fission_reactor_casing",
     "R": "#c:dusts/redstone"

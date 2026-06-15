@@ -31,7 +31,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
     @Override
     public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!minecraft.gameMode.canHurtPlayer() || minecraft.options.hideGui || !MekanismConfig.client.hudRenderMekaSuitEnergyBar.get()) {
+        if (!minecraft.gameMode.canHurtPlayer() || minecraft.gui.hud.isHidden() || !MekanismConfig.client.hudRenderMekaSuitEnergyBar.get()) {
             //canHurtPlayer is a copy of vanilla check for if the armor level can render
             return;
         }
@@ -49,11 +49,11 @@ public class MekaSuitEnergyLevel implements GuiLayer {
         }
         if (capacity > 0) {
             int x = graphics.guiWidth() / 2 - 91;
-            int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
+            int y = graphics.guiHeight() - minecraft.gui.hud.leftHeight + 2;
             int length = (int) Math.round(((double) stored / capacity) * 79);
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiBar.BAR, x, y, 81, 6);
             graphics.blit(RenderPipelines.GUI_TEXTURED, POWER_BAR, x + 1, y + 1, 0, 0, length, 4, length, 4, 79, 4);
-            minecraft.gui.leftHeight += 8;
+            minecraft.gui.hud.leftHeight += 8;
         }
     }
 }

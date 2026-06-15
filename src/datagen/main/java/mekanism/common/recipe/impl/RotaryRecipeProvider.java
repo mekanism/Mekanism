@@ -16,7 +16,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.FluidIds;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
@@ -46,7 +46,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID, MekanismTags.Fluids.HYDROFLUORIC_ACID);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE, MekanismTags.Fluids.URANIUM_OXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE, MekanismTags.Fluids.URANIUM_HEXAFLUORIDE);
-        addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.WATER_VAPOR, Fluids.WATER.builtInRegistryHolder(), FluidTags.WATER);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.WATER_VAPOR, fluids.getOrThrow(FluidIds.WATER), FluidTags.WATER);
     }
 
     private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {

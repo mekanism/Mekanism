@@ -6,7 +6,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_bogged"
+            "minecraft:entity_type": "mekanismadditions:baby_bogged"
           }
         }
       },
@@ -17,7 +17,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_creeper"
+            "minecraft:entity_type": "mekanismadditions:baby_creeper"
           }
         }
       },
@@ -28,7 +28,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_enderman"
+            "minecraft:entity_type": "mekanismadditions:baby_enderman"
           }
         }
       },
@@ -39,7 +39,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_skeleton"
+            "minecraft:entity_type": "mekanismadditions:baby_skeleton"
           }
         }
       },
@@ -50,7 +50,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_stray"
+            "minecraft:entity_type": "mekanismadditions:baby_stray"
           }
         }
       },
@@ -61,7 +61,7 @@
         "damage": {
           "blocked": false,
           "source_entity": {
-            "type": "mekanismadditions:baby_wither_skeleton"
+            "minecraft:entity_type": "mekanismadditions:baby_wither_skeleton"
           }
         }
       },

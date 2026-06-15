@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "#": "minecraft:polished_blackstone_pressure_plate",
     "E": "mekanism:energy_tablet",

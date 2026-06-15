@@ -145,14 +145,14 @@ public class HUDRenderer {
 
     /// Based on how [SubtitleOverlay#extractRenderState(GuiGraphicsExtractor)] calculates the width
     private int getAudibleSubtitlesWidth(Minecraft minecraft, Font font) {
-        if (!minecraft.options.showSubtitles().get() || minecraft.gui.subtitleOverlay.audibleSubtitles.isEmpty()) {
+        if (!minecraft.options.showSubtitles().get() || minecraft.gui.hud.subtitleOverlay.audibleSubtitles.isEmpty()) {
             //Subtitles are disabled or none are currently showing, don't bother calculating a width
             return 0;
         }
-        if (lastSubtitleGuiTick != minecraft.gui.getGuiTicks()) {
-            lastSubtitleGuiTick = minecraft.gui.getGuiTicks();
+        if (lastSubtitleGuiTick != minecraft.gui.hud.getGuiTicks()) {
+            lastSubtitleGuiTick = minecraft.gui.hud.getGuiTicks();
             int maxWidth = 0;
-            for (SubtitleOverlay.Subtitle subtitle : minecraft.gui.subtitleOverlay.audibleSubtitles) {
+            for (SubtitleOverlay.Subtitle subtitle : minecraft.gui.hud.subtitleOverlay.audibleSubtitles) {
                 //Note: We know all subtitles here are still active, so we can skip checking
                 maxWidth = Math.max(maxWidth, font.width(subtitle.getText()));
             }

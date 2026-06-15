@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "#c:ingots/refined_obsidian",
     "P": "mekanism:ingot_refined_obsidian"

@@ -69,55 +69,55 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE, 2),
-              new ItemStackTemplate(Items.LIGHT_GRAY_DYE, 6)
+              new ItemStackTemplate(Items.DYE.lightGray(), 6)
         ).save(consumer, Mekanism.rl(basePath + "black_to_light_gray"));
         //Blue + green -> cyan
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
-              new ItemStackTemplate(Items.CYAN_DYE, 4)
+              new ItemStackTemplate(Items.DYE.cyan(), 4)
         ).save(consumer, Mekanism.rl(basePath + "cyan"));
         //Gray + white -> light gray
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GRAY),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.LIGHT_GRAY_DYE, 4)
+              new ItemStackTemplate(Items.DYE.lightGray(), 4)
         ).save(consumer, Mekanism.rl(basePath + "gray_to_light_gray"));
         //Blue + white -> light blue
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.LIGHT_BLUE_DYE, 4)
+              new ItemStackTemplate(Items.DYE.lightBlue(), 4)
         ).save(consumer, Mekanism.rl(basePath + "light_blue"));
         //Green + white -> lime
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.LIME_DYE, 4)
+              new ItemStackTemplate(Items.DYE.lime(), 4)
         ).save(consumer, Mekanism.rl(basePath + "lime"));
         //Purple + pink -> magenta
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PURPLE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PINK),
-              new ItemStackTemplate(Items.MAGENTA_DYE, 4)
+              new ItemStackTemplate(Items.DYE.magenta(), 4)
         ).save(consumer, Mekanism.rl(basePath + "magenta"));
         //Red + yellow -> orange
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_YELLOW),
-              new ItemStackTemplate(Items.ORANGE_DYE, 4)
+              new ItemStackTemplate(Items.DYE.orange(), 4)
         ).save(consumer, Mekanism.rl(basePath + "orange"));
         //Red + white -> pink
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.PINK_DYE, 4)
+              new ItemStackTemplate(Items.DYE.pink(), 4)
         ).save(consumer, Mekanism.rl(basePath + "pink"));
         //Blue + red -> purple
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
-              new ItemStackTemplate(Items.PURPLE_DYE, 4)
+              new ItemStackTemplate(Items.DYE.purple(), 4)
         ).save(consumer, Mekanism.rl(basePath + "purple"));
     }
 

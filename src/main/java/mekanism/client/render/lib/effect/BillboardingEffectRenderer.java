@@ -2,23 +2,18 @@ package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.CustomEffect;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector.CustomGeometryRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class BillboardingEffectRenderer {
+//TODO - 26.2: Re-evaluate this
+public record BillboardingEffectRenderer(CustomEffect effect, CameraRenderState camera, int renderTick, float partialTick) implements CustomGeometryRenderer {
 
-    private BillboardingEffectRenderer() {
-    }
-
-    public static void render(CustomEffect effect, CameraRenderState camera, MultiBufferSource renderer, PoseStack poseStack, int renderTick, float partialTick) {
-        RenderType renderType = MekanismRenderType.SPS.apply(effect.getTexture());
-        VertexConsumer buffer = renderer.getBuffer(renderType);
+    @Override
+    public void render(PoseStack.Pose pose, VertexConsumer buffer) {
         int gridSize = effect.getTextureGridSize();
 
         int tick = renderTick % (gridSize * gridSize);
@@ -40,7 +35,7 @@ public class BillboardingEffectRenderer {
         float minV = yIndex * spriteSize;
         float maxV = minV + spriteSize;
 
-        Matrix4f matrix = poseStack.last().pose();
+        Matrix4f matrix = pose.pose();
         buffer.addVertex(matrix, vertexPos[0].x(), vertexPos[0].y(), vertexPos[0].z())
               .setUv(minU, maxV)
               .setColor(argb);

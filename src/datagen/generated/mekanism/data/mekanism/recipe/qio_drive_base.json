@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "#c:ender_pearls",
     "C": "mekanism:ultimate_control_circuit",

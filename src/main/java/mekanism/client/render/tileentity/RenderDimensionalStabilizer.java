@@ -132,7 +132,10 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, state.minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
-            RenderResizableCuboid.renderCube(piece.sidesToRender(), 0, 0, 0, 1, 1, 1, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderCube(piece.sidesToRender(), 0, 0, 0, 1, 1, 1, poseStack,
+                  Sheets.translucentBlockItemSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null,
+                  EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
             poseStack.popPose();
         }
     }

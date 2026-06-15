@@ -10,10 +10,10 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.ColorCollection;
 import net.neoforged.neoforge.common.Tags;
 
 class SawingRecipeProvider implements ISubRecipeProvider {
@@ -217,21 +217,11 @@ class SawingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addPrecisionSawmillBedRecipes(RecipeOutput consumer, String basePath) {
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, DyeColor.BLACK);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, DyeColor.BLUE);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, DyeColor.BROWN);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, DyeColor.CYAN);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GRAY_BED, DyeColor.GRAY);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GREEN_BED, DyeColor.GREEN);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_BLUE_BED, DyeColor.LIGHT_BLUE);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_GRAY_BED, DyeColor.LIGHT_GRAY);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIME_BED, DyeColor.LIME);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.MAGENTA_BED, DyeColor.MAGENTA);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.ORANGE_BED, DyeColor.ORANGE);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PINK_BED, DyeColor.PINK);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, DyeColor.PURPLE);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, DyeColor.RED);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, DyeColor.WHITE);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, DyeColor.YELLOW);
+        ColorCollection.VALUES.forEach(color -> SawmillRecipeBuilder.sawing(
+              IngredientCreatorAccess.item().from(Items.BED.pick(color)),
+              new ItemStackTemplate(Items.OAK_PLANKS, 3),
+              new ItemStackTemplate(Items.WOOL.pick(color), 3),
+              1
+        ).save(consumer, Mekanism.rl(basePath + color)));
     }
 }

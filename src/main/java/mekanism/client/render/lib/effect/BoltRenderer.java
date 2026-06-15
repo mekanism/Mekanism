@@ -14,7 +14,7 @@ import mekanism.common.lib.effect.BoltEffect.BoltQuads;
 import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -40,13 +40,17 @@ public class BoltRenderer {
         }
     }
 
-    public void render(long gameTime, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn) {
-        render(gameTime, partialTicks, matrixStack, bufferIn, null);
+    public void render(long gameTime, float partialTicks, PoseStack matrixStack, SubmitNodeCollector nodeCollector) {
+        render(gameTime, partialTicks, matrixStack, nodeCollector, null);
     }
 
-    public void render(long gameTime, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, @Nullable Vec3 cameraPos) {
-        VertexConsumer buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
-        Matrix4f matrix = matrixStack.last().pose();
+    public void render(long gameTime, float partialTicks, PoseStack matrixStack, SubmitNodeCollector nodeCollector, @Nullable Vec3 cameraPos) {
+        //TODO - 26.2: Make non-capturing?
+        nodeCollector.submitCustomGeometry(matrixStack, MekanismRenderType.MEK_LIGHTNING, (pose, buffer) -> render(gameTime, partialTicks, pose, buffer, cameraPos));
+    }
+
+    private void render(long gameTime, float partialTicks, PoseStack.Pose pose, VertexConsumer buffer, @Nullable Vec3 cameraPos) {
+        Matrix4f matrix = pose.pose();
         Timestamp timestamp = new Timestamp(gameTime, partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, 1 / REFRESH_TIME);
         if (refresh) {

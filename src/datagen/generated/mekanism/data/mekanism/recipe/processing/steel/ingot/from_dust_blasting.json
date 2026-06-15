@@ -1,7 +1,5 @@
 {
   "type": "minecraft:blasting",
-  "category": "misc",
-  "cookingtime": 100,
   "experience": 0.4,
   "ingredient": "mekanism:dust_steel",
   "result": {

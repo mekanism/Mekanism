@@ -56,6 +56,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -479,7 +480,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "6) Adds a recipe for sawing Books into Paper and Leather."
               ).blankLine()
               .recipe(SawmillRecipeManager.INSTANCE)
-              .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS.builtInRegistryHolder()))
+              .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(items.getOrThrow(BlockItemIds.MELON_CROP.item())))
               .addExample("sawing/leaves", IngredientCreatorAccess.item().from(items, ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
               .addExample("sawing/saplings", IngredientCreatorAccess.item().from(items, ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.asTemplate(), 0.75)
               .addExample("sawing/shield", IngredientCreatorAccess.item().from(Items.SHIELD), new WeightedItemStack(new ItemStack(Items.OAK_PLANKS, 4), 1.5))

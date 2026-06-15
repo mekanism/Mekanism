@@ -78,13 +78,13 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
     }
 
     @Override
-    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+    public void collect(FreeRunnerRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
         setupAnim(state);
         if (state.leftVisible()) {
-            collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, hasEffect);
+            collectParts(leftParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null);
         }
         if (state.rightVisible) {
-            collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null, hasEffect);
+            collectParts(rightParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, CommonColors.WHITE, null);
         }
     }
 

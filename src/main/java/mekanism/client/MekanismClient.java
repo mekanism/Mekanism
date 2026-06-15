@@ -58,7 +58,7 @@ public class MekanismClient {
     public static void updateKey(boolean pressed, int type) {
         if (Minecraft.getInstance().player != null) {
             UUID playerUUID = Minecraft.getInstance().player.getUUID();
-            boolean down = Minecraft.getInstance().screen == null && pressed;
+            boolean down = Minecraft.getInstance().gui.screen() == null && pressed;
             if (down != Mekanism.keyMap.has(playerUUID, type)) {
                 PacketUtils.sendToServer(new PacketKey(type, down));
                 Mekanism.keyMap.update(playerUUID, type, down);

@@ -29,7 +29,8 @@ public class RenderFreeRunners implements NoDataSpecialModelRenderer {
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         poseStack.translate(0, -1, 0);
-        this.freeRunners.collect(FreeRunnerRenderState.BOTH, poseStack, nodeCollector, lightCoords, overlayCoords, hasFoil);
+        //TODO - 26.2: Figure out foil
+        this.freeRunners.collect(FreeRunnerRenderState.BOTH, poseStack, nodeCollector, lightCoords, overlayCoords);
         poseStack.popPose();
     }
 

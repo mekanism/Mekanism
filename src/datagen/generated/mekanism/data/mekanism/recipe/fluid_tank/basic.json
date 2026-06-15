@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": "#mekanism:alloys/basic",
     "I": "#c:ingots/iron"

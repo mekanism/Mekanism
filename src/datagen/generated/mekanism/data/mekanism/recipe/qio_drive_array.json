@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "#": "#mekanism:personal_storage",
     "C": "#c:circuits/ultimate",

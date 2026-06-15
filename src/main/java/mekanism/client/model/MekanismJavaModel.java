@@ -34,7 +34,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
     }
 
     //TODO - 26.1 outlines??
-    public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
+    public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight);
 
     public void setupAnim(STATE state) {
         this.resetPose();
@@ -56,9 +56,10 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         }
     }
 
-    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite, boolean hasFoil) {
+    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite) {
         for (ModelPart part : parts) {
-            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, false, hasFoil, argb, null, 0);
+            //TODO - 26.2: Figure out how foil rendering works now as it no longer is passed to this
+            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, argb, null, 0);
         }
     }
 
@@ -145,10 +146,10 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         }
 
         @Override
-        public final void collect(@Nullable Void unused, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
-            collect(poseStack, submitNodeCollector, light, overlayLight, hasEffect);
+        public final void collect(@Nullable Void unused, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight) {
+            collect(poseStack, submitNodeCollector, light, overlayLight);
         }
 
-        public abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil);
+        public abstract void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight);
     }
 }

@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "A": "#mekanism:alloys/reinforced",
     "O": "#c:ingots/osmium",

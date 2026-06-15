@@ -1,7 +1,7 @@
 package mekanism.api.datagen.recipe;
 
 import java.util.Objects;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.triggers.Criterion;
 
 /// Helper class to declare named criteria for repeated use.
 ///

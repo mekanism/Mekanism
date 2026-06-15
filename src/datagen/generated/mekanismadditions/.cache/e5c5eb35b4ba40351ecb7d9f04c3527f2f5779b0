@@ -1,6 +1,6 @@
-// 26.1.2	2026-05-02T17:07:55.6920605	Advancements
+// 26.2-rc-2	2026-06-15T14:53:18.8831205	Advancements
 e8a2d02f36d898a3a57c9cf60fb55ec9e992ec7f data/mekanismadditions/advancement/balloon.json
 9ea4175a9a144f9005470eb2a34078e7ac9b8856 data/mekanismadditions/advancement/glow_in_the_dark.json
-f1073d64dd1119bd419144c97ac6068c5eb94017 data/mekanismadditions/advancement/hurt_by_babies.json
-1e1cf4ef69a0d39468c60df06edd98b97fb78c5f data/mekanismadditions/advancement/not_the_babies.json
-a3644f184c438bfb47b89c7842d8f24dc4768a9d data/mekanismadditions/advancement/pop_pop.json
+b9107f68bf6a4a4276f6f3a655089005f0561479 data/mekanismadditions/advancement/hurt_by_babies.json
+6ec4fd6ffd3bf69394a54739bb4f2adb6a31acec data/mekanismadditions/advancement/not_the_babies.json
+ddd2fd98074273b135a78b022ab5c73c80ca1e66 data/mekanismadditions/advancement/pop_pop.json

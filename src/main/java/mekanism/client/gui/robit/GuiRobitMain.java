@@ -81,7 +81,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addRenderableWidget(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addRenderableWidget(new MekanismImageButton(this, 6, 16, 18, getButtonLocation("home"), (element, _, _) -> {
             PacketUtils.sendToServer(new PacketEntityGuiInteract(GuiInteractionEntity.GO_HOME, ((GuiRobitMain) element.gui()).robit));
-            Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().gui.setScreen(null);
             return true;
         })).setTooltip(MekanismLang.ROBIT_TELEPORT);
         renameButton = addRenderableWidget(new MekanismImageButton(this, 6, 35, 18, getButtonLocation("rename"), (element, _, _) -> {

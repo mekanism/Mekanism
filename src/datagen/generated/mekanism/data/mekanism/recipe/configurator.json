@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": "#c:ingots/osmium",
     "I": "#c:ingots/iron",

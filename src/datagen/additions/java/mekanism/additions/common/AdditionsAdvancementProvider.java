@@ -11,11 +11,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.DamagePredicate;
-import net.minecraft.advancements.criterion.EntityHurtPlayerTrigger;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.KilledTrigger;
+import net.minecraft.advancements.predicates.DamagePredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.EntityHurtPlayerTrigger;
+import net.minecraft.advancements.triggers.KilledTrigger;
+import net.minecraft.advancements.triggers.KilledTrigger.TriggerInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -68,7 +69,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         return new RecipeCriterion(getName(type), kill(entityTypeLookup, type));
     }
 
-    private Criterion<KilledTrigger.TriggerInstance> kill(HolderGetter<EntityType<?>> entityTypeLookup, Holder<EntityType<?>> type) {
+    private Criterion<TriggerInstance> kill(HolderGetter<EntityType<?>> entityTypeLookup, Holder<EntityType<?>> type) {
         return KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityTypeLookup, type.value()));
     }
 

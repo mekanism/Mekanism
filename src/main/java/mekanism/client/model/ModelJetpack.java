@@ -119,11 +119,11 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
     }
 
     @Override
-    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
         setupAnim();
-        collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, -1, null, hasFoil);
-        collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasFoil);
-        collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null, hasFoil);
+        collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, -1, null);
+        collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
+        collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null);
     }
 
     protected static ModelPartData thrusterLeft(float fuelZ) {

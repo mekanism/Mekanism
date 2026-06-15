@@ -2,7 +2,7 @@ package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.common.loot.table.BaseEntityLootTables;
-import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.EntityTypeTags;

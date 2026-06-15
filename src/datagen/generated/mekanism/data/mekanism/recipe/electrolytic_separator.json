@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "mekanism:electrolytic_core",
     "A": "#mekanism:alloys/infused",

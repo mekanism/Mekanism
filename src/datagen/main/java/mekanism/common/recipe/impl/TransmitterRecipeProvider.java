@@ -13,9 +13,11 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 class TransmitterRecipeProvider implements ISubRecipeProvider {
@@ -48,13 +50,13 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, Items.IRON_BARS)
+              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS.item())
               .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, Items.IRON_BARS)
+              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS.item())
               .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
 
@@ -66,7 +68,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addMechanicalPipeRecipes(RecipeOutput consumer, String basePath) {
-        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_MECHANICAL_PIPE, Items.BUCKET);
+        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_MECHANICAL_PIPE, ItemIds.BUCKET);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ADVANCED_MECHANICAL_PIPE, MekanismBlocks.BASIC_MECHANICAL_PIPE, MekanismTags.Items.ALLOYS_INFUSED);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ELITE_MECHANICAL_PIPE, MekanismBlocks.ADVANCED_MECHANICAL_PIPE, MekanismTags.Items.ALLOYS_REINFORCED);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, MekanismBlocks.ELITE_MECHANICAL_PIPE, MekanismTags.Items.ALLOYS_ATOMIC);
@@ -101,11 +103,11 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTierNN(transmitter).getLowerName()));
     }
 
-    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, Item item) {
+    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, ResourceKey<Item> item) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, item)
+              .key(Pattern.CONSTANT, this.items, item)
               .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTierNN(transmitter).getLowerName()));
     }
 

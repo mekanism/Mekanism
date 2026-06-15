@@ -75,12 +75,12 @@ public class ModelArmoredJetpack extends ModelJetpack {
     }
 
     @Override
-    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
-        super.collect(poseStack, collector, light, overlayLight, hasFoil);
+    public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
+        super.collect(poseStack, collector, light, overlayLight);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
-        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, -1, null, hasFoil);
-        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasFoil);
+        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, -1, null);
+        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null);
         poseStack.popPose();
     }
 

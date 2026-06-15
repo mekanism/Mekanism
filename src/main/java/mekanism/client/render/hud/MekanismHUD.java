@@ -66,7 +66,7 @@ public class MekanismHUD implements GuiLayer {
     public void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        if (player != null && !player.isSpectator() && !minecraft.options.hideGui && MekanismConfig.client.enableHUD.get()) {
+        if (player != null && !player.isSpectator() && !minecraft.gui.hud.isHidden() && MekanismConfig.client.enableHUD.get()) {
             int count = 0;
             List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {

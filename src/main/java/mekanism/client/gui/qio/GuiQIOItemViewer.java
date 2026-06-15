@@ -187,9 +187,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         //Skip loading pinned windows for now on the new viewer as we will transfer any open windows manually (pinned or not)
         s.loadPinned = false;
-        minecraft.screen = null;
+        //TODO - 26.2: Should we AT this so that it doesn't run the "on close logic" for the previous viewer? Or can we get away with just setting a boolean on the viewer
+        // and then skipping actually closing it in those cases
+        //minecraft.gui.screen = null;
         minecraft.player.containerMenu = s.getMenu();
-        minecraft.setScreen(s);
+        minecraft.gui.setScreen(s);
         s.searchField.setText(searchField.getText());
         //Transfer all the windows to the new GUI
         s.transferWindows(windows);

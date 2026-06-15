@@ -487,6 +487,14 @@ repositories { RepositoryHandler handler ->
             includeGroup('org.appliedenergistics')
         }
     }
+    maven {
+        name = "Maven for PR #3198" // https://github.com/neoforged/NeoForge/pull/3198
+        url = uri("https://prmaven.neoforged.net/NeoForge/pr3198")
+        content {
+            includeModule("net.neoforged", "neoforge")
+            includeModule("net.neoforged", "testframework")
+        }
+    }
 }
 
 tasks.named('test', Test) {
@@ -511,9 +519,10 @@ dependencies {
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+        //TODO - 26.2: Re-enable
+        //localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
     compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}:api")
@@ -546,7 +555,8 @@ dependencies {
     //localRuntime("maven.modrinth:jade:${jade_version_modrinth}")
     /// - Maven (gradle build with added publish block, upload)
     compileOnly("snownee.jade:Jade:${jade_version}:api")
-    localRuntime("snownee.jade:Jade:${jade_version}")
+    //TODO - 26.1: Re-enable when it updates
+    //localRuntime("snownee.jade:Jade:${jade_version}")
 
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
     //localRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
@@ -561,23 +571,25 @@ dependencies {
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    //TODO - 26.2: Switch back to datagenMainImplementation
+    datagenMainCompileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}")
 
-    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
-    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty and Biomes we've gone
-    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
+    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
+    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty and Biomes we've gone
+    //TODO - 26.2: Switch back to datagenMainImplementation (and enable the two above lines)
+    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
 
     //datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")//Biomes we've gone
     //datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")//Biomes we've gone

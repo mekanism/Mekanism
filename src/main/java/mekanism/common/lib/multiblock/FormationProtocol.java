@@ -116,7 +116,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 manager.replaceCaches(result.idsFound().keySet(), idToUse, Objects.requireNonNull(cache, "Tried to merge multiblock caches but couldn't find a cache?"));
                 if (!rejectContents.rejectedItems.isEmpty()) {
                     //TODO - 1.20.4: Don't drop it in the center if there is no nearest player, maybe drop it on top of the multiblock? Or to one of the sides
-                    Vec3 dropPosition = pointerPos.getCenter();
+                    Vec3 dropPosition = Vec3.atCenterOf(pointerPos);
                     //Try to see which player was nearest to multiblocks that have rejected items
                     Player nearestPlayer = world.getNearestPlayer(dropPosition.x, dropPosition.y, dropPosition.z, 25, true);
                     if (nearestPlayer != null) {

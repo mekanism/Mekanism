@@ -475,7 +475,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //Red
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.ROSE_BUSH),
-              new ItemStackTemplate(Items.RED_DYE, 4)
+              new ItemStackTemplate(Items.DYE.red(), 4)
         ).save(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(
@@ -483,17 +483,17 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.POPPY,
                     Items.RED_TULIP
               ),
-              new ItemStackTemplate(Items.RED_DYE, 2)
+              new ItemStackTemplate(Items.DYE.red(), 2)
         ).save(consumer, Mekanism.rl(basePath + "small_red"));
         //Cyan
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.PITCHER_PLANT),
-              new ItemStackTemplate(Items.CYAN_DYE, 4)
+              new ItemStackTemplate(Items.DYE.cyan(), 4)
         ).save(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.CACTUS),
-              new ItemStackTemplate(Items.GREEN_DYE, 2)
+              new ItemStackTemplate(Items.DYE.green(), 2)
         ).save(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -502,47 +502,47 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.AZURE_BLUET,
                     Items.WHITE_TULIP
               ),
-              new ItemStackTemplate(Items.LIGHT_GRAY_DYE, 2)
+              new ItemStackTemplate(Items.DYE.lightGray(), 2)
         ).save(consumer, Mekanism.rl(basePath + "light_gray"));
         //Pink
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.PEONY),
-              new ItemStackTemplate(Items.PINK_DYE, 4)
+              new ItemStackTemplate(Items.DYE.pink(), 4)
         ).save(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(
                     Items.PINK_TULIP,
                     Items.PINK_PETALS
               ),
-              new ItemStackTemplate(Items.PINK_DYE, 2)
+              new ItemStackTemplate(Items.DYE.pink(), 2)
         ).save(consumer, Mekanism.rl(basePath + "small_pink"));
         //Lime
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.SEA_PICKLE),
-              new ItemStackTemplate(Items.LIME_DYE, 2)
+              new ItemStackTemplate(Items.DYE.lime(), 2)
         ).save(consumer, Mekanism.rl(basePath + "lime"));
         //Yellow
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.SUNFLOWER),
-              new ItemStackTemplate(Items.YELLOW_DYE, 4)
+              new ItemStackTemplate(Items.DYE.yellow(), 4)
         ).save(consumer, Mekanism.rl(basePath + "large_yellow"));
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.DANDELION),
-              new ItemStackTemplate(Items.YELLOW_DYE, 2)
+              new ItemStackTemplate(Items.DYE.yellow(), 2)
         ).save(consumer, Mekanism.rl(basePath + "small_yellow"));
         //Light blue
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.BLUE_ORCHID),
-              new ItemStackTemplate(Items.LIGHT_BLUE_DYE, 2)
+              new ItemStackTemplate(Items.DYE.lightBlue(), 2)
         ).save(consumer, Mekanism.rl(basePath + "light_blue"));
         //Magenta
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.LILAC),
-              new ItemStackTemplate(Items.MAGENTA_DYE, 4)
+              new ItemStackTemplate(Items.DYE.magenta(), 4)
         ).save(consumer, Mekanism.rl(basePath + "large_magenta"));
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.ALLIUM),
-              new ItemStackTemplate(Items.MAGENTA_DYE, 2)
+              new ItemStackTemplate(Items.DYE.magenta(), 2)
         ).save(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -550,7 +550,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.ORANGE_TULIP,
                     Items.TORCHFLOWER
               ),
-              new ItemStackTemplate(Items.ORANGE_DYE, 2)
+              new ItemStackTemplate(Items.DYE.orange(), 2)
         ).save(consumer, Mekanism.rl(basePath + "orange"));
         //Blue
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -558,12 +558,12 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.CORNFLOWER,
                     Items.LAPIS_LAZULI
               ),
-              new ItemStackTemplate(Items.BLUE_DYE, 2)
+              new ItemStackTemplate(Items.DYE.blue(), 2)
         ).save(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Items.COCOA_BEANS),
-              new ItemStackTemplate(Items.BROWN_DYE, 2)
+              new ItemStackTemplate(Items.DYE.brown(), 2)
         ).save(consumer, Mekanism.rl(basePath + "brown"));
         //Black
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -571,7 +571,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.INK_SAC,
                     Items.WITHER_ROSE
               ),
-              new ItemStackTemplate(Items.BLACK_DYE, 2)
+              new ItemStackTemplate(Items.DYE.black(), 2)
         ).save(consumer, Mekanism.rl(basePath + "black"));
         //White
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -579,7 +579,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
                     Items.BONE_MEAL,
                     Items.LILY_OF_THE_VALLEY
               ),
-              new ItemStackTemplate(Items.WHITE_DYE, 2)
+              new ItemStackTemplate(Items.DYE.white(), 2)
         ).save(consumer, Mekanism.rl(basePath + "white"));
     }
 

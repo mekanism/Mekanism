@@ -1,6 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "category": "misc",
   "key": {
     "#": "mekanism:laser_amplifier",
     "P": "#mekanism:personal_storage"

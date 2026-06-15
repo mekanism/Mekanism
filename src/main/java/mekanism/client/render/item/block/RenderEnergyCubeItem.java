@@ -60,7 +60,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
             poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.collect(state.coreState, poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords, false);
+            core.collect(state.coreState, poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords);
             poseStack.popPose();
         }
     }
@@ -101,13 +101,12 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
             mc().getBlockModelResolver().update(modelRenderState, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
         }
 
-        float ticks = mc().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
+        float ticks = mc().gameRenderer.gameRenderState().levelRenderState.gameTime + MekanismRenderer.getPartialTick();
         float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
 
         return new CubeState(
               energyRatio > 0 ? ModelEnergyCore.getState(tier.getBaseTier(), energyRatio) : null,
               ticks,
-              stack.hasFoil(),
               modelRenderState
         );
     }
@@ -120,7 +119,7 @@ public class RenderEnergyCubeItem implements SpecialModelRenderer<RenderEnergyCu
         return Minecraft.getInstance();
     }
 
-    public record CubeState(@Nullable Integer coreState, float ticks, boolean hasFoil, BlockModelRenderState blockRenderState) {}
+    public record CubeState(@Nullable Integer coreState, float ticks, BlockModelRenderState blockRenderState) {}
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<CubeState> {
 

@@ -18,6 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -56,12 +57,12 @@ public class AdditionsConfig extends BaseMekanismConfig {
         babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
               .defineInRange("arrowDamageMultiplier", 0.25, 0.1, 10));
 
-        addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityType.BOGGED);
-        addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER);
-        addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN);
-        addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON);
-        addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityType.STRAY);
-        addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON);
+        addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityTypes.BOGGED);
+        addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityTypes.CREEPER);
+        addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityTypes.ENDERMAN);
+        addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityTypes.SKELETON);
+        addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityTypes.STRAY);
+        addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityTypes.WITHER_SKELETON);
         builder.pop();
 
         configSpec = builder.build();

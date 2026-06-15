@@ -68,6 +68,7 @@ public class AdditionsTags {
         private Blocks() {
         }
 
+        //TODO - 26.2: Use BlockItemTagId in places?
         public static final TagKey<Block> FENCES_PLASTIC = commonTag("fences/plastic");
         public static final TagKey<Block> FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
         public static final TagKey<Block> STAIRS_PLASTIC = commonTag("stairs/plastic");

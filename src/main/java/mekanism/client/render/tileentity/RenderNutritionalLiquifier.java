@@ -90,8 +90,11 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
     @Override
     public void submit(LiquifierRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.stage != 0) {
-            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F, 0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
+        if (state.stage != 0 && state.pasteTexture != null) {
+            //TODO - 26.2: Validate this render sheet
+            RenderResizableCuboid.renderCube(RenderResizableCuboid.SideRender.NOT_DOWN, 0.001F, 0.313F, 0.001F, 0.999F,
+                  0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
+                  state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
         //TODO - 26.1: rendering
         /*if (state.active) {

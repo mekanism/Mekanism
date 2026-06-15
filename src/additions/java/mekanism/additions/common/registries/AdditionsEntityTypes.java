@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -30,7 +31,6 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.skeleton.Bogged;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 
 public class AdditionsEntityTypes {
@@ -45,18 +45,18 @@ public class AdditionsEntityTypes {
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyBogged>> BABY_BOGGED = ENTITY_TYPES.registerBasicMonster("baby_bogged", () -> baby(EntityBabyBogged::new, EntityType.BOGGED), Bogged::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyCreeper>> BABY_CREEPER = ENTITY_TYPES.registerBasicMonster("baby_creeper", () -> baby(EntityBabyCreeper::new, EntityType.CREEPER, 0.625F), Creeper::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyEnderman>> BABY_ENDERMAN = ENTITY_TYPES.registerBasicMonster("baby_enderman", () -> baby(EntityBabyEnderman::new, EntityType.ENDERMAN, 0.525F), EnderMan::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabySkeleton>> BABY_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_skeleton", () -> baby(EntityBabySkeleton::new, EntityType.SKELETON), AbstractSkeleton::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyStray>> BABY_STRAY = ENTITY_TYPES.registerBasicPlacement("baby_stray", () -> baby(EntityBabyStray::new, EntityType.STRAY), AbstractSkeleton::createAttributes, EntityBabyStray::spawnRestrictions);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyWitherSkeleton>> BABY_WITHER_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_wither_skeleton", () -> baby(EntityBabyWitherSkeleton::new, EntityType.WITHER_SKELETON), AbstractSkeleton::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyBogged>> BABY_BOGGED = ENTITY_TYPES.registerBasicMonster("baby_bogged", () -> baby(EntityBabyBogged::new, EntityTypes.BOGGED), Bogged::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyCreeper>> BABY_CREEPER = ENTITY_TYPES.registerBasicMonster("baby_creeper", () -> baby(EntityBabyCreeper::new, EntityTypes.CREEPER, 0.625F), Creeper::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyEnderman>> BABY_ENDERMAN = ENTITY_TYPES.registerBasicMonster("baby_enderman", () -> baby(EntityBabyEnderman::new, EntityTypes.ENDERMAN, 0.525F), EnderMan::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabySkeleton>> BABY_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_skeleton", () -> baby(EntityBabySkeleton::new, EntityTypes.SKELETON), AbstractSkeleton::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyStray>> BABY_STRAY = ENTITY_TYPES.registerBasicPlacement("baby_stray", () -> baby(EntityBabyStray::new, EntityTypes.STRAY), AbstractSkeleton::createAttributes, EntityBabyStray::spawnRestrictions);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyWitherSkeleton>> BABY_WITHER_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_wither_skeleton", () -> baby(EntityBabyWitherSkeleton::new, EntityTypes.WITHER_SKELETON), AbstractSkeleton::createAttributes);
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBalloon>> BALLOON = ENTITY_TYPES.registerBuilder("balloon", () -> EntityType.Builder.of(EntityBalloon::new, MobCategory.MISC)
           .sized(0.4F, 0.45F)
           .eyeHeight(0.45F - EntityBalloon.OFFSET)
     );
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityObsidianTNT>> OBSIDIAN_TNT = ENTITY_TYPES.registerBuilder("obsidian_tnt", () -> EntityType.Builder.<EntityObsidianTNT>of(EntityObsidianTNT::new, MobCategory.MISC)
-          //Copied from EntityType.TNT
+          //Copied from EntityTypes.TNT
           .fireImmune()
           .sized(0.98F, 0.98F)
           .eyeHeight(0.15F)
@@ -100,7 +100,7 @@ public class AdditionsEntityTypes {
         if (parent.canSpawnFarFromPlayer()) {
             builder.canSpawnFarFromPlayer();
         }
-        builder.immuneTo(parent.immuneTo.toArray(Block[]::new))
+        builder.immuneTo(parent.immuneTo)
               .setShouldReceiveVelocityUpdates(parent.trackDeltas())
               .clientTrackingRange(parent.clientTrackingRange())
               .setTrackingRange(parent.clientTrackingRange())

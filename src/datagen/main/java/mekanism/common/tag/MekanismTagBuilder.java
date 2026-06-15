@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.ColorCollection;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for things like holders and also a few more helpers and addition of SafeVarargs annotations
 public class MekanismTagBuilder<TYPE> {
@@ -39,9 +39,9 @@ public class MekanismTagBuilder<TYPE> {
         return apply(tagAdder, TagKey::location, tags);
     }
 
-    @SafeVarargs//TODO: Move away from having to have any intrinsics, this mostly exists as a convenience method for when we need to add vanilla entries
-    public final MekanismTagBuilder<TYPE> addIntrinsic(Registry<TYPE> registry, TYPE... elements) {
-        return apply(elementAdder, element -> Objects.requireNonNull(registry.getKeyOrNull(element)), elements);
+    public <COLOR> MekanismTagBuilder<TYPE> add(ColorCollection<COLOR> colorCollection, Function<COLOR, ResourceKey<TYPE>> keyExtractor) {
+        colorCollection.forEach(color -> elementAdder.accept(keyExtractor.apply(color).identifier()));
+        return this;
     }
 
     @SafeVarargs

@@ -35,6 +35,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -103,7 +105,6 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addUraniumRecipes(consumer, basePath + "uranium/");
     }
 
-    @SuppressWarnings("deprecation")
     private void addDynamicOreProcessingIngotRecipes(RecipeOutput consumer, String basePath, PrimaryResource resource) {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
         // We may want to consider this at least for the silk touched ore to ingot?
@@ -114,45 +115,45 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         int toOre = 8;
         switch (resource) {
             case IRON -> {
-                ingot = Items.IRON_INGOT.builtInRegistryHolder();
+                ingot = items.getOrThrow(ItemIds.IRON_INGOT);
                 ingotTag = Tags.Items.INGOTS_IRON;
-                nugget = Items.IRON_NUGGET.builtInRegistryHolder();
+                nugget = items.getOrThrow(ItemIds.IRON_NUGGET);
                 nuggetTag = Tags.Items.NUGGETS_IRON;
-                block = Items.IRON_BLOCK.builtInRegistryHolder();
-                raw = Items.RAW_IRON.builtInRegistryHolder();
+                block = items.getOrThrow(BlockItemIds.IRON_BLOCK.item());
+                raw = items.getOrThrow(ItemIds.RAW_IRON);
                 rawTag = Tags.Items.RAW_MATERIALS_IRON;
-                rawBlock = Items.RAW_IRON_BLOCK.builtInRegistryHolder();
+                rawBlock = items.getOrThrow(BlockItemIds.RAW_IRON_BLOCK.item());
                 rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_IRON;
-                ore = Items.IRON_ORE.builtInRegistryHolder();
-                deepslateOre = Items.DEEPSLATE_IRON_ORE.builtInRegistryHolder();
+                ore = items.getOrThrow(BlockItemIds.IRON_ORE.item());
+                deepslateOre = items.getOrThrow(BlockItemIds.DEEPSLATE_IRON_ORE.item());
                 dustExperience = 0.35F;
             }
             case GOLD -> {
-                ingot = Items.GOLD_INGOT.builtInRegistryHolder();
+                ingot = items.getOrThrow(ItemIds.GOLD_INGOT);
                 ingotTag = Tags.Items.INGOTS_GOLD;
-                nugget = Items.GOLD_NUGGET.builtInRegistryHolder();
+                nugget = items.getOrThrow(ItemIds.GOLD_NUGGET);
                 nuggetTag = Tags.Items.NUGGETS_GOLD;
-                block = Items.GOLD_BLOCK.builtInRegistryHolder();
-                raw = Items.RAW_GOLD.builtInRegistryHolder();
+                block = items.getOrThrow(BlockItemIds.GOLD_BLOCK.item());
+                raw = items.getOrThrow(ItemIds.RAW_GOLD);
                 rawTag = Tags.Items.RAW_MATERIALS_GOLD;
-                rawBlock = Items.RAW_GOLD_BLOCK.builtInRegistryHolder();
+                rawBlock = items.getOrThrow(BlockItemIds.RAW_GOLD_BLOCK.item());
                 rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_GOLD;
-                ore = Items.GOLD_ORE.builtInRegistryHolder();
-                deepslateOre = Items.DEEPSLATE_GOLD_ORE.builtInRegistryHolder();
+                ore = items.getOrThrow(BlockItemIds.GOLD_ORE.item());
+                deepslateOre = items.getOrThrow(BlockItemIds.DEEPSLATE_GOLD_ORE.item());
                 dustExperience = 0.5F;
             }
             case COPPER -> {
-                ingot = Items.COPPER_INGOT.builtInRegistryHolder();
+                ingot = items.getOrThrow(ItemIds.COPPER_INGOT);
                 ingotTag = Tags.Items.INGOTS_COPPER;
                 nugget = null;
                 nuggetTag = null;
-                block = Items.COPPER_BLOCK.builtInRegistryHolder();
-                raw = Items.RAW_COPPER.builtInRegistryHolder();
+                block = items.getOrThrow(BlockItemIds.COPPER_BLOCK.weathering().unaffected().item());
+                raw = items.getOrThrow(ItemIds.RAW_COPPER);
                 rawTag = Tags.Items.RAW_MATERIALS_COPPER;
-                rawBlock = Items.RAW_COPPER_BLOCK.builtInRegistryHolder();
+                rawBlock = items.getOrThrow(BlockItemIds.RAW_COPPER_BLOCK.item());
                 rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_COPPER;
-                ore = Items.COPPER_ORE.builtInRegistryHolder();
-                deepslateOre = Items.DEEPSLATE_COPPER_ORE.builtInRegistryHolder();
+                ore = items.getOrThrow(BlockItemIds.COPPER_ORE.item());
+                deepslateOre = items.getOrThrow(BlockItemIds.DEEPSLATE_COPPER_ORE.item());
                 dustExperience = 0.35F;
                 toOre = 20;//8 * 2.5
             }
@@ -451,7 +452,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               false
         ).save(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.NETHERITE_DUST), Items.NETHERITE_INGOT.builtInRegistryHolder(), 1, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.NETHERITE_DUST), items.getOrThrow(ItemIds.NETHERITE_INGOT), 1, 200,
               Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
         //Netherite Ingot to Netherite Dust
         ItemStackToItemStackRecipeBuilder.crushing(

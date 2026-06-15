@@ -91,7 +91,7 @@ public class ClientTickHandler {
                 return false;
             }
             JetpackMode mode = ((IJetpackItem) jetpackType.getItem()).getJetpackMode(jetpackType);
-            boolean guiOpen = minecraft.screen != null;
+            boolean guiOpen = minecraft.gui.screen() != null;
             boolean ascending = player.input.keyPresses.jump();
             boolean rising = ascending && !guiOpen;
             if (mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) {
@@ -232,11 +232,11 @@ public class ClientTickHandler {
             }
         }
 
-        if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
+        if (minecraft.gui.screen() == null || minecraft.gui.screen() instanceof GuiRadialSelector) {
             if (!MekKeyHandler.isRadialPressed() || (!updateSelectorRenderer(EquipmentSlot.MAINHAND) && !updateSelectorRenderer(EquipmentSlot.OFFHAND))) {
-                if (minecraft.screen != null) {
+                if (minecraft.gui.screen() != null) {
                     //If we currently have a radial selector gui open but shouldn't close it
-                    minecraft.setScreen(null);
+                    minecraft.gui.setScreen(null);
                 }
             }
         }
@@ -257,10 +257,10 @@ public class ClientTickHandler {
             if (stack.getItem() instanceof IGenericRadialModeItem item) {
                 RadialData<?> radialData = item.getRadialData(stack);
                 if (radialData != null) {
-                    if (!(minecraft.screen instanceof GuiRadialSelector screen) || !screen.hasMatchingData(slot, radialData)) {
+                    if (!(minecraft.gui.screen() instanceof GuiRadialSelector screen) || !screen.hasMatchingData(slot, radialData)) {
                         GuiRadialSelector newSelector = new GuiRadialSelector(slot, radialData, () -> minecraft.player);
-                        newSelector.tryInheritCurrentPath(minecraft.screen);
-                        minecraft.setScreen(newSelector);
+                        newSelector.tryInheritCurrentPath(minecraft.gui.screen());
+                        minecraft.gui.setScreen(newSelector);
                     }
                     return true;
                 }

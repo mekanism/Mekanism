@@ -37,7 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -213,7 +213,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                     //If the entity is still alive, see if there is any special handling we want to do
                     if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
                         if (lightningBolt == null) {
-                            lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
+                            lightningBolt = new LightningBolt(EntityTypes.LIGHTNING_BOLT, world);
                             //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
                             lightningBolt.setDamage(0);
                             lightningBolt.setVisualOnly(true);

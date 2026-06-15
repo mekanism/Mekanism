@@ -24,7 +24,8 @@ public class RenderAtomicDisassembler implements NoDataSpecialModelRenderer {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        atomicDisassembler.collect(null, poseStack, submitNodeCollector, lightCoords, overlayCoords, hasFoil);
+        //TODO - 26.2: Figure out foil
+        atomicDisassembler.collect(null, poseStack, submitNodeCollector, lightCoords, overlayCoords);
         poseStack.popPose();
     }
 
