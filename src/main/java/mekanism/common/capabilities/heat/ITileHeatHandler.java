@@ -72,9 +72,6 @@ public interface ITileHeatHandler {
             if (sink == null) {
                 continue;
             }
-            //double heatCapacity = heatCapacitor.getHeatCapacity();
-            //double invConduction = sink.getInverseConduction() + heatCapacitor.getInverseConduction();
-            //double tempToTransfer = (heatCapacitor.getTemperature() - getAmbientTemperature(side)) / invConduction;
             double temp = heatCapacitor.getTemperature();
             double sinkTemp = sink.getTemperature();
             if (temp <= sinkTemp) {
@@ -87,9 +84,6 @@ public interface ITileHeatHandler {
                 // past the following logic
                 continue;
             }
-            //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
-            // but it seems to nerf the heat system quite a bit so needs more review than being able
-            // to be done just before a release is made
             double heatCapacity = heatCapacitor.getHeatCapacity();
             double sinkHeatCapacity = sink.getHeatCapacity();
             //Calculate the target temperature using calorimetry
@@ -99,8 +93,6 @@ public interface ITileHeatHandler {
             double heatToTransfer = tempToTransfer * heatCapacity;
             heatCapacitor.handleHeat(-heatToTransfer, transaction);
             sink.handleHeat(heatToTransfer, transaction);
-            //TODO - 26.1 (heat): Validate != 0 makes sense, conductors used to compare it against > 0, but I think that was just to skip looking up the transmitter
-            // to see if it was in the same network, I think it is more correct as != 0?
             if (tempToTransfer != 0 && countsAsAdjacent(side)) {
                 adjacentTransfer += tempToTransfer;
             }

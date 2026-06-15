@@ -25,7 +25,6 @@ public final class HeatContainerType extends AbstractContainerType<IHeatCapacito
         if (data.heat().isPresent()) {
             capacitor.setHeatAndCapacity(data.heat().getAsDouble(), data.capacity(), null);
         } else {
-            //TODO - 26.1 (heat): Do we need to handle setting it for component backed capacitors to no heat data and just capacity data?
             capacitor.setHeatCapacity(data.capacity(), null);
         }
     }
