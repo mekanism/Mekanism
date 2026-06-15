@@ -5,7 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.network.PacketUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,8 +17,8 @@ import net.minecraft.util.Mth;
 public record HeatCapacitorData(OptionalDouble heat, double capacity) {
 
     public static final Codec<HeatCapacitorData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          Codec.DOUBLE.optionalFieldOf(SerializationConstants.STORED).forGetter(data -> data.heat.isPresent() ? Optional.of(data.heat.getAsDouble()) : Optional.empty()),
-          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(HeatCapacitorData::capacity)
+          SerializerHelper.NON_NEGATIVE_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_STORED).forGetter(data -> data.heat.isPresent() ? Optional.of(data.heat.getAsDouble()) : Optional.empty()),
+          SerializerHelper.ONE_OR_GREATER_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_CAPACITY, 1D).forGetter(HeatCapacitorData::capacity)
     ).apply(instance, (heat, capacity) -> new HeatCapacitorData(
           heat.map(OptionalDouble::of).orElseGet(OptionalDouble::empty),
           capacity
@@ -28,7 +30,8 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
     );
 
     public HeatCapacitorData(double heat, double capacity) {
-        this(OptionalDouble.of(Math.max(0D, heat)), capacity);
+        MekanismPreconditions.checkNonNegative(heat);
+        this(OptionalDouble.of(heat), capacity);
     }
 
     public HeatCapacitorData(double capacity) {
@@ -36,20 +39,19 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
     }
 
     public HeatCapacitorData withHeat(double heat) {
-        heat = Math.max(0D, heat);
+        MekanismPreconditions.checkNonNegative(heat);
         if (Mth.equal(heatOrAmbient(), heat)) {
             return this;
         }
         return new HeatCapacitorData(heat, capacity);
     }
 
-    public HeatCapacitorData withCapacity(double capacity) {
-        //TODO - 26.1 (heat): Evaluate what validation logic we want here
-        capacity = Math.max(0D, capacity);
-        if (Mth.equal(capacity(), capacity)) {
+    public HeatCapacitorData withCapacity(double heatCapacity) {
+        MekanismPreconditions.checkHeatCapacity(heatCapacity);
+        if (Mth.equal(capacity, heatCapacity)) {
             return this;
         }
-        return new HeatCapacitorData(heat, capacity);
+        return new HeatCapacitorData(heat, heatCapacity);
     }
 
     public double temperature() {

@@ -1,7 +1,7 @@
 package mekanism.common.component.containers.heat;
 
-import java.util.Objects;
 import java.util.function.UnaryOperator;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatCapacitorWrapper;
@@ -19,16 +19,11 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     private final double inverseConductionCoefficient;
     private final double inverseInsulationCoefficient;
-    private final HeatCapacitorData defaultData;
 
     public ComponentBackedHeatCapacitor(ItemAccess attachedAccess, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
         super(attachedAccess);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
-        //TODO - 26.1 (heat): Re-evaluate throwing like this? Can we somehow handle it more gracefully?
-        // Theoretically we could keep requiring passing in the default capacity
-        this.defaultData = Objects.requireNonNull(attachedAccess.getResource().getItem().components().get(containerType().getComponentType()),
-              "Attempted to create a component backed heat capacitor for an item that doesn't support heat data");
     }
 
     @Override
@@ -41,13 +36,14 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
         return containerType().get(attachedAccess.getResource());
     }
 
-    protected HeatCapacitorData getCurrentOrDefault() {
-        return Objects.requireNonNullElse(getCurrent(), defaultData);
-    }
-
     @Override
     public double getTemperature() {
-        return getCurrentOrDefault().temperature();
+        HeatCapacitorData current = getCurrent();
+        if (current == null) {
+            //Fail to update contents due to there being no backing data on the attached access
+            return HeatAPI.AMBIENT_TEMP;
+        }
+        return current.temperature();
     }
 
     @Override
@@ -62,20 +58,33 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     @Override
     public double getHeatCapacity() {
-        return getCurrentOrDefault().capacity();
+        HeatCapacitorData current = getCurrent();
+        if (current == null) {
+            //Fail to update contents due to there being no backing data on the attached access
+            return HeatAPI.DEFAULT_HEAT_CAPACITY;
+        }
+        return current.capacity();
     }
 
     @Override
     public double getHeat() {
-        return getCurrentOrDefault().heatOrAmbient();
+        HeatCapacitorData current = getCurrent();
+        if (current == null) {
+            //Fail to update contents due to there being no backing data on the attached access
+            return HeatAPI.AMBIENT_TEMP * HeatAPI.DEFAULT_HEAT_CAPACITY;
+        }
+        return current.heatOrAmbient();
     }
 
     //Note: While callers create capturing lambda's, as these methods are not really being used in item form anyway, it shouldn't have that big a performance impact
     private void updateContents(UnaryOperator<HeatCapacitorData> transformer, @Nullable TransactionContext transaction) {
         HeatCapacitorData current = getCurrent();
-        HeatCapacitorData existing = Objects.requireNonNullElse(current, defaultData);
+        if (current == null) {
+            //Fail to update contents due to there being no backing data on the attached access
+            return;
+        }
         //Note: withHeat handles clamping to zero
-        HeatCapacitorData newData = transformer.apply(existing);
+        HeatCapacitorData newData = transformer.apply(current);
         if (current != newData) {
             //Note: we can just check instance equality, because if the heat value is the same as it was, then the same object is returned from withHeat and withCapacity
             setContents(newData, transaction);
@@ -84,6 +93,7 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     @Override
     public void setHeat(double heat, @Nullable TransactionContext transaction) {
+        MekanismPreconditions.checkNonNegative(heat);
         updateContents(existing -> existing.withHeat(heat), transaction);
     }
 
@@ -106,7 +116,12 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     @Override
     public boolean isAmbientTemperature() {
-        return getCurrentOrDefault().heat().isEmpty();
+        HeatCapacitorData current = getCurrent();
+        if (current == null) {
+            //Fail to update contents due to there being no backing data on the attached access
+            return true;
+        }
+        return current.heat().isEmpty();
     }
 
     @Override
@@ -116,7 +131,11 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
         }
         HeatCapacitorData otherData;
         if (other instanceof ComponentBackedHeatCapacitor otherCapacitor) {
-            otherData = otherCapacitor.getCurrentOrDefault();
+            otherData = otherCapacitor.getCurrent();
+            if (otherData == null) {
+                //Fail to update contents due to there being no backing data on the attached access
+                return;
+            }
         } else {
             otherData = new HeatCapacitorData(other.getHeat(), other.getHeatCapacity());
         }
@@ -127,27 +146,15 @@ public class ComponentBackedHeatCapacitor extends SimpleComponentBackedContainer
 
     @Override
     public void serialize(ValueOutput output) {
-        HeatCapacitorData data = getCurrent();
-        if (data != null) {
-            if (data.heat().isPresent()) {
-                output.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
-            }
-            output.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
-        }
+        output.storeNullable(SerializationConstants.STATE, HeatCapacitorData.CODEC, getCurrent());
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        HeatCapacitorData data;
-        double capacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, defaultData.capacity());
-        double stored = input.getDoubleOr(SerializationConstants.STORED, -1);
-        if (stored == -1) {
-            data = new HeatCapacitorData(capacity);
-        } else {
-            data = new HeatCapacitorData(stored, capacity);
-        }
-        if (!data.equals(getCurrent())) {
-            setContents(data, null);
-        }
+        input.read(SerializationConstants.STATE, HeatCapacitorData.CODEC).ifPresent(state -> {
+            if (!state.equals(getCurrent())) {
+                setContents(state, null);
+            }
+        });
     }
 }

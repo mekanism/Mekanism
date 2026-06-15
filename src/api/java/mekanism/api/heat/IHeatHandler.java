@@ -12,20 +12,16 @@ public interface IHeatHandler {
     /// Returns the inverse conduction coefficient of the handler. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
     /// can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
     ///
-    /// @return Inverse conduction coefficient of the handler.
-    ///
-    /// @apiNote Must be at least `1`.
-    double getInverseConduction();//TODO - 26.1 (heat): The docs on IHeatCapacitor stated this must be greater than zero, but this states one. Which is correct?
+    /// @return Inverse conduction coefficient of the handler. **Must be at least `1`**
+    double getInverseConduction();
 
     /// Returns the heat capacity of the handler. This number can be thought of as the specific heat of the handler (specific heat x mass of the handler).
     ///
-    /// @return Heat capacity of the handler.
-    ///
-    /// @apiNote Must be at least `1`.
+    /// @return Heat capacity of the handler. **Must be at least `1`**
     double getHeatCapacity();
 
     /// Handles a change of heat in this handler. Can be positive or negative.
     ///
     /// @param transfer The amount being transferred.
-    void handleHeat(double transfer, TransactionContext transaction);//TODO - 26.1 (heat): Do we want this to have any sort of return value?
+    void handleHeat(double transfer, TransactionContext transaction);
 }

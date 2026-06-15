@@ -373,7 +373,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 //Reset the partial waste as we just irradiated it and there is not much sense having it exist in limbo
                 partialWaste = 0;
                 //Reset the heat to the default of the heat capacitor
-                heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp, transaction);
+                heatCapacitor.setHeat(Math.max(0D, heatCapacitor.getHeatCapacity() * biomeAmbientTemp), transaction);
                 //Force sync the update to the cache that corresponds to this multiblock
                 MultiblockCache<FissionReactorMultiblockData> cache = MultiblockManager.get(world, MekanismGeneratorsMultiblocks.FISSION_REACTOR).getCache(inventoryID);
                 if (cache != null) {

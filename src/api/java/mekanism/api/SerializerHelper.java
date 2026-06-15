@@ -20,6 +20,19 @@ public class SerializerHelper {
     private SerializerHelper() {
     }
 
+    /// Double codec that validates the value is non-negative.
+    ///
+    /// @since 10.8.0
+    public static final Codec<Double> NON_NEGATIVE_DOUBLE = doubleRangeMinInclusiveWithMessage(0, n -> "Value must be non-negative: " + n);
+    /// Double codec that validates the value is at least one.
+    ///
+    /// @since 10.8.0
+    public static final Codec<Double> ONE_OR_GREATER_DOUBLE = doubleRangeMinInclusiveWithMessage(1, n -> "Value must be greater than or equal to one: " + n);
+
+    private static Codec<Double> doubleRangeMinInclusiveWithMessage(double minInclusive, Function<Double, String> error) {
+        return Codec.DOUBLE.validate(value -> value.compareTo(minInclusive) >= 0 ? DataResult.success(value) : DataResult.error(() -> error.apply(value)));
+    }
+
     /// Generate a RecordCodecBuilder which is required only if the `primary` is present. If this field is present, it will be returned regardless. Does not eat errors
     ///
     /// @param primaryField    the field which determines the required-ness. MUST be an Optional
