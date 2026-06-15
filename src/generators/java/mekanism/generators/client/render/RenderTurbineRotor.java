@@ -90,7 +90,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
     }
 
     private void submitBlade(TurbineRotorRenderState state, TurbineBladeRenderState bladeState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
-        this.model.collect(bladeState, poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, false);
+        nodeCollector.submitModel(this.model, bladeState, poseStack, this.model.getRenderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
     }
 
     @Override
