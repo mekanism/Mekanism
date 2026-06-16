@@ -7,4 +7,8 @@ public interface IStorageTier extends ITier {
     long getCapacity();
 
     int getTransferRate();
+
+    default boolean isCreative() {
+        return false;
+    }
 }

@@ -1,7 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import java.util.function.Consumer;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -10,7 +9,6 @@ import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
@@ -19,9 +17,9 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.ItemAccessUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.TypedInstance;
@@ -87,28 +85,18 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    protected void addStats(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
-          Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
-        if (fluidStack.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
-        } else if (tier == FluidTankTier.CREATIVE) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, MekanismLang.INFINITE));
-        } else {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
-        }
-        if (tier == FluidTankTier.CREATIVE) {
-            tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
-        } else {
-            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
-        }
+    @Deprecated
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override
     protected void addTypeDetails(ItemStack stack, ItemAccess itemAccess, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
           Consumer<Component> tooltipAdder, TooltipFlag flag) {
         tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(itemAccess), true)));
-        super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
+        //Don't call super so that we can exclude the stored fluid from being shown as we show it in hover text
+        //super.addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

@@ -39,6 +39,11 @@ public enum EnergyCubeTier implements IStorageTier, StringRepresentable {
     }
 
     @Override
+    public boolean isCreative() {
+        return this == CREATIVE;
+    }
+
+    @Override
     public long getCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }

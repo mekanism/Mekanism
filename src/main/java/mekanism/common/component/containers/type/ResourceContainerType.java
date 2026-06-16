@@ -4,22 +4,28 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
+import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.containers.resource.ComponentBackedResourceHandler;
-import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -128,6 +134,23 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     @Override
     public void copy(CONTAINER from, CONTAINER to, @Nullable TransactionContext transaction) {
         to.copyContents(from, transaction);
+    }
+
+    public void addStoredResource(ItemAccess itemAccess, Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry, EnumColor color) {
+        ResourceHandler<RESOURCE> handler = getCapOrUnexposed(itemAccess);
+        if (handler == null) {
+            tooltipAdder.accept(emptyLangEntry.translate());
+        } else {
+            for (int container = 0, containers = handler.size(); container < containers; container++) {
+                RESOURCE resource = handler.getResource(container);
+                if (resource.isEmpty()) {
+                    tooltipAdder.accept(emptyLangEntry.translateColored(EnumColor.GRAY));
+                } else {
+                    tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.YELLOW, color, resource, EnumColor.GRAY,
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(handler.getAmountAsLong(container)))));
+                }
+            }
+        }
     }
 
     /// @param toFill      Item type to try and fill.

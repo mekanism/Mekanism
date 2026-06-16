@@ -164,7 +164,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 StorageUtils.addStoredChemical(itemAccess, tooltipAdder);
             }
             if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(itemAccess, tooltipAdder);
+                StorageUtils.addStoredFluid(itemAccess, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
             }
             tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }

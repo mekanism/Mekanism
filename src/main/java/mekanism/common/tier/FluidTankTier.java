@@ -38,6 +38,11 @@ public enum FluidTankTier implements IStorageTier {//TODO - 26.2: Do we want to 
     }
 
     @Override
+    public boolean isCreative() {
+        return this == CREATIVE;
+    }
+
+    @Override
     public int getTransferRate() {
         return transferRateReference == null ? getBaseTransferRate() : transferRateReference.getOrDefault();
     }

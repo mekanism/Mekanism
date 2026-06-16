@@ -3,8 +3,6 @@ package mekanism.common.item.block;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.component.component.AttachedEjector;
@@ -19,7 +17,6 @@ import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
@@ -55,12 +52,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     @Override
     @Deprecated
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier == ChemicalTankTier.CREATIVE);
-        if (tier == ChemicalTankTier.CREATIVE) {
-            tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
-        } else {
-            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getCapacity())));
-        }
+        StorageUtils.addStoredSubstance(ItemAccessUtils.sideEffectFreeAccess(stack), tooltipAdder, tier);
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 

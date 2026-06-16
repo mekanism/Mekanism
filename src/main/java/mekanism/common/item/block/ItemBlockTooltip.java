@@ -14,12 +14,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.component.IComponentAware;
-import mekanism.common.component.component.UpgradeAware;
-import mekanism.common.component.containers.creator.IContainerCreator;
-import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
-import mekanism.common.component.containers.energy.EnergyContainerBuilder;
-import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -30,6 +24,12 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.security.SecurityObject;
+import mekanism.common.component.IComponentAware;
+import mekanism.common.component.component.UpgradeAware;
+import mekanism.common.component.containers.creator.IContainerCreator;
+import mekanism.common.component.containers.energy.ComponentBackedEnergyContainer;
+import mekanism.common.component.containers.energy.EnergyContainerBuilder;
+import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
@@ -110,11 +110,6 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //Note: Security and owner info gets skipped if the stack doesn't expose them
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(itemAccess, tooltipAdder);
         addTypeDetails(stack, itemAccess, context, tooltipDisplay, tooltipAdder, flag);
-        //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
-        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
-        if (!fluidStack.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
-        }
         if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(itemAccess.getResource())) {
             tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(itemAccess)));
         }
@@ -133,6 +128,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCapOrTooltips()) {
             StorageUtils.addStoredEnergy(itemAccess, tooltipAdder, false);
+        }
+        //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
+        LargeResourceStack<FluidResource> fluidStack = ContainerType.FLUID.getStoredContentsFromAttachment(itemAccess);
+        if (!fluidStack.isEmpty()) {
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
     }
 
