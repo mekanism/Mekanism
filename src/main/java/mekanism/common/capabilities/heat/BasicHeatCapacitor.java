@@ -5,13 +5,14 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IHeatCapacitor.CapacitorState;
+import mekanism.common.component.containers.heat.HeatCapacitorData;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implements IHeatCapacitor {
+public class BasicHeatCapacitor extends SnapshotJournal<HeatCapacitorData> implements IHeatCapacitor {
 
     @Nullable
     private final IContentsListener listener;
@@ -66,7 +67,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implemen
         return heatCapacity;
     }
 
-    public void onContentsChanged(CapacitorState originalState) {
+    public void onContentsChanged(HeatCapacitorData originalState) {
         if (listener != null) {
             listener.onContentsChanged();
         }
@@ -102,7 +103,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implemen
     public void setHeat(double heat, @Nullable TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(heat);
         if (transaction == null) {
-            CapacitorState originalState = createSnapshot();
+            HeatCapacitorData originalState = createSnapshot();
             storedHeat = heat;
             //TODO - 26.2: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one but it might be useful to have
             onContentsChanged(originalState);
@@ -115,8 +116,13 @@ public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implemen
     public void updateHeatAndCapacity(double newCapacity, @Nullable TransactionContext transaction) {
         if (isHeatInitialized()) {
             //If the heat has been initialized, calculate the value the heat should have, and also update the capacity
-            double capacityChange = newCapacity - getHeatCapacity();
-            setHeatAndCapacity(Math.max(0D, getHeat() + capacityChange * getAmbientTemperature()), newCapacity, transaction);
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                //Ensure there is a snapshot from before we call getHeat
+                updateSnapshots(subTransaction);
+                double capacityChange = newCapacity - getHeatCapacity();
+                setHeatAndCapacity(Math.max(0D, getHeat() + capacityChange * getAmbientTemperature()), newCapacity, subTransaction);
+                subTransaction.commit();
+            }
         } else {
             //If heat hasn't been initialized yet, just update the capacity
             setHeatCapacity(newCapacity, transaction);
@@ -127,7 +133,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implemen
     public void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction) {
         MekanismPreconditions.checkHeatCapacity(newCapacity);
         if (transaction == null) {
-            CapacitorState originalState = createSnapshot();
+            HeatCapacitorData originalState = createSnapshot();
             heatCapacity = newCapacity;
             onContentsChanged(originalState);
         } else {
@@ -138,23 +144,26 @@ public class BasicHeatCapacitor extends SnapshotJournal<CapacitorState> implemen
     }
 
     @Override
-    protected CapacitorState createSnapshot() {
-        return new CapacitorState(getHeat(), heatCapacity);
+    protected HeatCapacitorData createSnapshot() {
+        if (isHeatInitialized()) {
+            return new HeatCapacitorData(getHeat(), heatCapacity);
+        }
+        return new HeatCapacitorData(heatCapacity);
     }
 
     @Override
-    protected void revertToSnapshot(CapacitorState snapshot) {
+    protected void revertToSnapshot(HeatCapacitorData snapshot) {
         //Bypass contents change check
-        storedHeat = snapshot.heat();
-        heatCapacity = snapshot.heatCapacity();
+        storedHeat = snapshot.heat().orElse(-1);
+        heatCapacity = snapshot.capacity();
     }
 
     @Override
-    protected void onRootCommit(CapacitorState originalState) {
+    protected void onRootCommit(HeatCapacitorData originalState) {
         super.onRootCommit(originalState);
         //TODO - 26.2 (heat): Should this use Mth#equal? I suspect no? Then tiny changes would potentially never get saved,
         // as it compares against last value rather than last saved value and we are checking the Mth#equal in the setHeat method
-        if (!Mth.equal(storedHeat, originalState.heat()) || !Mth.equal(heatCapacity, originalState.heatCapacity())) {
+        if (storedHeat != originalState.heat().orElse(-1) || !Mth.equal(heatCapacity, originalState.capacity())) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged(originalState);
         }
