@@ -18,11 +18,15 @@ public class AutomatedEnergyHandler implements EnergyHandler {
     @Nullable
     public static EnergyHandler wrap(@Nullable EnergyHandler handler, AutomationType automationType) {
         if (handler instanceof IEnergyContainer container) {
-            return new AutomatedEnergyHandler(container, null, automationType);
+            return wrap(container, automationType);
         } else if (handler instanceof ComponentBackedEnergyHandler energyHandler) {
             return new AutomatedEnergyHandler(null, energyHandler, automationType);
         }
         return handler;
+    }
+
+    public static EnergyHandler wrap(IEnergyContainer container, AutomationType automationType) {
+        return new AutomatedEnergyHandler(container, null, automationType);
     }
 
     @Nullable

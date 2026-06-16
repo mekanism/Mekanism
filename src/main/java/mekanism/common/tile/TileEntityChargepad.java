@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
@@ -11,6 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.single.BasicSingleHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.proxy.AutomatedEnergyHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.registries.MekanismBlocks;
@@ -40,9 +42,11 @@ public class TileEntityChargepad extends TileEntityMekanism {
 
     @UnknownNullability//Initialized via getInitialEnergyContainer
     private MachineEnergyContainer<TileEntityChargepad> energyContainer;
+    private final EnergyHandler internalEnergyHandler;
 
     public TileEntityChargepad(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHARGEPAD, pos, state);
+        internalEnergyHandler = AutomatedEnergyHandler.wrap(energyContainer, AutomationType.INTERNAL);
     }
 
     @Override
@@ -60,20 +64,23 @@ public class TileEntityChargepad extends TileEntityMekanism {
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
                   worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
             try (Transaction transaction = Transaction.openRoot()) {
+                //TODO - 26.2: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
+                // Do we want to somehow document that fact for the chargepad's limit
+                int energyToGive = energyContainer.getEnergyPerTick();
                 for (LivingEntity entity : entities) {
                     if (energyContainer.isEmpty()) {
                         //If we run out of energy, stop checking the remaining entities
                         break;
                     } else if (entity instanceof Player) {
-                        if (chargeHandler(Capabilities.ITEM.getCapability(entity), transaction)) {
+                        if (chargeHandler(Capabilities.ITEM.getCapability(entity), energyToGive, transaction)) {
                             active = true;
                         } else if (Mekanism.hooks.curios.isLoaded()) {
                             //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
-                            if (chargeHandler(CuriosIntegration.getCuriosInventory(entity), transaction)) {
+                            if (chargeHandler(CuriosIntegration.getCuriosInventory(entity), energyToGive, transaction)) {
                                 active = true;
                             }
                         }
-                    } else if (provideEnergy(Capabilities.ENERGY.getCapability(entity), transaction)) {
+                    } else if (provideEnergy(Capabilities.ENERGY.getCapability(entity), energyToGive, transaction)) {
                         //Note: Robits are handled by this path
                         active = true;
                     }
@@ -87,15 +94,12 @@ public class TileEntityChargepad extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    private boolean chargeHandler(@Nullable ResourceHandler<ItemResource> itemHandler, TransactionContext transaction) {
+    private boolean chargeHandler(@Nullable ResourceHandler<ItemResource> itemHandler, int energyToGive, TransactionContext transaction) {
         //Ensure that we have an item handler capability, because if for example the player is dead we will not
         if (itemHandler != null) {
-            //TODO - 26.2: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
-            // Do we want to somehow document that fact for the chargepad's limit
-            int energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {
                 //Note: We don't use strict here as we want to allow the item to move to an empty slot if it has to in order to be charged
-                int inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndex(itemHandler, slot), energyToGive, transaction);
+                int inserted = EnergyUtils.charge(internalEnergyHandler, ItemAccess.forHandlerIndex(itemHandler, slot), energyToGive, transaction);
                 if (inserted > 0) {
                     //Only allow charging one item per player each check of the chargepad
                     return true;
@@ -105,8 +109,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
         return false;
     }
 
-    private boolean provideEnergy(@Nullable EnergyHandler energyHandler, TransactionContext transaction) {
-        return EnergyUtils.charge(energyContainer, energyHandler, energyContainer.getEnergyPerTick(), transaction) > 0;
+    private boolean provideEnergy(@Nullable EnergyHandler energyHandler, int energyToGive, TransactionContext transaction) {
+        return EnergyUtils.charge(internalEnergyHandler, energyHandler, energyToGive, transaction) > 0;
     }
 
     @Override
