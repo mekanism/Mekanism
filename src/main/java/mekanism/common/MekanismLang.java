@@ -105,6 +105,7 @@ public enum MekanismLang implements ILangEntry {
     JEI_INVENTORY_FULL("jei.tooltip.error.recipe.transfer.inventory.full"),
     JEI_RECIPE_ID("jei.tooltip.recipe.id"),
     //Key
+    KEY_CATEGORY_MAIN("key.category", "main"),
     KEY_HAND_MODE("key", "mode"),
     KEY_HEAD_MODE("key", "head_mode"),
     KEY_CHEST_MODE("key", "chest_mode"),

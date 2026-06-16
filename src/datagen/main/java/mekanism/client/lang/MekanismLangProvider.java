@@ -75,8 +75,8 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -986,6 +986,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER, "%1$s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
         add(MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION, "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.");
         //Key
+        add(MekanismLang.KEY_CATEGORY_MAIN, "Mekanism");
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_HEAD_MODE, "Head Mode Switch");
         add(MekanismLang.KEY_CHEST_MODE, "Chest Mode Switch");
