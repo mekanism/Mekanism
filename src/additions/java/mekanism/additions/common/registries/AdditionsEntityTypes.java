@@ -100,7 +100,18 @@ public class AdditionsEntityTypes {
         if (parent.canSpawnFarFromPlayer()) {
             builder.canSpawnFarFromPlayer();
         }
+        if (parent.onlyOpCanSetNbt()) {
+            builder.setOnlyOpCanSetNbt(true);
+        }
+        if (!parent.isAllowedInPeaceful()) {
+            builder.notInPeaceful();
+        }
+        if (parent.getDefaultLootTable().isEmpty()) {
+            builder.noLootTable();
+        }
+        builder.requiredFeatures = parent.requiredFeatures();
         builder.immuneTo(parent.immuneTo)
+              .spawnDimensionsScale(parent.spawnDimensionsScale)
               .setShouldReceiveVelocityUpdates(parent.trackDeltas())
               .clientTrackingRange(parent.clientTrackingRange())
               .setTrackingRange(parent.clientTrackingRange())
