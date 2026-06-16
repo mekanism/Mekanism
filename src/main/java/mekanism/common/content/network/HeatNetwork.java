@@ -65,7 +65,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
         }
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
-        //TODO - 26.1 (heat): Is there a worry that the transmitter collection is empty?
+        //TODO - 26.2 (heat): Is there a worry that the transmitter collection is empty?
         meanTemp = newSumTemp / transmitters.size();
     }
 

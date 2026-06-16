@@ -671,7 +671,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public double getHeatCapacity() {
-        //TODO - 26.1 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
+        //TODO - 26.2 (heat): Should we expose this via the method wrapper so that all the blocks that have heat can report their heat capacity?
         return heatCapacitor.getHeatCapacity();
     }
     //End computer related methods

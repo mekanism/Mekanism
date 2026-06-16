@@ -20,7 +20,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         super(blockProvider, pos, state);
         addCapabilityResolver(new HeatHandlerManager(direction -> {
             ThermodynamicConductor conductor = getTransmitter();
-            //TODO - 26.1 (heat): Should we make this a full on anonymous class and implement canInsert/canExtract? The fact that we check this stuff for exposing the cap
+            //TODO - 26.2 (heat): Should we make this a full on anonymous class and implement canInsert/canExtract? The fact that we check this stuff for exposing the cap
             // makes me think that we should, but in some ways it would also make sense to expose it on all sides regardless?
             if (direction != null && (conductor.getConnectionTypeRaw(direction) == ConnectionType.NONE) || conductor.isRedstoneActivated()) {
                 //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,

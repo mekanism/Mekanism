@@ -107,7 +107,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
         if (!Mth.equal(heat, originalState)) {
             if (transaction == null) {
                 storedHeat = heat;
-                //TODO - 26.1: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one but it might be useful to have
+                //TODO - 26.2: do we need a way to avoid calling onContentsChange when loading from disk? I don't think we used to have one but it might be useful to have
                 onContentsChanged(originalState);
             } else {
                 updateSnapshots(transaction);
@@ -134,7 +134,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
             heatCapacity.updateSnapshots(transaction);
         }
         heatCapacity.value = newCapacity;
-        //TODO - 26.1 (heat): Should we be firing onContentsChanged?
+        //TODO - 26.2 (heat): Should we be firing onContentsChanged?
     }
 
     @Override
@@ -151,7 +151,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
     @Override
     protected void onRootCommit(Double originalState) {
         super.onRootCommit(originalState);
-        //TODO - 26.1 (heat): Should this use Mth#equal? I suspect no? Then tiny changes would potentially never get saved,
+        //TODO - 26.2 (heat): Should this use Mth#equal? I suspect no? Then tiny changes would potentially never get saved,
         // as it compares against last value rather than last saved value and we are checking the Mth#equal in the setHeat method
         if (storedHeat != originalState) {
             //Fire content change listeners during root commit if the final state is different from the original one
