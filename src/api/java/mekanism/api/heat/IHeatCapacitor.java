@@ -102,12 +102,12 @@ public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
         /// Codec for serializing and deserializing a heat capacitor's state.
         public static final Codec<CapacitorState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               SerializerHelper.NON_NEGATIVE_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_STORED, 0D).forGetter(CapacitorState::heat),
-              SerializerHelper.ONE_OR_GREATER_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_CAPACITY, 1D).forGetter(CapacitorState::heat)
+              SerializerHelper.ONE_OR_GREATER_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_CAPACITY, 1D).forGetter(CapacitorState::heatCapacity)
         ).apply(instance, CapacitorState::new));
 
         public CapacitorState {
             MekanismPreconditions.checkNonNegative(heat);
-            MekanismPreconditions.checkHeatCapacity(heat);
+            MekanismPreconditions.checkHeatCapacity(heatCapacity);
         }
     }
 }
