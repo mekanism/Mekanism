@@ -101,7 +101,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
             //And get the block entity and load it from the data
             BlockEntity tile = WorldUtils.getTileEntity(level, pos);
             if (tile != null) {
-                try (var problemRep = new ProblemReporter.ScopedCollector(tile.problemPath(), Mekanism.logger)) {
+                try (ProblemReporter.ScopedCollector problemRep = new ProblemReporter.ScopedCollector(tile.problemPath(), Mekanism.logger)) {
                     ValueInput valueInput = TagValueInput.create(problemRep, level.registryAccess(), blockEntityTag);
                     tile.loadWithComponents(valueInput);
                 }

@@ -70,7 +70,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
 
     @Nullable
     private List<RECIPE> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
-        var holderMatches = componentInputCache.get(input.typeHolder().getKey());
+        Map<DataComponentMap, List<RECIPE>> holderMatches = componentInputCache.get(input.typeHolder().getKey());
         if (holderMatches == null) {
             return null;
         }
@@ -89,7 +89,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
             return;
         }
         DataComponentMap components = PatchedDataComponentMap.fromPatch(inputHolder.components(), patch);
-        var holderMatch = componentInputCache.get(key);
+        Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(key);
         if (holderMatch == null) {
             componentInputCache.put(key, Collections.singletonMap(components, Collections.singletonList(recipe)));
         } else {

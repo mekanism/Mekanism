@@ -276,7 +276,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             outputSlot.copyContents(data.outputSlot, transaction);
             editMode = data.editMode;
             fluidTank.copyContents(data.fluidTank, transaction);
-            try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
                     component.read(input);

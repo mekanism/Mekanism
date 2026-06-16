@@ -123,7 +123,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             energyContainer.copyContents(data.energyContainer, transaction);
             chargeSlot.copyContents(data.chargeSlot, transaction);
             dischargeSlot.copyContents(data.dischargeSlot, transaction);
-            try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
                     component.read(input);

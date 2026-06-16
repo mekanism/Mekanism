@@ -160,7 +160,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             fillSlot.copyContents(data.fillSlot, transaction);
             dumping = data.dumping;
             chemicalTank.copyContents(data.chemicalTank, transaction);
-            try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
                     component.read(input);

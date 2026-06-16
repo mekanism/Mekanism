@@ -15,6 +15,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
+import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
@@ -213,7 +214,7 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerFluidModels(RegisterFluidModelsEvent event, FluidDeferredRegister fluidDeferredRegister) {
-        for (var registryObject : fluidDeferredRegister.getEntries()) {
+        for (FluidRegistryObject<MekanismFluidType, ?, ?, ?, ?> registryObject : fluidDeferredRegister.getEntries()) {
             MekanismFluidType fluidType = registryObject.getFluidType();
             event.register(new FluidModel.Unbaked(
                   new Material(fluidType.stillTexture),

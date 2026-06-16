@@ -141,7 +141,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
 
     private void coloredBlocks(BlockModelGenerators blockModels, Map<EnumColor, ? extends Holder<Block>> blocks, String modelName) {
         Identifier model = modLocation("block/plastic/" + modelName);
-        for (var entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : blocks.entrySet()) {
             Holder<Block> block = entry.getValue();
             blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block.value(), BlockModelGenerators.plainVariant(model)));
             tintedItem(blockModels, block.value(), model, entry.getKey());
@@ -152,7 +152,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
         Identifier bottomModel = modLocation("block/plastic/" + existingPrefix + "slab");
         Identifier topModel = modLocation("block/plastic/" + existingPrefix + "slab_top");
         MultiVariant doubleModel = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + doubleType));
-        for (var entry : slabs.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : slabs.entrySet()) {
             Block slab = entry.getValue().value();
             MultiVariant top = BlockModelGenerators.plainVariant(topModel);
             blockModels.blockStateOutput
@@ -176,7 +176,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
         MultiVariant post = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_post"));
         MultiVariant side = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_side"));
         Identifier inventory = modLocation("block/plastic/fence_inventory");
-        for (var entry : fences.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : fences.entrySet()) {
             Block fence = entry.getValue().value();
             blockModels.blockStateOutput.accept(BlockModelGenerators.createFence(fence, post, side));
             tintedItem(blockModels, fence, inventory, entry.getKey());
@@ -189,7 +189,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
         MultiVariant closed = BlockModelGenerators.plainVariant(gate);
         MultiVariant openWall = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_gate_wall_open"));
         MultiVariant closedWall = BlockModelGenerators.plainVariant(modLocation("block/plastic/" + existingPrefix + "fence_gate_wall"));
-        for (var entry : fenceGates.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : fenceGates.entrySet()) {
             Block fenceGate = entry.getValue().value();
             blockModels.blockStateOutput.accept(BlockModelGenerators.createFenceGate(fenceGate, open, closed, openWall, closedWall, true));
             tintedItem(blockModels, fenceGate, gate, entry.getKey());

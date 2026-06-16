@@ -57,7 +57,7 @@ public class EnergyCubeBaseGeometry implements ExtendedUnbakedGeometry {
         }
 
         // The builder to create the collection
-        var builder = new QuadCollection.Builder();
+        QuadCollection.Builder builder = new QuadCollection.Builder();
         // Build the quads for baking
 
         CubeSideState sideState = cubeState.state;

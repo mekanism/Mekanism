@@ -464,7 +464,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             for (int i = 0; i < data.outputSlots.size(); i++) {
                 outputSlots.get(i).copyContents(data.outputSlots.get(i), transaction);
             }
-            try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
                     component.read(input);

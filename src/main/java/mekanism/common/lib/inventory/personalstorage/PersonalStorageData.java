@@ -30,8 +30,8 @@ class PersonalStorageData extends SavedData {
     }
 
     private PersonalStorageData(Map<UUID, PersonalStorageItemInventory> loadedMap) {
-        for (var entry : loadedMap.entrySet()) {
-            var value = entry.getValue();
+        for (Map.Entry<UUID, PersonalStorageItemInventory> entry : loadedMap.entrySet()) {
+            PersonalStorageItemInventory value = entry.getValue();
             value.setParent(contentsListener);
             inventoriesById.put(entry.getKey(), value);
         }

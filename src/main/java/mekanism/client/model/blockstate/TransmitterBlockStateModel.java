@@ -45,9 +45,9 @@ import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.checkerframework.common.returnsreceiver.qual.This;
-import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
@@ -266,7 +266,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
         @Override
         public ContextMap getTopAdditionalProperties() {
-            var builder = new ContextMap.Builder();
+            ContextMap.Builder builder = new ContextMap.Builder();
             fillAdditionalProperties(this, builder);
             builder.withParameter(NeoForgeModelProperties.PART_VISIBILITY, visibilityMap);
             return builder.create(ContextKeySet.EMPTY);

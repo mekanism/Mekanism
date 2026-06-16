@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Deque;
@@ -350,7 +351,7 @@ public class TransmitterNetworkRegistry {
                 if (MekanismAPI.debug) {
                     Mekanism.logger.info("Dealing with {} changed chunks", changed.size());
                 }
-                for (var iterator = Long2BooleanMaps.fastIterator(changed); iterator.hasNext(); ) {
+                for (ObjectIterator<Long2BooleanMap.Entry> iterator = Long2BooleanMaps.fastIterator(changed); iterator.hasNext(); ) {
                     Long2BooleanMap.Entry entry = iterator.next();
                     long chunk = entry.getLongKey();
                     boolean loaded = entry.getBooleanValue();

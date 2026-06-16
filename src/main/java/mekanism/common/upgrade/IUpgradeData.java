@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public interface IUpgradeData {
 
     static CompoundTag readComponents(Provider provider, List<ITileComponent> components, PathElement pathElement) {
-        try (var reporter = new ProblemReporter.ScopedCollector(pathElement, readComponentsLogger)) {
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(pathElement, readComponentsLogger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
             for (ITileComponent component : components) {
                 component.write(output);
