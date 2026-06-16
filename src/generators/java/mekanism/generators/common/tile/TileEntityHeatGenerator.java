@@ -8,6 +8,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.HeatCapacitorWrapper;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
@@ -18,6 +19,8 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.OverridingSingleHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
@@ -46,6 +49,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
@@ -106,36 +110,43 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        MekContainerHelper<IHeatCapacitor> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
-        return builder.build();
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener);
+        return new OverridingSingleHolder<>(heatCapacitor, facingSupplier, (capacitor, side) -> {
+            if (side == RelativeSide.BOTTOM) {
+                return new DefaultInsulationCapacitor(capacitor);
+            }
+            return capacitor;
+        });
     }
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        energySlot.drainContainerIntoSlot(null);
-        fuelSlot.fillOrBurn(null);
-        long prev = energyContainer().getAmountAsLong();
-        heatCapacitor.handleHeat(getBoost());
-        FluidResource lavaResource = lavaTank.resource();
-        boolean isActive = false;
-        if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
-            int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
-            try (Transaction transaction = Transaction.openRoot()) {
-                if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
-                    isActive = true;
-                    heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get());
-                    transaction.commit();
+        try (Transaction transaction = Transaction.openRoot()) {
+            energySlot.drainContainerIntoSlot(transaction);
+            fuelSlot.fillOrBurn(transaction);
+            long prev = energyContainer().getAmountAsLong();
+            heatCapacitor.handleHeat(getBoost(), transaction);
+            FluidResource lavaResource = lavaTank.resource();
+            boolean isActive = false;
+            if (canFunction() && !lavaResource.isEmpty() && !EnergyHandlerUtil.isFull(energyContainer())) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
+                    if (lavaTank.extract(lavaResource, fluidRate, subTransaction, AutomationType.INTERNAL) == fluidRate) {
+                        isActive = true;
+                        heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get(), subTransaction);
+                        subTransaction.commit();
+                    }
                 }
             }
+            setActive(isActive);
+            HeatTransfer loss = simulate(transaction);
+            lastTransferLoss = loss.adjacentTransfer();
+            lastEnvironmentLoss = loss.environmentTransfer();
+            producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().getAmountAsLong() - prev));
+            transaction.commit();
         }
-        setActive(isActive);
-        HeatTransfer loss = simulate();
-        lastTransferLoss = loss.adjacentTransfer();
-        lastEnvironmentLoss = loss.environmentTransfer();
-        producingEnergy = Math.max(0, Ints.saturatedCast(energyContainer().getAmountAsLong() - prev));
         return sendUpdatePacket;
     }
 
@@ -173,40 +184,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public double getInverseInsulation(int capacitor, @Nullable Direction side) {
-        return side == Direction.DOWN ? HeatAPI.DEFAULT_INVERSE_INSULATION : super.getInverseInsulation(capacitor, side);
-    }
-
-    @Override
-    public double getTotalInverseInsulation(@Nullable Direction side) {
-        return side == Direction.DOWN ? HeatAPI.DEFAULT_INVERSE_INSULATION : super.getTotalInverseInsulation(side);
-    }
-
-    @Override
-    public HeatTransfer simulate() {
+    public HeatTransfer simulate(TransactionContext transaction) {
         double ambientTemp = Objects.requireNonNull(ambientTemperature, "Tile cannot simulate temperature before initialization").getAsDouble();
-        double temp = getTotalTemperature();
+        double temp = getTemperature();
         // 1 - Qc / Qh
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
-        heatCapacitor.handleHeat(-heatLost);
+        heatCapacitor.handleHeat(-heatLost, transaction);
         int energyFromHeat = MathUtils.clampToInt(Math.abs(heatLost) * carnotEfficiency);
-        try (Transaction transaction = Transaction.openRoot()) {
-            energyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsInt()), transaction, AutomationType.INTERNAL);
-            transaction.commit();
-        }
-        return super.simulate();
+        energyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsInt()), transaction, AutomationType.INTERNAL);
+        return super.simulate(transaction);
     }
 
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        return side == Direction.DOWN ? getAdjacentUnchecked(side) : null;
+        //Only allow adjacent heat transfer through the bottom face
+        return side == Direction.DOWN ? super.getAdjacent(side) : null;
     }
 
     @Override
     public int getProductionRate() {
         return producingEnergy;
+    }
+
+    public double getTemperature() {
+        return heatCapacitor.getTemperature();
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss")
@@ -235,5 +238,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         container.track(SyncableInt.create(this::getProductionRate, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+    }
+
+    private static class DefaultInsulationCapacitor extends HeatCapacitorWrapper {
+
+        protected DefaultInsulationCapacitor(IHeatCapacitor internal) {
+            super(internal);
+        }
+
+        @Override
+        public double getInverseInsulation() {
+            return HeatAPI.DEFAULT_INVERSE_INSULATION;
+        }
     }
 }

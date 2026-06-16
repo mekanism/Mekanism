@@ -10,6 +10,7 @@ import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -28,6 +29,7 @@ import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -62,6 +64,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
@@ -83,7 +87,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public BasicFluidTank outputTank;
     @ContainerSync
-    public VariableHeatCapacitor heatCapacitor;
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "thermal evaporation plant")
+    VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     private double tempMultiplier;
@@ -132,15 +137,20 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 152, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
-        heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, () -> biomeAmbientTemp, this));
+        heatCapacitor = VariableHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, () -> biomeAmbientTemp, this);
     }
 
     @Override
-    public void onCreated(Level world) {
-        super.onCreated(world);
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
+    }
+
+    @Override
+    public void onCreated(Level world, TransactionContext transaction) {
+        super.onCreated(world, transaction);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
+        heatCapacitor.updateHeatAndCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), transaction);
         updateSolars(world);
     }
 
@@ -156,15 +166,16 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         // external heat dissipation
-        lastEnvironmentLoss = simulateEnvironment();
-        // update temperature
-        updateHeatCapacitors(null);
-        //After we update the heat capacitors, update our temperature multiplier
-        // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
-                         ((double) height() / MAX_HEIGHT);
-        inputOutputSlot.drainTankIntoSlot(outputOutputSlot, null);
-        inputInputSlot.fillTankFromSlot(outputInputSlot, null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            lastEnvironmentLoss = simulateEnvironment(transaction);
+            // update our temperature multiplier
+            // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
+            tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
+                             ((double) height() / MAX_HEIGHT);
+            inputOutputSlot.drainTankIntoSlot(outputOutputSlot, transaction);
+            inputInputSlot.fillTankFromSlot(outputInputSlot, transaction);
+            transaction.commit();
+        }
         recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (!Mth.equal(scale, prevScale)) {
@@ -217,18 +228,19 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public double simulateEnvironment() {
-        double currentTemperature = getTemperature();
+    public double simulateEnvironment(TransactionContext transaction) {
         double heatCapacity = heatCapacitor.getHeatCapacity();
-        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity);
-        if (Math.abs(currentTemperature - biomeAmbientTemp) < 0.001) {
-            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat());
+        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity, transaction);
+        double currentTemperature = getTemperature();
+        double temperatureDifference = Math.abs(currentTemperature - biomeAmbientTemp);
+        if (temperatureDifference < 0.001) {
+            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat(), transaction);
         } else {
-            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(currentTemperature - biomeAmbientTemp));
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(temperatureDifference);
             if (currentTemperature > biomeAmbientTemp) {
                 incr = -incr;
             }
-            heatCapacitor.handleHeat(heatCapacity * incr);
+            heatCapacitor.handleHeat(heatCapacity * incr, transaction);
             if (incr < 0) {
                 return -incr;
             }
@@ -236,7 +248,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return 0;
     }
 
-    @ComputerMethod
     public double getTemperature() {
         return heatCapacitor.getTemperature();
     }

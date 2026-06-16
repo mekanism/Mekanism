@@ -2122,7 +2122,7 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-  - description: Get the temperature of the reactor in Kelvin.
+  - description: Get the temperature of the fission reactor in Kelvin.
     methodName: getTemperature
     returns:
       java_type: double
@@ -3976,7 +3976,7 @@ methods:
     returns:
       java_type: mekanism.common.content.entangloporter.InventoryFrequency
       type: Table (InventoryFrequency)
-  - description: Requires a frequency to be selected
+  - description: Get the temperature of the frequency in Kelvin.
     methodName: getTemperature
     returns:
       java_type: double
@@ -4473,7 +4473,8 @@ methods:
     returns:
       java_type: double
       type: Number (double)
-  - methodName: getTemperature
+  - description: Get the temperature of the thermal evaporation plant in Kelvin.
+    methodName: getTemperature
     returns:
       java_type: double
       type: Number (double)

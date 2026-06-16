@@ -311,7 +311,7 @@ Fission Reactor Multiblock (formed),getHeatedCoolantNeeded,,Number (long),,false
 Fission Reactor Multiblock (formed),getHeatingRate,,Number (int),,false,
 Fission Reactor Multiblock (formed),getMaxBurnRate,,Number (int),,false,
 Fission Reactor Multiblock (formed),getStatus,,boolean,,false,"true -> active, false -> off"
-Fission Reactor Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the reactor in Kelvin.
+Fission Reactor Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the fission reactor in Kelvin.
 Fission Reactor Multiblock (formed),getWaste,,Table (LargeResourceStack),,false,Get the contents of the waste tank.
 Fission Reactor Multiblock (formed),getWasteCapacity,,Number (long),,false,Get the capacity of the waste tank.
 Fission Reactor Multiblock (formed),getWasteFilledPercentage,,Number (double),,false,Get the filled percentage of the waste tank.
@@ -666,7 +666,7 @@ Quantum Entangloporter,getBufferItem,,Table (LargeResourceStack),,false,Get the 
 Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
 Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
 Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected
-Quantum Entangloporter,getTemperature,,Number (double),,false,Requires a frequency to be selected
+Quantum Entangloporter,getTemperature,,Number (double),,false,Get the temperature of the frequency in Kelvin.
 Quantum Entangloporter,getTransferLoss,,Number (double),,false,May not be accurate if there is no frequency
 Quantum Entangloporter,hasFrequency,,boolean,,false,
 Quantum Entangloporter,setFrequency,name: String,,,true,Requires a public frequency to exist
@@ -760,7 +760,7 @@ Thermal Evaporation Multiblock (formed),getOutputItemInput,,Table (LargeResource
 Thermal Evaporation Multiblock (formed),getOutputItemOutput,,Table (LargeResourceStack),,false,Get the contents of the output side's output slot.
 Thermal Evaporation Multiblock (formed),getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
 Thermal Evaporation Multiblock (formed),getProductionAmount,,Number (double),,false,
-Thermal Evaporation Multiblock (formed),getTemperature,,Number (double),,false,
+Thermal Evaporation Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the thermal evaporation plant in Kelvin.
 Universal Cable,getBuffer,,Number (long),,false,
 Universal Cable,getCapacity,,Number (long),,false,
 Universal Cable,getFilledPercentage,,Number (double),,false,

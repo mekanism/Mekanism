@@ -15,13 +15,7 @@ public abstract class SimpleComponentBackedContainer<ATTACHED> {
         this.attachedAccess = attachedAccess;
     }
 
-    protected abstract boolean isEmpty(ATTACHED value);
-
     protected abstract IContainerType<?, ATTACHED> containerType();
-
-    protected ATTACHED getAttached() {
-        return containerType().getOrEmpty(attachedAccess.getResource());
-    }
 
     protected boolean setContents(ATTACHED value, @Nullable TransactionContext transaction) {
         ItemResource attachedTo = attachedAccess.getResource();

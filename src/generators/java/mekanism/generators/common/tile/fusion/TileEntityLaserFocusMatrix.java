@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.fusion;
 
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.common.lib.transaction.TransactionHelper;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -8,6 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
@@ -31,7 +33,10 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
         if (!level.isClientSide() && player.isCreative()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                multiblock.setPlasmaTemp(1_000_000_000);
+                try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+                    multiblock.setPlasmaTemp(10 * FusionReactorMultiblockData.BURN_TEMPERATURE, transaction);
+                    transaction.commit();
+                }
                 return InteractionResult.SUCCESS_SERVER;
             }
         }

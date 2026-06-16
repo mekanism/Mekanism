@@ -37,7 +37,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 42, () -> List.of(
-              MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+              MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.energyContainer().getEnergyPerTick()))
         )).clearFormat());
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.energyContainer(), 164, 15))
@@ -50,7 +50,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.energyContainer(), tile::getEnergyUsed));
         addRenderableWidget(new GuiHeatTab(this, () -> {
-            Component temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);
+            Component temp = MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true);
             Component transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return List.of(MekanismLang.TEMPERATURE.translate(temp), MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));

@@ -29,7 +29,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(conductor, state, partialTick, cameraPosition, breakProgress);
         ThermodynamicConductor transmitter = conductor.getTransmitter();
-        state.tempColor = HeatUtils.getColorFromTemp(transmitter.getTotalTemperature(), transmitter.getBaseColor()).argb();
+        state.tempColor = HeatUtils.getColorFromTemp(transmitter.getTemperature(), transmitter.getBaseColor()).argb();
     }
 
     @Override

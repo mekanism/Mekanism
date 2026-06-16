@@ -13,22 +13,22 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.component.containers.type.IListContainerType;
 import mekanism.common.component.containers.type.ISingleContainerType;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
@@ -36,19 +36,20 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IFluidTank> fluidTanks = new ArrayList<>();
     private final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
     @Nullable
     private IEnergyContainer energyContainer;
+    @Nullable
+    private IHeatCapacitor heatCapacitor;
 
-    public void apply(T data) {
+    public void apply(T data, TransactionContext transaction) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
-            type.apply(data, this);
+            type.apply(data, this, transaction);
         }
     }
 
-    public void sync(T data) {
+    public void sync(T data, TransactionContext transaction) {
         for (CacheSubstance<ValueIOSerializable> type : CACHE_SUBSTANCES) {
-            type.sync(data, this);
+            type.sync(data, this, transaction);
         }
     }
 
@@ -80,7 +81,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Energy
             StorageUtils.mergeEnergyContainers(getEnergyContainer(), mergeCache.getEnergyContainer(), transaction);
             // Heat
-            StorageUtils.mergeHeatCapacitors(getHeatCapacitors(), mergeCache.getHeatCapacitors());
+            StorageUtils.mergeHeatCapacitors(getHeatCapacitor(), mergeCache.getHeatCapacitor(), transaction);
             transaction.commit();
         }
     }
@@ -106,9 +107,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         return energyContainer;
     }
 
+    @Nullable
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return heatCapacitors;
+    public IHeatCapacitor getHeatCapacitor() {
+        return heatCapacitor;
     }
 
     public static class RejectContents {
@@ -167,15 +169,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
     };
 
-    public static final CacheSubstance<IHeatCapacitor> HEAT = new CacheListSubstance<>(ContainerType.HEAT) {
+    public static final CacheSubstance<IHeatCapacitor> HEAT = new CacheSingleSubstance<>(ContainerType.HEAT) {
         @Override
         protected void defaultPrefab(MultiblockCache<?> cache) {
-            cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, null));
+            cache.heatCapacitor = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, null);
         }
 
+        @Nullable
         @Override
-        protected List<IHeatCapacitor> containerList(IMultiblockContents handler) {
-            return handler.getHeatCapacitors();
+        protected IHeatCapacitor container(IMultiblockContents handler) {
+            return handler.getHeatCapacitor();
         }
     };
 
@@ -208,13 +211,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             return containerType.getTag() + "_stored";
         }
 
-        public void copy(ELEMENT from, ELEMENT to) {
-            containerType.copy(from, to, null);
+        public void copy(ELEMENT from, ELEMENT to, TransactionContext transaction) {
+            containerType.copy(from, to, transaction);
         }
 
-        public abstract <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache);
+        public abstract <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction);
 
-        public abstract <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache);
+        public abstract <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction);
 
         public abstract void preHandleMerge(MultiblockCache<?> cache, MultiblockCache<?> merge);
 
@@ -237,25 +240,25 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         protected abstract List<ELEMENT> containerList(IMultiblockContents handler);
 
         @Override
-        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             List<ELEMENT> containers = containerList(data);
             List<ELEMENT> cacheContainers = containerList(cache);
             for (int i = 0; i < cacheContainers.size(); i++) {
                 if (i < containers.size()) {
-                    copy(cacheContainers.get(i), containers.get(i));
+                    copy(cacheContainers.get(i), containers.get(i), transaction);
                 }
             }
         }
 
         @Override
-        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             List<ELEMENT> containersToCopy = containerList(data);
             List<ELEMENT> cacheContainers = containerList(cache);
             if (cacheContainers.isEmpty()) {
                 prefab(cache, containersToCopy.size());
             }
             for (int i = 0; i < containersToCopy.size(); i++) {
-                copy(containersToCopy.get(i), cacheContainers.get(i));
+                copy(containersToCopy.get(i), cacheContainers.get(i), transaction);
             }
         }
 
@@ -311,21 +314,21 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         }
 
         @Override
-        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void apply(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             ELEMENT container = container(data);
             if (container != null) {
                 ELEMENT cacheContainer = container(cache);
                 if (cacheContainer != null) {
-                    copy(cacheContainer, container);
+                    copy(cacheContainer, container, transaction);
                 }
             }
         }
 
         @Override
-        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache) {
+        public <DATA extends MultiblockData> void sync(DATA data, MultiblockCache<DATA> cache, TransactionContext transaction) {
             ELEMENT container = container(data);
             if (container != null) {
-                copy(container, containerOrInit(cache));
+                copy(container, containerOrInit(cache), transaction);
             }
         }
 

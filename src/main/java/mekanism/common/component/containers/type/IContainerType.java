@@ -49,11 +49,15 @@ public interface IContainerType<CONTAINER extends ValueIOSerializable, ATTACHED>
 
     boolean supports(Item item);
 
-    ATTACHED getOrEmpty(DataComponentGetter stack);
+    @Nullable
+    default ATTACHED get(DataComponentGetter componentGetter) {
+        return componentGetter.get(getComponentType());
+    }
 
     //TODO: Add some sort of note about how the returned containers entirely ignore the size of the item access
     CONTAINER createContainer(ItemAccess attachedAccess, int containerIndex);
 
+    @Nullable
     ATTACHED createNewAttachment(ItemResource itemType);
 
     boolean canHandle(TileEntityMekanism tile);

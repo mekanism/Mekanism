@@ -48,6 +48,7 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IContentsListener {
@@ -86,7 +87,6 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     private final BiPredicate<Object, AutomationType> formedBiPred = (_, _) -> isFormed();
     private final BiPredicate<Object, AutomationType> notExternalFormedBiPred = (_, automationType) -> !automationType.isExternal() && isFormed();
@@ -188,7 +188,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return false;
     }
 
-    public void onCreated(Level world) {
+    public void onCreated(Level world, TransactionContext transaction) {
         for (BlockPos pos : internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IInternalMultiblock internalMultiblock) {
@@ -204,18 +204,18 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
 
         if (shouldCache(MultiblockCache.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
-                ContainerType.FLUID.clampContents(tank, null);
+                ContainerType.FLUID.clampContents(tank, transaction);
             }
         }
         if (shouldCache(MultiblockCache.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks()) {
-                ContainerType.CHEMICAL.clampContents(tank, null);
+                ContainerType.CHEMICAL.clampContents(tank, transaction);
             }
         }
         if (shouldCache(MultiblockCache.ENERGY)) {
             IEnergyContainer container = getEnergyContainer();
             if (container != null) {
-                ContainerType.ENERGY.clampContents(container, null);
+                ContainerType.ENERGY.clampContents(container, transaction);
             }
         }
         updateEjectors(world);
@@ -398,9 +398,21 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler, IC
         return isFormed() || isRemote() ? energyContainer() : null;
     }
 
+    @Nullable
+    protected IHeatCapacitor heatCapacitor() {
+        return null;
+    }
+
+    @Nullable
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return isFormed() || isRemote() ? heatCapacitors : Collections.emptyList();
+    public IHeatCapacitor getHeatCapacitor() {
+        return isFormed() || isRemote() ? heatCapacitor() : null;
+    }
+
+    @Nullable
+    @Override
+    public IHeatCapacitor getHeatCapacitor(@Nullable Direction side) {
+        return getHeatCapacitor();
     }
 
     public boolean isKnownLocation(BlockPos pos) {

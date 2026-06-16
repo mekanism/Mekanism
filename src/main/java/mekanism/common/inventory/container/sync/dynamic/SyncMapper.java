@@ -24,7 +24,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.ISyncableData;
@@ -62,9 +61,9 @@ public class SyncMapper extends BaseAnnotationScanner {
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
               SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getAmountAsLong, (energyContainer, energy) -> energyContainer.setEnergy(energy, null), 0L)
         ));
-        specialProperties.add(new SpecialPropertyHandler<>(BasicHeatCapacitor.class,
-              SpecialPropertyData.create(Double.TYPE, BasicHeatCapacitor::getHeatCapacity, BasicHeatCapacitor::setHeatCapacityFromPacket, 0D),
-              SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeat, IHeatCapacitor::setHeat, 0D)
+        specialProperties.add(new SpecialPropertyHandler<>(IHeatCapacitor.class,
+              SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeatCapacity, (capacitor, heatCapacity) -> capacitor.setHeatCapacity(heatCapacity, null), 0D),
+              SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeat, (capacitor, heat) -> capacitor.setHeat(heat, null), 0D)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
               SpecialPropertyData.create(resourceStackClass(), tank -> tank.getFluidTank().asStack(),

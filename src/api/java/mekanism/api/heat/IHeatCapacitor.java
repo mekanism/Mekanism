@@ -1,56 +1,66 @@
 package mekanism.api.heat;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public interface IHeatCapacitor extends ValueIOSerializable {
+public interface IHeatCapacitor extends ValueIOSerializable, IHeatHandler {
 
-    /// Returns the temperature of this capacitor.
-    ///
-    /// @return Temperature of this capacitor. Always bounded by absolute zero (0 degrees kelvin).
-    double getTemperature();
-
-    /// Returns the inverse conduction coefficient of this capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
-    /// can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
-    ///
-    /// @return Inverse conduction coefficient of this capacitor.
-    ///
-    /// @apiNote Must be greater than `0`
-    double getInverseConduction();
-
-    /// Returns the inverse insulation coefficient for this. The larger the value the less heat dissipates into the environment.
-    ///
-    /// @return Inverse insulation coefficient of this capacitor.
+    /// {@return the inverse insulation coefficient for this capacitor} The larger the value the less heat dissipates into the environment.
     double getInverseInsulation();
 
-    /// Returns the heat capacity of this capacitor. This number can be thought of as specific heat x mass of the capacitor itself.
-    ///
-    /// @return Heat capacity of this capacitor.
-    ///
-    /// @apiNote Must be at least `1`
-    double getHeatCapacity();
-
-    /// Returns the heat stored in this capacitor.
-    ///
-    /// @return Heat stored in this capacitor.
+    /// {@return heat stored in this capacitor}
     double getHeat();
+
+    @Override
+    default double getTemperature() {
+        return getHeat() / getHeatCapacity();
+    }
 
     /// Overrides the amount of heat in this [IHeatCapacitor].
     ///
-    /// @param heat Heat to set this capacitor's storage to (may be `0`).
+    /// @param heat        Heat to set this capacitor's storage to. **Must be at least 0**.
+    /// @param transaction The transaction that this operation is part of if any. May be `null`
     ///
-    /// @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
-    void setHeat(double heat);
+    /// @throws IllegalArgumentException If heat is less than zero. See also [MekanismPreconditions#checkNonNegative(double)] to help perform this check.
+    /// @since 10.8.0
+    void setHeat(double heat, @Nullable TransactionContext transaction);
 
-    /// Handles a change of heat in this capacitor. Can be positive or negative.
+    /// Overrides the heat capacity of this [IHeatCapacitor].
     ///
-    /// @param transfer The amount being transferred.
-    void handleHeat(double transfer);
+    /// @param newCapacity Heat capacity to set this capacitor to. **Must be at least 1**.
+    /// @param transaction The transaction that this operation is part of if any. May be `null`
+    ///
+    /// @throws IllegalArgumentException If heat capacity is less than one. See also [MekanismPreconditions#checkHeatCapacity(double)] to help perform this check.
+    /// @since 10.8.0
+    void setHeatCapacity(double newCapacity, @Nullable TransactionContext transaction);
+
+    /// Overrides the heat and heat capacity of this [IHeatCapacitor].
+    ///
+    /// @param heat         Heat to set this capacitor's storage to. **Must be at least 0**.
+    /// @param heatCapacity Heat capacity to set this capacitor to. **Must be at least 1**.
+    /// @param transaction  The transaction that this operation is part of if any. May be `null`
+    ///
+    /// @throws IllegalArgumentException If heat is less than zero, or heat capacity is less than one. See also [MekanismPreconditions#checkNonNegative(double)] and
+    /// [MekanismPreconditions#checkHeatCapacity(double)] to help perform this check.
+    /// @since 10.8.0
+    default void setHeatAndCapacity(double heat, double heatCapacity, @Nullable TransactionContext transaction) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            setHeatCapacity(heatCapacity, subTransaction);
+            setHeat(heat, subTransaction);
+            //Ensure that no onContentsChange is fired until after both have been updated (in case the transaction is null)
+            subTransaction.commit();
+        }
+    }
 
     /// Checks if this heat capacitor is currently at the ambient temperature of its surroundings.
     ///
@@ -64,22 +74,40 @@ public interface IHeatCapacitor extends ValueIOSerializable {
 
     @Override
     default void serialize(ValueOutput output) {
-        output.putDouble(SerializationConstants.STORED, getHeat());
+        output.store(SerializationConstants.STATE, CapacitorState.CODEC, new CapacitorState(getHeat(), getHeatCapacity()));
     }
 
     @Override
     default void deserialize(ValueInput input) {
-        setHeat(input.getDoubleOr(SerializationConstants.STORED, getHeat()));
+        input.read(SerializationConstants.STATE, CapacitorState.CODEC).ifPresent(state -> setHeatAndCapacity(state.heat(), state.heatCapacity(), null));
     }
 
     /// Helper method to copy all pertinent data from another [`heat capacitor`][IHeatCapacitor] to this one without requiring a serialization, deserialization cycle.
     ///
-    /// @param other Capacitor to copy data from.
+    /// @param other       Capacitor to copy data from.
     /// @param transaction The transaction that this operation is part of. May be `null`, and also the implementation may not fully support rolling back the transaction.
     ///
     /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @see HeatCapacitorWrapper#getInternal() Getting the internal capacitor when wrapped if instance checks are necessary.
     /// @since 10.8.0
     default void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
-        setHeat(other.getHeat());
+        setHeatAndCapacity(other.getHeat(), other.getHeatCapacity(), transaction);
+    }
+
+    /// Helper record for use in serialization to represent a heat capacitor's state.
+    ///
+    /// @since 10.8.0
+    record CapacitorState(double heat, double heatCapacity) {
+
+        /// Codec for serializing and deserializing a heat capacitor's state.
+        public static final Codec<CapacitorState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              SerializerHelper.NON_NEGATIVE_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_STORED, 0D).forGetter(CapacitorState::heat),
+              SerializerHelper.ONE_OR_GREATER_DOUBLE.optionalFieldOf(SerializationConstants.HEAT_CAPACITY, 1D).forGetter(CapacitorState::heat)
+        ).apply(instance, CapacitorState::new));
+
+        public CapacitorState {
+            MekanismPreconditions.checkNonNegative(heat);
+            MekanismPreconditions.checkHeatCapacity(heat);
+        }
     }
 }

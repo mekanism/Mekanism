@@ -25,6 +25,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.CommonWorldTickHandler;
@@ -35,8 +36,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
-import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.BasicSingleHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.component.FilterAware;
 import mekanism.common.component.OverflowAware;
 import mekanism.common.config.MekanismConfig;
@@ -179,9 +180,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MinerEnergyContainer.input(this, listener);
-        return new BasicEnergyHolder(energyContainer, facingSupplier, EnumSet.of(RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM));
+        return new BasicSingleHolder<>(energyContainer, facingSupplier, EnumSet.of(RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM));
     }
 
     @Override

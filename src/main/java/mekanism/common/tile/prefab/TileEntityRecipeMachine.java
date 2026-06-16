@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -14,7 +15,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
@@ -160,13 +161,13 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
 
     @Nullable
     @Override
-    protected final IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected final ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         return getInitialEnergyContainer(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener));
     }
 
     /// @apiNote Do not call directly, only override implementation
     @Nullable
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         return null;
     }
 
@@ -184,13 +185,14 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
 
     @Nullable
     @Override
-    protected final IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return getInitialHeatCapacitors(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener), ambientTemperature);
+    protected final ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return getInitialHeatCapacitor(listener, listener == this ? recipeCacheLookupMonitor : getRecipeCacheSaveOnlyListener(), getRecipeCacheUnpauseListener(listener), ambientTemperature);
     }
 
     /// @apiNote Do not call directly, only override implementation
     @Nullable
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener, CachedAmbientTemperature ambientTemperature) {
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, IContentsListener recipeCacheListener,
+          IContentsListener recipeCacheUnpauseListener, CachedAmbientTemperature ambientTemperature) {
         return null;
     }
 }

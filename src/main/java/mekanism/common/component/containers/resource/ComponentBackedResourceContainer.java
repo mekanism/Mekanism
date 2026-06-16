@@ -56,6 +56,12 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
+    protected AttachedResources<RESOURCE> getAttached() {
+        AttachedResources<RESOURCE> attached = super.getAttached();
+        return attached == null ? AttachedResources.empty() : attached;
+    }
+
+    @Override
     protected LargeResourceStack<RESOURCE> getContents(AttachedResources<RESOURCE> attached) {
         List<LargeResourceStack<RESOURCE>> containers = attached.containers();
         if (containerIndex < 0 || containerIndex >= containers.size()) {

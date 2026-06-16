@@ -21,6 +21,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 26.2: rewrite multiblocks to have the MultiblockData ticked here, without a Cache middleman
@@ -85,7 +86,10 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
             // in theory this method should only be called if the multiblock is valid and formed
             // but in case something goes wrong, don't let it
             if (cache != null) {
-                cache.sync(multiblock);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    cache.sync(multiblock, transaction);
+                    transaction.commit();
+                }
                 //If the multiblock is dirty mark the manager's data handler as dirty to ensure that we save
                 //markDirty();
                 // next we can reset the dirty state of the multiblock

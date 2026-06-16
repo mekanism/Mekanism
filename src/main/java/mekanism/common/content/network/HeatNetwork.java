@@ -11,6 +11,7 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, ThermodynamicConductor> {
 
@@ -47,21 +48,25 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     public void onUpdate() {
         super.onUpdate();
         double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
-        for (ThermodynamicConductor transmitter : getTransmitters()) {
-            HeatTransfer transfer = transmitter.simulate();
-            newHeatTransferred += transfer.adjacentTransfer();
-            newHeatLost += transfer.environmentTransfer();
+        Collection<ThermodynamicConductor> transmitters = getTransmitters();
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (ThermodynamicConductor transmitter : transmitters) {
+                HeatTransfer transfer = transmitter.simulate(transaction);
+                newHeatTransferred += transfer.adjacentTransfer();
+                newHeatLost += transfer.environmentTransfer();
+            }
+            transaction.commit();
         }
         //After we updated the heat values of all the transmitters, we need to update the temperatures
         // we do this after instead of when iterating initially so that if heat is transferred from one
         // conductor to one we already updated then we want it to have the proper total temperature
-        for (ThermodynamicConductor transmitter : getTransmitters()) {
-            transmitter.updateHeatCapacitors(null);
-            newSumTemp += transmitter.getTotalTemperature();
+        for (ThermodynamicConductor transmitter : transmitters) {
+            newSumTemp += transmitter.getTemperature();
         }
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
-        meanTemp = newSumTemp / transmittersSize();
+        //TODO - 26.1 (heat): Is there a worry that the transmitter collection is empty?
+        meanTemp = newSumTemp / transmitters.size();
     }
 
     @Override

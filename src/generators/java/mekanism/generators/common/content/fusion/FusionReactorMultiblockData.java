@@ -20,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.proxy.AutomatedResourceHandler;
@@ -61,8 +62,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -76,14 +77,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
-    private static final double burnTemperature = 100_000_000;
-    private static final double burnRatio = 1;
+    public static final double BURN_TEMPERATURE = 100_000_000;
+    private static final double BURN_RATIO = 1;
     //Thermal characteristics
-    private static final long plasmaHeatCapacity = 100;
-    private static final double caseHeatCapacity = 1;
-    private static final double inverseInsulation = 100_000;
+    private static final long PLASMA_HEAT_CAPACITY = 100;
+    private static final double CASE_HEAT_CAPACITY = 1;
+    private static final double INVERSE_INSULATION = 100_000;
     //Heat transfer metrics
-    private static final double plasmaCaseConductivity = 0.2;
+    private static final double PLASMA_CASE_CONDUCTIVITY = 0.2;
 
     private final List<CapabilityOutputTarget<EnergyHandler>> energyOutputTargets = new ArrayList<>();
     private final List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> chemicalOutputTargets = new ArrayList<>();
@@ -94,7 +95,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync
     private final IEnergyContainer energyContainer;
-    private final IHeatCapacitor heatCapacitor;
+    //TODO - 26.1 (heat): Should we do this rather than exposing lastCaseTemperature to the computer?
+    //@WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getCaseTemperature", docPlaceholder = "fusion reactor case")
+    final BasicHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded",
@@ -129,12 +132,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IChemicalTank fuelTank;
-    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate")
     private int injectionRate = 2;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private int lastBurned;
-
-    private double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
     final BasicInventorySlot reactorSlot;
@@ -155,7 +156,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
-        plasmaTemperature = biomeAmbientTemp;
+        plasmaJournal.temperature = biomeAmbientTemp;
         chemicalTanks.add(deuteriumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               chemical -> chemical.is(GeneratorTags.Chemicals.DEUTERIUM), this));
         chemicalTanks.add(tritiumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
@@ -165,8 +166,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, chemical -> chemical.is(MekanismChemicals.STEAM), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this);
-        heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
-              () -> inverseInsulation, () -> biomeAmbientTemp, this));
+        heatCapacitor = VariableHeatCapacitor.create(CASE_HEAT_CAPACITY, FusionReactorMultiblockData::getInverseConductionCoefficient, () -> INVERSE_INSULATION, () -> biomeAmbientTemp, this);
         inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
@@ -176,8 +176,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void onCreated(Level world) {
-        super.onCreated(world);
+    protected IHeatCapacitor heatCapacitor() {
+        return heatCapacitor;
+    }
+
+    @Override
+    public void onCreated(Level world, TransactionContext transaction) {
+        super.onCreated(world, transaction);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }
@@ -202,10 +207,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public void addTemperatureFromEnergyInput(long energyAdded, TransactionContext transaction) {
-        if (isBurning()) {
-            plasmaJournal.incrementPlasmaTemperature((double) energyAdded / plasmaHeatCapacity, transaction);
-        } else {
-            plasmaJournal.incrementPlasmaTemperature(((double) energyAdded / plasmaHeatCapacity) * 10, transaction);
+        if (energyAdded > 0) {
+            plasmaJournal.updateSnapshots(transaction);
+            if (isBurning()) {
+                plasmaJournal.temperature += (double) energyAdded / PLASMA_HEAT_CAPACITY;
+            } else {
+                plasmaJournal.temperature += ((double) energyAdded / PLASMA_HEAT_CAPACITY) * 10;
+            }
         }
     }
 
@@ -213,41 +221,43 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         int fuelBurned = 0;
-        //Only thermal transfer happens unless we're hot enough to burn.
-        if (getPlasmaTemp() >= burnTemperature) {
-            //If we're not burning, yet we need a hohlraum to ignite
-            if (!burning) {
-                vaporiseHohlraum();
-            }
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Only thermal transfer happens unless we're hot enough to burn.
+            if (getPlasmaTemp() >= BURN_TEMPERATURE) {
+                //If we're not burning, yet we need a hohlraum to ignite
+                if (!isBurning()) {
+                    vaporiseHohlraum(transaction);
+                }
 
-            //Only inject fuel if we're burning
-            if (isBurning()) {
-                injectFuel();
-                fuelBurned = burnFuel();
+                //Only inject fuel if we're burning
+                if (isBurning()) {
+                    injectFuel(transaction);
+                    fuelBurned = burnFuel(transaction);
+                }
                 if (fuelBurned == 0) {
                     setBurning(false);
                 }
+            } else {
+                setBurning(false);
             }
-        } else {
-            setBurning(false);
-        }
+            if (lastBurned != fuelBurned) {
+                lastBurned = fuelBurned;
+            }
 
-        if (lastBurned != fuelBurned) {
-            lastBurned = fuelBurned;
-        }
+            //Perform the heat transfer calculations
+            transferHeat(transaction);
 
-        //Perform the heat transfer calculations
-        transferHeat();
-        updateHeatCapacitors(null);
+            if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
+                EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, transaction);
+            }
+
+            if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {
+                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), steamTank, transaction);
+            }
+            transaction.commit();
+        }
+        //Now that the root commit has been made and the plasma temp is finalized, update the temperatures for this tick
         updateTemperatures();
-
-        if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
-            EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, null);
-        }
-
-        if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {
-            ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), steamTank, null);
-        }
 
         if (isBurning()) {
             kill(world);
@@ -291,114 +301,118 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    private void vaporiseHohlraum() {
+    private void vaporiseHohlraum(TransactionContext transaction) {
         if (GeneratorsItems.HOHLRAUM.is(reactorSlot.resource())) {
             ResourceHandler<ChemicalResource> handler = AutomatedResourceHandler.manual(Capabilities.CHEMICAL.getCapability(reactorSlot.asItemAccess()));
-            if (handler != null) {
+            if (handler != null && ResourceHandlerUtil.isFull(handler)) {
                 //Validate that the handler has some fusion fuel in it
-                try (Transaction transaction = Transaction.openRoot()) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
                     ChemicalResource fuelType = GeneratorsChemicals.FUSION_FUEL.asResource();
-                    int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(ChemicalResource.EMPTY), transaction);
-                    if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
-                        lastPlasmaTemperature = getPlasmaTemp();
-                        ContainerType.ITEM.clearContents(reactorSlot, transaction);
+                    int needed = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
+                    int availableFuel = needed == 0 ? 0 : handler.extract(fuelType, needed, subTransaction);
+                    //If we don't need any fuel, we can't try to transfer any, so just work
+                    if (needed == 0 || availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, subTransaction, AutomationType.INTERNAL) == availableFuel) {
+                        ContainerType.ITEM.clearContents(reactorSlot, subTransaction);
                         setBurning(true);
-                        transaction.commit();
+                        subTransaction.commit();
                     }
                 }
             }
         }
     }
 
-    private void injectFuel() {
+    private void injectFuel(TransactionContext transaction) {
         int amountNeeded = fuelTank.getNeededAsInt(ChemicalResource.EMPTY);
         int amountAvailable = 2 * Math.min(deuteriumTank.amountAsInt(), tritiumTank.amountAsInt());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
         int injectingAmount = amountToInject / 2;
         if (injectingAmount > 0) {
-            try (Transaction transaction = Transaction.openRoot()) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 //Note: We don't have to validate if the deuterium or tritium resources are empty, as if either is, then the injecting amount will be zero
-                if (deuteriumTank.extract(deuteriumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
-                    tritiumTank.extract(tritiumTank.resource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
-                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), amountToInject, transaction, AutomationType.MANUAL) == amountToInject) {
+                if (deuteriumTank.extract(deuteriumTank.resource(), injectingAmount, subTransaction, AutomationType.MANUAL) == injectingAmount &&
+                    tritiumTank.extract(tritiumTank.resource(), injectingAmount, subTransaction, AutomationType.MANUAL) == injectingAmount &&
+                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), amountToInject, subTransaction, AutomationType.MANUAL) == amountToInject) {
                     //Only inject if we actually are able to transfer the proper amounts
-                    transaction.commit();
+                    subTransaction.commit();
                 }
             }
         }
     }
 
-    private int burnFuel() {
+    private int burnFuel(TransactionContext transaction) {
         ChemicalResource fuel = fuelTank.resource();
         if (fuel.isEmpty()) {
             //Nothing to burn
             return 0;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            int fuelBurned = Math.clamp(MathUtils.clampToInt((lastPlasmaTemperature - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
-            int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
-            if (fuelUsed < fuelBurned) {//Failed to actually burn anything
-                return 0;
-            }
-            plasmaJournal.incrementPlasmaTemperature(MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity, transaction);
-            transaction.commit();
-            return fuelBurned;
+        int fuelBurned = Math.clamp(MathUtils.clampToInt((getPlasmaTemp() - BURN_TEMPERATURE) * BURN_RATIO), 0, fuelTank.amountAsInt());
+        int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
+        if (fuelUsed < fuelBurned) {//Failed to actually burn anything
+            return 0;
         }
+        plasmaJournal.updateSnapshots(transaction);
+        plasmaJournal.temperature += MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) PLASMA_HEAT_CAPACITY;
+        return fuelBurned;
     }
 
-    private void transferHeat() {
+    private void transferHeat(TransactionContext transaction) {
         //Transfer from plasma to casing
-        double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
+        double plasmaCaseHeat = PLASMA_CASE_CONDUCTIVITY * (getPlasmaTemp() - heatCapacitor.getTemperature());
         if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
-            setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
-            heatCapacitor.handleHeat(plasmaCaseHeat);
+            plasmaJournal.updateSnapshots(transaction);
+            plasmaJournal.temperature -= plasmaCaseHeat / PLASMA_HEAT_CAPACITY;
+            heatCapacitor.handleHeat(plasmaCaseHeat, transaction);
         }
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
-        if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            int waterToVaporize = MathUtils.clampToInt(HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-            FluidResource water = waterTank.resource();
-            if (!water.isEmpty()) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(ChemicalResource.EMPTY)), transaction, AutomationType.INTERNAL);
-                    if (vaporized > 0) {
-                        //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
-                        steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);
-                        caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-                        heatCapacitor.handleHeat(-caseWaterHeat);
-                        transaction.commit();
-                    }
+        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
+        double lostToWater = 0;
+        if (!waterTank.isEmpty() && Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                ChemicalResource steam = MekanismChemicals.STEAM.asResource();
+                int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+                int vaporized = waterTank.extract(waterTank.resource(), Math.min(waterToVaporize, steamTank.getNeededAsInt(steam)), subTransaction, AutomationType.INTERNAL);
+                if (vaporized > 0) {
+                    //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
+                    steamTank.insert(steam, vaporized, subTransaction, AutomationType.INTERNAL);
+                    lostToWater = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                    heatCapacitor.handleHeat(-lostToWater, subTransaction);
+                    subTransaction.commit();
                 }
             }
         }
 
-        HeatTransfer heatTransfer = simulate();
-        lastEnvironmentLoss = heatTransfer.environmentTransfer();
-        lastTransferLoss = heatTransfer.adjacentTransfer();
+        //HeatTransfer heatTransfer = simulate(transaction);
+        //lastEnvironmentLoss = heatTransfer.environmentTransfer();
+        //lastTransferLoss = heatTransfer.adjacentTransfer();
+        lastTransferLoss = simulateAdjacent(transaction) + lostToWater;
+        lastEnvironmentLoss = 0;
 
         //Passive energy generation
-        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
+        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
-            heatCapacitor.handleHeat(-caseAirHeat);
-            try (Transaction transaction = Transaction.openRoot()) {
-                energyContainer.insert(MathUtils.clampToInt(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), transaction, AutomationType.INTERNAL);
-                transaction.commit();
+            heatCapacitor.handleHeat(-caseAirHeat, transaction);
+            lastEnvironmentLoss = caseAirHeat;
+            int powerGen = MathUtils.clampToInt(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get());
+            if (powerGen > 0) {
+                energyContainer.insert(powerGen, transaction, AutomationType.INTERNAL);
             }
         }
     }
 
     @Override
-    public HeatTransfer simulate() {
-        double environmentTransfer = 0;
+    public HeatTransfer simulate(TransactionContext transaction) {
+        throw new UnsupportedOperationException("I'm special");
+    }
+
+    @Override
+    public double simulateAdjacent(TransactionContext transaction) {
         double adjacentTransfer = 0;
         for (ITileHeatHandler source : heatHandlers) {
-            HeatTransfer heatTransfer = source.simulate();
-            adjacentTransfer += heatTransfer.adjacentTransfer();
-            environmentTransfer += heatTransfer.environmentTransfer();
+            adjacentTransfer += source.simulateAdjacent(transaction);
         }
-        return new HeatTransfer(adjacentTransfer, environmentTransfer);
+        return adjacentTransfer;
     }
 
     @ComputerMethod(nameOverride = "getPlasmaTemperature")
@@ -412,14 +426,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public double getPlasmaTemp() {
-        return plasmaTemperature;
+        return plasmaJournal.temperature;
     }
 
-    public void setPlasmaTemp(double temp) {
-        if (!Mth.equal(plasmaTemperature, temp)) {
-            plasmaTemperature = temp;
-            markDirty();
-        }
+    public void setPlasmaTemp(double temp, TransactionContext transaction) {
+        plasmaJournal.updateSnapshots(transaction);
+        plasmaJournal.temperature = temp;
     }
 
     @ComputerMethod
@@ -427,15 +439,20 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return injectionRate;
     }
 
+    //Note: This method is called by the container sync stuff
     public void setInjectionRate(int rate) {
+        setInjectionRate(rate, null);
+    }
+
+    public void setInjectionRate(int rate, @Nullable TransactionContext transaction) {
         if (injectionRate != rate) {
             injectionRate = rate;
             //TODO - 26.2: Should these configs be limited to ints?
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (!isRemote()) {
-                ContainerType.FLUID.clampContents(waterTank, null);
-                ContainerType.CHEMICAL.clampContents(steamTank, null);
+                ContainerType.FLUID.clampContents(waterTank, transaction);
+                ContainerType.CHEMICAL.clampContents(steamTank, transaction);
             }
             markDirty();
         }
@@ -461,10 +478,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    public double getCaseTemp() {
-        return heatCapacitor.getTemperature();
-    }
-
     @Override
     protected int getMultiblockRedstoneLevel() {
         return ContainerType.CHEMICAL.getRedstoneSignalFromContainer(fuelTank);
@@ -474,9 +487,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public int getMinInjectionRate(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
-        double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
-                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
-                       plasmaCaseConductivity * (k + caseAirConductivity));
+        double aMin = BURN_TEMPERATURE * BURN_RATIO * PLASMA_CASE_CONDUCTIVITY * (k + caseAirConductivity) /
+                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * BURN_RATIO * (PLASMA_CASE_CONDUCTIVITY + k + caseAirConductivity) -
+                       PLASMA_CASE_CONDUCTIVITY * (k + caseAirConductivity));
         return 2 * Mth.ceil(aMin / 2D);
     }
 
@@ -485,8 +498,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         int injectionRate = Math.max(this.injectionRate, lastBurned);
-        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / plasmaCaseConductivity *
-               (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / PLASMA_CASE_CONDUCTIVITY *
+               (PLASMA_CASE_CONDUCTIVITY + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
@@ -502,8 +515,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
-        return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
-               (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+        return BURN_TEMPERATURE * energyPerFusionFuel * BURN_RATIO * (PLASMA_CASE_CONDUCTIVITY + k + caseAirConductivity) /
+               (energyPerFusionFuel * BURN_RATIO * (PLASMA_CASE_CONDUCTIVITY + k + caseAirConductivity) - PLASMA_CASE_CONDUCTIVITY * (k + caseAirConductivity));
     }
 
     public long getPassiveGeneration(boolean active, boolean current) {
@@ -547,28 +560,23 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private class PlasmaJournal extends SnapshotJournal<Double> {
 
-        private double temperatureDiff;
-
-        public void incrementPlasmaTemperature(double temperatureDiff, TransactionContext transaction) {
-            updateSnapshots(transaction);
-            this.temperatureDiff += temperatureDiff;
-        }
+        private double temperature;
 
         @Override
         protected Double createSnapshot() {
-            return temperatureDiff;
+            return temperature;
         }
 
         @Override
         protected void revertToSnapshot(Double snapshot) {
-            temperatureDiff = snapshot;
+            temperature = snapshot;
         }
 
         @Override
         protected void onRootCommit(Double originalState) {
             super.onRootCommit(originalState);
-            if (!Mth.equal(originalState, temperatureDiff)) {
-                setPlasmaTemp(getPlasmaTemp() + temperatureDiff);
+            if (!Mth.equal(originalState, temperature)) {
+                markDirty();
             }
         }
     }

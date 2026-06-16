@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
@@ -21,8 +22,8 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
-import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -121,9 +122,9 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener);
-        return new EnergyConfigHolder(energyContainer, this);
+        return SingleConfigHolder.energy(energyContainer, this);
     }
 
     @Override

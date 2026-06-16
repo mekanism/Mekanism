@@ -7,12 +7,13 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.sps.SPSMultiblockData;
@@ -59,7 +60,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, listener);
         return _ -> energyContainer;
     }

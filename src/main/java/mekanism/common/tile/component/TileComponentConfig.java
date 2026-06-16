@@ -356,6 +356,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private static <CONTAINER> BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, CONTAINER container) {
         if (type == TransmissionType.ENERGY) {
             return new EnergySlotInfo(input, output, (IEnergyContainer) container);
+        } else if (type == TransmissionType.HEAT) {
+            return new HeatSlotInfo(input, output, (IHeatCapacitor) container);
         }
         return createInfo(type, input, output, List.of(container));
     }
@@ -366,8 +368,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
             case FLUID -> new FluidSlotInfo(input, output, (List<IFluidTank>) containers);
             case CHEMICAL -> new ChemicalSlotInfo(input, output, (List<IChemicalTank>) containers);
-            case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
-            case ENERGY -> throw new UnsupportedOperationException("Energy Configs do not support multiple energy containers");
+            case HEAT, ENERGY -> throw new UnsupportedOperationException("Heat and Energy Configs do not support multiple containers");
         };
     }
 

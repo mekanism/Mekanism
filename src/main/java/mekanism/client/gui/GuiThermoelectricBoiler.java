@@ -43,7 +43,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 110, 40, () -> {
             BoilerMultiblockData multiblock = tile.getMultiblock();
-            return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+            return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(multiblock.lastBoilRate)), MekanismLang.MAX_BOIL_RATE.translate(TextUtils.format(multiblock.lastMaxBoil)));
         }).padding(3).recipeViewerCategories(RecipeViewerRecipeType.BOILER));
         addRenderableWidget(new GuiBoilerTab(this, tile, BoilerTab.STAT));

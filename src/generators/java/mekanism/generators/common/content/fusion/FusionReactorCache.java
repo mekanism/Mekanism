@@ -4,6 +4,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 
@@ -29,19 +30,19 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void apply(FusionReactorMultiblockData data) {
-        super.apply(data);
+    public void apply(FusionReactorMultiblockData data, TransactionContext transaction) {
+        super.apply(data, transaction);
         if (plasmaTemperature >= 0) {
-            data.setPlasmaTemp(plasmaTemperature);
+            data.setPlasmaTemp(plasmaTemperature, transaction);
         }
-        data.setInjectionRate(getInjectionRate());
+        data.setInjectionRate(getInjectionRate(), transaction);
         data.setBurning(burning);
         data.updateTemperatures();
     }
 
     @Override
-    public void sync(FusionReactorMultiblockData data) {
-        super.sync(data);
+    public void sync(FusionReactorMultiblockData data, TransactionContext transaction) {
+        super.sync(data, transaction);
         plasmaTemperature = data.getPlasmaTemp();
         injectionRate = data.getInjectionRate();
         burning = data.isBurning();

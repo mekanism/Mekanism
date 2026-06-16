@@ -23,7 +23,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -31,7 +30,6 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyHandlerTarget;
@@ -64,7 +62,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements ITileHeatHandler, IContentsListener {
+public class InventoryFrequency extends Frequency implements IContentsListener {
 
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
@@ -82,8 +80,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         frequency.storedFluid.setContents(fluid, null);
         frequency.storedChemical.setContents(chemical, null);
         frequency.storedItem.setContents(item, null);
-        frequency.storedHeat.setHeat(heat);
-        frequency.storedHeat.setHeatCapacity(heatCapacity, false);
+        frequency.storedHeat.setHeatAndCapacity(heat, heatCapacity, null);
         return frequency;
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
@@ -98,7 +95,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
               frequency.storedFluid.setContents(fluid, null);
               frequency.storedChemical.setContents(chemical, null);
               frequency.storedItem.setContents(item, null);
-              frequency.storedHeat.setHeat(heat);
+              frequency.storedHeat.setHeat(heat, null);
               return frequency;
           }
     );
@@ -116,7 +113,6 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
     private List<IInventorySlot> inventorySlots;
     private List<IChemicalTank> chemicalTanks;
     private List<IFluidTank> fluidTanks;
-    private List<IHeatCapacitor> heatCapacitors;
 
     /// @param uuid Should only be null if we have incomplete data that we are loading
     public InventoryFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
@@ -134,8 +130,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this);
-        heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
-              1_000, null, this));
+        storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION, 1_000, null, this);
     }
 
     public List<IInventorySlot> getInventorySlots() {
@@ -154,13 +149,8 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         return storedEnergy;
     }
 
-    public List<IHeatCapacitor> getHeatCapacitors() {
-        return heatCapacitors;
-    }
-
-    @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return heatCapacitors;
+    public BasicHeatCapacitor getHeatCapacitor() {
+        return storedHeat;
     }
 
     @Override
@@ -187,14 +177,14 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
         return changedData;
     }
 
-    public void handleEject(long gameTime) {
+    public void handleEject(long gameTime, TransactionContext transaction) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
             Map<TransmissionType, Target<?, ?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
             List<TargetExecution> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
-            try (Transaction simulation = Transaction.openRoot()) {
+            try (Transaction simulation = Transaction.open(transaction)) {
                 addEnergyTransferHandler(typesToEject, transferHandlers, expected, simulation);
                 addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.FLUID, storedFluid, simulation);
                 addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.CHEMICAL, storedChemical, simulation);
@@ -231,11 +221,11 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler, I
                 //Run all our transfer handlers that we have
                 for (TargetExecution transferHandler : transferHandlers) {
                     if (transferHandler.getHandlerCount() > 0) {
-                        try (Transaction transaction = Transaction.openRoot()) {
-                            if (transferHandler.extract(transaction)) {
+                        try (Transaction subTransaction = Transaction.open(transaction)) {
+                            if (transferHandler.extract(subTransaction)) {
                                 //If we were able to extract everything we thought we would be able to and had tried to send
                                 // then commit all the changes
-                                transaction.commit();
+                                subTransaction.commit();
                             }
                         }
                     }

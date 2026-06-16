@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -14,8 +15,8 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
-import mekanism.common.capabilities.holder.energy.BasicEnergyHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.BasicSingleHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
@@ -69,16 +70,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = ResistiveHeaterEnergyContainer.input(this, listener);
-        return new BasicEnergyHolder(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
+        return new BasicSingleHolder<>(energyContainer, facingSupplier, Set.of(RelativeSide.LEFT, RelativeSide.RIGHT));
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        MekContainerHelper<IHeatCapacitor> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
-        return builder.build();
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener);
+        return _ -> heatCapacitor;
     }
 
     @Override
@@ -91,23 +91,23 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        energySlot.fillContainerOrConvert(null);
-        int toUse = 0;
-        if (canFunction()) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
-                if (toUse > 0) {
-                    heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
-                    transaction.commit();
+        try (Transaction transaction = Transaction.openRoot()) {
+            energySlot.fillContainerOrConvert(transaction);
+            if (canFunction()) {
+                clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
+                if (clientEnergyUsed > 0) {
+                    heatCapacitor.handleHeat(clientEnergyUsed * MekanismConfig.general.resistiveHeaterEfficiency.get(), transaction);
                 }
+            } else {
+                clientEnergyUsed = 0;
             }
+            setActive(clientEnergyUsed > 0);
+            HeatTransfer transfer = simulate(transaction);
+            lastEnvironmentLoss = transfer.environmentTransfer();
+            lastTransferLoss = transfer.adjacentTransfer();
+            transaction.commit();
         }
-        setActive(toUse > 0);
-        clientEnergyUsed = toUse;
-        HeatTransfer transfer = simulate();
-        lastEnvironmentLoss = transfer.environmentTransfer();
-        lastTransferLoss = transfer.adjacentTransfer();
-        float newSoundScale = (float) (toUse / 100_000D);
+        float newSoundScale = (float) (clientEnergyUsed / 100_000D);
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket = true;
@@ -118,6 +118,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @ComputerMethod
     public int getEnergyUsed() {
         return clientEnergyUsed;
+    }
+
+    public double getTemperature() {
+        return heatCapacitor.getTemperature();
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss")

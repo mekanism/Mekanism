@@ -46,7 +46,7 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
 
     protected ResourceContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<RESOURCE>>> component, String containerTag,
           MultiTypeCapability<ResourceHandler<RESOURCE>> capability, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
-        super(component, containerTag, capability, AttachedResources.empty());
+        super(component, containerTag, capability);
         this.stackHelper = stackHelper;
     }
 
@@ -70,8 +70,8 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     protected ResourceHandler<RESOURCE> createHandler(ItemAccess itemAccess) {
         ItemResource resource = itemAccess.getResource();
         int count;
-        AttachedResources<RESOURCE> attached = getOrEmpty(resource);
-        if (attached.isEmpty()) {
+        AttachedResources<RESOURCE> attached = get(resource);
+        if (attached == null || attached.isEmpty()) {
             //TODO: Are there any cases where the attached is empty, but we have containers?
             //TODO - 26.2: Re-evaluate this branch not just being zero and then returning null is the only difference for what getCapOrUnexposed
             // (which would use createHandlerIfData) previously did

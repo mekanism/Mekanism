@@ -48,6 +48,6 @@
     "mekanism:teleporter_frequency",
     "mekanism:inventory_frequency",
     "mekanism:qio_frequency",
-    "mekanism:heat_data"
+    "mekanism:heat"
   ]
 }

@@ -9,6 +9,7 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -25,6 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
@@ -58,30 +60,35 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        MekContainerHelper<IHeatCapacitor> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
-        return builder.build();
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener);
+        return _ -> heatCapacitor;
     }
 
     @Override
     protected boolean onUpdateServer(ServerLevel level) {
         boolean sendUpdatePacket = super.onUpdateServer(level);
-        if (burnTime == 0) {
-            maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues(), null);
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (burnTime == 0) {
+                maxBurnTime = fuelSlot.burn(level.fuelValues(), transaction);
+                burnTime = maxBurnTime;
+            }
+            setActive(burnTime > 0);
+            if (burnTime > 0) {
+                int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());
+                burnTime -= ticks;
+                heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get() * ticks, transaction);
+            }
+            HeatTransfer loss = simulate(transaction);
+            lastEnvironmentLoss = loss.environmentTransfer();
+            lastTransferLoss = loss.adjacentTransfer();
+            transaction.commit();
         }
-        boolean isActive = false;
-        if (burnTime > 0) {
-            int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());
-            burnTime -= ticks;
-            heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get() * ticks);
-            isActive = true;
-        }
-        setActive(isActive);
-        HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.environmentTransfer();
-        lastTransferLoss = loss.adjacentTransfer();
         return sendUpdatePacket;
+    }
+
+    public double getTemperature() {
+        return heatCapacitor.getTemperature();
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss")

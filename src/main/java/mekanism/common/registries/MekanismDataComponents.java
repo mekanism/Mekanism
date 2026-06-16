@@ -15,11 +15,12 @@ import mekanism.common.component.FormulaComponent;
 import mekanism.common.component.FrequencyAware;
 import mekanism.common.component.LockData;
 import mekanism.common.component.OverflowAware;
+import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.component.StabilizedChunks;
 import mekanism.common.component.component.AttachedEjector;
 import mekanism.common.component.component.AttachedSideConfig;
 import mekanism.common.component.component.UpgradeAware;
-import mekanism.common.component.containers.heat.AttachedHeat;
+import mekanism.common.component.containers.heat.HeatCapacitorData;
 import mekanism.common.component.containers.resource.AttachedResources;
 import mekanism.common.component.qio.DriveContents;
 import mekanism.common.component.qio.DriveMetadata;
@@ -29,7 +30,6 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.component.PasteBucketConsumption;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IFreeRunnerItem.FreeRunnerMode;
@@ -76,9 +76,9 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS
           .registerAttachedContents("chemicals", LargeResourceStack.CHEMICAL_HELPER);
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
-          builder -> builder.persistent(AttachedHeat.CODEC)
-                .networkSynchronized(AttachedHeat.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<HeatCapacitorData>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat",
+          builder -> builder.persistent(HeatCapacitorData.CODEC)
+                .networkSynchronized(HeatCapacitorData.STREAM_CODEC)
                 .cacheEncoding()
     );
 

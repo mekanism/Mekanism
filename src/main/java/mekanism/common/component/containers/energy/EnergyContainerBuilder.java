@@ -13,7 +13,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
-public class EnergyContainersBuilder {
+public class EnergyContainerBuilder {
 
     public static final IContainerCreator<IEnergyContainer, Long> MEKASUIT = creator(attachedAccess -> new ComponentBackedEnergyContainer(
           attachedAccess, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(),
@@ -22,7 +22,7 @@ public class EnergyContainersBuilder {
     public static final IContainerCreator<IEnergyContainer, Long> ENERGY_CUBE = creator(ComponentBackedEnergyCubeContainer::create);
     public static final IContainerCreator<IEnergyContainer, Long> RESISTIVE_HEATER = creator(ComponentBackedResistiveEnergyContainer::create);
 
-    private EnergyContainersBuilder() {
+    private EnergyContainerBuilder() {
     }
 
     public static IContainerCreator<IEnergyContainer, Long> basicCreator(IntSupplier rate, LongSupplier maxEnergy) {

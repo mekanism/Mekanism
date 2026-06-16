@@ -159,10 +159,13 @@ public final class SerializationConstants {
     public static final String EMITTING = "emitting";
     public static final String ENABLED = "enabled";
     public static final String ENCHANTMENTS = "enchantments";
-    public static final String ENERGY_CONTAINERS = "energy_containers";
+    /// @since 10.8.0
+    public static final String ENERGY_CONTAINER = "energy_container";
     public static final String ENERGY = "energy";
     public static final String ENERGY_USAGE = "energy_usage";
     public static final String ENUMS = "enums";
+    /// @since 10.8.0
+    public static final String EXPLODED = "exploded";
     public static final String EXTENDS = "extends";
     public static final String FIELDS = "fields";
     public static final String FILTER = "filter";
@@ -179,7 +182,8 @@ public final class SerializationConstants {
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
-    public static final String HEAT_CAPACITORS = "heat_capacitors";
+    /// @since 10.8.0
+    public static final String HEAT_CAPACITOR = "heat_capacitor";
     public static final String HEAT_CAPACITY = "heat_capacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "home_location";

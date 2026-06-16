@@ -20,9 +20,14 @@ public abstract class QEConfigHolder<TYPE extends @Nullable Object> extends Conf
         this.containerResolver = containerResolver;
     }
 
+    @Nullable
+    public InventoryFrequency getFrequency() {
+        return entangloporter.getFreq();
+    }
+
     @Override
     protected TYPE allData() {
-        return containerResolver.apply(entangloporter.getFreq());
+        return containerResolver.apply(getFrequency());
     }
 
     @Override

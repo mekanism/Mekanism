@@ -44,11 +44,10 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
@@ -275,7 +274,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             fluidHandlerManager = null;
         }
 
-        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
+        ISingleContainerHolder<IEnergyContainer> initialEnergyContainers = getInitialEnergyContainer(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
             capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this::getGameTime));
         } else {
@@ -290,9 +289,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
 
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        IContainerHolder<IHeatCapacitor> initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
-        if (initialHeatCapacitors != null) {
-            capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(initialHeatCapacitors, this));
+        ISingleContainerHolder<IHeatCapacitor> initialHeatCapacitor = getInitialHeatCapacitor(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
+        if (initialHeatCapacitor != null) {
+            capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(initialHeatCapacitor));
         } else {
             heatHandlerManager = null;
         }
@@ -429,7 +428,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return energyHandlerManager != null;
     }
 
-    @Override
     public final boolean canHandleHeat() {
         return heatHandlerManager != null;
     }
@@ -619,17 +617,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        //TODO - 26.2: Shouuld we validate this is a server level??
+        //TODO - 26.2: Should we validate this is a server level??
         boolean sendUpdatePacket = tile.onUpdateServer((ServerLevel) level);
         if (tile.updateRadiationScale()) {
             sendUpdatePacket = true;
         }
         //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
-        if (tile.canHandleHeat()) {
-            // update heat after server tick as we now have simulated changes
-            // we use persists, as only one reference should update
-            tile.updateHeatCapacitors(null);
-        }
+
         //Set that we received zero energy so if it is a different tick than we last had,
         // and we don't actually receive anything then we will properly update it to zero
         LastEnergyTracker lastEnergyTracker = tile.getLastEnergyTracker();
@@ -915,11 +909,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {
-            for (IHeatCapacitor capacitor : getHeatCapacitors()) {
-                container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
-                if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
-                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
-                }
+            IHeatCapacitor capacitor = getHeatCapacitor();
+            if (capacitor != null) {
+                container.track(SyncableDouble.create(capacitor::getHeat, heat -> capacitor.setHeat(heat, null)));
+                container.track(SyncableDouble.create(capacitor::getHeatCapacity, heat -> capacitor.setHeatCapacity(heat, null)));
             }
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
@@ -1229,7 +1222,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IMekanismFluidHandler
 
     //Methods for implementing IMekanismStrictEnergyHandler
-    protected @Nullable IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    @Nullable
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         return null;
     }
 
@@ -1251,7 +1245,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IInWorldHeatHandler
     @Nullable
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+    protected ISingleContainerHolder<IHeatCapacitor> getInitialHeatCapacitor(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return null;
     }
 
@@ -1266,14 +1260,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            return getAdjacentUnchecked(side);
-        }
-        return null;
-    }
-
-    @Nullable
-    protected IHeatHandler getAdjacentUnchecked(Direction side) {
         BlockCapabilityCache<IHeatHandler, @Nullable Direction> cache = adjacentHeatCaps.get(side);
         if (cache == null) {
             cache = BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(side), side.getOpposite());
@@ -1282,13 +1268,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return cache.getCapability();
     }
 
-    public final List<IHeatCapacitor> getHeatCapacitors() {
-        return getHeatCapacitors(null);
+    @Nullable
+    public final IHeatCapacitor getHeatCapacitor() {
+        return getHeatCapacitor(null);
     }
 
+    @Nullable
     @Override
-    public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return heatHandlerManager == null ? Collections.emptyList() : heatHandlerManager.getContainers(side);
+    public final IHeatCapacitor getHeatCapacitor(@Nullable Direction side) {
+        return heatHandlerManager == null ? null : heatHandlerManager.getContainer(side);
     }
     //End methods for IInWorldHeatHandler
 

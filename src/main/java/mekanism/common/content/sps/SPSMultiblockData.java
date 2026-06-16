@@ -48,6 +48,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
@@ -88,8 +89,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void onCreated(Level world) {
-        super.onCreated(world);
+    public void onCreated(Level world, TransactionContext transaction) {
+        super.onCreated(world, transaction);
         deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
         advancementArea = deathZone.inflate(15);
     }

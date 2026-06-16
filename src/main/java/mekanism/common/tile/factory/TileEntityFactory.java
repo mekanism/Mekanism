@@ -16,6 +16,7 @@ import java.util.function.ToIntBiFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -27,8 +28,8 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
-import mekanism.common.capabilities.holder.energy.EnergyConfigHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.SingleConfigHolder;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -170,14 +171,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainer(IContentsListener listener) {
+    protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, () -> {
             listener.onContentsChanged();
             for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
                 cacheLookupMonitor.unpause();
             }
         });
-        return new EnergyConfigHolder(energyContainer, this);
+        return SingleConfigHolder.energy(energyContainer, this);
     }
 
     @Override
