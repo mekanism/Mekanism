@@ -7,15 +7,18 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
-import mekanism.common.recipe.ISubRecipeProvider;
+import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 
-public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvider {
+class PigmentExtractingPlasticRecipeProvider extends BaseSubRecipeProvider {
 
     private static final int PLASTIC_BLOCK_RATE = PigmentExtractingRecipeProvider.DYE_RATE * 3 / 16;//48
     private static final int SLICK_PLASTIC_BLOCK_RATE = PLASTIC_BLOCK_RATE * 7 / 8;//42
@@ -29,6 +32,10 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
     private static final int PLASTIC_GLOW_SLAB_RATE = PLASTIC_GLOW_BLOCK_RATE / 2;//21
     private static final int TRANSPARENT_PLASTIC_STAIRS_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE * 2 / 3;//28
     private static final int TRANSPARENT_PLASTIC_SLAB_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE / 2;//21
+
+    PigmentExtractingPlasticRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {

@@ -6,9 +6,10 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.plastic.BlockPlasticFence;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.text.EnumColor;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
@@ -21,8 +22,9 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
-public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
+class PlasticFencesRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern PLASTIC_FENCE = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT),
@@ -31,10 +33,8 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR),
           TripleLine.of(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR));
 
-    private final HolderGetter<Item> items;
-
-    public PlasticFencesRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    PlasticFencesRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

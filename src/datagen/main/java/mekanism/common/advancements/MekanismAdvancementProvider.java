@@ -45,18 +45,19 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
-        HolderGetter<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
 
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), AdvancementType.GOAL, false, false, false)
@@ -64,7 +65,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM), AdvancementType.TASK, false)
-              .orCriteria("material", itemLookup, MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              .orCriteria("material", items, MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.OSMIUM),
                     MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.TIN),
                     MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.LEAD),
                     MekanismItems.getProcessedResource(ResourceType.INGOT, PrimaryResource.URANIUM),
@@ -117,11 +118,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismBlocks.LASER, AdvancementType.TASK, false)
               .save(consumer);
         advancement(MekanismAdvancements.LASER_DEATH)
-              .display(Items.SKELETON_SKULL, null, AdvancementType.TASK, true, true, true)
+              .display(items, BlockItemIds.SKELETON_SKULL.item(), null, AdvancementType.TASK, true, true, true)
               .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.LASER))
               .save(consumer);
         advancement(MekanismAdvancements.STOPPING_LASERS)
-              .display(Items.SHIELD, AdvancementType.TASK, true)
+              .display(items, ItemIds.SHIELD, AdvancementType.TASK, true)
               .addCriterion("block", BlockLaserTrigger.TriggerInstance.block())
               .save(consumer);
         advancement(MekanismAdvancements.AUTO_COLLECTION)
@@ -133,14 +134,14 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.INSTALLER)
               .display(MekanismItems.BASIC_TIER_INSTALLER, AdvancementType.GOAL, false)
-              .orCriteria("installer", itemLookup, MekanismItems.BASIC_TIER_INSTALLER,
+              .orCriteria("installer", items, MekanismItems.BASIC_TIER_INSTALLER,
                     MekanismItems.ADVANCED_TIER_INSTALLER,
                     MekanismItems.ELITE_TIER_INSTALLER,
                     MekanismItems.ULTIMATE_TIER_INSTALLER
               ).save(consumer);
         advancement(MekanismAdvancements.FACTORY)
-              .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING), AdvancementType.GOAL, true)
-              .orCriteria("factory", itemLookup, getItems(MekanismBlocks.BLOCKS.getSecondaryEntries(), item -> item instanceof ItemBlockFactory))
+              .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING).getItemHolder(), AdvancementType.GOAL, true)
+              .orCriteria("factory", items, getItems(MekanismBlocks.BLOCKS.getSecondaryEntries(), item -> item instanceof ItemBlockFactory))
               .orCriteria("tier_installer", UseTierInstallerTrigger.TriggerInstance.any())
               .save(consumer);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
@@ -168,8 +169,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
 
         advancement(MekanismAdvancements.PERSONAL_STORAGE)
-              .display(MekanismBlocks.PERSONAL_CHEST, AdvancementType.TASK, false)
-              .addCriterion("storage", hasItems(itemLookup, MekanismTags.Items.PERSONAL_STORAGE))
+              .display(MekanismBlocks.PERSONAL_CHEST.getItemHolder(), AdvancementType.TASK, false)
+              .addCriterion("storage", hasItems(items, MekanismTags.Items.PERSONAL_STORAGE))
               .save(consumer);
         advancement(MekanismAdvancements.SIMPLE_MASS_STORAGE)
               .displayAndCriterion(MekanismBlocks.BASIC_BIN, AdvancementType.TASK, false)
@@ -218,11 +219,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                     MekanismItems.HAZMAT_BOOTS
               )).save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING)
-              .display(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, AdvancementType.TASK, true)
+              .display(MekanismBlocks.RADIOACTIVE_WASTE_BARREL.getItemHolder(), AdvancementType.TASK, true)
               .addCriterion("poisoned", MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageTypes.RADIATION))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING_DEATH)
-              .display(Items.PLAYER_HEAD, null, AdvancementType.TASK, true, true, true)
+              .display(items, BlockItemIds.PLAYER_HEAD.item(), null, AdvancementType.TASK, true, true, true)
               .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.RADIATION))
               .save(consumer);
 
@@ -231,7 +232,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         //TODO: If we end up adding a criteria for creating a multiblock switch the criteria for this to using that
         advancement(MekanismAdvancements.SPS)
-              .display(MekanismBlocks.SPS_CASING, AdvancementType.TASK, false)
+              .display(MekanismBlocks.SPS_CASING.getItemHolder(), AdvancementType.TASK, false)
               .andCriteria(MekanismBlocks.SPS_CASING,
                     MekanismBlocks.SPS_PORT
               ).save(consumer);
@@ -241,7 +242,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.NUCLEOSYNTHESIZER)
               .displayAndCriterion(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AdvancementType.CHALLENGE, true)
               .save(consumer);
-        addExperiments(registries, consumer);
+        addExperiments(registries, items, consumer);
 
         advancement(MekanismAdvancements.POLONIUM)
               .displayAndCriterion(MekanismItems.POLONIUM_PELLET, AdvancementType.TASK, true)
@@ -388,7 +389,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.INFUSING_EFFICIENCY)
               .display(MekanismItems.ENRICHED_REDSTONE, AdvancementType.TASK, true)
-              .addCriterion("enriched_material", hasItems(itemLookup, MekanismTags.Items.ENRICHED))
+              .addCriterion("enriched_material", hasItems(items, MekanismTags.Items.ENRICHED))
               .save(consumer);
         advancement(MekanismAdvancements.YELLOW_CAKE)
               .displayAndCriterion(MekanismItems.YELLOW_CAKE_URANIUM, AdvancementType.GOAL, false)
@@ -429,22 +430,22 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
     }
 
-    private void addExperiments(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
+    private void addExperiments(HolderLookup.Provider registries, HolderGetter<Item> items, Consumer<AdvancementHolder> consumer) {
         RegistryLookup<EntityType<?>> lookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_CREEPER)
-              .display(Items.CREEPER_HEAD, null, AdvancementType.CHALLENGE, true, true, true)
+              .display(items, BlockItemIds.CREEPER_HEAD.item(), null, AdvancementType.CHALLENGE, true, true, true)
               .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, MekanismTags.Entities.CREEPERS))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_MOOSHROOM)
-              .display(Items.MOOSHROOM_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .display(items, ItemIds.MOOSHROOM_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
               .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.MOOSHROOM))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_PIG)
-              .display(Items.PIG_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .display(items, ItemIds.PIG_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
               .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.PIG))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_VILLAGER)
-              .display(Items.VILLAGER_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .display(items, ItemIds.VILLAGER_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
               .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityTypes.VILLAGER))
               .save(consumer);
     }

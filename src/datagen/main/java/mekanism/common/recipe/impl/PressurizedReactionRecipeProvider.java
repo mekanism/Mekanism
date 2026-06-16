@@ -1,11 +1,11 @@
 package mekanism.common.recipe.impl;
 
 import java.util.List;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -19,14 +19,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
+class PressurizedReactionRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-    private final HolderGetter<Fluid> fluids;
-
-    public PressurizedReactionRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids) {
-        this.items = items;
-        this.fluids = fluids;
+    PressurizedReactionRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -147,7 +143,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addSubstrateRecipes(RecipeOutput consumer, String basePath) {
         //Ethene + oxygen
         PressurizedReactionRecipeBuilder.reaction(
-                    IngredientCreatorAccess.item().from(MekanismItems.SUBSTRATE),
+                    IngredientCreatorAccess.item().fromHolder(MekanismItems.SUBSTRATE),
                     IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.ETHENE, 50),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
                     60,
@@ -156,7 +152,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
         PressurizedReactionRecipeBuilder.reaction(
-                    IngredientCreatorAccess.item().from(MekanismItems.SUBSTRATE),
+                    IngredientCreatorAccess.item().fromHolder(MekanismItems.SUBSTRATE),
                     IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 200),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ETHENE, 100),
                     400,

@@ -2,11 +2,11 @@ package mekanism.common.recipe.impl;
 
 import java.util.Arrays;
 import java.util.Map;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -15,6 +15,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -23,14 +25,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class CrusherRecipeProvider implements ISubRecipeProvider {
+class CrusherRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public CrusherRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    CrusherRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -49,48 +50,48 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         addCrusherPrismarineRecipes(consumer, basePath + "prismarine/");
         //Dripstone Block -> Pointed Dripstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DRIPSTONE_BLOCK),
-              new ItemStackTemplate(Items.POINTED_DRIPSTONE, 4)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DRIPSTONE_BLOCK),
+              template(BlockItemIds.POINTED_DRIPSTONE, 4)
         ).save(consumer, Mekanism.rl(basePath + "pointed_dripstone_from_block"));
         //Honecomb Block -> Honeycomb
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.HONEYCOMB_BLOCK),
-              new ItemStackTemplate(Items.HONEYCOMB, 4)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.HONEYCOMB_BLOCK),
+              template(ItemIds.HONEYCOMB, 4)
         ).save(consumer, Mekanism.rl(basePath + "honeycomb_from_block"));
         //Purpur Block -> Purpur Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PURPUR_PILLAR),
-              new ItemStackTemplate(Items.PURPUR_BLOCK)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PURPUR_PILLAR),
+              template(BlockItemIds.PURPUR_BLOCK)
         ).save(consumer, Mekanism.rl(basePath + "purpur_block_from_pillar"));
         //Charcoal -> Charcoal Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHARCOAL),
+              IngredientCreatorAccess.item().from(this.items, ItemIds.CHARCOAL),
               MekanismItems.CHARCOAL_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "charcoal_dust"));
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStackTemplate(Items.GRAVEL)
+              template(BlockItemIds.GRAVEL)
         ).save(consumer, Mekanism.rl(basePath + "cobblestone_to_gravel"));
         //Flint -> Gunpowder
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.FLINT),
-              new ItemStackTemplate(Items.GUNPOWDER)
+              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
+              template(ItemIds.GUNPOWDER)
         ).save(consumer, Mekanism.rl(basePath + "flint_to_gunpowder"));
         //Gravel -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.GRAVELS),
-              new ItemStackTemplate(Items.SAND)
+              template(BlockItemIds.SAND)
         ).save(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
         //Mud bricks -> packed mud
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.MUD_BRICKS),
-              new ItemStackTemplate(Items.PACKED_MUD)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD_BRICKS),
+              template(BlockItemIds.PACKED_MUD)
         ).save(consumer, Mekanism.rl(basePath + "mud_bricks_to_packed"));
         //Break music disc 5
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.MUSIC_DISC_5),
-              new ItemStackTemplate(Items.DISC_FRAGMENT_5, 9)
+              IngredientCreatorAccess.item().from(this.items, ItemIds.MUSIC_DISC_5),
+              template(ItemIds.DISC_FRAGMENT_5, 9)
         ).save(consumer, Mekanism.rl(basePath + "break_disc_5"));
         //Obsidian -> obsidian dust
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -100,23 +101,23 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Blaze Rod -> blaze powder
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BLAZE),
-              new ItemStackTemplate(Items.BLAZE_POWDER, 4)
+              template(ItemIds.BLAZE_POWDER, 4)
         ).save(consumer, Mekanism.rl(basePath + "blaze_rod"));
         //Breeze Rod -> wind charge
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_BREEZE),
-              new ItemStackTemplate(Items.WIND_CHARGE, 6)
+              template(ItemIds.WIND_CHARGE, 6)
         ).save(consumer, Mekanism.rl(basePath + "breeze_rod"));
         //Bone -> bone meal
         final int BONEMEAL_FROM_BONE = 6;
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.BONE),
-              new ItemStackTemplate(Items.BONE_MEAL, BONEMEAL_FROM_BONE)
+              IngredientCreatorAccess.item().from(this.items, ItemIds.BONE),
+              template(ItemIds.BONE_MEAL, BONEMEAL_FROM_BONE)
         ).save(consumer, Mekanism.rl(basePath + "bone"));
         //Bone block -> bone meal
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.BONE_BLOCK),
-              new ItemStackTemplate(Items.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.BONE_BLOCK),
+              template(ItemIds.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
         ).save(consumer, Mekanism.rl(basePath + "bone_block"));
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + "red_sandstone_to_sand", null, Items.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
@@ -125,12 +126,12 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Wool -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(this.items, ItemTags.WOOL),
-              new ItemStackTemplate(Items.STRING, 4)
+              template(BlockItemIds.TRIPWIRE, 4)
         ).save(consumer, Mekanism.rl(basePath + "wool_to_string"));
         //Soul Soil -> Soul Sand
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.SOUL_SOIL),
-              new ItemStackTemplate(Items.SOUL_SAND)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SOUL_SOIL),
+              template(BlockItemIds.SOUL_SAND)
         ).save(consumer, Mekanism.rl(basePath + "soul_soil_to_soul_sand"));
         //Polished or Smooth Basalt -> Basalt
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -138,380 +139,380 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
                     Items.POLISHED_BASALT,
                     Items.SMOOTH_BASALT
               ),
-              new ItemStackTemplate(Items.BASALT)
+              template(BlockItemIds.BASALT)
         ).save(consumer, Mekanism.rl(basePath + "polished_or_smooth_basalt_to_basalt"));
         //Chiseled Nether Bricks -> Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_NETHER_BRICKS),
-              new ItemStackTemplate(Items.NETHER_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_NETHER_BRICKS),
+              template(BlockItemIds.NETHER_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_nether_bricks_to_nether_bricks"));
         //Nether Bricks -> Cracked Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.NETHER_BRICKS),
-              new ItemStackTemplate(Items.CRACKED_NETHER_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.NETHER_BRICKS),
+              template(BlockItemIds.CRACKED_NETHER_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "nether_bricks_to_cracked_nether_bricks"));
     }
 
     private void addCrusherStoneRecipes(RecipeOutput consumer, String basePath) {
         //Stone -> Cobblestone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.STONE),
-              new ItemStackTemplate(Items.COBBLESTONE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE),
+              template(BlockItemIds.COBBLESTONE)
         ).save(consumer, Mekanism.rl(basePath + "to_cobblestone"));
         //Stone Stairs -> Cobblestone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.STONE_STAIRS),
-              new ItemStackTemplate(Items.COBBLESTONE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_STAIRS),
+              template(BlockItemIds.COBBLESTONE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_to_cobblestone_stairs"));
         //Stone Slabs -> Cobblestone Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.STONE_SLAB),
-              new ItemStackTemplate(Items.COBBLESTONE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_SLAB),
+              template(BlockItemIds.COBBLESTONE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slabs_to_cobblestone_slabs"));
         //Chiseled Stone Bricks -> Stone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_STONE_BRICKS),
-              new ItemStackTemplate(Items.STONE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_STONE_BRICKS),
+              template(BlockItemIds.STONE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_bricks_to_bricks"));
         //Stone Bricks -> Cracked Stone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.STONE_BRICKS),
-              new ItemStackTemplate(Items.CRACKED_STONE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.STONE_BRICKS),
+              template(BlockItemIds.CRACKED_STONE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_cracked_bricks"));
         //Cracked Stone Bricks -> Stone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CRACKED_STONE_BRICKS),
-              new ItemStackTemplate(Items.STONE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_STONE_BRICKS),
+              template(BlockItemIds.STONE)
         ).save(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
     private void addCrusherTuffRecipes(RecipeOutput consumer, String basePath) {
         //Polished Tuff -> Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_TUFF),
-              new ItemStackTemplate(Items.TUFF)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF),
+              template(BlockItemIds.TUFF)
         ).save(consumer, Mekanism.rl(basePath + "from_polished"));
         //Polished Tuff Stairs -> Tuff Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_TUFF_STAIRS),
-              new ItemStackTemplate(Items.TUFF_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_STAIRS),
+              template(BlockItemIds.TUFF_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished"));
         //Polished Tuff Slabs -> Tuff Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_TUFF_SLAB),
-              new ItemStackTemplate(Items.TUFF_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_SLAB),
+              template(BlockItemIds.TUFF_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slabs_from_polished"));
         //Polished Tuff Walls -> Tuff Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_TUFF_WALL),
-              new ItemStackTemplate(Items.TUFF_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_TUFF_WALL),
+              template(BlockItemIds.TUFF_WALL)
         ).save(consumer, Mekanism.rl(basePath + "wall_from_polished"));
 
         //Tuff Bricks -> Polished Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICKS),
-              new ItemStackTemplate(Items.POLISHED_TUFF)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICKS),
+              template(BlockItemIds.POLISHED_TUFF)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_polished"));
         //Tuff Brick Stairs -> Polished Tuff Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICK_STAIRS),
-              new ItemStackTemplate(Items.POLISHED_TUFF_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_STAIRS),
+              template(BlockItemIds.POLISHED_TUFF_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "brick_stairs_to_polished"));
         //Tuff Brick Slabs -> Polished Tuff Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICK_SLAB),
-              new ItemStackTemplate(Items.POLISHED_TUFF_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_SLAB),
+              template(BlockItemIds.POLISHED_TUFF_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "brick_slabs_to_polished"));
         //Tuff Brick Walls -> Polished Tuff Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICK_WALL),
-              new ItemStackTemplate(Items.POLISHED_TUFF_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_BRICK_WALL),
+              template(BlockItemIds.POLISHED_TUFF_WALL)
         ).save(consumer, Mekanism.rl(basePath + "brick_wall_to_polished"));
 
         //Chiseled Tuff -> Tuff Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_TUFF),
-              new ItemStackTemplate(Items.TUFF_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_TUFF),
+              template(BlockItemIds.TUFF_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
 
         //Tuff -> Chiseled Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF),
-              new ItemStackTemplate(Items.CHISELED_TUFF)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF),
+              template(BlockItemIds.CHISELED_TUFF)
         ).save(consumer, Mekanism.rl(basePath + "to_chiseled"));
         //Tuff Stairs -> Tuff Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_STAIRS),
-              new ItemStackTemplate(Items.TUFF_BRICK_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_STAIRS),
+              template(BlockItemIds.TUFF_BRICK_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_to_brick"));
         //Tuff Slabs -> Tuff Brick Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_SLAB),
-              new ItemStackTemplate(Items.TUFF_BRICK_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_SLAB),
+              template(BlockItemIds.TUFF_BRICK_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slab_to_brick"));
         //Tuff Walls -> Tuff Brick Walls
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_WALL),
-              new ItemStackTemplate(Items.TUFF_BRICK_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.TUFF_WALL),
+              template(BlockItemIds.TUFF_BRICK_WALL)
         ).save(consumer, Mekanism.rl(basePath + "wall_to_brick"));
     }
 
     private void addCrusherDeepslateRecipes(RecipeOutput consumer, String basePath) {
         //Deepslate -> Cobbled Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE),
-              new ItemStackTemplate(Items.COBBLED_DEEPSLATE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE),
+              template(BlockItemIds.COBBLED_DEEPSLATE)
         ).save(consumer, Mekanism.rl(basePath + "to_cobbled"));
 
         //Polished Deepslate -> Deepslate Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DEEPSLATE),
-              new ItemStackTemplate(Items.DEEPSLATE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE),
+              template(BlockItemIds.DEEPSLATE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "polished_to_bricks"));
         //Polished Deepslate Stairs -> Deepslate Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DEEPSLATE_STAIRS),
-              new ItemStackTemplate(Items.DEEPSLATE_BRICK_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_STAIRS),
+              template(BlockItemIds.DEEPSLATE_BRICK_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "polished_stairs_to_brick"));
         //Polished Deepslate Slabs -> Deepslate Brick Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DEEPSLATE_SLAB),
-              new ItemStackTemplate(Items.DEEPSLATE_BRICK_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_SLAB),
+              template(BlockItemIds.DEEPSLATE_BRICK_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "polished_slabs_to_brick"));
         //Polished Deepslate Wall -> Deepslate Brick Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DEEPSLATE_WALL),
-              new ItemStackTemplate(Items.DEEPSLATE_BRICK_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DEEPSLATE_WALL),
+              template(BlockItemIds.DEEPSLATE_BRICK_WALL)
         ).save(consumer, Mekanism.rl(basePath + "polished_wall_to_brick"));
 
         //Deepslate Bricks -> Cracked Deepslate Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_BRICKS),
-              new ItemStackTemplate(Items.CRACKED_DEEPSLATE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICKS),
+              template(BlockItemIds.CRACKED_DEEPSLATE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_cracked_bricks"));
         //Cracked Deepslate Bricks -> Deepslate Tiles
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CRACKED_DEEPSLATE_BRICKS),
-              new ItemStackTemplate(Items.DEEPSLATE_TILES)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_BRICKS),
+              template(BlockItemIds.DEEPSLATE_TILES)
         ).save(consumer, Mekanism.rl(basePath + "cracked_bricks_to_tile"));
 
         //Deepslate Brick Stairs -> Deepslate Tile Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_BRICK_STAIRS),
-              new ItemStackTemplate(Items.DEEPSLATE_TILE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_STAIRS),
+              template(BlockItemIds.DEEPSLATE_TILE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "brick_stairs_to_tile"));
         //Deepslate Brick Slabs -> Deepslate Tile Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_BRICK_SLAB),
-              new ItemStackTemplate(Items.DEEPSLATE_TILE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_SLAB),
+              template(BlockItemIds.DEEPSLATE_TILE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "brick_slabs_to_tile"));
         //Deepslate Brick Wall -> Deepslate Tile Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_BRICK_WALL),
-              new ItemStackTemplate(Items.DEEPSLATE_TILE_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_BRICK_WALL),
+              template(BlockItemIds.DEEPSLATE_TILE_WALL)
         ).save(consumer, Mekanism.rl(basePath + "brick_wall_to_tile"));
 
         //Deepslate Tiles -> Cracked Deepslate Tiles
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_TILES),
-              new ItemStackTemplate(Items.CRACKED_DEEPSLATE_TILES)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILES),
+              template(BlockItemIds.CRACKED_DEEPSLATE_TILES)
         ).save(consumer, Mekanism.rl(basePath + "tile_to_cracked_tile"));
         //Cracked Deepslate Tiles -> Chiseled Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CRACKED_DEEPSLATE_TILES),
-              new ItemStackTemplate(Items.CHISELED_DEEPSLATE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_DEEPSLATE_TILES),
+              template(BlockItemIds.CHISELED_DEEPSLATE)
         ).save(consumer, Mekanism.rl(basePath + "cracked_tile_to_chiseled"));
 
         //Deepslate Tile Stairs -> Cobbled Deepslate Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_TILE_STAIRS),
-              new ItemStackTemplate(Items.COBBLED_DEEPSLATE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_STAIRS),
+              template(BlockItemIds.COBBLED_DEEPSLATE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "tile_stairs_to_cobbled"));
         //Deepslate Tile Slabs -> Cobbled Deepslate Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_TILE_SLAB),
-              new ItemStackTemplate(Items.COBBLED_DEEPSLATE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_SLAB),
+              template(BlockItemIds.COBBLED_DEEPSLATE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "tile_slabs_to_cobbled"));
         //Deepslate Tile Wall -> Cobbled Deepslate Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.DEEPSLATE_TILE_WALL),
-              new ItemStackTemplate(Items.COBBLED_DEEPSLATE_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DEEPSLATE_TILE_WALL),
+              template(BlockItemIds.COBBLED_DEEPSLATE_WALL)
         ).save(consumer, Mekanism.rl(basePath + "tile_wall_to_cobbled"));
 
         //Chiseled Deepslate -> Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_DEEPSLATE),
-              new ItemStackTemplate(Items.DEEPSLATE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_DEEPSLATE),
+              template(BlockItemIds.DEEPSLATE)
         ).save(consumer, Mekanism.rl(basePath + "from_chiseled"));
     }
 
     private void addCrusherBlackstoneRecipes(RecipeOutput consumer, String basePath) {
         //Polished Blackstone -> Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_BLACKSTONE),
-              new ItemStackTemplate(Items.BLACKSTONE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE),
+              template(BlockItemIds.BLACKSTONE)
         ).save(consumer, Mekanism.rl(basePath + "from_polished"));
         //Polished Blackstone Wall -> Blackstone Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_BLACKSTONE_WALL),
-              new ItemStackTemplate(Items.BLACKSTONE_WALL)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_WALL),
+              template(BlockItemIds.BLACKSTONE_WALL)
         ).save(consumer, Mekanism.rl(basePath + "polished_wall_to_wall"));
         //Polished Blackstone Stairs -> Blackstone Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_BLACKSTONE_STAIRS),
-              new ItemStackTemplate(Items.BLACKSTONE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_STAIRS),
+              template(BlockItemIds.BLACKSTONE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "polished_stairs_to_stairs"));
         //Polished Blackstone Slabs -> Blackstone Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_BLACKSTONE_SLAB),
-              new ItemStackTemplate(Items.BLACKSTONE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_SLAB),
+              template(BlockItemIds.BLACKSTONE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "polished_slabs_to_slabs"));
         //Chiseled Polished Blackstone Bricks -> Polished Blackstone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_POLISHED_BLACKSTONE),
-              new ItemStackTemplate(Items.POLISHED_BLACKSTONE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_POLISHED_BLACKSTONE),
+              template(BlockItemIds.POLISHED_BLACKSTONE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_bricks_to_bricks"));
         //Polished Blackstone Bricks -> Cracked Polished Blackstone Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_BLACKSTONE_BRICKS),
-              new ItemStackTemplate(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_BLACKSTONE_BRICKS),
+              template(BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_cracked_bricks"));
         //Cracked Polished Blackstone Bricks -> Polished Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS),
-              new ItemStackTemplate(Items.POLISHED_BLACKSTONE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CRACKED_POLISHED_BLACKSTONE_BRICKS),
+              template(BlockItemIds.POLISHED_BLACKSTONE)
         ).save(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
     private void addCrusherQuartzRecipes(RecipeOutput consumer, String basePath) {
         //Quartz Block -> Smooth Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.QUARTZ_BLOCK),
-              new ItemStackTemplate(Items.SMOOTH_QUARTZ)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BLOCK),
+              template(BlockItemIds.SMOOTH_QUARTZ)
         ).save(consumer, Mekanism.rl(basePath + "to_smooth_quartz"));
         //Quartz Slab -> Smooth Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.QUARTZ_SLAB),
-              new ItemStackTemplate(Items.SMOOTH_QUARTZ_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_SLAB),
+              template(BlockItemIds.SMOOTH_QUARTZ_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slab_to_smooth_slab"));
         //Quartz Stairs -> Smooth Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.QUARTZ_STAIRS),
-              new ItemStackTemplate(Items.SMOOTH_QUARTZ_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_STAIRS),
+              template(BlockItemIds.SMOOTH_QUARTZ_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_to_smooth_stairs"));
         //Smooth Quartz Block -> Quartz Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.SMOOTH_QUARTZ),
-              new ItemStackTemplate(Items.QUARTZ_BRICKS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SMOOTH_QUARTZ),
+              template(BlockItemIds.QUARTZ_BRICKS)
         ).save(consumer, Mekanism.rl(basePath + "smooth_to_bricks"));
         //Quartz Bricks -> Chiseled Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.QUARTZ_BRICKS),
-              new ItemStackTemplate(Items.CHISELED_QUARTZ_BLOCK)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_BRICKS),
+              template(BlockItemIds.CHISELED_QUARTZ_BLOCK)
         ).save(consumer, Mekanism.rl(basePath + "bricks_to_chiseled"));
         //Chiseled Quartz Block -> Quartz Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.CHISELED_QUARTZ_BLOCK),
-              new ItemStackTemplate(Items.QUARTZ_PILLAR)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.CHISELED_QUARTZ_BLOCK),
+              template(BlockItemIds.QUARTZ_PILLAR)
         ).save(consumer, Mekanism.rl(basePath + "chiseled_to_pillar"));
         //Quartz Pillar -> Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.QUARTZ_PILLAR),
-              new ItemStackTemplate(Items.QUARTZ_BLOCK)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.QUARTZ_PILLAR),
+              template(BlockItemIds.QUARTZ_BLOCK)
         ).save(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
     private void addCrusherGraniteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Granite -> Granite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_GRANITE),
-              new ItemStackTemplate(Items.GRANITE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE),
+              template(BlockItemIds.GRANITE)
         ).save(consumer, Mekanism.rl(basePath + "from_polished"));
         //Polished Granite Stairs -> Granite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_GRANITE_STAIRS),
-              new ItemStackTemplate(Items.GRANITE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_STAIRS),
+              template(BlockItemIds.GRANITE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished_stairs"));
         //Polished Granite Slab -> Granite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_GRANITE_SLAB),
-              new ItemStackTemplate(Items.GRANITE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_GRANITE_SLAB),
+              template(BlockItemIds.GRANITE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
     private void addCrusherDioriteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Diorite -> Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DIORITE),
-              new ItemStackTemplate(Items.DIORITE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE),
+              template(BlockItemIds.DIORITE)
         ).save(consumer, Mekanism.rl(basePath + "from_polished"));
         //Polished Diorite Stairs -> Granite Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DIORITE_STAIRS),
-              new ItemStackTemplate(Items.DIORITE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_STAIRS),
+              template(BlockItemIds.DIORITE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished_stairs"));
         //Polished Diorite Slab -> Diorite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_DIORITE_SLAB),
-              new ItemStackTemplate(Items.DIORITE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_DIORITE_SLAB),
+              template(BlockItemIds.DIORITE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
     private void addCrusherAndesiteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Andesite -> Andesite
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_ANDESITE),
-              new ItemStackTemplate(Items.ANDESITE)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE),
+              template(BlockItemIds.ANDESITE)
         ).save(consumer, Mekanism.rl(basePath + "from_polished"));
         //Polished Andesite Stairs -> Andesite Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_ANDESITE_STAIRS),
-              new ItemStackTemplate(Items.ANDESITE_STAIRS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_STAIRS),
+              template(BlockItemIds.ANDESITE_STAIRS)
         ).save(consumer, Mekanism.rl(basePath + "stairs_from_polished_stairs"));
         //Polished Andesite Slab -> Andesite Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.POLISHED_ANDESITE_SLAB),
-              new ItemStackTemplate(Items.ANDESITE_SLAB)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.POLISHED_ANDESITE_SLAB),
+              template(BlockItemIds.ANDESITE_SLAB)
         ).save(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
     private void addCrusherPrismarineRecipes(RecipeOutput consumer, String basePath) {
         //Prismarine -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 4)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE),
+              template(ItemIds.PRISMARINE_SHARD, 4)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_block"));
         //Prismarine Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_SLAB),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 2)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_SLAB),
+              template(ItemIds.PRISMARINE_SHARD, 2)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_slabs"));
         //Prismarine Stairs -> Prismarine Shards
         // Note: Uses 1 -> 4 as he stone cutter allows for one prismarine block to one step
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_STAIRS),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 4)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_STAIRS),
+              template(ItemIds.PRISMARINE_SHARD, 4)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_stairs"));
         //Prismarine Wall -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_WALL),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 4)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_WALL),
+              template(ItemIds.PRISMARINE_SHARD, 4)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_wall"));
         //Prismarine Brick -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_BRICKS),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 9)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICKS),
+              template(ItemIds.PRISMARINE_SHARD, 9)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_brick"));
         //Prismarine Brick Slabs -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_BRICK_SLAB, 2),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 9)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_SLAB, 2),
+              template(ItemIds.PRISMARINE_SHARD, 9)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_brick_slabs"));
         //Prismarine Brick Stairs -> Prismarine Shards
         // Note: Uses 1 -> 9 as the stone cutter allows for one brick to one step
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.PRISMARINE_BRICK_STAIRS),
-              new ItemStackTemplate(Items.PRISMARINE_SHARD, 9)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.PRISMARINE_BRICK_STAIRS),
+              template(ItemIds.PRISMARINE_SHARD, 9)
         ).save(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 

@@ -1,12 +1,12 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.block.machine.ItemBlockFactory;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -21,14 +21,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class FactoryRecipeProvider implements ISubRecipeProvider {
+class FactoryRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public FactoryRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    FactoryRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

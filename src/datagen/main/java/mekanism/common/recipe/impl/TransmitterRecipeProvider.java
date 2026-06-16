@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -18,9 +18,10 @@ import net.minecraft.references.ItemIds;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class TransmitterRecipeProvider implements ISubRecipeProvider {
+class TransmitterRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern BASIC_TRANSMITTER_PATTERN = RecipePattern.createPattern(TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL));
     private static final RecipePattern TRANSMITTER_UPGRADE_PATTERN = RecipePattern.createPattern(
@@ -28,10 +29,8 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.PREVIOUS, Pattern.ALLOY, Pattern.PREVIOUS),
           TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS));
 
-    private final HolderGetter<Item> items;
-
-    public TransmitterRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    TransmitterRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -50,13 +49,13 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
               ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS.item())
+              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS)
               .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS.item())
+              .key(Pattern.CONSTANT, this.items, BlockItemIds.IRON_BARS)
               .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
 

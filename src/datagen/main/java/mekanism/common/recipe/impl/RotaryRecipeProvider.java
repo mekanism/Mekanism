@@ -4,7 +4,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
@@ -15,16 +14,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidIds;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
-class RotaryRecipeProvider implements ISubRecipeProvider {
+class RotaryRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Fluid> fluids;
-
-    public RotaryRecipeProvider(HolderGetter<Fluid> fluids) {
-        this.fluids = fluids;
+    RotaryRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

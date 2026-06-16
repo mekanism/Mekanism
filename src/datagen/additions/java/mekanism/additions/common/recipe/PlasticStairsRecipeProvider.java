@@ -4,9 +4,10 @@ import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.text.EnumColor;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
@@ -19,18 +20,17 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
-public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
+class PlasticStairsRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern PLASTIC_STAIRS = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
-    private final HolderGetter<Item> items;
-
-    public PlasticStairsRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    PlasticStairsRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

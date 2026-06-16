@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockResource;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
@@ -20,13 +20,12 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.ItemIds;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
-class StorageRecipeProvider implements ISubRecipeProvider {
+class StorageRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public StorageRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    StorageRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

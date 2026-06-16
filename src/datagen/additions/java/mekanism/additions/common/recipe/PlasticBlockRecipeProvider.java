@@ -6,14 +6,15 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.plastic.BlockPlastic;
 import mekanism.additions.common.block.plastic.BlockPlasticRoad;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
+import mekanism.common.recipe.impl.BaseSubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -34,9 +35,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
+class PlasticBlockRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern PLASTIC = RecipePattern.createPattern(
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
@@ -59,10 +61,8 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, AdditionsRecipeProvider.SLIME_CHAR, Pattern.CONSTANT),
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
 
-    private final HolderGetter<Item> items;
-
-    public PlasticBlockRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    PlasticBlockRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

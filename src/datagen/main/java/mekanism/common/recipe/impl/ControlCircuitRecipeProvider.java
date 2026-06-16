@@ -5,7 +5,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -21,17 +20,14 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.material.Fluid;
 
-class ControlCircuitRecipeProvider implements ISubRecipeProvider {
+class ControlCircuitRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern circuitPattern = RecipePattern.createPattern(TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY));
 
-    private final HolderGetter<Item> items;
-    private final HolderGetter<Chemical> chemicals;
-
-    public ControlCircuitRecipeProvider(HolderGetter<Item> items, HolderGetter<Chemical> chemicals) {
-        this.items = items;
-        this.chemicals = chemicals;
+    ControlCircuitRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

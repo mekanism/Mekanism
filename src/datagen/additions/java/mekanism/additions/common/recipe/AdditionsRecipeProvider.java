@@ -70,7 +70,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
               ).key(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
-              .key(TNT_CHAR, this.items, BlockItemIds.TNT.item())
+              .key(TNT_CHAR, this.items, BlockItemIds.TNT)
               .category(RecipeCategory.REDSTONE)
               .save(output);
         registerBalloons();
@@ -80,11 +80,11 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     @Override
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
         return List.of(
-              new PigmentExtractingPlasticRecipeProvider(),
-              new PlasticBlockRecipeProvider(this.items),
-              new PlasticFencesRecipeProvider(this.items),
-              new PlasticSlabsRecipeProvider(this.items),
-              new PlasticStairsRecipeProvider(this.items)
+              new PigmentExtractingPlasticRecipeProvider(this.items, this.fluids, this.chemicals),
+              new PlasticBlockRecipeProvider(this.items, this.fluids, this.chemicals),
+              new PlasticFencesRecipeProvider(this.items, this.fluids, this.chemicals),
+              new PlasticSlabsRecipeProvider(this.items, this.fluids, this.chemicals),
+              new PlasticStairsRecipeProvider(this.items, this.fluids, this.chemicals)
         );
     }
 

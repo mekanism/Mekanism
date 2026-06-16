@@ -1,11 +1,11 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -23,13 +23,12 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.ColorCollection;
+import net.minecraft.world.level.material.Fluid;
 
-class PaintingRecipeProvider implements ISubRecipeProvider {
+class PaintingRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public PaintingRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    PaintingRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -62,7 +61,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
                 ItemStackChemicalToItemStackRecipeBuilder.painting(
-                      IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
+                      IngredientCreatorAccess.item().fromHolder(MekanismItems.DYE_BASE),
                       IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
                       new ItemStackTemplate(items.getOrThrow(ItemIds.DYE.pick(dyeColor))),
                       false

@@ -7,6 +7,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>> {//TODO - 26.1: Add helpers that take TypedInstance?
@@ -40,12 +41,27 @@ public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, ING
 
     /// Creates an Ingredient that matches a given tag and amount.
     ///
+    /// @param lookup Holder getter to find the tag in.
     /// @param tag    Tag to match.
     /// @param amount Amount needed.
     ///
-    /// @throws NullPointerException     if the given tag is null.
+    /// @throws NullPointerException     if the given id or lookup is null.
     /// @throws IllegalArgumentException if the given amount smaller than one.
-    INGREDIENT from(HolderGetter<TYPE> lookup, TagKey<TYPE> tag, int amount);//TODO - 26.1: Add docs for lookup param
+    /// @since 10.8.0
+    INGREDIENT from(HolderGetter<TYPE> lookup, TagKey<TYPE> tag, int amount);
+
+    /// Creates an Ingredient that matches a given element and amount.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param id     Element id to match.
+    /// @param amount Amount needed.
+    ///
+    /// @throws NullPointerException     if the given id or lookup is null.
+    /// @throws IllegalArgumentException if the given amount smaller than one.
+    /// @since 10.8.0
+    default INGREDIENT from(HolderGetter<TYPE> lookup, ResourceKey<TYPE> id, int amount) {
+        return fromHolder(lookup.getOrThrow(id), amount);
+    }
 
     /// Retrieve a codec which can (de)encode a single or multi ingredient of this type.
     ///

@@ -18,11 +18,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.redstone.Orientation.SideBias;
@@ -221,7 +221,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     void setTargetItem(Identifier itemName) throws ComputerException {
         validateSecurityIsPublic();
         Optional<Holder.Reference<Item>> item = BuiltInRegistries.ITEM.get(itemName);
-        if (item.isEmpty() || item.get().value() == Items.AIR) {
+        if (item.isEmpty() || item.get().is(BlockItemIds.AIR.item())) {
             throw new ComputerException("Target item '%s' could not be found. If you are trying to clear it consider using clearTargetItem instead.", itemName);
         }
         handleStackChange(new ItemStack(item.get()));

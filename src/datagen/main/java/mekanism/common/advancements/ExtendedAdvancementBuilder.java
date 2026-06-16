@@ -15,8 +15,10 @@ import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.ClientAsset.ResourceTexture;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
@@ -43,17 +45,26 @@ public class ExtendedAdvancementBuilder {
         return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background).map(ResourceTexture::new), type, showToast, announceToChat, hidden));
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
-          boolean hidden) {
-        return display(new ItemStackTemplate(item.asItem()), background, type, showToast, announceToChat, hidden);
+    public ExtendedAdvancementBuilder display(HolderGetter<Item> items, ResourceKey<Item> id, @Nullable Identifier background, AdvancementType type, boolean showToast,
+          boolean announceToChat, boolean hidden) {
+        return display(items.getOrThrow(id), background, type, showToast, announceToChat, hidden);
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, AdvancementType type, boolean announceToChat) {
+    public ExtendedAdvancementBuilder display(Holder<Item> item, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
+          boolean hidden) {
+        return display(new ItemStackTemplate(item), background, type, showToast, announceToChat, hidden);
+    }
+
+    public ExtendedAdvancementBuilder display(HolderGetter<Item> items, ResourceKey<Item> id, AdvancementType type, boolean announceToChat) {
+        return display(items, id, null, type, true, announceToChat, false);
+    }
+
+    public ExtendedAdvancementBuilder display(Holder<Item> item, AdvancementType type, boolean announceToChat) {
         return display(item, null, type, true, announceToChat, false);
     }
 
     public <ITEM extends ItemLike & INamedEntry> ExtendedAdvancementBuilder displayAndCriterion(ITEM item, AdvancementType type, boolean announceToChat) {
-        display(item, type, announceToChat);
+        display(item.asItem().builtInRegistryHolder(), type, announceToChat);
         return addCriterion(item);
     }
 

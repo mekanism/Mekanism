@@ -11,11 +11,14 @@ import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemId;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jspecify.annotations.Nullable;
@@ -39,13 +42,13 @@ public class RecipeProviderUtil {
         smeltingRecipe.save(consumer, smeltingLocation);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> lookup, String basePath, Item planks, @Nullable Item boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
           @Nullable Item hangingSign, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, lookup, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
+        addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> lookup, String basePath, Item planks, @Nullable Item boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
           @Nullable Item hangingSign, String name, @Nullable ICondition condition) {
         if (boat != null) {
@@ -59,7 +62,7 @@ public class RecipeProviderUtil {
                 save(consumer, SawmillRecipeBuilder.sawing(
                       IngredientCreatorAccess.item().from(chestBoat),
                       new ItemStackTemplate(boat),
-                      new ItemStackTemplate(Items.CHEST),
+                      template(items, BlockItemIds.CHEST),
                       1
                 ), basePath + "chest_boat/" + name, condition);
             }
@@ -73,13 +76,13 @@ public class RecipeProviderUtil {
         save(consumer, SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(fenceGate),
               new ItemStackTemplate(planks, 2),
-              new ItemStackTemplate(Items.STICK, 4),
+              new ItemStackTemplate(items.getOrThrow(ItemIds.STICK), 4),
               1
         ), basePath + "fence_gate/" + name, condition);
         if (log != null) {
             //Log
             save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(lookup, log),
+                  IngredientCreatorAccess.item().from(items, log),
                   new ItemStackTemplate(planks, 6),
                   MekanismItems.SAWDUST.asTemplate(),
                   0.25
@@ -108,10 +111,10 @@ public class RecipeProviderUtil {
         ), basePath + "trapdoor/" + name, condition);
     }
 
-    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> lookup, String path, @Nullable ICondition condition, Item sand,
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, @Nullable ICondition condition, Item sand,
           TagKey<Item> sandstoneTag) {
         save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(lookup, sandstoneTag),
+              IngredientCreatorAccess.item().from(items, sandstoneTag),
               new ItemStackTemplate(sand, 2)
         ), path, condition);
     }
@@ -130,5 +133,21 @@ public class RecipeProviderUtil {
             builder.addCondition(condition);
         }
         builder.save(consumer, Mekanism.rl(path));
+    }
+
+    public static ItemStackTemplate template(HolderGetter<Item> items, ResourceKey<Item> item) {
+        return template(items, item, 1);
+    }
+
+    public static ItemStackTemplate template(HolderGetter<Item> items, ResourceKey<Item> item, int amount) {
+        return new ItemStackTemplate(items.getOrThrow(item), amount);
+    }
+
+    public static ItemStackTemplate template(HolderGetter<Item> items, BlockItemId item) {
+        return template(items, item, 1);
+    }
+
+    public static ItemStackTemplate template(HolderGetter<Item> items, BlockItemId item, int amount) {
+        return template(items, item.item(), amount);
     }
 }

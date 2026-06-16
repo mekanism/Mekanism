@@ -1,9 +1,9 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -11,15 +11,14 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 
-class GasConversionRecipeProvider implements ISubRecipeProvider {
+class GasConversionRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public GasConversionRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    GasConversionRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -27,7 +26,7 @@ class GasConversionRecipeProvider implements ISubRecipeProvider {
         String basePath = "chemical_conversion/";
         //Flint -> oxygen
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(Items.FLINT),
+              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
               MekanismChemicals.OXYGEN.asTemplate(10)
         ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium

@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -18,19 +18,18 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class UpgradeRecipeProvider implements ISubRecipeProvider {
+class UpgradeRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern UPGRADE_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),
           TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
           TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY));
 
-    private final HolderGetter<Item> items;
-
-    public UpgradeRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    UpgradeRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

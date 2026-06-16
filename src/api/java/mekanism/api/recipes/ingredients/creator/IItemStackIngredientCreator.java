@@ -10,8 +10,10 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTagId;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -155,9 +157,64 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         return from(Ingredient.of(HolderSet.direct(List.of(items))), amount);
     }
 
+    /// Creates an Item Stack Ingredient that matches a given Item id.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param id     Element id to match.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, ResourceKey<Item> id) {
+        return from(lookup, id, 1);
+    }
+
+    /// Creates an Item Stack Ingredient that matches a given Item id.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param id     Element id to match.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, BlockItemId id) {
+        return from(lookup, id, 1);
+    }
+
+    /// Creates an Item Stack Ingredient that matches a given Item id.
+    ///
+    /// @param lookup Holder getter to find the id in.
+    /// @param id     Element id to match.
+    /// @param amount Amount needed.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, BlockItemId id, int amount) {
+        return from(lookup, id.item(), amount);
+    }
+
     /// Creates an Item Stack Ingredient that matches a given Item tag.
     ///
-    /// @param tag Tag to match.
+    /// @param lookup Holder getter to find the tag in.
+    /// @param tag    Tag to match.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, BlockItemTagId tag) {
+        return from(lookup, tag, 1);
+    }
+
+    /// Creates an Item Stack Ingredient that matches a given Item tag.
+    ///
+    /// @param lookup Holder getter to find the tag in.
+    /// @param tag    Tag to match.
+    /// @param amount Amount needed.
+    ///
+    /// @since 10.8.0
+    default ItemStackIngredient from(HolderGetter<Item> lookup, BlockItemTagId tag, int amount) {
+        return from(lookup, tag.item(), amount);
+    }
+
+    /// Creates an Item Stack Ingredient that matches a given Item tag.
+    ///
+    /// @param lookup Holder getter to find the tag in.
+    /// @param tag    Tag to match.
+    ///
+    /// @since 10.8.0
     default ItemStackIngredient from(HolderGetter<Item> lookup, TagKey<Item> tag) {
         return from(lookup, tag, 1);
     }
@@ -223,7 +280,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     /// @throws NullPointerException  if the given registries or item id are null.
     /// @throws IllegalStateException if the item does not exist.
     /// @since 10.6.7
-    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
+    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {//TODO - 26.2: re-evaluate
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
 

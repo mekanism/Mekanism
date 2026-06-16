@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
@@ -18,18 +18,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
-class ChemicalTankRecipeProvider implements ISubRecipeProvider {
+class ChemicalTankRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern CHEMICAL_TANK_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
           TripleLine.of(Pattern.OSMIUM, Pattern.PREVIOUS, Pattern.OSMIUM),
           TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY));
 
-    private final HolderGetter<Item> items;
-
-    public ChemicalTankRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    ChemicalTankRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

@@ -1,29 +1,29 @@
 package mekanism.common.recipe.impl;
 
 import java.util.Map;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class CombinerRecipeProvider implements ISubRecipeProvider {
+class CombinerRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public CombinerRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    CombinerRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
@@ -34,33 +34,33 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         addCombinerWaxingRecipes(consumer, basePath + "wax/");
         //Gravel
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.FLINT),
+              IngredientCreatorAccess.item().from(this.items, ItemIds.FLINT),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStackTemplate(Items.GRAVEL)
+              template(BlockItemIds.GRAVEL)
         ).save(consumer, Mekanism.rl(basePath + "gravel"));
         //Obsidian
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_OBSIDIAN, 4),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
-              new ItemStackTemplate(Items.OBSIDIAN)
+              template(BlockItemIds.OBSIDIAN)
         ).save(consumer, Mekanism.rl(basePath + "obsidian"));
         //Rooted Dirt
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.HANGING_ROOTS, 3),
-              IngredientCreatorAccess.item().from(Items.DIRT),
-              new ItemStackTemplate(Items.ROOTED_DIRT)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.HANGING_ROOTS, 3),
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.DIRT),
+              template(BlockItemIds.ROOTED_DIRT)
         ).save(consumer, Mekanism.rl(basePath + "rooted_dirt"));
         //Packed mud
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.CROPS_WHEAT),
-              IngredientCreatorAccess.item().from(Items.MUD),
-              new ItemStackTemplate(Items.PACKED_MUD)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
+              template(BlockItemIds.PACKED_MUD)
         ).save(consumer, Mekanism.rl(basePath + "packed_mud"));
         //Muddy mangrove roots
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.MANGROVE_ROOTS),
-              IngredientCreatorAccess.item().from(Items.MUD),
-              new ItemStackTemplate(Items.MUDDY_MANGROVE_ROOTS)
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MANGROVE_ROOTS),
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.MUD),
+              template(BlockItemIds.MUDDY_MANGROVE_ROOTS)
         ).save(consumer, Mekanism.rl(basePath + "muddy_mangrove_roots"));
     }
 
@@ -69,55 +69,55 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE, 2),
-              new ItemStackTemplate(Items.DYE.lightGray(), 6)
+              template(ItemIds.DYE.lightGray(), 6)
         ).save(consumer, Mekanism.rl(basePath + "black_to_light_gray"));
         //Blue + green -> cyan
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
-              new ItemStackTemplate(Items.DYE.cyan(), 4)
+              template(ItemIds.DYE.cyan(), 4)
         ).save(consumer, Mekanism.rl(basePath + "cyan"));
         //Gray + white -> light gray
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GRAY),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.DYE.lightGray(), 4)
+              template(ItemIds.DYE.lightGray(), 4)
         ).save(consumer, Mekanism.rl(basePath + "gray_to_light_gray"));
         //Blue + white -> light blue
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.DYE.lightBlue(), 4)
+              template(ItemIds.DYE.lightBlue(), 4)
         ).save(consumer, Mekanism.rl(basePath + "light_blue"));
         //Green + white -> lime
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_GREEN),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.DYE.lime(), 4)
+              template(ItemIds.DYE.lime(), 4)
         ).save(consumer, Mekanism.rl(basePath + "lime"));
         //Purple + pink -> magenta
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PURPLE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_PINK),
-              new ItemStackTemplate(Items.DYE.magenta(), 4)
+              template(ItemIds.DYE.magenta(), 4)
         ).save(consumer, Mekanism.rl(basePath + "magenta"));
         //Red + yellow -> orange
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_YELLOW),
-              new ItemStackTemplate(Items.DYE.orange(), 4)
+              template(ItemIds.DYE.orange(), 4)
         ).save(consumer, Mekanism.rl(basePath + "orange"));
         //Red + white -> pink
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_WHITE),
-              new ItemStackTemplate(Items.DYE.pink(), 4)
+              template(ItemIds.DYE.pink(), 4)
         ).save(consumer, Mekanism.rl(basePath + "pink"));
         //Blue + red -> purple
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLUE),
               IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_RED),
-              new ItemStackTemplate(Items.DYE.purple(), 4)
+              template(ItemIds.DYE.purple(), 4)
         ).save(consumer, Mekanism.rl(basePath + "purple"));
     }
 
@@ -125,27 +125,27 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         ItemStackIngredient glow = IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_GLOWSTONE);
         //Sweet Berries -> Glow Berries
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.SWEET_BERRIES),
+              IngredientCreatorAccess.item().from(this.items, BlockItemIds.SWEET_BERRY_CROP),
               glow,
-              new ItemStackTemplate(Items.GLOW_BERRIES)
+              template(BlockItemIds.GLOW_BERRY_CROP)
         ).save(consumer, Mekanism.rl(basePath + "berries"));
         //Ink Sac -> Glow Ink Sac
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.INK_SAC),
+              IngredientCreatorAccess.item().from(this.items, ItemIds.INK_SAC),
               glow,
-              new ItemStackTemplate(Items.GLOW_INK_SAC)
+              template(ItemIds.GLOW_INK_SAC)
         ).save(consumer, Mekanism.rl(basePath + "ink_sac"));
         //Item Frame -> Glow Item Frame
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Items.ITEM_FRAME),
+              IngredientCreatorAccess.item().from(this.items, ItemIds.ITEM_FRAME),
               glow,
-              new ItemStackTemplate(Items.GLOW_ITEM_FRAME)
+              template(ItemIds.GLOW_ITEM_FRAME)
         ).save(consumer, Mekanism.rl(basePath + "item_frame"));
     }
 
     private void addCombinerWaxingRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from waxing recipe set
-        ItemStackIngredient wax = IngredientCreatorAccess.item().from(Items.HONEYCOMB);
+        ItemStackIngredient wax = IngredientCreatorAccess.item().from(this.items, ItemIds.HONEYCOMB);
         for (Map.Entry<Block, Block> entry : HoneycombItem.WAXABLES.get().entrySet()) {
             Block result = entry.getValue();
             CombinerRecipeBuilder.combining(

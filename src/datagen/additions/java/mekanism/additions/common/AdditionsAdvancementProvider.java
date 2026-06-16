@@ -21,30 +21,30 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
-        HolderGetter<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
         HolderGetter<EntityType<?>> entityTypeLookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), AdvancementType.TASK, false)
-              .addCriterion("balloon", hasItems(itemLookup, AdditionsTags.Items.BALLOONS))
+              .addCriterion("balloon", hasItems(items, AdditionsTags.Items.BALLOONS))
               .save(consumer);
         advancement(AdditionsAdvancements.POP_POP)
               .display(AdditionsItems.BALLOONS.get(EnumColor.RED), null, AdvancementType.GOAL, true, false, true)
               .addCriterion("pop", kill(entityTypeLookup, AdditionsEntityTypes.BALLOON))
               .save(consumer);
         advancement(AdditionsAdvancements.GLOW_IN_THE_DARK)
-              .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE), AdvancementType.TASK, false)
-              .addCriterion("glow_panel", hasItems(itemLookup, AdditionsTags.Items.GLOW_PANELS))
+              .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE).getItemHolder(), AdvancementType.TASK, false)
+              .addCriterion("glow_panel", hasItems(items, AdditionsTags.Items.GLOW_PANELS))
               .save(consumer);
         advancement(AdditionsAdvancements.HURT_BY_BABIES)
-              .display(Items.CREEPER_HEAD, null, AdvancementType.GOAL, true, true, true)
+              .display(items, BlockItemIds.CREEPER_HEAD.item(), null, AdvancementType.GOAL, true, true, true)
               .andCriteria(
                     damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_BOGGED),
                     damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_CREEPER),
@@ -54,7 +54,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
                     damagedCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_WITHER_SKELETON)
               ).save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
-              .display(Items.WITHER_SKELETON_SKULL, AdvancementType.GOAL, false)
+              .display(items, BlockItemIds.WITHER_SKELETON_SKULL.item(), AdvancementType.GOAL, false)
               .orCriteria(
                     killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_BOGGED),
                     killCriterion(entityTypeLookup, AdditionsEntityTypes.BABY_CREEPER),

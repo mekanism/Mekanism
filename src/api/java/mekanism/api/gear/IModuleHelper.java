@@ -13,13 +13,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
@@ -193,7 +193,7 @@ public interface IModuleHelper {
     ///
     /// @since 10.5.0
     default boolean isModuleContainer(TypedInstance<Item> typedInstance) {
-        return !typedInstance.is(Items.AIR) && isModuleContainer(typedInstance.typeHolder());
+        return !typedInstance.is(BlockItemIds.AIR.item()) && isModuleContainer(typedInstance.typeHolder());
     }
 
     /// Checks if the item is a module container and can store modules.

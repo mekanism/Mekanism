@@ -34,6 +34,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.references.BlockItemIds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -164,15 +166,15 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     public boolean validateDashboard(PortableDashboardContents contents) {
         return contents.contents().size() == PortableDashboardContents.TOTAL_SLOTS &&
                //First window
-               matches(contents.getSlotContents(0, 1), Items.OAK_PLANKS, 4) &&
-               matches(contents.getSlotContents(0, 4), Items.OAK_PLANKS, 5) &&
+               matches(contents.getSlotContents(0, 1), BlockItemIds.OAK_PLANKS.item(), 4) &&
+               matches(contents.getSlotContents(0, 4), BlockItemIds.OAK_PLANKS.item(), 5) &&
                //Second window
-               matches(contents.getSlotContents(1, 0), Items.STONE, 1) &&
+               matches(contents.getSlotContents(1, 0), BlockItemIds.STONE.item(), 1) &&
                //Third window
-               matches(contents.getSlotContents(2, 8), Items.OAK_LOG, 64);
+               matches(contents.getSlotContents(2, 8), BlockItemIds.OAK_LOG.item(), 64);
     }
 
-    private static boolean matches(LargeResourceStack<ItemResource> stack, Item item, long amount) {
+    private static boolean matches(LargeResourceStack<ItemResource> stack, ResourceKey<Item> item, long amount) {
         return stack.amount() == amount && stack.resource().is(item);
     }
 
@@ -254,7 +256,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     private boolean isStone(IItemStackFilter<?> filter) {
-        return filter.getItemType().is(Items.STONE);
+        return filter.getItemType().is(BlockItemIds.STONE.item());
     }
 
     public boolean testFilter(QIOItemStackFilter filter) {

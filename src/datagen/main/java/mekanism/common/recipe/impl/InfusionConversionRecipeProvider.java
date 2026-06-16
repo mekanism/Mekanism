@@ -1,12 +1,12 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStackTemplate;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -17,15 +17,14 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.references.ItemIds;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 //TODO: Try to cleanup some of the duplicate code in this class?
-class InfusionConversionRecipeProvider implements ISubRecipeProvider {
+class InfusionConversionRecipeProvider extends BaseSubRecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public InfusionConversionRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    InfusionConversionRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override

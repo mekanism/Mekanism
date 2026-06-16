@@ -4,6 +4,7 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
 public class EntityBabyStray extends Stray {
@@ -26,7 +26,7 @@ public class EntityBabyStray extends Stray {
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
         do {
             mutable.move(Direction.UP);
-        } while (world.getBlockState(mutable).is(Blocks.POWDER_SNOW));
+        } while (world.getBlockState(mutable).is(BlockItemIds.POWDER_SNOW.block()));
         if (checkMonsterSpawnRules(type, world, reason, pos, random)) {
             if (reason == EntitySpawnReason.SPAWNER) {
                 return true;

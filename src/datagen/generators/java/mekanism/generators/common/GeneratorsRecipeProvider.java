@@ -177,7 +177,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, osmiumIngot(this.items))
               .key(COPPER_CHAR, this.items, Tags.Items.INGOTS_COPPER)
-              .key(FURNACE_CHAR, this.items, BlockItemIds.FURNACE.item())
+              .key(FURNACE_CHAR, this.items, BlockItemIds.FURNACE)
               .save(output, MekanismGenerators.rl("generator/heat"));
         //Wind
         MekDataShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
@@ -403,7 +403,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, IRON_BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .key(IRON_BARS_CHAR, this.items, BlockItemIds.IRON_BARS.item())
+              .key(IRON_BARS_CHAR, this.items, BlockItemIds.IRON_BARS)
               .save(output, MekanismGenerators.rl("turbine/vent"));
     }
 }

@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -18,19 +18,18 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
-class EnergyCubeRecipeProvider implements ISubRecipeProvider {
+class EnergyCubeRecipeProvider extends BaseSubRecipeProvider {
 
     private static final RecipePattern ENERGY_CUBE_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
           TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
           TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY));
 
-    private final HolderGetter<Item> items;
-
-    public EnergyCubeRecipeProvider(HolderGetter<Item> items) {
-        this.items = items;
+    EnergyCubeRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        super(items, fluids, chemicals);
     }
 
     @Override
