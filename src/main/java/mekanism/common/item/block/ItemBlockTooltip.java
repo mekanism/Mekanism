@@ -16,7 +16,6 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
@@ -36,7 +35,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemAccessUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import mekanism.common.util.text.UpgradeDisplay;
@@ -47,9 +45,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -72,16 +68,6 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     public void onDestroyed(ItemEntity item, DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
-    }
-
-    @Override
-    protected boolean canPlace(BlockPlaceContext context, BlockState stateForPlacement) {
-        if (!super.canPlace(context, stateForPlacement)) {
-            return false;
-        }
-        AttributeHasBounding hasBounding = Attribute.get(stateForPlacement, AttributeHasBounding.class);
-        return hasBounding == null || hasBounding.handle(context.getLevel(), context.getClickedPos(), stateForPlacement, context,
-              (level, pos, ctx) -> WorldUtils.isValidReplaceableBlock(level, ctx, pos));
     }
 
     @Override

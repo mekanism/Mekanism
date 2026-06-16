@@ -588,6 +588,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
         level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
         level.setBlockAndUpdate(pos, newState);
+        newState.getBlock().setPlacedBy(level, pos, newState, null, stack);
         level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(null, newState));
         return true;
     }

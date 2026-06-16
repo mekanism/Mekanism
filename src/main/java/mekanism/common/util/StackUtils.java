@@ -31,7 +31,7 @@ public final class StackUtils {
     @Nullable
     public static BlockState getStateForPlacement(ItemStack stack, BlockPos pos, Player player) {
         return Block.byItem(stack.getItem()).getStateForPlacement(new BlockPlaceContext(new UseOnContext(player, InteractionHand.MAIN_HAND,
-              new BlockHitResult(Vec3.ZERO, Direction.UP, pos, false))));
+              new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, true))));
     }
 
     /// @implNote Renderable check based on [net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer#shouldRender(Equippable, EquipmentSlot)]

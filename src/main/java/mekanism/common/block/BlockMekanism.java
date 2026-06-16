@@ -107,7 +107,14 @@ public abstract class BlockMekanism extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
+        BlockState state = BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
+        if (state != null) {
+            AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+            if (hasBounding != null && !hasBounding.handle(context.getLevel(), context.getClickedPos(), state, context, (level, pos, ctx) -> WorldUtils.isValidReplaceableBlock(level, ctx, pos))) {
+                return null;
+            }
+        }
+        return state;
     }
 
     @Override

@@ -970,6 +970,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (getClientActive()) {
             currentActive = true;
         }
+        //Note: When placed, some cases like the digital miner placing things with replace block
+        // only actually fire on the client side. So just in case that was the case, we want to sync the bounding positions to the client
+        resyncMasterToBounding();
     }
 
     @Override
