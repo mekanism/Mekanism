@@ -168,13 +168,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this);
         heatCapacitor = VariableHeatCapacitor.create(CASE_HEAT_CAPACITY, FusionReactorMultiblockData::getInverseConductionCoefficient, () -> INVERSE_INSULATION, () -> biomeAmbientTemp, this);
-        inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), itemType -> {
-            if (GeneratorsItems.HOHLRAUM.is(itemType)) {
-                ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
-                return handler != null && ResourceHandlerUtil.isFull(handler);
+        inventorySlots.add(reactorSlot = BasicInventorySlot.at(ConstantPredicates.notExternal(), (itemType, automationType) -> {
+            if (automationType.isInternal()) {
+                return true;
             }
-            return false;
-        }, this, 85, 39));
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccessUtils.sideEffectFreeAccess(itemType));
+            return handler != null && ResourceHandlerUtil.isFull(handler);
+        }, GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
     @Override
