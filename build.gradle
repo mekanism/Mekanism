@@ -27,7 +27,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.5'
+    gradleVersion = '9.5.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -69,20 +69,20 @@ sourceSets {
             //Disable the packages of any integrations that aren't updated yet and are not in a compileable state against the version for the previous MC release
             //TODO - 1.21.11: When we get to the point datagen needs to compile, if there are any classes that can't because of an integration, figure out how to handle that
             if (disableCrT) {
-                println("Disabling compilation of CraftTweaker integration")
+                println('Disabling compilation of CraftTweaker integration')
                 exclude('mekanism/common/integration/crafttweaker/**')
             }
             if (disableTOP) {
-                println("Disabling compilation of The One Probe integration")
+                println('Disabling compilation of The One Probe integration')
                 exclude('mekanism/common/integration/lookingat/theoneprobe/**')
             }
             if (disableEMI) {
-                println("Disabling compilation of EMI integration")
+                println('Disabling compilation of EMI integration')
                 exclude('mekanism/client/recipe_viewer/emi/**')
                 exclude('mekanism/generators/client/recipe_viewer/emi/**')
             }
             if (disableProjectE) {
-                println("Disabling compilation of ProjE integration")
+                println('Disabling compilation of ProjE integration')
                 exclude('mekanism/common/integration/projecte/**')
             }
         }
@@ -150,7 +150,7 @@ for (String name : secondaryModules) {
     }
     if (disableEMI) {
         if (name == 'generators') {
-            println("[generators] Disabling compilation of EMI integration")
+            println('[generators] Disabling compilation of EMI integration')
             sourceSet.java.exclude('mekanism/generators/client/recipe_viewer/emi/**')
         }
     }
@@ -214,7 +214,7 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     def extraSourceSet = sourceSets.create(baseSourceSet.getTaskName(extra, null))
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
     if (disableCrT) {
-        println("[datagen] Disabling compilation of CrT integration")
+        println('[datagen] Disabling compilation of CrT integration')
         extraSourceSet.java.exclude('mekanism/common/integration/crafttweaker/**')
     }
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
@@ -261,7 +261,7 @@ def setupTasks(SourceSet sourceSet) {
         setGroup('process resources')
         duplicatesStrategy = DuplicatesStrategy.FAIL
         var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'neo_version': neo_version_range,
-                                 'jei_version': jei_version_range, 'fb_version': fb_version_range]
+                                 'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
@@ -279,7 +279,7 @@ def setupTasks(SourceSet sourceSet) {
                         throw new RuntimeException("Failed to process '${file}': ${e.getMessage()}", e)
                     }
                 } else {
-                    logger.warn("File was empty: {}", file)
+                    logger.warn('File was empty: {}', file)
                 }
             }
         }
@@ -485,14 +485,6 @@ repositories { RepositoryHandler handler ->
         it.forRepositories(handler.mavenCentral())
         it.filter {
             includeGroup('org.appliedenergistics')
-        }
-    }
-    maven {
-        name = "Maven for PR #3198" // https://github.com/neoforged/NeoForge/pull/3198
-        url = uri("https://prmaven.neoforged.net/NeoForge/pr3198")
-        content {
-            includeModule("net.neoforged", "neoforge")
-            includeModule("net.neoforged", "testframework")
         }
     }
 }
