@@ -119,7 +119,7 @@ public class BasicHeatCapacitor extends SnapshotJournal<Double> implements IHeat
     public void updateHeatAndCapacity(double newCapacity, @Nullable TransactionContext transaction) {
         if (isHeatInitialized()) {
             //If the heat has been initialized, calculate the value the heat should have, and also update the capacity
-            setHeatAndCapacity(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature(), newCapacity, transaction);
+            setHeatAndCapacity(Math.max(0D, getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature()), newCapacity, transaction);
         } else {
             //If heat hasn't been initialized yet, just update the capacity
             setHeatCapacity(newCapacity, transaction);
