@@ -95,6 +95,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -485,18 +487,21 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
     }
 
     @Override
+    protected void actuallyHurt(ServerLevel level, DamageSource source, float dmg) {
+        super.actuallyHurt(level, source, dmg);
+        if (!source.is(DamageTypes.GENERIC_KILL)) {
+            //If the damage type is not from the kill command, reset the robit's health back to maximum
+            setHealth(getMaxHealth());
+        }
+    }
+
+    @Override
     public void onDamageTaken(DamageContainer damageContainer) {
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before hitting a robit
         try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
             energyContainer.extract(MathUtils.clampToInt(1_000 * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
             transaction.commit();
         }
-        //Don't actually allow taking damage to reduce the robit's health
-        setHealth(getMaxHealth());
-    }
-
-    @Override
-    protected void tickDeath() {
     }
 
     public void setHome(GlobalPos home) {
