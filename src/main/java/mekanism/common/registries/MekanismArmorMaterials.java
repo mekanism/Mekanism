@@ -23,7 +23,7 @@ public class MekanismArmorMaterials {
 
     private static final Map<ArmorType, Integer> NONE = Collections.emptyMap();
 
-    //TODO - 26.1: List.of(new ArmorMaterial.Layer(rl))
+    //TODO - 26.2: List.of(new ArmorMaterial.Layer(rl))
     public static final ArmorMaterial HAZMAT = create(MekanismEquipmentAssets.HAZMAT, NONE, 0, 0, 0);
 
     //Same enchantment value as iron and turtle

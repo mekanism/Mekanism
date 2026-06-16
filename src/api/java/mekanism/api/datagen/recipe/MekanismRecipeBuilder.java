@@ -82,7 +82,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     ///
     /// @since 10.8.0
     protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        //TODO - 26.1: Re-evaluate implementations, as it seems that vanilla changed what they are validating
+        //TODO - 26.2: Re-evaluate implementations, as it seems that vanilla changed what they are validating
     }
 
     /// Builds this recipe.

@@ -60,7 +60,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
                 state.tankColor = MekanismRenderer.getColorARGB(fluid, scale);
                 state.tankMaxY = ModelRenderer.getMaxY(state.height, scale, MekanismUtils.lighterThanAirGas(fluid));
                 state.valveTexture = MekanismRenderer.getValveTexture(fluid);
-                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//TODO - 26.2: are these always active? (when not empty) Should they be?
                     state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.tankMaxY - 0.01F, state.renderLocation, state.height));
                 }
             }

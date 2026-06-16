@@ -65,7 +65,7 @@ public class LaserParticle extends SingleQuadParticle {
         float quadSize = getQuadSize(partialTicks);
         Quaternionf quaternion = direction.getRotation();
         quaternion.mul(Axis.YP.rotation(RADIAN_45));
-        //TODO - 26.1 make this not a SingleQuadParticle - SQP render the quad with all 4 vertices the same position, this does not
+        //TODO - 26.2 make this not a SingleQuadParticle - SQP render the quad with all 4 vertices the same position, this does not
         //drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
         //Quaternionf quaternion2 = new Quaternionf(quaternion);
         //quaternion2.mul(Axis.YP.rotation(RADIAN_90));
@@ -107,7 +107,7 @@ public class LaserParticle extends SingleQuadParticle {
 
     @Override
     protected SingleQuadParticle.Layer getLayer() {
-        //TODO - 26.1: Validate this
+        //TODO - 26.2: Validate this
         return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
@@ -141,7 +141,7 @@ public class LaserParticle extends SingleQuadParticle {
         });
     }
 
-    //TODO - 26.1 this
+    //TODO - 26.2 this
     //@Override
     public AABB getRenderBoundingBox(float partialTicks) {
         return getBoundingBox();

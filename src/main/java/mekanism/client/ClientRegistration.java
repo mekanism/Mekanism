@@ -223,7 +223,7 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        //todo - 26.1: this shouldn't need extra - just a fix on the item model itself
+        //TODO - 26.2: this shouldn't need extra - just a fix on the item model itself
         addLitModel(MekanismItems.MEKA_TOOL);
     }
 
@@ -575,19 +575,19 @@ public class ClientRegistration {
         }
     }
 
-    //TODO - 26.1 baked models
+    //TODO - 26.2 baked models
     /*public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
         customModels.put(provider.getId(), object);
     }*/
 
     public static void addLitModel(INamedEntry... entries) {
-        //TODO - 26.1 baked models
+        //TODO - 26.2 baked models
         /*for (INamedEntry namedEntry : entries) {
             addCustomModel(namedEntry, (orig, evt) -> lightBakedModel(orig));
         }*/
     }
 
-    //TODO - 26.1 baked models
+    //TODO - 26.2 baked models
     /*private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
           new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =

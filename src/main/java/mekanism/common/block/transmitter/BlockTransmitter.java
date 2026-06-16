@@ -67,14 +67,14 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         return type.getTileType();
     }
 
-    //TODO - 26.1: https://github.com/mekanism/Mekanism/commit/ba9d4fa1c10c3d3c4802eabcef19b79170fdee78 switched from neighbor block updates to neighbor block entity updates
+    //TODO - 26.2: https://github.com/mekanism/Mekanism/commit/ba9d4fa1c10c3d3c4802eabcef19b79170fdee78 switched from neighbor block updates to neighbor block entity updates
     // Check other overriders and figure out how to adjust them for orientation and the like
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, level, pos);
         if (tile != null) {
-            //TODO - 26.1: Figure out orientation
+            //TODO - 26.2: Figure out orientation
             tile.onNeighborBlockChange(orientation == null ? null : orientation.getSide());
         }
     }
@@ -110,7 +110,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
 
     @Override
     protected VoxelShape getOcclusionShape(BlockState state) {
-        //TODO - 26.1: can we do this?
+        //TODO - 26.2: can we do this?
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         //return getRealShape(world, pos);
         return getCenter();

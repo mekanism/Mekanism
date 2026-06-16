@@ -317,7 +317,7 @@ public class TextComponentUtil {
         };
     }
 
-    //TODO - 26.1: find and remove these?
+    //TODO - 26.2: find and remove these?
     private static MutableComponent logLiteralItemUsage(Item item) {
         if (!FMLEnvironment.isProduction()) {
             MekanismAPI.logger.error("Item instance ({}) passed directly to translate method", item, new Exception());

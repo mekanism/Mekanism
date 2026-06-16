@@ -28,7 +28,7 @@ public class QIODriveData extends SnapshotJournal<QIODriveData.Snapshot> {
         typeCapacity = driveItem.getTypeCapacity();
         // load item map from drive stack
         driveData.getOrDefault(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY).loadItemMap(this::addTypeFromSaved);
-        //TODO - 26.1: Re-evaluate this, theoretically as we just loaded this the metadata should be correct?
+        //TODO - 26.2: Re-evaluate this, theoretically as we just loaded this the metadata should be correct?
         // or was this to account for when a type is no longer valid?
         //QIODriveSlot slot = key.holder().getDriveSlots().get(key.driveSlot());
         //slot.updateSaveData(slot.resource().with(MekanismDataComponents.DRIVE_METADATA, asDriveMetadata()));

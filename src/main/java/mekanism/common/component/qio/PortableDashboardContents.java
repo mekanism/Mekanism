@@ -16,7 +16,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 
 //Note: While technically we could use an ItemStack or ItemStackTemplate for the list of contents, we use the custom large resource stack as it is immutable
 // and then if we do decide to make it so that the dashboard can hold long amount of items, then it will natively support it
-public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> contents) {//TODO - 26.1: Re-evaluate this decision ^
+public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> contents) {//TODO - 26.2: Re-evaluate this decision ^
 
     public static final int TOTAL_SLOTS = 9 * IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS;
 

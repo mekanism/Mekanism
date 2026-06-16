@@ -56,7 +56,7 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             int relativeHeight = getRelativeHeight(i, height);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-            //TODO - 26.1: rendering
+            //TODO - 26.2: rendering
             //RenderSystem.enableBlend();
             //RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 

@@ -101,7 +101,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                             }
                             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
                             teleporter.sendTeleportParticles();
-                        } catch (Exception _) {//TODO - 26.1: What exception are we catching??
+                        } catch (Exception _) {//TODO - 26.2: What exception are we catching??
                         }
                     }
                 }

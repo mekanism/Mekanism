@@ -206,7 +206,7 @@ public class GuiTextField extends GuiElement {
         if (textScale != 1.0F && scaledX > textField.getX()) {
             scaledX = textField.getX() + (scaledX - textField.getX()) / textScale;
         }
-        //TODO - 26.1: Validate this is fine for how to scale and pass on the mouse button event
+        //TODO - 26.2: Validate this is fine for how to scale and pass on the mouse button event
         if (textField.mouseClicked(new MouseButtonEvent(scaledX, event.y(), event.buttonInfo()), isDoubleClick)) {
             return true;
         }

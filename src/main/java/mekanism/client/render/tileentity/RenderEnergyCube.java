@@ -59,7 +59,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     public void extractRenderState(TileEntityEnergyCube cube, EnergyCubeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cube, state, partialTick, cameraPosition, breakProgress);
         state.coreTint = cube.getTier().getBaseTier().getPackedColor(ARGB.as8BitChannel(cube.getEnergyScale()));
-        //TODO - 26.1: Do we want to use game time as a basis or some other value?
+        //TODO - 26.2: Do we want to use game time as a basis or some other value?
         state.ticks = cube.getGameTime() + partialTick;
     }
 
@@ -75,12 +75,12 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
-              //TODO - 26.1: Figure out the render type
+              //TODO - 26.2: Figure out the render type
               ModelEnergyCore.RENDER_TYPE,
-              //TODO - 26.1: Do we want to be using the state's light level instead?
+              //TODO - 26.2: Do we want to be using the state's light level instead?
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              null,//TODO - 26.1: Do we need to specify the texture or is doing so in the render type good enough?
+              null,//TODO - 26.2: Do we need to specify the texture or is doing so in the render type good enough?
               state.coreTint,
               null//No break overlay for the core
         );

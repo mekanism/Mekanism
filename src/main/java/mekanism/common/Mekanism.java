@@ -184,7 +184,7 @@ public class Mekanism {
             }
             //In case JEI isn't present, also sync the smelting recipes so that we can wrap them for testing the input
             event.sendRecipes(RecipeType.SMELTING);
-            //TODO - 26.1: Re-evaluate this. If we rewrite how the formulaic assemblicator handles recipes on the client side, then this might not be necessary?
+            //TODO - 26.2: Re-evaluate this. If we rewrite how the formulaic assemblicator handles recipes on the client side, then this might not be necessary?
             event.sendRecipes(RecipeType.CRAFTING);
         });
         modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
@@ -279,7 +279,7 @@ public class Mekanism {
 
     private void addReloadListenersLowest(AddServerReloadListenersEvent event) {
         //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes or loot tables
-        //TODO - 26.1: Evaluate the dependency system and what we want the id of this to be
+        //TODO - 26.2: Evaluate the dependency system and what we want the id of this to be
         event.addListener(rl("recipe_cache_manager"), getRecipeCacheManager());
     }
 

@@ -73,7 +73,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     public void serialize(ValueOutput output) {
         super.serialize(output);
         //TODO - 1.21: This doesn't get persisted anymore when breaking blocks that have fluid inventory slots
-        //TODO - 26.1: Re-implement it and allow keeping track of it similar to how bins keep track of their lock type?
+        //TODO - 26.2: Re-implement it and allow keeping track of it similar to how bins keep track of their lock type?
         lastDirectionJournal.serialize(output);
     }
 
@@ -86,7 +86,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
     @Nullable
     private <RESOURCE extends Resource> ResourceHandler<RESOURCE> getHandler(InOutSlotResourceItemAccess<RESOURCE> access) {
         ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability = access.getCapability();
-        //TODO - 26.1: Can we somehow predict whether we should use a one by one access or not? The issue with not using a oneByOne access for things like buckets
+        //TODO - 26.2: Can we somehow predict whether we should use a one by one access or not? The issue with not using a oneByOne access for things like buckets
         // is that their max stack size when filled is one, so then we can't move it all into the output slot (and have a successful exchange by doing so)
         ResourceHandler<RESOURCE> handler = access.oneByOne().getCapability(capability);
         /*if (access.getAmount() > 1) {
@@ -95,7 +95,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
                 // See if the item exposes a capability only when it is not stacked
                 return access.oneByOne().getCapability(capability);
             }
-            //TODO - 26.1: Determine if we should try extracting/inserting based on what we have available to see if we should potentially try the one by one access regardless?
+            //TODO - 26.2: Determine if we should try extracting/inserting based on what we have available to see if we should potentially try the one by one access regardless?
             // Or maybe we should just always use a one by one access?
         }*/
         return handler;
@@ -185,7 +185,7 @@ public abstract class ResourceHandlerSlot extends BasicInventorySlot {
                         subTransaction.commit();
                         return true;
                     }
-                    //TODO - 26.1: Should we be resetting it to unknown if we failed to move it?
+                    //TODO - 26.2: Should we be resetting it to unknown if we failed to move it?
                     return false;
                 }
             }

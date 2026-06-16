@@ -36,7 +36,7 @@ public class GuiElementHolder extends GuiScalableElement {
     public static void updateBackgroundColor() {
         //TODO: Try to do this in a more generic way. We don't directly use our ColorAtlas because we want to automatically
         // get it from the texture
-        //todo - 26.1: get it from the gui sprites atlas instead
+        //TODO - 26.2: get it from the gui sprites atlas instead
         try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER.withPrefix("textures/gui/sprites/").withSuffix(".png"));
              NativeImage image = NativeImage.read(stream)) {
             int argb = image.getPixel(HOLDER_BORDER_SIZE + 1, HOLDER_BORDER_SIZE + 1);

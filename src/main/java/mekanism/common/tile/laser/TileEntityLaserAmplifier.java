@@ -177,7 +177,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         super.readSustainedData(input);
         input.getInt(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
         input.getInt(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
-        //TODO - 26.1: Re-evaluate all the cases we have an or that support optional if we should just use the optional
+        //TODO - 26.2: Re-evaluate all the cases we have an or that support optional if we should just use the optional
         delay = input.getIntOr(SerializationConstants.TIME, delay);
         NBTUtils.setEnumIfPresent(input, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }

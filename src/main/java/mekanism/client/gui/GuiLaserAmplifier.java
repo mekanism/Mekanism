@@ -68,7 +68,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    //TODO - 26.1: Should we just make this be Integer.parseInt without any handling for E?
+    //TODO - 26.2: Should we just make this be Integer.parseInt without any handling for E?
     private int parseInt(String text) throws NumberFormatException {
         if (text.contains("E")) {
             //TODO: Improve how we handle scientific notation, we currently create a big decimal and then

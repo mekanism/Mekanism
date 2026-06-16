@@ -62,7 +62,7 @@ public class FrequencyTypes {
         return type;
     }
 
-    //TODO - 26.1 - investigate why no usages, remove?
+    //TODO - 26.2 - investigate why no usages, remove?
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
         return (FrequencyType<FREQ>) registryMap.get(tag.getString(SerializationConstants.TYPE));
     }

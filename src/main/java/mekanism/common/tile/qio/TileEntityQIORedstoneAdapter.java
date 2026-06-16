@@ -110,7 +110,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             isEmitting = shouldEmit;
             needsUpdate = true;
             //Update redstone on sides except the back
-            //TODO - 26.1 check Orientation
+            //TODO - 26.2 check Orientation
             Direction frontDirection = getDirection();
             level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(RelativeSide.TOP.getDirection(frontDirection), frontDirection, SideBias.LEFT));
         }

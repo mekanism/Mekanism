@@ -105,7 +105,7 @@ class ChemicalInjectorRecipeProvider extends BaseSubRecipeProvider {
     private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from weathering recipe set
         ChemicalStackIngredient oxygen = IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1);
-        //TODO - 26.1: Switch this to being created at runtime and making use of the Neo DataMap?
+        //TODO - 26.2: Switch this to being created at runtime and making use of the Neo DataMap?
         // https://github.com/neoforged/NeoForge/commit/87875183dcd8239404cbddbe8717db1dbe4f64ee
         // Likely will require a PR based on https://github.com/neoforged/NeoForge/pull/1915 to move data maps before registries?
         for (Map.Entry<Block, Block> entry : WeatheringCopper.NEXT_BY_BLOCK.get().entrySet()) {

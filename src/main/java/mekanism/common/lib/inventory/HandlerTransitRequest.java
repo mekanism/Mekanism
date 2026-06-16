@@ -68,7 +68,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         }
 
         public void addSlot(int slot, int amount) {
-            //TODO - 26.1: Evaluate not bothering to keep track of the slot index, and just letting the handler figure out how it wants things extracted?
+            //TODO - 26.2: Evaluate not bothering to keep track of the slot index, and just letting the handler figure out how it wants things extracted?
             slotMap.put(slot, new AmountJournal(slot, amount));
             totalCount += amount;
         }
@@ -91,7 +91,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
                     int slot = entry.getIntKey();
                     int extracted = handler.extract(slot, itemType, toUse, subTransaction);
                     if (extracted < toUse) { // be loud if an InvStack's prediction doesn't line up
-                        //TODO - 26.1: Re-evaluate this, and if we actually care about being loud here now that nothing is voided or duped
+                        //TODO - 26.2: Re-evaluate this, and if we actually care about being loud here now that nothing is voided or duped
                         Mekanism.logger.warn("An inventory's returned content count does not line up with HandlerTransitRequest's prediction.");
                         Mekanism.logger.warn("HandlerTransitRequest slot: {}, item: {}, toUse: {}, stored type: {}, extracted: {}", slot, itemType, toUse,
                               handler.getResource(slot), extracted);

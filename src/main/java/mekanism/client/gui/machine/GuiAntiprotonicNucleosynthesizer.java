@@ -83,11 +83,11 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        //TODO - 26.1: gui rendering
+        //TODO - 26.2: gui rendering
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 100);
-        ////TODO - 26.1: I think it is this?
+        ////TODO - 26.2: I think it is this?
         ////guiGraphics.submitGuiElementRenderState();
         //MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
         //float partialTicks = MekanismRenderer.getPartialTick();

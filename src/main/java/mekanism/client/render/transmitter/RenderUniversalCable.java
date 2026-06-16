@@ -29,7 +29,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(cable, state, partialTick, cameraPosition, breakProgress);
         EnergyNetwork network = cable.getTransmitter().getTransmitterNetwork();
-        if (network == null) {//TODO - 26.1: Does this race condition still exist?
+        if (network == null) {//TODO - 26.2: Does this race condition still exist?
             return;//race conditions, yay
         }
         state.currentScale = network.currentScale;
@@ -37,8 +37,8 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
 
     @Override
     public void submit(CableRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.1: What threshold do we want to cut this off at?
-        //todo - 26.1: rendering
+        //TODO - 26.2: What threshold do we want to cut this off at?
+        //TODO - 26.2: rendering
         /*if (state.currentScale > 0) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);

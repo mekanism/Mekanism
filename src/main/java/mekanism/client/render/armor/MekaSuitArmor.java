@@ -108,7 +108,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean hasOpaqueArm = armorQuads.opaqueQuads().containsKey(armPos);
         boolean hasTransparentArm = armorQuads.transparentQuads().containsKey(armPos);
-        //TODO - 26.1 models
+        //TODO - 26.2 models
         /*if (hasOpaqueArm || hasTransparentArm) {
             poseStack.pushPose();
             armPos.translate(baseModel, poseStack, state);
@@ -146,7 +146,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         render(baseModel, nodeCollector, poseStack, lightCoords, color, state, armorQuads.opaqueQuads(), false);
 
         if (type == EquipmentSlot.CHEST) {
-            //TODO - 26.1 models
+            //TODO - 26.2 models
             /*BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
             if (IModuleHelper.INSTANCE.isEnabled(state.chestEquipment, MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(-0.01, 0.35, 0.37), new Vec3(-0.01, 0.15, 0.37), 10)
@@ -159,7 +159,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             //Adjust the poseStack so that we render the lightning in the correct spot if the player is crouching
             poseStack.pushPose();
             ModelPos.BODY.translate(baseModel, poseStack, state);
-            //TODO - 26.1 models
+            //TODO - 26.2 models
             //boltRenderer.render(gameTime, state.partialTick, poseStack, renderer);
             poseStack.popPose();
         }
@@ -170,7 +170,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
           Color color, STATE state, Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
-        //TODO - 26.1 models
+        //TODO - 26.2 models
         /*if (!quadMap.isEmpty()) {
             RenderType renderType = transparent ? RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS) : MekanismRenderType.MEKASUIT;
             VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, renderType, false, hasEffect);
@@ -194,7 +194,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         List<BakedQuad> quads = new ArrayList<>();
         //Note: We need to use a new list to not accidentally pollute the cached bake quads with the LED quads that we match them with
         // this also means that we can avoid even baking the data against empty part lists entirely
-        //TODO - 26.1 models
+        //TODO - 26.2 models
         /*if (!parts.isEmpty()) {
             quads.addAll(data.bake(new MekaSuitModelConfiguration(parts)).getQuads(null, null, random, ModelData.EMPTY, null));
         }
@@ -283,10 +283,10 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 float scale = 0;
                 // then we check if the entity is not pointing steeply into the sky
                 // if it isn't or if the entity has a lot of movement
-                if (state.xRot > -45 /* TODO - 26.1 || entity.getDeltaMovement().y > 1*/) {
+                if (state.xRot > -45 /* TODO - 26.2 || entity.getDeltaMovement().y > 1*/) {
                     // then we fully expand the wings
                     scale = 1;
-                } /* TODO - 26.1 else if (entity.getDeltaMovement().y > 0) {
+                } /* TODO - 26.2 else if (entity.getDeltaMovement().y > 0) {
                     // otherwise, if the entity is pointing steeply into the sky, and we have a small amount
                     // of movement (y movement between zero and one) then we partially expand the wings
                     scale = (float) entity.getDeltaMovement().y;
@@ -298,11 +298,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 yRot = EXPANDED_WING_Y_ROT * scale;
                 zRot = EXPANDED_WING_Z_ROT * scale;
             }
-            //TODO - 26.1: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state?
+            //TODO - 26.2: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state?
             if (state instanceof AvatarRenderState playerState) {
                 //If the entity is a player, then transition the wings gradually to their target position
                 ElytraAnimationState elytraAnimationState;
-                //TODO - 26.1: What is the difference between playerState.flyingYRot and state.elytraRotY?
+                //TODO - 26.2: What is the difference between playerState.flyingYRot and state.elytraRotY?
                 state.elytraRotX = 0;
                 yRot = state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
                 //Base off of target values
@@ -330,7 +330,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
     }
 
     private static void processMekaTool(OBJModelData mekaToolModel, Set<String> ignored) {
-        //TODO - 26.1 models
+        //TODO - 26.2 models
         /*for (String name : mekaToolModel.getModel().getRootComponentNames()) {
             if (name.contains(OVERRIDDEN_TAG)) {
                 //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
@@ -403,7 +403,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
         Map<ModelPos, Set<String>> armorQuadsToRender = new EnumMap<>(ModelPos.class);
         Map<ModelPos, Set<String>> armorLEDQuadsToRender = new EnumMap<>(ModelPos.class);
-        //TODO - 26.1 models
+        //TODO - 26.2 models
         /*for (String name : MekanismModelCache.INSTANCE.MEKASUIT.getModel().getRootComponentNames()) {
             if (!checkEquipment(type, name)) {
                 // skip if it's the wrong equipment type
@@ -507,7 +507,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         }
     }
 
-    //TODO - 26.1 models - predicate needs to be RenderState based?
+    //TODO - 26.2 models - predicate needs to be RenderState based?
     private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<LivingEntity> isActive) {
 
         /// Score closest to zero is considered best, negative one for no match at all.
@@ -558,7 +558,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     for (Entry<Holder<ModuleData<?>>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                         if (container.hasEnabled(entry.getKey())) {
                             ModuleModelSpec spec = entry.getValue();
-                            //TODO - 26.1 models - only have state here
+                            //TODO - 26.2 models - only have state here
                             modules.put(spec, /*spec.isActive(state)*/true);
                         }
                     }
@@ -592,7 +592,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
             Collection<ModuleModelSpec> modules = moduleModelSpec.values();
-            //TODO - 26.1 models
+            //TODO - 26.2 models
             /*for (String name : getModel().getRootComponentNames()) {
                 //Find the "best" spec by checking all the specs and finding out which one is listed first
                 // this way if we are overriding another module, then we just put the module that is overriding

@@ -98,7 +98,7 @@ public class ModelAtomicDisassembler extends MekanismJavaModel.NoState {
     @Override
     public void collect(PoseStack poseStack, SubmitNodeCollector collector, int light, int overlayLight) {
         setupAnim();
-        collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, -1, null);//TODO - 26.1 What color? vanilla seems to pass -1 when not specified
+        collectParts(parts, poseStack, RENDER_TYPE, collector, light, overlayLight, -1, null);//TODO - 26.2 What color? vanilla seems to pass -1 when not specified
         collectParts(bladeParts, poseStack, BLADE_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0xBFFFFFFF, null);
     }
 

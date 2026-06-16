@@ -170,7 +170,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //After we render all the contents and moved to the furthest stratum that vanilla will use
         // excluding things like tooltips or the currently carried item which should both render above windows:
         // shift the matrix to relative coordinates again, and add a new stratum for each window
-        //TODO - 26.1: Make sure this works fine and there isn't some unforseen side effects
+        //TODO - 26.2: Make sure this works fine and there isn't some unforseen side effects
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         pose.translate(leftPos, topPos);
@@ -400,7 +400,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    @Override//TODO - 26.1: review `pose` used for zindex stuff
+    @Override//TODO - 26.2: review `pose` used for zindex stuff
     protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
@@ -416,7 +416,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    @Override//todo - 26.1: fix tooltips showing for elements hidden by windows
+    @Override//TODO - 26.2: fix tooltips showing for elements hidden by windows
     protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.extractTooltip(guiGraphics, mouseX, mouseY);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);

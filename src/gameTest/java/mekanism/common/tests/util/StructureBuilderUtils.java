@@ -48,7 +48,7 @@ public class StructureBuilderUtils {
     }
 
     private static CompoundTag containing(NonNullList<ItemStack> items) {
-        //TODO - 26.1: Should we pass a path to the scoped collector?
+        //TODO - 26.2: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
             ContainerHelper.saveAllItems(output, items);
@@ -66,7 +66,7 @@ public class StructureBuilderUtils {
         }
         driveSlots.getFirst().setContents(drive.asResource(), 1, null);
 
-        //TODO - 26.1: Should we pass a path to the scoped collector?
+        //TODO - 26.2: Should we pass a path to the scoped collector?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
             ContainerType.ITEM.saveTo(output, driveSlots);

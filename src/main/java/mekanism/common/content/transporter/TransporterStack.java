@@ -128,7 +128,7 @@ public class TransporterStack {
     public void write(ValueOutput output) {
         writeCommon(output);
         if (pathType != null) {
-            //TODO - 26.1: Figure out path type and if we should set it to none when saving to file instead of not saving it
+            //TODO - 26.2: Figure out path type and if we should set it to none when saving to file instead of not saving it
             // given that for syncing we pretend it is none.
             NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, pathType);
         }

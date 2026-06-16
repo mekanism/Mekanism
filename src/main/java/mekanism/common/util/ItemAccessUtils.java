@@ -28,7 +28,7 @@ public class ItemAccessUtils {
 
     /// Similar to [ItemAccess#forPlayerInteraction(Player, InteractionHand)], except does not act as infinite for cases when the player is in creative.
     public static ItemAccess playerHandAccess(Player player, InteractionHand hand) {
-        //TODO - 26.1: See if any usages of this should actually be forPlayerInteraction for creative player interaction of not mutating the initial stack
+        //TODO - 26.2: See if any usages of this should actually be forPlayerInteraction for creative player interaction of not mutating the initial stack
         // or the other variant of this method
         return playerHandAccess(player, hand, false);
     }
@@ -52,7 +52,7 @@ public class ItemAccessUtils {
     /// Helper to create an ItemAccess for an item instance that doesn't take stack size into account, doesn't mutate the passed instance, and allows for the backing item
     /// type to change.
     public static ItemAccess sideEffectFreeAccess(TypedInstance<Item> instance) {
-        //TODO - 26.1: SideEffectFreeItemAccess knows how to handle the size, are there any cases we should be taking the size into account?
+        //TODO - 26.2: SideEffectFreeItemAccess knows how to handle the size, are there any cases we should be taking the size into account?
         return sideEffectFreeAccess(instance, 1);
     }
 

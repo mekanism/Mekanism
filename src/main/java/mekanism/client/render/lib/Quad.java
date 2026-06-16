@@ -16,7 +16,7 @@ import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1 - can we get rid of these?
+//TODO - 26.2 - can we get rid of these?
 public class Quad {
 
     private final Vertex[] vertices;
@@ -46,7 +46,7 @@ public class Quad {
         shade = quad.materialInfo().shade();
         hasAmbientOcclusion = quad.materialInfo().ambientOcclusion();
         BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
-        //TODO - 26.1: no existy. Hopefully yeet this class. Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
+        //TODO - 26.2: no existy. Hopefully yeet this class. Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
         //unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY);
         vertices = unpacker.getVertices();
     }
@@ -111,7 +111,7 @@ public class Quad {
 
     public BakedQuad bake() {
         QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
-        //TODO - 26.1 quadBaker.setSprite(sprite);
+        //TODO - 26.2 quadBaker.setSprite(sprite);
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
         quadBaker.setShade(shade);
@@ -200,7 +200,7 @@ public class Quad {
 
         @Override
         public VertexConsumer setLineWidth(float width) {
-            //TODO - 26.1: Do we need to be implementing this? I doubt it actually gets called for the usage, but we need to make sure
+            //TODO - 26.2: Do we need to be implementing this? I doubt it actually gets called for the usage, but we need to make sure
             return this;
         }
 

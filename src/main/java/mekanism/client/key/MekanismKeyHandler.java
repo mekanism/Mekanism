@@ -30,7 +30,7 @@ import top.theillusivec4.curios.api.SlotResult;
 
 public class MekanismKeyHandler {
 
-    //TODO - 26.1: Re-evaluate key binding categories and also translating this
+    //TODO - 26.2: Re-evaluate key binding categories and also translating this
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Mekanism.rl("main"));
     public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HAND_MODE).conflictInGame().keyCode(InputConstants.KEY_N)
           .onKeyDown((_, _) -> {
@@ -62,7 +62,7 @@ public class MekanismKeyHandler {
                   PacketUtils.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
               }
           }).build();
-    //TODO - 26.1: Evaluate control vs command for macs
+    //TODO - 26.2: Evaluate control vs command for macs
     public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(InputConstants.KEY_LCONTROL)
           .onKeyDown((kb, _) -> MekanismClient.updateKey(kb, KeySync.BOOST)).onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST)).build();
     public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(InputConstants.KEY_H)

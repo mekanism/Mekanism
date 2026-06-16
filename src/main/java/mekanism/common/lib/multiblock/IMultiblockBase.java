@@ -17,7 +17,7 @@ public interface IMultiblockBase extends ITileWrapper {
         return getDefaultData();
     }
 
-    //TODO - 26.1: Is this no longer necessary with the multiblock rewrite? If so we should remove this and the getMultiblockData methods
+    //TODO - 26.2: Is this no longer necessary with the multiblock rewrite? If so we should remove this and the getMultiblockData methods
     default void setMultiblockData(MultiblockManager<?> manager, MultiblockData multiblockData) {
         getStructure(manager).setMultiblockData(multiblockData);
     }

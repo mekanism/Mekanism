@@ -409,7 +409,7 @@ public class MekanismBlockTypes {
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
-          //TODO - 26.1: Evaluate storage for charge pad given the usage is currently the limit per entity standing on it
+          //TODO - 26.2: Evaluate storage for charge pad given the usage is currently the limit per entity standing on it
           .withEnergyUsage(MekanismConfig.usage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())

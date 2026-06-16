@@ -39,7 +39,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
+//TODO - 26.2: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
 // Also double check the stuff we override as it looks like some of it might have changed in vanilla
 public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 

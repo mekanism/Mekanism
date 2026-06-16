@@ -870,7 +870,7 @@ public enum MekanismLang implements ILangEntry {
         return key;
     }
 
-    //TODO - 26.1: unused?
+    //TODO - 26.2: unused?
     /*public static ILangEntry get(EquipmentSlot type) {
         return switch (type) {
             case HEAD -> HEAD;

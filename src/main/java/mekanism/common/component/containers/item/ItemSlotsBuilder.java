@@ -40,7 +40,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-//TODO - 26.1: Do we want this to extend ResourceContainersBuilder
+//TODO - 26.2: Do we want this to extend ResourceContainersBuilder
 public class ItemSlotsBuilder {
 
     //Note: For a lot of slots with specific helper methods we can simply use a ComponentBackedInventorySlot as we don't have any overrides or desire to call those methods while on an itemstack
@@ -52,7 +52,7 @@ public class ItemSlotsBuilder {
           new ComponentBackedInventorySlot(attachedAccess, containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue());
 
     //Copy of predicates from FuelInventorySlot
-    //TODO - 26.1: this now needs world access. Does it really matter as it's only used on the Fuelwood heater's item inv, which we don't expose?
+    //TODO - 26.2: this now needs world access. Does it really matter as it's only used on the Fuelwood heater's item inv, which we don't expose?
     /*private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_EXTRACT = (itemType, automationType) -> !automationType.isExternal() || itemType.toStack().getBurnTime(null) == 0;
     private static final BiPredicate<ItemResource, AutomationType> FUEL_CAN_INSERT = (itemType, automationType) -> automationType.isInternal() || itemType.toStack().getBurnTime(null) != 0;
     private static final IBasicContainerCreator<IInventorySlot> FUEL_SLOT_CREATOR = (attachedAccess, containerIndex) -> new ComponentBackedInventorySlot(attachedAccess,

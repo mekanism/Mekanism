@@ -65,7 +65,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
             } else if (!EventHooks.onNeighborNotify(level, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
                 BlockPos toUpdate = worldPosition.relative(side);
                 level.getBlockState(toUpdate).onNeighborChange(level, toUpdate, worldPosition);
-                //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
+                //TODO - 26.2: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
             }
             prevOutputting = outputting;
         }

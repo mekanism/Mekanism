@@ -11,7 +11,7 @@ import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 public class HeatHandlerManager extends CapabilityHandlerManager<IContainerHolder<IHeatCapacitor>, IHeatCapacitor, IHeatHandler> {
 
     public HeatHandlerManager(IContainerHolder<IHeatCapacitor> holder, ISidedHeatHandler baseHandler) {
-        //TODO - 26.1: Evaluate if we want to change this to be more like the other things where the handler isn't implemented by the tile itself
+        //TODO - 26.2: Evaluate if we want to change this to be more like the other things where the handler isn't implemented by the tile itself
         super(holder, Capabilities.HEAT, IContainerHolder::getContainers, (side, h) -> new ProxyHeatHandler(baseHandler, side, h));
     }
 }

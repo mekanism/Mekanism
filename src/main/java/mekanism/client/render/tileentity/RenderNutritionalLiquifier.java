@@ -82,7 +82,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         }
         ItemStack stack = liquifier.getRenderStack();
         if (!stack.isEmpty()) {
-            //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
+            //TODO - 26.2: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
             int seed = Ints.saturatedCast(state.blockPos.asLong());
             this.itemModelResolver.updateForTopItem(state.item, stack, ItemDisplayContext.GROUND, liquifier.getLevel(), null, seed);
         }
@@ -96,7 +96,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                   0.313F + 0.624F * (state.stage / (float) stages), 0.999F, poseStack, Sheets.translucentBlockItemSheet(), nodeCollector,
                   state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         /*if (state.active) {
             //Render the blade at the correct rotation if we are active
             poseStack.pushPose();
@@ -126,7 +126,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
             if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
-                //TODO - 26.1: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
+                //TODO - 26.2: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
                 if (isTickingNormally(tile)) {

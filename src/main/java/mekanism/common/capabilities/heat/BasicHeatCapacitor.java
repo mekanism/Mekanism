@@ -139,7 +139,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Override
     public void copyContents(IHeatCapacitor other, @Nullable TransactionContext transaction) {
         IHeatCapacitor.super.copyContents(other, transaction);
-        //TODO - 26.1: Should heat capacity be copied before or after?
+        //TODO - 26.2: Should heat capacity be copied before or after?
         setHeatCapacity(other.getHeatCapacity(), false);
     }
 

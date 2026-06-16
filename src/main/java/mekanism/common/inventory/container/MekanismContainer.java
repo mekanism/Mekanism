@@ -361,7 +361,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     protected ItemStack transferSuccess(Slot currentSlot, Player player, int amountInserted) {
-        //TODO - 26.1: This remove call has the potential to break the contract that mayPickup is called first?
+        //TODO - 26.2: This remove call has the potential to break the contract that mayPickup is called first?
         // Though all of our callers are from within #quickMoveStack which vanilla checks mayPickup before calling
         ItemStack newStack = currentSlot.remove(amountInserted);
         currentSlot.onTake(player, newStack);

@@ -57,7 +57,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
             EnumColor color = entry.getKey();
             Item balloon = entry.getValue().value();
             //Identifier generatedModel = balloonParent.create(ModelLocationUtils.getModelLocation(balloon), new TextureMapping(), itemModels.modelOutput);
-            //todo - 26.1: does this work, or does it need to define child model with parent? (previous line). check other usages if so
+            //TODO - 26.2: does this work, or does it need to define child model with parent? (previous line). check other usages if so
             //tintedItem(itemModels, balloon, balloonModelLoc, color);
             ItemModel.Unbaked modelToRegister = ItemModelUtils.select(
                   new DisplayContext(),

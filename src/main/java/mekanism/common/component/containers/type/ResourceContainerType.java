@@ -73,7 +73,7 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
         AttachedResources<RESOURCE> attached = getOrEmpty(resource);
         if (attached.isEmpty()) {
             //TODO: Are there any cases where the attached is empty, but we have containers?
-            //TODO - 26.1: Re-evaluate this branch not just being zero and then returning null is the only difference for what getCapOrUnexposed
+            //TODO - 26.2: Re-evaluate this branch not just being zero and then returning null is the only difference for what getCapOrUnexposed
             // (which would use createHandlerIfData) previously did
             count = getContainerCount(resource.typeHolder().value());
         } else {
@@ -268,10 +268,10 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
                 RESOURCE toAddResource = toAddContainer.resource();
                 long toAddAmount = toAddContainer.amountAsLong();
                 CONTAINER origContainer = orig.get(container);
-                //TODO - 26.1: Validate all callers have this work with the given automation type
-                //TODO - 26.1: Should we change this to bypass all rate limits in case we add a multiblock that has them at a later date.
+                //TODO - 26.2: Validate all callers have this work with the given automation type
+                //TODO - 26.2: Should we change this to bypass all rate limits in case we add a multiblock that has them at a later date.
                 // That might be problematic to do, as the container merging uses dummy containers, that have no limits
-                //TODO - 26.1: If toAddAmount is greater than max int how do we want to handle it
+                //TODO - 26.2: If toAddAmount is greater than max int how do we want to handle it
                 int added = origContainer.insert(toAddResource, Ints.saturatedCast(toAddAmount), transaction, AutomationType.INTERNAL);
                 if (added < toAddAmount) {
                     //Add any remainder to the rejects
@@ -395,9 +395,9 @@ public abstract class ResourceContainerType<RESOURCE extends Resource, CONTAINER
     ///
     /// @see net.neoforged.neoforge.transfer.fluid.FluidUtil#interactWithFluidHandler(Player, InteractionHand, BlockPos, ResourceHandler, TransactionContext)
     public boolean interactWithHandler(Player player, InteractionHand hand, @Nullable BlockPos pos, ResourceHandler<RESOURCE> handler, @Nullable TransactionContext transaction) {
-        //TODO - 26.1: Should we add a variant of this that allows following a container edit mode?
+        //TODO - 26.2: Should we add a variant of this that allows following a container edit mode?
         // That way it can be set to force fill/drain the item instead of doing its best guess? I suspect this would be a nice QoL change
-        //TODO - 26.1: Do we want chemical handler interactions to fire game events or make sounds?
+        //TODO - 26.2: Do we want chemical handler interactions to fire game events or make sounds?
         ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand).oneByOne();
         ResourceHandler<RESOURCE> handHandler = capability().getCapability(itemAccess);
         if (handHandler == null) {

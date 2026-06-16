@@ -27,7 +27,7 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
         return MATERIAL;
     }
 
-    //@Override//TODO - 26.1: Figure out if we need to setup profiling for this again?
+    //@Override//TODO - 26.2: Figure out if we need to setup profiling for this again?
     protected String getProfilerSection() {
         return ProfilerConstants.PERSONAL_CHEST;
     }

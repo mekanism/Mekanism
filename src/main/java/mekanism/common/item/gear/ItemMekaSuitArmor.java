@@ -246,7 +246,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    //TODO - 26.1: Re-evaluate this item access
+                    //TODO - 26.2: Re-evaluate this item access
                     ItemAccess itemAccess = ItemAccess.forStack(stack);
                     for (Module<?> module : container.modules()) {
                         module.tick(itemAccess, player, transaction);
@@ -309,7 +309,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return slotType == armorType.getSlot() && getModules(instance).stream().anyMatch(IModule::handlesModeChange);
     }
 
-    //TODO - 26.1 Elytra unit
+    //TODO - 26.2 Elytra unit
     /*@Override
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (getType() == ArmorType.CHESTPLATE && !entity.isShiftKeyDown()) {
@@ -385,7 +385,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    /*TODO - 26.1: check that thse are handled by the item props
+    /*TODO - 26.2: check that thse are handled by the item props
     @Override
     public int getDefense() {
         return getMaterial().value().getDefense(getType());

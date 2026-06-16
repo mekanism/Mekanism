@@ -28,7 +28,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
       extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /// Map of ResourceKey to Map of components to lists.
-    //TODO - 26.1 can this use a Reference map now that it uses ResourceKey?
+    //TODO - 26.2 can this use a Reference map now that it uses ResourceKey?
     private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RECIPE>>> componentInputCache = new HashMap<>();
 
     @Override

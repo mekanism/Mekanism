@@ -5,7 +5,7 @@ import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Do we want to up the default config limits for any of these tiers?
+//TODO - 26.2: Do we want to up the default config limits for any of these tiers?
 public enum BinTier implements ITier {
     BASIC(BaseTier.BASIC, 4_096),
     ADVANCED(BaseTier.ADVANCED, 8_192),

@@ -160,9 +160,9 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Add filled variants of creative chemical tanks to creative/recipe viewers for all registered chemicals. Note: This includes radioactive ones that "
           + "normally can't be stored in chemical tanks."),
 
-    //TODO - 26.1: Do we want to change/move the steam energy density config? Also update all the configs to reference FE instead of joules
+    //TODO - 26.2: Do we want to change/move the steam energy density config? Also update all the configs to reference FE instead of joules
     GENERAL_ENERGY_CONVERSION("general.energy_conversion", "Energy Conversion Rate", "Settings for configuring Energy Conversions", "Edit Conversion Rates"),
-    //TODO - 26.1: Should these two reference to joules go away? It is heat not energy
+    //TODO - 26.2: Should these two reference to joules go away? It is heat not energy
     GENERAL_ENERGY_CONVERSION_STEAM("general.energy_conversion.steam", "Steam Energy Density", "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler."),
 
     GENERAL_RADIATION("general.radiation", "Radiation Settings", "Settings for configuring Radiation", true),

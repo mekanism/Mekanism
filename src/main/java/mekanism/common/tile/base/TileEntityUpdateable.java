@@ -61,7 +61,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     public long getGameTime() {
-        //TODO - 26.1: Re-evaluate this impl
+        //TODO - 26.2: Re-evaluate this impl
         return level == null ? 0 : level.getGameTime();
     }
 
@@ -73,7 +73,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     /// Called when the tile is permanently removed
     ///
     /// @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
-    //TODO - 26.1: verify this works as intended - does the drop contain the contents?
+    //TODO - 26.2: verify this works as intended - does the drop contain the contents?
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
     }
@@ -117,7 +117,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
 
     @Override
     public final CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        //TODO - 26.1: Is this fine for how to create the problem reporter?
+        //TODO - 26.2: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
             writeUpdatedTag(output);
@@ -125,7 +125,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         }
     }
 
-    //todo - 26.1 - did we _need_ to change this to ValueOutput?
+    //TODO - 26.2 - did we _need_ to change this to ValueOutput?
     protected void writeUpdatedTag(ValueOutput output) {
         writeReducedUpdatedTag(output);
     }
@@ -137,7 +137,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @Override
     public void onDataPacket(Connection net, ValueInput input) {
         //Handle the update tag when we are on the client
-        //TODO - 26.1: Do we need to check if it is empty in any way?
+        //TODO - 26.2: Do we need to check if it is empty in any way?
         /*CompoundTag tag = pkt.getTag();
         if (!tag.isEmpty()) {*/
         handleUpdateTag(input);
@@ -182,7 +182,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     public void setLevel(Level world) {
         super.setLevel(world);
         updateCoord();
-        //TODO - 26.1: Do we need to clear the BlockCapabilityCaches we are storing if the level changes? Probably
+        //TODO - 26.2: Do we need to clear the BlockCapabilityCaches we are storing if the level changes? Probably
         // The level changing is not really an expected thing to have happen, but might be worth
         // considering if we run into mods that the caches are causing problems for
     }

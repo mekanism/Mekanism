@@ -74,7 +74,7 @@ public abstract class AbstractContainerType<CONTAINER extends ValueIOSerializabl
     @Override
     public CONTAINER createContainer(ItemAccess attachedAccess, int containerIndex) {
         //TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
-        //TODO - 26.1: Theoretically users of this bypass any checks for if the attached access is stacked, but I believe all uses are fine with directly acting on the stack (validate this)
+        //TODO - 26.2: Theoretically users of this bypass any checks for if the attached access is stacked, but I believe all uses are fine with directly acting on the stack (validate this)
         Item attachedTo = attachedAccess.getResource().getItem();
         IContainerCreator<CONTAINER, ATTACHED> containerCreator = getCreator(attachedTo);
         if (containerCreator == null) {

@@ -88,7 +88,7 @@ import org.jspecify.annotations.Nullable;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
     //All basic dig actions except shears
-    //TODO - 26.1: review why these not longer exist
+    //TODO - 26.2: review why these not longer exist
     public static final Set<ItemAbility> ALWAYS_SUPPORTED_ACTIONS = Set.of(/*ItemAbilities.AXE_DIG, ItemAbilities.HOE_DIG, ItemAbilities.SHOVEL_DIG, ItemAbilities.PICKAXE_DIG,
           ItemAbilities.SWORD_DIG*/);
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
@@ -100,7 +100,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public ItemAtomicDisassembler(Properties properties) {
-        //TODO - 26.1: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
+        //TODO - 26.2: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
         super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(

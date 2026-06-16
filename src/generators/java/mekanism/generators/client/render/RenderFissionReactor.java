@@ -64,7 +64,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             isGaseous = MekanismUtils.lighterThanAirGas(coolant);
             state.coolantGlow = MekanismRenderer.calculateGlowLight(LightCoordsUtil.FULL_SKY, coolant);
             state.coolantColor = MekanismRenderer.getColorARGB(coolant, coolantScale);
-            //TODO - 26.1: Do we want to add support for valve rendering?
+            //TODO - 26.2: Do we want to add support for valve rendering?
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             ChemicalResource coolant = multiblock.coolantTank.getChemicalTank().resource();
             state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(coolant));
@@ -83,7 +83,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         }
 
         if (multiblock.isBurning()) {
-            //TODO - 26.1: Do we need to copy this like this?
+            //TODO - 26.2: Do we need to copy this like this?
             state.assemblies.addAll(multiblock.assemblies);
         }
     }
@@ -92,7 +92,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     public void submit(FissionRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         BlockPos pos = state.blockPos;
         if (!state.assemblies.isEmpty()) {
-            //TODO - 26.1: Profiler?
+            //TODO - 26.2: Profiler?
             //profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
             for (FormedAssembly assembly : state.assemblies) {
                 BlockPos assemblyPos = assembly.pos();

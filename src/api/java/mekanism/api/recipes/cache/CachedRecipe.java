@@ -306,7 +306,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
                     }
                     return;
                 }
-                //TODO - 26.1: If we fail to use stuff, should we reset the progress?
+                //TODO - 26.2: If we fail to use stuff, should we reset the progress?
             }
             setActive.accept(false);
             if (operations < 0) {

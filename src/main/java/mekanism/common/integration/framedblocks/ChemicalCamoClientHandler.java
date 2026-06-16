@@ -22,7 +22,7 @@ final class ChemicalCamoClientHandler extends ResourceCamoContentClientHandler<C
     @Override
     public ResourceModelSpec getModelSpec(ChemicalCamoContent chemicalCamoContent) {
         ChemicalResource resource = chemicalCamoContent.getResource();
-        //TODO - 26.1: Should we force translucency?
+        //TODO - 26.2: Should we force translucency?
         Material.Baked stillMaterial = new Material.Baked(MekanismRenderer.getChemicalTexture(resource), false);
         return new ResourceModelSpec(stillMaterial, null, resource.getChemicalTint() != CommonColors.WHITE, null);
     }

@@ -15,7 +15,7 @@ public class LyingAmountIntegerHandler extends SpecificAmountIntegerHandler {
     }
 
     @Override
-    public int perform(int amountOffered, TransactionContext transaction) {//TODO - 26.1: Evaluate if these lying handlers even make any sense anymore
+    public int perform(int amountOffered, TransactionContext transaction) {//TODO - 26.2: Evaluate if these lying handlers even make any sense anymore
         int canAccept = super.perform(amountOffered, transaction);
         if (!hasLied) {
             hasLied = true;

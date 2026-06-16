@@ -71,7 +71,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 } else {
                     FluidType fluidType = fluid.getFluidType();
                     blockList.add(new BlockInfo<>(state, fluidType, (graphics, f, x, y) -> {
-                        //TODO - 26.1: fluid rendering
+                        //TODO - 26.2: fluid rendering
                         //IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
                         //MekanismRenderer.color(graphics, properties.getTintColor());
                         //TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());

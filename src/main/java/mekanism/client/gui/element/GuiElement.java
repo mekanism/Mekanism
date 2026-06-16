@@ -309,7 +309,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
         //Note: We only call this method if we are hovering the proper spot
-        //TODO - 26.1: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
+        //TODO - 26.2: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
         tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY, true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
@@ -484,7 +484,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         this.buttonBackground = buttonBackground;
     }
 
-    //TODO - 26.1: I am guessing mojang removed the duplicate behavior and made it so that it just checks the one method. Validate that there isn't anything else we are meant to override instead
+    //TODO - 26.2: I am guessing mojang removed the duplicate behavior and made it so that it just checks the one method. Validate that there isn't anything else we are meant to override instead
     /*@Override
     protected boolean clicked(double mouseX, double mouseY) {
         //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in subclasses

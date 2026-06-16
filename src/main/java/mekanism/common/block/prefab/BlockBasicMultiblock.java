@@ -17,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
-    //TODO - 26.1: Re-evaluate usages of this and maybe decide to inline properties to call sites?
+    //TODO - 26.2: Re-evaluate usages of this and maybe decide to inline properties to call sites?
     public static BlockBehaviour.Properties defaultProperties(BlockBehaviour.Properties properties) {
         return properties.strength(5, 9).requiresCorrectToolForDrops();
     }

@@ -18,7 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Chemical.class, zenCodeName = CrTConstants.CLASS_CHEMICAL)
 public class CrTChemical {
 
-    //TODO - 26.1: Rethink how we expose chemical attributes to CrT. We definitely don't want to deal with adding,
+    //TODO - 26.2: Rethink how we expose chemical attributes to CrT. We definitely don't want to deal with adding,
     // but being able to query them might be useful? See if CrT has builtin support for data map stuff
     private CrTChemical() {
     }

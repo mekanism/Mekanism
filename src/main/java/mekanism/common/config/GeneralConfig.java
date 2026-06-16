@@ -160,7 +160,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
         int maxVolume = 18 * 18 * 18;
-        //TODO - 26.1: Re-evaluate this default value
+        //TODO - 26.2: Re-evaluate this default value
         dynamicTankFluidPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("mBPerTank", 16_000L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
@@ -225,7 +225,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR.applyToBuilder(builder).push("oredictionificator");
-        //todo - 26.1: add blacklist too, e.g. for `c:nuggets/brass_like`
+        //TODO - 26.2: add blacklist too, e.g. for `c:nuggets/brass_like`
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR_VALID_ITEMS.applyToBuilder(builder),
               "validItemFilters", () -> Collections.singletonMap("c", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();
@@ -269,7 +269,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_BOILER.applyToBuilder(builder).push("boiler");
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
-        //TODO - 26.1: Do we want to up the water per tank default to match the cooledCoolantPerTank config?
+        //TODO - 26.2: Do we want to up the water per tank default to match the cooledCoolantPerTank config?
         boilerWaterPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_WATER.applyToBuilder(builder)
               .defineInRange("waterPerTank", 16L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         boilerSteamPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_STEAM.applyToBuilder(builder)

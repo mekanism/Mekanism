@@ -55,7 +55,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
                     }
                     int size = tileSlots.size();
                     List<IInventorySlot> containers = destInv.getContainers();
-                    if (containers.size() == size) {//TODO - 26.1: If they don't match how should we handle it?
+                    if (containers.size() == size) {//TODO - 26.2: If they don't match how should we handle it?
                         for (int i = 0; i < size; i++) {
                             IInventorySlot tileSlot = tileSlots.get(i);
                             if (!tileSlot.isEmpty()) {

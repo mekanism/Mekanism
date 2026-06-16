@@ -71,7 +71,7 @@ public class GuiRadialSelector extends Screen {
         render(guiGraphics, mouseX, mouseY, centerX, centerY, radialData);
     }
 
-    //TODO - 26.1: rendering
+    //TODO - 26.2: rendering
     private <MODE extends IRadialMode> void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
@@ -245,7 +245,7 @@ public class GuiRadialSelector extends Screen {
         drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
     }
 
-    //TODO - 26.1: rendering
+    //TODO - 26.2: rendering
     private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
         //RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode

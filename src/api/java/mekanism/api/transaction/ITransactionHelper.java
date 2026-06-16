@@ -56,7 +56,7 @@ public interface ITransactionHelper {
     /// {@return the given rate limit tracker, or the infinite rate limit tracker if no tracker was given}
     ///
     /// @param tracker Rate limit tracker to check if present.
-    default RateLimitTracker orInfinite(@Nullable RateLimitTracker tracker) {//TODO - 26.1: Do we want to define rate limits for more things?
+    default RateLimitTracker orInfinite(@Nullable RateLimitTracker tracker) {//TODO - 26.2: Do we want to define rate limits for more things?
         return tracker == null ? infiniteRateLimit() : tracker;
     }
 }

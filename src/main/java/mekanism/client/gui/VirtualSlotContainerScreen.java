@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 26.2: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
@@ -68,7 +68,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         return false;
     }
 
-    //TODO - 26.1: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
+    //TODO - 26.2: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void extractSlotHighlightBack(GuiGraphicsExtractor graphics) {
@@ -81,13 +81,13 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         }
     }
 
-    //TODO - 26.1: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
+    //TODO - 26.2: If we AT x and y for slots to not be final, and actually update them I think we can skip this override unless we need this to be delayed
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void extractSlotHighlightFront(GuiGraphicsExtractor graphics) {
         if (this.hoveredSlot instanceof IVirtualSlot virtualSlot) {
             if (this.hoveredSlot.isHighlightable()) {
-                //TODO - 26.1: Do we need to delay this?
+                //TODO - 26.2: Do we need to delay this?
                 graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, virtualSlot.getActualX() - 4, virtualSlot.getActualY() - 4, 24, 24);
             }
         } else {
@@ -136,7 +136,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Override
     protected void renderSlotContents(GuiGraphicsExtractor graphics, ItemStack itemStack, Slot slot, @Nullable String itemCount) {
         if (slot instanceof IVirtualSlot virtualSlot) {
-            //TODO - 26.1: Re-evaluate overriding this method? I don't think this should ever be called as we override extractSlot and change the render call?
+            //TODO - 26.2: Re-evaluate overriding this method? I don't think this should ever be called as we override extractSlot and change the render call?
             virtualSlot.updateRenderInfo(itemStack, false, itemCount);
         } else {
             //If we are not a virtual slot, the super method is good enough

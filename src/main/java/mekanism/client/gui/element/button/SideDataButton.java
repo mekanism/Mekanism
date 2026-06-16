@@ -63,7 +63,7 @@ public class SideDataButton extends BasicColorButton {
             BlockPos otherBlockPos = tile.getBlockPos().relative(globalSide);
             BlockState blockOnSide = tileWorld.getBlockState(otherBlockPos);
             if (!blockOnSide.isAir()) {
-                //TODO - 26.1 check that previous false was the same param, and if there's supposed to be a HitResult version???
+                //TODO - 26.2 check that previous false was the same param, and if there's supposed to be a HitResult version???
                 otherBlockItem = blockOnSide.getCloneItemStack(otherBlockPos, tileWorld, false, Minecraft.getInstance().player);
             } else {
                 otherBlockItem = ItemStack.EMPTY;

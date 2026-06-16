@@ -196,7 +196,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.ROBIT, RenderRobitItem.Unbaked.INSTANCE, existingModel("item/robit_transforms"));
 
-        //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
+        //TODO - 26.2: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismBlocks.BASIC_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismBlocks.ELITE_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);

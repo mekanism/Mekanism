@@ -79,7 +79,7 @@ public class MekanismRobitSkins {
             return name.identifier();
         }
 
-        //TODO - 26.1: Re-evaluate exposing this method
+        //TODO - 26.2: Re-evaluate exposing this method
         public RobitSkin skin() {
             return skinHolder.value();
         }

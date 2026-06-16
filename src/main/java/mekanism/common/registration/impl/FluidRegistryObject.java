@@ -57,7 +57,7 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
     }
 
     public FluidStackTemplate asTemplate(int amount) {
-        //TODO - 26.1: Should we pass get() or this to the template constructor?
+        //TODO - 26.2: Should we pass get() or this to the template constructor?
         return new FluidStackTemplate(get(), amount);
     }
 

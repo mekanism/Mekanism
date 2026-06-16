@@ -50,7 +50,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
                 FluidResource fluidType = fluidHandler.getResource(tank);
                 //Store the type of the fluid. We skip empty fluids if there is only a single tank
                 if (!fluidType.isEmpty() || tanks > 1) {
-                    //TODO - 26.1: Should this be using the fluidstack's subtype interpretation? (So that it takes fluid components into account?
+                    //TODO - 26.2: Should this be using the fluidstack's subtype interpretation? (So that it takes fluid components into account?
                     subTypeData = tryAddData(subTypeData, fluidType.getFluid());
                 }
             }

@@ -232,7 +232,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     /// @throws NullPointerException     if the list of tags is null.
     /// @throws IllegalArgumentException if the list of tags is empty.
     /// @since 10.7.11
-    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, List<TagKey<Item>> tags) {//TODO - 26.1: Add docs for lookup param
+    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, List<TagKey<Item>> tags) {//TODO - 26.2: Add docs for lookup param
         if (tags.isEmpty()) {
             throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
         } else if (tags.size() == 1) {

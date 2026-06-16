@@ -80,7 +80,7 @@ public class CommandMek {
                       rules.set(GameRules.ADVANCE_TIME, false, server);
                       rules.set(GameRules.ADVANCE_WEATHER, false, server);
                       rules.set(GameRules.MOB_GRIEFING, false, server);
-                      //TODO - 26.1: check this is correct
+                      //TODO - 26.2: check this is correct
                       source.getLevel().clockManager().moveToTimeMarker(server.registryAccess().holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
                       //Act as if /weather clear was ran
                       source.getLevel().getWeatherData().setRaining(false);

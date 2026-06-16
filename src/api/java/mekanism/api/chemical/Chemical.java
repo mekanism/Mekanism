@@ -33,7 +33,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Investigate making chemicals a datapack registry
+//TODO - 26.2: Investigate making chemicals a datapack registry
 public class Chemical implements IHasTranslationKey, IHasTextComponent {
 
     /// A codec which can (de)encode chemical holders.
@@ -73,7 +73,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
     }
 
-    //TODO - 26.1: Figure out if we should we keep this cache or remove it?
+    //TODO - 26.2: Figure out if we should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
     private final Identifier iconLocation;
@@ -115,7 +115,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
     /// {@return radiation level of this chemical, or zero if it is not radioactive}
     ///
     /// @since 10.7.11
-    public double getRadioactivity() {//TODO - 26.1: Do we want this to return the baseline instead of zero if it is missing?
+    public double getRadioactivity() {//TODO - 26.2: Do we want this to return the baseline instead of zero if it is missing?
         return radioactivity;
     }
 
@@ -164,7 +164,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         return getTint();
     }
 
-    @Internal//TODO - 26.1: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
+    @Internal//TODO - 26.2: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
     @MustBeInvokedByOverriders
     public void updateFromDataMap(Holder<Chemical> holder) {
         attributes.clear();

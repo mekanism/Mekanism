@@ -269,7 +269,7 @@ public class QIOCraftingTransferHelper {
     }
 
     /// Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
-    public abstract static class BaseSimulatedInventory {//TODO - 26.1: Can we remove this and replace it with usage of transactions?
+    public abstract static class BaseSimulatedInventory {//TODO - 26.2: Can we remove this and replace it with usage of transactions?
 
         private final ItemResource[] inventory;
         private final int[] stackSizes;

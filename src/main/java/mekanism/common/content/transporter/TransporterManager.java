@@ -95,7 +95,7 @@ public class TransporterManager {
                 int toInsert = stack.size();
                 int inserted = handler.insert(stack.getItemType(), toInsert, simulation);
                 if (inserted < toInsert) {
-                    //TODO - 26.1: Should we be failing here? Because what if we can't insert the apples that are en route, but can insert the carrots
+                    //TODO - 26.2: Should we be failing here? Because what if we can't insert the apples that are en route, but can insert the carrots
                     if (inserted == 0) {
                         //If none of the stack could be inserted, check if we are attempting to insert it
                         // into the same side as the side we are predicting that we can insert into.
@@ -117,7 +117,7 @@ public class TransporterManager {
     private static class FlowingJournal extends SnapshotJournal<Set<TransporterStack>> {
 
         private final GlobalPos pos;
-        //TODO - 26.1: Should this be some sort of queue, or should we do reverting similar to how it works for dropped items?
+        //TODO - 26.2: Should this be some sort of queue, or should we do reverting similar to how it works for dropped items?
         private Set<TransporterStack> stacks = new HashSet<>();
 
         public FlowingJournal(GlobalPos pos) {
@@ -125,7 +125,7 @@ public class TransporterManager {
         }
 
         private void add(TransporterStack stack, @Nullable TransactionContext transaction) {
-            //TODO - 26.1: If we are in a transaction, but aren't passed one, then this might get rolled back by revert?
+            //TODO - 26.2: If we are in a transaction, but aren't passed one, then this might get rolled back by revert?
             // Is this a worry we might have? Same goes for removal
             if (transaction != null) {
                 updateSnapshots(transaction);

@@ -31,7 +31,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_GENERATOR_HEAT_GEN_NETHER("server.generator.heat.gen.nether", "Nether Energy Generation",
           "Add this amount to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether."),
     SERVER_GENERATOR_HEAT_TANK_CAPACITY("server.generator.heat.tank_capacity", "Tank Capacity", "The capacity in mB of the fluid tank in the Heat Generator."),
-    //TODO - 26.1: Should this reference to joules go away? It is heat not energy
+    //TODO - 26.2: Should this reference to joules go away? It is heat not energy
     SERVER_GENERATOR_HEAT_FLUID_RATE("server.generator.heat.fluid_rate", "Fluid Rate",
           "The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator."),
 
@@ -56,7 +56,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
           "Amount of energy in FE that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
     SERVER_TURBINE_CHEMICAL_CAPACITY("server.turbine.capacity.chemical", "Chemical Per Tank",
           "Amount of chemical (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * chemicalPerTank"),
-    //TODO - 26.1: Should these two reference to joules go away? It is heat not energy
+    //TODO - 26.2: Should these two reference to joules go away? It is heat not energy
     SERVER_TURBINE_JOULES_PER_STEAM("server.turbine.energy_conversion.steam", "Joules Per Steam", "Maximum Joules per tick generated per Steam unit in the Industrial Turbine."),
     SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then multiplied by the Joules Per Steam amount to calculate the generation rate."),
 
@@ -93,7 +93,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_FUSION("server.fusion", "Fusion Reactor", "Settings for configuring Fusion Reactors", "Edit Reactor Settings"),
     SERVER_FUSION_FUEL_ENERGY("server.fusion.fuel_energy", "Energy Per D-T Fuel", "Affects the Injection Rate, Max Temp, and Ignition Temp."),
-    //TODO - 26.1: Should these two reference to joules go away? It is heat not energy
+    //TODO - 26.2: Should these two reference to joules go away? It is heat not energy
     SERVER_FUSION_THERMOCOUPLE_EFFICIENCY("server.fusion.thermocouple_efficiency", "Thermocouple Efficiency",
           "The fraction of the heat dissipated from the case that is converted to Joules."),
     SERVER_FUSION_THERMAL_CONDUCTIVITY("server.fusion.casing_thermal_conductivity", "Casing Thermal Conductivity",

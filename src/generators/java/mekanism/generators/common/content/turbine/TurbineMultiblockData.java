@@ -157,7 +157,7 @@ public class TurbineMultiblockData extends MultiblockData {
                     flow = MathUtils.clampToInt(rate);
                     flowRate = rate / origRate;
                     try (Transaction transaction = Transaction.openRoot()) {
-                        //TODO - 26.1: Re-evaluate these checks and the above math
+                        //TODO - 26.2: Re-evaluate these checks and the above math
                         if (energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL) == amountGenerated &&
                             chemicalTank.extract(chemicalTank.resource(), flow, transaction, AutomationType.INTERNAL) == flow) {
                             int waterProduced = Math.min(flow, condensers * MekanismGeneratorsConfig.generators.condenserRate.get());

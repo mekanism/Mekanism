@@ -1,6 +1,6 @@
 package mekanism.client.render;
 
-//TODO - 26.1 shaders
+//TODO - 26.2 shaders
 /*import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.io.IOException;

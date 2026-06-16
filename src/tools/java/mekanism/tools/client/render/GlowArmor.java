@@ -1,5 +1,5 @@
 package mekanism.tools.client.render;
-//TODO - 26.1 glow armor model
+//TODO - 26.2 glow armor model
 /*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

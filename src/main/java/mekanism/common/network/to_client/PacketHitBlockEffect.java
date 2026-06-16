@@ -24,7 +24,7 @@ public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPa
 
     @Override
     public void handle(IPayloadContext context) {
-        //TODO - 26.1: Can we grab the level from the context, or would that require a cast that then might crash on the server?
+        //TODO - 26.2: Can we grab the level from the context, or would that require a cast that then might crash on the server?
         Minecraft.getInstance().level.addBreakingBlockEffect(result.getBlockPos(), result.getDirection(), result);
     }
 }

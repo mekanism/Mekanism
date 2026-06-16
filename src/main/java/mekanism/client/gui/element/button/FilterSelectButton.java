@@ -23,7 +23,7 @@ public class FilterSelectButton extends MekanismButton {
 
     @Override
     public void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //TODO - 26.1 Gui blend
+        //TODO - 26.2 Gui blend
         //RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();
         //RenderSystem.enableDepthTest();

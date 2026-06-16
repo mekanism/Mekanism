@@ -145,7 +145,7 @@ public class RenderTickHandler {
             // Note: We will pop this in a listener at the lowest priority
             Matrix3x2fStack pose = event.getGuiGraphics().pose();
             pose.pushMatrix();
-            pose.translate(0, 0/* TODO - 26.1: , GuiMekanism.maxZOffset*/);
+            pose.translate(0, 0/* TODO - 26.2: , GuiMekanism.maxZOffset*/);
         }
     }
 
@@ -157,10 +157,10 @@ public class RenderTickHandler {
         }
     }
 
-    @SubscribeEvent//TODO - 26.1 is this a correct replacement?
+    @SubscribeEvent//TODO - 26.2 is this a correct replacement?
     public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
         if (boltRenderer.hasBoltsToRender()) {
-            //TODO - 26.1: Figure out if this is still valid as the buffer
+            //TODO - 26.2: Figure out if this is still valid as the buffer
             /*MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             LevelRenderState levelState = event.getLevelRenderState();
             boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
@@ -186,7 +186,7 @@ public class RenderTickHandler {
             PlayerModel model = renderer.getModel();
             AvatarRenderState renderState = renderer.createRenderState();
             renderer.extractRenderState(player, renderState, MekanismRenderer.getPartialTick());
-            //TODO - 26.1 model.setAllVisible(true);
+            //TODO - 26.2 model.setAllVisible(true);
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
             boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
             if (rightHand) {
@@ -325,10 +325,10 @@ public class RenderTickHandler {
         return true;
     }
 
-    //TODO - 26.1 CustomBlockOutlineRenderer
+    //TODO - 26.2 CustomBlockOutlineRenderer
     @SubscribeEvent
     public void onBlockHover(ExtractBlockOutlineRenderStateEvent event) {
-        //TODO - 26.1: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
+        //TODO - 26.2: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         LocalPlayer player = minecraft.player;
         if (player == null) {
             return;
@@ -339,7 +339,7 @@ public class RenderTickHandler {
         ProfilerFiller profiler = Profiler.get();
         BlockState blockState = event.getBlockState();
 
-        //todo - 26.1: blasting unit. don't forget translucency check
+        //TODO - 26.2: blasting unit. don't forget translucency check
             /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
             // Draw outlines for area mining blocks
             if (!outliningArea) {
@@ -353,7 +353,7 @@ public class RenderTickHandler {
                         for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
                             // simulate ray tracing results for all block positions
-                            if (!pos.equals(blastingTarget) && todo - 26.1: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
+                            if (!pos.equals(blastingTarget) && TODO - 26.2: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
                                 levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
@@ -445,7 +445,7 @@ public class RenderTickHandler {
 
     public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal, boolean isHighContrast) {
         float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
-        //todo - 26.1: vanilla high contrast also does a black render. See net.minecraft.client.renderer.LevelRenderer.renderBlockOutline
+        //TODO - 26.2: vanilla high contrast also does a black render. See net.minecraft.client.renderer.LevelRenderer.renderBlockOutline
         int color = isHighContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(102);
         for (Line line : lines) {
             poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);

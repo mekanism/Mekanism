@@ -108,7 +108,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
-        //TODO - 26.1: rendering, possible PIP
+        //TODO - 26.2: rendering, possible PIP
         /*int colorFrom = colorDetails.getColorFrom();
         int colorTo = colorDetails.getColorTo();
         if (colorFrom == CommonColors.WHITE && colorTo == CommonColors.WHITE) {

@@ -42,9 +42,9 @@ public class CommonWorldTickHandler {
     //TODO: I believe this may be fine as is with just the load and save methods being synchronized
     // but there is a chance this is not the case in which case we should adjust how this is done
     @Nullable
-    private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//TODO - 26.1 move this to chunk attachment
+    private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//TODO - 26.2 move this to chunk attachment
     @Nullable
-    private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;//TODO - 26.1: move this to a level attachment
+    private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;//TODO - 26.2: move this to a level attachment
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
     @Nullable
@@ -100,13 +100,13 @@ public class CommonWorldTickHandler {
         //Note: The level should always be an instance of Level based on what is passed to the constructor of BreakBlockEvent,
         // but we instance check it just to be safe
         if (!state.isAir() && event.getLevel() instanceof Level level && !IBlockSecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos())) {
-            //TODO - 26.1 Do we need to use event.setNotifyClient ?
+            //TODO - 26.2 Do we need to use event.setNotifyClient ?
             //If they don't because it is something that is locked, then cancel the event
             event.setCanceled(true);
         }
     }
 
-    //TODO - 26.1 move this to chunk attachment
+    //TODO - 26.2 move this to chunk attachment
     /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void chunkSave(ChunkDataEvent.Save event) {
         LevelAccessor world = event.getLevel();
@@ -120,7 +120,7 @@ public class CommonWorldTickHandler {
         }
     }*/
 
-    //TODO - 26.1 move this to chunk attachment
+    //TODO - 26.2 move this to chunk attachment
     /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide()) {

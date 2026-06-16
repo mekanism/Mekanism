@@ -30,7 +30,7 @@ public class MekanismElytraLayer<STATE extends HumanoidRenderState, MODEL extend
         super.submit(poseStack, submitNodeCollector, lightCoords, state, yRot, xRot);
     }
 
-    //todo - 26.1: this is now a static method @Override
+    //TODO - 26.2: this is now a static method @Override
     public Identifier getElytraTexture(ItemStack stack, STATE state) {
         return HDPE_ELYTRA;
     }

@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 
 public class RadiationSource implements IRadiationSource {
 
-    //TODO - 26.1: Should we apply bounds to what is valid as the radiation level
+    //TODO - 26.2: Should we apply bounds to what is valid as the radiation level
     public static final Codec<RadiationSource> CODEC = RecordCodecBuilder.create(in -> in.group(
           BlockPos.CODEC.fieldOf(SerializationConstants.POS).forGetter(RadiationSource::getPosition),
           Codec.DOUBLE.fieldOf(SerializationConstants.RADIATION).forGetter(RadiationSource::getMagnitude)

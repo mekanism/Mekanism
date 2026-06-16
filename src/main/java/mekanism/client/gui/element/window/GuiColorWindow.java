@@ -35,7 +35,7 @@ import org.jspecify.annotations.Nullable;
 
 public class GuiColorWindow extends GuiWindow {
 
-    //TODO - 26.1: confirm tile blit works
+    //TODO - 26.2: confirm tile blit works
     public static final Identifier TRANSPARENCY_GRID = Mekanism.rl("transparency_grid");
     private static final Identifier HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
     private static final int S_TILES = 10, V_TILES = 10;
@@ -143,7 +143,7 @@ public class GuiColorWindow extends GuiWindow {
 
     //Based on GuiGraphicsExtractor#fillGradient
     private void drawGradient(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
-        //TODO - 26.1 GUI rendering
+        //TODO - 26.2 GUI rendering
         /*VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         buffer.addVertex(matrix4f, x, y + height, 0).setColor(bl.argb());

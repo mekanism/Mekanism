@@ -15,7 +15,7 @@ public class AttributeEnergy implements Attribute {
     public static final long STORAGE_MULTIPLIER = 4;
 
     private IntSupplier energyUsage = ConstantPredicates.ZERO;
-    //TODO - 26.1: Validate this is the proper change, Sara believes in the energy rework thiakil changed things to call 4 * getUsage instead of modifying the default energy storage
+    //TODO - 26.2: Validate this is the proper change, Sara believes in the energy rework thiakil changed things to call 4 * getUsage instead of modifying the default energy storage
     // We also should update the comment above
     private LongSupplier energyStorage = () -> STORAGE_MULTIPLIER * energyUsage.getAsInt();
 

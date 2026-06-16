@@ -89,7 +89,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     private boolean chargeHandler(@Nullable ResourceHandler<ItemResource> itemHandler, TransactionContext transaction) {
         //Ensure that we have an item handler capability, because if for example the player is dead we will not
         if (itemHandler != null) {
-            //TODO - 26.1: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
+            //TODO - 26.2: We are using this as a energy per target per tick limit rather than an overall transfer rate limit.
             // Do we want to somehow document that fact for the chargepad's limit
             int energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {

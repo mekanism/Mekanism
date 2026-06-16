@@ -50,7 +50,7 @@ public abstract class WrappedShapedRecipe extends ShapedRecipe {
     public boolean matches(CraftingInput input, Level world) {
         //Note: We do not override the matches method if it matches ignoring NBT,
         // to ensure that we return the proper value for if there is a match that gives a proper output
-        return super.matches(input, world) && !assemble(input).isEmpty();//TODO - 26.1: can this ever be empty?
+        return super.matches(input, world) && !assemble(input).isEmpty();//TODO - 26.2: can this ever be empty?
     }
 
     public interface Factory<CLAZZ extends WrappedShapedRecipe> {

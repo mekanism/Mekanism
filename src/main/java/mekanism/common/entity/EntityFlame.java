@@ -247,7 +247,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             return;
         }
         if (recipe.isPresent()) {
-            //TODO - 26.1: Do we need to be firing any of the place methods on the client side now that we also are firing this event on the client side?
+            //TODO - 26.2: Do we need to be firing any of the place methods on the client side now that we also are firing this event on the client side?
             if (NeoForge.EVENT_BUS.post(new BreakBlockEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
                 //We can't break the block exit
                 return;

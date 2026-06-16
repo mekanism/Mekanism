@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 public class FrequencyType<FREQ extends Frequency> {
 
-    //TODO - 26.1 - investigate no usages
+    //TODO - 26.2 - investigate no usages
     public static final Codec<FrequencyType<?>> CODEC = MekCodecs.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
     public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(255).map(
           name -> {

@@ -88,7 +88,7 @@ public class BoltRenderer {
         }
     }
 
-    @Deprecated//TODO - 26.1: Try to replace all usages of this with one that gets the game time from a render state
+    @Deprecated//TODO - 26.2: Try to replace all usages of this with one that gets the game time from a render state
     public void update(Object owner, BoltEffect newBoltData, float partialTicks) {
         if (minecraft.level == null) {
             return;

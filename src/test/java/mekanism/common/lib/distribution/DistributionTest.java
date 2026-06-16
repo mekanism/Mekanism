@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-//TODO - 26.1: Add tests that test rolling back emitions
+//TODO - 26.2: Add tests that test rolling back emitions
 @DisplayName("Test Distribution via EmitUtils")
 class DistributionTest {
 

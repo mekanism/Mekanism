@@ -34,7 +34,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
               Mekanism.rl("entity/armor/mekatool")
         );
 
-        //TODO - 26.1: Add javadocs stating that chemical resources now need to be added to the block atlas
+        //TODO - 26.2: Add javadocs stating that chemical resources now need to be added to the block atlas
         // OR, they can be added to the following folders to be auto-added
         blockAtlas.addSource(new DirectoryLister("mek_liquid", "mek_liquid/"));
         blockAtlas.addSource(new DirectoryLister("mek_chemical", "mek_chemical/"));

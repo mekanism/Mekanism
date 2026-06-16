@@ -376,7 +376,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 //TODO: Check if it matters that we are not actually updating the list of remaining items?
                 // The better solution would be to not allow continuing until we moved output AND all remaining items
                 // instead of trying to move all at once??
-                //TODO - 26.1: validate we don't have to clear the list anywhere
+                //TODO - 26.2: validate we don't have to clear the list anywhere
                 int remainingAmount = remainingItem.count();
                 if (remainingAmount > 0 && directOutputHandler.insert(ItemResource.of(remainingItem), remainingAmount, transaction) < remainingAmount) {
                     //Can't fit it all, bail and revert changes
@@ -653,7 +653,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    //TODO - 26.1: Fix the placing into wrong slot briefly on the client side by ensuring the stock control map is synced to the client?
+    //TODO - 26.2: Fix the placing into wrong slot briefly on the client side by ensuring the stock control map is synced to the client?
     private void buildStockControlMap() {
         if (formula.isEmpty()) {
             return;

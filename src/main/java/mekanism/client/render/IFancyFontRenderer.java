@@ -18,7 +18,7 @@ import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
 //TODO - 1.21: Document this class
-//TODO - 26.1 fixme
+//TODO - 26.2 fixme
 public interface IFancyFontRenderer {
 
     int getXSize();

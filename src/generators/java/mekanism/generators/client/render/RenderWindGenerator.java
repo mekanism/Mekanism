@@ -57,7 +57,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             poseStack.translate(0.5, 1.5, 0.5);
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-            //TODO - 26.1: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
+            //TODO - 26.2: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
             nodeCollector.submitModel(this.model, state.rotation, poseStack, ModelWindGenerator.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
             poseStack.popPose();
         }

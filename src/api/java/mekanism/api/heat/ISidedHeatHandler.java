@@ -4,7 +4,7 @@ import net.minecraft.core.Direction;
 import org.jspecify.annotations.Nullable;
 
 /// A sided variant of [IHeatHandler]
-//TODO - 26.1: Re-evaluate this class
+//TODO - 26.2: Re-evaluate this class
 public interface ISidedHeatHandler extends IHeatHandler {
 
     /// The side this [ISidedHeatHandler] is for. This defaults to null, which is for internal use.

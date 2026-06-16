@@ -526,15 +526,15 @@ dependencies {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        //TODO - 26.1: Re-enable when it updates
+        //TODO - 26.2: Re-enable when it updates
         //datagenMainRuntimeOnly(emi)
     }
 
-    //TODO - 26.1: Re-enable when it updates
+    //TODO - 26.2: Re-enable when it updates
     //localRuntime("team.chisel.ctm:CTM:${major_minecraft_version}-${ctm_version}")
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    //TODO - 26.1: Re-enable when it updates
+    //TODO - 26.2: Re-enable when it updates
     //localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
 
     //// Jade
@@ -547,7 +547,7 @@ dependencies {
     //localRuntime("maven.modrinth:jade:${jade_version_modrinth}")
     /// - Maven (gradle build with added publish block, upload)
     compileOnly("snownee.jade:Jade:${jade_version}:api")
-    //TODO - 26.1: Re-enable when it updates
+    //TODO - 26.2: Re-enable when it updates
     //localRuntime("snownee.jade:Jade:${jade_version}")
 
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
@@ -556,7 +556,7 @@ dependencies {
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    //TODO - 26.1: Re-enable when it updates
+    //TODO - 26.2: Re-enable when it updates
     //localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
     compileOnly(jeiTweaker)
@@ -586,12 +586,12 @@ dependencies {
     //datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")//Biomes we've gone
     //datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")//Biomes we've gone
     //datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")//Biomes we've gone
-    //TODO - 26.1 change back to datagenMainImplementation
+    //TODO - 26.2 change back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}")
 
-    //TODO - 26.1: Switch this back to datagenMainImplementation
+    //TODO - 26.2: Switch this back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    //TODO - 26.1: Re-enable once this updates
+    //TODO - 26.2: Re-enable once this updates
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it

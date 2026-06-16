@@ -19,8 +19,8 @@ import net.neoforged.testframework.gametest.EmptyTemplate;
 import net.neoforged.testframework.gametest.GameTest;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
 
-//TODO - 26.1: Add tests to validate the state of the drive item after inventory modifications
-//TODO - 26.1: Test to make sure items can get split among multiple drives, and then rolling back behaves as expected
+//TODO - 26.2: Add tests to validate the state of the drive item after inventory modifications
+//TODO - 26.2: Test to make sure items can get split among multiple drives, and then rolling back behaves as expected
 @ForEachTest(groups = "qio.transactional")
 public class TransactionalQIOTest {
 

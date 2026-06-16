@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
-//TODO - 26.1: Remove this in favor of just rendering a model part?
+//TODO - 26.2: Remove this in favor of just rendering a model part?
 public class ModelEnergyCore extends MekanismJavaModel<Integer> {
 
     private static final Identifier CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");

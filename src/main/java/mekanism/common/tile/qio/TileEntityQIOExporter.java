@@ -196,7 +196,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     public void readSustainedData(ValueInput input) {
         super.readSustainedData(input);
         exportWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, exportWithoutFilter);
-        //TODO - 26.1: Should the default value be the current round robin value?
+        //TODO - 26.2: Should the default value be the current round robin value?
         roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, false);
     }
 

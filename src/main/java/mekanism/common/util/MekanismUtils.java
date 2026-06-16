@@ -107,7 +107,7 @@ public final class MekanismUtils {
     // be transitioned over to the level's tickrate
     public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;
     public static final LongSupplier GAME_TIME_SUPPLIER = () -> {
-        //TODO - 26.1: Re-evaluate If this is a reasonable enough implementation for rate limits on items, or if there is some other way we want to do it.
+        //TODO - 26.2: Re-evaluate If this is a reasonable enough implementation for rate limits on items, or if there is some other way we want to do it.
         // We could theoretically reset the limit when the root transaction is committed, and then just not care about the game time at all
         // Yes it wouldn't stop multiple calls from different transactions from being limitted, but in general if multiple calls do happen,
         // odds are they will be within a single overall transaction (except? maybe for cases like multiple mods wireless charging a player's inventory)
@@ -258,7 +258,7 @@ public final class MekanismUtils {
                 // def * upgradeMultiplier ^ ((speed - gas) / 8)
                 //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
                 // that use this that are not statistical and have gas upgrades so would go through this code path
-                //TODO - 26.1: Re-evaluate this cast
+                //TODO - 26.2: Re-evaluate this cast
                 return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
                       fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL))));
             }
@@ -520,7 +520,7 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        //TODO - 26.1 milk now cures all effects, do we need to change anything?
+        //TODO - 26.2 milk now cures all effects, do we need to change anything?
         return !effectInstance.getEffect().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
@@ -567,7 +567,7 @@ public final class MekanismUtils {
     ///
     /// @return true if the player is neither in creative mode, nor in spectator mode.
     public static boolean isPlayingMode(Player player) {
-        //TODO - 26.1: Look at calls to Player#isCreative, and see what should potentially be going through here
+        //TODO - 26.2: Look at calls to Player#isCreative, and see what should potentially be going through here
         return !player.isCreative() && !player.isSpectator();
     }
 
@@ -673,7 +673,7 @@ public final class MekanismUtils {
                     // block hardness values in a modded context
                     continue;
                 }
-                //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+                //TODO - 26.2: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
                 BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
                 if (event.isCanceled()) {
                     //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)

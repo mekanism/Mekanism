@@ -102,7 +102,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     @Override
     public void handleUpdateTag(ValueInput input) {
         super.handleUpdateTag(input);
-        //TODO - 26.1: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
+        //TODO - 26.2: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
         input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(uuid -> setMultiblock(level, uuid), () -> multiblockUUID = null);
     }
 }

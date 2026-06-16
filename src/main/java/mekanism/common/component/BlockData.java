@@ -119,7 +119,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
     public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
         Block block = blockState.getBlock();
         tooltipAdder.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
-        //TODO - 26.1: Test this and figure out if there is a reason/way to support the tooltip display stuff for proxied components
+        //TODO - 26.2: Test this and figure out if there is a reason/way to support the tooltip display stuff for proxied components
         if (blockEntityTag != null) {
             tooltipAdder.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
                   RegistryUtils.getHolderById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE)

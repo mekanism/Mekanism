@@ -16,7 +16,7 @@ public class StorageConfig extends BaseMekanismConfig {
     StorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        //TODO - 26.1: Update these config values
+        //TODO - 26.2: Update these config values
         laserAmplifier = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_LASER_AMPLIFIER, "laserAmplifier",
               5_000_000L, 1);
         laserTractorBeam = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.ENERGY_STORAGE_TRACTOR_BEAM, "laserTractorBeam",

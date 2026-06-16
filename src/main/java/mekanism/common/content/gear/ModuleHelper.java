@@ -39,7 +39,7 @@ import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import org.jspecify.annotations.Nullable;
 
 /// @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via [IModuleHelper#INSTANCE]
-public class ModuleHelper implements IModuleHelper {//TODO - 26.1: Evaluate moving at least some of this stuff to being defined via datamaps or at least datapack
+public class ModuleHelper implements IModuleHelper {//TODO - 26.2: Evaluate moving at least some of this stuff to being defined via datamaps or at least datapack
 
     public static ModuleHelper get() {
         return (ModuleHelper) INSTANCE;

@@ -296,7 +296,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             sum = r;
         }
         try (Transaction simulation = Transaction.open(transaction)) {
-            //TODO - 26.1: Can we make it so that the calculation of if there is enough energy only happens once?
+            //TODO - 26.2: Can we make it so that the calculation of if there is enough energy only happens once?
             // Maybe at the very least just simulate and then remove any extra enties from toTeleport that we don't have energy for
             if (energyContainer.extract(sum, simulation, AutomationType.INTERNAL) < sum) {
                 return NOT_ENOUGH_ENERGY;
@@ -763,7 +763,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     String getStatus() {
         if (hasFrequency()) {
-            //TODO - 26.1: Evaluate making it so that these cases get handled automatically with it just being an enum?
+            //TODO - 26.2: Evaluate making it so that these cases get handled automatically with it just being an enum?
             return switch (status) {
                 case READY -> "ready";
                 case NO_FRAME -> "no frame";

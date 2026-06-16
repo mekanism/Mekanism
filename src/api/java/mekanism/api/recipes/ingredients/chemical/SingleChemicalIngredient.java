@@ -16,7 +16,7 @@ import org.jspecify.annotations.Nullable;
 /// [mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#mapCodecNonEmpty]
 ///
 /// @since 10.6.0
-public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 26.1: Refactor this to be more like SimpleFluidIngredient
+public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 26.2: Refactor this to be more like SimpleFluidIngredient
 
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalInstance.CHEMICAL_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
           .fieldOf(SerializationConstants.CHEMICAL);

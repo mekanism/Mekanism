@@ -38,7 +38,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
         }
     }
 
-    //TODO - 26.1: Re-evaluate doing this
+    //TODO - 26.2: Re-evaluate doing this
     protected void addChemicalSprites(SourceList atlas) {
         List<Identifier> icons = new ArrayList<>();
         for (Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {

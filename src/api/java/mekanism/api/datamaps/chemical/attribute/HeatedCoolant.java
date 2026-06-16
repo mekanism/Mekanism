@@ -58,7 +58,7 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     }
 
     /// {@return a chemical resource representing the type of the cooled coolant}
-    public ChemicalResource cool() {//TODO - 26.1: Update docs
+    public ChemicalResource cool() {//TODO - 26.2: Update docs
         return ChemicalResource.of(otherVariant);
     }
 

@@ -68,12 +68,12 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
             if (!fluid.isEmpty()) {
                 float fluidScale = (float) handler.getAmountAsLong(0) / handler.getCapacityAsLong(0, fluid);
                 contentsMaxY = fluidScale > 0 ? RenderFluidTank.contentsMaxY(fluidScale, MekanismUtils.lighterThanAirGas(fluid)) : 0;
-                fluidLight = fluid.getFluidType().getLightLevel();//todo - 26.1: used to be stack, is that important anywhere?
+                fluidLight = fluid.getFluidType().getLightLevel();//TODO - 26.2: used to be stack, is that important anywhere?
                 fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
                 fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             }
         }
-        //todo - 26.1: do this with the block model from model manager (copy Energy cube item)
+        //TODO - 26.2: do this with the block model from model manager (copy Energy cube item)
         BlockState blockState = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
         BlockModelRenderState blockModel = new BlockModelRenderState();
         mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);

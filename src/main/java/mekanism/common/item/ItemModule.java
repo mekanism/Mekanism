@@ -25,7 +25,7 @@ public class ItemModule extends Item implements IModuleItem {
     public ItemModule(Holder<ModuleData<?>> moduleData, Properties properties) {
         super(properties.overrideDescription(moduleData.unwrap().map(
               //Note: In theory it will always take this path, but in case for some reason a direct holder is passed, we support querying it from the value instead
-              //TODO - 26.1: Do we want to expose a constant for the translation key prefix? (Maybe doing so for all of our custom translation keys?)
+              //TODO - 26.2: Do we want to expose a constant for the translation key prefix? (Maybe doing so for all of our custom translation keys?)
               key -> Util.makeDescriptionId("module", key.identifier()),
               ModuleData::getTranslationKey
         )));

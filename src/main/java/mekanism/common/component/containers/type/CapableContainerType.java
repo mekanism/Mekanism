@@ -61,7 +61,7 @@ public abstract class CapableContainerType<CONTAINER extends ValueIOSerializable
     protected abstract HANDLER createHandler(ItemAccess itemAccess);
 
     @Nullable
-    public HANDLER getCapOrUnexposed(ItemAccess itemAccess) {//TODO - 26.1: Re-evaluate this
+    public HANDLER getCapOrUnexposed(ItemAccess itemAccess) {//TODO - 26.2: Re-evaluate this
         HANDLER handler = capability.getCapability(itemAccess);
         //Fall back to the raw unexposed handler if it isn't exposed as a capability
         return handler == null ? createHandler(itemAccess) : handler;

@@ -42,7 +42,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
                 }
                 InteractionResult result = openGui(player);
                 return result;
-                //TODO - 26.1: why are these being remapped??
+                //TODO - 26.2: why are these being remapped??
                 /*return switch (result) {
                     case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
                     case InteractionResult.CONSUME -> ItemInteractionResult.CONSUME;

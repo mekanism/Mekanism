@@ -89,7 +89,7 @@ public class HUDRenderer {
     }
 
     private void renderMekaSuitEnergyIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws) {
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         /*Matrix3x2fStack pose = guiGraphics.pose();
         pose.pushMatrix();
         pose.translate(10, 10);
@@ -119,7 +119,7 @@ public class HUDRenderer {
 
     private void renderMekaSuitModuleIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, int screenWidth, int screenHeight,
           boolean reverseHud, int subtitlesWidth) {
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         /*int startX = screenWidth - 10;
         int curY = screenHeight - 10;
         Matrix4f matrix = new Matrix4f(guiGraphics.pose().last().pose());
@@ -167,7 +167,7 @@ public class HUDRenderer {
 
     private void renderHUDElement(Font font, GuiGraphicsExtractor guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
           boolean iconRight) {
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         int color = element.getColor();
         /*RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();*/
@@ -183,7 +183,7 @@ public class HUDRenderer {
         int posX = reverseHud ? screenWidth - 125 - audibleSubtitlesWidth : 25;
         //Pin the compass above the bottom of the screen and also above the text hud that may render below it
         int posY = Math.min(screenHeight - 20, maxTextHeight) - 80;
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         /*PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(posX + 50, posY + 50, 0);
@@ -213,7 +213,7 @@ public class HUDRenderer {
     }
 
     private void rotateStr(GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, ILangEntry langEntry, float rotation, float shift, int color) {
-        //TODO - 26.1: rendering
+        //TODO - 26.2: rendering
         /*PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.mulPose(Axis.ZP.rotationDegrees(shift));

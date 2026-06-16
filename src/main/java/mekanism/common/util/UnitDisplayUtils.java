@@ -53,7 +53,7 @@ public class UnitDisplayUtils {
     };
 
     public static Component getEnergyDisplayShort(long value) {
-        //TODO - 26.1: Re-evaluate this, getDisplayBase takes a double, can we make it more accurate for higher values by creating a variant for longs?
+        //TODO - 26.2: Re-evaluate this, getDisplayBase takes a double, can we make it more accurate for higher values by creating a variant for longs?
         return getDisplayBase(value, FORGE_ENERGY, 2, true, true);
     }
 

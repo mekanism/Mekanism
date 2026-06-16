@@ -6,7 +6,7 @@ import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jspecify.annotations.Nullable;
 
-public enum PipeTier implements IStorageTier {//TODO - 26.1: Do we want to change capacities to match chemicals?
+public enum PipeTier implements IStorageTier {//TODO - 26.2: Do we want to change capacities to match chemicals?
     BASIC(BaseTier.BASIC, 2L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME / 4),
     ADVANCED(BaseTier.ADVANCED, 8L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 32L * FluidType.BUCKET_VOLUME, 8 * FluidType.BUCKET_VOLUME),

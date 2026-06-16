@@ -64,7 +64,7 @@ public class ClientRegistrationUtil {
         }
         return -1;
     });
-    //TODO - 26.1 item models
+    //TODO - 26.2 item models
     /*
     private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
@@ -155,10 +155,10 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
-        //TODO - 26.1: do this with the models themselves?
+        //TODO - 26.2: do this with the models themselves?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
-        }//TODO - 26.1 item colours
+        }//TODO - 26.2 item colours
         /* else if (event instanceof RegisterColorHandlersEvent.ItemTintSources itemEvent) {
             registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
         }*/
@@ -192,7 +192,7 @@ public class ClientRegistrationUtil {
 
                     @Override
                     public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
-                        //TODO - 26.1: is alpha needed?
+                        //TODO - 26.2: is alpha needed?
                         fluidFogColor.set(ARGB.redFloat(fluidTint), ARGB.greenFloat(fluidTint), ARGB.blueFloat(fluidTint));
                     }
 

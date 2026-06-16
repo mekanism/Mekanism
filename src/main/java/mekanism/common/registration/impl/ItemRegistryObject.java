@@ -53,7 +53,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         return new ItemStackTemplate(value(), count);
     }
 
-    //TODO - 26.1: Re-evaluate asStack usages, as maybe most are gone by the time datagen is converted to asTemplate?
+    //TODO - 26.2: Re-evaluate asStack usages, as maybe most are gone by the time datagen is converted to asTemplate?
     public ItemStack asStack() {
         return asStack(1);
     }

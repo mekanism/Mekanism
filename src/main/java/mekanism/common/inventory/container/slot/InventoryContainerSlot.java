@@ -32,7 +32,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         this.slotType = slotType;
         this.slotOverlay = slotOverlay;
         this.warningAdder = warningAdder;
-        //TODO - 26.1: Evaluate callers of getItem in cases where it may be an InventoryContainerSlot
+        //TODO - 26.2: Evaluate callers of getItem in cases where it may be an InventoryContainerSlot
         // as it is possible we might be relying on being able to edit the item. While StackCopySlot may be able to handle that
         // we also might be missing the setChanged calls it would be relying on
     }
@@ -54,7 +54,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
 
     @Override
     public int extract(Player player, ItemResource resource, int amount, TransactionContext transaction) {
-        //TODO - 26.1: Should we be calling mayPickup here or should we trust that if it is overridden then this method also gets overridden?
+        //TODO - 26.2: Should we be calling mayPickup here or should we trust that if it is overridden then this method also gets overridden?
         // Calling it duplicates the can extract check, but prevent overriders from having to also override this
         // though we don't check mayPlace for the insert method
         return resource.isEmpty() ? 0 : slot.extract(resource, amount, transaction, AutomationType.MANUAL);

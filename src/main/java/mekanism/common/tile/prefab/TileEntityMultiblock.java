@@ -215,7 +215,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
         InteractionResult result = openGui(player);
         return result;
-        //TODO - 26.1: why are these being remapped??
+        //TODO - 26.2: why are these being remapped??
         /*return switch (result) {
             case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> InteractionResult.SUCCESS;
             case InteractionResult.CONSUME -> InteractionResult.CONSUME;
@@ -271,7 +271,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.handleUpdateTag(input);
         isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
         T multiblock = getMultiblock();
-        //TODO - 26.1: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
+        //TODO - 26.2: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
         multiblock.setFormedForce(input.getBooleanOr(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed()));
         if (isMaster()) {
             if (multiblock.isFormed()) {

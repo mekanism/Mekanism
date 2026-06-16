@@ -66,7 +66,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected void drawBackgroundOverlay(GuiGraphicsExtractor guiGraphics) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            //TODO - 26.1: figure out the rest of the params
+            //TODO - 26.2: figure out the rest of the params
             //guiGraphics.blit(RenderPipelines.GUI, MekanismRenderer.REDSTONE_PULSE_ID, getButtonX() + 1, getButtonY() + 1, 0, innerWidth - 2, innerHeight - 2);
         } else {
             super.drawBackgroundOverlay(guiGraphics);

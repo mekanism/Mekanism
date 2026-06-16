@@ -705,7 +705,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        //TODO - 26.1: Re-evaluate callers
+        //TODO - 26.2: Re-evaluate callers
         public boolean isStackStillValid(Level world, ItemStack stack, int index) {
             return isStackStillValid(world, ItemResource.of(stack), index);
         }
@@ -742,7 +742,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         private static Iterable<ItemStack> getItems(Ingredient ingredient) {
-            //todo - 26.1: unpack ingredients, check RecipeIndex(Cache)
+            //TODO - 26.2: unpack ingredients, check RecipeIndex(Cache)
             return Collections.emptyList();
         }
 
@@ -845,7 +845,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        //TODO - 26.1: Recipes. probably use the display() and make it a util func
+        //TODO - 26.2: Recipes. probably use the display() and make it a util func
         private static List<Ingredient> getIngredients(CraftingRecipe value) {
             return Collections.emptyList();//value.getIngredients();
         }

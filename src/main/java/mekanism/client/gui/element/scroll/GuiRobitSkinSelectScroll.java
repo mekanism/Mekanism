@@ -179,7 +179,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(gui().registryAccess(), skinKey);
         List<Identifier> textures = skinLookup.textures();
-        //TODO - 26.1 robit model
+        //TODO - 26.2 robit model
         /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {
             Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.identifier());

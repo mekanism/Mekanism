@@ -11,7 +11,7 @@ import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
 /// Mekanism model loader that properly loads models and switches between them based on the active model data
-//TODO - 26.1 models
+//TODO - 26.2 models
 public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> {
 
     public static final ModelProperty<Void> EMITTING = new ModelProperty<>();

@@ -90,7 +90,7 @@ public final class MekanismHooks {
         if (jsonThings.isLoaded()) {
             JsonThingsIntegration.hook(modEventBus);
         }
-        //TODO - 26.1: projectE
+        //TODO - 26.2: projectE
         //if (projecte.isLoaded()) {
         //    MekanismNormalizedSimpleStacks.NSS_SERIALIZERS.register(modEventBus);
         //}

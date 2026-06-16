@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
-    //TODO - 26.1: Re-evaluate usages of this and maybe decide to inline properties to call sites?
+    //TODO - 26.2: Re-evaluate usages of this and maybe decide to inline properties to call sites?
     public static BlockBehaviour.Properties defaultProperties(BlockBehaviour.Properties properties) {
         //TODO - 1.18: Figure out what the resistance should be (it used to be different in 1.12)
         return properties.strength(3.5F, 16).requiresCorrectToolForDrops();

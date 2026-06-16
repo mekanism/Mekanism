@@ -342,7 +342,7 @@ public class ClientTickHandler {
         }
     }
 
-    //TODO - 26.1: Do we need to even be calling this anymore in post? As we are adjusting the state now rather than just the model
+    //TODO - 26.2: Do we need to even be calling this anymore in post? As we are adjusting the state now rather than just the model
     private static void setModelVisibility(HumanoidRenderState state, HumanoidModel<?> entityModel, boolean showModel) {
         if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.head.visible = showModel;
@@ -356,7 +356,7 @@ public class ClientTickHandler {
             entityModel.body.visible = showModel;
             if (!(state instanceof ArmorStandRenderState)) {
                 //Don't adjust arms for armor stands as the model will end up changing them anyway, and then we may incorrectly activate them
-                //TODO - 26.1: Is this still true? I am guessing we might be able to just disable them for the armor stand
+                //TODO - 26.2: Is this still true? I am guessing we might be able to just disable them for the armor stand
                 entityModel.leftArm.visible = showModel;
                 entityModel.rightArm.visible = showModel;
             }
@@ -372,7 +372,7 @@ public class ClientTickHandler {
             }
         } else if (itemHidesCape(state.chestEquipment.getItem()) && state instanceof AvatarRenderState playerState) {
             //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
-            //TODO - 26.1: I think the cape layer now actually has something that we might be able to integrate with that sort of checks if there is a wings layer present
+            //TODO - 26.2: I think the cape layer now actually has something that we might be able to integrate with that sort of checks if there is a wings layer present
             playerState.showCape = false;
         }
         if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {

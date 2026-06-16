@@ -34,7 +34,7 @@ public class QIOGameTestHelper extends MekGameTestHelper {
 
     public void addDrives(QIOFrequency frequency) {
         TileEntityQIODriveArray driveArray = getBlockEntity(0, 0, 0, TileEntityQIODriveArray.class);
-        //TODO - 26.1: Do we need to somehow set the frequency on the BE? Maybe for testing modifications to the drive slots
+        //TODO - 26.2: Do we need to somehow set the frequency on the BE? Maybe for testing modifications to the drive slots
         List<QIODriveSlot> driveSlots = driveArray.getDriveSlots();
         for (int slot = 0, size = driveSlots.size(); slot < size; slot++) {
             QIODriveSlot driveSlot = driveSlots.get(slot);
@@ -72,7 +72,7 @@ public class QIOGameTestHelper extends MekGameTestHelper {
     }
 
     public void testExtract(QIOFrequency frequency, ItemResource itemType, long amount, boolean commit) {
-        //TODO - 26.1: Is there a better way for us to do this that ends up with having items in the frequency to be able to extract from?
+        //TODO - 26.2: Is there a better way for us to do this that ends up with having items in the frequency to be able to extract from?
         testInsert(frequency, itemType, amount, true);
         try (Transaction transaction = Transaction.openRoot()) {
             long extracted = frequency.massExtract(itemType, amount, transaction);

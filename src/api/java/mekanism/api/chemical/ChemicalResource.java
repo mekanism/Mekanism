@@ -14,7 +14,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Update docs on this
+//TODO - 26.2: Update docs on this
 public final class ChemicalResource implements RegisteredResource<Chemical>, IHasTextComponent, IHasTranslationKey {
 
     /// The empty resource instance of a [ChemicalResource]
@@ -50,7 +50,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     /// @throws IllegalStateException If the backing registry is unavailable or not yet ready.
     /// @throws NullPointerException  If the underlying Holder has not been populated (the target object is not registered).
     public static ChemicalResource of(Chemical chemical) {
-        //TODO - 26.1: Re-evaluate this
+        //TODO - 26.2: Re-evaluate this
         return of(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical));
     }
 
@@ -62,7 +62,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return EMPTY;
         }
-        if (chemical.kind() == Holder.Kind.DIRECT) {//TODO - 26.1: Re-evaluate and maybe make a util method for this as it is copied from the ChemicalStack constructor
+        if (chemical.kind() == Holder.Kind.DIRECT) {//TODO - 26.2: Re-evaluate and maybe make a util method for this as it is copied from the ChemicalStack constructor
             if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
                 throw new IllegalArgumentException("Cannot create a ChemicalStack from an unbound direct holder");
             }
@@ -121,7 +121,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     /// {@return true if this resource matches the chemical of the passed stack}
     ///
     /// @param stack the chemical stack to check
-    public boolean matches(ChemicalStack stack) {//TODO - 26.1: Re-evaluate this
+    public boolean matches(ChemicalStack stack) {//TODO - 26.2: Re-evaluate this
         return is(stack.typeHolder());
     }
 

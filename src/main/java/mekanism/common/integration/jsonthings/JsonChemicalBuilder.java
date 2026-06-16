@@ -39,7 +39,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
 
     @Override
     public void validate() {
-        //TODO - 26.1: Is there any data we want to be validating here?
+        //TODO - 26.2: Is there any data we want to be validating here?
     }
 
     public JsonChemicalBuilder texture(Identifier texture) {

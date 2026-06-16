@@ -40,7 +40,7 @@ public class FrequencyControllerManager {
     protected static <FREQ extends Frequency> FrequencyLookup<FREQ> createLookup(FrequencyType<FREQ> frequencyType, @Nullable UUID uuid, SecurityMode securityMode, Codec<FrequencyLookup<FREQ>> codec) {
         FrequencyLookup<FREQ> lookup;
         if (dataStorage == null) {
-            //assume client - TODO - 26.1 - does this even get called on the client? seems not
+            //assume client - TODO - 26.2 - does this even get called on the client? seems not
             lookup = new FrequencyLookup<>(frequencyType, uuid, securityMode);
         } else {
             SavedDataType<FrequencyLookup<FREQ>> dataType = new SavedDataType<>(

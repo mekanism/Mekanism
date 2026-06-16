@@ -51,7 +51,7 @@ public class ItemConfigurationCard extends Item {
     @Override
     @Deprecated
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        //TODO - 26.1: Go through the various append methods we have and move some over to data component based
+        //TODO - 26.2: Go through the various append methods we have and move some over to data component based
         // Also support TooltipDisplay#hideTooltip
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         tooltipAdder.accept(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
@@ -73,7 +73,7 @@ public class ItemConfigurationCard extends Item {
         } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
             return InteractionResult.FAIL;
         }
-        //TODO - 26.1: Figure out if there is any other information we want to include in the problem path
+        //TODO - 26.2: Figure out if there is any other information we want to include in the problem path
         ProblemReporter.PathElement problemPath = new ConfigurationCardPathElement(blockState.getBlock(), pos);
         ItemStack stack = context.getItemInHand();
         if (player.isShiftKeyDown()) {
@@ -133,7 +133,7 @@ public class ItemConfigurationCard extends Item {
         }
         ItemStack configCard = player.getItemInHand(usedHand);
         configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
-        //TODO - 26.1: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
+        //TODO - 26.2: Does this need to use a copy of the stack rather than directly removing the component above? Check other implementations of use as well
         return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(configCard);
     }
 
@@ -153,7 +153,7 @@ public class ItemConfigurationCard extends Item {
     }
 
     private Component getConfigCardName(@Nullable CompoundTag data) {
-        //TODO - 26.1: Do we want to change the caller of this to go via the value input method?
+        //TODO - 26.2: Do we want to change the caller of this to go via the value input method?
         if (data == null) {
             return MekanismLang.NONE.translate();
         }

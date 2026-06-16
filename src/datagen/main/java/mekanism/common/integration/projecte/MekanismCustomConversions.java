@@ -15,7 +15,7 @@ public class MekanismCustomConversions extends CustomConversionProvider {
 
     @Override
     protected void addCustomConversions(HolderLookup.Provider registries) {
-        //TODO - 26.1: Enable after ProjectE is updated
+        //TODO - 26.2: Enable after ProjectE is updated
         /*createConversionBuilder(Mekanism.rl("defaults"))
               .comment("Default values for Mekanism items.")
               .before(MekanismItems.SALT, 8)

@@ -34,7 +34,7 @@ public class ItemMekanismShield extends ShieldItem {
                           0.25F,
                           1.0F,
                           List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-                          //TODO - 26.1: should different shields block more damage?
+                          //TODO - 26.2: should different shields block more damage?
                           new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
                           Optional.of(context.getOrThrow(DamageTypeTags.BYPASSES_SHIELD)),
                           Optional.of(SoundEvents.SHIELD_BLOCK),

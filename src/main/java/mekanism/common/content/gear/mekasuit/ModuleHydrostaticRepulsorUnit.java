@@ -40,7 +40,7 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
 
     @Override
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, ItemAccess itemAccess, Player player, TransactionContext transaction) {
-        //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
+        //TODO - 26.2 if we want to do more than water, EntityFluidInteraction needs interrogating
         if (isSwimBoost(module) && player.isEyeInFluid(FluidTags.WATER)) {
             //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
             module.useAllEnergy(null, itemAccess, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get(), transaction, false);

@@ -22,7 +22,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-//todo - 26.1: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
+//TODO - 26.2: review if any of these can be converted back to regular java models - needs rendertype without texture & only single rendertype/light coords
 public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extends Model<STATE>*/ {
 
     protected final ModelPart root;
@@ -33,7 +33,7 @@ public abstract class MekanismJavaModel<STATE extends @Nullable Object> /*extend
         this.allParts = root.getAllParts();
     }
 
-    //TODO - 26.1 outlines??
+    //TODO - 26.2 outlines??
     public abstract void collect(STATE state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlayLight);
 
     public void setupAnim(STATE state) {

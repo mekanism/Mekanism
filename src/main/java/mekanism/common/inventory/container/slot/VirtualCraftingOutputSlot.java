@@ -56,7 +56,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
             int amountPerRecipe = slot.amountAsInt();
             //Return how many full recipe extractions we would be able to do. We don't modify the
             // actual slot as we want it to maintain its contents
-            //TODO - 26.1: Do we need to add a snapshot listener for the transaction being committed to increment amountCrafted?
+            //TODO - 26.2: Do we need to add a snapshot listener for the transaction being committed to increment amountCrafted?
             // I suspect it doesn't matter as we don't actually ever call this method except for vanilla slots that we wrap into ITransactionalSlot
             return (amount / amountPerRecipe) * amountPerRecipe;
         }
@@ -82,7 +82,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         ItemStack extracted = getStackCopy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.count();
-        //TODO - 26.1: Do we want to scale this up by how many times the full stack could be extracted while still being under amount
+        //TODO - 26.2: Do we want to scale this up by how many times the full stack could be extracted while still being under amount
         // Unlike #extract, we do need to make sure that it is at least one recipe's worth, even if we don't have to round up for other cases
         return extracted;
     }

@@ -53,7 +53,7 @@ public class MeltdownLevelData implements ValueIOSerializable {
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 26.1: Re-evaluate if we want this to be stored under, as previously it was just as a list without needing a key
+        //TODO - 26.2: Re-evaluate if we want this to be stored under, as previously it was just as a list without needing a key
         // Also figure out if this properly supports being lenient if say one meltdown source is of a broken format
         for (Meltdown meltdown : input.listOrEmpty(SerializationConstants.VALUE, Meltdown.CODEC)) {
             this.meltdowns.add(meltdown);

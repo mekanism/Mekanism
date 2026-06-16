@@ -24,7 +24,7 @@ public class BasicColorButton extends MekanismButton {
     @Override
     protected int getButtonBlitColor() {
         EnumColor color = getColor();
-        //todo - 26.1: this seems silly. there should be no need for all the Color boxing/unboxing
+        //TODO - 26.2: this seems silly. there should be no need for all the Color boxing/unboxing
         if (color != null) {
             Color c = Color.rgb(color.getRgbCode());
             double[] hsv = c.hsvArray();

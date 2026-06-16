@@ -46,7 +46,7 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
     public static LayerDefinition createOverlayLayer() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        //TODO - 26.1: Figure out the overlay model size and parameters. And if we need a separate one for each case of only rendering the model on one side?
+        //TODO - 26.2: Figure out the overlay model size and parameters. And if we need a separate one for each case of only rendering the model on one side?
         root.addOrReplaceChild("overlay",
               CubeListBuilder.create()
                     .texOffs(0, 0)
@@ -90,7 +90,7 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
 
     @Override
     public void submit(DiversionTransporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (!MekanismConfig.client.opaqueTransmitters.get()) {//TODO - 26.1: Re-evaluate this check
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {//TODO - 26.2: Re-evaluate this check
             super.submit(state, poseStack, nodeCollector, camera);
         }
         if (state.overlay != null) {
@@ -100,14 +100,14 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
             nodeCollector.submitModelPart(
                   this.overlayModel,
                   poseStack,
-                  //TODO - 26.1: ConduitRenderer uses RenderTypes::entityCutoutNoCull, do we care about cull,
+                  //TODO - 26.2: ConduitRenderer uses RenderTypes::entityCutoutNoCull, do we care about cull,
                   // and is MC better at handling ordering of a variety of render types. Such as we used to use translucentCullBlockSheet
                   state.overlay.renderType(RenderTypes::entityCutout),
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
                   this.materials.get(state.overlay),
                   DIVERSION_OVERLAY_ARGB,
-                  state.breakProgress//TODO - 26.1: Do we want to be passing the crumbling state?
+                  state.breakProgress//TODO - 26.2: Do we want to be passing the crumbling state?
             );
             poseStack.popPose();
         }

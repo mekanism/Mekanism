@@ -41,7 +41,7 @@ public class JetpackFlameParticle extends FlameParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
-            //TODO - 26.1: Do we need to scale the particle like flame particle's provider does?
+            //TODO - 26.2: Do we need to scale the particle like flame particle's provider does?
             return new JetpackFlameParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet.get(random));
         }
     }

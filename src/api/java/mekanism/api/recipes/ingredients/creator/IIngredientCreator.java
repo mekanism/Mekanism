@@ -10,7 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>> {//TODO - 26.1: Add helpers that take TypedInstance?
+public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, STACK>> {//TODO - 26.2: Add helpers that take TypedInstance?
 
     /// Creates an Ingredient that matches a given stack.
     ///

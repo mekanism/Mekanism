@@ -94,7 +94,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new MekanismSoundProvider(output));
         gen.addProvider(true, new MekanismSpriteSourceProvider(output, lookupProvider));
         gen.addProvider(true, new MekanismModelProvider(output, clientResources));
-        //todo - 26.1: gen.addProvider(true, new MekanismBlockStateProvider(output));
+        //TODO - 26.2: gen.addProvider(true, new MekanismBlockStateProvider(output));
         //Server side data generators
         gen.addProvider(true, new MekanismTagProvider(output, lookupProvider));
         gen.addProvider(true, new MekanismLootProvider(output, lookupProvider));

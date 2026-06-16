@@ -32,8 +32,8 @@ public final class EnergyUtils {
         } else if (handler instanceof ComponentBackedEnergyHandler energyHandler) {
             return energyHandler.getEnergyContainer();
         }
-        //TODO - 26.1: Do we want a way to wrap energy handlers into an energy container for purposes of things like extractManual?
-        //TODO - 26.1: We might want to change how we expose item caps in general so that they go via manual by default. Is there any reason we wouldn't want to?
+        //TODO - 26.2: Do we want a way to wrap energy handlers into an energy container for purposes of things like extractManual?
+        //TODO - 26.2: We might want to change how we expose item caps in general so that they go via manual by default. Is there any reason we wouldn't want to?
         // It should be trivial to make the interface method for default type not private, and then override it on our items
         return null;
     }

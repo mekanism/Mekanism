@@ -141,10 +141,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     @Override
     public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            //TODO - 26.1: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
+            //TODO - 26.2: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
-            //todo - 26.1: check this vs the old. Looks rather strong on top of other windows
+            //TODO - 26.2: check this vs the old. Looks rather strong on top of other windows
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiMekanism.SHADOW, relativeX - 3, relativeY - 3, width + 6, height + 6, ARGB.color(0.75F, CommonColors.WHITE));
         }
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());

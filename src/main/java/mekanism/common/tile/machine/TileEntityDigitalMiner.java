@@ -594,7 +594,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private boolean canMine(ServerLevel level, BlockState state, BlockPos pos) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingData(this);//pretend to be the owner
-        //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+        //TODO - 26.2: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
         boolean canMine = !NeoForge.EVENT_BUS.post(new BreakBlockEvent(level, pos, state, dummy)).isCanceled();
         if (MekanismAPI.debug && !canMine) {
             Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().identifier(), pos);
@@ -798,7 +798,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         running = input.getBooleanOr(SerializationConstants.RUNNING, running);
         delay = input.getIntOr(SerializationConstants.DELAY, delay);
         numPowering = input.getIntOr(SerializationConstants.NUM_POWERING, numPowering);
-        //TODO - 26.1: Do we want a codec that also tries to load it from int for legacy data?
+        //TODO - 26.2: Do we want a codec that also tries to load it from int for legacy data?
         input.read(SerializationConstants.STATE, State.CODEC).ifPresent(s -> {
             if (!initCalc && s == State.SEARCHING) {
                 //If we loaded and haven't started yet, but we were searching when we saved

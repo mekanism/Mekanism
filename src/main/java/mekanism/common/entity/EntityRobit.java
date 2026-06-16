@@ -394,7 +394,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        //TODO - 26.1: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
+        //TODO - 26.2: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
         if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {
@@ -698,7 +698,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, ItemRecipeLook
         return MekanismRobitSkins.get(Objects.requireNonNull(getLevel(), "not in level").registryAccess(), getSkinId());
     }
 
-    //todo - 26.1: cache the skin instance and index
+    //TODO - 26.2: cache the skin instance and index
 
     @Override
     public boolean setSkin(ResourceKey<RobitSkin> skinKey, @Nullable Player player) {

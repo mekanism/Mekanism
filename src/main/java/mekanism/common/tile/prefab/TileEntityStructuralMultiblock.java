@@ -129,7 +129,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void onAdded(Level level) {
         super.onAdded(level);
         //Ensure placing a structural multiblock tries to form the connected multiblock
-        //TODO - 26.1: Is this firing on the client? If so it might cause cast exceptions once it gets to onCreate and then creating the eject capability caches
+        //TODO - 26.2: Is this firing on the client? If so it might cause cast exceptions once it gets to onCreate and then creating the eject capability caches
         invalidStructure.tick(level, this, true);
     }
 

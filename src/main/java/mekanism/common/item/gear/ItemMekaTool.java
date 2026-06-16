@@ -96,7 +96,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     private static final Identifier RADIAL_ID = Mekanism.rl("meka_tool");
 
-    public ItemMekaTool(Properties properties) {//todo - 26.1 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
+    public ItemMekaTool(Properties properties) {//TODO - 26.2 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.fireResistant().rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
               .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
                     Tool.Rule.deniesDrops(context.lookupOrThrow(Registries.BLOCK).getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),

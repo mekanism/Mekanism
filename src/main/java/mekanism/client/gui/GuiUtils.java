@@ -54,12 +54,12 @@ public class GuiUtils {
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
             int argb = ARGB.white(alpha);
-            //TODO - 26.1: Can we merge the multiply and argb calls into one?
+            //TODO - 26.2: Can we merge the multiply and argb calls into one?
             guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
     }
 
-    //TODO - 26.1: Remove unused/redundant params
+    //TODO - 26.2: Remove unused/redundant params
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, int color) {
         if (desiredWidth == 0 || desiredHeight == 0) {
@@ -193,7 +193,7 @@ public class GuiUtils {
                 if (overlay) {
                     //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
                     // for rendering the stored count so that it doesn't clip with later windows
-                    //TODO - 26.1 check this - pose.translate(0, 0, -25);
+                    //TODO - 26.2 check this - pose.translate(0, 0, -25);
                     guiGraphics.itemDecorations(font, stack, xAxis, yAxis, text);
                 }
 

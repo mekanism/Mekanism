@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 
 public abstract class GuiScalableElement extends GuiTexturedElement {
 
-    //todo - 26.1: move side width/height into sprite mcmeta
+    //TODO - 26.2: move side width/height into sprite mcmeta
     protected GuiScalableElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height, int sideWidth, int sideHeight) {
         super(resource, gui, x, y, width, height);
         active = false;

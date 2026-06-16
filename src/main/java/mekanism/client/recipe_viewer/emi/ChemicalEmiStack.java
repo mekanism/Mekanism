@@ -37,7 +37,7 @@ public class ChemicalEmiStack extends EmiStack {
     }
 
     public ChemicalEmiStack(Chemical chemical, DataComponentPatch ignored, long amount) {
-        //TODO - 26.1: Re-evaluate usage and if we can just use the below, or what needs to happen
+        //TODO - 26.2: Re-evaluate usage and if we can just use the below, or what needs to happen
         // I am not sure if EmiRegistryAdapter even works with data pack registries in the first place,
         // so we might have to request a different entry point from Emi anyway
         this(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical), amount);

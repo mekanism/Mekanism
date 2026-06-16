@@ -63,7 +63,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
             state.waterMaxY = ModelRenderer.getMaxY(state.height, multiblock.prevWaterScale, MekanismUtils.lighterThanAirGas(water));
             state.valves.clear();
             if (multiblock.prevWaterScale > 0) {
-                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//TODO - 26.2: are these always active? (when not empty) Should they be?
                     state.valves.add(ValveRenderData.get(entry.getValue(), entry.getKey(), state.waterMaxY - 0.01F, state.renderLocation, state.height));
                 }
             }

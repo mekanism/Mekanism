@@ -110,7 +110,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithOverrides(facingSupplier);
         //Note: We add an override to the top of the fluid tank, to handle valve contents being inserted
-        //TODO - 26.1: Should we add it as relative side top or Direction.UP? We used to use direction up, and this is technically the same
+        //TODO - 26.2: Should we add it as relative side top or Direction.UP? We used to use direction up, and this is technically the same
         // because our fluid tanks don't support being placed on their side, but which implementation would be more robust?
         fluidTank = builder.addContainer(FluidTankFluidTank.create(this, listener),
               (tank, side) -> side == RelativeSide.TOP ? new ValveFluidTankWrapper(tank, this::getValveJournal) : tank);
@@ -316,7 +316,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
-        //TODO - 26.1: Re-evaluate this alternate encoding further (check history)
+        //TODO - 26.2: Re-evaluate this alternate encoding further (check history)
         NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
         if (!valveJournal.fluid.isEmpty()) {
             output.store(SerializationConstants.VALVE, FluidResource.CODEC, valveJournal.fluid);
@@ -337,7 +337,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
             }
         }
-        //TODO - 26.1: Should we only update this when the scale has changed? And/or if we had updated the light level?
+        //TODO - 26.2: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
         NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);

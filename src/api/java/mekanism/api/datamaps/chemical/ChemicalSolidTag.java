@@ -17,7 +17,7 @@ import net.minecraft.world.item.Item;
 /// @param solidRepresentation the item tag that represents the ore or block that goes with a chemical.
 ///
 /// @since 10.7.11
-public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.1: Do we want to just define this in the recipe
+public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 26.2: Do we want to just define this in the recipe
 
     /// The ID of the data map.
     ///

@@ -128,7 +128,7 @@ public class PersonalStorageManager {
             ItemResource resource = itemAccess.getResource();
             UUID storageId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
             if (storageId != null) {
-                //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason?
+                //TODO - 26.2: Do we want this to fail if we couldn't exchange for some reason?
                 ItemAccessUtils.exchange(itemAccess, resource.without(MekanismDataComponents.PERSONAL_STORAGE_ID), transaction);
                 //If there actually was an id stored then remove the corresponding inventory
                 PersonalStorageData data = forOwner(owner);
@@ -144,7 +144,7 @@ public class PersonalStorageManager {
         UUID invId = resource.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
         if (invId == null) {
             invId = UUID.randomUUID();
-            //TODO - 26.1: Do we want this to fail if we couldn't exchange for some reason?
+            //TODO - 26.2: Do we want this to fail if we couldn't exchange for some reason?
             ItemAccessUtils.exchange(itemAccess, resource.with(MekanismDataComponents.PERSONAL_STORAGE_ID, invId), transaction);
         }
         return invId;

@@ -125,7 +125,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return new BlockHitResult(location, hit.getDirection(), mainPos, hit.isInside());
     }
 
-    //TODO - 26.1: onRemove @Override
+    //TODO - 26.2: onRemove @Override
     protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
@@ -138,7 +138,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                     world.removeBlock(mainPos, false);
                 }
             }
-            //TODO - 26.1: super.onRemove(state, world, pos, newState, isMoving);
+            //TODO - 26.2: super.onRemove(state, world, pos, newState, isMoving);
         }
     }
 
@@ -317,7 +317,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     protected VoxelShape getOcclusionShape(BlockState state) {
-        //Todo - 26.1: perhaps override getAppearance?
+        //TODO - 26.2: perhaps override getAppearance?
         //return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
         return super.getOcclusionShape(state);
     }

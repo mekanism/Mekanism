@@ -56,7 +56,7 @@ public class MekanismRenderer {
     // effect block light for the glow rather than having it actually become full light
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
-    //todo - 26.1: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
+    //TODO - 26.2: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
     public static RenderResizableCuboid.TexturePicker WHITE_ICON_GETTER;
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
@@ -69,7 +69,7 @@ public class MekanismRenderer {
     /// @param type  Still or Flowing
     ///
     /// @return the sprite, or missing sprite if not found
-    //TODO - 26.1 - is this still what should be done?
+    //TODO - 26.2 - is this still what should be done?
     public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
@@ -121,11 +121,11 @@ public class MekanismRenderer {
     //Color
     @Deprecated(forRemoval = true)
     public static void resetColor(GuiGraphicsExtractor guiGraphics) {
-        //TODO - 26.1: inline color reset / remove
+        //TODO - 26.2: inline color reset / remove
         //guiGraphics.setColor(1, 1, 1, 1);
     }
 
-    //todo - 26.1: review usages to ensure it's actually used (all color() methods)
+    //TODO - 26.2: review usages to ensure it's actually used (all color() methods)
     public static int color(int color, float alpha) {
         return ARGB.color(alpha, color);
     }
@@ -228,7 +228,7 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
-        //TODO - 26.1: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
+        //TODO - 26.2: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
@@ -238,7 +238,7 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        //TODO - 26.1: Re-evaluate callers and see if any have access to the delta tracker through non static means
+        //TODO - 26.2: Re-evaluate callers and see if any have access to the delta tracker through non static means
         return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
 

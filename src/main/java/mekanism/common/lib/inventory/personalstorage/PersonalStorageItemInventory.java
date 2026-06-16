@@ -52,7 +52,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
 
     @Override
     public void onContentsChanged() {
-        //TODO - 26.1: Switch back to this once we make make it so onContentsChanged isn't called for deserialization?
+        //TODO - 26.2: Switch back to this once we make make it so onContentsChanged isn't called for deserialization?
         //Objects.requireNonNull(parent, "Incorrect deserialisation, setParent not called").onContentsChanged();
         if (parent != null) {
             parent.onContentsChanged();

@@ -41,7 +41,7 @@ public class ModelBabyCreeper extends CreeperModel {
         root.addOrReplaceChild("right_front_leg", cubelistbuilder, PartPose.offset(-2.0F, 18.0F, -4.0F));
         root.addOrReplaceChild("left_front_leg", cubelistbuilder, PartPose.offset(2.0F, 18.0F, -4.0F));
         return LayerDefinition.create(mesh, 64, 32)
-              .apply(BABY_MODEL_TRANSFORM);//todo - 26.1: test this is the correct way to transform it
+              .apply(BABY_MODEL_TRANSFORM);//TODO - 26.2: test this is the correct way to transform it
     }
 
     public ModelBabyCreeper(ModelPart root) {

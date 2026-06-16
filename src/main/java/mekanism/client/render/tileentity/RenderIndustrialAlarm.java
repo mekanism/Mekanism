@@ -62,7 +62,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
           ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(alarm, state, partialTick, cameraPosition, breakProgress);
         state.direction = alarm.getDirection();
-        //TODO - 26.1: Do we want to use game time as a basis or some other value?
+        //TODO - 26.2: Do we want to use game time as a basis or some other value?
         state.modelState.setRotation((alarm.getGameTime() + partialTick) * ROTATE_SPEED % 360);
     }
 

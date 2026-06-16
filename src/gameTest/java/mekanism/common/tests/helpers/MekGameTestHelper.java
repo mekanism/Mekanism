@@ -52,7 +52,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     }
 
     public GameTestAssertException assertionException(String description) {
-        //TODO - 26.1: Do we want to make any of our assertions translatable so that they can replace parameters instead of using string concat?
+        //TODO - 26.2: Do we want to make any of our assertions translatable so that they can replace parameters instead of using string concat?
         return assertionException(Component.literal(description));
     }
 

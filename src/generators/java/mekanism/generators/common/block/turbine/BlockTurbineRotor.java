@@ -49,7 +49,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             if (tile.removeBlade(world)) {
                 if (!player.isCreative()) {
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
-                    //TODO - 26.1: I don't think this setChanged call or the one lower down are necessary anymore?
+                    //TODO - 26.2: I don't think this setChanged call or the one lower down are necessary anymore?
                     player.getInventory().setChanged();
                 }
                 return InteractionResult.SUCCESS_SERVER;

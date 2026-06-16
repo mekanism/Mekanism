@@ -29,18 +29,18 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     public void extractRenderState(TileEntityPressurizedTube tube, TubeRenderState state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(tube, state, partialTick, cameraPosition, breakProgress);
         ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
-        if (network == null) {//TODO - 26.1: Does this race condition still exist?
+        if (network == null) {//TODO - 26.2: Does this race condition still exist?
             return;//race conditions, yay
         }
         state.currentScale = Math.max(0.2F, network.currentScale);
         state.chemicalTexture = MekanismRenderer.getChemicalTexture(network.getLastType());
-        //TODO - 26.1: Do we need to make this ARGB as technically alpha is currently empty
+        //TODO - 26.2: Do we need to make this ARGB as technically alpha is currently empty
         state.chemicalTint = MekanismRenderer.getTint(network.getLastType().typeHolder());
     }
 
     @Override
     public void submit(TubeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //todo - 26.1: rendering
+        //TODO - 26.2: rendering
         /*if (state.chemicalTexture != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);

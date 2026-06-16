@@ -94,7 +94,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemStac
 
     @Override
     public void logMissingTags() {
-        //TODO - 26.1: Re-evaluate this implementation
+        //TODO - 26.2: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             Ingredient unsized = ingredient.ingredient();
             if (unsized.isCustom()) {

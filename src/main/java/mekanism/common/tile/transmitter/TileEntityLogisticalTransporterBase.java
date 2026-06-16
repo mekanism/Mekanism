@@ -45,7 +45,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         super.preRemoveSideEffects(pos, state);
         if (level != null && !level.isClientSide()) {
             LogisticalTransporterBase transporter = getTransmitter();
-            //TODO - 26.1: Evaluate overriding Block#shouldChangedStateKeepBlockEntity to make it so that upgrading lets the entity persist?
+            //TODO - 26.2: Evaluate overriding Block#shouldChangedStateKeepBlockEntity to make it so that upgrading lets the entity persist?
             // Also evaluate if there are any other cases where we might want to override that method
             if (!transporter.isUpgrading()) {
                 //If the transporter is not currently being upgraded, drop the contents

@@ -26,7 +26,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IChemicalTank tank) {
-            //TODO - 26.1: Should this return maximum capacity (as in capacityAsLong(ChemicalResource.EMPTY)?)
+            //TODO - 26.2: Should this return maximum capacity (as in capacityAsLong(ChemicalResource.EMPTY)?)
             return tank.capacityAsLong(tank.resource());
         }
 
@@ -54,7 +54,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IFluidTank tank) {
-            //TODO - 26.1: Should this return maximum capacity (as in capacityAsLong(FluidResource.EMPTY)?)
+            //TODO - 26.2: Should this return maximum capacity (as in capacityAsLong(FluidResource.EMPTY)?)
             return tank.capacityAsLong(tank.resource());
         }
 

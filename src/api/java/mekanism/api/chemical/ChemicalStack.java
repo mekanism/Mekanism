@@ -260,7 +260,7 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
         if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return;
         }
-        //TODO - 26.1: Do we want to fire an event similar to fluid stacks?
+        //TODO - 26.2: Do we want to fire an event similar to fluid stacks?
         chemicalHolder.value().appendHoverText(this, context, tooltips, tooltipFlag);
         if (chemicalHolder.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
             tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));

@@ -41,7 +41,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame, FlameRenderState> {
         float alpha = (flame.tickCount + partialTick) / EntityFlame.LIFESPAN;
         float actualAlpha = 1 - alpha;
         state.tintColor = ARGB.white(ARGB.as8BitChannel(actualAlpha));
-        //TODO - 26.1: Figure out this scaling and if we even want it
+        //TODO - 26.2: Figure out this scaling and if we even want it
         float size = (float) Math.pow(2 * alpha, 2);
         //state.scale = 0.8F + size;
     }

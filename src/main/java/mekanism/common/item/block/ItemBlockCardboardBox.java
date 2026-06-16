@@ -45,9 +45,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         BlockData existingData = stack.get(MekanismDataComponents.BLOCK_DATA);
-        //TODO - 26.1: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
+        //TODO - 26.2: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
         tooltipAdder.accept(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
-        //TODO - 26.1: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
+        //TODO - 26.2: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
         stack.addToTooltip(MekanismDataComponents.BLOCK_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
     }
 
@@ -55,7 +55,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         //Check if the player is allowed to use the cardboard box in the given position
         if (world.mayInteract(player, pos) && player.mayUseItemAt(pos.relative(sideClicked), sideClicked, stack)) {
             //If they are then check if they can "break" the block that is in that spot
-            //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+            //TODO - 26.2: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
             if (!NeoForge.EVENT_BUS.post(new BreakBlockEvent(world, pos, state, player)).isCanceled()) {
                 //If they can then we need to see if they are allowed to "place" the cardboard box in the given position
                 //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots

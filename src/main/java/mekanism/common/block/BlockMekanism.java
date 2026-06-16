@@ -79,7 +79,7 @@ public abstract class BlockMekanism extends Block {
     @Override
     public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData, Player player) {
         ItemStack stack = super.getCloneItemStack(world, pos, state, includeData, player);
-        //TODO - 26.1: Do we also want to check the includeData field in this if statement?
+        //TODO - 26.2: Do we also want to check the includeData field in this if statement?
         if (MekanismConfig.common.copyBlockData.get()) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
             if (tile != null) {
@@ -134,7 +134,7 @@ public abstract class BlockMekanism extends Block {
         if (hasBounding != null) {
             hasBounding.removeBoundingBlocks(level, pos, state);
         }
-        //TODO - 26.1: I believe this theoretically only needs to happen if it supports comparators?
+        //TODO - 26.2: I believe this theoretically only needs to happen if it supports comparators?
         Containers.updateNeighboursAfterDestroy(state, level, pos);
 
     }
@@ -196,7 +196,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     protected int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos, Direction direction) {
-        //TODO - 26.1: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
+        //TODO - 26.2: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support

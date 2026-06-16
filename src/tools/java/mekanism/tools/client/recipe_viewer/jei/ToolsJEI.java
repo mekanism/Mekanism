@@ -35,7 +35,7 @@ public class ToolsJEI implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registry) {
         if (MekanismJEI.shouldLoad()) {
             //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
-            //TODO - 26.1: check that we need to still do this - JEI doesn't seem to have a reference to Repairable (yet?)
+            //TODO - 26.2: check that we need to still do this - JEI doesn't seem to have a reference to Repairable (yet?)
             for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
                 RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {
                     Repairable repairable = item.components().get(DataComponents.REPAIRABLE);
