@@ -13,7 +13,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.ProxiedContainerHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.ProxiedSingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.sps.SPSMultiblockData;
@@ -62,13 +64,13 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
         energyContainer = MachineEnergyContainer.input(this, listener);
-        return _ -> energyContainer;
+        return ProxiedSingleContainerHolder.energy(_ -> !getActive(), _ -> getActive(), _ -> energyContainer);
     }
 
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
-        //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
-        return _ -> getMultiblock().getChemicalTanks();
+        //Don't allow inserting if we are on output mode, or extracting if we are on input mode, our tanks will handle ensuring that we don't insert/extract from an invalid tank
+        return new ProxiedContainerHolder<>(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getChemicalTanks());
     }
 
     @Override

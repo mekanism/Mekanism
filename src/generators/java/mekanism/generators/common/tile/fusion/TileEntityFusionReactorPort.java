@@ -13,7 +13,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
+import mekanism.common.capabilities.holder.container.ProxiedContainerHolder;
 import mekanism.common.capabilities.holder.single.ISingleContainerHolder;
+import mekanism.common.capabilities.holder.single.ProxiedSingleContainerHolder;
 import mekanism.common.component.containers.type.ContainerType;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -45,18 +47,20 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     @Override
     public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
-        //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
-        return _ -> getMultiblock().getChemicalTanks();
+        //Don't allow inserting if we are on output mode, or extracting if we are on input mode, our tanks will handle ensuring that we don't insert/extract from an invalid tank
+        return new ProxiedContainerHolder<>(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getChemicalTanks());
     }
 
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
-        return _ -> getMultiblock().getFluidTanks();
+        //Don't allow inserting if we are on output mode, or extracting if we are on input mode, our tanks will handle ensuring that we don't insert/extract from an invalid tank
+        return new ProxiedContainerHolder<>(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getFluidTanks());
     }
 
     @Override
     protected ISingleContainerHolder<IEnergyContainer> getInitialEnergyContainer(IContentsListener listener) {
-        return _ -> getMultiblock().getEnergyContainer();
+        //Don't allow inserting if we are on output mode, or extracting if we are on input mode
+        return ProxiedSingleContainerHolder.energy(_ -> !getActive(), _ -> getActive(), _ -> getMultiblock().getEnergyContainer());
     }
 
     @Override
