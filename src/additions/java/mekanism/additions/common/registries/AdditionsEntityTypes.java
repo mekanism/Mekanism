@@ -57,6 +57,7 @@ public class AdditionsEntityTypes {
     );
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityObsidianTNT>> OBSIDIAN_TNT = ENTITY_TYPES.registerBuilder("obsidian_tnt", () -> EntityType.Builder.<EntityObsidianTNT>of(EntityObsidianTNT::new, MobCategory.MISC)
           //Copied from EntityTypes.TNT
+          .noLootTable()
           .fireImmune()
           .sized(0.98F, 0.98F)
           .eyeHeight(0.15F)
